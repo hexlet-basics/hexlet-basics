@@ -55,6 +55,13 @@ const languageModules: Record<
   rust: () => import("@shikijs/langs/rust"),
 };
 
+// Языки, которые реально загружены в highlighter. Всё остальное рендерим как
+// обычный текст, чтобы не падать с "Language `x` not found" (см. issue #597).
+export const supportedLanguages = new Set(Object.keys(languageModules));
+
+// Специальные "языки" shiki, которые не требуют загрузки грамматики.
+export const plainTextLanguage = "text";
+
 async function loadShiki() {
   const highlighterPromise = createHighlighterCore({
     themes: [() => import("@shikijs/themes/github-light")],
