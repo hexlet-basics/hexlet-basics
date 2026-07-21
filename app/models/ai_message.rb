@@ -1,4 +1,4 @@
-# typed: false
+# typed: strict
 # frozen_string_literal: true
 
 # == Schema Information
@@ -39,6 +39,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class AiMessage < ApplicationRecord
+  extend T::Sig
+
   acts_as_message chat: :ai_chat, tool_calls: :ai_tool_calls, model: :ai_model
   has_many_attached :attachments
 
@@ -48,10 +50,12 @@ class AiMessage < ApplicationRecord
 
   scope :role_user, -> { where(role: "user") }
 
+  sig { params(_auth_object: T.untyped).returns(T::Array[String]) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "role", "content", "user_id", "created_at", "ai_chat_id" ]
   end
 
+  sig { params(_auth_object: T.untyped).returns(T::Array[String]) }
   def self.ransackable_associations(_auth_object = nil)
     [ "ai_chat" ]
   end
@@ -60,10 +64,11 @@ class AiMessage < ApplicationRecord
 
   # RubyLLM persists messages without knowing about our user association,
   # so attribute the user-authored message to the chat owner ourselves.
+  sig { void }
   def assign_chat_user
     return unless role == "user"
     return if user.present?
 
-    self.user = ai_chat&.user
+    self.user = ai_chat.user
   end
 end

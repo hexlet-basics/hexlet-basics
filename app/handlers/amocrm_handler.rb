@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 class AmocrmHandler < ApplicationJob
@@ -6,6 +6,9 @@ class AmocrmHandler < ApplicationJob
 
   prepend RailsEventStore::AsyncHandler
 
+  # `perform` is wrapped by the prepended `RailsEventStore::AsyncHandler`, so a
+  # runtime-checked sig can't replace it; declare it statically only.
+  T::Sig::WithoutRuntime.sig { params(event: RubyEventStore::Event).void }
   def perform(event)
     call(event)
   end
