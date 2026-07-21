@@ -36,16 +36,19 @@ class Web::LocalesController < Web::ApplicationController
     referer = request.referer
     return fallback if referer.blank?
 
-    uri = URI.parse(referer)
+    uri =
+      begin
+        URI.parse(referer)
+      rescue URI::InvalidURIError
+        return fallback
+      end
     return fallback unless uri.host == request.host
 
-    stripped = uri.path.sub(%r{\A/(?:es|ru)(?=/|\z)}, "")
+    stripped = T.must(uri.path).sub(%r{\A/(?:es|ru)(?=/|\z)}, "")
     return fallback if stripped.blank? || stripped == "/"
 
     prefix = suffix ? "/#{suffix}" : ""
     query = uri.query.present? ? "?#{uri.query}" : ""
     "#{prefix}#{stripped}#{query}"
-  rescue URI::InvalidURIError
-    fallback
   end
 end
