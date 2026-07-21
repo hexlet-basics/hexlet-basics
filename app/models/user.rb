@@ -79,6 +79,8 @@ class User < ApplicationRecord
     unless: :removed?
 
   validates :phone, uniqueness: true, allow_blank: true, unless: :removed?
+  # Partial unique index on webauthn_id (WHERE webauthn_id IS NOT NULL).
+  validates :webauthn_id, uniqueness: true, allow_blank: true
 
   validate :identifier_present, unless: :removed?
 

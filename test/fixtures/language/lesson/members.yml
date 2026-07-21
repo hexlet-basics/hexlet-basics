@@ -16,7 +16,6 @@
 #
 #  index_language_lesson_members_on_language_member_id            (language_member_id)
 #  user_finished_lessons_language_module_lesson_id_index          (lesson_id)
-#  user_finished_lessons_user_id_index                            (user_id)
 #  user_finished_lessons_user_id_language_module_lesson_id_index  (user_id,lesson_id) UNIQUE
 #
 # Foreign Keys

@@ -80,7 +80,7 @@ class Language < ApplicationRecord
   # enumerize :learn_as, in: %i[first_language second_language], default: :first_language
 
   # NOTE: must be part of the docker image: hexlet-basics/exercises-<slug>
-  validates :slug, presence: true
+  validates :slug, presence: true, uniqueness: true
   # validates :learn_as, presence: true
 
   belongs_to :current_version, optional: true, class_name: "Language::Version"

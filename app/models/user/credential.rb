@@ -25,4 +25,7 @@
 #
 class User::Credential < ApplicationRecord
   belongs_to :user
+  # Mirrors the DB NOT NULL columns and the unique index on external_id.
+  validates :external_id, presence: true, uniqueness: true
+  validates :public_key, presence: true
 end

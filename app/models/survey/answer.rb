@@ -14,7 +14,6 @@
 #
 # Indexes
 #
-#  index_survey_answers_on_survey_id              (survey_id)
 #  index_survey_answers_on_survey_id_and_user_id  (survey_id,user_id) UNIQUE
 #  index_survey_answers_on_survey_item_id         (survey_item_id)
 #  index_survey_answers_on_user_id                (user_id)

@@ -36,6 +36,7 @@ class Language::Lesson::Review < ApplicationRecord
 
   # validates :summary, presence: true
   validates :lesson, presence: true, uniqueness: { scope: :locale }
+  validates :locale, presence: true
 
   sig { params(auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(auth_object = nil)

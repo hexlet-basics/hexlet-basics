@@ -19,7 +19,6 @@
 #
 #  index_language_lesson_members_on_language_member_id            (language_member_id)
 #  user_finished_lessons_language_module_lesson_id_index          (lesson_id)
-#  user_finished_lessons_user_id_index                            (user_id)
 #  user_finished_lessons_user_id_language_module_lesson_id_index  (user_id,lesson_id) UNIQUE
 #
 # Foreign Keys
@@ -36,6 +35,9 @@ class Language::Lesson::Member < ApplicationRecord
   belongs_to :language
   belongs_to :language_member, class_name: "Language::Member"
   belongs_to :lesson
+
+  # Mirrors the unique index on (user_id, lesson_id): one membership per lesson.
+  validates :lesson_id, uniqueness: { scope: :user_id }
 
   has_one :ai_chat, foreign_key: :language_lesson_member_id, dependent: :destroy
 

@@ -14,7 +14,6 @@
 # Indexes
 #
 #  index_survey_scenario_items_on_scenario_id                (scenario_id)
-#  index_survey_scenario_items_on_survey_id                  (survey_id)
 #  index_survey_scenario_items_on_survey_id_and_scenario_id  (survey_id,scenario_id) UNIQUE
 #
 # Foreign Keys

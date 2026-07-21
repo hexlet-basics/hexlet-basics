@@ -29,6 +29,8 @@ class BookRequest < ApplicationRecord
   include AASM
 
   belongs_to :user
+  # Mirrors the unique index on user_id: one book request per user.
+  validates :user_id, uniqueness: true
 
   typed_enum :state, State, default: State::Requested, suffix: true, validate: true
 end

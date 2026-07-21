@@ -58,6 +58,9 @@ terraform/*.json
 stats.html
 .idea/
 .npm-cache
+
+# Reports dumped by `make check` (database_consistency) on internal errors.
+/database_consistency_*.txt
 .playwright-cli
 npm-cache
 .claude

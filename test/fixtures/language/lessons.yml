@@ -20,7 +20,6 @@
 # Indexes
 #
 #  index_language_lessons_on_language_id_and_slug  (language_id,slug) UNIQUE
-#  language_module_lessons_language_id_index       (language_id)
 #  language_module_lessons_module_id_index         (module_id)
 #  language_module_lessons_upload_id_index         (upload_id)
 #

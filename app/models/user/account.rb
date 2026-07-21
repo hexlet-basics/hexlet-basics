@@ -24,5 +24,6 @@ class User::Account < ApplicationRecord
   belongs_to :user
 
   # Mirrors the unique index on (provider, uid): one social identity per user.
-  validates :uid, uniqueness: { scope: :provider }
+  validates :provider, presence: true
+  validates :uid, presence: true, uniqueness: { scope: :provider }
 end

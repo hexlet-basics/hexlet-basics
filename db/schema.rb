@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_21_191955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -105,7 +105,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.index ["ai_model_id"], name: "index_ai_chats_on_ai_model_id"
     t.index ["language_lesson_member_id"], name: "index_ai_chats_on_language_lesson_member_id"
     t.index ["user_id", "language_lesson_member_id"], name: "index_ai_chats_on_user_id_and_language_lesson_member_id", unique: true
-    t.index ["user_id"], name: "index_ai_chats_on_user_id"
   end
 
   create_table "ai_messages", force: :cascade do |t|
@@ -151,7 +150,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.index ["family"], name: "index_ai_models_on_family"
     t.index ["modalities"], name: "index_ai_models_on_modalities", using: :gin
     t.index ["provider", "model_id"], name: "index_ai_models_on_provider_and_model_id", unique: true
-    t.index ["provider"], name: "index_ai_models_on_provider"
   end
 
   create_table "ai_tool_calls", force: :cascade do |t|
@@ -332,7 +330,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.index ["language_member_id"], name: "index_language_lesson_members_on_language_member_id"
     t.index ["lesson_id"], name: "user_finished_lessons_language_module_lesson_id_index"
     t.index ["user_id", "lesson_id"], name: "user_finished_lessons_user_id_language_module_lesson_id_index", unique: true
-    t.index ["user_id"], name: "user_finished_lessons_user_id_index"
   end
 
   create_table "language_lesson_reviews", force: :cascade do |t|
@@ -404,7 +401,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "upload_id"
     t.index ["language_id", "slug"], name: "index_language_lessons_on_language_id_and_slug", unique: true
-    t.index ["language_id"], name: "language_module_lessons_language_id_index"
     t.index ["module_id"], name: "language_module_lessons_module_id_index"
     t.index ["upload_id"], name: "language_module_lessons_upload_id_index"
   end
@@ -718,7 +714,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.bigint "role_id", null: false
     t.datetime "updated_at", null: false
     t.index ["role_id", "resource"], name: "index_staff_member_role_permissions_on_role_id_and_resource", unique: true
-    t.index ["role_id"], name: "index_staff_member_role_permissions_on_role_id"
   end
 
   create_table "staff_member_roles", force: :cascade do |t|
@@ -746,7 +741,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["survey_id", "user_id"], name: "index_survey_answers_on_survey_id_and_user_id", unique: true
-    t.index ["survey_id"], name: "index_survey_answers_on_survey_id"
     t.index ["survey_item_id"], name: "index_survey_answers_on_survey_item_id"
     t.index ["user_id"], name: "index_survey_answers_on_user_id"
   end
@@ -770,7 +764,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_043521) do
     t.datetime "updated_at", null: false
     t.index ["scenario_id"], name: "index_survey_scenario_items_on_scenario_id"
     t.index ["survey_id", "scenario_id"], name: "index_survey_scenario_items_on_survey_id_and_scenario_id", unique: true
-    t.index ["survey_id"], name: "index_survey_scenario_items_on_survey_id"
   end
 
   create_table "survey_scenario_members", force: :cascade do |t|

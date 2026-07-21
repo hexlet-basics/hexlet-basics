@@ -17,7 +17,6 @@
 #
 # Indexes
 #
-#  index_staff_member_role_permissions_on_role_id               (role_id)
 #  index_staff_member_role_permissions_on_role_id_and_resource  (role_id,resource) UNIQUE
 #
 # Foreign Keys

@@ -34,6 +34,7 @@ class Survey::Item < ApplicationRecord
   belongs_to :survey
 
   validates :value, presence: true, if: :active?
+  validates :order, presence: true
 
   typed_enum :state, State, default: State::Active
 end

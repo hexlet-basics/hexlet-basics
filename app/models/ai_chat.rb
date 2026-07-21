@@ -16,7 +16,6 @@
 #
 #  index_ai_chats_on_ai_model_id                            (ai_model_id)
 #  index_ai_chats_on_language_lesson_member_id              (language_lesson_member_id)
-#  index_ai_chats_on_user_id                                (user_id)
 #  index_ai_chats_on_user_id_and_language_lesson_member_id  (user_id,language_lesson_member_id) UNIQUE
 #
 # Foreign Keys
