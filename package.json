@@ -10,7 +10,6 @@
     "@dnd-kit/helpers": "^0.5.0",
     "@dnd-kit/react": "^0.5.0",
     "@emotion/react": "^11.14.0",
-    "@gfazioli/mantine-split-pane": "^4.1.9",
     "@github/webauthn-json": "^2.1.1",
     "@hexlet/analytics-plugin-yandex-metrika": "^1.0.10",
     "@inertiajs/core": "^3.6.1",

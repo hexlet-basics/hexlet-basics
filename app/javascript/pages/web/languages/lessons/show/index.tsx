@@ -13,11 +13,14 @@ import {
   NavLink,
   Paper,
   ScrollArea,
+  Splitter,
   Stack,
   Tabs,
   Text,
   Title,
 } from "@mantine/core";
+import type { SplitterPaneSize } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import {
   IconBook,
   IconBrandGithub,
@@ -66,15 +69,51 @@ function HtmlPreviewBlock() {
 export default function Index() {
   return (
     <LessonLayout>
-      <AppShell.Navbar p={0}>
-        <LessonLeftBlock />
-      </AppShell.Navbar>
       <AppShell.Main h="100%">
-        <Box h="100%" mih={0}>
-          <LessonRightBlock />
-        </Box>
+        <LessonPanes />
       </AppShell.Main>
     </LessonLayout>
+  );
+}
+
+// The theory pane and the editor pane share a draggable divider on desktop
+// (issue #585). On mobile the two panes can't sit side by side, so one fills
+// the screen at a time and the burger in each tab bar toggles between them
+// (same mechanism as issue #720). Both blocks stay mounted the whole time —
+// the panes are always in the DOM, only their width changes — so the chat and
+// editor never remount.
+function LessonPanes() {
+  const isDesktop = useMediaQuery("(min-width: 48em)", true, {
+    getInitialValueInEffect: true,
+  });
+  const mobileNavOpened = useLessonStore((state) => state.mobileNavOpened);
+  const paneSizes = useLessonStore((state) => state.paneSizes);
+  const setPaneSizes = useLessonStore((state) => state.setPaneSizes);
+
+  const mobileSizes: SplitterPaneSize[] = mobileNavOpened
+    ? ["100%", "0%"]
+    : ["0%", "100%"];
+  const sizes = isDesktop ? paneSizes : mobileSizes;
+
+  return (
+    <Splitter
+      h="100%"
+      sizes={sizes}
+      onSizeChange={(next) => {
+        if (isDesktop) {
+          setPaneSizes(next);
+        }
+      }}
+      withHandle={isDesktop}
+      lineSize={isDesktop ? undefined : 0}
+    >
+      <Splitter.Pane defaultSize={sizes[0]} min={isDesktop ? "25%" : "0%"}>
+        <LessonLeftBlock />
+      </Splitter.Pane>
+      <Splitter.Pane defaultSize={sizes[1]}>
+        <LessonRightBlock />
+      </Splitter.Pane>
+    </Splitter>
   );
 }
 

@@ -1,3 +1,4 @@
+import type { SplitterPaneSize } from "@mantine/hooks";
 import type {
   Language,
   LanguageLesson,
@@ -31,6 +32,8 @@ export interface LessonState {
   focusesCount: number;
   mobileNavOpened: boolean;
   toggleMobileNav: () => void;
+  paneSizes: SplitterPaneSize[];
+  setPaneSizes: (sizes: SplitterPaneSize[]) => void;
   changeContent: (content: string) => void;
   resetContent: () => void;
   changeTab: (tab: TabName) => void;

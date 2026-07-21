@@ -21,9 +21,6 @@ importers:
       '@emotion/react':
         specifier: ^11.14.0
         version: 11.14.0(@types/react@19.2.17)(react@19.2.7)
-      '@gfazioli/mantine-split-pane':
-        specifier: ^4.1.9
-        version: 4.1.9(@mantine/core@9.4.2(@mantine/hooks@9.4.2(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.2(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@github/webauthn-json':
         specifier: ^2.1.1
         version: 2.1.1
@@ -763,14 +760,6 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
-
-  '@gfazioli/mantine-split-pane@4.1.9':
-    resolution: {integrity: sha512-uUa8fupOqKWDD4o6nnv6iNRq7aM0QUbaJKyPqqDgLVa9CAAsogvRBTDFQhjcPHLfFPA//sNNcehLopEB2h8nfg==}
-    peerDependencies:
-      '@mantine/core': '>=9.0.0'
-      '@mantine/hooks': '>=9.0.0'
-      react: ^18.x || ^19.x
-      react-dom: ^18.x || ^19.x
 
   '@github/webauthn-json@2.1.1':
     resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
@@ -5499,13 +5488,6 @@ snapshots:
       tabbable: 6.5.0
 
   '@floating-ui/utils@0.2.12': {}
-
-  '@gfazioli/mantine-split-pane@4.1.9(@mantine/core@9.4.2(@mantine/hooks@9.4.2(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@mantine/hooks@9.4.2(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
-    dependencies:
-      '@mantine/core': 9.4.2(@mantine/hooks@9.4.2(react@19.2.7))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@mantine/hooks': 9.4.2(react@19.2.7)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
 
   '@github/webauthn-json@2.1.1': {}
 

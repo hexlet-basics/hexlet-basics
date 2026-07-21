@@ -34,9 +34,11 @@ export function createLessonStore(
           startTime: 0,
           solutionState: "notAllowedToBeShown",
           mobileNavOpened: false,
+          paneSizes: ["40%", "60%"],
           ...initProps,
           toggleMobileNav: () =>
             set((state) => ({ mobileNavOpened: !state.mobileNavOpened })),
+          setPaneSizes: (paneSizes) => set({ paneSizes }),
           changeContent: (content) => set({ content }),
           resetContent: () =>
             set((state) => ({
@@ -123,7 +125,10 @@ export function createLessonStore(
           },
         }),
         {
-          partialize: (state) => ({ content: state.content }),
+          partialize: (state) => ({
+            content: state.content,
+            paneSizes: state.paneSizes,
+          }),
           name: `lesson-${lesson.id}`,
         },
       ),
