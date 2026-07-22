@@ -21,6 +21,7 @@ class Web::PhoneAuthControllerTest < ActionDispatch::IntegrationTest
 
   def test_new
     get new_phone_auth_url
+
     assert_response :success
   end
 
@@ -33,6 +34,7 @@ class Web::PhoneAuthControllerTest < ActionDispatch::IntegrationTest
 
   def test_request_code_rejects_invalid_phone
     post phone_auth_url, params: { data: { phone: "not-a-phone" } }
+
     assert_redirected_to new_phone_auth_url
     assert { cached_code.nil? }
   end
@@ -68,6 +70,7 @@ class Web::PhoneAuthControllerTest < ActionDispatch::IntegrationTest
     post phone_auth_url, params: { data: { phone: @phone } }
 
     post confirm_phone_auth_url, params: { data: { phone: @phone, code: "0000-wrong" } }
+
     assert_redirected_to verify_phone_auth_url(phone: @phone)
     assert { !authenticated? }
   end

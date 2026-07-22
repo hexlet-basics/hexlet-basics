@@ -191,7 +191,7 @@ class WorkflowLeadResource
     }
 
     data.each_with_object([]) do |(key, value), result|
-      next unless value.present?
+      next if value.blank?
 
       field_meta = T.let(LEAD_FIELD_MAPPER.fetch(key), FieldMeta)
       payload = {

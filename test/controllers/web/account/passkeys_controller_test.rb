@@ -12,6 +12,7 @@ class Web::Account::PasskeysControllerTest < ActionDispatch::IntegrationTest
 
   def test_register_passkey
     get new_account_passkey_url
+
     assert_response :success
     options = JSON.parse(@response.body)
     credential = @client.create(challenge: options["challenge"])

@@ -9,7 +9,9 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import type { PropsWithChildren } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
@@ -17,13 +19,54 @@ import {
   currentPasswordInputProps,
   loginEmailInputProps,
 } from "@/lib/authFieldProps";
-import { loginWithPasskey, passkeySupported } from "@/lib/passkey";
+import {
+  cancelPasskeyCeremony,
+  loginWithPasskey,
+  passkeyAutofillSupported,
+  passkeyCancelled,
+  passkeySupported,
+} from "@/lib/passkey";
 import * as Routes from "@/routes.js";
 
 type Props = PropsWithChildren;
 
 export default function New(_props: Props) {
   const { t } = useTranslation();
+
+  const handlePasskeyLogin = async () => {
+    try {
+      await loginWithPasskey();
+    } catch (error) {
+      if (passkeyCancelled(error)) {
+        return;
+      }
+
+      notifications.show({
+        color: "red",
+        message: t(($) => $.sessions.new.passkey_error),
+      });
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (!(await passkeyAutofillSupported())) {
+        return;
+      }
+
+      try {
+        await loginWithPasskey(true);
+      } catch (error) {
+        // Autofill runs unprompted in the background, so a toast here
+        // would blame the user for an action they never took.
+        if (!passkeyCancelled(error)) {
+          console.warn(error);
+        }
+      }
+    })();
+
+    return cancelPasskeyCeremony;
+  }, []);
 
   const { onSubmit, processing, form, reset } = useAppForm(
     { email: "", password: "" },
@@ -52,6 +95,7 @@ export default function New(_props: Props) {
                 required
                 autoFocus
                 {...loginEmailInputProps}
+                autoComplete="username webauthn"
               />
               <TextInput
                 label={t(($) => $.models.attributes.user.password)}
@@ -90,7 +134,11 @@ export default function New(_props: Props) {
                 {t(($) => $.sessions.new.sign_in_with_magic_link)}
               </Button>
               {passkeySupported() ? (
-                <Button variant="default" fullWidth onClick={loginWithPasskey}>
+                <Button
+                  variant="default"
+                  fullWidth
+                  onClick={handlePasskeyLogin}
+                >
                   {t(($) => $.sessions.new.sign_in_with_passkey)}
                 </Button>
               ) : null}

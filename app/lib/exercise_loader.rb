@@ -284,7 +284,7 @@ class ExerciseLoader
 
     lesson_infos = infos.map { |info| create_lesson_info(language_version, version, info) }
 
-    Rails.logger.info("Lesson #{lesson.slug} (#{lesson_infos.map { it[:locale] }.join(', ')}) loaded")
+    Rails.logger.info("Lesson #{lesson.slug} (#{lesson_infos.pluck(:locale).join(', ')}) loaded")
 
     { lesson: lesson, lesson_version: version, lesson_infos: lesson_infos }
   end

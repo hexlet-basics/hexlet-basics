@@ -6,6 +6,7 @@ class Web::BlogPosts::LikesControllerTest < ActionDispatch::IntegrationTest
   def test_create
     post = blog_posts("full-python-ru")
     post blog_post_likes_url(post.slug)
+
     assert_response :redirect
   end
 
@@ -14,6 +15,7 @@ class Web::BlogPosts::LikesControllerTest < ActionDispatch::IntegrationTest
 
     post = blog_posts("full-python-ru")
     post blog_post_likes_url(post.slug)
+
     assert_response :redirect
   end
 end

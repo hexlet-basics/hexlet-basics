@@ -10,7 +10,7 @@ class Web::LocalesController < Web::ApplicationController
     locale = params[:new_locale]
 
     unless I18n.available_locales.map(&:to_s).include?(locale)
-      redirect_back fallback_location: root_path(suffix: AppHost.locale_for_url(I18n.default_locale))
+      redirect_back_or_to(root_path(suffix: AppHost.locale_for_url(I18n.default_locale)))
       return
     end
 
@@ -40,8 +40,9 @@ class Web::LocalesController < Web::ApplicationController
       begin
         URI.parse(referer)
       rescue URI::InvalidURIError
-        return fallback
+        nil
       end
+    return fallback if uri.nil?
     return fallback unless uri.host == request.host
 
     stripped = T.must(uri.path).sub(%r{\A/(?:es|ru)(?=/|\z)}, "")

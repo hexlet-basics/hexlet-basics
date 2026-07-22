@@ -42,9 +42,11 @@ class Assistants::RunJobTest < ActiveJob::TestCase
     end
 
     user_message = @ai_chat.ai_messages.role_user.last
+
     assert_equal @user.id, user_message.user_id
 
     assistant_message = @ai_chat.ai_messages.where(role: "assistant").last
+
     assert_equal "Привет, мир", assistant_message.content
   end
 end

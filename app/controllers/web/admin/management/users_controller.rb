@@ -44,7 +44,7 @@ class Web::Admin::Management::UsersController < Web::Admin::Management::Applicat
 
   sig { void }
   def edit
-    user = User.find params[:id]
+    user = User.find params.expect(:id)
     progressByLanguage = user.lesson_members.group(:language).count
     progress = progressByLanguage.map do |language, count|
       { language: language.slug, count: }

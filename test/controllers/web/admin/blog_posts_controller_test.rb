@@ -10,11 +10,13 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
 
   def test_index
     get admin_blog_posts_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_blog_post_url
+
     assert_response :success
   end
 
@@ -23,6 +25,7 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
 
     attrs = attributes_for(:blog_post, language_id: lang.id)
     post admin_blog_posts_url, params: { data: attrs }
+
     assert_response :redirect
 
     assert { lang.blog_posts.find_by slug: attrs[:slug] }
@@ -32,6 +35,7 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
     blog_post = blog_posts("from-full")
 
     get edit_admin_blog_post_url(blog_post)
+
     assert_response :success
   end
 
@@ -39,6 +43,7 @@ class Web::Admin::BlogPostsControllerTest < ActionDispatch::IntegrationTest
     blog_post = blog_posts("from-full")
 
     patch admin_blog_post_url(blog_post), params: { data: { slug: "mumu" } }
+
     assert_response :redirect
 
     blog_post.reload

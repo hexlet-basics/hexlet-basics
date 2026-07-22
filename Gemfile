@@ -2,8 +2,8 @@ source "https://rubygems.org"
 # ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails"
 gem "puma"
+gem "rails"
 
 # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
 gem "bundler-audit", require: false
@@ -12,15 +12,15 @@ gem "bundler-audit", require: false
 # gem "jbuilder"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "alba"
-gem "typelizer"
 gem "ruby_llm"
+gem "typelizer"
+gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem "solid_cable"
 gem "solid_cache"
 gem "solid_queue"
-gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -31,10 +31,10 @@ gem "bootsnap", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
-gem "inertia_rails"
-gem "vite_rails"
 gem "foreman"
+gem "inertia_rails"
 gem "ostruct"
+gem "vite_rails"
 
 # gem 'aws-sdk-s3'
 
@@ -45,10 +45,10 @@ gem "ruby-vips", "~> 2.0", require: false
 # gem 'responders'
 
 # gem 'http_accept_language'
-gem "pagy"
 gem "omniauth-facebook"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
+gem "pagy"
 gem "phonelib"
 gem "ransack"
 # gem 'redis'
@@ -63,9 +63,9 @@ gem "webauthn"
 
 # gem 'jsbundling-rails'
 
-gem "stackprof"
-gem "sentry-ruby"
 gem "sentry-rails"
+gem "sentry-ruby"
+gem "stackprof"
 
 # Condense Rails' multi-line request logs into one structured line per request
 gem "lograge"
@@ -78,8 +78,8 @@ gem "amocrm"
 gem "js-routes"
 
 gem "sorbet"
-gem "sorbet-schema"
 gem "sorbet-result"
+gem "sorbet-schema"
 
 group :development, :test, :staging do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -92,20 +92,20 @@ group :development, :test, :staging do
   gem "i18n-tasks", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
-  gem "rubocop-sorbet", require: false
-  gem "rubocop-minitest", require: false
   gem "rubocop-capybara", require: false
   gem "rubocop-factory_bot", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-rails-omakase", require: false
   gem "rubocop-rake", require: false
+  gem "rubocop-sorbet", require: false
 
   gem "factory_bot_rails"
   gem "faker"
 
   gem "database_consistency", require: false
 
-  gem "tapioca"
   gem "boba", require: false
+  gem "tapioca"
   # gem "bullet"
 end
 
@@ -115,9 +115,9 @@ group :development, :staging do
   # gem 'i18n-debug'
   # gem 'listen'
   # gem 'derailed_benchmarks'
-  gem "web-console"
   gem "ruby-lsp", require: false
   gem "ruby-lsp-rails", require: false
+  gem "web-console"
 end
 
 group :test do
@@ -135,9 +135,9 @@ end
 
 gem "aasm"
 gem "acts-as-taggable-on"
-gem "webmock"
 gem "aws-sdk-s3"
 gem "bcrypt"
+gem "webmock"
 # gem "enumerize"
 gem "gon"
 gem "googleauth"
@@ -152,14 +152,14 @@ gem "commonmarker"
 gem "counter_culture"
 # NOTE: было только в dev/test/staging — из-за этого N+1 маскировались локально, но
 # жили в проде. Включён во всех окружениях, чтобы авто-eager-load ассоциаций работал и на проде.
-gem "goldiloader"
 gem "ahoy_matey"
+gem "goldiloader"
 # gem "country_select"
 # gem 'sorbet-rails' # Temp disable sorbet for memory optimization
 
-gem "strong_migrations"
 gem "browser"
 gem "browserslist"
+gem "strong_migrations"
 #
 gem "meta-tags"
 #

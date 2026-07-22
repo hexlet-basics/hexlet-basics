@@ -72,6 +72,7 @@ Configus.build Rails.env do
   end
 
   env :staging, parent: :production do
+    # полностью наследует продовые настройки
   end
 
   env :development, parent: :production do

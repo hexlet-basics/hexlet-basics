@@ -8,6 +8,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get edit_account_profile_url
+
     assert_response :success
   end
 
@@ -20,6 +21,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
         first_name: new_name
       }
     }
+
     assert_response :redirect
 
     user.reload
@@ -30,6 +32,7 @@ class Web::Account::ProfilesControllerTest < ActionDispatch::IntegrationTest
   def test_destroy
     user = sign_in_as(:full)
     delete account_profile_url
+
     assert_response :redirect
 
     user.reload

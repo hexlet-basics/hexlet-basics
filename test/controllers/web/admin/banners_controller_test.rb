@@ -10,17 +10,20 @@ class Web::Admin::BannersControllerTest < ActionDispatch::IntegrationTest
 
   def test_index
     get admin_banners_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_banner_url
+
     assert_response :success
   end
 
   def test_create
     attrs = attributes_for(:banner)
     post admin_banners_url, params: { data: attrs }
+
     assert_response :redirect
 
     assert { Banner.find_by(body: attrs[:body]) }
@@ -30,6 +33,7 @@ class Web::Admin::BannersControllerTest < ActionDispatch::IntegrationTest
     banner = banners("published-ru")
 
     get edit_admin_banner_url(banner)
+
     assert_response :success
   end
 
@@ -39,6 +43,7 @@ class Web::Admin::BannersControllerTest < ActionDispatch::IntegrationTest
     assert { banner.published_state? }
 
     patch admin_banner_url(banner), params: { data: { body: "mumu", state: "archived" } }
+
     assert_response :redirect
 
     banner.reload
@@ -50,6 +55,7 @@ class Web::Admin::BannersControllerTest < ActionDispatch::IntegrationTest
     banner = banners("published-ru")
 
     delete admin_banner_url(banner)
+
     assert_response :redirect
 
     assert { Banner.find_by(id: banner.id).nil? }

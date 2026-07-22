@@ -30,7 +30,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   sig { void }
   def edit
-    category = Language::Category.find(params[:id])
+    category = Language::Category.find(params.expect(:id))
     landing_pages = Language::LandingPage.web.merge(Language.ordered)
 
     render inertia: true, props: {
@@ -72,7 +72,7 @@ class Web::Admin::LanguageCategoriesController < Web::Admin::ApplicationControll
 
   sig { void }
   def destroy
-    category = Language::Category.find(params[:id])
+    category = Language::Category.find(params.expect(:id))
 
     # if category.language_landing_pages.any?
     #   f(:error)

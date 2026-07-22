@@ -3,7 +3,7 @@
 class Web::Languages::ApplicationController < Web::ApplicationController
   sig { returns(Language) }
   def resource_language
-    @resource_language ||= T.let(Language.find_by!(slug: params[:language_id]), T.nilable(Language))
+    @resource_language ||= T.let(Language.find_by!(slug: params.expect(:language_id)), T.nilable(Language))
   end
 
   sig { returns(Language::LandingPage) }

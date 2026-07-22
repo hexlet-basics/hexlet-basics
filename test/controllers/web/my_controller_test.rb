@@ -10,6 +10,7 @@ class Web::MyControllerTest < ActionDispatch::IntegrationTest
 
   def test_should_get_index
     get my_url
+
     assert_response :success
   end
 end

@@ -4,8 +4,8 @@
 class DockerExerciseClientStub < DockerExerciseClientInterface
   extend T::Sig
 
-  sig { override.params(lang_name: String).returns(String) }
-  def self.repo_dest(lang_name)
+  sig { override.params(_lang_name: String).returns(String) }
+  def self.repo_dest(_lang_name)
     "test/fixtures/files/exercises"
   end
 
@@ -35,4 +35,5 @@ class DockerExerciseClientStub < DockerExerciseClientInterface
   def self.ensure_image(image_name:, image_tag:, lang_name:, lang_version:)
     ""
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 end

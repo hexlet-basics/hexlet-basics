@@ -10,9 +10,9 @@ class EventSender
     sig { params(
       event: ApplicationEvent,
       user: T.nilable(User),
-      request: T.nilable(ActionDispatch::Request)
+      _request: T.nilable(ActionDispatch::Request)
     ).void }
-    def publish_event(event, user, request = nil)
+    def publish_event(event, user, _request = nil)
       if user.nil?
         event_store.publish(event)
       else

@@ -30,25 +30,26 @@
 #
 class Language::Lesson::Review < ApplicationRecord
   belongs_to :language
-  belongs_to :lesson, foreign_key: "language_lesson_id"
-  belongs_to :lesson_version, foreign_key: "language_lesson_version_id", class_name: "Language::Lesson::Version"
-  belongs_to :lesson_version_info, foreign_key: "language_lesson_version_info_id", class_name: "Language::Lesson::Version::Info"
+  belongs_to :lesson, foreign_key: "language_lesson_id", inverse_of: :reviews
+  # у Version и Info нет обратных ассоциаций на ревью
+  belongs_to :lesson_version, foreign_key: "language_lesson_version_id", class_name: "Language::Lesson::Version", inverse_of: false
+  belongs_to :lesson_version_info, foreign_key: "language_lesson_version_info_id", class_name: "Language::Lesson::Version::Info", inverse_of: false
 
   # validates :summary, presence: true
-  validates :lesson, presence: true, uniqueness: { scope: :locale }
+  validates :lesson, uniqueness: { scope: :locale }
   validates :locale, presence: true
 
   # A summary is filled only when a lesson actually has student questions
   # (see ReviewLessonJob), so a non-empty summary marks reviews worth looking at.
   scope :with_summary, -> { where.not(summary: "") }
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "id", "language_id", "language_lesson_id", "language_lesson_version_id", "language_lesson_version_info_id", "summary", "updated_at" ]
   end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_associations(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_associations(_auth_object = nil)
     [ "language", "lesson" ]
   end
 end

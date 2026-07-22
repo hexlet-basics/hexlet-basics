@@ -9,6 +9,7 @@ class Web::Admin::LanguageLessonMembersControllerTest < ActionDispatch::Integrat
 
   def test_index
     get admin_language_lesson_members_path
+
     assert_response :success
   end
 end

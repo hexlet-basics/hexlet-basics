@@ -11,7 +11,8 @@ require "rails/test_help"
 require "webmock/minitest"
 require_relative "test_helpers/session_test_helper"
 
-I18n.locale = "ru"
+# Глобальная локаль для всего сьюта, with_locale здесь неприменим
+I18n.locale = "ru" # rubocop:disable Rails/I18nLocaleAssignment
 Rails.application.routes.default_url_options[:suffix] = AppHost.locale_for_url(I18n.locale)
 
 module ActiveSupport

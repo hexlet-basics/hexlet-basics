@@ -26,7 +26,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
 
   sig { void }
   def edit
-    language = Language.find(params[:id])
+    language = Language.find(params.expect(:id))
     versions = language.versions.limit(5).order(created_at: :desc)
     landing_page = language.landing_pages.published.find_by(locale: I18n.locale, main: true)
 
@@ -54,7 +54,7 @@ class Web::Admin::LanguagesController < Web::Admin::ApplicationController
 
   sig { void }
   def review
-    language = Language.find(params[:id])
+    language = Language.find(params.expect(:id))
     language.current_lesson_infos.find_each do |info|
       ReviewLessonJob.perform_later(info.id)
     end

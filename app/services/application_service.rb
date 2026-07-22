@@ -4,7 +4,6 @@
 class ApplicationService
   extend T::Sig
 
-  private
 
   sig { returns(Typed::Success[NilClass]) }
   def self.success

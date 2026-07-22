@@ -96,7 +96,8 @@ class User < ApplicationRecord
     format: { with: UsefulRegexp.without_spec_chars },
     allow_blank: true
 
-  has_many :visits, class_name: "Ahoy::Visit"
+  # аналитика переживает удаление пользователя, visit.user опционален
+  has_many :visits, class_name: "Ahoy::Visit", dependent: :nullify
   has_many :events, through: :visits, class_name: "Ahoy::Event"
 
   has_many :lesson_members, class_name: "Language::Lesson::Member", dependent: :destroy
@@ -106,7 +107,7 @@ class User < ApplicationRecord
   has_many :accounts, dependent: :destroy
   has_many :credentials, dependent: :destroy
   has_many :reviews, dependent: :destroy
-  has_many :blog_posts, foreign_key: "creator_id", dependent: :destroy
+  has_many :blog_posts, foreign_key: "creator_id", dependent: :destroy, inverse_of: :creator
 
   has_many :survey_answers, class_name: "Survey::Answer", dependent: :destroy
   has_many :survey_answers_surveys, through: :survey_answers, source: :survey
@@ -117,8 +118,8 @@ class User < ApplicationRecord
   has_many :ai_chats, dependent: :destroy
   has_many :ai_messages, dependent: :nullify
 
-  has_one :book_request
-  has_many :leads
+  has_one :book_request, dependent: :destroy
+  has_many :leads, dependent: :destroy
 
   has_one :staff_member, dependent: :destroy, inverse_of: :user
 

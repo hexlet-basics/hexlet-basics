@@ -14,7 +14,72 @@ plugins:
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false
 AllCops:
-  TargetRubyVersion: 3.4.4
+  TargetRubyVersion: 4.0
+  NewCops: enable
+
+# Omakase ставит DisabledByDefault и включает только стилевой минимум.
+# Стиль (Style/Layout/Metrics) оставляем ему, но correctness-департаменты
+# включаем целиком: Lint, Security, Performance, Rails, Bundler.
+Lint:
+  Enabled: true
+Security:
+  Enabled: true
+Performance:
+  Enabled: true
+Rails:
+  Enabled: true
+Bundler:
+  Enabled: true
+
+Rails/UnknownEnv:
+  Environments:
+    - development
+    - test
+    - production
+    - staging
+
+# find_by_password_reset_token! — реальный метод Rails 8
+# (has_secure_password reset_token:), а не динамический finder
+Rails/DynamicFindBy:
+  AllowedMethods:
+    - find_by_sql
+    - find_by_password_reset_token!
+
+# `def ... super end` используется как носитель Sorbet-сигнатуры —
+# удаление "бесполезного" метода снимает типизацию
+Lint/UselessMethodDefinition:
+  Enabled: false
+
+# delegate несовместим с Sorbet-сигнатурами: sig требует явного def,
+# автокоррект оставляет сироту-sig (srb 5040/5003)
+Rails/Delegate:
+  Enabled: false
+
+# Дублирующиеся литеральные ветки в case-маппингах (Ruby-тип -> TS-тип)
+# читаются лучше, чем склейка when-ов
+Lint/DuplicateBranch:
+  IgnoreLiteralBranches: true
+
+Rails/Output:
+  Exclude:
+    # CLI-экспортер, запускается из rake, puts — его интерфейс
+    - 'app/lib/events_types_exporter.rb'
+
+# Техдолг: уникальные индексы нужно добавлять отдельной миграцией
+# после проверки данных в проде на дубликаты
+Rails/UniqueValidationWithoutIndex:
+  Exclude:
+    - 'app/models/blog_post/related_language_item.rb'
+    - 'app/models/language/category.rb'
+    - 'app/models/language/category/item.rb'
+    - 'app/models/language/landing_page.rb'
+    - 'app/models/language/lesson/review.rb'
+    - 'app/models/survey/scenario/member.rb'
+
+# Контроллерные тесты намеренно "толстые": один сценарий —
+# несколько проверок статуса, тела и состояния
+Minitest/MultipleAssertions:
+  Enabled: false
 
 # Держим планку `# typed: strict` по умолчанию для app/.
 # Каждая строка Exclude — техдолг с понятной причиной.

@@ -27,7 +27,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
 
   sig { void }
   def edit
-    banner = Banner.find(params[:id])
+    banner = Banner.find(params.expect(:id))
 
     render inertia: true, props: {
       bannerDto: BannerUpdateResource.new(banner)
@@ -66,7 +66,7 @@ class Web::Admin::BannersController < Web::Admin::ApplicationController
 
   sig { void }
   def destroy
-    banner = Banner.find(params[:id])
+    banner = Banner.find(params.expect(:id))
     banner.destroy ? f(:success) : f(:error)
 
     redirect_to admin_banners_url

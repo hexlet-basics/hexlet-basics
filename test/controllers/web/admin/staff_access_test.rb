@@ -14,18 +14,21 @@ class Web::Admin::StaffAccessTest < ActionDispatch::IntegrationTest
   def test_editor_can_access_blog
     sign_in_as(@editor)
     get admin_blog_posts_url
+
     assert_response :success
   end
 
   def test_editor_cannot_access_other_resource
     sign_in_as(@editor)
     get admin_banners_url
+
     assert_redirected_to admin_root_path
   end
 
   def test_editor_cannot_access_management
     sign_in_as(@editor)
     get admin_management_users_url
+
     assert_redirected_to admin_root_path
   end
 
@@ -33,22 +36,27 @@ class Web::Admin::StaffAccessTest < ActionDispatch::IntegrationTest
   def test_editor_cannot_post_custom_action_on_other_resource
     sign_in_as(@editor)
     post review_admin_language_url(languages(:php))
+
     assert_redirected_to admin_root_path
   end
 
   def test_non_staff_user_cannot_enter_admin
     sign_in_as(users(:two))
     get admin_blog_posts_url
+
     assert_redirected_to root_path
   end
 
   def test_admin_can_access_everything
     sign_in_as(:admin)
     get admin_blog_posts_url
+
     assert_response :success
     get admin_banners_url
+
     assert_response :success
     get admin_management_users_url
+
     assert_response :success
   end
 end

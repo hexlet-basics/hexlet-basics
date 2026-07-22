@@ -48,12 +48,13 @@ class Language::Lesson::Version::Info < ApplicationRecord
   has_one :lesson, through: :version
   belongs_to :language_version, class_name: "Language::Version"
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "definitions", "description", "id", "instructions", "language_id", "language_lesson_id", "language_version_id", "locale", "name", "theory", "tips", "updated_at", "version_id" ]
   end
 
   sig { returns(String) }
   def to_s
-    name.to_s  end
+    name.to_s
+  end
 end

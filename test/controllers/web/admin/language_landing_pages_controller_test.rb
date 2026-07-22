@@ -9,11 +9,13 @@ class Web::Admin::LanguageLandingPagesControllerTest < ActionDispatch::Integrati
 
   def test_index
     get admin_language_landing_pages_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_language_landing_page_url
+
     assert_response :success
   end
 
@@ -22,6 +24,7 @@ class Web::Admin::LanguageLandingPagesControllerTest < ActionDispatch::Integrati
 
     params = { data: { slug: slug } }
     post admin_language_landing_pages_url, params: params
+
     assert_response :redirect
 
     # assert { Language.find_by(slug: slug) }
@@ -31,6 +34,7 @@ class Web::Admin::LanguageLandingPagesControllerTest < ActionDispatch::Integrati
     landing_page = language_landing_pages("php-ru")
 
     get edit_admin_language_landing_page_url(landing_page)
+
     assert_response :success
   end
 
@@ -39,6 +43,7 @@ class Web::Admin::LanguageLandingPagesControllerTest < ActionDispatch::Integrati
 
     params = { data: { description: "new description" } }
     patch admin_language_landing_page_url(landing_page), params: params
+
     assert_response :redirect
 
     # language.reload

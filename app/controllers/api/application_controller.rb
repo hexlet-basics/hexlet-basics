@@ -5,6 +5,6 @@ class Api::ApplicationController < ApplicationController
 
   rescue_from ApplicationParamsStruct::InvalidParams do
     T.bind(self, Api::ApplicationController)
-    head :unprocessable_entity
+    head :unprocessable_content
   end
 end

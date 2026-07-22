@@ -10,11 +10,13 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
 
   def test_index
     get admin_languages_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_language_url
+
     assert_response :success
   end
 
@@ -39,6 +41,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
 
     params = { data: { slug: slug } }
     post admin_languages_url, params: params
+
     assert_response :redirect
 
     assert { Language.find_by(slug: slug) }
@@ -59,6 +62,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
       }
     }
     post admin_languages_url, params: params
+
     assert_response :redirect
 
     language = Language.find_by!(slug: slug)
@@ -70,6 +74,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
 
     params = { data: { slug: slug, cover: fixture_file_upload("course-cover.png", "image/png") } }
     post admin_languages_url, params: params
+
     assert_response :redirect
 
     language = Language.find_by!(slug: slug)
@@ -86,6 +91,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
       }
     }
     patch admin_language_url(language), params: params
+
     assert_response :redirect
 
     language.reload
@@ -96,6 +102,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     language = languages(:php)
 
     get edit_admin_language_url(language)
+
     assert_response :success
   end
 
@@ -104,6 +111,7 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
 
     params = { data: { progress: "in_development" } }
     patch admin_language_url(language), params: params
+
     assert_response :redirect
 
     language.reload

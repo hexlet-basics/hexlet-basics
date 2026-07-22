@@ -38,8 +38,8 @@ class Lead < ApplicationRecord
   serialize :survey_answers_data
   serialize :courses_data
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "email", "id", "phone", "state", "telegram", "updated_at", "user_id", "whatsapp" ]
   end
 end

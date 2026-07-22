@@ -33,13 +33,13 @@ class Survey::Answer < ApplicationRecord
 
   # enum :state, { requested: "requested", fulfilled: "fulfilled" }, default: "requested", suffix: true
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "id", "state", "survey_id", "survey_item_id", "updated_at", "user_id" ]
   end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_associations(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_associations(_auth_object = nil)
     [ "survey" ]
   end
 end

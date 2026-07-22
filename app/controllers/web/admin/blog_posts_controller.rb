@@ -32,7 +32,7 @@ class Web::Admin::BlogPostsController < Web::Admin::ApplicationController
 
   sig { void }
   def edit
-    blog_post = BlogPost.find(params[:id])
+    blog_post = BlogPost.find(params.expect(:id))
 
     render inertia: true, props: {
       blogPostDto: BlogPostUpdateResource.new(blog_post),

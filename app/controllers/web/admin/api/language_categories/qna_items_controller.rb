@@ -41,12 +41,12 @@ class Web::Admin::Api::LanguageCategories::QnaItemsController < Web::Admin::Api:
 
   sig { returns(Language::Category) }
   def language_category
-    Language::Category.find(params[:language_category_id])
+    Language::Category.find(params.expect(:language_category_id))
   end
 
   sig { returns(Language::Category::QnaItem) }
   def qna_item
-    language_category.qna_items.find(params[:id])
+    language_category.qna_items.find(params.expect(:id))
   end
 
   sig { returns(ActionController::Parameters) }

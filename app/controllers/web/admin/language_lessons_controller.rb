@@ -17,7 +17,7 @@ class Web::Admin::LanguageLessonsController < Web::Admin::ApplicationController
 
   sig { void }
   def review
-    lesson = Language::Lesson.find(params[:id])
+    lesson = Language::Lesson.find(params.expect(:id))
     lesson.infos.find_each do |info|
       ReviewLessonJob.perform_later(info.id)
     end

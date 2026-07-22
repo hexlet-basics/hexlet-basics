@@ -54,7 +54,7 @@ class Language::LandingPage < ApplicationRecord
   belongs_to :language
   belongs_to :landing_page_to_redirect, optional: true, class_name: "Language::LandingPage"
   # belongs_to :language_category, class_name: "Language::Category"
-  has_many :qna_items, foreign_key: "language_landing_page_id"
+  has_many :qna_items, foreign_key: "language_landing_page_id", dependent: :destroy, inverse_of: :language_landing_page
   validates :meta_title, presence: true
   validates :header, presence: true
   validates :name, presence: true
@@ -65,7 +65,7 @@ class Language::LandingPage < ApplicationRecord
   validates :locale, presence: true # , inclusion: I18n.available_locales
   validates :description, presence: true, if: :published?
 
-  has_many :language_category_items, class_name: "Language::Category::Item", foreign_key: "language_landing_page_id"
+  has_many :language_category_items, class_name: "Language::Category::Item", foreign_key: "language_landing_page_id", dependent: :destroy, inverse_of: :language_landing_page
   has_many :language_categories, through: :language_category_items, source: "language_category"
 
   has_one_attached :outcomes_image do |attachable|
@@ -73,8 +73,8 @@ class Language::LandingPage < ApplicationRecord
     attachable.variant :main, resize_to_limit: [ 640, 360 ], preprocessed: PREPROCESS_VARIANTS
   end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_associations(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_associations(_auth_object = nil)
     [ "language" ]
   end
 
@@ -87,5 +87,6 @@ class Language::LandingPage < ApplicationRecord
 
   sig { returns(String) }
   def to_s
-    header.to_s  end
+    header.to_s
+  end
 end

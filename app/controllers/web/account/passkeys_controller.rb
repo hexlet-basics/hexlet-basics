@@ -40,7 +40,7 @@ class Web::Account::PasskeysController < Web::Account::ApplicationController
 
   sig { void }
   def destroy
-    T.must(current_user).credentials.find(params[:id]).destroy!
+    T.must(current_user).credentials.find(params.expect(:id)).destroy!
 
     f(:success)
     redirect_to edit_account_profile_path

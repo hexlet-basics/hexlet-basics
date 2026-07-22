@@ -80,7 +80,8 @@ class Language::Version < ApplicationRecord
 
   sig { returns(String) }
   def to_s
-    name.to_s  end
+    name.to_s
+  end
 
   # TODO: после пересборки всех языков удалить метод и его использование
   # для run_exercise использовать тег release

@@ -52,7 +52,7 @@ class Language::Lesson < ApplicationRecord
   belongs_to :language
   belongs_to :module
 
-  has_many :reviews, foreign_key: "language_lesson_id", dependent: :destroy, class_name: "Language::Lesson::Review"
+  has_many :reviews, foreign_key: "language_lesson_id", dependent: :destroy, class_name: "Language::Lesson::Review", inverse_of: :lesson
   has_many :versions, dependent: :destroy
   has_many :members, dependent: :destroy
   has_many :ai_chats, through: :members, source: :ai_chat
@@ -79,19 +79,20 @@ class Language::Lesson < ApplicationRecord
    end
  end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "id", "language_id", "module_id", "natural_order", "order", "original_code", "path_to_code", "prepared_code", "review", "slug", "state", "test_code", "updated_at", "upload_id" ]
   end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_associations(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_associations(_auth_object = nil)
     [ "ai_messages", "infos", "language", "members", "module", "reviews", "versions" ]
   end
 
   sig { returns(String) }
   def to_s
-    slug.to_s  end
+    slug.to_s
+  end
 
   # work when joined using with_localed_info
   sig { returns(T.untyped) }

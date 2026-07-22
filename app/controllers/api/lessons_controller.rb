@@ -5,7 +5,7 @@ class Api::LessonsController < Api::ApplicationController
 
   sig { void }
   def check
-    lesson = Language::Lesson.find(params[:id])
+    lesson = Language::Lesson.find(params.expect(:id))
     struct = ApplicationParamsStruct.from_params!(LessonCheckStruct, params.require(:data))
 
     version_id = T.must(struct.version_id)
@@ -30,7 +30,7 @@ class Api::LessonsController < Api::ApplicationController
       end
       render json: LessonCheckingResponseResource.new(check)
     when Typed::Failure
-      head :unprocessable_entity
+      head :unprocessable_content
     end
   end
 end

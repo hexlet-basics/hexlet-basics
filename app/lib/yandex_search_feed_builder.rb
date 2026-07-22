@@ -8,7 +8,7 @@ module YandexSearchFeedBuilder
     urls = Rails.application.routes.url_helpers
     builder = Nokogiri::XML::Builder.new do |xml|
       # xml.instruct! :xml, version: "1.0", encoding: "UTF-8"
-      xml.yml_catalog(date: Time.now.strftime("%Y-%m-%d %H:%M")) do
+      xml.yml_catalog(date: Time.zone.now.strftime("%Y-%m-%d %H:%M")) do
         xml.shop do
           xml.name I18n.t("common.organization.name")
           xml.company I18n.t("common.organization.legal_name")
@@ -54,7 +54,7 @@ module YandexSearchFeedBuilder
                 xml.categoryId 101
                 xml.price 0
                 xml.currencyId "RUR"
-                xml.send "set-ids", lp.language_category_id
+                xml.send :"set-ids", lp.language_category_id
                 xml.param(name: "Продолжительность", unit: "месяц") { xml.text 1 }
                 xml.param(name: "Формат обучения") { xml.text "Самостоятельно" }
                 xml.param(name: "Сложность") { xml.text "Для новичков" }

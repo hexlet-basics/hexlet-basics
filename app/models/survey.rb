@@ -31,7 +31,7 @@
 class Survey < ApplicationRecord
   has_many :items, class_name: "Survey::Item", dependent: :restrict_with_exception
   has_many :answers, class_name: "Survey::Answer", dependent: :restrict_with_exception
-  has_many :scenario_items, class_name: "Survey::Scenario::Item"
+  has_many :scenario_items, class_name: "Survey::Scenario::Item", dependent: :destroy
   has_many :scenarios, through: :scenario_items, source: :scenario
 
   belongs_to :parent_survey_item, class_name: "Survey::Item", optional: true
@@ -41,8 +41,8 @@ class Survey < ApplicationRecord
   validates :slug, presence: true, uniqueness: { scope: :locale }
   validates :items, length: { minimum: 2 }
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "description", "id", "locale", "question", "slug", "state", "updated_at" ]
   end
 

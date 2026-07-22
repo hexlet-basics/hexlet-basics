@@ -10,11 +10,13 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
 
   def test_index
     get admin_reviews_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_review_url
+
     assert_response :success
   end
 
@@ -23,6 +25,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
 
     attrs = attributes_for(:review, language_id: lang.id, user_id: @user.id, locale: I18n.locale)
     post admin_reviews_url, params: { data: attrs }
+
     assert_response :redirect
 
     assert { lang.reviews.find_by body: attrs[:body] }
@@ -32,6 +35,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
     review = reviews("full-javascript")
 
     get edit_admin_review_url(review)
+
     assert_response :success
   end
 
@@ -41,6 +45,7 @@ class Web::Admin::ReviewsControllerTest < ActionDispatch::IntegrationTest
     assert { review.published_state? }
 
     patch admin_review_url(review), params: { data: { body: "mumu", state: "archived" } }
+
     assert_response :redirect
 
     review.reload

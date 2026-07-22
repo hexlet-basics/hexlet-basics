@@ -5,6 +5,7 @@ require "test_helper"
 class Web::HomeControllerTest < ActionDispatch::IntegrationTest
   def test_index
     get root_url
+
     assert_response :success
   end
 
@@ -12,6 +13,7 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get root_url
+
     assert_response :success
   end
 
@@ -27,11 +29,13 @@ class Web::HomeControllerTest < ActionDispatch::IntegrationTest
 
   def test_map
     get map_url
+
     assert_response :success
   end
 
   def test_map_not_found_for_non_russian_locale
     get map_url(suffix: :es)
+
     assert_response :not_found
   end
 end

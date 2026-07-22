@@ -25,7 +25,7 @@ class Rack::Attack
 
   # Login attempts by submitted email, independent of IP (credential stuffing).
   throttle("logins/email", limit: 10, period: 1.minute) do |req|
-    if req.post? && req.path.match?(%r{/session\z})
+    if req.post? && req.path.end_with?("/session")
       email = req.params.dig("data", "email") || req.params["email"]
       email.to_s.downcase.presence
     end
@@ -33,17 +33,17 @@ class Rack::Attack
 
   # Sign-ups by IP: 5 per minute.
   throttle("signups/ip", limit: 5, period: 1.minute) do |req|
-    req.ip if req.post? && req.path.match?(%r{/users\z}) && !req.path.include?("/admin/")
+    req.ip if req.post? && req.path.end_with?("/users") && req.path.exclude?("/admin/")
   end
 
   # Phone-code requests by IP: 5 per minute (complements PhoneAuthService limits).
   throttle("phone_auth/ip", limit: 5, period: 1.minute) do |req|
-    req.ip if req.post? && req.path.match?(%r{/phone_auth\z})
+    req.ip if req.post? && req.path.end_with?("/phone_auth")
   end
 
   # Password-reset requests by IP: 5 per minute.
   throttle("password_reset/ip", limit: 5, period: 1.minute) do |req|
-    req.ip if req.post? && req.path.match?(%r{/remind_password\z})
+    req.ip if req.post? && req.path.end_with?("/remind_password")
   end
 
   ### Response ###

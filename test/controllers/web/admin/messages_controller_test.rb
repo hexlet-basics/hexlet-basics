@@ -9,6 +9,7 @@ class Web::Admin::MessagesControllerTest < ActionDispatch::IntegrationTest
 
   def test_index
     get admin_messages_url
+
     assert_response :success
   end
 end

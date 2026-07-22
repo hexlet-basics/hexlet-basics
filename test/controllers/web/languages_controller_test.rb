@@ -5,6 +5,7 @@ require "test_helper"
 class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
   def test_index
     get languages_url
+
     assert_response :success
   end
 
@@ -12,6 +13,7 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     landing_page = language_landing_pages("javascript-ru")
 
     get language_url(landing_page.slug)
+
     assert_response :success
   end
 
@@ -21,6 +23,7 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     ru_landing_page = language_landing_pages("javascript-ru")
 
     get language_url(ru_landing_page.slug, suffix: nil)
+
     assert_redirected_to languages_path
   end
 
@@ -29,6 +32,7 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     landing_page = language_landing_pages("javascript-ru")
 
     get language_url(archived_landing_page.slug)
+
     assert_redirected_to language_path(landing_page.slug)
   end
 
@@ -38,6 +42,7 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get language_url(landing_page.slug)
+
     assert_response :success
   end
 
@@ -47,6 +52,7 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get language_url(landing_page.slug)
+
     assert_response :success
   end
 
@@ -56,6 +62,7 @@ class Web::LanguagesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get language_url(landing_page.slug)
+
     assert_response :success
   end
 end

@@ -30,7 +30,7 @@ class Web::LanguageCategoriesController < Web::ApplicationController
 
   sig { void }
   def show
-    category = Language::Category.with_locale.find_by! slug: params[:id]
+    category = Language::Category.with_locale.find_by! slug: params.expect(:id)
     landing_pages = category.language_landing_pages.web.where(listed: true).merge(Language.ordered)
 
     title = t(".header", name: category.header)

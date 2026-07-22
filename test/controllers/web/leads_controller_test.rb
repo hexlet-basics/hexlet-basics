@@ -7,6 +7,7 @@ class Web::LeadsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get new_lead_url
+
     assert_response :success
   end
 
@@ -29,6 +30,7 @@ class Web::LeadsControllerTest < ActionDispatch::IntegrationTest
     }
 
     post leads_url, params: { utm_source: "jopa", data: lead_params }
+
     assert_response :redirect
 
     user.reload

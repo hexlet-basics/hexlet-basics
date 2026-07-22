@@ -13,10 +13,7 @@ module Tapioca
 
         ConstantType = type_member { { fixed: T.class_of(::ApplicationRecord) } }
 
-        RELATION_CLASS_NAMES = T.let(
-          %w[PrivateRelation PrivateAssociationRelation PrivateCollectionProxy].freeze,
-          T::Array[String]
-        )
+        RELATION_CLASS_NAMES = %w[PrivateRelation PrivateAssociationRelation PrivateCollectionProxy].freeze
 
         sig { override.returns(T::Enumerable[T::Class[T.anything]]) }
         def self.gather_constants

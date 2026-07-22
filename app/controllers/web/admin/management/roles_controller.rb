@@ -23,7 +23,7 @@ class Web::Admin::Management::RolesController < Web::Admin::Management::Applicat
 
   sig { void }
   def edit
-    role = StaffMember::Role.find(params[:id])
+    role = StaffMember::Role.find(params.expect(:id))
 
     render inertia: true, props: {
       roleCrud: StaffRoleCrudResource.new(role)
@@ -62,7 +62,7 @@ class Web::Admin::Management::RolesController < Web::Admin::Management::Applicat
 
   sig { void }
   def destroy
-    role = StaffMember::Role.find(params[:id])
+    role = StaffMember::Role.find(params.expect(:id))
     role.destroy ? f(:success) : f(:error)
     redirect_to admin_management_roles_url
   end

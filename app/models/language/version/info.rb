@@ -40,5 +40,6 @@ class Language::Version::Info < ApplicationRecord
 
   sig { returns(String) }
   def to_s
-    header.to_s  end
+    header.to_s
+  end
 end

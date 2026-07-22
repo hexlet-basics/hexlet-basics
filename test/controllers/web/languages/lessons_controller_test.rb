@@ -13,6 +13,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
 
   def test_show
     get language_lesson_url(@language.slug, @lesson.slug)
+
     assert_response :success
   end
 
@@ -20,6 +21,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(:full)
 
     get language_lesson_url(@language.slug, @lesson.slug)
+
     assert_response :success
   end
 
@@ -27,6 +29,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     # TODO add fixtures
     sign_in_as(:full)
     get language_lesson_url(@language.slug, @lesson.slug)
+
     assert_response :success
   end
 
@@ -34,6 +37,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     # TODO add fixtures
     sign_in_as(:full)
     get language_lesson_url(@language.slug, @lesson.slug)
+
     assert_response :success
   end
 
@@ -41,6 +45,7 @@ class Web::Languages::LessonsControllerTest < ActionDispatch::IntegrationTest
     user = sign_in_as(:two)
 
     get language_lesson_url(@language.slug, @lesson.slug)
+
     assert_response :success
 
     course_member = @language.members.find_by!(user:)

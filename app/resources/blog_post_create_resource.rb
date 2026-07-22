@@ -15,7 +15,7 @@ class BlogPostCreateResource < ApplicationResource
 
   typelize :string
   attribute :rich_body do
-    next "" unless it.rich_body.body.present?
+    next "" if it.rich_body.body.blank?
 
     BlogPostRichTextContent.to_editor_html(it.rich_body.body.to_html)
   end

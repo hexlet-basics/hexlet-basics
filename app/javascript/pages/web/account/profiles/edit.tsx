@@ -12,13 +12,19 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { IconKey } from "@tabler/icons-react";
 import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppForm } from "@/hooks/useAppForm";
 import useConfirmation from "@/hooks/useConfirmation";
 import ApplicationLayout from "@/layouts/ApplicationLayout";
-import { passkeySupported, registerPasskey } from "@/lib/passkey";
+import {
+  passkeyCancelled,
+  passkeyPreviouslyRegistered,
+  passkeySupported,
+  registerPasskey,
+} from "@/lib/passkey";
 import * as Routes from "@/routes.js";
 import type { UserCredential, UserProfileForm } from "@/types/serializers";
 
@@ -48,6 +54,22 @@ export default function Edit({ form, passkeys }: Props) {
 
   const deletePasskey = (id: number) => {
     router.visit(Routes.account_passkey_path(id), { method: "delete" });
+  };
+
+  const handleAddPasskey = async () => {
+    try {
+      await registerPasskey();
+    } catch (error) {
+      if (passkeyCancelled(error)) {
+        return;
+      }
+
+      const message = passkeyPreviouslyRegistered(error)
+        ? t(($) => $.account.profiles.edit.passkeys.already_registered)
+        : t(($) => $.account.profiles.edit.passkeys.error);
+
+      notifications.show({ color: "red", message });
+    }
   };
 
   return (
@@ -107,13 +129,7 @@ export default function Edit({ form, passkeys }: Props) {
                 ))
               )}
               {passkeySupported() ? (
-                <Button
-                  variant="default"
-                  mt="sm"
-                  onClick={() => {
-                    registerPasskey();
-                  }}
-                >
+                <Button variant="default" mt="sm" onClick={handleAddPasskey}>
                   {t(($) => $.account.profiles.edit.passkeys.add)}
                 </Button>
               ) : null}

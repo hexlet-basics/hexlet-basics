@@ -10,6 +10,7 @@ class Web::Admin::Api::UsersControllerTest < ActionDispatch::IntegrationTest
 
   def test_search
     get search_admin_api_users_url(format: :json)
+
     assert_response :success
   end
 end

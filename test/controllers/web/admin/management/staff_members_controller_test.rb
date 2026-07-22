@@ -12,11 +12,13 @@ class Web::Admin::Management::StaffMembersControllerTest < ActionDispatch::Integ
 
   def test_index
     get admin_management_staff_members_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_management_staff_member_url
+
     assert_response :success
   end
 
@@ -24,6 +26,7 @@ class Web::Admin::Management::StaffMembersControllerTest < ActionDispatch::Integ
     post admin_management_staff_members_url, params: {
       data: { user_id: @user.id, role_id: @role.id, allowed_locales: [ "ru" ] }
     }
+
     assert_response :redirect
     assert { StaffMember.exists?(user: @user, role: @role) }
   end
@@ -35,6 +38,7 @@ class Web::Admin::Management::StaffMembersControllerTest < ActionDispatch::Integ
     patch admin_management_staff_member_url(staff_member), params: {
       data: { role_id: other_role.id, allowed_locales: [ "ru", "en" ] }
     }
+
     assert_response :redirect
     assert { staff_member.reload.role == other_role }
   end
@@ -42,6 +46,7 @@ class Web::Admin::Management::StaffMembersControllerTest < ActionDispatch::Integ
   def test_destroy
     staff_member = StaffMember.create!(user: @user, role: @role)
     delete admin_management_staff_member_url(staff_member)
+
     assert_response :redirect
     assert { !StaffMember.exists?(staff_member.id) }
   end

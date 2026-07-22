@@ -6,6 +6,7 @@ require "test_helper"
 class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
   def test_new
     get new_session_url
+
     assert_response :success
   end
 
@@ -13,6 +14,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:one)
 
     post session_url, params: { data: { email: user.email, password: "password" } }
+
     assert_response :redirect
 
     assert { authenticated? }
@@ -23,6 +25,7 @@ class Web::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert { authenticated? }
 
     delete session_url
+
     assert_response :redirect
 
     # assert { !authenticated? }

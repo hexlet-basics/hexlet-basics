@@ -30,7 +30,9 @@ class UserResource < ApplicationResource
   end
 
   typelize :string, nullable: true
-  attribute :password do end
+  attribute :password do
+    # пароль наружу не отдаём никогда, поле нужно только для формы
+  end
 
   # For Wootric (GTM)
   typelize :number, nullable: true

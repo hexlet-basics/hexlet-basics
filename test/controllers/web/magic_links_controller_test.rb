@@ -17,6 +17,7 @@ class Web::MagicLinksControllerTest < ActionDispatch::IntegrationTest
 
   def test_new
     get new_magic_link_url
+
     assert_response :success
   end
 
@@ -38,12 +39,14 @@ class Web::MagicLinksControllerTest < ActionDispatch::IntegrationTest
     token = @user.generate_token_for(:magic_link)
 
     get magic_link_url(token)
+
     assert_redirected_to root_url
     assert { authenticated? }
   end
 
   def test_show_with_invalid_token_does_not_sign_in
     get magic_link_url("garbage-token")
+
     assert_redirected_to new_magic_link_url
     assert { !authenticated? }
   end

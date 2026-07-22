@@ -9,11 +9,13 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
 
   def test_index
     get admin_language_categories_url
+
     assert_response :success
   end
 
   def test_new
     get new_admin_language_category_url
+
     assert_response :success
   end
 
@@ -24,6 +26,7 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
       slug: slug, name: slug, header: slug
     } }
     post admin_language_categories_url, params: params
+
     assert_response :redirect
 
     assert { Language::Category.find_by(slug: slug) }
@@ -33,6 +36,7 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
     language_category = language_categories("frontend-ru")
 
     get edit_admin_language_category_url(language_category)
+
     assert_response :success
   end
 
@@ -47,6 +51,7 @@ class Web::Admin::LanguageCategoriesControllerTest < ActionDispatch::Integration
       }
     }
     patch admin_language_category_url(language_category), params: params
+
     assert_response :redirect
 
     assert_equal [ landing_page.id ], language_category.items.reload.pluck(:language_landing_page_id)

@@ -9,7 +9,7 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
   end
 
   def test_index
-    skip
+    skip("не адаптирован после переезда на Inertia, см. 6fbf064d")
     language = languages(:php)
 
     get admin_language_versions_url(language)
@@ -18,10 +18,11 @@ class Web::Admin::Languages::VersionsControllerTest < ActionDispatch::Integratio
   end
 
   def test_create
-    skip
+    skip("не адаптирован после переезда на Inertia, см. 6fbf064d")
     language = languages(:php)
 
     post admin_language_versions_url(language)
+
     assert_response :redirect
 
     language.reload

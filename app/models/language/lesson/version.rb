@@ -66,8 +66,6 @@ class Language::Lesson::Version < ApplicationRecord
 
   sig { returns(String) }
   def to_s
-    # NOTE: previously referenced `name`, which this model has never had (no such
-    # column/method) — to_s always raised. Use the present natural_order instead.
     natural_order.to_s
   end
 end

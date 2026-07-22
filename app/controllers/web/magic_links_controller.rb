@@ -6,6 +6,21 @@ class Web::MagicLinksController < Web::ApplicationController
   before_action :redirect_if_authenticated, only: %i[new create]
 
   sig { void }
+  def show
+    user = User.find_by_token_for(:magic_link, params[:id])
+
+    if user
+      publish_auth_events(user)
+      sign_in(user)
+      f(:success)
+      redirect_to after_authentication_url
+    else
+      f(:error, type: :alert)
+      redirect_to new_magic_link_path
+    end
+  end
+
+  sig { void }
   def new
     set_meta_tags title: t(".title")
     render inertia: true, props: {}
@@ -19,21 +34,6 @@ class Web::MagicLinksController < Web::ApplicationController
     # Anti-enumeration: the outcome is the same whether or not the email exists.
     f(:success)
     redirect_to root_path
-  end
-
-  sig { void }
-  def show
-    user = User.find_by_token_for(:magic_link, params[:id])
-
-    if user
-      publish_auth_events(user)
-      sign_in(user)
-      f(:success)
-      redirect_to after_authentication_url
-    else
-      f(:error, type: :alert)
-      redirect_to new_magic_link_path
-    end
   end
 
   private

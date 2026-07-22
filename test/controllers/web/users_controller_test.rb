@@ -20,6 +20,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
 
   def test_new
     get new_user_url
+
     assert_response :success
   end
 
@@ -27,6 +28,7 @@ class Web::UsersControllerTest < ActionDispatch::IntegrationTest
     user_params = FactoryBot.attributes_for(:user)
 
     post users_url, params: { data: user_params }
+
     assert_response :redirect
 
     user = User.find_by! email: user_params[:email].downcase

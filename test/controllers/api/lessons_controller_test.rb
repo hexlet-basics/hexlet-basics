@@ -21,6 +21,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     }
 
     post check_api_lesson_url(@lesson), params: { data: { version_id: @lesson.versions.first.id, code: code } }
+
     assert_response :success
 
     body = response.parsed_body
@@ -41,6 +42,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     code = file_fixture("exercise/incorrect.rb").read
 
     post check_api_lesson_url(@lesson), params: { data: { version_id: @lesson.versions.first.id, code: code } }
+
     assert_response :success
 
     body = response.parsed_body
@@ -52,6 +54,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     code = file_fixture("exercise/correct.rb").read
 
     post check_api_lesson_url(@lesson), params: { data: { code: code } }
+
     assert_response :unprocessable_entity
   end
 
@@ -68,6 +71,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson1.members.create!(language:, user:, language_member:)
 
     post check_api_lesson_url(lesson1), params: { data: { version_id: lesson_version1.id, code: } }
+
     assert_response :success
     assert { response.parsed_body["passed"] }
 
@@ -76,6 +80,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson2.members.create!(language:, user:, language_member:)
 
     post check_api_lesson_url(lesson2), params: { data: { version_id: lesson_version2.id, code: } }
+
     assert_response :success
     assert { response.parsed_body["passed"] }
 
@@ -84,6 +89,7 @@ class Api::LessonsControllerTest < ActionDispatch::IntegrationTest
     lesson3.members.create!(language:, user:, language_member:)
 
     post check_api_lesson_url(lesson3), params: { data: { version_id: lesson_version3.id, code: } }
+
     assert_response :success
     assert { response.parsed_body["passed"] }
 

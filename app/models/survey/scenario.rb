@@ -29,19 +29,19 @@ class Survey::Scenario < ApplicationRecord
   end
 
   belongs_to :survey_item, class_name: "Survey::Item", optional: true
-  has_many :items, class_name: "Survey::Scenario::Item"
+  has_many :items, class_name: "Survey::Scenario::Item", dependent: :destroy
   has_many :surveys, through: :items
-  has_many :members, class_name: "Survey::Scenario::Member"
+  has_many :members, class_name: "Survey::Scenario::Member", dependent: :destroy
   has_many :user, through: :members
-  has_many :triggers
+  has_many :triggers, dependent: :destroy
 
   validates :locale, presence: true
   validates :name, presence: true
 
   typed_enum :state, State, suffix: true
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "created_at", "id", "locale", "name", "state", "survey_item_id", "updated_at" ]
   end
 end

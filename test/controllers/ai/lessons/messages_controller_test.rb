@@ -34,8 +34,9 @@ class Ai::Lessons::MessagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     body = response.parsed_body
+
     assert_equal 2, body.size
-    assert_equal %w[user assistant], body.map { it["role"] }
-    assert_equal %w[question answer], body.map { it["content"] }
+    assert_equal(%w[user assistant], body.pluck("role"))
+    assert_equal(%w[question answer], body.pluck("content"))
   end
 end

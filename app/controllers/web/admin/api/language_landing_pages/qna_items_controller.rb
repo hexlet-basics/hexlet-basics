@@ -41,12 +41,12 @@ class Web::Admin::Api::LanguageLandingPages::QnaItemsController < Web::Admin::Ap
 
   sig { returns(Language::LandingPage) }
   def language_landing_page
-    Language::LandingPage.find(params[:language_landing_page_id])
+    Language::LandingPage.find(params.expect(:language_landing_page_id))
   end
 
   sig { returns(Language::LandingPage::QnaItem) }
   def qna_item
-    language_landing_page.qna_items.find(params[:id])
+    language_landing_page.qna_items.find(params.expect(:id))
   end
 
   sig { returns(ActionController::Parameters) }

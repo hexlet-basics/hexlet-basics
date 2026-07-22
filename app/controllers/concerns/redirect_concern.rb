@@ -17,11 +17,11 @@ module RedirectConcern
       main_landing_page = landing_page.language.landing_pages.find_by(main: true)
 
       if next_landing_page
-        redirect_to view_context.language_path(next_landing_page.slug), status: 301
+        redirect_to view_context.language_path(next_landing_page.slug), status: :moved_permanently
       elsif main_landing_page
-        redirect_to view_context.language_path(main_landing_page.slug), status: 301
+        redirect_to view_context.language_path(main_landing_page.slug), status: :moved_permanently
       else
-        redirect_to view_context.root_path, status: 301
+        redirect_to view_context.root_path, status: :moved_permanently
       end
     end
   end

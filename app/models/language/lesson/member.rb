@@ -39,7 +39,7 @@ class Language::Lesson::Member < ApplicationRecord
   # Mirrors the unique index on (user_id, lesson_id): one membership per lesson.
   validates :lesson_id, uniqueness: { scope: :user_id }
 
-  has_one :ai_chat, foreign_key: :language_lesson_member_id, dependent: :destroy
+  has_one :ai_chat, foreign_key: :language_lesson_member_id, dependent: :destroy, inverse_of: :language_lesson_member
 
   counter_culture :language_member,
                   column_name: ->(model) { model.finished? ? "finished_lessons_count" : nil }
@@ -53,13 +53,13 @@ class Language::Lesson::Member < ApplicationRecord
     end
   end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_attributes(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at" ]
   end
 
-  sig { params(auth_object: T.untyped).returns(T.untyped) }
-  def self.ransackable_associations(auth_object = nil)
+  sig { params(_auth_object: T.untyped).returns(T.untyped) }
+  def self.ransackable_associations(_auth_object = nil)
     []
   end
 end

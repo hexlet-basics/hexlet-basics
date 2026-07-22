@@ -5,7 +5,7 @@ class MarkdownImageProcessor
 
   sig { params(markdown: String, block: T.proc.params(url: String).returns(String)).returns(String) }
   def self.process(markdown, &block)
-    markdown.gsub(/!\[([^\]]*)\]\(([^)]+)\)/) do |match|
+    markdown.gsub(/!\[([^\]]*)\]\(([^)]+)\)/) do |_match|
       alt_text = Regexp.last_match(1)
       image_url = Regexp.last_match(2)
 

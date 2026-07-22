@@ -5,14 +5,15 @@ require "test_helper"
 
 class Web::GoogleAuthControllerTest < ActionDispatch::IntegrationTest
   def test_check_google_auth
-    skip
+    skip("не адаптирован после переезда на Inertia, см. 6fbf064d")
 
     post T.unsafe(self).google_onetap_callback_path
+
     assert_redirected_to root_path
   end
 
   def test_create_user
-    skip
+    skip("не адаптирован после переезда на Inertia, см. 6fbf064d")
 
     headers = { "Cookie" => "g_csrf_token=g_csrf_token_test;" }
     params = {

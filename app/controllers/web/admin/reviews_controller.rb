@@ -29,7 +29,7 @@ class Web::Admin::ReviewsController < Web::Admin::ApplicationController
 
   sig { void }
   def edit
-    review = Review.find(params[:id])
+    review = Review.find(params.expect(:id))
     languages = Language.all
 
     render inertia: true, props: {

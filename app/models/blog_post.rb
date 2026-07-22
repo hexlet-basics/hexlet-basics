@@ -74,7 +74,7 @@ class BlogPost < ApplicationRecord
   belongs_to :language, optional: true
   has_one :category, through: :language, class_name: "Language::Category"
   belongs_to :creator, class_name: "User"
-  has_many :likes
+  has_many :likes, dependent: :destroy
 
   sig { returns(String) }
   def to_s
@@ -101,7 +101,7 @@ class BlogPost < ApplicationRecord
 
   sig { void }
   def canonicalize_rich_body_for_storage
-    return unless rich_body.body.present?
+    return if rich_body.body.blank?
 
     self.rich_body = BlogPostRichTextContent.from_editor_html(rich_body.body.to_html)
   end

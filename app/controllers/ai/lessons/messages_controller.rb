@@ -3,7 +3,7 @@
 class Ai::Lessons::MessagesController < Ai::ApplicationController
   sig { void }
   def index
-    lesson = Language::Lesson.find(params[:lesson_id])
+    lesson = Language::Lesson.find(params.expect(:lesson_id))
     lesson_member = lesson.members.find_by!(user: current_user)
     ai_chat = lesson_member.ai_chat
 
@@ -19,7 +19,7 @@ class Ai::Lessons::MessagesController < Ai::ApplicationController
       return
     end
 
-    lesson = Language::Lesson.find(params[:lesson_id])
+    lesson = Language::Lesson.find(params.expect(:lesson_id))
     lesson_member = lesson.members.find_by!(user: current_user)
     ai_chat = AiChat.find_or_create_by!(user: lesson_member.user, language_lesson_member: lesson_member)
 

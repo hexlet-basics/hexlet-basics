@@ -54,7 +54,7 @@ class Web::BooksController < Web::ApplicationController
     book_request.state = "downloaded"
     book_request.save!
 
-    filepath = Rails.root.join("public/book.pdf")
+    filepath = Rails.public_path.join("book.pdf")
     send_file filepath,
       filename: "profession-developer-hexlet-book.pdf",
       type: "application/pdf",

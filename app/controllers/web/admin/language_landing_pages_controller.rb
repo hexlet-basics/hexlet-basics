@@ -32,7 +32,7 @@ class Web::Admin::LanguageLandingPagesController < Web::Admin::ApplicationContro
 
   sig { void }
   def edit
-    landing_page = Language::LandingPage.with_locale.find(params[:id])
+    landing_page = Language::LandingPage.with_locale.find(params.expect(:id))
     languages = Language.all
     landing_pages = Language::LandingPage.published
 

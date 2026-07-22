@@ -27,7 +27,7 @@ class Web::Admin::Management::StaffMembersController < Web::Admin::Management::A
 
   sig { void }
   def edit
-    staff_member = StaffMember.includes(:role, :user).find(params[:id])
+    staff_member = StaffMember.includes(:role, :user).find(params.expect(:id))
 
     render inertia: true, props: {
       staffMemberCrud: StaffMemberCrudResource.new(staff_member),
@@ -68,7 +68,7 @@ class Web::Admin::Management::StaffMembersController < Web::Admin::Management::A
 
   sig { void }
   def destroy
-    staff_member = StaffMember.find(params[:id])
+    staff_member = StaffMember.find(params.expect(:id))
     staff_member.destroy ? f(:success) : f(:error)
     redirect_to admin_management_staff_members_url
   end

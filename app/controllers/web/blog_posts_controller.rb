@@ -33,7 +33,7 @@ class Web::BlogPostsController < Web::ApplicationController
 
   sig { void }
   def show
-    blog_post = BlogPost.with_locale.published_state.find_by!(slug: params[:id])
+    blog_post = BlogPost.with_locale.published_state.find_by!(slug: params.expect(:id))
 
     blog_posts = BlogPost.published_state.with_locale
       .includes([ :creator, :likes, { cover_attachment: :blob } ])

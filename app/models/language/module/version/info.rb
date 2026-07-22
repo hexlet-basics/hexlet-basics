@@ -35,5 +35,6 @@ class Language::Module::Version::Info < ApplicationRecord
 
   sig { returns(String) }
   def to_s
-    name.to_s  end
+    name.to_s
+  end
 end

@@ -12,6 +12,7 @@ class Web::PasskeySessionsControllerTest < ActionDispatch::IntegrationTest
 
   def test_new_returns_options
     get new_passkey_session_url
+
     assert_response :success
     assert { JSON.parse(@response.body)["challenge"].present? }
   end
@@ -21,6 +22,7 @@ class Web::PasskeySessionsControllerTest < ActionDispatch::IntegrationTest
     assertion = @client.get(challenge: JSON.parse(@response.body)["challenge"])
 
     post passkey_session_url, params: { credential: assertion.to_json }
+
     assert_redirected_to root_url
     assert { authenticated? }
   end

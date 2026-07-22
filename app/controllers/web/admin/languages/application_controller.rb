@@ -6,6 +6,6 @@ class Web::Admin::Languages::ApplicationController < Web::Admin::ApplicationCont
 
   sig { returns(Language) }
   def resource_language
-    @resource_language ||= T.let(Language.find(params[:language_id]), T.nilable(Language))
+    @resource_language ||= T.let(Language.find(params.expect(:language_id)), T.nilable(Language))
   end
 end

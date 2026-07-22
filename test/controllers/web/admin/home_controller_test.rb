@@ -9,6 +9,7 @@ class Web::Admin::HomeControllerTest < ActionDispatch::IntegrationTest
 
   def test_index
     get admin_root_url
+
     assert_response :success
   end
 end

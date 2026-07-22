@@ -13,6 +13,7 @@ module SessionTestHelper
     user = resolve_user(user_or_fixture)
 
     post session_url, params: { data: { email: T.must(user.email), password: "password" } }
+
     assert_redirected_to root_path
 
     user
