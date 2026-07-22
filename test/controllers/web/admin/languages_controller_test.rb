@@ -44,6 +44,54 @@ class Web::Admin::LanguagesControllerTest < ActionDispatch::IntegrationTest
     assert { Language.find_by(slug: slug) }
   end
 
+  def test_create_with_frontend_shaped_payload
+    slug = "ai"
+
+    params = {
+      data: {
+        progress: "draft",
+        learn_as: "first_language",
+        cover: { name: "cover", record: { id: nil, slug: nil, progress: "draft" } },
+        id: nil,
+        slug: slug,
+        hexlet_program_landing_page: "ai-for-developers",
+        repository_url: "https://github.com/hexlet-basics/exercises-"
+      }
+    }
+    post admin_languages_url, params: params
+    assert_response :redirect
+
+    language = Language.find_by!(slug: slug)
+    assert { !language.cover.attached? }
+  end
+
+  def test_create_with_cover
+    slug = "racket"
+
+    params = { data: { slug: slug, cover: fixture_file_upload("course-cover.png", "image/png") } }
+    post admin_languages_url, params: params
+    assert_response :redirect
+
+    language = Language.find_by!(slug: slug)
+    assert { language.cover.attached? }
+  end
+
+  def test_update_with_frontend_shaped_payload
+    language = languages(:php)
+
+    params = {
+      data: {
+        progress: "in_development",
+        cover: { name: "cover", record: { id: language.id, slug: language.slug } }
+      }
+    }
+    patch admin_language_url(language), params: params
+    assert_response :redirect
+
+    language.reload
+    assert { language.in_development_progress? }
+  end
+
   def test_edit
     language = languages(:php)
 

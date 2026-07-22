@@ -3,10 +3,13 @@
 class LanguageUpdateResource < ApplicationResource
   typelize_from Language
 
-  attributes :id, :progress, :learn_as, :slug, :hexlet_program_landing_page, :cover
+  attributes :id, :progress, :learn_as, :slug, :hexlet_program_landing_page
 
   typelize slug: :string
+
+  # cover seeds the file input, not the stored attachment; the current one is exposed via cover_thumb_url
   typelize cover: "File | null"
+  attribute(:cover) { nil }
 
   typelize cover_thumb_url: [ :string, nullable: true ]
   attribute(:cover_thumb_url) do

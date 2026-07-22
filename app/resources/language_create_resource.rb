@@ -5,13 +5,12 @@ class LanguageCreateResource < ApplicationResource
 
   attributes :progress,
     :learn_as,
-    :cover,
     :id,
     slug: [ String, true ],
     hexlet_program_landing_page: [ String, true ]
 
+  # cover seeds the file input, not the stored attachment
   typelize cover: "File | null"
+  attribute(:cover) { nil }
   typelize id: [ :number, nullable: true ]
-  typelize repository_url: [ :string, nullable: true ]
-  attribute(:repository_url) { it.repository_url }
 end

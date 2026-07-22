@@ -25,11 +25,12 @@ class LanguageService < ApplicationService
 
     private
 
-    # cover lives outside the struct; set it only when present (skip_if_empty)
+    # cover lives outside the struct; set it only for a real upload — forms may
+    # echo back a serialized attachment hash, which is not attachable
     sig { params(struct: LanguageStruct, cover: T.untyped).returns(T::Hash[Symbol, T.untyped]) }
     def attrs(struct, cover)
       result = struct.attributes
-      result[:cover] = cover if cover.present?
+      result[:cover] = cover if cover.is_a?(ActionDispatch::Http::UploadedFile)
       result
     end
   end
