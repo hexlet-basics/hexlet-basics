@@ -1,4 +1,13 @@
 import { router } from "@inertiajs/react";
+import type {
+  PublicKeyCredentialCreationOptionsJSON,
+  PublicKeyCredentialRequestOptionsJSON,
+} from "@simplewebauthn/browser";
+import {
+  browserSupportsWebAuthn,
+  startAuthentication,
+  startRegistration,
+} from "@simplewebauthn/browser";
 import * as Routes from "@/routes.js";
 
 async function fetchOptions(url: string): Promise<unknown> {
@@ -10,38 +19,26 @@ async function fetchOptions(url: string): Promise<unknown> {
   return response.json();
 }
 
-export const passkeySupported = (): boolean =>
-  typeof window !== "undefined" &&
-  typeof window.PublicKeyCredential?.parseRequestOptionsFromJSON === "function";
+export const passkeySupported = (): boolean => browserSupportsWebAuthn();
 
 export async function loginWithPasskey(): Promise<void> {
-  const options = (await fetchOptions(
+  const optionsJSON = (await fetchOptions(
     Routes.new_passkey_session_path(),
   )) as PublicKeyCredentialRequestOptionsJSON;
-  const publicKey = PublicKeyCredential.parseRequestOptionsFromJSON(options);
-  const credential = await navigator.credentials.get({ publicKey });
-
-  if (!(credential instanceof PublicKeyCredential)) {
-    throw new Error("Passkey authentication was cancelled");
-  }
+  const credential = await startAuthentication({ optionsJSON });
 
   router.post(Routes.passkey_session_path(), {
-    credential: JSON.stringify(credential.toJSON()),
+    credential: JSON.stringify(credential),
   });
 }
 
 export async function registerPasskey(): Promise<void> {
-  const options = (await fetchOptions(
+  const optionsJSON = (await fetchOptions(
     Routes.new_account_passkey_path(),
   )) as PublicKeyCredentialCreationOptionsJSON;
-  const publicKey = PublicKeyCredential.parseCreationOptionsFromJSON(options);
-  const credential = await navigator.credentials.create({ publicKey });
-
-  if (!(credential instanceof PublicKeyCredential)) {
-    throw new Error("Passkey registration was cancelled");
-  }
+  const credential = await startRegistration({ optionsJSON });
 
   router.post(Routes.account_passkeys_path(), {
-    credential: JSON.stringify(credential.toJSON()),
+    credential: JSON.stringify(credential),
   });
 }
