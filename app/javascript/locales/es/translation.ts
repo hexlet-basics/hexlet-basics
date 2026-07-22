@@ -6,8 +6,10 @@ export default {
           delete: "Delete account",
           passkeys: {
             add: "Añadir una passkey",
+            already_registered: "Esta passkey ya está registrada.",
             delete: "Eliminar",
             empty: "Aún no tienes passkeys.",
+            error: "No se pudo añadir la passkey. Inténtalo de nuevo.",
             title: "Passkeys",
             unnamed: "Passkey",
           },
@@ -576,7 +578,6 @@ export default {
       },
       community_chat: "Chat de comunidad y soporte",
       community_url: "https://t.me/hexletcommunity\n",
-      telegram_channel: "Canal de Telegram de Hexlet",
       confirm:
         "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
       current_state: "Current state",
@@ -656,6 +657,7 @@ export default {
       },
       success_message: "Operación completada correctamente.",
       teacherSolution: "Teacher's solution:",
+      telegram_channel: "Canal de Telegram de Hexlet",
       testForExercise: "Tests",
       testInstructions: "Your exercise will be checked with these tests:",
       time: {
@@ -1019,6 +1021,8 @@ export default {
     languages: {
       lessons: {
         show: {
+          autocomplete_hint:
+            "El editor sugiere comandos mientras escribes. Pulsa Tab para aceptar una sugerencia y usa las teclas ↑ y ↓ para desplazarte por la lista.",
           breadcrumb: "breadcrumb",
           chat: {
             community: "Живые люди",
@@ -1068,10 +1072,8 @@ export default {
           discuss: "AI Assistent",
           editor: "Editor",
           editor_aria_label: "Editor de código",
-          autocomplete_hint:
-            "El editor sugiere comandos mientras escribes. Pulsa Tab para aceptar una sugerencia y usa las teclas ↑ y ↓ para desplazarte por la lista.",
-          hint_close: "Cerrar",
           finish: "Завершить",
+          hint_close: "Cerrar",
           if_stuck_html:
             "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
           instructions: "Instructions",
@@ -2148,6 +2150,8 @@ export default {
         meta: {
           description: "Войти на Code Basics",
         },
+        passkey_error:
+          "No se pudo iniciar sesión con la passkey. Inténtalo de nuevo.",
         password: "Password",
         register: "Sign up",
         reset_password: "Reset Password",

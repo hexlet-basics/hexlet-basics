@@ -7,8 +7,10 @@ export default interface Resources {
           delete: "Удалить аккаунт";
           passkeys: {
             add: "Добавить passkey";
+            already_registered: "Этот passkey уже добавлен.";
             delete: "Удалить";
             empty: "У вас пока нет passkey.";
+            error: "Не удалось добавить passkey. Попробуйте ещё раз.";
             title: "Passkeys";
             unnamed: "Passkey";
           };
@@ -1993,6 +1995,7 @@ export default interface Resources {
         meta: {
           description: "Войти на Code Basics";
         };
+        passkey_error: "Не удалось войти по passkey. Попробуйте ещё раз.";
         password: "Пароль";
         register: "Регистрация";
         reset_password: "Восстановить";
