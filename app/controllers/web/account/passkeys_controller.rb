@@ -48,8 +48,8 @@ class Web::Account::PasskeysController < Web::Account::ApplicationController
 
   private
 
-  sig { void }
-  def handle_failure
+  sig { params(_exception: T.untyped).void }
+  def handle_failure(_exception = nil)
     f(:error, type: :alert)
     redirect_to edit_account_profile_path
   end

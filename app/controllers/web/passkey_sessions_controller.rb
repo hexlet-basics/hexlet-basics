@@ -48,8 +48,8 @@ class Web::PasskeySessionsController < Web::ApplicationController
     js_event(event)
   end
 
-  sig { void }
-  def handle_failure
+  sig { params(_exception: T.untyped).void }
+  def handle_failure(_exception = nil)
     f(:error, type: :alert)
     redirect_to new_session_path
   end

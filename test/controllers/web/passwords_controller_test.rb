@@ -11,6 +11,11 @@ class Web::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  def test_edit_with_invalid_token
+    get edit_password_url("invalid-token")
+    assert_response :redirect
+  end
+
   def test_update
     user = users(:full)
     before_password_digest = user.password_digest

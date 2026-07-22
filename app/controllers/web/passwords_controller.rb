@@ -48,8 +48,8 @@ class Web::PasswordsController < Web::ApplicationController
     @user ||= T.let(User.find_by_password_reset_token!(token), T.nilable(User))
   end
 
-  sig { void }
-  def handle_invalid_token
+  sig { params(_exception: T.untyped).void }
+  def handle_invalid_token(_exception = nil)
     f(:error)
     redirect_to root_path
   end
