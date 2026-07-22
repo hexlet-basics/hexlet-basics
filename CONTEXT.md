@@ -22,10 +22,16 @@ The human language a piece of content is written in. The axis of translation.
 _Avoid_: language.
 
 **Version** (Course Version):
-A built, immutable snapshot of a Course's whole content tree. A Course has one
-live snapshot at a time.
-_Code name_: `Language::Version`.
-_Avoid_: build, release.
+An immutable snapshot of a Course's whole content tree, produced by a build. A
+Course accumulates many Versions over time but has at most one **live** Version
+at a time — the one every learner sees. Only a successfully built Version is
+ever live: a Version still building or whose build failed is never shown, and a
+failed rebuild leaves the previously live Version in place. A superseded Version
+is retained but shown to no one; no learner is pinned to a particular Version.
+Content is never edited in place — a correction is a new build, so a new
+Version.
+_Code name_: `Language::Version`. The live one is `Language#current_version`.
+_Avoid_: build (the act, not the artifact), release, publish.
 
 **Module**:
 A named grouping of Lessons within a Course — the chapter level.
@@ -33,7 +39,10 @@ _Code name_: `Language::Module`.
 
 **Lesson**:
 The stable identity of one unit of content — the thing a learner opens and
-solves in the browser. Keeps its identity across Versions.
+solves in the browser. Keeps its identity across Versions. A learner's Lesson
+Progress attaches to this stable identity, not to any one Lesson Version, so
+rebuilding a Course preserves Progress as long as each Lesson keeps its
+identity; a Lesson dropped from a new Version simply stops being shown.
 _Code name_: `Language::Lesson`.
 
 **Lesson Version / Module Version**:
@@ -43,7 +52,11 @@ _Code names_: `Language::Lesson::Version`, `Language::Module::Version`.
 
 **Info**:
 The localized text of a Course, Module Version, or Lesson Version (its name,
-theory, instructions, tips) for one Locale.
+theory, instructions, tips) for one Locale. There is exactly one Info per
+content node and Locale, and no fallback between Locales: a piece of content
+exists only in the Locales it has an Info for, and a learner who requests a
+Locale with no Info is turned away rather than shown another Locale. Infos need
+not cover every Locale — coverage is per content node.
 _Code names_: `…::Version::Info`.
 _Avoid_: translation, content.
 
@@ -64,9 +77,18 @@ _Code name_: `Language::LandingPage`.
 
 **Readiness** (of a Course):
 The authoring maturity of a Course — how finished its content is. A property of
-the content, set by authors.
+the content, set by hand by authors, not derived from build state: a Course can
+be fully built and live yet still held at a lower Readiness. Three ascending
+levels — Draft (the starting level), In Development, Completed. Readiness gates
+discoverability: only a Completed Course is listed in the public catalog and on
+landing pages. It does not gate access — a Draft or In Development Course's
+Lessons remain reachable by direct link; they are simply not surfaced.
 _Code name_: `Language#progress`.
 _Avoid_: progress (for this meaning).
+
+> `Language::Version` also carries a `progress`, but it is a build-time copy of
+> the spec's value, not the authoritative Readiness. The Readiness that gates
+> exposure is always `Language#progress`.
 
 **Progress** (of a learner):
 How far a learner has advanced through a Course. A property of the learner.
@@ -76,14 +98,23 @@ _Avoid_: readiness.
 
 **Enrollment**:
 A user's participation in a Course and their Course-level Progress. A record
-about a user's relationship to a Course — **not** a person. A user who could
-begin a Course but has not is "ready to start."
+about a user's relationship to a Course — **not** a person. There is no separate
+"enroll" step: an Enrollment begins the moment a learner first opens any Lesson
+of the Course. A user who could begin a Course but has not is "ready to start" —
+they have no Enrollment yet. Its Course-level Progress is a roll-up of the
+learner's Lesson Progress, not an independent source of truth. A Course counts
+as finished once the learner has finished every Lesson of the live Version,
+judged at the moment of a solution check; a finished Enrollment is never
+reopened, so a later Version that adds Lessons leaves it finished.
 _Code name_: `Language::Member`.
 _Avoid_: member, membership.
 
 **Lesson Progress**:
-A learner's state on a single Lesson within an Enrollment. The unit that drives
-Course-level Progress, and what a Lesson Assistant attaches to.
+A learner's state on a single Lesson within an Enrollment — the source of truth
+from which Course-level Progress is rolled up, and what a Lesson Assistant
+attaches to. Keyed to the stable Lesson identity, so it survives a Course
+rebuild (see Lesson). A Lesson is finished when the learner submits a passing
+solution.
 _Code name_: `Language::Lesson::Member`.
 _Avoid_: lesson member, lesson attempt.
 
