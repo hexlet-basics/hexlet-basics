@@ -18,20 +18,14 @@ class DockerExerciseClient < DockerExerciseClientInterface
 
   sig { override.params(lang_name: String).void }
   def self.download(lang_name)
-    cmd = "docker pull #{image_name(lang_name)}"
-    Rails.logger.debug(cmd)
-    _stdout, stderr, status = Open3.capture3(cmd)
-
-    unless status.success?
-      raise "Docker command failed: #{stderr.strip}"
-    end
+    run_command!("docker pull #{image_name(lang_name)}")
 
     system("rm -rf #{repo_dest(lang_name)}")
     system("mkdir -p #{repo_dest(lang_name)}")
 
     # FIXME docker in docker volume
-    system("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
-    system("docker cp exercises-#{lang_name}:/exercises-#{lang_name} /tmp/hexletbasics/")
+    run_command!("docker run --name exercises-#{lang_name} -v #{repo_dest(lang_name)}:/out #{image_name(lang_name)}")
+    run_command!("docker cp exercises-#{lang_name}:/exercises-#{lang_name} /tmp/hexletbasics/")
     system("docker rm exercises-#{lang_name}")
   end
 
@@ -68,5 +62,15 @@ class DockerExerciseClient < DockerExerciseClientInterface
     end
 
     full_image_name
+  end
+
+  sig { params(cmd: String).void }
+  def self.run_command!(cmd)
+    Rails.logger.debug(cmd)
+    _stdout, stderr, status = Open3.capture3(cmd)
+
+    unless status.success?
+      raise "Docker command failed: #{cmd} (#{stderr.strip})"
+    end
   end
 end

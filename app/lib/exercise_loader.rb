@@ -11,7 +11,10 @@ class ExerciseLoader
 
   sig { params(language_version: T.untyped).returns(T.untyped) }
   def run(language_version)
-    return unless language_version.may_build?
+    unless language_version.may_build?
+      language_version.update!(result: "Skipped: version in state '#{language_version.state}', expected 'created' (previous run died?)")
+      return false
+    end
 
     language_version.build!
 

@@ -162,6 +162,10 @@ Prefer these instructions over generic Rails or React defaults.
 - Prefer targeted tests first, then broader suites.
 - For controller or model changes, add or update a nearby `_test.rb` file under `test/`.
 - Use fixtures from `test/fixtures/`; the suite loads all fixtures by default.
+- Starting data in tests comes ONLY from fixtures; never build/create records in a test to set up initial state. Transitioning a fixture record inside the test (e.g. firing an AASM event) is fine.
+- Check states and enum-like attributes with predicate methods (`version.created?`, `version.built?`), never by comparing the raw string (`version.state == "created"`).
+- Never chain operations: any operation (e.g. `reload`, an event, a save) is its own statement, never chained inside another expression. `version.reload` on its own line, then `assert { version.result == ... }` — not `assert { version.reload.result == ... }`.
+- Use `assert { expr }` blocks for assertions.
 - System tests are reserved for user-visible flows that need browser coverage.
 - Frontend tests are not widespread today; if you add Vitest coverage, keep it narrow and fast.
 - Do not leave failing tests behind if the touched area can be tested locally.
