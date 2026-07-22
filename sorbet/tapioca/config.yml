@@ -20,6 +20,14 @@ gem:
     # which Sorbet reports as 5067 regardless of strictness. It isn't referenced
     # from typed code (wired via config), so skip generating its RBI.
     - solid_cable
+    # rubocop plugin RBIs reference RuboCop::Cop::Base and friends, but the
+    # rubocop gem itself only gets an empty stub RBI, so every cop class fails
+    # to resolve (srb 5002). Lint tooling is never referenced from typed code.
+    - rubocop-capybara
+    - rubocop-factory_bot
+    - rubocop-minitest
+    - rubocop-rake
+    - rubocop-sorbet
 dsl:
   # boba's ActiveRecord*Persisted compilers type associations/columns as present
   # (non-nilable) for persisted records, replacing the built-in nilable ones.

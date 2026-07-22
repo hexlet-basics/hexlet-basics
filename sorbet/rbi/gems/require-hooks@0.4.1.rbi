@@ -44,15 +44,9 @@ module RequireHooks
     # pkg:gem/require-hooks#lib/require-hooks/api.rb:135
     def hijack_load(patterns: T.unsafe(nil), exclude_patterns: T.unsafe(nil), &block); end
 
-    # Returns the value of attribute print_warnings.
-    #
     # pkg:gem/require-hooks#lib/require-hooks/api.rb:93
     def print_warnings; end
 
-    # Sets the attribute print_warnings
-    #
-    # @param value the value to set the attribute print_warnings to.
-    #
     # pkg:gem/require-hooks#lib/require-hooks/api.rb:93
     def print_warnings=(_arg0); end
 
@@ -77,8 +71,6 @@ module RequireHooks
 
     private
 
-    # @return [Boolean]
-    #
     # pkg:gem/require-hooks#lib/require-hooks/api.rb:184
     def eval_coverage_enabled?; end
 
@@ -89,67 +81,45 @@ end
 
 # pkg:gem/require-hooks#lib/require-hooks/api.rb:4
 class RequireHooks::Context
-  # @return [Context] a new instance of Context
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:8
   def initialize(patterns: T.unsafe(nil), exclude_patterns: T.unsafe(nil)); end
 
-  # Returns the value of attribute around_load.
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:5
   def around_load; end
 
-  # @return [Boolean]
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:30
   def empty?; end
 
-  # Returns the value of attribute exclude_patterns.
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:5
   def exclude_patterns; end
 
-  # @return [Boolean]
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:45
   def hijack?; end
 
-  # Returns the value of attribute hijack_load.
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:5
   def hijack_load; end
 
-  # @return [Boolean]
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:24
   def match?(path); end
 
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:81
   def merge!(another_ctx); end
 
-  # Returns the value of attribute patterns.
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:5
   def patterns; end
 
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:59
   def perform_source_transform(path); end
 
-  # @return [Boolean]
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:35
   def readonly?; end
 
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:49
   def run_around_load_callbacks(path); end
 
-  # Returns the value of attribute source_transform.
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:5
   def source_transform; end
 
-  # @return [Boolean]
-  #
   # pkg:gem/require-hooks#lib/require-hooks/api.rb:41
   def source_transform?; end
 
