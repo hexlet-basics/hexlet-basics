@@ -9,6 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
 import * as Sentry from "@sentry/react";
 import parseHtml from "html-react-parser";
 import { type PropsWithChildren, useEffect } from "react";
@@ -77,6 +78,7 @@ function RootLayout(props: Props) {
       deduplicateInlineStyles
       theme={theme}
     >
+      <Notifications />
       <ModalsProvider>
         <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
           <Head>{parseHtml(metaTagsHTMLString, { trim: true })}</Head>
