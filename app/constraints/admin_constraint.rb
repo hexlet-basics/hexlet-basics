@@ -12,6 +12,8 @@ class AdminConstraint
     return false if session_id.blank?
 
     session = Session.find_by(id: session_id)
-    session&.user&.admin? || false
+    return false unless session
+
+    session.user.admin? || false
   end
 end
