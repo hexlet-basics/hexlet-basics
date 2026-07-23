@@ -619,6 +619,9 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
+    solid_queue_monitor (2.2.1)
+      rails (>= 7.0)
+      solid_queue (>= 0.1.0)
     sorbet (0.6.13351)
       sorbet-static (= 0.6.13351)
     sorbet-result (1.4.0)
@@ -812,6 +815,7 @@ DEPENDENCIES
   solid_cable
   solid_cache
   solid_queue
+  solid_queue_monitor
   sorbet
   sorbet-result
   sorbet-schema
@@ -1063,6 +1067,7 @@ CHECKSUMS
   solid_cable (4.0.2) sha256=084636a67679ad00d23088b33c84047e614bcf41ee559db24b414d83cdc42d03
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.4.0) sha256=e6a18d196f0b27cb6e3c77c5b31258b05fb634f8ed64fb1866ed164047216c2a
+  solid_queue_monitor (2.2.1) sha256=84e3ebc4cca0de9050b22bd92db6ecc0f563001c7f2fbd7815ddc0e843ebdbea
   sorbet (0.6.13351) sha256=68be733f86d8484dd26e2556edacc351a5e1ed1c53c710f8169a227d3fb33e75
   sorbet-result (1.4.0) sha256=194eededbcb78cf04ee2db8bd3b19e76f305dc043062ed90c56b4b9eac268ccd
   sorbet-runtime (0.6.13351) sha256=f8fee17c6e3edf835dc6823d26afb9a7c8969c6710d1fabe2fb43f4e0c15c64f

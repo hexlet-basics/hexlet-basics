@@ -14,6 +14,7 @@ import {
   IconHome,
   IconLock,
   IconMessageCircle,
+  IconStack2,
   IconTerminal2,
   IconUserCheck,
   IconUsers,
@@ -153,6 +154,12 @@ function NavbarMenu() {
             href={Routes.admin_management_staff_members_path()}
             label={t(($) => $.admin.management.staff_members.index.header)}
             leftSection={<IconUsers size={16} />}
+          />
+          <NavLink
+            component="a"
+            href="/solid_queue"
+            label={t(($) => $.layouts.admin.application.jobs)}
+            leftSection={<IconStack2 size={16} />}
           />
         </>
       )}

@@ -22,6 +22,9 @@ gem "solid_cable"
 gem "solid_cache"
 gem "solid_queue"
 
+# Admin-only web dashboard for Solid Queue (mounted at /solid_queue)
+gem "solid_queue_monitor"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

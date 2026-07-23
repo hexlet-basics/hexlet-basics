@@ -1175,6 +1175,7 @@ export default {
           banners: "Banners",
           blog_posts: "Blog Posts",
           dashboard: "Dashboard",
+          jobs: "Cola de tareas",
           language_categories: "Categories",
           language_landing_pages: "Landing Pages",
           language_lesson_members: "Прохождение уроков",

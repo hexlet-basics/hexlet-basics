@@ -7,9 +7,10 @@ Rails.application.routes.draw do
   mount RailsEventStore::Browser => "/res" if Rails.env.development?
   # mount ActionCable.server => "/cable"
 
-  # Feature-flag admin UI, gated to admins by the signed session cookie.
+  # Admin-only web UIs, gated to admins by the signed session cookie.
   constraints(AdminConstraint) do
     mount Flipper::UI.app(Flipper) => "/admin/flipper", as: :flipper_ui
+    mount SolidQueueMonitor::Engine => "/solid_queue"
   end
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

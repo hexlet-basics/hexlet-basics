@@ -1094,6 +1094,7 @@ export default interface Resources {
           banners: "Баннеры";
           blog_posts: "Посты в блоге";
           dashboard: "Кабинет";
+          jobs: "Очередь задач";
           language_categories: "Категории";
           language_landing_pages: "Лендинги";
           language_lesson_members: "Прохождение уроков";
