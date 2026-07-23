@@ -43,7 +43,7 @@ spec:
               memory: "300Mi"
               cpu: "10m"
             limits:
-              memory: '600Mi'
+              memory: '800Mi'
           command: ["bin/jobs"]
           volumeMounts:
             - mountPath: /tmp/hexlet-basics
@@ -60,3 +60,5 @@ spec:
               value: {{ .Chart.Version }}
             - name: RAILS_MAX_THREADS
               value: "5"
+            - name: JOB_CONCURRENCY
+              value: "1"
