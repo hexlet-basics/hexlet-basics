@@ -391,6 +391,9 @@ module GeneratedUrlHelpersModule
   def session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def solid_queue_monitor_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def success_language_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

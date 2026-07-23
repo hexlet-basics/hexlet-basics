@@ -391,6 +391,9 @@ module GeneratedPathHelpersModule
   def session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def solid_queue_monitor_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def success_language_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
