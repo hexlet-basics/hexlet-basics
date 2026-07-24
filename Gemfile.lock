@@ -129,8 +129,9 @@ GEM
     bigdecimal (4.1.2)
     bindata (2.5.1)
     bindex (0.8.1)
-    boba (0.1.11)
-      tapioca (<= 0.19.1)
+    boba (0.0.2)
+      sorbet-static-and-runtime (~> 0.5)
+      tapioca (~> 0.16)
     bootsnap (1.24.6)
       msgpack (~> 1.2)
     brakeman (8.0.5)
@@ -622,22 +623,22 @@ GEM
     solid_queue_monitor (2.2.1)
       rails (>= 7.0)
       solid_queue (>= 0.1.0)
-    sorbet (0.6.13354)
-      sorbet-static (= 0.6.13354)
+    sorbet (0.6.13359)
+      sorbet-static (= 0.6.13359)
     sorbet-result (1.4.0)
       sorbet-runtime (~> 0.5)
-    sorbet-runtime (0.6.13354)
+    sorbet-runtime (0.6.13359)
     sorbet-schema (0.9.3)
       sorbet-result (~> 1.1)
       sorbet-runtime (~> 0.5)
       sorbet-struct-comparable (~> 1.3)
       zeitwerk (~> 2.6)
-    sorbet-static (0.6.13354-aarch64-linux)
-    sorbet-static (0.6.13354-universal-darwin)
-    sorbet-static (0.6.13354-x86_64-linux)
-    sorbet-static-and-runtime (0.6.13354)
-      sorbet (= 0.6.13354)
-      sorbet-runtime (= 0.6.13354)
+    sorbet-static (0.6.13359-aarch64-linux)
+    sorbet-static (0.6.13359-universal-darwin)
+    sorbet-static (0.6.13359-x86_64-linux)
+    sorbet-static-and-runtime (0.6.13359)
+      sorbet (= 0.6.13359)
+      sorbet-runtime (= 0.6.13359)
     sorbet-struct-comparable (1.3.0)
       sorbet-runtime (>= 0.5)
     spoom (1.8.4)
@@ -652,7 +653,7 @@ GEM
     strong_migrations (2.8.0)
       activerecord (>= 7.2)
     sync (0.5.0)
-    tapioca (0.19.1)
+    tapioca (0.19.2)
       benchmark
       bundler (>= 2.2.25)
       netrc (>= 0.11.0)
@@ -661,7 +662,7 @@ GEM
       require-hooks (>= 0.2.2)
       rubydex (>= 0.1.0.beta10)
       sorbet-static-and-runtime (>= 0.6.12698)
-      spoom (>= 1.7.9)
+      spoom (>= 1.7.16)
       thor (>= 1.2.0)
       tsort
     term-ansicolor (1.11.3)
@@ -870,12 +871,13 @@ CHECKSUMS
   bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
   bindata (2.5.1) sha256=53186a1ec2da943d4cb413583d680644eb810aacbf8902497aac8f191fad9e58
   bindex (0.8.1) sha256=7b1ecc9dc539ed8bccfc8cb4d2732046227b09d6f37582ff12e50a5047ceb17e
-  boba (0.1.11) sha256=4c777661a4b8cad8609b11968cb43b3e7f1136642cc3bd741170076bc50c855d
+  boba (0.0.2) sha256=6ebab7ad7f36a872c8414c329ab19812405b6b5e675618837a831c7084178c80
   bootsnap (1.24.6) sha256=c60bab88c70332290f0a2636a288f675299eb4f804a02a3c085b42eca9da164a
   brakeman (8.0.5) sha256=03735f9690d3fd4b32d66aacbf0a6d15a84266bdd06b32c05c8ecc8f6021d2be
   browser (6.2.0) sha256=281d5295788825c9396427c292c2d2be0a5c91875c93c390fde6e5d61a5ace2d
   browserslist (0.1.0) sha256=75882b9960fb8db5e7c55d139e8d72d70c5281f315e882df313aac91bff24011
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
+  bundler (4.0.17) sha256=214e21431b5665dd2f99df8a5511c6b151d7a72e8015c8b38f8b775b61cbb6c1
   bundler-audit (0.9.3) sha256=81c8766c71e47d0d28a0f98c7eed028539f21a6ea3cd8f685eb6f42333c9b4e9
   capybara (3.40.0) sha256=42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef
   cbor (0.5.10.3) sha256=c3aa1d0c7e9bbffe8de4bed554f588d7926c62276ffe2dd7fabb65bae801d28a
@@ -1068,20 +1070,20 @@ CHECKSUMS
   solid_cache (1.0.10) sha256=bc05a2fb3ac78a6f43cbb5946679cf9db67dd30d22939ededc385cb93e120d41
   solid_queue (1.5.0) sha256=329f29caab9cc68eefe489013eb5a38ea4a66708ed2bee301384dbed91890f7f
   solid_queue_monitor (2.2.1) sha256=84e3ebc4cca0de9050b22bd92db6ecc0f563001c7f2fbd7815ddc0e843ebdbea
-  sorbet (0.6.13354) sha256=d50a05573acbf7557a321602f8c71e45cc02d04513f5582630cdc8e2e384bb44
+  sorbet (0.6.13359) sha256=772eabba1cadbfdba4cd8416d342e4ad5f195b8e57bf08467cf1fb103fc5a415
   sorbet-result (1.4.0) sha256=194eededbcb78cf04ee2db8bd3b19e76f305dc043062ed90c56b4b9eac268ccd
-  sorbet-runtime (0.6.13354) sha256=1e9de4e2c445ed8de4157fb4ce96443e345952f740c74393e9d9839c7fb01be8
+  sorbet-runtime (0.6.13359) sha256=5edcd198c678d69f07ec2758b9d0f277bce2e322efd7d5bd902a34c1056a2e5a
   sorbet-schema (0.9.3) sha256=ef87356e82c9dff6671e11372a0515f736504e81b2d9753e01c3b79d2530a84b
-  sorbet-static (0.6.13354-aarch64-linux) sha256=d9080f72ea34977a2151fcaf28593e08d2fecd0abfbaa5fdfd3190f938d1d91f
-  sorbet-static (0.6.13354-universal-darwin) sha256=03cf873f5baacd1e8e34ae9c89eec2aa2f8dda3d1931ec341b26a9f2121cf177
-  sorbet-static (0.6.13354-x86_64-linux) sha256=8c467a9f8a9662a9976d77c4425dba580844c45f89be834820aa3b77130c3d7c
-  sorbet-static-and-runtime (0.6.13354) sha256=ff0f9fa83b49f90418e1c5abd790283f1ca08d56c9ab7659160f505982a075e7
+  sorbet-static (0.6.13359-aarch64-linux) sha256=d6ffbc62c2189d6d02ae2d7b054e78565f404a5d254b34c876dd2adade621f63
+  sorbet-static (0.6.13359-universal-darwin) sha256=ebad32899f8cf929589a1932f48670fb4e522ea75a9f4cdfa1395475377282f5
+  sorbet-static (0.6.13359-x86_64-linux) sha256=08bb9cc0db2d0a6f9e181af0259c54455bfa66577b1581a4f11e928ad58190bd
+  sorbet-static-and-runtime (0.6.13359) sha256=cea6c6c1e930becdaadf6bbe732c119441ef206bf16c74e8bc11d11975dcb181
   sorbet-struct-comparable (1.3.0) sha256=337aff31c4eda80554485f9a30201067bf54fcd76bd992494a0d8c32fb04036b
   spoom (1.8.4) sha256=7283c94a7bbfdfe8764af9027cee2929ef6e1a14271f285e6924e896ca52e880
   stackprof (0.2.28) sha256=4ec2ace02f386012b40ca20ef80c030ad711831f59511da12e83b34efb0f9a04
   strong_migrations (2.8.0) sha256=cb9c0f8160e60f3e9c0e76098d57a6f61825b9618e8eb41cebbd1c1079874439
   sync (0.5.0) sha256=668356cc07c59ac7ed9ecf34fec3929831f179c07adb1f3e1c3b7a1609a638fd
-  tapioca (0.19.1) sha256=5de94d458950897ffe3d4e86a21eec48bb6a8775af85f80b1486b7ae7ba51823
+  tapioca (0.19.2) sha256=938731b07811aee8d23871b1aee8861d464fbaf2cfffbf79a62b0c869a5120ec
   term-ansicolor (1.11.3) sha256=8c01ec3abd095eb94dca8aed5a127d36e594239eb525eb306259c9e930534603
   terminal-table (4.0.0) sha256=f504793203f8251b2ea7c7068333053f0beeea26093ec9962e62ea79f94301d2
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
