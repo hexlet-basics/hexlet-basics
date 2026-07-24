@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271  # v6
         with:
           # NOTE: pinned below 11.12 — action-setup's self-install of pnpm 11.12
           # crashes with "Cannot use 'in' operator to search for 'integrity' in
