@@ -17,6 +17,26 @@ if (!import.meta.env.SSR && import.meta.env.VITE_SENTRY_DSN) {
   });
 }
 
+// После деплоя старая вкладка тянет вью-чанк, которого уже нет (хеши сборки
+// поменялись), и Vite падает с "Failed to fetch dynamically imported module".
+// Vite отдаёт для этого отдельное событие `vite:preloadError`: один раз
+// перезагружаем страницу, чтобы подтянуть свежий манифест. Флаг в sessionStorage
+// не даёт зациклиться, если чанк и правда недоступен (тогда ошибку увидит
+// Sentry).
+if (!import.meta.env.SSR) {
+  const reloadGuardKey = "chunkReloadAt";
+  window.addEventListener("vite:preloadError", (event) => {
+    const now = Date.now();
+    const lastReloadAt = Number(sessionStorage.getItem(reloadGuardKey) ?? 0);
+    if (now - lastReloadAt < 10_000) {
+      return;
+    }
+    sessionStorage.setItem(reloadGuardKey, String(now));
+    event.preventDefault();
+    window.location.reload();
+  });
+}
+
 createInertiaApp({
   defaults: {
     visitOptions: (href, options) => {
