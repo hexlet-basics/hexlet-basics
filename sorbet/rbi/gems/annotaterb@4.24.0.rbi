@@ -247,16 +247,21 @@ module AnnotateRb::ModelAnnotator::Annotation; end
 
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:6
 class AnnotateRb::ModelAnnotator::Annotation::AnnotationBuilder
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:58
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:60
   def initialize(klass, options); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:63
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:65
   def build; end
 
   private
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:77
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:84
   def multi_db_environment?; end
+
+  # TODO: Consolidate ignore_database_name and ignore_multi_database_name; they serve the same purpose
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:80
+  def show_database_name?; end
 end
 
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:7
@@ -267,7 +272,7 @@ class AnnotateRb::ModelAnnotator::Annotation::AnnotationBuilder::Annotation < ::
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:21
   def body; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:35
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:37
   def build; end
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:8
@@ -287,7 +292,7 @@ class AnnotateRb::ModelAnnotator::Annotation::AnnotationBuilder::Annotation < ::
 
   private
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:51
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/annotation/annotation_builder.rb:53
   def columns; end
 end
 
@@ -897,6 +902,63 @@ class AnnotateRb::ModelAnnotator::EnumAnnotation::EnumComponent < ::AnnotateRb::
   def values; end
 end
 
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation.rb:5
+module AnnotateRb::ModelAnnotator::ExclusionConstraintAnnotation; end
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:6
+class AnnotateRb::ModelAnnotator::ExclusionConstraintAnnotation::Annotation
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:9
+  def initialize(constraints); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:13
+  def body; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:34
+  def to_default; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:22
+  def to_markdown; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:26
+  def to_rdoc; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:30
+  def to_yard; end
+end
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation.rb:7
+AnnotateRb::ModelAnnotator::ExclusionConstraintAnnotation::Annotation::HEADER_TEXT = T.let(T.unsafe(nil), String)
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation_builder.rb:6
+class AnnotateRb::ModelAnnotator::ExclusionConstraintAnnotation::AnnotationBuilder
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation_builder.rb:7
+  def initialize(model, options); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/annotation_builder.rb:12
+  def build; end
+end
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:6
+class AnnotateRb::ModelAnnotator::ExclusionConstraintAnnotation::ExclusionConstraintComponent < ::AnnotateRb::ModelAnnotator::Components::Base
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:9
+  def initialize(name, details, max_size); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:7
+  def details; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:7
+  def max_size; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:7
+  def name; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:15
+  def to_default; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/exclusion_constraint_annotation/exclusion_constraint_component.rb:21
+  def to_markdown; end
+end
+
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_name_resolver.rb:5
 class AnnotateRb::ModelAnnotator::FileNameResolver
   class << self
@@ -910,43 +972,54 @@ module AnnotateRb::ModelAnnotator::FileParser; end
 
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:6
 class AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:36
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:46
   def initialize(content, wrapper_open, wrapper_close, parser); end
 
   # Returns true if annotations are detected in the file content
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:106
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:116
   def annotated?; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:97
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:107
   def annotation; end
 
   # Returns the line index (not the line number) that the annotation ends, inclusive.
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:32
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:42
   def annotation_end; end
 
   # Returns the line index (not the line number) that the annotation starts.
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:30
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:40
   def annotation_start; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:34
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:44
   def parser; end
 
   # Find the annotation's line start and line end
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:46
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:56
   def run; end
 
   private
 
-  # Tabular rows have ≥2 leading spaces after `#`; prose has at most one.
+  # A line is part of the schema block if it matches one of the known
+  # header prefixes/exact texts, or if it looks like a tabular/list row
+  # of the annotation body:
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:122
+  # - Default/plain format: rows have >= 2 leading spaces after `#`
+  #   (e.g. "#  id  :integer  not null"); prose has at most one.
+  # - Markdown format (`format_markdown: true`) instead uses a single
+  #   leading space after `#` for everything, so it needs its own
+  #   detection: "### <name>" section headers (matched against
+  #   MARKDOWN_SECTION_HEADERS with the prefix stripped), "|"-delimited
+  #   table rows (header/divider/data), and "* `...`" bulleted list
+  #   items for indexes/foreign keys/enums.
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:143
   def schema_like?(comment); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:112
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:122
   def walk_forward_through_schema(comments, start, block_end); end
 end
 
@@ -959,10 +1032,21 @@ AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder::COMPAT_PREFIX_MD = T.l
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:9
 AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder::DEFAULT_ANNOTATION_ENDING = T.let(T.unsafe(nil), String)
 
-# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:25
+# `format_markdown: true` renders each of the section headers above as
+# "### <name>" instead of "<name>", so SCHEMA_HEADER_EXACT can't match it directly.
+# There's no HEADER_TEXT constant for the columns table itself,
+# so "Columns" is listed explicitly here.
+#
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:32
+AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder::MARKDOWN_HEADER_PREFIX = T.let(T.unsafe(nil), String)
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:33
+AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder::MARKDOWN_SECTION_HEADERS = T.let(T.unsafe(nil), Array)
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:35
 class AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder::MalformedAnnotation < ::StandardError; end
 
-# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:27
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:37
 class AnnotateRb::ModelAnnotator::FileParser::AnnotationFinder::NoAnnotationFound < ::StandardError; end
 
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/annotation_finder.rb:19
@@ -1185,11 +1269,28 @@ class AnnotateRb::ModelAnnotator::FileParser::YmlParser
 
   private
 
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/yml_parser.rb:100
+  def content_line?(line); end
+
+  # True when the input contains an ERB tag, i.e. it is a dynamic fixture
+  # rather than plain (possibly malformed) YAML.
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/yml_parser.rb:107
+  def erb_fixture?; end
+
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/yml_parser.rb:31
   def parse_comments; end
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/yml_parser.rb:40
   def parse_yml; end
+
+  # Locates the content bounds of an ERB fixture directly from the original
+  # lines, treating the ERB/YAML body as the doc. The start is the first
+  # non-blank, non-comment line so annotations are written above the ERB
+  # block (and after any leading comments), never inside a tag.
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/yml_parser.rb:86
+  def record_erb_positions; end
 
   class << self
     # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/file_parser/yml_parser.rb:10
@@ -1285,7 +1386,7 @@ class AnnotateRb::ModelAnnotator::ForeignKeyAnnotation::ForeignKeyComponentBuild
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/foreign_key_annotation/foreign_key_component_builder.rb:14
   def formatted_name; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/foreign_key_annotation/foreign_key_component_builder.rb:39
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/foreign_key_annotation/foreign_key_component_builder.rb:45
   def ref_info; end
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/foreign_key_annotation/foreign_key_component_builder.rb:22
@@ -1298,7 +1399,7 @@ class AnnotateRb::ModelAnnotator::ForeignKeyAnnotation::ForeignKeyComponentBuild
 
   # The fk columns or primary key might be composite (an Array), so format them into a string for the annotation
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/foreign_key_annotation/foreign_key_component_builder.rb:50
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/foreign_key_annotation/foreign_key_component_builder.rb:56
   def stringify(columns); end
 end
 
@@ -1336,6 +1437,16 @@ class AnnotateRb::ModelAnnotator::IndexAnnotation::AnnotationBuilder
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/index_annotation/annotation_builder.rb:12
   def build; end
+
+  private
+
+  # Mirrors ActiveRecord's schema_dumper#indexes_in_create: PostgreSQL's
+  # unique and exclusion constraints are backed by indexes with the same
+  # name, so those show up in `connection.indexes` too. Drop them here so
+  # they only appear under their dedicated sections.
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/index_annotation/annotation_builder.rb:36
+  def reject_constraint_backed_indexes(indexes); end
 end
 
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/index_annotation/index_component.rb:6
@@ -1411,16 +1522,25 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:11
   def initialize(klass, options); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:142
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:154
   def _retrieve_indexes_from_table; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:126
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:138
   def built_attributes; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:177
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:189
   def classified_sort(cols, grouped_polymorphic); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:71
+  # Returns column defaults for annotations.
+  #
+  # `Model#column_defaults` reflects `attribute :foo, default: X` overrides,
+  # which would incorrectly show the Ruby-side default in annotations
+  # instead of the DB schema default. To preserve model-level decorations
+  # such as `TimeZoneConverter` on datetime columns, we start from
+  # `column_defaults` and only substitute the DB schema value when a
+  # difference indicates an attribute-level override.
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:79
   def column_defaults; end
 
   # Gets the columns of the ActiveRecord model, processes them, and then returns them.
@@ -1434,7 +1554,7 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:45
   def database_name; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:222
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:234
   def enum_types; end
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:66
@@ -1443,25 +1563,25 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # These are the columns that the globalize gem needs to work but
   # are not necessary for the models to be displayed as annotations.
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:212
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:224
   def ignored_translation_table_columns; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:120
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:132
   def is_column_primary_key?(column_name); end
 
   # Calculates the max width of the schema for the model by looking at the columns, schema comments, with respect
   # to the options.
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:97
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:109
   def max_schema_info_width; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:239
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:251
   def migration_version; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:91
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:103
   def model_name; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:173
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:185
   def position_of_column_comment; end
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:54
@@ -1472,7 +1592,7 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:50
   def raw_columns; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:138
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:150
   def retrieve_indexes_from_table; end
 
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:62
@@ -1481,17 +1601,29 @@ class AnnotateRb::ModelAnnotator::ModelWrapper
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:58
   def table_exists?; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:87
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:99
   def table_name; end
 
   # Add columns managed by the globalize gem if this gem is being used.
   # TODO: Audit if this is still needed, it seems like Globalize gem is no longer maintained
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:77
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:89
   def translated_columns; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:163
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:175
   def with_comments?; end
+
+  private
+
+  # Rails post-8.1 exposes `Column#cast_type` directly; Rails 8.1 introduced
+  # the transitional `Column#fetch_cast_type(connection)`; older versions
+  # required `connection.lookup_cast_type_from_column(column)`.
+  #
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:289
+  def cast_type_for(column); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/model_wrapper.rb:281
+  def schema_default_for(column); end
 end
 
 # Should be the wrapper for an ActiveRecord model that serves as the source of truth of the model
@@ -1835,6 +1967,63 @@ class AnnotateRb::ModelAnnotator::SingleFileRemoveAnnotationInstruction
   def options; end
 end
 
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation.rb:5
+module AnnotateRb::ModelAnnotator::UniqueConstraintAnnotation; end
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:6
+class AnnotateRb::ModelAnnotator::UniqueConstraintAnnotation::Annotation
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:9
+  def initialize(constraints); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:13
+  def body; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:34
+  def to_default; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:22
+  def to_markdown; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:26
+  def to_rdoc; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:30
+  def to_yard; end
+end
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation.rb:7
+AnnotateRb::ModelAnnotator::UniqueConstraintAnnotation::Annotation::HEADER_TEXT = T.let(T.unsafe(nil), String)
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation_builder.rb:6
+class AnnotateRb::ModelAnnotator::UniqueConstraintAnnotation::AnnotationBuilder
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation_builder.rb:7
+  def initialize(model, options); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/annotation_builder.rb:12
+  def build; end
+end
+
+# pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:6
+class AnnotateRb::ModelAnnotator::UniqueConstraintAnnotation::UniqueConstraintComponent < ::AnnotateRb::ModelAnnotator::Components::Base
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:9
+  def initialize(name, details, max_size); end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:7
+  def details; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:7
+  def max_size; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:7
+  def name; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:15
+  def to_default; end
+
+  # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/unique_constraint_annotation/unique_constraint_component.rb:21
+  def to_markdown; end
+end
+
 # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/zeitwerk_class_getter.rb:5
 class AnnotateRb::ModelAnnotator::ZeitwerkClassGetter
   # pkg:gem/annotaterb#lib/annotate_rb/model_annotator/zeitwerk_class_getter.rb:12
@@ -1870,35 +2059,35 @@ end
 class AnnotateRb::Options
   extend ::Forwardable
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:178
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:184
   def initialize(options = T.unsafe(nil), state = T.unsafe(nil)); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:176
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:182
   def [](*_arg0, **_arg1, &_arg2); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:238
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:244
   def get_state(key); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:191
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:197
   def load_defaults; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:242
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:248
   def print; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:229
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:235
   def set_state(key, value, overwrite = T.unsafe(nil)); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:187
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:193
   def to_h; end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:225
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:231
   def with_default_fallback(key); end
 
   private
 
   # Guard against user inputting strings instead of symbols
   #
-  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:249
+  # pkg:gem/annotaterb#lib/annotate_rb/options.rb:255
   def symbolize_exclude_tests; end
 
   class << self
@@ -1907,31 +2096,31 @@ class AnnotateRb::Options
   end
 end
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:169
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:175
 AnnotateRb::Options::ALL_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:103
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:106
 AnnotateRb::Options::DEFAULT_OPTIONS = T.let(T.unsafe(nil), Hash)
 
 # pkg:gem/annotaterb#lib/annotate_rb/options.rb:28
 AnnotateRb::Options::FLAG_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:105
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:108
 AnnotateRb::Options::FLAG_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:66
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:69
 AnnotateRb::Options::OTHER_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:141
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:147
 AnnotateRb::Options::OTHER_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:94
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:97
 AnnotateRb::Options::PATH_OPTIONS = T.let(T.unsafe(nil), Hash)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:162
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:168
 AnnotateRb::Options::PATH_OPTION_KEYS = T.let(T.unsafe(nil), Array)
 
-# pkg:gem/annotaterb#lib/annotate_rb/options.rb:173
+# pkg:gem/annotaterb#lib/annotate_rb/options.rb:179
 AnnotateRb::Options::POSITION_DEFAULT = T.let(T.unsafe(nil), String)
 
 # pkg:gem/annotaterb#lib/annotate_rb/options.rb:17
@@ -1958,13 +2147,13 @@ class AnnotateRb::Parser
   # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:162
   def add_model_options_to_parser(option_parser); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:369
+  # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:384
   def add_options_to_parser(option_parser); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:298
+  # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:313
   def add_position_options_to_parser(option_parser); end
 
-  # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:281
+  # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:296
   def add_route_options_to_parser(option_parser); end
 
   # pkg:gem/annotaterb#lib/annotate_rb/parser.rb:140
