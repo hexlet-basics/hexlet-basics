@@ -53,6 +53,7 @@ const languageModules: Record<
   diff: () => import("@shikijs/langs/diff"),
   swift: () => import("@shikijs/langs/swift"),
   rust: () => import("@shikijs/langs/rust"),
+  lua: () => import("@shikijs/langs/lua"),
 };
 
 // Языки, которые реально загружены в highlighter. Всё остальное рендерим как
@@ -61,6 +62,36 @@ export const supportedLanguages = new Set(Object.keys(languageModules));
 
 // Специальные "языки" shiki, которые не требуют загрузки грамматики.
 export const plainTextLanguage = "text";
+
+// Явное указание «обычного текста» — не считаем неизвестным языком и не шумим в
+// Sentry.
+const plainTextAliases = new Set(["text", "plaintext", "plain", "txt"]);
+
+// Классифицируем язык из ```-блока. `language` гарантированно загружен в
+// highlighter (иначе shiki падает с "Language `x` not found", issue #597), а
+// `unknown` показывает, стоит ли сообщать о нём в Sentry.
+//
+// Отдельно гасим «склеенные» теги вроде `javapublic`/`csvar`: это баг контента,
+// где язык ```-блока прилип к первой строке кода (```java + public → javapublic),
+// а не язык, который нам надо поддержать. Такой тег начинается с уже известного
+// языка, поэтому молча откатываемся на текст и НЕ шумим. Действительно новые
+// одиночные токены (например, язык, который мы ещё не завезли) по-прежнему
+// репортим, чтобы не потерять сигнал.
+export function classifyLanguage(requested: string): {
+  language: string;
+  unknown: boolean;
+} {
+  if (supportedLanguages.has(requested)) {
+    return { language: requested, unknown: false };
+  }
+  if (plainTextAliases.has(requested)) {
+    return { language: plainTextLanguage, unknown: false };
+  }
+  const isGluedContentTag = [...supportedLanguages].some(
+    (lang) => lang.length >= 2 && requested.startsWith(lang),
+  );
+  return { language: plainTextLanguage, unknown: !isGluedContentTag };
+}
 
 async function loadShiki() {
   const highlighterPromise = createHighlighterCore({

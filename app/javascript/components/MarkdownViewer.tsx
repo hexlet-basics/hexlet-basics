@@ -13,7 +13,7 @@ import type { PluggableList } from "unified";
 import type { Node } from "unist";
 import { visit } from "unist-util-visit";
 import { typographyStyles } from "@/lib/mantine";
-import { plainTextLanguage, supportedLanguages } from "@/lib/shiki";
+import { classifyLanguage, plainTextLanguage } from "@/lib/shiki";
 
 type HastElement = NonNullable<ExtraProps["node"]>;
 
@@ -84,12 +84,13 @@ function MarkdownCodeBlock({
 
   // Неизвестный язык (нет соответствующей грамматики shiki) не рендерим как есть —
   // иначе highlighter падает с "Language `x` not found" (issue #597). Откатываемся
-  // на обычный текст и сообщаем в Sentry, чтобы не терять такие случаи.
+  // на обычный текст; о действительно новых языках сообщаем в Sentry, а шум от
+  // склеенных тегов контента и явного plain text гасим (см. classifyLanguage).
   let language = plainTextLanguage;
   if (requestedLanguage) {
-    if (supportedLanguages.has(requestedLanguage)) {
-      language = requestedLanguage;
-    } else {
+    const classified = classifyLanguage(requestedLanguage);
+    language = classified.language;
+    if (classified.unknown) {
       Sentry.captureMessage(
         `MarkdownViewer: unsupported code language "${requestedLanguage}", falling back to plain text`,
         "warning",
