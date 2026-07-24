@@ -2,5 +2,5 @@ apiVersion: v2
 name: codebasics
 description: A Helm chart for deploying codebasics
 type: application
-version: 0.1.3
+version: 0.1.4
 icon: https://code-basics.com/favicon.ico

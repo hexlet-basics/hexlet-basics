@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.4](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.3...hexlet_basics-v0.1.4) (2026-07-24)
+
+
+### Bug Fixes
+
+* **app:** reload once on stale chunk import errors after deploy ([dcb801a](https://github.com/hexlet-basics/hexlet-basics/commit/dcb801afb5e548b3db75d494c9941aaf929276d3))
+* **lessons:** quiet code-language Sentry noise and highlight lua ([fe101ee](https://github.com/hexlet-basics/hexlet-basics/commit/fe101eef7b5a189186830674b6fdf16f2dc5ec65))
+* **lessons:** stop ShikiError on unmapped course code languages ([25964a9](https://github.com/hexlet-basics/hexlet-basics/commit/25964a9e74e11d5b1d948d8cddcb8a70aaa19d14))
+
+
+### Miscellaneous
+
+* update dependencies and sync sorbet RBIs ([3e0fc5f](https://github.com/hexlet-basics/hexlet-basics/commit/3e0fc5f1d68e31b97dc96fdcd92c19f215bb1a27))
+
 ## [0.1.3](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.2...hexlet_basics-v0.1.3) (2026-07-23)
 
 
