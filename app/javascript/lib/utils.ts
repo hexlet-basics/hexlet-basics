@@ -14,6 +14,7 @@ const editorMapping: Record<string, string> = {
   "pre-course-java": "java",
   "pre-course-python": "python",
   "pre-course-javascript": "javascript",
+  csConsole: "csharp",
 };
 
 const langToTabSizeMapping: Record<string, number> = {

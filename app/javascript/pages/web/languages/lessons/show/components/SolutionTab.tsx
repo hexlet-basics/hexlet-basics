@@ -15,6 +15,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import useCountdown from "@/hooks/useCountdown.ts";
 import waitingClock from "@/images/waiting_clock.webp";
+import { toSupportedLanguage } from "@/lib/shiki";
 import { getEditorLanguage } from "@/lib/utils.ts";
 import type { LessonSharedProps } from "@/types";
 import { useLessonStore } from "../store.tsx";
@@ -82,7 +83,7 @@ export default function SolutionTab() {
     return (
       <CodeHighlight
         code={content}
-        language={getEditorLanguage(course.slug!)}
+        language={toSupportedLanguage(getEditorLanguage(course.slug!))}
         withCopyButton={false}
       />
     );
@@ -97,7 +98,7 @@ export default function SolutionTab() {
           </Title>
           <CodeHighlight
             code={lesson.original_code!}
-            language={getEditorLanguage(course.slug!)}
+            language={toSupportedLanguage(getEditorLanguage(course.slug!))}
             withCopyButton={false}
           />
         </Stack>

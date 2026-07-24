@@ -77,6 +77,14 @@ const plainTextAliases = new Set(["text", "plaintext", "plain", "txt"]);
 // языка, поэтому молча откатываемся на текст и НЕ шумим. Действительно новые
 // одиночные токены (например, язык, который мы ещё не завезли) по-прежнему
 // репортим, чтобы не потерять сигнал.
+// Приводим язык к тому, что точно загружен в highlighter. Нужно там, где язык
+// берётся не из ```-блока, а из слага курса (getEditorLanguage) и может не иметь
+// грамматики (например `csConsole`, `d`) — иначе CodeHighlight падает с
+// "Language `x` not found".
+export function toSupportedLanguage(language: string): string {
+  return supportedLanguages.has(language) ? language : plainTextLanguage;
+}
+
 export function classifyLanguage(requested: string): {
   language: string;
   unknown: boolean;
