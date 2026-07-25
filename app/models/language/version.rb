@@ -31,10 +31,20 @@
 class Language::Version < ApplicationRecord
   include AASM
 
+  # A build that has sat in `building` longer than this was almost certainly
+  # abandoned: the worker was hard-killed (OOM/SIGKILL) mid-run, so the
+  # rescue in ExerciseLoader#run never fired and the row never left `building`.
+  # The threshold is deliberately generous — a live build touches the row only
+  # at update_language, then stays quiet through the long lesson/asset phase —
+  # so a stale timestamp here means dead, not slow.
+  STUCK_BUILD_AFTER = T.let(2.hours, ActiveSupport::Duration)
+
   sig { params(_auth_object: T.untyped).returns(T.untyped) }
   def self.ransackable_attributes(_auth_object = nil)
     [ "id", "created_at" ]
   end
+
+  scope :stuck_building, -> { building.where(updated_at: ..STUCK_BUILD_AFTER.ago) }
 
   has_many :module_versions, dependent: :destroy,
                              foreign_key: :language_version_id,

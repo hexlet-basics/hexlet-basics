@@ -1,4 +1,15 @@
-# production:
+shared: &shared
+  reap_stuck_version_builds:
+    class: ReapStuckVersionBuildsJob
+    schedule: every hour
+
+production:
+  <<: *shared
+
+staging:
+  <<: *shared
+
+# Reference for future recurring tasks:
 #   sync_analytics_tables:
 #     class: RefreshUserSurveyPivotJob
 #     priority: 2
