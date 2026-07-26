@@ -5,27 +5,24 @@ import (
 	"net/http"
 
 	"github.com/rs/cors"
+	"github.com/samber/do/v2"
 
+	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
-	"hexletbasics/internal/handlers"
-	"hexletbasics/internal/store"
+	"hexletbasics/internal/di"
 )
 
 func main() {
-	cfg, err := config.Load()
+	injector := di.New()
+	defer func() { _ = do.MustInvoke[*ent.Client](injector).Close() }()
+
+	cfg, err := do.Invoke[*config.Config](injector)
 	if err != nil {
 		log.Fatalf("config: %v", err)
 	}
 
-	client, err := store.NewClient(cfg.DatabaseURL)
-	if err != nil {
-		log.Fatalf("db connect: %v", err)
-	}
-	defer func() { _ = client.Close() }()
-
-	srv := handlers.NewServer(client)
-	apiServer, err := api.NewServer(srv)
+	apiServer, err := do.Invoke[*api.Server](injector)
 	if err != nil {
 		log.Fatalf("api server: %v", err)
 	}
