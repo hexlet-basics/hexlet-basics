@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"context"
-	"sort"
+
+	"entgo.io/ent/dialect/sql"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/course"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
@@ -31,34 +33,27 @@ func NewServer(db *ent.Client) *Server {
 // Mirrors the legacy scope: listed landing pages joined to their Course,
 // ordered by the Course display order (NULLS LAST), then Course id.
 func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
+	// Order by the Course's integer `order` (NULLS LAST), then Course id. The
+	// legacy query had no tie-breaker among a Course's several listed landing
+	// pages, leaving that order undefined; landing page id goes last so the
+	// catalog is deterministic. All ordering happens in SQL.
 	pages, err := s.db.LandingPage.Query().
 		Where(landingpage.Listed(true)).
 		WithCourse().
+		Order(
+			landingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
+			// language_id is the FK to Course, so it equals the Course id — order
+			// by it directly (a main-table column) instead of joining the edge
+			// again for its id.
+			landingpage.ByLanguageID(),
+			// Qualify the landing page id: the edge ordering joins `languages`,
+			// so a bare `id` term is ambiguous.
+			func(s *sql.Selector) { s.OrderBy(s.C(landingpage.FieldID)) },
+		).
 		All(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	// Order by the Course's integer `order` (NULLS LAST), then Course id. The
-	// legacy query had no tie-breaker among a Course's several listed landing
-	// pages, leaving that order undefined; we add landing page id last so the
-	// catalog is deterministic.
-	sort.SliceStable(pages, func(i, j int) bool {
-		ci, cj := pages[i].Edges.Course, pages[j].Edges.Course
-		oi, oj := ci.Order, cj.Order
-		switch {
-		case oi != nil && oj != nil && *oi != *oj:
-			return *oi < *oj
-		case oi != nil && oj == nil:
-			return true
-		case oi == nil && oj != nil:
-			return false
-		}
-		if ci.ID != cj.ID {
-			return ci.ID < cj.ID
-		}
-		return pages[i].ID < pages[j].ID
-	})
 
 	return s.conv.ToCatalogItems(pages), nil
 }
