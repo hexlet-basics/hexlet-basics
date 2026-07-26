@@ -3,8 +3,13 @@
 package api
 
 import (
+	"time"
+
 	"github.com/go-faster/errors"
 )
+
+// AdminDeleteCourseCategoryNoContent is response for AdminDeleteCourseCategory operation.
+type AdminDeleteCourseCategoryNoContent struct{}
 
 // A course (legacy: `Language`).
 // Ref: #/components/schemas/Course
@@ -203,6 +208,192 @@ func (s *CourseCatalogItem) SetCoverUrl(val NilString) {
 // SetCourse sets the value of Course.
 func (s *CourseCatalogItem) SetCourse(val Course) {
 	s.Course = val
+}
+
+// A course category (legacy table: `language_categories`).
+// Ref: #/components/schemas/CourseCategory
+type CourseCategory struct {
+	ID          int32     `json:"id"`
+	Slug        NilString `json:"slug"`
+	Name        NilString `json:"name"`
+	Header      NilString `json:"header"`
+	Description NilString `json:"description"`
+	Locale      NilString `json:"locale"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseCategory) GetID() int32 {
+	return s.ID
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseCategory) GetSlug() NilString {
+	return s.Slug
+}
+
+// GetName returns the value of Name.
+func (s *CourseCategory) GetName() NilString {
+	return s.Name
+}
+
+// GetHeader returns the value of Header.
+func (s *CourseCategory) GetHeader() NilString {
+	return s.Header
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseCategory) GetDescription() NilString {
+	return s.Description
+}
+
+// GetLocale returns the value of Locale.
+func (s *CourseCategory) GetLocale() NilString {
+	return s.Locale
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CourseCategory) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *CourseCategory) SetID(val int32) {
+	s.ID = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseCategory) SetSlug(val NilString) {
+	s.Slug = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseCategory) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetHeader sets the value of Header.
+func (s *CourseCategory) SetHeader(val NilString) {
+	s.Header = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseCategory) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *CourseCategory) SetLocale(val NilString) {
+	s.Locale = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CourseCategory) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*CourseCategory) adminCreateCourseCategoryRes() {}
+func (*CourseCategory) adminUpdateCourseCategoryRes() {}
+
+// Writable fields for creating or updating a course category.
+// Ref: #/components/schemas/CourseCategoryInput
+type CourseCategoryInput struct {
+	Name        string    `json:"name"`
+	Header      string    `json:"header"`
+	Slug        string    `json:"slug"`
+	Description NilString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *CourseCategoryInput) GetName() string {
+	return s.Name
+}
+
+// GetHeader returns the value of Header.
+func (s *CourseCategoryInput) GetHeader() string {
+	return s.Header
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseCategoryInput) GetSlug() string {
+	return s.Slug
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseCategoryInput) GetDescription() NilString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *CourseCategoryInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetHeader sets the value of Header.
+func (s *CourseCategoryInput) SetHeader(val string) {
+	s.Header = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseCategoryInput) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseCategoryInput) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// A page of results. Generic envelope reused by every admin list.
+// Ref: #/components/schemas/CourseCategoryPage
+type CourseCategoryPage struct {
+	Items []CourseCategory `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *CourseCategoryPage) GetItems() []CourseCategory {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *CourseCategoryPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *CourseCategoryPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *CourseCategoryPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *CourseCategoryPage) SetItems(val []CourseCategory) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *CourseCategoryPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *CourseCategoryPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *CourseCategoryPage) SetPerPage(val int32) {
+	s.PerPage = val
 }
 
 // How a course is meant to be learned.
@@ -476,4 +667,82 @@ func (o NilString) Or(d string) string {
 		return v
 	}
 	return d
+}
+
+// NewOptInt32 returns new OptInt32 with value set to v.
+func NewOptInt32(v int32) OptInt32 {
+	return OptInt32{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt32 is optional int32.
+type OptInt32 struct {
+	Value int32
+	Set   bool
+}
+
+// IsSet returns true if OptInt32 was set.
+func (o OptInt32) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt32) Reset() {
+	var v int32
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt32) SetTo(v int32) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt32) Get() (v int32, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt32) Or(d int32) int32 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// Field-level validation errors, keyed by field name (each value is the list of messages for that
+// field). Returned when a write fails validation — including constraints the schema cannot express,
+// like uniqueness.
+// Ref: #/components/schemas/ValidationError
+type ValidationError struct {
+	Errors ValidationErrorErrors `json:"errors"`
+}
+
+// GetErrors returns the value of Errors.
+func (s *ValidationError) GetErrors() ValidationErrorErrors {
+	return s.Errors
+}
+
+// SetErrors sets the value of Errors.
+func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
+	s.Errors = val
+}
+
+func (*ValidationError) adminCreateCourseCategoryRes() {}
+func (*ValidationError) adminUpdateCourseCategoryRes() {}
+
+type ValidationErrorErrors map[string][]string
+
+func (s *ValidationErrorErrors) init() ValidationErrorErrors {
+	m := *s
+	if m == nil {
+		m = map[string][]string{}
+		*s = m
+	}
+	return m
 }

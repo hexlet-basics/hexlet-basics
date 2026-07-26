@@ -9,5 +9,8 @@ import (
 // Course is the predicate function for course builders.
 type Course func(*sql.Selector)
 
+// CourseCategory is the predicate function for coursecategory builders.
+type CourseCategory func(*sql.Selector)
+
 // LandingPage is the predicate function for landingpage builders.
 type LandingPage func(*sql.Selector)

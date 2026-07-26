@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"sync"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -24,8 +26,9 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeCourse      = "Course"
-	TypeLandingPage = "LandingPage"
+	TypeCourse         = "Course"
+	TypeCourseCategory = "CourseCategory"
+	TypeLandingPage    = "LandingPage"
 )
 
 // CourseMutation represents an operation that mutates the Course nodes in the graph.
@@ -1077,6 +1080,754 @@ func (m *CourseMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Course edge %s", name)
+}
+
+// CourseCategoryMutation represents an operation that mutates the CourseCategory nodes in the graph.
+type CourseCategoryMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	slug          *string
+	name          *string
+	header        *string
+	description   *string
+	locale        *string
+	created_at    *time.Time
+	updated_at    *time.Time
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*CourseCategory, error)
+	predicates    []predicate.CourseCategory
+}
+
+var _ ent.Mutation = (*CourseCategoryMutation)(nil)
+
+// coursecategoryOption allows management of the mutation configuration using functional options.
+type coursecategoryOption func(*CourseCategoryMutation)
+
+// newCourseCategoryMutation creates new mutation for the CourseCategory entity.
+func newCourseCategoryMutation(c config, op Op, opts ...coursecategoryOption) *CourseCategoryMutation {
+	m := &CourseCategoryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCourseCategory,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCourseCategoryID sets the ID field of the mutation.
+func withCourseCategoryID(id int) coursecategoryOption {
+	return func(m *CourseCategoryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *CourseCategory
+		)
+		m.oldValue = func(ctx context.Context) (*CourseCategory, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().CourseCategory.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCourseCategory sets the old CourseCategory of the mutation.
+func withCourseCategory(node *CourseCategory) coursecategoryOption {
+	return func(m *CourseCategoryMutation) {
+		m.oldValue = func(context.Context) (*CourseCategory, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CourseCategoryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CourseCategoryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CourseCategoryMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CourseCategoryMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().CourseCategory.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSlug sets the "slug" field.
+func (m *CourseCategoryMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *CourseCategoryMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldSlug(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (m *CourseCategoryMutation) ClearSlug() {
+	m.slug = nil
+	m.clearedFields[coursecategory.FieldSlug] = struct{}{}
+}
+
+// SlugCleared returns if the "slug" field was cleared in this mutation.
+func (m *CourseCategoryMutation) SlugCleared() bool {
+	_, ok := m.clearedFields[coursecategory.FieldSlug]
+	return ok
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *CourseCategoryMutation) ResetSlug() {
+	m.slug = nil
+	delete(m.clearedFields, coursecategory.FieldSlug)
+}
+
+// SetName sets the "name" field.
+func (m *CourseCategoryMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *CourseCategoryMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *CourseCategoryMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[coursecategory.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *CourseCategoryMutation) NameCleared() bool {
+	_, ok := m.clearedFields[coursecategory.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *CourseCategoryMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, coursecategory.FieldName)
+}
+
+// SetHeader sets the "header" field.
+func (m *CourseCategoryMutation) SetHeader(s string) {
+	m.header = &s
+}
+
+// Header returns the value of the "header" field in the mutation.
+func (m *CourseCategoryMutation) Header() (r string, exists bool) {
+	v := m.header
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHeader returns the old "header" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldHeader(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHeader is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHeader requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHeader: %w", err)
+	}
+	return oldValue.Header, nil
+}
+
+// ClearHeader clears the value of the "header" field.
+func (m *CourseCategoryMutation) ClearHeader() {
+	m.header = nil
+	m.clearedFields[coursecategory.FieldHeader] = struct{}{}
+}
+
+// HeaderCleared returns if the "header" field was cleared in this mutation.
+func (m *CourseCategoryMutation) HeaderCleared() bool {
+	_, ok := m.clearedFields[coursecategory.FieldHeader]
+	return ok
+}
+
+// ResetHeader resets all changes to the "header" field.
+func (m *CourseCategoryMutation) ResetHeader() {
+	m.header = nil
+	delete(m.clearedFields, coursecategory.FieldHeader)
+}
+
+// SetDescription sets the "description" field.
+func (m *CourseCategoryMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *CourseCategoryMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *CourseCategoryMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[coursecategory.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *CourseCategoryMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[coursecategory.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *CourseCategoryMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, coursecategory.FieldDescription)
+}
+
+// SetLocale sets the "locale" field.
+func (m *CourseCategoryMutation) SetLocale(s string) {
+	m.locale = &s
+}
+
+// Locale returns the value of the "locale" field in the mutation.
+func (m *CourseCategoryMutation) Locale() (r string, exists bool) {
+	v := m.locale
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLocale returns the old "locale" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldLocale(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLocale is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLocale requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLocale: %w", err)
+	}
+	return oldValue.Locale, nil
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (m *CourseCategoryMutation) ClearLocale() {
+	m.locale = nil
+	m.clearedFields[coursecategory.FieldLocale] = struct{}{}
+}
+
+// LocaleCleared returns if the "locale" field was cleared in this mutation.
+func (m *CourseCategoryMutation) LocaleCleared() bool {
+	_, ok := m.clearedFields[coursecategory.FieldLocale]
+	return ok
+}
+
+// ResetLocale resets all changes to the "locale" field.
+func (m *CourseCategoryMutation) ResetLocale() {
+	m.locale = nil
+	delete(m.clearedFields, coursecategory.FieldLocale)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CourseCategoryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CourseCategoryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CourseCategoryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseCategoryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseCategoryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseCategoryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the CourseCategoryMutation builder.
+func (m *CourseCategoryMutation) Where(ps ...predicate.CourseCategory) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CourseCategoryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CourseCategoryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.CourseCategory, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CourseCategoryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CourseCategoryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (CourseCategory).
+func (m *CourseCategoryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CourseCategoryMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.slug != nil {
+		fields = append(fields, coursecategory.FieldSlug)
+	}
+	if m.name != nil {
+		fields = append(fields, coursecategory.FieldName)
+	}
+	if m.header != nil {
+		fields = append(fields, coursecategory.FieldHeader)
+	}
+	if m.description != nil {
+		fields = append(fields, coursecategory.FieldDescription)
+	}
+	if m.locale != nil {
+		fields = append(fields, coursecategory.FieldLocale)
+	}
+	if m.created_at != nil {
+		fields = append(fields, coursecategory.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, coursecategory.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CourseCategoryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case coursecategory.FieldSlug:
+		return m.Slug()
+	case coursecategory.FieldName:
+		return m.Name()
+	case coursecategory.FieldHeader:
+		return m.Header()
+	case coursecategory.FieldDescription:
+		return m.Description()
+	case coursecategory.FieldLocale:
+		return m.Locale()
+	case coursecategory.FieldCreatedAt:
+		return m.CreatedAt()
+	case coursecategory.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CourseCategoryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case coursecategory.FieldSlug:
+		return m.OldSlug(ctx)
+	case coursecategory.FieldName:
+		return m.OldName(ctx)
+	case coursecategory.FieldHeader:
+		return m.OldHeader(ctx)
+	case coursecategory.FieldDescription:
+		return m.OldDescription(ctx)
+	case coursecategory.FieldLocale:
+		return m.OldLocale(ctx)
+	case coursecategory.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case coursecategory.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown CourseCategory field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CourseCategoryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case coursecategory.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
+		return nil
+	case coursecategory.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case coursecategory.FieldHeader:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHeader(v)
+		return nil
+	case coursecategory.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case coursecategory.FieldLocale:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLocale(v)
+		return nil
+	case coursecategory.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case coursecategory.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategory field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CourseCategoryMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CourseCategoryMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CourseCategoryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown CourseCategory numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CourseCategoryMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(coursecategory.FieldSlug) {
+		fields = append(fields, coursecategory.FieldSlug)
+	}
+	if m.FieldCleared(coursecategory.FieldName) {
+		fields = append(fields, coursecategory.FieldName)
+	}
+	if m.FieldCleared(coursecategory.FieldHeader) {
+		fields = append(fields, coursecategory.FieldHeader)
+	}
+	if m.FieldCleared(coursecategory.FieldDescription) {
+		fields = append(fields, coursecategory.FieldDescription)
+	}
+	if m.FieldCleared(coursecategory.FieldLocale) {
+		fields = append(fields, coursecategory.FieldLocale)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CourseCategoryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CourseCategoryMutation) ClearField(name string) error {
+	switch name {
+	case coursecategory.FieldSlug:
+		m.ClearSlug()
+		return nil
+	case coursecategory.FieldName:
+		m.ClearName()
+		return nil
+	case coursecategory.FieldHeader:
+		m.ClearHeader()
+		return nil
+	case coursecategory.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case coursecategory.FieldLocale:
+		m.ClearLocale()
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategory nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CourseCategoryMutation) ResetField(name string) error {
+	switch name {
+	case coursecategory.FieldSlug:
+		m.ResetSlug()
+		return nil
+	case coursecategory.FieldName:
+		m.ResetName()
+		return nil
+	case coursecategory.FieldHeader:
+		m.ResetHeader()
+		return nil
+	case coursecategory.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case coursecategory.FieldLocale:
+		m.ResetLocale()
+		return nil
+	case coursecategory.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case coursecategory.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategory field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CourseCategoryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CourseCategoryMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CourseCategoryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CourseCategoryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CourseCategoryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CourseCategoryMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CourseCategoryMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown CourseCategory unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CourseCategoryMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown CourseCategory edge %s", name)
 }
 
 // LandingPageMutation represents an operation that mutates the LandingPage nodes in the graph.

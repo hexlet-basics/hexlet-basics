@@ -54,3 +54,26 @@ func (c *ConverterImpl) ToCourse(source *ent.Course) api.Course {
 	}
 	return apiCourse
 }
+func (c *ConverterImpl) ToCourseCategories(source []*ent.CourseCategory) []api.CourseCategory {
+	var apiCourseCategoryList []api.CourseCategory
+	if source != nil {
+		apiCourseCategoryList = make([]api.CourseCategory, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseCategoryList[i] = c.ToCourseCategory(source[i])
+		}
+	}
+	return apiCourseCategoryList
+}
+func (c *ConverterImpl) ToCourseCategory(source *ent.CourseCategory) api.CourseCategory {
+	var apiCourseCategory api.CourseCategory
+	if source != nil {
+		apiCourseCategory.ID = Int32FromInt((*source).ID)
+		apiCourseCategory.Slug = NilStringFromPtr((*source).Slug)
+		apiCourseCategory.Name = NilStringFromPtr((*source).Name)
+		apiCourseCategory.Header = NilStringFromPtr((*source).Header)
+		apiCourseCategory.Description = NilStringFromPtr((*source).Description)
+		apiCourseCategory.Locale = NilStringFromPtr((*source).Locale)
+		apiCourseCategory.CreatedAt = TimeIdentity((*source).CreatedAt)
+	}
+	return apiCourseCategory
+}

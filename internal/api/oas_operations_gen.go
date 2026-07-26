@@ -6,5 +6,10 @@ package api
 type OperationName = string
 
 const (
-	ListCoursesOperation OperationName = "ListCourses"
+	AdminCreateCourseCategoryOperation OperationName = "AdminCreateCourseCategory"
+	AdminDeleteCourseCategoryOperation OperationName = "AdminDeleteCourseCategory"
+	AdminGetCourseCategoryOperation    OperationName = "AdminGetCourseCategory"
+	AdminListCourseCategoriesOperation OperationName = "AdminListCourseCategories"
+	AdminUpdateCourseCategoryOperation OperationName = "AdminUpdateCourseCategory"
+	ListCoursesOperation               OperationName = "ListCourses"
 )

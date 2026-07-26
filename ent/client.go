@@ -12,6 +12,7 @@ import (
 	"hexletbasics/ent/migrate"
 
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/landingpage"
 
 	"entgo.io/ent"
@@ -27,6 +28,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
+	// CourseCategory is the client for interacting with the CourseCategory builders.
+	CourseCategory *CourseCategoryClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
 }
@@ -41,6 +44,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Course = NewCourseClient(c.config)
+	c.CourseCategory = NewCourseCategoryClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
 }
 
@@ -132,10 +136,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		Course:      NewCourseClient(cfg),
-		LandingPage: NewLandingPageClient(cfg),
+		ctx:            ctx,
+		config:         cfg,
+		Course:         NewCourseClient(cfg),
+		CourseCategory: NewCourseCategoryClient(cfg),
+		LandingPage:    NewLandingPageClient(cfg),
 	}, nil
 }
 
@@ -153,10 +158,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		Course:      NewCourseClient(cfg),
-		LandingPage: NewLandingPageClient(cfg),
+		ctx:            ctx,
+		config:         cfg,
+		Course:         NewCourseClient(cfg),
+		CourseCategory: NewCourseCategoryClient(cfg),
+		LandingPage:    NewLandingPageClient(cfg),
 	}, nil
 }
 
@@ -186,6 +192,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Course.Use(hooks...)
+	c.CourseCategory.Use(hooks...)
 	c.LandingPage.Use(hooks...)
 }
 
@@ -193,6 +200,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Course.Intercept(interceptors...)
+	c.CourseCategory.Intercept(interceptors...)
 	c.LandingPage.Intercept(interceptors...)
 }
 
@@ -201,6 +209,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *CourseMutation:
 		return c.Course.mutate(ctx, m)
+	case *CourseCategoryMutation:
+		return c.CourseCategory.mutate(ctx, m)
 	case *LandingPageMutation:
 		return c.LandingPage.mutate(ctx, m)
 	default:
@@ -357,6 +367,139 @@ func (c *CourseClient) mutate(ctx context.Context, m *CourseMutation) (Value, er
 	}
 }
 
+// CourseCategoryClient is a client for the CourseCategory schema.
+type CourseCategoryClient struct {
+	config
+}
+
+// NewCourseCategoryClient returns a client for the CourseCategory from the given config.
+func NewCourseCategoryClient(c config) *CourseCategoryClient {
+	return &CourseCategoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coursecategory.Hooks(f(g(h())))`.
+func (c *CourseCategoryClient) Use(hooks ...Hook) {
+	c.hooks.CourseCategory = append(c.hooks.CourseCategory, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `coursecategory.Intercept(f(g(h())))`.
+func (c *CourseCategoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CourseCategory = append(c.inters.CourseCategory, interceptors...)
+}
+
+// Create returns a builder for creating a CourseCategory entity.
+func (c *CourseCategoryClient) Create() *CourseCategoryCreate {
+	mutation := newCourseCategoryMutation(c.config, OpCreate)
+	return &CourseCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CourseCategory entities.
+func (c *CourseCategoryClient) CreateBulk(builders ...*CourseCategoryCreate) *CourseCategoryCreateBulk {
+	return &CourseCategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CourseCategoryClient) MapCreateBulk(slice any, setFunc func(*CourseCategoryCreate, int)) *CourseCategoryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CourseCategoryCreateBulk{err: fmt.Errorf("calling to CourseCategoryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CourseCategoryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CourseCategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CourseCategory.
+func (c *CourseCategoryClient) Update() *CourseCategoryUpdate {
+	mutation := newCourseCategoryMutation(c.config, OpUpdate)
+	return &CourseCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CourseCategoryClient) UpdateOne(_m *CourseCategory) *CourseCategoryUpdateOne {
+	mutation := newCourseCategoryMutation(c.config, OpUpdateOne, withCourseCategory(_m))
+	return &CourseCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CourseCategoryClient) UpdateOneID(id int) *CourseCategoryUpdateOne {
+	mutation := newCourseCategoryMutation(c.config, OpUpdateOne, withCourseCategoryID(id))
+	return &CourseCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CourseCategory.
+func (c *CourseCategoryClient) Delete() *CourseCategoryDelete {
+	mutation := newCourseCategoryMutation(c.config, OpDelete)
+	return &CourseCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CourseCategoryClient) DeleteOne(_m *CourseCategory) *CourseCategoryDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CourseCategoryClient) DeleteOneID(id int) *CourseCategoryDeleteOne {
+	builder := c.Delete().Where(coursecategory.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CourseCategoryDeleteOne{builder}
+}
+
+// Query returns a query builder for CourseCategory.
+func (c *CourseCategoryClient) Query() *CourseCategoryQuery {
+	return &CourseCategoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCourseCategory},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CourseCategory entity by its id.
+func (c *CourseCategoryClient) Get(ctx context.Context, id int) (*CourseCategory, error) {
+	return c.Query().Where(coursecategory.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CourseCategoryClient) GetX(ctx context.Context, id int) *CourseCategory {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CourseCategoryClient) Hooks() []Hook {
+	return c.hooks.CourseCategory
+}
+
+// Interceptors returns the client interceptors.
+func (c *CourseCategoryClient) Interceptors() []Interceptor {
+	return c.inters.CourseCategory
+}
+
+func (c *CourseCategoryClient) mutate(ctx context.Context, m *CourseCategoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CourseCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CourseCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CourseCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CourseCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CourseCategory mutation op: %q", m.Op())
+	}
+}
+
 // LandingPageClient is a client for the LandingPage schema.
 type LandingPageClient struct {
 	config
@@ -509,9 +652,9 @@ func (c *LandingPageClient) mutate(ctx context.Context, m *LandingPageMutation) 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Course, LandingPage []ent.Hook
+		Course, CourseCategory, LandingPage []ent.Hook
 	}
 	inters struct {
-		Course, LandingPage []ent.Interceptor
+		Course, CourseCategory, LandingPage []ent.Interceptor
 	}
 )

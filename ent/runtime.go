@@ -2,8 +2,26 @@
 
 package ent
 
+import (
+	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/schema"
+	"time"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	coursecategoryFields := schema.CourseCategory{}.Fields()
+	_ = coursecategoryFields
+	// coursecategoryDescCreatedAt is the schema descriptor for created_at field.
+	coursecategoryDescCreatedAt := coursecategoryFields[5].Descriptor()
+	// coursecategory.DefaultCreatedAt holds the default value on creation for the created_at field.
+	coursecategory.DefaultCreatedAt = coursecategoryDescCreatedAt.Default.(func() time.Time)
+	// coursecategoryDescUpdatedAt is the schema descriptor for updated_at field.
+	coursecategoryDescUpdatedAt := coursecategoryFields[6].Descriptor()
+	// coursecategory.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	coursecategory.DefaultUpdatedAt = coursecategoryDescUpdatedAt.Default.(func() time.Time)
+	// coursecategory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	coursecategory.UpdateDefaultUpdatedAt = coursecategoryDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

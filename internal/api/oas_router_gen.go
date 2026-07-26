@@ -10,6 +10,15 @@ import (
 	"github.com/ogen-go/ogen/uri"
 )
 
+var (
+	rn1AllowedHeaders = map[string]string{
+		"POST": "Content-Type",
+	}
+	rn3AllowedHeaders = map[string]string{
+		"PUT": "Content-Type",
+	}
+)
+
 func (s *Server) cutPrefix(path string) (string, bool) {
 	prefix := s.cfg.Prefix
 	if prefix == "" {
@@ -40,6 +49,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
+	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -48,29 +58,115 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/languages"
+		case '/': // Prefix: "/"
 
-			if l := len("/languages"); len(elem) >= l && elem[0:l] == "/languages" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				// Leaf node.
-				switch r.Method {
-				case "GET":
-					s.handleListCoursesRequest([0]string{}, elemIsEscaped, w, r)
-				default:
-					s.notAllowed(w, r, notAllowedParams{
-						allowedMethods: "GET",
-						allowedHeaders: nil,
-						acceptPost:     "",
-						acceptPatch:    "",
-					})
+				break
+			}
+			switch elem[0] {
+			case 'a': // Prefix: "admin/language_categories"
+
+				if l := len("admin/language_categories"); len(elem) >= l && elem[0:l] == "admin/language_categories" {
+					elem = elem[l:]
+				} else {
+					break
 				}
 
-				return
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleAdminListCourseCategoriesRequest([0]string{}, elemIsEscaped, w, r)
+					case "POST":
+						s.handleAdminCreateCourseCategoryRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET,POST",
+							allowedHeaders: rn1AllowedHeaders,
+							acceptPost:     "application/json",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "DELETE":
+							s.handleAdminDeleteCourseCategoryRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "GET":
+							s.handleAdminGetCourseCategoryRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PUT":
+							s.handleAdminUpdateCourseCategoryRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "DELETE,GET,PUT",
+								allowedHeaders: rn3AllowedHeaders,
+								acceptPost:     "",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+
+				}
+
+			case 'l': // Prefix: "languages"
+
+				if l := len("languages"); len(elem) >= l && elem[0:l] == "languages" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleListCoursesRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET",
+							allowedHeaders: nil,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+
 			}
 
 		}
@@ -86,7 +182,7 @@ type Route struct {
 	operationGroup string
 	pathPattern    string
 	count          int
-	args           [0]string
+	args           [1]string
 }
 
 // Name returns ogen operation name.
@@ -159,29 +255,130 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/languages"
+		case '/': // Prefix: "/"
 
-			if l := len("/languages"); len(elem) >= l && elem[0:l] == "/languages" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				// Leaf node.
-				switch method {
-				case "GET":
-					r.name = ListCoursesOperation
-					r.summary = ""
-					r.operationID = "listCourses"
-					r.operationGroup = ""
-					r.pathPattern = "/languages"
-					r.args = args
-					r.count = 0
-					return r, true
-				default:
-					return
+				break
+			}
+			switch elem[0] {
+			case 'a': // Prefix: "admin/language_categories"
+
+				if l := len("admin/language_categories"); len(elem) >= l && elem[0:l] == "admin/language_categories" {
+					elem = elem[l:]
+				} else {
+					break
 				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = AdminListCourseCategoriesOperation
+						r.summary = ""
+						r.operationID = "adminListCourseCategories"
+						r.operationGroup = ""
+						r.pathPattern = "/admin/language_categories"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "POST":
+						r.name = AdminCreateCourseCategoryOperation
+						r.summary = ""
+						r.operationID = "adminCreateCourseCategory"
+						r.operationGroup = ""
+						r.pathPattern = "/admin/language_categories"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "DELETE":
+							r.name = AdminDeleteCourseCategoryOperation
+							r.summary = ""
+							r.operationID = "adminDeleteCourseCategory"
+							r.operationGroup = ""
+							r.pathPattern = "/admin/language_categories/{id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "GET":
+							r.name = AdminGetCourseCategoryOperation
+							r.summary = ""
+							r.operationID = "adminGetCourseCategory"
+							r.operationGroup = ""
+							r.pathPattern = "/admin/language_categories/{id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PUT":
+							r.name = AdminUpdateCourseCategoryOperation
+							r.summary = ""
+							r.operationID = "adminUpdateCourseCategory"
+							r.operationGroup = ""
+							r.pathPattern = "/admin/language_categories/{id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+				}
+
+			case 'l': // Prefix: "languages"
+
+				if l := len("languages"); len(elem) >= l && elem[0:l] == "languages" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "GET":
+						r.name = ListCoursesOperation
+						r.summary = ""
+						r.operationID = "listCourses"
+						r.operationGroup = ""
+						r.pathPattern = "/languages"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
 			}
 
 		}

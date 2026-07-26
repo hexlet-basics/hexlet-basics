@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ListCoursesData, ListCoursesResponses } from './types.gen';
+import type { AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, ListCoursesData, ListCoursesResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
   /**
@@ -17,6 +17,45 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
    */
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
+
+/**
+ * List course categories (paginated).
+ */
+export const adminListCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseCategoriesData, ThrowOnError>): RequestResult<AdminListCourseCategoriesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCourseCategoriesResponses, unknown, ThrowOnError>({ url: '/admin/language_categories', ...options });
+
+/**
+ * Create a course category.
+ */
+export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseCategoryData, ThrowOnError>): RequestResult<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError>({
+  url: '/admin/language_categories',
+  ...options,
+  headers: {
+    'Content-Type': 'application/json',
+    ...options.headers
+  }
+});
+
+/**
+ * Delete a course category.
+ */
+export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseCategoryData, ThrowOnError>): RequestResult<AdminDeleteCourseCategoryResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseCategoryResponses, unknown, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
+
+/**
+ * Get a single course category.
+ */
+export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseCategoryData, ThrowOnError>): RequestResult<AdminGetCourseCategoryResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetCourseCategoryResponses, unknown, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
+
+/**
+ * Update a course category.
+ */
+export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseCategoryData, ThrowOnError>): RequestResult<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError>({
+  url: '/admin/language_categories/{id}',
+  ...options,
+  headers: {
+    'Content-Type': 'application/json',
+    ...options.headers
+  }
+});
 
 /**
  * List the published course catalog.

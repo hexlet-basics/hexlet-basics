@@ -7,6 +7,8 @@
 package apiconv
 
 import (
+	"time"
+
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
@@ -26,6 +28,7 @@ import (
 // goverter:extend NilInt32FromPtr
 // goverter:extend NilLearnAsFromPtr
 // goverter:extend NilProgressFromPtr
+// goverter:extend TimeIdentity
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
 
@@ -37,7 +40,15 @@ type Converter interface {
 
 	// goverter:map CategoryID CategoryId
 	ToCourse(source *ent.Course) api.Course
+
+	ToCourseCategory(source *ent.CourseCategory) api.CourseCategory
+
+	ToCourseCategories(source []*ent.CourseCategory) []api.CourseCategory
 }
+
+// TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
+// instead of deep-copying its unexported fields.
+func TimeIdentity(v time.Time) time.Time { return v }
 
 // Int32FromInt narrows an ent int id/count to the contract's int32.
 func Int32FromInt(v int) int32 { return int32(v) }

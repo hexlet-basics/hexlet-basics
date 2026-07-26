@@ -8,6 +8,36 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
+	//
+	// Create a course category.
+	//
+	// POST /admin/language_categories
+	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
+	// AdminDeleteCourseCategory implements adminDeleteCourseCategory operation.
+	//
+	// Delete a course category.
+	//
+	// DELETE /admin/language_categories/{id}
+	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error
+	// AdminGetCourseCategory implements adminGetCourseCategory operation.
+	//
+	// Get a single course category.
+	//
+	// GET /admin/language_categories/{id}
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
+	// AdminListCourseCategories implements adminListCourseCategories operation.
+	//
+	// List course categories (paginated).
+	//
+	// GET /admin/language_categories
+	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error)
+	// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
+	//
+	// Update a course category.
+	//
+	// PUT /admin/language_categories/{id}
+	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
 	// ListCourses implements listCourses operation.
 	//
 	// List the published course catalog.

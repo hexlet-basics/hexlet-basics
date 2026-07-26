@@ -13,6 +13,51 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
+//
+// Create a course category.
+//
+// POST /admin/language_categories
+func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (r AdminCreateCourseCategoryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminDeleteCourseCategory implements adminDeleteCourseCategory operation.
+//
+// Delete a course category.
+//
+// DELETE /admin/language_categories/{id}
+func (UnimplementedHandler) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error {
+	return ht.ErrNotImplemented
+}
+
+// AdminGetCourseCategory implements adminGetCourseCategory operation.
+//
+// Get a single course category.
+//
+// GET /admin/language_categories/{id}
+func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (r *CourseCategory, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminListCourseCategories implements adminListCourseCategories operation.
+//
+// List course categories (paginated).
+//
+// GET /admin/language_categories
+func (UnimplementedHandler) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (r *CourseCategoryPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
+//
+// Update a course category.
+//
+// PUT /admin/language_categories/{id}
+func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (r AdminUpdateCourseCategoryRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // ListCourses implements listCourses operation.
 //
 // List the published course catalog.

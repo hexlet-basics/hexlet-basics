@@ -20,6 +20,18 @@ func (f CourseFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CourseMutation", m)
 }
 
+// The CourseCategoryFunc type is an adapter to allow the use of ordinary
+// function as CourseCategory mutator.
+type CourseCategoryFunc func(context.Context, *ent.CourseCategoryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CourseCategoryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CourseCategoryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CourseCategoryMutation", m)
+}
+
 // The LandingPageFunc type is an adapter to allow the use of ordinary
 // function as LandingPage mutator.
 type LandingPageFunc func(context.Context, *ent.LandingPageMutation) (ent.Value, error)

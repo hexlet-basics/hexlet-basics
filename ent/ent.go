@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/landingpage"
 	"reflect"
 	"sync"
@@ -74,8 +75,9 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			course.Table:      course.ValidColumn,
-			landingpage.Table: landingpage.ValidColumn,
+			course.Table:         course.ValidColumn,
+			coursecategory.Table: coursecategory.ValidColumn,
+			landingpage.Table:    landingpage.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

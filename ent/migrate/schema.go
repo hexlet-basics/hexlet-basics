@@ -27,6 +27,23 @@ var (
 		Columns:    LanguagesColumns,
 		PrimaryKey: []*schema.Column{LanguagesColumns[0]},
 	}
+	// LanguageCategoriesColumns holds the columns for the "language_categories" table.
+	LanguageCategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "slug", Type: field.TypeString, Nullable: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "header", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// LanguageCategoriesTable holds the schema information for the "language_categories" table.
+	LanguageCategoriesTable = &schema.Table{
+		Name:       "language_categories",
+		Columns:    LanguageCategoriesColumns,
+		PrimaryKey: []*schema.Column{LanguageCategoriesColumns[0]},
+	}
 	// LanguageLandingPagesColumns holds the columns for the "language_landing_pages" table.
 	LanguageLandingPagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -54,6 +71,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		LanguagesTable,
+		LanguageCategoriesTable,
 		LanguageLandingPagesTable,
 	}
 )
@@ -61,6 +79,9 @@ var (
 func init() {
 	LanguagesTable.Annotation = &entsql.Annotation{
 		Table: "languages",
+	}
+	LanguageCategoriesTable.Annotation = &entsql.Annotation{
+		Table: "language_categories",
 	}
 	LanguageLandingPagesTable.ForeignKeys[0].RefTable = LanguagesTable
 	LanguageLandingPagesTable.Annotation = &entsql.Annotation{

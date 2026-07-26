@@ -40,6 +40,48 @@ export type CourseCatalogItem = {
 };
 
 /**
+ * A course category (legacy table: `language_categories`).
+ */
+export type CourseCategory = {
+  id: number;
+  slug: string | null;
+  name: string | null;
+  header: string | null;
+  description: string | null;
+  locale: string | null;
+  createdAt: string;
+};
+
+/**
+ * Writable fields for creating or updating a course category.
+ */
+export type CourseCategoryInput = {
+  name: string;
+  header: string;
+  slug: string;
+  description: string | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list.
+ */
+export type CourseCategoryPage = {
+  items: Array<CourseCategory>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
  * How a course is meant to be learned.
  */
 export type CourseLearnAs = 'first_language' | 'second_language';
@@ -48,6 +90,128 @@ export type CourseLearnAs = 'first_language' | 'second_language';
  * Publication/readiness state of a course.
  */
 export type CourseProgress = 'completed' | 'in_development' | 'draft';
+
+/**
+ * Field-level validation errors, keyed by field name (each value is the list
+ * of messages for that field). Returned when a write fails validation —
+ * including constraints the schema cannot express, like uniqueness.
+ */
+export type ValidationError = {
+  errors: {
+    [key: string]: Array<string>;
+  };
+};
+
+export type AdminListCourseCategoriesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+  };
+  url: '/admin/language_categories';
+};
+
+export type AdminListCourseCategoriesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseCategoryPage;
+};
+
+export type AdminListCourseCategoriesResponse = AdminListCourseCategoriesResponses[keyof AdminListCourseCategoriesResponses];
+
+export type AdminCreateCourseCategoryData = {
+  body: CourseCategoryInput;
+  path?: never;
+  query?: never;
+  url: '/admin/language_categories';
+};
+
+export type AdminCreateCourseCategoryErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateCourseCategoryError = AdminCreateCourseCategoryErrors[keyof AdminCreateCourseCategoryErrors];
+
+export type AdminCreateCourseCategoryResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: CourseCategory;
+};
+
+export type AdminCreateCourseCategoryResponse = AdminCreateCourseCategoryResponses[keyof AdminCreateCourseCategoryResponses];
+
+export type AdminDeleteCourseCategoryData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{id}';
+};
+
+export type AdminDeleteCourseCategoryResponses = {
+  /**
+   * There is no content to send for this request, but the headers may be useful.
+   */
+  204: void;
+};
+
+export type AdminDeleteCourseCategoryResponse = AdminDeleteCourseCategoryResponses[keyof AdminDeleteCourseCategoryResponses];
+
+export type AdminGetCourseCategoryData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{id}';
+};
+
+export type AdminGetCourseCategoryResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseCategory;
+};
+
+export type AdminGetCourseCategoryResponse = AdminGetCourseCategoryResponses[keyof AdminGetCourseCategoryResponses];
+
+export type AdminUpdateCourseCategoryData = {
+  body: CourseCategoryInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{id}';
+};
+
+export type AdminUpdateCourseCategoryErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateCourseCategoryError = AdminUpdateCourseCategoryErrors[keyof AdminUpdateCourseCategoryErrors];
+
+export type AdminUpdateCourseCategoryResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseCategory;
+};
+
+export type AdminUpdateCourseCategoryResponse = AdminUpdateCourseCategoryResponses[keyof AdminUpdateCourseCategoryResponses];
 
 export type ListCoursesData = {
   body?: never;

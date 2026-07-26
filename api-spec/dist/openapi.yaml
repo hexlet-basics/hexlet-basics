@@ -37,30 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - items
-                  - total
-                  - page
-                  - perPage
-                properties:
-                  items:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/CourseCategory'
-                  total:
-                    type: integer
-                    format: int32
-                    description: Total rows across all pages (before pagination).
-                  page:
-                    type: integer
-                    format: int32
-                    description: 1-based page number this response represents.
-                  perPage:
-                    type: integer
-                    format: int32
-                    description: Page size used for this response.
-                description: A page of results. Generic envelope reused by every admin list.
+                $ref: '#/components/schemas/CourseCategoryPage'
       tags:
         - 'Admin: Course Categories'
     post:
@@ -312,6 +289,31 @@ components:
           type: string
           nullable: true
       description: Writable fields for creating or updating a course category.
+    CourseCategoryPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseCategory'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: A page of results. Generic envelope reused by every admin list.
     CourseLearnAs:
       type: string
       enum:
