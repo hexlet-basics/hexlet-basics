@@ -14,13 +14,19 @@ import {
 import type { i18n as I18n } from "i18next";
 import type { ReactNode } from "react";
 import { I18nextProvider } from "react-i18next";
+import { type AuthUser, getCurrentUser } from "@/lib/auth";
 
 interface RouterContext {
   queryClient: QueryClient;
   i18n: I18n;
+  user: AuthUser | null;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  // Resolve the current user from the httpOnly JWT cookie server-side, so
+  // authenticated pages render on the server (ADR-0008). STUB: null until the
+  // auth backend lands.
+  beforeLoad: () => ({ user: getCurrentUser() }),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
