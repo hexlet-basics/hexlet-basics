@@ -87,6 +87,12 @@ gen-client:
 gen-ent:
 	go generate ./ent
 
+## fixtures-import: convert legacy Rails fixtures -> Go testfixtures YAML in
+## fixtures/ (non-destructive; FORCE=1 overwrites, ONLY=t1,t2 scopes). Borrows
+## the Rails runtime via `rails runner`; adds no files to legacy/.
+fixtures-import:
+	cd legacy && RAILS_ENV=test bin/rails runner ../scripts/export_fixtures.rb
+
 ## gen-all: regenerate everything (ent + full contract pipeline)
 gen-all: gen-ent gen
 
