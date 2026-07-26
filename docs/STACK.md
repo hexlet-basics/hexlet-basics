@@ -20,7 +20,7 @@ kept on **bcrypt passwords** and **URL routes** only (ADR-0002).
 | Email | `aws-sdk-go-v2` (+ `config`, `credentials`) + `service/ses` | ADR-0006. Talks to **Yandex Postbox** SES-compat API (not AWS). |
 | Assets | **`gocloud.dev/blob`** | ADR-0005. ADDED. s3blob (prod) / fileblob (dev) + ent attachment table. |
 | i18n | `nicksnyder/go-i18n/v2` | Backend-emitted strings only. Content localization = ent data; UI i18n = React i18next. |
-| Config / DI / utils | `spf13/viper`, `samber/do`, `samber/lo`, `samber/oops`, `oklog/ulid`, `gosimple/slug` | |
+| Config / DI / utils | `caarlos0/env`, `samber/do`, `samber/lo`, `samber/oops`, `oklog/ulid`, `gosimple/slug` | `caarlos0/env` over `spf13/viper`: config is env-only (12-factor), no files/remote/flags — struct-tag parsing fits, viper's weight didn't. |
 | Logs / errors | `slog` + `lmittmann/tint`, **`getsentry/sentry-go`** | ADR-0007. sentry-go ADDED (OTel ≠ error tracking). |
 | Tracing (lean) | `go.opentelemetry.io/otel` + `sdk` + `trace` | ogen emits OTel natively. |
 | Tests | `stretchr/testify`, `go-txdb`, `testfixtures` | Fixtures-based, like legacy. |
@@ -56,7 +56,7 @@ does DKIM) · `robbiet480/go.sns` (Postbox monitoring ≠ AWS SNS).
 `go.mod` advances **per phase** — unimported deps get removed by `go mod tidy`,
 so libraries land with the code that uses them.
 
-0. **Foundation** — viper, slog+tint, samber/do+lo+oops, ulid, slug, lean otel.
+0. **Foundation** — caarlos0/env, slog+tint, samber/do+lo+oops, ulid, slug, lean otel.
 1. **Persistence** — ent + atlas; rewrite `internal/handlers/courses.go`; testify + go-txdb + testfixtures.
 2. **API layer** — ogen + rs/cors; drop echo/oapi-codegen/kin-openapi.
 3. **Auth** — go-crypt + go-pkgz/auth + go-webauthn + golang-jwt.

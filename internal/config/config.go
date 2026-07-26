@@ -2,35 +2,22 @@
 package config
 
 import (
-	"strings"
-
+	"github.com/caarlos0/env/v11"
 	"github.com/samber/oops"
-	"github.com/spf13/viper"
 )
 
-// Config holds the runtime configuration for the server.
+// Config holds the runtime configuration for the server. Fields are populated
+// from environment variables (12-factor); defaults keep local dev zero-config.
 type Config struct {
-	Addr        string
-	DatabaseURL string
+	Addr        string `env:"ADDR" envDefault:":3001"`
+	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://postgres:postgres@127.0.0.1:54330/code_basics_development"`
 }
 
 // Load reads configuration from environment variables, applying defaults.
 func Load() (*Config, error) {
-	v := viper.New()
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.AutomaticEnv()
-
-	v.SetDefault("addr", ":3001")
-	v.SetDefault("database_url", "postgres://postgres:postgres@127.0.0.1:54330/code_basics_development")
-
-	cfg := &Config{
-		Addr:        v.GetString("addr"),
-		DatabaseURL: v.GetString("database_url"),
+	cfg := &Config{}
+	if err := env.Parse(cfg); err != nil {
+		return nil, oops.Wrapf(err, "parse config from environment")
 	}
-
-	if cfg.DatabaseURL == "" {
-		return nil, oops.Errorf("database_url is required")
-	}
-
 	return cfg, nil
 }
