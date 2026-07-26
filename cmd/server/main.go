@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("db connect: %v", err)
 	}
-	defer client.Close()
+	defer func() { _ = client.Close() }()
 
 	srv := handlers.NewServer(client)
 	apiServer, err := api.NewServer(srv)
