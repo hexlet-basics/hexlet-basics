@@ -41,13 +41,13 @@ services-stop:
 # Dev (run the stack)
 # ---------------------------------------------------------------------------
 
-## dev: run API + frontend together (overmind)
+## dev: run API (air live-reload) + frontend (vite) together; Ctrl-C stops both
 dev:
-	overmind start -f Procfile.dev
+	pnpm dev:all
 
-## dev-api: run only the Go API server (:3001)
+## dev-api: run only the Go API server with live-reload (:3001)
 dev-api:
-	go run ./cmd/server
+	air
 
 ## dev-web: run only the Vite frontend
 dev-web:

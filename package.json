@@ -6,12 +6,14 @@
   "scripts": {
     "generate": "openapi-ts",
     "dev": "vite",
+    "dev:all": "concurrently -k -n api,web -c blue,green \"air\" \"vite\"",
     "build": "tsc -b && vite build",
     "check": "tsc -b",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "simple-git-hooks"
   },
   "dependencies": {
     "@mantine/core": "^9.4.2",
@@ -33,6 +35,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "concurrently": "^10.0.4",
     "i18next-cli": "^1.67.3",
     "typescript": "~5.9.3",
     "vite": "^8.1.1"

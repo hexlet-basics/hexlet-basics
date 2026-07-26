@@ -1,0 +1,16 @@
+# Live-reload for the Go API server (github.com/air-verse/air).
+# Rebuilds and restarts ./cmd/server on .go changes; run via `make dev-api`.
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/server ./cmd/server"
+  bin = "./tmp/server"
+  include_ext = ["go"]
+  exclude_dir = ["tmp", "bin", "dist", "node_modules", "legacy"]
+  exclude_regex = ["_test\\.go"]
+  stop_on_error = true
+  delay = 300
+
+[misc]
+  clean_on_exit = true
