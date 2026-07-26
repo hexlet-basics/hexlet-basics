@@ -36,6 +36,14 @@ services-start:
 services-stop:
 	docker stop code_basics_postgres
 
+## db-dump-schema: refresh db/structure.sql from the (Rails-owned) test DB
+# The schema is owned by legacy Rails during the cutover (ADR-0002). CI loads
+# this snapshot into a fresh Postgres before `go test`. Rerun after any Rails
+# migration so the snapshot does not drift.
+db-dump-schema:
+	docker exec code_basics_postgres pg_dump -U postgres \
+		--schema-only --no-owner --no-privileges code_basics_test > db/structure.sql
+
 # ---------------------------------------------------------------------------
 # Dev (run the stack)
 # ---------------------------------------------------------------------------
@@ -153,7 +161,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help setup services-start services-stop dev dev-api dev-web dev-spec \
+.PHONY: help setup services-start services-stop db-dump-schema dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-web clean \
 	deps-update update-skills
