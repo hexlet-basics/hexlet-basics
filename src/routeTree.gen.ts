@@ -9,86 +9,126 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as LanguagesIndexRouteImport } from './routes/languages/index'
-import { Route as LanguagesSlugRouteImport } from './routes/languages/$slug'
+import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
+import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
+import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
+import { Route as Char123LocaleChar125LanguagesSlugRouteImport } from './routes/{-$locale}/languages/$slug'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const Char123LocaleChar125Route = Char123LocaleChar125RouteImport.update({
+  id: '/{-$locale}',
+  path: '/{-$locale}',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LanguagesIndexRoute = LanguagesIndexRouteImport.update({
-  id: '/languages/',
-  path: '/languages/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LanguagesSlugRoute = LanguagesSlugRouteImport.update({
-  id: '/languages/$slug',
-  path: '/languages/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const Char123LocaleChar125IndexRoute =
+  Char123LocaleChar125IndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125LanguagesIndexRoute =
+  Char123LocaleChar125LanguagesIndexRouteImport.update({
+    id: '/languages/',
+    path: '/languages/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125LanguagesSlugRoute =
+  Char123LocaleChar125LanguagesSlugRouteImport.update({
+    id: '/languages/$slug',
+    path: '/languages/$slug',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/languages/$slug': typeof LanguagesSlugRoute
-  '/languages/': typeof LanguagesIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
+  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
+  '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/languages/$slug': typeof LanguagesSlugRoute
-  '/languages': typeof LanguagesIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
+  '/{-$locale}/languages': typeof Char123LocaleChar125LanguagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/languages/$slug': typeof LanguagesSlugRoute
-  '/languages/': typeof LanguagesIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
+  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
+  '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/languages/$slug' | '/languages/'
+  fullPaths:
+    | '/{-$locale}'
+    | '/{-$locale}/'
+    | '/{-$locale}/languages/$slug'
+    | '/{-$locale}/languages/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/languages/$slug' | '/languages'
-  id: '__root__' | '/' | '/languages/$slug' | '/languages/'
+  to: '/{-$locale}' | '/{-$locale}/languages/$slug' | '/{-$locale}/languages'
+  id:
+    | '__root__'
+    | '/{-$locale}'
+    | '/{-$locale}/'
+    | '/{-$locale}/languages/$slug'
+    | '/{-$locale}/languages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  LanguagesSlugRoute: typeof LanguagesSlugRoute
-  LanguagesIndexRoute: typeof LanguagesIndexRoute
+  Char123LocaleChar125Route: typeof Char123LocaleChar125RouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/{-$locale}': {
+      id: '/{-$locale}'
+      path: '/{-$locale}'
+      fullPath: '/{-$locale}'
+      preLoaderRoute: typeof Char123LocaleChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$locale}/': {
+      id: '/{-$locale}/'
       path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}/'
+      preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
-    '/languages/': {
-      id: '/languages/'
+    '/{-$locale}/languages/': {
+      id: '/{-$locale}/languages/'
       path: '/languages'
-      fullPath: '/languages/'
-      preLoaderRoute: typeof LanguagesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}/languages/'
+      preLoaderRoute: typeof Char123LocaleChar125LanguagesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
-    '/languages/$slug': {
-      id: '/languages/$slug'
+    '/{-$locale}/languages/$slug': {
+      id: '/{-$locale}/languages/$slug'
       path: '/languages/$slug'
-      fullPath: '/languages/$slug'
-      preLoaderRoute: typeof LanguagesSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}/languages/$slug'
+      preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
   }
 }
 
+interface Char123LocaleChar125RouteChildren {
+  Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  Char123LocaleChar125LanguagesSlugRoute: typeof Char123LocaleChar125LanguagesSlugRoute
+  Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
+}
+
+const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
+  Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
+  Char123LocaleChar125LanguagesSlugRoute:
+    Char123LocaleChar125LanguagesSlugRoute,
+  Char123LocaleChar125LanguagesIndexRoute:
+    Char123LocaleChar125LanguagesIndexRoute,
+}
+
+const Char123LocaleChar125RouteWithChildren =
+  Char123LocaleChar125Route._addFileChildren(Char123LocaleChar125RouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  LanguagesSlugRoute: LanguagesSlugRoute,
-  LanguagesIndexRoute: LanguagesIndexRoute,
+  Char123LocaleChar125Route: Char123LocaleChar125RouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

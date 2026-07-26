@@ -2,6 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { client } from "@/client/client.gen";
+import { createI18n } from "@/lib/i18n";
 import { routeTree } from "./routeTree.gen";
 
 // The generated hey-api client is a singleton; point it at the Go API. During
@@ -19,10 +20,13 @@ client.setConfig({
 // wraps the tree in QueryClientProvider.
 export function getRouter() {
   const queryClient = new QueryClient();
+  // Request-scoped i18n instance; the `{-$locale}` layout resolves the URL
+  // locale in beforeLoad and calls changeLanguage on it.
+  const i18n = createI18n();
 
   const router = createRouter({
     routeTree,
-    context: { queryClient },
+    context: { queryClient, i18n },
     defaultPreload: "intent",
     scrollRestoration: true,
   });

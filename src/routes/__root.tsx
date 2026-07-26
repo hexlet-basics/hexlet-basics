@@ -11,11 +11,13 @@ import {
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
+import type { i18n as I18n } from "i18next";
 import type { ReactNode } from "react";
-import "@/lib/i18n";
+import { I18nextProvider } from "react-i18next";
 
 interface RouterContext {
   queryClient: QueryClient;
+  i18n: I18n;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -30,16 +32,28 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootComponent() {
+  // The `{-$locale}` layout has already run changeLanguage in beforeLoad, so
+  // i18n.language is the resolved locale by the time the document renders.
+  const { i18n } = Route.useRouteContext();
+
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <I18nextProvider i18n={i18n}>
+      <RootDocument lang={i18n.language}>
+        <Outlet />
+      </RootDocument>
+    </I18nextProvider>
   );
 }
 
-function RootDocument({ children }: { children: ReactNode }) {
+function RootDocument({
+  children,
+  lang,
+}: {
+  children: ReactNode;
+  lang: string;
+}) {
   return (
-    <html lang="en" {...mantineHtmlProps}>
+    <html lang={lang} {...mantineHtmlProps}>
       <head>
         <ColorSchemeScript />
         <HeadContent />

@@ -28,6 +28,7 @@ dist/
 .claude/
 .playwright-cli/
 .ruby-lsp/
+.tanstack/
 stats.html
 fixtures/
 

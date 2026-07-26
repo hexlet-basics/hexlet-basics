@@ -16,6 +16,7 @@
       "!public",
       "!legacy",
       "!src/client",
+      "!src/routeTree.gen.ts",
       "!api-spec/dist"
     ]
   },

@@ -2,7 +2,7 @@ import { Container, Text, Title } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 
 // Stub course page — to be ported from legacy next.
-export const Route = createFileRoute("/languages/$slug")({
+export const Route = createFileRoute("/{-$locale}/languages/$slug")({
   component: Show,
 });
 
