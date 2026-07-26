@@ -5,7 +5,180 @@ export type ClientOptions = {
 };
 
 /**
- * A course (legacy: `Language`).
+ * A prompt to the in-lesson assistant, carrying the editor context.
+ */
+export type AssistantMessageInput = {
+  message: string;
+  output: string | null;
+  userCode: string | null;
+};
+
+/**
+ * A stored blob (cover image, outcomes image) returned by the uploader.
+ */
+export type Attachment = {
+  id: number;
+  url: string;
+  filename: string;
+  contentType: string;
+  byteSize: number;
+};
+
+export type AttachmentUploadForm = {
+  file: Blob | File;
+};
+
+/**
+ * A site banner (legacy: `Banner`).
+ */
+export type Banner = {
+  id: number;
+  locale: BannerLocale;
+  body: string;
+  url: string | null;
+  background: BannerBackground;
+  state: BannerState;
+  startsAt: string | null;
+  finishesAt: string | null;
+  createdAt: string;
+};
+
+/**
+ * Banner display background.
+ */
+export type BannerBackground = 'cta_gradient' | 'dark' | 'blue';
+
+export type BannerInput = {
+  state: BannerState;
+  background: BannerBackground;
+  locale: BannerLocale;
+  body: string;
+  url: string | null;
+  startsAt: string | null;
+  finishesAt: string | null;
+};
+
+/**
+ * Banners only target ru/en today (legacy `BannerLocale`).
+ */
+export type BannerLocale = 'ru' | 'en';
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type BannerPage = {
+  items: Array<Banner>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * Banner publication state.
+ */
+export type BannerState = 'draft' | 'published' | 'archived';
+
+/**
+ * A blog post (legacy: `BlogPost`).
+ */
+export type BlogPost = {
+  id: number;
+  creator: User;
+  name: string | null;
+  slug: string | null;
+  description: string | null;
+  state: BlogPostState | null;
+  locale: string | null;
+  url: string;
+  richBodyHtml: string;
+  readingTime: number;
+  likesCount: number;
+  relatedCourseItemsCount: number;
+  coverThumbVariant: string | null;
+  coverListVariant: string | null;
+  coverMainVariant: string | null;
+  createdAt: string;
+};
+
+export type BlogPostInput = {
+  name: string | null;
+  slug: string | null;
+  description: string | null;
+  state: BlogPostState | null;
+  /**
+   * Markdown/rich source; `richBodyHtml` is derived on read.
+   */
+  richBody: string;
+  /**
+   * Attachment id from `POST /admin/attachments`, or null to keep/clear.
+   */
+  coverAttachmentId: number | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type BlogPostPage = {
+  items: Array<BlogPost>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * The set of courses promoted on a blog post.
+ */
+export type BlogPostRelatedCoursesInput = {
+  courseIds: Array<number>;
+};
+
+/**
+ * Blog post publication state.
+ */
+export type BlogPostState = 'draft' | 'published' | 'archived';
+
+/**
+ * A request to download the free book (ru marketing funnel).
+ */
+export type BookRequestInput = {
+  email: string;
+  fullName: string | null;
+};
+
+/**
+ * A submitted solution to run against the lesson's tests.
+ */
+export type CheckLessonInput = {
+  code: string;
+  /**
+   * The lesson version the code was written against.
+   */
+  versionId: number;
+};
+
+/**
+ * A course (legacy: `Language`). Superset read model: the public catalog embeds
+ * it, admin course screens read the full shape.
  */
 export type Course = {
   id: number;
@@ -13,13 +186,23 @@ export type Course = {
   name: string | null;
   learnAs: CourseLearnAs | null;
   progress: CourseProgress | null;
+  categoryId: number | null;
+  currentVersionId: number | null;
+  currentVersion: CourseVersion | null;
+  createdAt: string;
   membersCount: number;
   lessonsCount: number;
-  categoryId: number | null;
+  ratingCount: number;
+  ratingValue: number;
+  repositoryUrl: string | null;
+  hexletProgramLandingPage: string | null;
+  coverListVariant: string | null;
+  coverThumbVariant: string | null;
 };
 
 /**
- * A catalog entry as shown on the courses index (legacy: LanguageLandingPageForLists).
+ * A catalog entry as shown on the courses index (legacy:
+ * `LanguageLandingPageForLists`). Embeds the full course plus derived fields.
  */
 export type CourseCatalogItem = {
   id: number;
@@ -40,7 +223,7 @@ export type CourseCatalogItem = {
 };
 
 /**
- * A course category (legacy table: `language_categories`).
+ * A course category (legacy: `LanguageCategory` / table `language_categories`).
  */
 export type CourseCategory = {
   id: number;
@@ -63,10 +246,109 @@ export type CourseCategoryInput = {
 };
 
 /**
- * A page of results. Generic envelope reused by every admin list.
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
  */
 export type CourseCategoryPage = {
   items: Array<CourseCategory>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * A category page with the courses it groups.
+ */
+export type CourseCategoryView = {
+  category: CourseCategory;
+  landingPages: Array<CourseCatalogItem>;
+};
+
+export type CourseInput = {
+  slug: string | null;
+  learnAs: CourseLearnAs | null;
+  progress: CourseProgress | null;
+  hexletProgramLandingPage: string | null;
+  repositoryUrl: string | null;
+  /**
+   * Attachment id from `POST /admin/attachments`, or null.
+   */
+  coverAttachmentId: number | null;
+};
+
+/**
+ * A marketing landing page for a course (legacy: `LanguageLandingPage`).
+ */
+export type CourseLandingPage = {
+  id: number;
+  courseId: number;
+  courseSlug: string;
+  createdAt: string;
+  slug: string;
+  name: string;
+  main: boolean | null;
+  listed: boolean | null;
+  state: LandingPageState | null;
+  /**
+   * Free-form ordering key (legacy stores it as a string).
+   */
+  order: string | null;
+  metaTitle: string;
+  metaDescription: string;
+  header: string;
+  description: string;
+  usedInHeader: string | null;
+  usedInDescription: string | null;
+  outcomesHeader: string | null;
+  outcomesDescription: string | null;
+  outcomesImage: string | null;
+  /**
+   * Estimated duration in hours.
+   */
+  duration: number;
+  membersCount: number;
+};
+
+export type CourseLandingPageInput = {
+  courseId: number;
+  slug: string | null;
+  name: string | null;
+  main: boolean | null;
+  listed: boolean | null;
+  footer: boolean | null;
+  footerName: string | null;
+  state: LandingPageState | null;
+  order: string | null;
+  landingPageToRedirectId: number | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  header: string | null;
+  description: string | null;
+  usedInHeader: string | null;
+  usedInDescription: string | null;
+  outcomesHeader: string | null;
+  outcomesDescription: string | null;
+  /**
+   * Attachment id from `POST /admin/attachments`, or null.
+   */
+  outcomesImageAttachmentId: number | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type CourseLandingPagePage = {
+  items: Array<CourseLandingPage>;
   /**
    * Total rows across all pages (before pagination).
    */
@@ -87,9 +369,727 @@ export type CourseCategoryPage = {
 export type CourseLearnAs = 'first_language' | 'second_language';
 
 /**
+ * A single lesson (legacy: `LanguageLesson`).
+ */
+export type CourseLesson = {
+  course: Course;
+  id: number;
+  name: string | null;
+  slug: string;
+  locale: string | null;
+  naturalOrder: number;
+  versionId: number;
+  version: number | null;
+  description: string | null;
+  instructions: string | null;
+  theory: string | null;
+  definitions: Array<LessonDefinition>;
+  tips: Array<string>;
+  preparedCode: string | null;
+  originalCode: string | null;
+  testCode: string | null;
+  sourceCodeUrl: string | null;
+  createdAt: string;
+};
+
+/**
+ * A lesson as shown in admin lists (legacy: `LanguageLessonForLists`).
+ */
+export type CourseLessonListItem = {
+  id: number;
+  name: string | null;
+  description: string | null;
+  slug: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type CourseLessonListItemPage = {
+  items: Array<CourseLessonListItem>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * A user's participation in a lesson (legacy: `LanguageLessonMember`).
+ */
+export type CourseLessonMember = {
+  id: number;
+  userId: number;
+  state: MemberState;
+  messagesCount: number | null;
+  createdAt: string;
+  courseSlug: string;
+  courseLessonSlug: string;
+  courseLessonName: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type CourseLessonMemberPage = {
+  items: Array<CourseLessonMember>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * An AI-generated lesson review record (legacy: `LanguageLessonReview`).
+ */
+export type CourseLessonReview = {
+  id: number;
+  locale: string;
+  courseId: number;
+  courseLessonId: number;
+  courseLessonVersionId: number;
+  courseLessonVersionInfoId: number;
+  summary: string;
+  slug: string;
+  lessonNaturalOrder: number;
+  courseSlug: string;
+  createdAt: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type CourseLessonReviewPage = {
+  items: Array<CourseLessonReview>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * A member's enrollment/progress in a course (legacy `LanguageMember`).
+ */
+export type CourseMember = {
+  id: number;
+  userId: number;
+  courseId: number;
+  state: MemberState | null;
+  /**
+   * Completion percentage (0–100).
+   */
+  progress: number;
+  nextLessonName: string | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type CoursePage = {
+  items: Array<Course>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
  * Publication/readiness state of a course.
  */
 export type CourseProgress = 'completed' | 'in_development' | 'draft';
+
+/**
+ * A build/version of a course's exercises (legacy `LanguageVersion`).
+ */
+export type CourseVersion = {
+  id: number;
+  result: string | null;
+  state: string | null;
+  createdAt: string;
+};
+
+/**
+ * Everything the public course landing needs in one payload.
+ */
+export type CourseView = {
+  course: Course;
+  landingPage: CourseLandingPage | null;
+  lessons: Array<CourseLessonListItem>;
+  /**
+   * The current user's membership, when signed in.
+   */
+  member: CourseMember | null;
+};
+
+/**
+ * The current user resolved from the session cookie (null when anonymous).
+ */
+export type CurrentUser = {
+  user: User | null;
+};
+
+export type EmailInput = {
+  email: string;
+};
+
+/**
+ * The caller is authenticated but lacks permission for this resource.
+ */
+export type ForbiddenError = {
+  message: string;
+};
+
+/**
+ * Publication state shared by landing pages.
+ */
+export type LandingPageState = 'draft' | 'archived' | 'published';
+
+/**
+ * A sales lead (legacy: `Lead`).
+ */
+export type Lead = {
+  id: number;
+  userId: number;
+  fullName: string | null;
+  email: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  telegram: string | null;
+  surveyAnswersData: string | null;
+  coursesData: string | null;
+  createdAt: string;
+};
+
+/**
+ * A lead captured from a marketing form (legacy: `LeadCrud`).
+ */
+export type LeadInput = {
+  contactMethod: 'telegram' | 'phone' | 'whatsapp';
+  contactValue: string;
+  ymClientId: string | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type LeadPage = {
+  items: Array<Lead>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * One message in the in-lesson AI chat (legacy: `AiMessage`).
+ */
+export type LessonAssistantMessage = {
+  id: number;
+  role: string;
+  userId: number | null;
+  content: string;
+  courseSlug: string;
+  courseLessonSlug: string;
+  courseLessonName: string;
+  createdAt: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type LessonAssistantMessagePage = {
+  items: Array<LessonAssistantMessage>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * Result of running a submitted solution (legacy: `LessonCheckingResponse`).
+ */
+export type LessonCheckingResponse = {
+  passed: boolean;
+  output: string;
+  result: 'passed' | 'failed' | 'failed-infinity';
+  status: number;
+  lessonHasBeenFinished: boolean;
+  courseHasBeenFinished: boolean;
+};
+
+/**
+ * A lesson definition entry (name + description pair).
+ */
+export type LessonDefinition = {
+  name: string;
+  description: string;
+};
+
+/**
+ * UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+ */
+export type Locale = 'ru' | 'en' | 'es';
+
+/**
+ * Course-membership lifecycle (legacy `MemberState`).
+ */
+export type MemberState = 'started' | 'finished';
+
+/**
+ * The signed-in user's dashboard (legacy: `MyController#show`).
+ */
+export type MyDashboard = {
+  startedCourseMembers: Array<CourseMember>;
+  finishedCourseMembers: Array<CourseMember>;
+  /**
+   * Landing page (catalog item) keyed by course id, for each membership.
+   */
+  landingPagesByCourseId: {
+    [key: string]: CourseCatalogItem;
+  };
+};
+
+/**
+ * A resource was not found.
+ */
+export type NotFoundError = {
+  message: string;
+};
+
+/**
+ * A static content page (about, authors, privacy, tos, cookie).
+ */
+export type PageContent = {
+  slug: string;
+  title: string;
+  bodyHtml: string;
+};
+
+export type PasskeyAssertionInput = {
+  /**
+   * JSON-encoded assertion credential from `navigator.credentials.get`.
+   */
+  credential: string;
+};
+
+/**
+ * A WebAuthn ceremony payload. The challenge/options and the client response
+ * are opaque JSON owned by `go-webauthn`; the contract carries them as strings
+ * so the browser API round-trips them verbatim.
+ */
+export type PasskeyChallenge = {
+  /**
+   * JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
+   */
+  options: string;
+};
+
+export type PasskeyRegistrationInput = {
+  /**
+   * JSON-encoded registration credential from `navigator.credentials.create`.
+   */
+  credential: string;
+  nickname: string | null;
+};
+
+/**
+ * Admin resources a staff role can be granted permissions on.
+ */
+export type PermissionResource = 'blog_posts' | 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
+
+export type PhoneConfirmInput = {
+  phone: string;
+  code: string;
+};
+
+export type PhoneInput = {
+  phone: string;
+};
+
+/**
+ * Profile edit form (legacy: `UserProfileForm`).
+ */
+export type ProfileInput = {
+  firstName: string | null;
+  lastName: string | null;
+};
+
+/**
+ * A Q&A entry attached to a category or landing page (legacy QnA item).
+ */
+export type QnaItem = {
+  id: number;
+  question: string;
+  answer: string;
+};
+
+export type QnaItemInput = {
+  question: string;
+  answer: string;
+};
+
+/**
+ * Password reset submission (legacy: `UserPassword`).
+ */
+export type ResetPasswordInput = {
+  password: string;
+};
+
+/**
+ * A student review/testimonial (legacy: `Review`).
+ */
+export type Review = {
+  id: number;
+  user: User;
+  course: Course;
+  userId: number;
+  courseId: number;
+  body: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  fullName: string | null;
+  state: ReviewState | null;
+  locale: ReviewLocale | null;
+  createdAt: string;
+};
+
+export type ReviewInput = {
+  state: ReviewState | null;
+  pinned: boolean | null;
+  courseId: number | null;
+  userId: number | null;
+  body: string | null;
+  firstName: string | null;
+  lastName: string | null;
+};
+
+/**
+ * Reviews only target ru/en today (legacy `ReviewLocale`).
+ */
+export type ReviewLocale = 'ru' | 'en';
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type ReviewPage = {
+  items: Array<Review>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * Review publication state.
+ */
+export type ReviewState = 'draft' | 'published' | 'archived';
+
+export type RoleInput = {
+  name: string;
+  description: string | null;
+};
+
+/**
+ * One permission row to set on a role.
+ */
+export type RolePermissionInput = {
+  resource: PermissionResource;
+  canIndex: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDestroy: boolean;
+};
+
+/**
+ * The full permission matrix submitted for a role.
+ */
+export type RolePermissionsInput = {
+  permissions: Array<RolePermissionInput>;
+};
+
+/**
+ * Email + password login.
+ */
+export type SessionInput = {
+  email: string;
+  password: string;
+};
+
+/**
+ * Sign-up form (legacy: `UserSignUpForm`).
+ */
+export type SignUpInput = {
+  firstName: string | null;
+  email: string;
+  password: string;
+};
+
+/**
+ * Aggregated data for the XML sitemap / SEO index.
+ */
+export type Sitemap = {
+  landingPages: Array<SitemapCourseLandingPage>;
+  lessons: Array<SitemapCourseLesson>;
+  blogPosts: Array<SitemapBlogPost>;
+};
+
+/**
+ * Minimal blog-post row for the sitemap (legacy: `SitemapBlogPost`).
+ */
+export type SitemapBlogPost = {
+  id: number;
+  name: string;
+  slug: string;
+  locale: Locale;
+};
+
+/**
+ * Minimal landing-page row for the sitemap (legacy: `LanguageSitemapLandingPage`).
+ */
+export type SitemapCourseLandingPage = {
+  id: number;
+  courseId: number;
+  slug: string;
+  header: string;
+  locale: Locale;
+};
+
+/**
+ * Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).
+ */
+export type SitemapCourseLesson = {
+  id: number;
+  courseId: number;
+  name: string;
+  slug: string;
+  naturalOrder: number;
+  locale: Locale;
+};
+
+/**
+ * A staff member: a user bound to a role (legacy: `StaffMember`).
+ */
+export type StaffMember = {
+  id: number;
+  userId: number;
+  roleId: number;
+  user: User;
+  role: StaffRole;
+  allowedLocales: Array<string>;
+};
+
+export type StaffMemberInput = {
+  userId: number;
+  roleId: number;
+  allowedLocales: Array<string>;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type StaffMemberPage = {
+  items: Array<StaffMember>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * A staff role (legacy: `StaffRole`).
+ */
+export type StaffRole = {
+  id: number;
+  name: string;
+  description: string | null;
+  permissionsCount: number;
+  createdAt: string;
+};
+
+/**
+ * A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
+ */
+export type StaffRoleDetail = {
+  id: number;
+  name: string;
+  description: string | null;
+  permissions: Array<StaffRolePermission>;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type StaffRolePage = {
+  items: Array<StaffRole>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * One resource's permission bits for a role (legacy: `StaffRolePermission`).
+ */
+export type StaffRolePermission = {
+  id: number;
+  roleId: number;
+  resource: PermissionResource;
+  canIndex: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDestroy: boolean;
+};
+
+/**
+ * The request is not authenticated (no/invalid session cookie).
+ */
+export type UnauthorizedError = {
+  message: string;
+};
+
+/**
+ * A user (legacy: `User`). Passwords are never part of a response.
+ */
+export type User = {
+  id: number;
+  firstName: string | null;
+  lastName: string | null;
+  name: string | null;
+  email: string | null;
+  admin: boolean | null;
+  canAccessAdmin: boolean;
+  assistantMessagesCount: number | null;
+  createdAt: string;
+  createdAtAsTimestamp: number | null;
+  type: 'user';
+};
+
+/**
+ * A registered passkey/WebAuthn credential (legacy: `UserCredential`).
+ */
+export type UserCredential = {
+  id: number;
+  nickname: string | null;
+  createdAt: string;
+};
+
+/**
+ * A user row as shown in admin lists/forms (legacy: `UserCrud`).
+ */
+export type UserCrud = {
+  id: number;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  admin: boolean | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type UserCrudPage = {
+  items: Array<UserCrud>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+export type UserInput = {
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  admin: boolean | null;
+};
 
 /**
  * Field-level validation errors, keyed by field name (each value is the list
@@ -102,12 +1102,673 @@ export type ValidationError = {
   };
 };
 
+export type ListQueryPage = number;
+
+export type ListQueryPerPage = number;
+
+/**
+ * Sort field (ransack `sf`).
+ */
+export type ListQuerySortField = string;
+
+/**
+ * Sort order (ransack `so`).
+ */
+export type ListQuerySortOrder = 'asc' | 'desc';
+
+export type ListPasskeysData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/account/passkeys';
+};
+
+export type ListPasskeysErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type ListPasskeysError = ListPasskeysErrors[keyof ListPasskeysErrors];
+
+export type ListPasskeysResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<UserCredential>;
+};
+
+export type ListPasskeysResponse = ListPasskeysResponses[keyof ListPasskeysResponses];
+
+export type CreatePasskeyData = {
+  body: PasskeyRegistrationInput;
+  path?: never;
+  query?: never;
+  url: '/account/passkeys';
+};
+
+export type CreatePasskeyErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreatePasskeyError = CreatePasskeyErrors[keyof CreatePasskeyErrors];
+
+export type CreatePasskeyResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: UserCredential;
+};
+
+export type CreatePasskeyResponse = CreatePasskeyResponses[keyof CreatePasskeyResponses];
+
+export type NewPasskeyData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/account/passkeys/new';
+};
+
+export type NewPasskeyErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type NewPasskeyError = NewPasskeyErrors[keyof NewPasskeyErrors];
+
+export type NewPasskeyResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: PasskeyChallenge;
+};
+
+export type NewPasskeyResponse = NewPasskeyResponses[keyof NewPasskeyResponses];
+
+export type DeletePasskeyData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/account/passkeys/{id}';
+};
+
+export type DeletePasskeyErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type DeletePasskeyError = DeletePasskeyErrors[keyof DeletePasskeyErrors];
+
+export type DeletePasskeyResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type DeletePasskeyResponse = DeletePasskeyResponses[keyof DeletePasskeyResponses];
+
+export type DeleteAccountData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/account/profile';
+};
+
+export type DeleteAccountErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
+
+export type DeleteAccountResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type DeleteAccountResponse = DeleteAccountResponses[keyof DeleteAccountResponses];
+
+export type UpdateProfileData = {
+  body: ProfileInput;
+  path?: never;
+  query?: never;
+  url: '/account/profile';
+};
+
+export type UpdateProfileErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type UpdateProfileError = UpdateProfileErrors[keyof UpdateProfileErrors];
+
+export type UpdateProfileResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: User;
+};
+
+export type UpdateProfileResponse = UpdateProfileResponses[keyof UpdateProfileResponses];
+
+export type GetProfileData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/account/profile/edit';
+};
+
+export type GetProfileErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type GetProfileError = GetProfileErrors[keyof GetProfileErrors];
+
+export type GetProfileResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: User;
+};
+
+export type GetProfileResponse = GetProfileResponses[keyof GetProfileResponses];
+
+export type AdminListUsersData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/api/users';
+};
+
+export type AdminListUsersResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: UserCrudPage;
+};
+
+export type AdminListUsersResponse = AdminListUsersResponses[keyof AdminListUsersResponses];
+
+export type AdminCreateUserData = {
+  body: UserInput;
+  path?: never;
+  query?: never;
+  url: '/admin/api/users';
+};
+
+export type AdminCreateUserErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateUserError = AdminCreateUserErrors[keyof AdminCreateUserErrors];
+
+export type AdminCreateUserResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: UserCrud;
+};
+
+export type AdminCreateUserResponse = AdminCreateUserResponses[keyof AdminCreateUserResponses];
+
+export type AdminSearchUsersData = {
+  body?: never;
+  path?: never;
+  query: {
+    q: string;
+  };
+  url: '/admin/api/users/search';
+};
+
+export type AdminSearchUsersResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<UserCrud>;
+};
+
+export type AdminSearchUsersResponse = AdminSearchUsersResponses[keyof AdminSearchUsersResponses];
+
+export type AdminDeleteUserData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/api/users/{id}';
+};
+
+export type AdminDeleteUserResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteUserResponse = AdminDeleteUserResponses[keyof AdminDeleteUserResponses];
+
+export type AdminGetUserData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/api/users/{id}';
+};
+
+export type AdminGetUserErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetUserError = AdminGetUserErrors[keyof AdminGetUserErrors];
+
+export type AdminGetUserResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: UserCrud;
+};
+
+export type AdminGetUserResponse = AdminGetUserResponses[keyof AdminGetUserResponses];
+
+export type AdminUpdateUserData = {
+  body: UserInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/api/users/{id}';
+};
+
+export type AdminUpdateUserErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
+
+export type AdminUpdateUserResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: UserCrud;
+};
+
+export type AdminUpdateUserResponse = AdminUpdateUserResponses[keyof AdminUpdateUserResponses];
+
+export type AdminUploadAttachmentData = {
+  body: AttachmentUploadForm;
+  path?: never;
+  query?: never;
+  url: '/admin/attachments';
+};
+
+export type AdminUploadAttachmentErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUploadAttachmentError = AdminUploadAttachmentErrors[keyof AdminUploadAttachmentErrors];
+
+export type AdminUploadAttachmentResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: Attachment;
+};
+
+export type AdminUploadAttachmentResponse = AdminUploadAttachmentResponses[keyof AdminUploadAttachmentResponses];
+
+export type AdminListBannersData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/banners';
+};
+
+export type AdminListBannersResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BannerPage;
+};
+
+export type AdminListBannersResponse = AdminListBannersResponses[keyof AdminListBannersResponses];
+
+export type AdminCreateBannerData = {
+  body: BannerInput;
+  path?: never;
+  query?: never;
+  url: '/admin/banners';
+};
+
+export type AdminCreateBannerErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateBannerError = AdminCreateBannerErrors[keyof AdminCreateBannerErrors];
+
+export type AdminCreateBannerResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: Banner;
+};
+
+export type AdminCreateBannerResponse = AdminCreateBannerResponses[keyof AdminCreateBannerResponses];
+
+export type AdminDeleteBannerData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/banners/{id}';
+};
+
+export type AdminDeleteBannerResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteBannerResponse = AdminDeleteBannerResponses[keyof AdminDeleteBannerResponses];
+
+export type AdminGetBannerData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/banners/{id}';
+};
+
+export type AdminGetBannerErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetBannerError = AdminGetBannerErrors[keyof AdminGetBannerErrors];
+
+export type AdminGetBannerResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Banner;
+};
+
+export type AdminGetBannerResponse = AdminGetBannerResponses[keyof AdminGetBannerResponses];
+
+export type AdminUpdateBannerData = {
+  body: BannerInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/banners/{id}';
+};
+
+export type AdminUpdateBannerErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateBannerError = AdminUpdateBannerErrors[keyof AdminUpdateBannerErrors];
+
+export type AdminUpdateBannerResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Banner;
+};
+
+export type AdminUpdateBannerResponse = AdminUpdateBannerResponses[keyof AdminUpdateBannerResponses];
+
+export type AdminListBlogPostsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/blog_posts';
+};
+
+export type AdminListBlogPostsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPostPage;
+};
+
+export type AdminListBlogPostsResponse = AdminListBlogPostsResponses[keyof AdminListBlogPostsResponses];
+
+export type AdminCreateBlogPostData = {
+  body: BlogPostInput;
+  path?: never;
+  query?: never;
+  url: '/admin/blog_posts';
+};
+
+export type AdminCreateBlogPostErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateBlogPostError = AdminCreateBlogPostErrors[keyof AdminCreateBlogPostErrors];
+
+export type AdminCreateBlogPostResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: BlogPost;
+};
+
+export type AdminCreateBlogPostResponse = AdminCreateBlogPostResponses[keyof AdminCreateBlogPostResponses];
+
+export type AdminDeleteBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/blog_posts/{id}';
+};
+
+export type AdminDeleteBlogPostResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteBlogPostResponse = AdminDeleteBlogPostResponses[keyof AdminDeleteBlogPostResponses];
+
+export type AdminGetBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/blog_posts/{id}';
+};
+
+export type AdminGetBlogPostErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetBlogPostError = AdminGetBlogPostErrors[keyof AdminGetBlogPostErrors];
+
+export type AdminGetBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminGetBlogPostResponse = AdminGetBlogPostResponses[keyof AdminGetBlogPostResponses];
+
+export type AdminUpdateBlogPostData = {
+  body: BlogPostInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/blog_posts/{id}';
+};
+
+export type AdminUpdateBlogPostErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateBlogPostError = AdminUpdateBlogPostErrors[keyof AdminUpdateBlogPostErrors];
+
+export type AdminUpdateBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminUpdateBlogPostResponse = AdminUpdateBlogPostResponses[keyof AdminUpdateBlogPostResponses];
+
+export type AdminSetBlogPostRelatedCoursesData = {
+  body: BlogPostRelatedCoursesInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/blog_posts/{id}/related_courses';
+};
+
+export type AdminSetBlogPostRelatedCoursesErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminSetBlogPostRelatedCoursesError = AdminSetBlogPostRelatedCoursesErrors[keyof AdminSetBlogPostRelatedCoursesErrors];
+
+export type AdminSetBlogPostRelatedCoursesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type AdminSetBlogPostRelatedCoursesResponse = AdminSetBlogPostRelatedCoursesResponses[keyof AdminSetBlogPostRelatedCoursesResponses];
+
 export type AdminListCourseCategoriesData = {
   body?: never;
   path?: never;
   query?: {
     page?: number;
     perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
   };
   url: '/admin/language_categories';
 };
@@ -148,6 +1809,102 @@ export type AdminCreateCourseCategoryResponses = {
 
 export type AdminCreateCourseCategoryResponse = AdminCreateCourseCategoryResponses[keyof AdminCreateCourseCategoryResponses];
 
+export type AdminListCategoryQnaItemsData = {
+  body?: never;
+  path: {
+    categoryId: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{categoryId}/qna_items';
+};
+
+export type AdminListCategoryQnaItemsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<QnaItem>;
+};
+
+export type AdminListCategoryQnaItemsResponse = AdminListCategoryQnaItemsResponses[keyof AdminListCategoryQnaItemsResponses];
+
+export type AdminCreateCategoryQnaItemData = {
+  body: QnaItemInput;
+  path: {
+    categoryId: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{categoryId}/qna_items';
+};
+
+export type AdminCreateCategoryQnaItemErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateCategoryQnaItemError = AdminCreateCategoryQnaItemErrors[keyof AdminCreateCategoryQnaItemErrors];
+
+export type AdminCreateCategoryQnaItemResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: QnaItem;
+};
+
+export type AdminCreateCategoryQnaItemResponse = AdminCreateCategoryQnaItemResponses[keyof AdminCreateCategoryQnaItemResponses];
+
+export type AdminDeleteCategoryQnaItemData = {
+  body?: never;
+  path: {
+    categoryId: number;
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{categoryId}/qna_items/{id}';
+};
+
+export type AdminDeleteCategoryQnaItemResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteCategoryQnaItemResponse = AdminDeleteCategoryQnaItemResponses[keyof AdminDeleteCategoryQnaItemResponses];
+
+export type AdminUpdateCategoryQnaItemData = {
+  body: QnaItemInput;
+  path: {
+    categoryId: number;
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_categories/{categoryId}/qna_items/{id}';
+};
+
+export type AdminUpdateCategoryQnaItemErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateCategoryQnaItemError = AdminUpdateCategoryQnaItemErrors[keyof AdminUpdateCategoryQnaItemErrors];
+
+export type AdminUpdateCategoryQnaItemResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: QnaItem;
+};
+
+export type AdminUpdateCategoryQnaItemResponse = AdminUpdateCategoryQnaItemResponses[keyof AdminUpdateCategoryQnaItemResponses];
+
 export type AdminDeleteCourseCategoryData = {
   body?: never;
   path: {
@@ -159,7 +1916,7 @@ export type AdminDeleteCourseCategoryData = {
 
 export type AdminDeleteCourseCategoryResponses = {
   /**
-   * There is no content to send for this request, but the headers may be useful.
+   * Empty 204 response for deletes and other content-less successes.
    */
   204: void;
 };
@@ -174,6 +1931,15 @@ export type AdminGetCourseCategoryData = {
   query?: never;
   url: '/admin/language_categories/{id}';
 };
+
+export type AdminGetCourseCategoryErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetCourseCategoryError = AdminGetCourseCategoryErrors[keyof AdminGetCourseCategoryErrors];
 
 export type AdminGetCourseCategoryResponses = {
   /**
@@ -213,6 +1979,1309 @@ export type AdminUpdateCourseCategoryResponses = {
 
 export type AdminUpdateCourseCategoryResponse = AdminUpdateCourseCategoryResponses[keyof AdminUpdateCourseCategoryResponses];
 
+export type AdminListCourseLandingPagesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/language_landing_pages';
+};
+
+export type AdminListCourseLandingPagesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLandingPagePage;
+};
+
+export type AdminListCourseLandingPagesResponse = AdminListCourseLandingPagesResponses[keyof AdminListCourseLandingPagesResponses];
+
+export type AdminCreateCourseLandingPageData = {
+  body: CourseLandingPageInput;
+  path?: never;
+  query?: never;
+  url: '/admin/language_landing_pages';
+};
+
+export type AdminCreateCourseLandingPageErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateCourseLandingPageError = AdminCreateCourseLandingPageErrors[keyof AdminCreateCourseLandingPageErrors];
+
+export type AdminCreateCourseLandingPageResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: CourseLandingPage;
+};
+
+export type AdminCreateCourseLandingPageResponse = AdminCreateCourseLandingPageResponses[keyof AdminCreateCourseLandingPageResponses];
+
+export type AdminDeleteCourseLandingPageData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{id}';
+};
+
+export type AdminDeleteCourseLandingPageResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteCourseLandingPageResponse = AdminDeleteCourseLandingPageResponses[keyof AdminDeleteCourseLandingPageResponses];
+
+export type AdminGetCourseLandingPageData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{id}';
+};
+
+export type AdminGetCourseLandingPageErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetCourseLandingPageError = AdminGetCourseLandingPageErrors[keyof AdminGetCourseLandingPageErrors];
+
+export type AdminGetCourseLandingPageResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLandingPage;
+};
+
+export type AdminGetCourseLandingPageResponse = AdminGetCourseLandingPageResponses[keyof AdminGetCourseLandingPageResponses];
+
+export type AdminUpdateCourseLandingPageData = {
+  body: CourseLandingPageInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{id}';
+};
+
+export type AdminUpdateCourseLandingPageErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateCourseLandingPageError = AdminUpdateCourseLandingPageErrors[keyof AdminUpdateCourseLandingPageErrors];
+
+export type AdminUpdateCourseLandingPageResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLandingPage;
+};
+
+export type AdminUpdateCourseLandingPageResponse = AdminUpdateCourseLandingPageResponses[keyof AdminUpdateCourseLandingPageResponses];
+
+export type AdminListLandingPageQnaItemsData = {
+  body?: never;
+  path: {
+    landingPageId: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{landingPageId}/qna_items';
+};
+
+export type AdminListLandingPageQnaItemsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<QnaItem>;
+};
+
+export type AdminListLandingPageQnaItemsResponse = AdminListLandingPageQnaItemsResponses[keyof AdminListLandingPageQnaItemsResponses];
+
+export type AdminCreateLandingPageQnaItemData = {
+  body: QnaItemInput;
+  path: {
+    landingPageId: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{landingPageId}/qna_items';
+};
+
+export type AdminCreateLandingPageQnaItemErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateLandingPageQnaItemError = AdminCreateLandingPageQnaItemErrors[keyof AdminCreateLandingPageQnaItemErrors];
+
+export type AdminCreateLandingPageQnaItemResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: QnaItem;
+};
+
+export type AdminCreateLandingPageQnaItemResponse = AdminCreateLandingPageQnaItemResponses[keyof AdminCreateLandingPageQnaItemResponses];
+
+export type AdminDeleteLandingPageQnaItemData = {
+  body?: never;
+  path: {
+    landingPageId: number;
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
+};
+
+export type AdminDeleteLandingPageQnaItemResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteLandingPageQnaItemResponse = AdminDeleteLandingPageQnaItemResponses[keyof AdminDeleteLandingPageQnaItemResponses];
+
+export type AdminUpdateLandingPageQnaItemData = {
+  body: QnaItemInput;
+  path: {
+    landingPageId: number;
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
+};
+
+export type AdminUpdateLandingPageQnaItemErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateLandingPageQnaItemError = AdminUpdateLandingPageQnaItemErrors[keyof AdminUpdateLandingPageQnaItemErrors];
+
+export type AdminUpdateLandingPageQnaItemResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: QnaItem;
+};
+
+export type AdminUpdateLandingPageQnaItemResponse = AdminUpdateLandingPageQnaItemResponses[keyof AdminUpdateLandingPageQnaItemResponses];
+
+export type AdminListCourseLessonMembersData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/language_lesson_members';
+};
+
+export type AdminListCourseLessonMembersResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLessonMemberPage;
+};
+
+export type AdminListCourseLessonMembersResponse = AdminListCourseLessonMembersResponses[keyof AdminListCourseLessonMembersResponses];
+
+export type AdminListCourseLessonReviewsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/language_lesson_reviews';
+};
+
+export type AdminListCourseLessonReviewsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLessonReviewPage;
+};
+
+export type AdminListCourseLessonReviewsResponse = AdminListCourseLessonReviewsResponses[keyof AdminListCourseLessonReviewsResponses];
+
+export type AdminListCourseLessonsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/language_lessons';
+};
+
+export type AdminListCourseLessonsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLessonListItemPage;
+};
+
+export type AdminListCourseLessonsResponse = AdminListCourseLessonsResponses[keyof AdminListCourseLessonsResponses];
+
+export type AdminReviewCourseLessonData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/language_lessons/{id}/review';
+};
+
+export type AdminReviewCourseLessonErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminReviewCourseLessonError = AdminReviewCourseLessonErrors[keyof AdminReviewCourseLessonErrors];
+
+export type AdminReviewCourseLessonResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminReviewCourseLessonResponse = AdminReviewCourseLessonResponses[keyof AdminReviewCourseLessonResponses];
+
+export type AdminListCoursesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/languages';
+};
+
+export type AdminListCoursesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CoursePage;
+};
+
+export type AdminListCoursesResponse = AdminListCoursesResponses[keyof AdminListCoursesResponses];
+
+export type AdminCreateCourseData = {
+  body: CourseInput;
+  path?: never;
+  query?: never;
+  url: '/admin/languages';
+};
+
+export type AdminCreateCourseErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateCourseError = AdminCreateCourseErrors[keyof AdminCreateCourseErrors];
+
+export type AdminCreateCourseResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: Course;
+};
+
+export type AdminCreateCourseResponse = AdminCreateCourseResponses[keyof AdminCreateCourseResponses];
+
+export type AdminGetCourseData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/languages/{id}';
+};
+
+export type AdminGetCourseErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetCourseError = AdminGetCourseErrors[keyof AdminGetCourseErrors];
+
+export type AdminGetCourseResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminGetCourseResponse = AdminGetCourseResponses[keyof AdminGetCourseResponses];
+
+export type AdminUpdateCourseData = {
+  body: CourseInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/languages/{id}';
+};
+
+export type AdminUpdateCourseErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateCourseError = AdminUpdateCourseErrors[keyof AdminUpdateCourseErrors];
+
+export type AdminUpdateCourseResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Course;
+};
+
+export type AdminUpdateCourseResponse = AdminUpdateCourseResponses[keyof AdminUpdateCourseResponses];
+
+export type AdminReviewCourseData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/languages/{id}/review';
+};
+
+export type AdminReviewCourseErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminReviewCourseError = AdminReviewCourseErrors[keyof AdminReviewCourseErrors];
+
+export type AdminReviewCourseResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminReviewCourseResponse = AdminReviewCourseResponses[keyof AdminReviewCourseResponses];
+
+export type AdminCreateCourseVersionData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/languages/{id}/versions';
+};
+
+export type AdminCreateCourseVersionErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminCreateCourseVersionError = AdminCreateCourseVersionErrors[keyof AdminCreateCourseVersionErrors];
+
+export type AdminCreateCourseVersionResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: CourseVersion;
+};
+
+export type AdminCreateCourseVersionResponse = AdminCreateCourseVersionResponses[keyof AdminCreateCourseVersionResponses];
+
+export type AdminListLeadsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/leads';
+};
+
+export type AdminListLeadsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: LeadPage;
+};
+
+export type AdminListLeadsResponse = AdminListLeadsResponses[keyof AdminListLeadsResponses];
+
+export type AdminGetRolePermissionsData = {
+  body?: never;
+  path: {
+    roleId: number;
+  };
+  query?: never;
+  url: '/admin/management/role_permissions/{roleId}';
+};
+
+export type AdminGetRolePermissionsErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetRolePermissionsError = AdminGetRolePermissionsErrors[keyof AdminGetRolePermissionsErrors];
+
+export type AdminGetRolePermissionsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffRoleDetail;
+};
+
+export type AdminGetRolePermissionsResponse = AdminGetRolePermissionsResponses[keyof AdminGetRolePermissionsResponses];
+
+export type AdminUpdateRolePermissionsData = {
+  body: RolePermissionsInput;
+  path: {
+    roleId: number;
+  };
+  query?: never;
+  url: '/admin/management/role_permissions/{roleId}';
+};
+
+export type AdminUpdateRolePermissionsErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateRolePermissionsError = AdminUpdateRolePermissionsErrors[keyof AdminUpdateRolePermissionsErrors];
+
+export type AdminUpdateRolePermissionsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffRoleDetail;
+};
+
+export type AdminUpdateRolePermissionsResponse = AdminUpdateRolePermissionsResponses[keyof AdminUpdateRolePermissionsResponses];
+
+export type AdminListRolesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/management/roles';
+};
+
+export type AdminListRolesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffRolePage;
+};
+
+export type AdminListRolesResponse = AdminListRolesResponses[keyof AdminListRolesResponses];
+
+export type AdminCreateRoleData = {
+  body: RoleInput;
+  path?: never;
+  query?: never;
+  url: '/admin/management/roles';
+};
+
+export type AdminCreateRoleErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateRoleError = AdminCreateRoleErrors[keyof AdminCreateRoleErrors];
+
+export type AdminCreateRoleResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: StaffRoleDetail;
+};
+
+export type AdminCreateRoleResponse = AdminCreateRoleResponses[keyof AdminCreateRoleResponses];
+
+export type AdminDeleteRoleData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/roles/{id}';
+};
+
+export type AdminDeleteRoleResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteRoleResponse = AdminDeleteRoleResponses[keyof AdminDeleteRoleResponses];
+
+export type AdminGetRoleData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/roles/{id}';
+};
+
+export type AdminGetRoleErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetRoleError = AdminGetRoleErrors[keyof AdminGetRoleErrors];
+
+export type AdminGetRoleResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffRoleDetail;
+};
+
+export type AdminGetRoleResponse = AdminGetRoleResponses[keyof AdminGetRoleResponses];
+
+export type AdminUpdateRoleData = {
+  body: RoleInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/roles/{id}';
+};
+
+export type AdminUpdateRoleErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateRoleError = AdminUpdateRoleErrors[keyof AdminUpdateRoleErrors];
+
+export type AdminUpdateRoleResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffRoleDetail;
+};
+
+export type AdminUpdateRoleResponse = AdminUpdateRoleResponses[keyof AdminUpdateRoleResponses];
+
+export type AdminListStaffMembersData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/management/staff_members';
+};
+
+export type AdminListStaffMembersResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffMemberPage;
+};
+
+export type AdminListStaffMembersResponse = AdminListStaffMembersResponses[keyof AdminListStaffMembersResponses];
+
+export type AdminCreateStaffMemberData = {
+  body: StaffMemberInput;
+  path?: never;
+  query?: never;
+  url: '/admin/management/staff_members';
+};
+
+export type AdminCreateStaffMemberErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateStaffMemberError = AdminCreateStaffMemberErrors[keyof AdminCreateStaffMemberErrors];
+
+export type AdminCreateStaffMemberResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: StaffMember;
+};
+
+export type AdminCreateStaffMemberResponse = AdminCreateStaffMemberResponses[keyof AdminCreateStaffMemberResponses];
+
+export type AdminDeleteStaffMemberData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/staff_members/{id}';
+};
+
+export type AdminDeleteStaffMemberResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteStaffMemberResponse = AdminDeleteStaffMemberResponses[keyof AdminDeleteStaffMemberResponses];
+
+export type AdminGetStaffMemberData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/staff_members/{id}';
+};
+
+export type AdminGetStaffMemberErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetStaffMemberError = AdminGetStaffMemberErrors[keyof AdminGetStaffMemberErrors];
+
+export type AdminGetStaffMemberResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffMember;
+};
+
+export type AdminGetStaffMemberResponse = AdminGetStaffMemberResponses[keyof AdminGetStaffMemberResponses];
+
+export type AdminUpdateStaffMemberData = {
+  body: StaffMemberInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/staff_members/{id}';
+};
+
+export type AdminUpdateStaffMemberErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateStaffMemberError = AdminUpdateStaffMemberErrors[keyof AdminUpdateStaffMemberErrors];
+
+export type AdminUpdateStaffMemberResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: StaffMember;
+};
+
+export type AdminUpdateStaffMemberResponse = AdminUpdateStaffMemberResponses[keyof AdminUpdateStaffMemberResponses];
+
+export type AdminListManagementUsersData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/management/users';
+};
+
+export type AdminListManagementUsersResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: UserCrudPage;
+};
+
+export type AdminListManagementUsersResponse = AdminListManagementUsersResponses[keyof AdminListManagementUsersResponses];
+
+export type AdminGetManagementUserData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/users/{id}';
+};
+
+export type AdminGetManagementUserErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetManagementUserError = AdminGetManagementUserErrors[keyof AdminGetManagementUserErrors];
+
+export type AdminGetManagementUserResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: UserCrud;
+};
+
+export type AdminGetManagementUserResponse = AdminGetManagementUserResponses[keyof AdminGetManagementUserResponses];
+
+export type AdminUpdateManagementUserData = {
+  body: UserInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/management/users/{id}';
+};
+
+export type AdminUpdateManagementUserErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateManagementUserError = AdminUpdateManagementUserErrors[keyof AdminUpdateManagementUserErrors];
+
+export type AdminUpdateManagementUserResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: UserCrud;
+};
+
+export type AdminUpdateManagementUserResponse = AdminUpdateManagementUserResponses[keyof AdminUpdateManagementUserResponses];
+
+export type AdminListMessagesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/messages';
+};
+
+export type AdminListMessagesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: LessonAssistantMessagePage;
+};
+
+export type AdminListMessagesResponse = AdminListMessagesResponses[keyof AdminListMessagesResponses];
+
+export type AdminListReviewsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/reviews';
+};
+
+export type AdminListReviewsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: ReviewPage;
+};
+
+export type AdminListReviewsResponse = AdminListReviewsResponses[keyof AdminListReviewsResponses];
+
+export type AdminCreateReviewData = {
+  body: ReviewInput;
+  path?: never;
+  query?: never;
+  url: '/admin/reviews';
+};
+
+export type AdminCreateReviewErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminCreateReviewError = AdminCreateReviewErrors[keyof AdminCreateReviewErrors];
+
+export type AdminCreateReviewResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: Review;
+};
+
+export type AdminCreateReviewResponse = AdminCreateReviewResponses[keyof AdminCreateReviewResponses];
+
+export type AdminDeleteReviewData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/reviews/{id}';
+};
+
+export type AdminDeleteReviewResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminDeleteReviewResponse = AdminDeleteReviewResponses[keyof AdminDeleteReviewResponses];
+
+export type AdminGetReviewData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/reviews/{id}';
+};
+
+export type AdminGetReviewErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type AdminGetReviewError = AdminGetReviewErrors[keyof AdminGetReviewErrors];
+
+export type AdminGetReviewResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Review;
+};
+
+export type AdminGetReviewResponse = AdminGetReviewResponses[keyof AdminGetReviewResponses];
+
+export type AdminUpdateReviewData = {
+  body: ReviewInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/admin/reviews/{id}';
+};
+
+export type AdminUpdateReviewErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type AdminUpdateReviewError = AdminUpdateReviewErrors[keyof AdminUpdateReviewErrors];
+
+export type AdminUpdateReviewResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Review;
+};
+
+export type AdminUpdateReviewResponse = AdminUpdateReviewResponses[keyof AdminUpdateReviewResponses];
+
+export type ListAssistantMessagesData = {
+  body?: never;
+  path: {
+    lessonId: number;
+  };
+  query?: never;
+  url: '/ai/lessons/{lessonId}/messages';
+};
+
+export type ListAssistantMessagesErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type ListAssistantMessagesError = ListAssistantMessagesErrors[keyof ListAssistantMessagesErrors];
+
+export type ListAssistantMessagesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<LessonAssistantMessage>;
+};
+
+export type ListAssistantMessagesResponse = ListAssistantMessagesResponses[keyof ListAssistantMessagesResponses];
+
+export type CreateAssistantMessageData = {
+  body: AssistantMessageInput;
+  path: {
+    lessonId: number;
+  };
+  query?: never;
+  url: '/ai/lessons/{lessonId}/messages';
+};
+
+export type CreateAssistantMessageErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type CreateAssistantMessageError = CreateAssistantMessageErrors[keyof CreateAssistantMessageErrors];
+
+export type CreateAssistantMessageResponses = {
+  /**
+   * The request has been accepted for processing, but processing has not yet completed.
+   */
+  202: unknown;
+};
+
+export type ListBlogPostsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/blog_posts';
+};
+
+export type ListBlogPostsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPostPage;
+};
+
+export type ListBlogPostsResponse = ListBlogPostsResponses[keyof ListBlogPostsResponses];
+
+export type LikeBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/blog_posts/{id}/likes';
+};
+
+export type LikeBlogPostErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type LikeBlogPostError = LikeBlogPostErrors[keyof LikeBlogPostErrors];
+
+export type LikeBlogPostResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: BlogPost;
+};
+
+export type LikeBlogPostResponse = LikeBlogPostResponses[keyof LikeBlogPostResponses];
+
+export type GetNextBlogPostData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/blog_posts/{id}/next';
+};
+
+export type GetNextBlogPostErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type GetNextBlogPostError = GetNextBlogPostErrors[keyof GetNextBlogPostErrors];
+
+export type GetNextBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type GetNextBlogPostResponse = GetNextBlogPostResponses[keyof GetNextBlogPostResponses];
+
+export type GetBlogPostData = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: '/blog_posts/{slug}';
+};
+
+export type GetBlogPostErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type GetBlogPostError = GetBlogPostErrors[keyof GetBlogPostErrors];
+
+export type GetBlogPostResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BlogPost;
+};
+
+export type GetBlogPostResponse = GetBlogPostResponses[keyof GetBlogPostResponses];
+
+export type CreateBookRequestData = {
+  body: BookRequestInput;
+  path?: never;
+  query?: never;
+  url: '/book/create_request';
+};
+
+export type CreateBookRequestErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreateBookRequestError = CreateBookRequestErrors[keyof CreateBookRequestErrors];
+
+export type CreateBookRequestResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type CreateBookRequestResponse = CreateBookRequestResponses[keyof CreateBookRequestResponses];
+
+export type ListPublicCourseCategoriesData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/language_categories';
+};
+
+export type ListPublicCourseCategoriesResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Array<CourseCategory>;
+};
+
+export type ListPublicCourseCategoriesResponse = ListPublicCourseCategoriesResponses[keyof ListPublicCourseCategoriesResponses];
+
+export type GetPublicCourseCategoryData = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: '/language_categories/{slug}';
+};
+
+export type GetPublicCourseCategoryErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type GetPublicCourseCategoryError = GetPublicCourseCategoryErrors[keyof GetPublicCourseCategoryErrors];
+
+export type GetPublicCourseCategoryResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseCategoryView;
+};
+
+export type GetPublicCourseCategoryResponse = GetPublicCourseCategoryResponses[keyof GetPublicCourseCategoryResponses];
+
 export type ListCoursesData = {
   body?: never;
   path?: never;
@@ -228,3 +3297,547 @@ export type ListCoursesResponses = {
 };
 
 export type ListCoursesResponse = ListCoursesResponses[keyof ListCoursesResponses];
+
+export type GetCourseLessonData = {
+  body?: never;
+  path: {
+    courseSlug: string;
+    slug: string;
+  };
+  query?: never;
+  url: '/languages/{courseSlug}/lessons/{slug}';
+};
+
+export type GetCourseLessonErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type GetCourseLessonError = GetCourseLessonErrors[keyof GetCourseLessonErrors];
+
+export type GetCourseLessonResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseLesson;
+};
+
+export type GetCourseLessonResponse = GetCourseLessonResponses[keyof GetCourseLessonResponses];
+
+export type GetCourseData = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: '/languages/{slug}';
+};
+
+export type GetCourseErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
+
+export type GetCourseResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CourseView;
+};
+
+export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
+
+export type CreateLeadData = {
+  body: LeadInput;
+  path?: never;
+  query?: never;
+  url: '/leads';
+};
+
+export type CreateLeadErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreateLeadError = CreateLeadErrors[keyof CreateLeadErrors];
+
+export type CreateLeadResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: Lead;
+};
+
+export type CreateLeadResponse = CreateLeadResponses[keyof CreateLeadResponses];
+
+export type CheckLessonData = {
+  body: CheckLessonInput;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/lessons/{id}/check';
+};
+
+export type CheckLessonErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CheckLessonError = CheckLessonErrors[keyof CheckLessonErrors];
+
+export type CheckLessonResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: LessonCheckingResponse;
+};
+
+export type CheckLessonResponse = CheckLessonResponses[keyof CheckLessonResponses];
+
+export type SwitchLocaleData = {
+  body?: never;
+  path?: never;
+  query: {
+    locale: Locale;
+  };
+  url: '/locale/switch';
+};
+
+export type SwitchLocaleResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type SwitchLocaleResponse = SwitchLocaleResponses[keyof SwitchLocaleResponses];
+
+export type CreateMagicLinkData = {
+  body: EmailInput;
+  path?: never;
+  query?: never;
+  url: '/magic_links';
+};
+
+export type CreateMagicLinkErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreateMagicLinkError = CreateMagicLinkErrors[keyof CreateMagicLinkErrors];
+
+export type CreateMagicLinkResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type CreateMagicLinkResponse = CreateMagicLinkResponses[keyof CreateMagicLinkResponses];
+
+export type ConsumeMagicLinkData = {
+  body?: never;
+  path: {
+    token: string;
+  };
+  query?: never;
+  url: '/magic_links/{token}';
+};
+
+export type ConsumeMagicLinkErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type ConsumeMagicLinkError = ConsumeMagicLinkErrors[keyof ConsumeMagicLinkErrors];
+
+export type ConsumeMagicLinkResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: User;
+};
+
+export type ConsumeMagicLinkResponse = ConsumeMagicLinkResponses[keyof ConsumeMagicLinkResponses];
+
+export type GetSitemapData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/map';
+};
+
+export type GetSitemapResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: Sitemap;
+};
+
+export type GetSitemapResponse = GetSitemapResponses[keyof GetSitemapResponses];
+
+export type GetCurrentUserData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/me';
+};
+
+export type GetCurrentUserResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: CurrentUser;
+};
+
+export type GetCurrentUserResponse = GetCurrentUserResponses[keyof GetCurrentUserResponses];
+
+export type GetMyDashboardData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/my';
+};
+
+export type GetMyDashboardErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: UnauthorizedError;
+};
+
+export type GetMyDashboardError = GetMyDashboardErrors[keyof GetMyDashboardErrors];
+
+export type GetMyDashboardResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: MyDashboard;
+};
+
+export type GetMyDashboardResponse = GetMyDashboardResponses[keyof GetMyDashboardResponses];
+
+export type GetPageData = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: '/pages/{slug}';
+};
+
+export type GetPageErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type GetPageError = GetPageErrors[keyof GetPageErrors];
+
+export type GetPageResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: PageContent;
+};
+
+export type GetPageResponse = GetPageResponses[keyof GetPageResponses];
+
+export type CreatePasskeySessionData = {
+  body: PasskeyAssertionInput;
+  path?: never;
+  query?: never;
+  url: '/passkey_session';
+};
+
+export type CreatePasskeySessionErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreatePasskeySessionError = CreatePasskeySessionErrors[keyof CreatePasskeySessionErrors];
+
+export type CreatePasskeySessionResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: User;
+};
+
+export type CreatePasskeySessionResponse = CreatePasskeySessionResponses[keyof CreatePasskeySessionResponses];
+
+export type NewPasskeySessionData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/passkey_session/new';
+};
+
+export type NewPasskeySessionResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: PasskeyChallenge;
+};
+
+export type NewPasskeySessionResponse = NewPasskeySessionResponses[keyof NewPasskeySessionResponses];
+
+export type UpdatePasswordData = {
+  body: ResetPasswordInput;
+  path: {
+    token: string;
+  };
+  query?: never;
+  url: '/password/{token}';
+};
+
+export type UpdatePasswordErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type UpdatePasswordError = UpdatePasswordErrors[keyof UpdatePasswordErrors];
+
+export type UpdatePasswordResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type UpdatePasswordResponse = UpdatePasswordResponses[keyof UpdatePasswordResponses];
+
+export type CheckPasswordResetTokenData = {
+  body?: never;
+  path: {
+    token: string;
+  };
+  query?: never;
+  url: '/password/{token}/edit';
+};
+
+export type CheckPasswordResetTokenErrors = {
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+};
+
+export type CheckPasswordResetTokenError = CheckPasswordResetTokenErrors[keyof CheckPasswordResetTokenErrors];
+
+export type CheckPasswordResetTokenResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type CheckPasswordResetTokenResponse = CheckPasswordResetTokenResponses[keyof CheckPasswordResetTokenResponses];
+
+export type CreatePhoneAuthData = {
+  body: PhoneInput;
+  path?: never;
+  query?: never;
+  url: '/phone_auth';
+};
+
+export type CreatePhoneAuthErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreatePhoneAuthError = CreatePhoneAuthErrors[keyof CreatePhoneAuthErrors];
+
+export type CreatePhoneAuthResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type CreatePhoneAuthResponse = CreatePhoneAuthResponses[keyof CreatePhoneAuthResponses];
+
+export type ConfirmPhoneAuthData = {
+  body: PhoneConfirmInput;
+  path?: never;
+  query?: never;
+  url: '/phone_auth/confirm';
+};
+
+export type ConfirmPhoneAuthErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type ConfirmPhoneAuthError = ConfirmPhoneAuthErrors[keyof ConfirmPhoneAuthErrors];
+
+export type ConfirmPhoneAuthResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: User;
+};
+
+export type ConfirmPhoneAuthResponse = ConfirmPhoneAuthResponses[keyof ConfirmPhoneAuthResponses];
+
+export type CreatePasswordReminderData = {
+  body: EmailInput;
+  path?: never;
+  query?: never;
+  url: '/remind_password';
+};
+
+export type CreatePasswordReminderErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreatePasswordReminderError = CreatePasswordReminderErrors[keyof CreatePasswordReminderErrors];
+
+export type CreatePasswordReminderResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type CreatePasswordReminderResponse = CreatePasswordReminderResponses[keyof CreatePasswordReminderResponses];
+
+export type ListPublicReviewsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/reviews';
+};
+
+export type ListPublicReviewsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: ReviewPage;
+};
+
+export type ListPublicReviewsResponse = ListPublicReviewsResponses[keyof ListPublicReviewsResponses];
+
+export type DeleteSessionData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/session';
+};
+
+export type DeleteSessionResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type DeleteSessionResponse = DeleteSessionResponses[keyof DeleteSessionResponses];
+
+export type CreateSessionData = {
+  body: SessionInput;
+  path?: never;
+  query?: never;
+  url: '/session';
+};
+
+export type CreateSessionErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreateSessionError = CreateSessionErrors[keyof CreateSessionErrors];
+
+export type CreateSessionResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: User;
+};
+
+export type CreateSessionResponse = CreateSessionResponses[keyof CreateSessionResponses];
+
+export type CreateUserData = {
+  body: SignUpInput;
+  path?: never;
+  query?: never;
+  url: '/users';
+};
+
+export type CreateUserErrors = {
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+};
+
+export type CreateUserError = CreateUserErrors[keyof CreateUserErrors];
+
+export type CreateUserResponses = {
+  /**
+   * The request has succeeded and a new resource has been created as a result.
+   */
+  201: User;
+};
+
+export type CreateUserResponse = CreateUserResponses[keyof CreateUserResponses];

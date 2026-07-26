@@ -3,8 +3,8 @@
 import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { adminCreateCourseCategory, adminDeleteCourseCategory, adminGetCourseCategory, adminListCourseCategories, adminUpdateCourseCategory, listCourses, type Options } from '../sdk.gen';
-import type { AdminCreateCourseCategoryData, AdminCreateCourseCategoryError, AdminCreateCourseCategoryResponse, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryResponse, AdminGetCourseCategoryData, AdminGetCourseCategoryResponse, AdminListCourseCategoriesData, AdminListCourseCategoriesResponse, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryError, AdminUpdateCourseCategoryResponse, ListCoursesData, ListCoursesResponse } from '../types.gen';
+import { adminCreateBanner, adminCreateBlogPost, adminCreateCategoryQnaItem, adminCreateCourse, adminCreateCourseCategory, adminCreateCourseLandingPage, adminCreateCourseVersion, adminCreateLandingPageQnaItem, adminCreateReview, adminCreateRole, adminCreateStaffMember, adminCreateUser, adminDeleteBanner, adminDeleteBlogPost, adminDeleteCategoryQnaItem, adminDeleteCourseCategory, adminDeleteCourseLandingPage, adminDeleteLandingPageQnaItem, adminDeleteReview, adminDeleteRole, adminDeleteStaffMember, adminDeleteUser, adminGetBanner, adminGetBlogPost, adminGetCourse, adminGetCourseCategory, adminGetCourseLandingPage, adminGetManagementUser, adminGetReview, adminGetRole, adminGetRolePermissions, adminGetStaffMember, adminGetUser, adminListBanners, adminListBlogPosts, adminListCategoryQnaItems, adminListCourseCategories, adminListCourseLandingPages, adminListCourseLessonMembers, adminListCourseLessonReviews, adminListCourseLessons, adminListCourses, adminListLandingPageQnaItems, adminListLeads, adminListManagementUsers, adminListMessages, adminListReviews, adminListRoles, adminListStaffMembers, adminListUsers, adminReviewCourse, adminReviewCourseLesson, adminSearchUsers, adminSetBlogPostRelatedCourses, adminUpdateBanner, adminUpdateBlogPost, adminUpdateCategoryQnaItem, adminUpdateCourse, adminUpdateCourseCategory, adminUpdateCourseLandingPage, adminUpdateLandingPageQnaItem, adminUpdateManagementUser, adminUpdateReview, adminUpdateRole, adminUpdateRolePermissions, adminUpdateStaffMember, adminUpdateUser, adminUploadAttachment, checkLesson, checkPasswordResetToken, confirmPhoneAuth, consumeMagicLink, createAssistantMessage, createBookRequest, createLead, createMagicLink, createPasskey, createPasskeySession, createPasswordReminder, createPhoneAuth, createSession, createUser, deleteAccount, deletePasskey, deleteSession, getBlogPost, getCourse, getCourseLesson, getCurrentUser, getMyDashboard, getNextBlogPost, getPage, getProfile, getPublicCourseCategory, getSitemap, likeBlogPost, listAssistantMessages, listBlogPosts, listCourses, listPasskeys, listPublicCourseCategories, listPublicReviews, newPasskey, newPasskeySession, type Options, switchLocale, updatePassword, updateProfile } from '../sdk.gen';
+import type { AdminCreateBannerData, AdminCreateBannerError, AdminCreateBannerResponse, AdminCreateBlogPostData, AdminCreateBlogPostError, AdminCreateBlogPostResponse, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemError, AdminCreateCategoryQnaItemResponse, AdminCreateCourseCategoryData, AdminCreateCourseCategoryError, AdminCreateCourseCategoryResponse, AdminCreateCourseData, AdminCreateCourseError, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageError, AdminCreateCourseLandingPageResponse, AdminCreateCourseResponse, AdminCreateCourseVersionData, AdminCreateCourseVersionError, AdminCreateCourseVersionResponse, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemError, AdminCreateLandingPageQnaItemResponse, AdminCreateReviewData, AdminCreateReviewError, AdminCreateReviewResponse, AdminCreateRoleData, AdminCreateRoleError, AdminCreateRoleResponse, AdminCreateStaffMemberData, AdminCreateStaffMemberError, AdminCreateStaffMemberResponse, AdminCreateUserData, AdminCreateUserError, AdminCreateUserResponse, AdminDeleteBannerData, AdminDeleteBannerResponse, AdminDeleteBlogPostData, AdminDeleteBlogPostResponse, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemResponse, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryResponse, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageResponse, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemResponse, AdminDeleteReviewData, AdminDeleteReviewResponse, AdminDeleteRoleData, AdminDeleteRoleResponse, AdminDeleteStaffMemberData, AdminDeleteStaffMemberResponse, AdminDeleteUserData, AdminDeleteUserResponse, AdminGetBannerData, AdminGetBannerError, AdminGetBannerResponse, AdminGetBlogPostData, AdminGetBlogPostError, AdminGetBlogPostResponse, AdminGetCourseCategoryData, AdminGetCourseCategoryError, AdminGetCourseCategoryResponse, AdminGetCourseData, AdminGetCourseError, AdminGetCourseLandingPageData, AdminGetCourseLandingPageError, AdminGetCourseLandingPageResponse, AdminGetCourseResponse, AdminGetManagementUserData, AdminGetManagementUserError, AdminGetManagementUserResponse, AdminGetReviewData, AdminGetReviewError, AdminGetReviewResponse, AdminGetRoleData, AdminGetRoleError, AdminGetRolePermissionsData, AdminGetRolePermissionsError, AdminGetRolePermissionsResponse, AdminGetRoleResponse, AdminGetStaffMemberData, AdminGetStaffMemberError, AdminGetStaffMemberResponse, AdminGetUserData, AdminGetUserError, AdminGetUserResponse, AdminListBannersData, AdminListBannersResponse, AdminListBlogPostsData, AdminListBlogPostsResponse, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsResponse, AdminListCourseCategoriesData, AdminListCourseCategoriesResponse, AdminListCourseLandingPagesData, AdminListCourseLandingPagesResponse, AdminListCourseLessonMembersData, AdminListCourseLessonMembersResponse, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsResponse, AdminListCourseLessonsData, AdminListCourseLessonsResponse, AdminListCoursesData, AdminListCoursesResponse, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsResponse, AdminListLeadsData, AdminListLeadsResponse, AdminListManagementUsersData, AdminListManagementUsersResponse, AdminListMessagesData, AdminListMessagesResponse, AdminListReviewsData, AdminListReviewsResponse, AdminListRolesData, AdminListRolesResponse, AdminListStaffMembersData, AdminListStaffMembersResponse, AdminListUsersData, AdminListUsersResponse, AdminReviewCourseData, AdminReviewCourseError, AdminReviewCourseLessonData, AdminReviewCourseLessonError, AdminReviewCourseLessonResponse, AdminReviewCourseResponse, AdminSearchUsersData, AdminSearchUsersResponse, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesError, AdminSetBlogPostRelatedCoursesResponse, AdminUpdateBannerData, AdminUpdateBannerError, AdminUpdateBannerResponse, AdminUpdateBlogPostData, AdminUpdateBlogPostError, AdminUpdateBlogPostResponse, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemError, AdminUpdateCategoryQnaItemResponse, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryError, AdminUpdateCourseCategoryResponse, AdminUpdateCourseData, AdminUpdateCourseError, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageError, AdminUpdateCourseLandingPageResponse, AdminUpdateCourseResponse, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemError, AdminUpdateLandingPageQnaItemResponse, AdminUpdateManagementUserData, AdminUpdateManagementUserError, AdminUpdateManagementUserResponse, AdminUpdateReviewData, AdminUpdateReviewError, AdminUpdateReviewResponse, AdminUpdateRoleData, AdminUpdateRoleError, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsError, AdminUpdateRolePermissionsResponse, AdminUpdateRoleResponse, AdminUpdateStaffMemberData, AdminUpdateStaffMemberError, AdminUpdateStaffMemberResponse, AdminUpdateUserData, AdminUpdateUserError, AdminUpdateUserResponse, AdminUploadAttachmentData, AdminUploadAttachmentError, AdminUploadAttachmentResponse, CheckLessonData, CheckLessonError, CheckLessonResponse, CheckPasswordResetTokenData, CheckPasswordResetTokenError, CheckPasswordResetTokenResponse, ConfirmPhoneAuthData, ConfirmPhoneAuthError, ConfirmPhoneAuthResponse, ConsumeMagicLinkData, ConsumeMagicLinkError, ConsumeMagicLinkResponse, CreateAssistantMessageData, CreateAssistantMessageError, CreateBookRequestData, CreateBookRequestError, CreateBookRequestResponse, CreateLeadData, CreateLeadError, CreateLeadResponse, CreateMagicLinkData, CreateMagicLinkError, CreateMagicLinkResponse, CreatePasskeyData, CreatePasskeyError, CreatePasskeyResponse, CreatePasskeySessionData, CreatePasskeySessionError, CreatePasskeySessionResponse, CreatePasswordReminderData, CreatePasswordReminderError, CreatePasswordReminderResponse, CreatePhoneAuthData, CreatePhoneAuthError, CreatePhoneAuthResponse, CreateSessionData, CreateSessionError, CreateSessionResponse, CreateUserData, CreateUserError, CreateUserResponse, DeleteAccountData, DeleteAccountError, DeleteAccountResponse, DeletePasskeyData, DeletePasskeyError, DeletePasskeyResponse, DeleteSessionData, DeleteSessionResponse, GetBlogPostData, GetBlogPostError, GetBlogPostResponse, GetCourseData, GetCourseError, GetCourseLessonData, GetCourseLessonError, GetCourseLessonResponse, GetCourseResponse, GetCurrentUserData, GetCurrentUserResponse, GetMyDashboardData, GetMyDashboardError, GetMyDashboardResponse, GetNextBlogPostData, GetNextBlogPostError, GetNextBlogPostResponse, GetPageData, GetPageError, GetPageResponse, GetProfileData, GetProfileError, GetProfileResponse, GetPublicCourseCategoryData, GetPublicCourseCategoryError, GetPublicCourseCategoryResponse, GetSitemapData, GetSitemapResponse, LikeBlogPostData, LikeBlogPostError, LikeBlogPostResponse, ListAssistantMessagesData, ListAssistantMessagesError, ListAssistantMessagesResponse, ListBlogPostsData, ListBlogPostsResponse, ListCoursesData, ListCoursesResponse, ListPasskeysData, ListPasskeysError, ListPasskeysResponse, ListPublicCourseCategoriesData, ListPublicCourseCategoriesResponse, ListPublicReviewsData, ListPublicReviewsResponse, NewPasskeyData, NewPasskeyError, NewPasskeyResponse, NewPasskeySessionData, NewPasskeySessionResponse, SwitchLocaleData, SwitchLocaleResponse, UpdatePasswordData, UpdatePasswordError, UpdatePasswordResponse, UpdateProfileData, UpdateProfileError, UpdateProfileResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
   Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -39,14 +39,14 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
   return [params];
 };
 
-export const adminListCourseCategoriesQueryKey = (options?: Options<AdminListCourseCategoriesData>) => createQueryKey('adminListCourseCategories', options);
+export const listPasskeysQueryKey = (options?: Options<ListPasskeysData>) => createQueryKey('listPasskeys', options);
 
 /**
- * List course categories (paginated).
+ * List the current user's passkeys.
  */
-export const adminListCourseCategoriesOptions = (options?: Options<AdminListCourseCategoriesData>) => queryOptions<AdminListCourseCategoriesResponse, DefaultError, AdminListCourseCategoriesResponse, ReturnType<typeof adminListCourseCategoriesQueryKey>>({
+export const listPasskeysOptions = (options?: Options<ListPasskeysData>) => queryOptions<ListPasskeysResponse, ListPasskeysError, ListPasskeysResponse, ReturnType<typeof listPasskeysQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
-    const { data } = await adminListCourseCategories({
+    const { data } = await listPasskeys({
       ...options,
       ...queryKey[0],
       signal,
@@ -54,7 +54,126 @@ export const adminListCourseCategoriesOptions = (options?: Options<AdminListCour
     });
     return data;
   },
-  queryKey: adminListCourseCategoriesQueryKey(options)
+  queryKey: listPasskeysQueryKey(options)
+});
+
+/**
+ * Register a new passkey for the current user.
+ */
+export const createPasskeyMutation = (options?: Partial<Options<CreatePasskeyData>>): UseMutationOptions<CreatePasskeyResponse, CreatePasskeyError, Options<CreatePasskeyData>> => {
+  const mutationOptions: UseMutationOptions<CreatePasskeyResponse, CreatePasskeyError, Options<CreatePasskeyData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createPasskey({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const newPasskeyQueryKey = (options?: Options<NewPasskeyData>) => createQueryKey('newPasskey', options);
+
+/**
+ * Begin a passkey registration ceremony.
+ */
+export const newPasskeyOptions = (options?: Options<NewPasskeyData>) => queryOptions<NewPasskeyResponse, NewPasskeyError, NewPasskeyResponse, ReturnType<typeof newPasskeyQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await newPasskey({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: newPasskeyQueryKey(options)
+});
+
+/**
+ * Remove a passkey.
+ */
+export const deletePasskeyMutation = (options?: Partial<Options<DeletePasskeyData>>): UseMutationOptions<DeletePasskeyResponse, DeletePasskeyError, Options<DeletePasskeyData>> => {
+  const mutationOptions: UseMutationOptions<DeletePasskeyResponse, DeletePasskeyError, Options<DeletePasskeyData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await deletePasskey({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Delete the current user's account.
+ */
+export const deleteAccountMutation = (options?: Partial<Options<DeleteAccountData>>): UseMutationOptions<DeleteAccountResponse, DeleteAccountError, Options<DeleteAccountData>> => {
+  const mutationOptions: UseMutationOptions<DeleteAccountResponse, DeleteAccountError, Options<DeleteAccountData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await deleteAccount({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Update the current user's profile.
+ */
+export const updateProfileMutation = (options?: Partial<Options<UpdateProfileData>>): UseMutationOptions<UpdateProfileResponse, UpdateProfileError, Options<UpdateProfileData>> => {
+  const mutationOptions: UseMutationOptions<UpdateProfileResponse, UpdateProfileError, Options<UpdateProfileData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await updateProfile({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const getProfileQueryKey = (options?: Options<GetProfileData>) => createQueryKey('getProfile', options);
+
+/**
+ * The editable profile of the current user.
+ */
+export const getProfileOptions = (options?: Options<GetProfileData>) => queryOptions<GetProfileResponse, GetProfileError, GetProfileResponse, ReturnType<typeof getProfileQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getProfile({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getProfileQueryKey(options)
+});
+
+export const adminListUsersQueryKey = (options?: Options<AdminListUsersData>) => createQueryKey('adminListUsers', options);
+
+export const adminListUsersOptions = (options?: Options<AdminListUsersData>) => queryOptions<AdminListUsersResponse, DefaultError, AdminListUsersResponse, ReturnType<typeof adminListUsersQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListUsers({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListUsersQueryKey(options)
 });
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
@@ -85,6 +204,358 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
   }
   return params as unknown as typeof page;
 };
+
+export const adminListUsersInfiniteQueryKey = (options?: Options<AdminListUsersData>): QueryKey<Options<AdminListUsersData>> => createQueryKey('adminListUsers', options, true);
+
+export const adminListUsersInfiniteOptions = (options?: Options<AdminListUsersData>) => {
+  const opts = infiniteQueryOptions<AdminListUsersResponse, DefaultError, InfiniteData<AdminListUsersResponse>, QueryKey<Options<AdminListUsersData>>, number | Pick<QueryKey<Options<AdminListUsersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListUsersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListUsers({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListUsersInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateUserMutation = (options?: Partial<Options<AdminCreateUserData>>): UseMutationOptions<AdminCreateUserResponse, AdminCreateUserError, Options<AdminCreateUserData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateUserResponse, AdminCreateUserError, Options<AdminCreateUserData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateUser({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminSearchUsersQueryKey = (options: Options<AdminSearchUsersData>) => createQueryKey('adminSearchUsers', options);
+
+/**
+ * Typeahead search by name/email.
+ */
+export const adminSearchUsersOptions = (options: Options<AdminSearchUsersData>) => queryOptions<AdminSearchUsersResponse, DefaultError, AdminSearchUsersResponse, ReturnType<typeof adminSearchUsersQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminSearchUsers({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminSearchUsersQueryKey(options)
+});
+
+export const adminDeleteUserMutation = (options?: Partial<Options<AdminDeleteUserData>>): UseMutationOptions<AdminDeleteUserResponse, DefaultError, Options<AdminDeleteUserData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteUserResponse, DefaultError, Options<AdminDeleteUserData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteUser({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetUserQueryKey = (options: Options<AdminGetUserData>) => createQueryKey('adminGetUser', options);
+
+export const adminGetUserOptions = (options: Options<AdminGetUserData>) => queryOptions<AdminGetUserResponse, AdminGetUserError, AdminGetUserResponse, ReturnType<typeof adminGetUserQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetUser({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetUserQueryKey(options)
+});
+
+export const adminUpdateUserMutation = (options?: Partial<Options<AdminUpdateUserData>>): UseMutationOptions<AdminUpdateUserResponse, AdminUpdateUserError, Options<AdminUpdateUserData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateUserResponse, AdminUpdateUserError, Options<AdminUpdateUserData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateUser({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Upload a file; returns the attachment to reference from a form.
+ */
+export const adminUploadAttachmentMutation = (options?: Partial<Options<AdminUploadAttachmentData>>): UseMutationOptions<AdminUploadAttachmentResponse, AdminUploadAttachmentError, Options<AdminUploadAttachmentData>> => {
+  const mutationOptions: UseMutationOptions<AdminUploadAttachmentResponse, AdminUploadAttachmentError, Options<AdminUploadAttachmentData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUploadAttachment({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListBannersQueryKey = (options?: Options<AdminListBannersData>) => createQueryKey('adminListBanners', options);
+
+export const adminListBannersOptions = (options?: Options<AdminListBannersData>) => queryOptions<AdminListBannersResponse, DefaultError, AdminListBannersResponse, ReturnType<typeof adminListBannersQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListBanners({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListBannersQueryKey(options)
+});
+
+export const adminListBannersInfiniteQueryKey = (options?: Options<AdminListBannersData>): QueryKey<Options<AdminListBannersData>> => createQueryKey('adminListBanners', options, true);
+
+export const adminListBannersInfiniteOptions = (options?: Options<AdminListBannersData>) => {
+  const opts = infiniteQueryOptions<AdminListBannersResponse, DefaultError, InfiniteData<AdminListBannersResponse>, QueryKey<Options<AdminListBannersData>>, number | Pick<QueryKey<Options<AdminListBannersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListBannersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListBanners({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListBannersInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateBannerMutation = (options?: Partial<Options<AdminCreateBannerData>>): UseMutationOptions<AdminCreateBannerResponse, AdminCreateBannerError, Options<AdminCreateBannerData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateBannerResponse, AdminCreateBannerError, Options<AdminCreateBannerData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateBanner({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteBannerMutation = (options?: Partial<Options<AdminDeleteBannerData>>): UseMutationOptions<AdminDeleteBannerResponse, DefaultError, Options<AdminDeleteBannerData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteBannerResponse, DefaultError, Options<AdminDeleteBannerData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteBanner({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetBannerQueryKey = (options: Options<AdminGetBannerData>) => createQueryKey('adminGetBanner', options);
+
+export const adminGetBannerOptions = (options: Options<AdminGetBannerData>) => queryOptions<AdminGetBannerResponse, AdminGetBannerError, AdminGetBannerResponse, ReturnType<typeof adminGetBannerQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetBanner({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetBannerQueryKey(options)
+});
+
+export const adminUpdateBannerMutation = (options?: Partial<Options<AdminUpdateBannerData>>): UseMutationOptions<AdminUpdateBannerResponse, AdminUpdateBannerError, Options<AdminUpdateBannerData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateBannerResponse, AdminUpdateBannerError, Options<AdminUpdateBannerData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateBanner({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListBlogPostsQueryKey = (options?: Options<AdminListBlogPostsData>) => createQueryKey('adminListBlogPosts', options);
+
+export const adminListBlogPostsOptions = (options?: Options<AdminListBlogPostsData>) => queryOptions<AdminListBlogPostsResponse, DefaultError, AdminListBlogPostsResponse, ReturnType<typeof adminListBlogPostsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListBlogPosts({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListBlogPostsQueryKey(options)
+});
+
+export const adminListBlogPostsInfiniteQueryKey = (options?: Options<AdminListBlogPostsData>): QueryKey<Options<AdminListBlogPostsData>> => createQueryKey('adminListBlogPosts', options, true);
+
+export const adminListBlogPostsInfiniteOptions = (options?: Options<AdminListBlogPostsData>) => {
+  const opts = infiniteQueryOptions<AdminListBlogPostsResponse, DefaultError, InfiniteData<AdminListBlogPostsResponse>, QueryKey<Options<AdminListBlogPostsData>>, number | Pick<QueryKey<Options<AdminListBlogPostsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListBlogPostsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListBlogPosts({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListBlogPostsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateBlogPostMutation = (options?: Partial<Options<AdminCreateBlogPostData>>): UseMutationOptions<AdminCreateBlogPostResponse, AdminCreateBlogPostError, Options<AdminCreateBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateBlogPostResponse, AdminCreateBlogPostError, Options<AdminCreateBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteBlogPostMutation = (options?: Partial<Options<AdminDeleteBlogPostData>>): UseMutationOptions<AdminDeleteBlogPostResponse, DefaultError, Options<AdminDeleteBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteBlogPostResponse, DefaultError, Options<AdminDeleteBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetBlogPostQueryKey = (options: Options<AdminGetBlogPostData>) => createQueryKey('adminGetBlogPost', options);
+
+export const adminGetBlogPostOptions = (options: Options<AdminGetBlogPostData>) => queryOptions<AdminGetBlogPostResponse, AdminGetBlogPostError, AdminGetBlogPostResponse, ReturnType<typeof adminGetBlogPostQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetBlogPost({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetBlogPostQueryKey(options)
+});
+
+export const adminUpdateBlogPostMutation = (options?: Partial<Options<AdminUpdateBlogPostData>>): UseMutationOptions<AdminUpdateBlogPostResponse, AdminUpdateBlogPostError, Options<AdminUpdateBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateBlogPostResponse, AdminUpdateBlogPostError, Options<AdminUpdateBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Set the related/promoted courses for a post.
+ */
+export const adminSetBlogPostRelatedCoursesMutation = (options?: Partial<Options<AdminSetBlogPostRelatedCoursesData>>): UseMutationOptions<AdminSetBlogPostRelatedCoursesResponse, AdminSetBlogPostRelatedCoursesError, Options<AdminSetBlogPostRelatedCoursesData>> => {
+  const mutationOptions: UseMutationOptions<AdminSetBlogPostRelatedCoursesResponse, AdminSetBlogPostRelatedCoursesError, Options<AdminSetBlogPostRelatedCoursesData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminSetBlogPostRelatedCourses({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListCourseCategoriesQueryKey = (options?: Options<AdminListCourseCategoriesData>) => createQueryKey('adminListCourseCategories', options);
+
+/**
+ * List course categories (paginated).
+ */
+export const adminListCourseCategoriesOptions = (options?: Options<AdminListCourseCategoriesData>) => queryOptions<AdminListCourseCategoriesResponse, DefaultError, AdminListCourseCategoriesResponse, ReturnType<typeof adminListCourseCategoriesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCourseCategories({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCourseCategoriesQueryKey(options)
+});
 
 export const adminListCourseCategoriesInfiniteQueryKey = (options?: Options<AdminListCourseCategoriesData>): QueryKey<Options<AdminListCourseCategoriesData>> => createQueryKey('adminListCourseCategories', options, true);
 
@@ -133,6 +604,63 @@ export const adminCreateCourseCategoryMutation = (options?: Partial<Options<Admi
   return mutationOptions;
 };
 
+export const adminListCategoryQnaItemsQueryKey = (options: Options<AdminListCategoryQnaItemsData>) => createQueryKey('adminListCategoryQnaItems', options);
+
+export const adminListCategoryQnaItemsOptions = (options: Options<AdminListCategoryQnaItemsData>) => queryOptions<AdminListCategoryQnaItemsResponse, DefaultError, AdminListCategoryQnaItemsResponse, ReturnType<typeof adminListCategoryQnaItemsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCategoryQnaItems({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCategoryQnaItemsQueryKey(options)
+});
+
+export const adminCreateCategoryQnaItemMutation = (options?: Partial<Options<AdminCreateCategoryQnaItemData>>): UseMutationOptions<AdminCreateCategoryQnaItemResponse, AdminCreateCategoryQnaItemError, Options<AdminCreateCategoryQnaItemData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateCategoryQnaItemResponse, AdminCreateCategoryQnaItemError, Options<AdminCreateCategoryQnaItemData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateCategoryQnaItem({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteCategoryQnaItemMutation = (options?: Partial<Options<AdminDeleteCategoryQnaItemData>>): UseMutationOptions<AdminDeleteCategoryQnaItemResponse, DefaultError, Options<AdminDeleteCategoryQnaItemData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteCategoryQnaItemResponse, DefaultError, Options<AdminDeleteCategoryQnaItemData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteCategoryQnaItem({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminUpdateCategoryQnaItemMutation = (options?: Partial<Options<AdminUpdateCategoryQnaItemData>>): UseMutationOptions<AdminUpdateCategoryQnaItemResponse, AdminUpdateCategoryQnaItemError, Options<AdminUpdateCategoryQnaItemData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateCategoryQnaItemResponse, AdminUpdateCategoryQnaItemError, Options<AdminUpdateCategoryQnaItemData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateCategoryQnaItem({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
 /**
  * Delete a course category.
  */
@@ -155,7 +683,7 @@ export const adminGetCourseCategoryQueryKey = (options: Options<AdminGetCourseCa
 /**
  * Get a single course category.
  */
-export const adminGetCourseCategoryOptions = (options: Options<AdminGetCourseCategoryData>) => queryOptions<AdminGetCourseCategoryResponse, DefaultError, AdminGetCourseCategoryResponse, ReturnType<typeof adminGetCourseCategoryQueryKey>>({
+export const adminGetCourseCategoryOptions = (options: Options<AdminGetCourseCategoryData>) => queryOptions<AdminGetCourseCategoryResponse, AdminGetCourseCategoryError, AdminGetCourseCategoryResponse, ReturnType<typeof adminGetCourseCategoryQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
     const { data } = await adminGetCourseCategory({
       ...options,
@@ -185,6 +713,1101 @@ export const adminUpdateCourseCategoryMutation = (options?: Partial<Options<Admi
   return mutationOptions;
 };
 
+export const adminListCourseLandingPagesQueryKey = (options?: Options<AdminListCourseLandingPagesData>) => createQueryKey('adminListCourseLandingPages', options);
+
+export const adminListCourseLandingPagesOptions = (options?: Options<AdminListCourseLandingPagesData>) => queryOptions<AdminListCourseLandingPagesResponse, DefaultError, AdminListCourseLandingPagesResponse, ReturnType<typeof adminListCourseLandingPagesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCourseLandingPages({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCourseLandingPagesQueryKey(options)
+});
+
+export const adminListCourseLandingPagesInfiniteQueryKey = (options?: Options<AdminListCourseLandingPagesData>): QueryKey<Options<AdminListCourseLandingPagesData>> => createQueryKey('adminListCourseLandingPages', options, true);
+
+export const adminListCourseLandingPagesInfiniteOptions = (options?: Options<AdminListCourseLandingPagesData>) => {
+  const opts = infiniteQueryOptions<AdminListCourseLandingPagesResponse, DefaultError, InfiniteData<AdminListCourseLandingPagesResponse>, QueryKey<Options<AdminListCourseLandingPagesData>>, number | Pick<QueryKey<Options<AdminListCourseLandingPagesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListCourseLandingPagesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListCourseLandingPages({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListCourseLandingPagesInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateCourseLandingPageMutation = (options?: Partial<Options<AdminCreateCourseLandingPageData>>): UseMutationOptions<AdminCreateCourseLandingPageResponse, AdminCreateCourseLandingPageError, Options<AdminCreateCourseLandingPageData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateCourseLandingPageResponse, AdminCreateCourseLandingPageError, Options<AdminCreateCourseLandingPageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateCourseLandingPage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteCourseLandingPageMutation = (options?: Partial<Options<AdminDeleteCourseLandingPageData>>): UseMutationOptions<AdminDeleteCourseLandingPageResponse, DefaultError, Options<AdminDeleteCourseLandingPageData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteCourseLandingPageResponse, DefaultError, Options<AdminDeleteCourseLandingPageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteCourseLandingPage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetCourseLandingPageQueryKey = (options: Options<AdminGetCourseLandingPageData>) => createQueryKey('adminGetCourseLandingPage', options);
+
+export const adminGetCourseLandingPageOptions = (options: Options<AdminGetCourseLandingPageData>) => queryOptions<AdminGetCourseLandingPageResponse, AdminGetCourseLandingPageError, AdminGetCourseLandingPageResponse, ReturnType<typeof adminGetCourseLandingPageQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetCourseLandingPage({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetCourseLandingPageQueryKey(options)
+});
+
+export const adminUpdateCourseLandingPageMutation = (options?: Partial<Options<AdminUpdateCourseLandingPageData>>): UseMutationOptions<AdminUpdateCourseLandingPageResponse, AdminUpdateCourseLandingPageError, Options<AdminUpdateCourseLandingPageData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateCourseLandingPageResponse, AdminUpdateCourseLandingPageError, Options<AdminUpdateCourseLandingPageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateCourseLandingPage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListLandingPageQnaItemsQueryKey = (options: Options<AdminListLandingPageQnaItemsData>) => createQueryKey('adminListLandingPageQnaItems', options);
+
+export const adminListLandingPageQnaItemsOptions = (options: Options<AdminListLandingPageQnaItemsData>) => queryOptions<AdminListLandingPageQnaItemsResponse, DefaultError, AdminListLandingPageQnaItemsResponse, ReturnType<typeof adminListLandingPageQnaItemsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListLandingPageQnaItems({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListLandingPageQnaItemsQueryKey(options)
+});
+
+export const adminCreateLandingPageQnaItemMutation = (options?: Partial<Options<AdminCreateLandingPageQnaItemData>>): UseMutationOptions<AdminCreateLandingPageQnaItemResponse, AdminCreateLandingPageQnaItemError, Options<AdminCreateLandingPageQnaItemData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateLandingPageQnaItemResponse, AdminCreateLandingPageQnaItemError, Options<AdminCreateLandingPageQnaItemData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateLandingPageQnaItem({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteLandingPageQnaItemMutation = (options?: Partial<Options<AdminDeleteLandingPageQnaItemData>>): UseMutationOptions<AdminDeleteLandingPageQnaItemResponse, DefaultError, Options<AdminDeleteLandingPageQnaItemData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteLandingPageQnaItemResponse, DefaultError, Options<AdminDeleteLandingPageQnaItemData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteLandingPageQnaItem({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminUpdateLandingPageQnaItemMutation = (options?: Partial<Options<AdminUpdateLandingPageQnaItemData>>): UseMutationOptions<AdminUpdateLandingPageQnaItemResponse, AdminUpdateLandingPageQnaItemError, Options<AdminUpdateLandingPageQnaItemData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateLandingPageQnaItemResponse, AdminUpdateLandingPageQnaItemError, Options<AdminUpdateLandingPageQnaItemData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateLandingPageQnaItem({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListCourseLessonMembersQueryKey = (options?: Options<AdminListCourseLessonMembersData>) => createQueryKey('adminListCourseLessonMembers', options);
+
+export const adminListCourseLessonMembersOptions = (options?: Options<AdminListCourseLessonMembersData>) => queryOptions<AdminListCourseLessonMembersResponse, DefaultError, AdminListCourseLessonMembersResponse, ReturnType<typeof adminListCourseLessonMembersQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCourseLessonMembers({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCourseLessonMembersQueryKey(options)
+});
+
+export const adminListCourseLessonMembersInfiniteQueryKey = (options?: Options<AdminListCourseLessonMembersData>): QueryKey<Options<AdminListCourseLessonMembersData>> => createQueryKey('adminListCourseLessonMembers', options, true);
+
+export const adminListCourseLessonMembersInfiniteOptions = (options?: Options<AdminListCourseLessonMembersData>) => {
+  const opts = infiniteQueryOptions<AdminListCourseLessonMembersResponse, DefaultError, InfiniteData<AdminListCourseLessonMembersResponse>, QueryKey<Options<AdminListCourseLessonMembersData>>, number | Pick<QueryKey<Options<AdminListCourseLessonMembersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListCourseLessonMembersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListCourseLessonMembers({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListCourseLessonMembersInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminListCourseLessonReviewsQueryKey = (options?: Options<AdminListCourseLessonReviewsData>) => createQueryKey('adminListCourseLessonReviews', options);
+
+export const adminListCourseLessonReviewsOptions = (options?: Options<AdminListCourseLessonReviewsData>) => queryOptions<AdminListCourseLessonReviewsResponse, DefaultError, AdminListCourseLessonReviewsResponse, ReturnType<typeof adminListCourseLessonReviewsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCourseLessonReviews({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCourseLessonReviewsQueryKey(options)
+});
+
+export const adminListCourseLessonReviewsInfiniteQueryKey = (options?: Options<AdminListCourseLessonReviewsData>): QueryKey<Options<AdminListCourseLessonReviewsData>> => createQueryKey('adminListCourseLessonReviews', options, true);
+
+export const adminListCourseLessonReviewsInfiniteOptions = (options?: Options<AdminListCourseLessonReviewsData>) => {
+  const opts = infiniteQueryOptions<AdminListCourseLessonReviewsResponse, DefaultError, InfiniteData<AdminListCourseLessonReviewsResponse>, QueryKey<Options<AdminListCourseLessonReviewsData>>, number | Pick<QueryKey<Options<AdminListCourseLessonReviewsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListCourseLessonReviewsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListCourseLessonReviews({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListCourseLessonReviewsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminListCourseLessonsQueryKey = (options?: Options<AdminListCourseLessonsData>) => createQueryKey('adminListCourseLessons', options);
+
+export const adminListCourseLessonsOptions = (options?: Options<AdminListCourseLessonsData>) => queryOptions<AdminListCourseLessonsResponse, DefaultError, AdminListCourseLessonsResponse, ReturnType<typeof adminListCourseLessonsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCourseLessons({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCourseLessonsQueryKey(options)
+});
+
+export const adminListCourseLessonsInfiniteQueryKey = (options?: Options<AdminListCourseLessonsData>): QueryKey<Options<AdminListCourseLessonsData>> => createQueryKey('adminListCourseLessons', options, true);
+
+export const adminListCourseLessonsInfiniteOptions = (options?: Options<AdminListCourseLessonsData>) => {
+  const opts = infiniteQueryOptions<AdminListCourseLessonsResponse, DefaultError, InfiniteData<AdminListCourseLessonsResponse>, QueryKey<Options<AdminListCourseLessonsData>>, number | Pick<QueryKey<Options<AdminListCourseLessonsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListCourseLessonsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListCourseLessons({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListCourseLessonsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Enqueue AI review for a single lesson.
+ */
+export const adminReviewCourseLessonMutation = (options?: Partial<Options<AdminReviewCourseLessonData>>): UseMutationOptions<AdminReviewCourseLessonResponse, AdminReviewCourseLessonError, Options<AdminReviewCourseLessonData>> => {
+  const mutationOptions: UseMutationOptions<AdminReviewCourseLessonResponse, AdminReviewCourseLessonError, Options<AdminReviewCourseLessonData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminReviewCourseLesson({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListCoursesQueryKey = (options?: Options<AdminListCoursesData>) => createQueryKey('adminListCourses', options);
+
+export const adminListCoursesOptions = (options?: Options<AdminListCoursesData>) => queryOptions<AdminListCoursesResponse, DefaultError, AdminListCoursesResponse, ReturnType<typeof adminListCoursesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListCourses({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListCoursesQueryKey(options)
+});
+
+export const adminListCoursesInfiniteQueryKey = (options?: Options<AdminListCoursesData>): QueryKey<Options<AdminListCoursesData>> => createQueryKey('adminListCourses', options, true);
+
+export const adminListCoursesInfiniteOptions = (options?: Options<AdminListCoursesData>) => {
+  const opts = infiniteQueryOptions<AdminListCoursesResponse, DefaultError, InfiniteData<AdminListCoursesResponse>, QueryKey<Options<AdminListCoursesData>>, number | Pick<QueryKey<Options<AdminListCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListCourses({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListCoursesInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateCourseMutation = (options?: Partial<Options<AdminCreateCourseData>>): UseMutationOptions<AdminCreateCourseResponse, AdminCreateCourseError, Options<AdminCreateCourseData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateCourseResponse, AdminCreateCourseError, Options<AdminCreateCourseData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateCourse({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetCourseQueryKey = (options: Options<AdminGetCourseData>) => createQueryKey('adminGetCourse', options);
+
+export const adminGetCourseOptions = (options: Options<AdminGetCourseData>) => queryOptions<AdminGetCourseResponse, AdminGetCourseError, AdminGetCourseResponse, ReturnType<typeof adminGetCourseQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetCourse({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetCourseQueryKey(options)
+});
+
+export const adminUpdateCourseMutation = (options?: Partial<Options<AdminUpdateCourseData>>): UseMutationOptions<AdminUpdateCourseResponse, AdminUpdateCourseError, Options<AdminUpdateCourseData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateCourseResponse, AdminUpdateCourseError, Options<AdminUpdateCourseData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateCourse({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Enqueue AI re-review of every current lesson version.
+ */
+export const adminReviewCourseMutation = (options?: Partial<Options<AdminReviewCourseData>>): UseMutationOptions<AdminReviewCourseResponse, AdminReviewCourseError, Options<AdminReviewCourseData>> => {
+  const mutationOptions: UseMutationOptions<AdminReviewCourseResponse, AdminReviewCourseError, Options<AdminReviewCourseData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminReviewCourse({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Build a new version of the course exercises.
+ */
+export const adminCreateCourseVersionMutation = (options?: Partial<Options<AdminCreateCourseVersionData>>): UseMutationOptions<AdminCreateCourseVersionResponse, AdminCreateCourseVersionError, Options<AdminCreateCourseVersionData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateCourseVersionResponse, AdminCreateCourseVersionError, Options<AdminCreateCourseVersionData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateCourseVersion({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListLeadsQueryKey = (options?: Options<AdminListLeadsData>) => createQueryKey('adminListLeads', options);
+
+export const adminListLeadsOptions = (options?: Options<AdminListLeadsData>) => queryOptions<AdminListLeadsResponse, DefaultError, AdminListLeadsResponse, ReturnType<typeof adminListLeadsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListLeads({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListLeadsQueryKey(options)
+});
+
+export const adminListLeadsInfiniteQueryKey = (options?: Options<AdminListLeadsData>): QueryKey<Options<AdminListLeadsData>> => createQueryKey('adminListLeads', options, true);
+
+export const adminListLeadsInfiniteOptions = (options?: Options<AdminListLeadsData>) => {
+  const opts = infiniteQueryOptions<AdminListLeadsResponse, DefaultError, InfiniteData<AdminListLeadsResponse>, QueryKey<Options<AdminListLeadsData>>, number | Pick<QueryKey<Options<AdminListLeadsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListLeadsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListLeads({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListLeadsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminGetRolePermissionsQueryKey = (options: Options<AdminGetRolePermissionsData>) => createQueryKey('adminGetRolePermissions', options);
+
+/**
+ * The permission matrix for a role.
+ */
+export const adminGetRolePermissionsOptions = (options: Options<AdminGetRolePermissionsData>) => queryOptions<AdminGetRolePermissionsResponse, AdminGetRolePermissionsError, AdminGetRolePermissionsResponse, ReturnType<typeof adminGetRolePermissionsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetRolePermissions({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetRolePermissionsQueryKey(options)
+});
+
+/**
+ * Replace the permission matrix for a role.
+ */
+export const adminUpdateRolePermissionsMutation = (options?: Partial<Options<AdminUpdateRolePermissionsData>>): UseMutationOptions<AdminUpdateRolePermissionsResponse, AdminUpdateRolePermissionsError, Options<AdminUpdateRolePermissionsData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateRolePermissionsResponse, AdminUpdateRolePermissionsError, Options<AdminUpdateRolePermissionsData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateRolePermissions({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListRolesQueryKey = (options?: Options<AdminListRolesData>) => createQueryKey('adminListRoles', options);
+
+export const adminListRolesOptions = (options?: Options<AdminListRolesData>) => queryOptions<AdminListRolesResponse, DefaultError, AdminListRolesResponse, ReturnType<typeof adminListRolesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListRoles({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListRolesQueryKey(options)
+});
+
+export const adminListRolesInfiniteQueryKey = (options?: Options<AdminListRolesData>): QueryKey<Options<AdminListRolesData>> => createQueryKey('adminListRoles', options, true);
+
+export const adminListRolesInfiniteOptions = (options?: Options<AdminListRolesData>) => {
+  const opts = infiniteQueryOptions<AdminListRolesResponse, DefaultError, InfiniteData<AdminListRolesResponse>, QueryKey<Options<AdminListRolesData>>, number | Pick<QueryKey<Options<AdminListRolesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListRolesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListRoles({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListRolesInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateRoleMutation = (options?: Partial<Options<AdminCreateRoleData>>): UseMutationOptions<AdminCreateRoleResponse, AdminCreateRoleError, Options<AdminCreateRoleData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateRoleResponse, AdminCreateRoleError, Options<AdminCreateRoleData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateRole({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteRoleMutation = (options?: Partial<Options<AdminDeleteRoleData>>): UseMutationOptions<AdminDeleteRoleResponse, DefaultError, Options<AdminDeleteRoleData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteRoleResponse, DefaultError, Options<AdminDeleteRoleData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteRole({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetRoleQueryKey = (options: Options<AdminGetRoleData>) => createQueryKey('adminGetRole', options);
+
+export const adminGetRoleOptions = (options: Options<AdminGetRoleData>) => queryOptions<AdminGetRoleResponse, AdminGetRoleError, AdminGetRoleResponse, ReturnType<typeof adminGetRoleQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetRole({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetRoleQueryKey(options)
+});
+
+export const adminUpdateRoleMutation = (options?: Partial<Options<AdminUpdateRoleData>>): UseMutationOptions<AdminUpdateRoleResponse, AdminUpdateRoleError, Options<AdminUpdateRoleData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateRoleResponse, AdminUpdateRoleError, Options<AdminUpdateRoleData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateRole({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListStaffMembersQueryKey = (options?: Options<AdminListStaffMembersData>) => createQueryKey('adminListStaffMembers', options);
+
+export const adminListStaffMembersOptions = (options?: Options<AdminListStaffMembersData>) => queryOptions<AdminListStaffMembersResponse, DefaultError, AdminListStaffMembersResponse, ReturnType<typeof adminListStaffMembersQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListStaffMembers({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListStaffMembersQueryKey(options)
+});
+
+export const adminListStaffMembersInfiniteQueryKey = (options?: Options<AdminListStaffMembersData>): QueryKey<Options<AdminListStaffMembersData>> => createQueryKey('adminListStaffMembers', options, true);
+
+export const adminListStaffMembersInfiniteOptions = (options?: Options<AdminListStaffMembersData>) => {
+  const opts = infiniteQueryOptions<AdminListStaffMembersResponse, DefaultError, InfiniteData<AdminListStaffMembersResponse>, QueryKey<Options<AdminListStaffMembersData>>, number | Pick<QueryKey<Options<AdminListStaffMembersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListStaffMembersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListStaffMembers({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListStaffMembersInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateStaffMemberMutation = (options?: Partial<Options<AdminCreateStaffMemberData>>): UseMutationOptions<AdminCreateStaffMemberResponse, AdminCreateStaffMemberError, Options<AdminCreateStaffMemberData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateStaffMemberResponse, AdminCreateStaffMemberError, Options<AdminCreateStaffMemberData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateStaffMember({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteStaffMemberMutation = (options?: Partial<Options<AdminDeleteStaffMemberData>>): UseMutationOptions<AdminDeleteStaffMemberResponse, DefaultError, Options<AdminDeleteStaffMemberData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteStaffMemberResponse, DefaultError, Options<AdminDeleteStaffMemberData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteStaffMember({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetStaffMemberQueryKey = (options: Options<AdminGetStaffMemberData>) => createQueryKey('adminGetStaffMember', options);
+
+export const adminGetStaffMemberOptions = (options: Options<AdminGetStaffMemberData>) => queryOptions<AdminGetStaffMemberResponse, AdminGetStaffMemberError, AdminGetStaffMemberResponse, ReturnType<typeof adminGetStaffMemberQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetStaffMember({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetStaffMemberQueryKey(options)
+});
+
+export const adminUpdateStaffMemberMutation = (options?: Partial<Options<AdminUpdateStaffMemberData>>): UseMutationOptions<AdminUpdateStaffMemberResponse, AdminUpdateStaffMemberError, Options<AdminUpdateStaffMemberData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateStaffMemberResponse, AdminUpdateStaffMemberError, Options<AdminUpdateStaffMemberData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateStaffMember({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListManagementUsersQueryKey = (options?: Options<AdminListManagementUsersData>) => createQueryKey('adminListManagementUsers', options);
+
+export const adminListManagementUsersOptions = (options?: Options<AdminListManagementUsersData>) => queryOptions<AdminListManagementUsersResponse, DefaultError, AdminListManagementUsersResponse, ReturnType<typeof adminListManagementUsersQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListManagementUsers({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListManagementUsersQueryKey(options)
+});
+
+export const adminListManagementUsersInfiniteQueryKey = (options?: Options<AdminListManagementUsersData>): QueryKey<Options<AdminListManagementUsersData>> => createQueryKey('adminListManagementUsers', options, true);
+
+export const adminListManagementUsersInfiniteOptions = (options?: Options<AdminListManagementUsersData>) => {
+  const opts = infiniteQueryOptions<AdminListManagementUsersResponse, DefaultError, InfiniteData<AdminListManagementUsersResponse>, QueryKey<Options<AdminListManagementUsersData>>, number | Pick<QueryKey<Options<AdminListManagementUsersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListManagementUsersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListManagementUsers({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListManagementUsersInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminGetManagementUserQueryKey = (options: Options<AdminGetManagementUserData>) => createQueryKey('adminGetManagementUser', options);
+
+export const adminGetManagementUserOptions = (options: Options<AdminGetManagementUserData>) => queryOptions<AdminGetManagementUserResponse, AdminGetManagementUserError, AdminGetManagementUserResponse, ReturnType<typeof adminGetManagementUserQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetManagementUser({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetManagementUserQueryKey(options)
+});
+
+export const adminUpdateManagementUserMutation = (options?: Partial<Options<AdminUpdateManagementUserData>>): UseMutationOptions<AdminUpdateManagementUserResponse, AdminUpdateManagementUserError, Options<AdminUpdateManagementUserData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateManagementUserResponse, AdminUpdateManagementUserError, Options<AdminUpdateManagementUserData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateManagementUser({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminListMessagesQueryKey = (options?: Options<AdminListMessagesData>) => createQueryKey('adminListMessages', options);
+
+export const adminListMessagesOptions = (options?: Options<AdminListMessagesData>) => queryOptions<AdminListMessagesResponse, DefaultError, AdminListMessagesResponse, ReturnType<typeof adminListMessagesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListMessages({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListMessagesQueryKey(options)
+});
+
+export const adminListMessagesInfiniteQueryKey = (options?: Options<AdminListMessagesData>): QueryKey<Options<AdminListMessagesData>> => createQueryKey('adminListMessages', options, true);
+
+export const adminListMessagesInfiniteOptions = (options?: Options<AdminListMessagesData>) => {
+  const opts = infiniteQueryOptions<AdminListMessagesResponse, DefaultError, InfiniteData<AdminListMessagesResponse>, QueryKey<Options<AdminListMessagesData>>, number | Pick<QueryKey<Options<AdminListMessagesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListMessagesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListMessages({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListMessagesInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminListReviewsQueryKey = (options?: Options<AdminListReviewsData>) => createQueryKey('adminListReviews', options);
+
+export const adminListReviewsOptions = (options?: Options<AdminListReviewsData>) => queryOptions<AdminListReviewsResponse, DefaultError, AdminListReviewsResponse, ReturnType<typeof adminListReviewsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListReviews({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListReviewsQueryKey(options)
+});
+
+export const adminListReviewsInfiniteQueryKey = (options?: Options<AdminListReviewsData>): QueryKey<Options<AdminListReviewsData>> => createQueryKey('adminListReviews', options, true);
+
+export const adminListReviewsInfiniteOptions = (options?: Options<AdminListReviewsData>) => {
+  const opts = infiniteQueryOptions<AdminListReviewsResponse, DefaultError, InfiniteData<AdminListReviewsResponse>, QueryKey<Options<AdminListReviewsData>>, number | Pick<QueryKey<Options<AdminListReviewsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListReviewsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListReviews({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListReviewsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminCreateReviewMutation = (options?: Partial<Options<AdminCreateReviewData>>): UseMutationOptions<AdminCreateReviewResponse, AdminCreateReviewError, Options<AdminCreateReviewData>> => {
+  const mutationOptions: UseMutationOptions<AdminCreateReviewResponse, AdminCreateReviewError, Options<AdminCreateReviewData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminCreateReview({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminDeleteReviewMutation = (options?: Partial<Options<AdminDeleteReviewData>>): UseMutationOptions<AdminDeleteReviewResponse, DefaultError, Options<AdminDeleteReviewData>> => {
+  const mutationOptions: UseMutationOptions<AdminDeleteReviewResponse, DefaultError, Options<AdminDeleteReviewData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminDeleteReview({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const adminGetReviewQueryKey = (options: Options<AdminGetReviewData>) => createQueryKey('adminGetReview', options);
+
+export const adminGetReviewOptions = (options: Options<AdminGetReviewData>) => queryOptions<AdminGetReviewResponse, AdminGetReviewError, AdminGetReviewResponse, ReturnType<typeof adminGetReviewQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminGetReview({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminGetReviewQueryKey(options)
+});
+
+export const adminUpdateReviewMutation = (options?: Partial<Options<AdminUpdateReviewData>>): UseMutationOptions<AdminUpdateReviewResponse, AdminUpdateReviewError, Options<AdminUpdateReviewData>> => {
+  const mutationOptions: UseMutationOptions<AdminUpdateReviewResponse, AdminUpdateReviewError, Options<AdminUpdateReviewData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminUpdateReview({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const listAssistantMessagesQueryKey = (options: Options<ListAssistantMessagesData>) => createQueryKey('listAssistantMessages', options);
+
+/**
+ * The assistant chat history for the current user in this lesson.
+ */
+export const listAssistantMessagesOptions = (options: Options<ListAssistantMessagesData>) => queryOptions<ListAssistantMessagesResponse, ListAssistantMessagesError, ListAssistantMessagesResponse, ReturnType<typeof listAssistantMessagesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await listAssistantMessages({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: listAssistantMessagesQueryKey(options)
+});
+
+/**
+ * Ask the assistant. Enqueues generation (river job); the reply is delivered
+ * out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
+ */
+export const createAssistantMessageMutation = (options?: Partial<Options<CreateAssistantMessageData>>): UseMutationOptions<unknown, CreateAssistantMessageError, Options<CreateAssistantMessageData>> => {
+  const mutationOptions: UseMutationOptions<unknown, CreateAssistantMessageError, Options<CreateAssistantMessageData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createAssistantMessage({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const listBlogPostsQueryKey = (options?: Options<ListBlogPostsData>) => createQueryKey('listBlogPosts', options);
+
+/**
+ * Paginated published blog posts.
+ */
+export const listBlogPostsOptions = (options?: Options<ListBlogPostsData>) => queryOptions<ListBlogPostsResponse, DefaultError, ListBlogPostsResponse, ReturnType<typeof listBlogPostsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await listBlogPosts({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: listBlogPostsQueryKey(options)
+});
+
+export const listBlogPostsInfiniteQueryKey = (options?: Options<ListBlogPostsData>): QueryKey<Options<ListBlogPostsData>> => createQueryKey('listBlogPosts', options, true);
+
+/**
+ * Paginated published blog posts.
+ */
+export const listBlogPostsInfiniteOptions = (options?: Options<ListBlogPostsData>) => {
+  const opts = infiniteQueryOptions<ListBlogPostsResponse, DefaultError, InfiniteData<ListBlogPostsResponse>, QueryKey<Options<ListBlogPostsData>>, number | Pick<QueryKey<Options<ListBlogPostsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<ListBlogPostsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await listBlogPosts({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: listBlogPostsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Like a post (idempotent per visitor).
+ */
+export const likeBlogPostMutation = (options?: Partial<Options<LikeBlogPostData>>): UseMutationOptions<LikeBlogPostResponse, LikeBlogPostError, Options<LikeBlogPostData>> => {
+  const mutationOptions: UseMutationOptions<LikeBlogPostResponse, LikeBlogPostError, Options<LikeBlogPostData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await likeBlogPost({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const getNextBlogPostQueryKey = (options: Options<GetNextBlogPostData>) => createQueryKey('getNextBlogPost', options);
+
+/**
+ * The next post to read after this one.
+ */
+export const getNextBlogPostOptions = (options: Options<GetNextBlogPostData>) => queryOptions<GetNextBlogPostResponse, GetNextBlogPostError, GetNextBlogPostResponse, ReturnType<typeof getNextBlogPostQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getNextBlogPost({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getNextBlogPostQueryKey(options)
+});
+
+export const getBlogPostQueryKey = (options: Options<GetBlogPostData>) => createQueryKey('getBlogPost', options);
+
+/**
+ * A single blog post by slug.
+ */
+export const getBlogPostOptions = (options: Options<GetBlogPostData>) => queryOptions<GetBlogPostResponse, GetBlogPostError, GetBlogPostResponse, ReturnType<typeof getBlogPostQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getBlogPost({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getBlogPostQueryKey(options)
+});
+
+/**
+ * Request the book download link by email.
+ */
+export const createBookRequestMutation = (options?: Partial<Options<CreateBookRequestData>>): UseMutationOptions<CreateBookRequestResponse, CreateBookRequestError, Options<CreateBookRequestData>> => {
+  const mutationOptions: UseMutationOptions<CreateBookRequestResponse, CreateBookRequestError, Options<CreateBookRequestData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createBookRequest({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const listPublicCourseCategoriesQueryKey = (options?: Options<ListPublicCourseCategoriesData>) => createQueryKey('listPublicCourseCategories', options);
+
+/**
+ * List published categories.
+ */
+export const listPublicCourseCategoriesOptions = (options?: Options<ListPublicCourseCategoriesData>) => queryOptions<ListPublicCourseCategoriesResponse, DefaultError, ListPublicCourseCategoriesResponse, ReturnType<typeof listPublicCourseCategoriesQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await listPublicCourseCategories({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: listPublicCourseCategoriesQueryKey(options)
+});
+
+export const getPublicCourseCategoryQueryKey = (options: Options<GetPublicCourseCategoryData>) => createQueryKey('getPublicCourseCategory', options);
+
+/**
+ * A category and the courses it groups.
+ */
+export const getPublicCourseCategoryOptions = (options: Options<GetPublicCourseCategoryData>) => queryOptions<GetPublicCourseCategoryResponse, GetPublicCourseCategoryError, GetPublicCourseCategoryResponse, ReturnType<typeof getPublicCourseCategoryQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getPublicCourseCategory({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getPublicCourseCategoryQueryKey(options)
+});
+
 export const listCoursesQueryKey = (options?: Options<ListCoursesData>) => createQueryKey('listCourses', options);
 
 /**
@@ -202,3 +1825,419 @@ export const listCoursesOptions = (options?: Options<ListCoursesData>) => queryO
   },
   queryKey: listCoursesQueryKey(options)
 });
+
+export const getCourseLessonQueryKey = (options: Options<GetCourseLessonData>) => createQueryKey('getCourseLesson', options);
+
+/**
+ * Lesson player payload (theory, starter code, tests) by slug.
+ */
+export const getCourseLessonOptions = (options: Options<GetCourseLessonData>) => queryOptions<GetCourseLessonResponse, GetCourseLessonError, GetCourseLessonResponse, ReturnType<typeof getCourseLessonQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getCourseLesson({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getCourseLessonQueryKey(options)
+});
+
+export const getCourseQueryKey = (options: Options<GetCourseData>) => createQueryKey('getCourse', options);
+
+/**
+ * Course landing page by slug.
+ */
+export const getCourseOptions = (options: Options<GetCourseData>) => queryOptions<GetCourseResponse, GetCourseError, GetCourseResponse, ReturnType<typeof getCourseQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getCourse({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getCourseQueryKey(options)
+});
+
+/**
+ * Submit a contact request.
+ */
+export const createLeadMutation = (options?: Partial<Options<CreateLeadData>>): UseMutationOptions<CreateLeadResponse, CreateLeadError, Options<CreateLeadData>> => {
+  const mutationOptions: UseMutationOptions<CreateLeadResponse, CreateLeadError, Options<CreateLeadData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createLead({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Run a submitted solution and record progress. Synchronous to match legacy;
+ * revisit as submit + stream for the Docker-job model (see file header).
+ */
+export const checkLessonMutation = (options?: Partial<Options<CheckLessonData>>): UseMutationOptions<CheckLessonResponse, CheckLessonError, Options<CheckLessonData>> => {
+  const mutationOptions: UseMutationOptions<CheckLessonResponse, CheckLessonError, Options<CheckLessonData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await checkLesson({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const switchLocaleQueryKey = (options: Options<SwitchLocaleData>) => createQueryKey('switchLocale', options);
+
+/**
+ * Persist the preferred UI locale on the session.
+ */
+export const switchLocaleOptions = (options: Options<SwitchLocaleData>) => queryOptions<SwitchLocaleResponse, DefaultError, SwitchLocaleResponse, ReturnType<typeof switchLocaleQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await switchLocale({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: switchLocaleQueryKey(options)
+});
+
+/**
+ * Email a one-time sign-in link.
+ */
+export const createMagicLinkMutation = (options?: Partial<Options<CreateMagicLinkData>>): UseMutationOptions<CreateMagicLinkResponse, CreateMagicLinkError, Options<CreateMagicLinkData>> => {
+  const mutationOptions: UseMutationOptions<CreateMagicLinkResponse, CreateMagicLinkError, Options<CreateMagicLinkData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createMagicLink({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const consumeMagicLinkQueryKey = (options: Options<ConsumeMagicLinkData>) => createQueryKey('consumeMagicLink', options);
+
+/**
+ * Consume a magic link token; sets the JWT cookie.
+ */
+export const consumeMagicLinkOptions = (options: Options<ConsumeMagicLinkData>) => queryOptions<ConsumeMagicLinkResponse, ConsumeMagicLinkError, ConsumeMagicLinkResponse, ReturnType<typeof consumeMagicLinkQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await consumeMagicLink({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: consumeMagicLinkQueryKey(options)
+});
+
+export const getSitemapQueryKey = (options?: Options<GetSitemapData>) => createQueryKey('getSitemap', options);
+
+/**
+ * Everything the sitemap generator needs.
+ */
+export const getSitemapOptions = (options?: Options<GetSitemapData>) => queryOptions<GetSitemapResponse, DefaultError, GetSitemapResponse, ReturnType<typeof getSitemapQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getSitemap({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getSitemapQueryKey(options)
+});
+
+export const getCurrentUserQueryKey = (options?: Options<GetCurrentUserData>) => createQueryKey('getCurrentUser', options);
+
+/**
+ * Resolve the current user from the session cookie (for SSR).
+ */
+export const getCurrentUserOptions = (options?: Options<GetCurrentUserData>) => queryOptions<GetCurrentUserResponse, DefaultError, GetCurrentUserResponse, ReturnType<typeof getCurrentUserQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getCurrentUser({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getCurrentUserQueryKey(options)
+});
+
+export const getMyDashboardQueryKey = (options?: Options<GetMyDashboardData>) => createQueryKey('getMyDashboard', options);
+
+/**
+ * The signed-in user's course dashboard.
+ */
+export const getMyDashboardOptions = (options?: Options<GetMyDashboardData>) => queryOptions<GetMyDashboardResponse, GetMyDashboardError, GetMyDashboardResponse, ReturnType<typeof getMyDashboardQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getMyDashboard({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getMyDashboardQueryKey(options)
+});
+
+export const getPageQueryKey = (options: Options<GetPageData>) => createQueryKey('getPage', options);
+
+/**
+ * A static content page by slug.
+ */
+export const getPageOptions = (options: Options<GetPageData>) => queryOptions<GetPageResponse, GetPageError, GetPageResponse, ReturnType<typeof getPageQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getPage({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getPageQueryKey(options)
+});
+
+/**
+ * Complete a passkey login; sets the JWT cookie.
+ */
+export const createPasskeySessionMutation = (options?: Partial<Options<CreatePasskeySessionData>>): UseMutationOptions<CreatePasskeySessionResponse, CreatePasskeySessionError, Options<CreatePasskeySessionData>> => {
+  const mutationOptions: UseMutationOptions<CreatePasskeySessionResponse, CreatePasskeySessionError, Options<CreatePasskeySessionData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createPasskeySession({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const newPasskeySessionQueryKey = (options?: Options<NewPasskeySessionData>) => createQueryKey('newPasskeySession', options);
+
+/**
+ * Begin a passkey login ceremony.
+ */
+export const newPasskeySessionOptions = (options?: Options<NewPasskeySessionData>) => queryOptions<NewPasskeySessionResponse, DefaultError, NewPasskeySessionResponse, ReturnType<typeof newPasskeySessionQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await newPasskeySession({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: newPasskeySessionQueryKey(options)
+});
+
+/**
+ * Set a new password using a reset token.
+ */
+export const updatePasswordMutation = (options?: Partial<Options<UpdatePasswordData>>): UseMutationOptions<UpdatePasswordResponse, UpdatePasswordError, Options<UpdatePasswordData>> => {
+  const mutationOptions: UseMutationOptions<UpdatePasswordResponse, UpdatePasswordError, Options<UpdatePasswordData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await updatePassword({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const checkPasswordResetTokenQueryKey = (options: Options<CheckPasswordResetTokenData>) => createQueryKey('checkPasswordResetToken', options);
+
+/**
+ * Validate a reset token before showing the form.
+ */
+export const checkPasswordResetTokenOptions = (options: Options<CheckPasswordResetTokenData>) => queryOptions<CheckPasswordResetTokenResponse, CheckPasswordResetTokenError, CheckPasswordResetTokenResponse, ReturnType<typeof checkPasswordResetTokenQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await checkPasswordResetToken({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: checkPasswordResetTokenQueryKey(options)
+});
+
+/**
+ * Send an SMS verification code.
+ */
+export const createPhoneAuthMutation = (options?: Partial<Options<CreatePhoneAuthData>>): UseMutationOptions<CreatePhoneAuthResponse, CreatePhoneAuthError, Options<CreatePhoneAuthData>> => {
+  const mutationOptions: UseMutationOptions<CreatePhoneAuthResponse, CreatePhoneAuthError, Options<CreatePhoneAuthData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createPhoneAuth({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Confirm the SMS code; sets the JWT cookie.
+ */
+export const confirmPhoneAuthMutation = (options?: Partial<Options<ConfirmPhoneAuthData>>): UseMutationOptions<ConfirmPhoneAuthResponse, ConfirmPhoneAuthError, Options<ConfirmPhoneAuthData>> => {
+  const mutationOptions: UseMutationOptions<ConfirmPhoneAuthResponse, ConfirmPhoneAuthError, Options<ConfirmPhoneAuthData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await confirmPhoneAuth({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Email a password-reset link.
+ */
+export const createPasswordReminderMutation = (options?: Partial<Options<CreatePasswordReminderData>>): UseMutationOptions<CreatePasswordReminderResponse, CreatePasswordReminderError, Options<CreatePasswordReminderData>> => {
+  const mutationOptions: UseMutationOptions<CreatePasswordReminderResponse, CreatePasswordReminderError, Options<CreatePasswordReminderData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createPasswordReminder({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+export const listPublicReviewsQueryKey = (options?: Options<ListPublicReviewsData>) => createQueryKey('listPublicReviews', options);
+
+/**
+ * Paginated published student reviews.
+ */
+export const listPublicReviewsOptions = (options?: Options<ListPublicReviewsData>) => queryOptions<ListPublicReviewsResponse, DefaultError, ListPublicReviewsResponse, ReturnType<typeof listPublicReviewsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await listPublicReviews({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: listPublicReviewsQueryKey(options)
+});
+
+export const listPublicReviewsInfiniteQueryKey = (options?: Options<ListPublicReviewsData>): QueryKey<Options<ListPublicReviewsData>> => createQueryKey('listPublicReviews', options, true);
+
+/**
+ * Paginated published student reviews.
+ */
+export const listPublicReviewsInfiniteOptions = (options?: Options<ListPublicReviewsData>) => {
+  const opts = infiniteQueryOptions<ListPublicReviewsResponse, DefaultError, InfiniteData<ListPublicReviewsResponse>, QueryKey<Options<ListPublicReviewsData>>, number | Pick<QueryKey<Options<ListPublicReviewsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<ListPublicReviewsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await listPublicReviews({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: listPublicReviewsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Log out; clears the JWT cookie.
+ */
+export const deleteSessionMutation = (options?: Partial<Options<DeleteSessionData>>): UseMutationOptions<DeleteSessionResponse, DefaultError, Options<DeleteSessionData>> => {
+  const mutationOptions: UseMutationOptions<DeleteSessionResponse, DefaultError, Options<DeleteSessionData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await deleteSession({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Log in with email + password; sets the JWT cookie.
+ */
+export const createSessionMutation = (options?: Partial<Options<CreateSessionData>>): UseMutationOptions<CreateSessionResponse, CreateSessionError, Options<CreateSessionData>> => {
+  const mutationOptions: UseMutationOptions<CreateSessionResponse, CreateSessionError, Options<CreateSessionData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createSession({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Sign up; sets the JWT cookie on success.
+ */
+export const createUserMutation = (options?: Partial<Options<CreateUserData>>): UseMutationOptions<CreateUserResponse, CreateUserError, Options<CreateUserData>> => {
+  const mutationOptions: UseMutationOptions<CreateUserResponse, CreateUserError, Options<CreateUserData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await createUser({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};

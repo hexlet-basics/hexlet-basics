@@ -1,0 +1,184 @@
+import "@typespec/http";
+import "@typespec/rest";
+import "@typespec/openapi";
+
+using Http;
+using Rest;
+using OpenAPI;
+
+namespace HexletBasics;
+
+// ---------------------------------------------------------------------------
+// Public read / SEO surface.
+//
+// Legacy URLs are preserved (ADR-0002): `/languages`, `/language_categories`,
+// locale prefixes handled by the SSR router, not the contract. Reads are
+// unauthenticated; writes here are the marketing entry points (leads, likes).
+// ---------------------------------------------------------------------------
+
+/** Everything the public course landing needs in one payload. */
+model CourseView {
+  course: Course;
+  landingPage: CourseLandingPage | null;
+  lessons: CourseLessonListItem[];
+
+  /** The current user's membership, when signed in. */
+  member: CourseMember | null;
+}
+
+/** A category page with the courses it groups. */
+model CourseCategoryView {
+  category: CourseCategory;
+  landingPages: CourseCatalogItem[];
+}
+
+/** A static content page (about, authors, privacy, tos, cookie). */
+model PageContent {
+  slug: string;
+  title: string;
+  bodyHtml: string;
+}
+
+@route("/languages")
+@tag("Courses")
+interface Courses {
+  /** List the published course catalog. */
+  @get
+  @operationId("listCourses")
+  list(): CourseCatalogItem[];
+
+  /** Course landing page by slug. */
+  @get
+  @route("/{slug}")
+  @operationId("getCourse")
+  get(@path slug: string): CourseView | NotFoundError;
+}
+
+@route("/languages/{courseSlug}/lessons")
+@tag("Courses")
+interface CourseLessons {
+  /** Lesson player payload (theory, starter code, tests) by slug. */
+  @get
+  @route("/{slug}")
+  @operationId("getCourseLesson")
+  get(@path courseSlug: string, @path slug: string): CourseLesson | NotFoundError;
+}
+
+@route("/language_categories")
+@tag("Course Categories")
+interface PublicCourseCategories {
+  /** List published categories. */
+  @get
+  @operationId("listPublicCourseCategories")
+  list(): CourseCategory[];
+
+  /** A category and the courses it groups. */
+  @get
+  @route("/{slug}")
+  @operationId("getPublicCourseCategory")
+  get(@path slug: string): CourseCategoryView | NotFoundError;
+}
+
+@route("/blog_posts")
+@tag("Blog")
+interface Blog {
+  /** Paginated published blog posts. */
+  @get
+  @operationId("listBlogPosts")
+  list(...ListQuery): Page<BlogPost>;
+
+  /** A single blog post by slug. */
+  @get
+  @route("/{slug}")
+  @operationId("getBlogPost")
+  get(@path slug: string): BlogPost | NotFoundError;
+
+  /** The next post to read after this one. */
+  @get
+  @route("/{id}/next")
+  @operationId("getNextBlogPost")
+  next(@path id: int32): BlogPost | NotFoundError;
+
+  /** Like a post (idempotent per visitor). */
+  @post
+  @route("/{id}/likes")
+  @operationId("likeBlogPost")
+  like(@path id: int32): {
+    @statusCode statusCode: 201;
+    @body body: BlogPost;
+  } | NotFoundError;
+}
+
+@route("/reviews")
+@tag("Reviews")
+interface PublicReviews {
+  /** Paginated published student reviews. */
+  @get
+  @operationId("listPublicReviews")
+  list(...ListQuery): Page<Review>;
+}
+
+@route("/pages")
+@tag("Pages")
+interface Pages {
+  /** A static content page by slug. */
+  @get
+  @route("/{slug}")
+  @operationId("getPage")
+  get(@path slug: string): PageContent | NotFoundError;
+}
+
+// ---- Marketing writes -----------------------------------------------------
+
+/** A lead captured from a marketing form (legacy: `LeadCrud`). */
+model LeadInput {
+  contactMethod: "telegram" | "phone" | "whatsapp";
+  @minLength(1) contactValue: string;
+  ymClientId: string | null;
+}
+
+@route("/leads")
+@tag("Leads")
+interface PublicLeads {
+  /** Submit a contact request. */
+  @post
+  @operationId("createLead")
+  create(@body body: LeadInput): {
+    @statusCode statusCode: 201;
+    @body lead: Lead;
+  } | ValidationError;
+}
+
+/** A request to download the free book (ru marketing funnel). */
+model BookRequestInput {
+  @minLength(1) email: string;
+  fullName: string | null;
+}
+
+@route("/book")
+@tag("Marketing")
+interface Book {
+  /** Request the book download link by email. */
+  @post
+  @route("/create_request")
+  @operationId("createBookRequest")
+  createRequest(@body body: BookRequestInput): NoContent | ValidationError;
+}
+
+// ---- Sitemap --------------------------------------------------------------
+
+/** Aggregated data for the XML sitemap / SEO index. */
+model Sitemap {
+  landingPages: SitemapCourseLandingPage[];
+  lessons: SitemapCourseLesson[];
+  blogPosts: SitemapBlogPost[];
+}
+
+@route("/map")
+@tag("Sitemap")
+interface SitemapFeed {
+  /** Everything the sitemap generator needs. */
+  @get
+  @operationId("getSitemap")
+  get(): Sitemap;
+}

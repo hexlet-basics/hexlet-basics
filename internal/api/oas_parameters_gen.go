@@ -14,6 +14,449 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+// AdminCreateCategoryQnaItemParams is parameters of adminCreateCategoryQnaItem operation.
+type AdminCreateCategoryQnaItemParams struct {
+	CategoryId int32
+}
+
+func unpackAdminCreateCategoryQnaItemParams(packed middleware.Parameters) (params AdminCreateCategoryQnaItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "categoryId",
+			In:   "path",
+		}
+		params.CategoryId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminCreateCategoryQnaItemParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminCreateCategoryQnaItemParams, _ error) {
+	// Decode path: categoryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "categoryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.CategoryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "categoryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminCreateCourseVersionParams is parameters of adminCreateCourseVersion operation.
+type AdminCreateCourseVersionParams struct {
+	ID int32
+}
+
+func unpackAdminCreateCourseVersionParams(packed middleware.Parameters) (params AdminCreateCourseVersionParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminCreateCourseVersionParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminCreateCourseVersionParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminCreateLandingPageQnaItemParams is parameters of adminCreateLandingPageQnaItem operation.
+type AdminCreateLandingPageQnaItemParams struct {
+	LandingPageId int32
+}
+
+func unpackAdminCreateLandingPageQnaItemParams(packed middleware.Parameters) (params AdminCreateLandingPageQnaItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "landingPageId",
+			In:   "path",
+		}
+		params.LandingPageId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminCreateLandingPageQnaItemParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminCreateLandingPageQnaItemParams, _ error) {
+	// Decode path: landingPageId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "landingPageId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.LandingPageId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "landingPageId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteBannerParams is parameters of adminDeleteBanner operation.
+type AdminDeleteBannerParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteBannerParams(packed middleware.Parameters) (params AdminDeleteBannerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteBannerParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteBannerParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteBlogPostParams is parameters of adminDeleteBlogPost operation.
+type AdminDeleteBlogPostParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteBlogPostParams(packed middleware.Parameters) (params AdminDeleteBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteCategoryQnaItemParams is parameters of adminDeleteCategoryQnaItem operation.
+type AdminDeleteCategoryQnaItemParams struct {
+	CategoryId int32
+	ID         int32
+}
+
+func unpackAdminDeleteCategoryQnaItemParams(packed middleware.Parameters) (params AdminDeleteCategoryQnaItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "categoryId",
+			In:   "path",
+		}
+		params.CategoryId = packed[key].(int32)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteCategoryQnaItemParams(args [2]string, argsEscaped bool, r *http.Request) (params AdminDeleteCategoryQnaItemParams, _ error) {
+	// Decode path: categoryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "categoryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.CategoryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "categoryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminDeleteCourseCategoryParams is parameters of adminDeleteCourseCategory operation.
 type AdminDeleteCourseCategoryParams struct {
 	ID int32
@@ -31,6 +474,644 @@ func unpackAdminDeleteCourseCategoryParams(packed middleware.Parameters) (params
 }
 
 func decodeAdminDeleteCourseCategoryParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteCourseCategoryParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteCourseLandingPageParams is parameters of adminDeleteCourseLandingPage operation.
+type AdminDeleteCourseLandingPageParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteCourseLandingPageParams(packed middleware.Parameters) (params AdminDeleteCourseLandingPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteCourseLandingPageParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteCourseLandingPageParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteLandingPageQnaItemParams is parameters of adminDeleteLandingPageQnaItem operation.
+type AdminDeleteLandingPageQnaItemParams struct {
+	LandingPageId int32
+	ID            int32
+}
+
+func unpackAdminDeleteLandingPageQnaItemParams(packed middleware.Parameters) (params AdminDeleteLandingPageQnaItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "landingPageId",
+			In:   "path",
+		}
+		params.LandingPageId = packed[key].(int32)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteLandingPageQnaItemParams(args [2]string, argsEscaped bool, r *http.Request) (params AdminDeleteLandingPageQnaItemParams, _ error) {
+	// Decode path: landingPageId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "landingPageId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.LandingPageId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "landingPageId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteReviewParams is parameters of adminDeleteReview operation.
+type AdminDeleteReviewParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteReviewParams(packed middleware.Parameters) (params AdminDeleteReviewParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteReviewParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteReviewParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteRoleParams is parameters of adminDeleteRole operation.
+type AdminDeleteRoleParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteRoleParams(packed middleware.Parameters) (params AdminDeleteRoleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteRoleParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteRoleParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteStaffMemberParams is parameters of adminDeleteStaffMember operation.
+type AdminDeleteStaffMemberParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteStaffMemberParams(packed middleware.Parameters) (params AdminDeleteStaffMemberParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteStaffMemberParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteStaffMemberParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminDeleteUserParams is parameters of adminDeleteUser operation.
+type AdminDeleteUserParams struct {
+	ID int32
+}
+
+func unpackAdminDeleteUserParams(packed middleware.Parameters) (params AdminDeleteUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminDeleteUserParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminDeleteUserParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetBannerParams is parameters of adminGetBanner operation.
+type AdminGetBannerParams struct {
+	ID int32
+}
+
+func unpackAdminGetBannerParams(packed middleware.Parameters) (params AdminGetBannerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetBannerParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetBannerParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetBlogPostParams is parameters of adminGetBlogPost operation.
+type AdminGetBlogPostParams struct {
+	ID int32
+}
+
+func unpackAdminGetBlogPostParams(packed middleware.Parameters) (params AdminGetBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetCourseParams is parameters of adminGetCourse operation.
+type AdminGetCourseParams struct {
+	ID int32
+}
+
+func unpackAdminGetCourseParams(packed middleware.Parameters) (params AdminGetCourseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetCourseParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetCourseParams, _ error) {
 	// Decode path: id.
 	if err := func() error {
 		param := args[0]
@@ -144,10 +1225,1002 @@ func decodeAdminGetCourseCategoryParams(args [1]string, argsEscaped bool, r *htt
 	return params, nil
 }
 
+// AdminGetCourseLandingPageParams is parameters of adminGetCourseLandingPage operation.
+type AdminGetCourseLandingPageParams struct {
+	ID int32
+}
+
+func unpackAdminGetCourseLandingPageParams(packed middleware.Parameters) (params AdminGetCourseLandingPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetCourseLandingPageParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetCourseLandingPageParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetManagementUserParams is parameters of adminGetManagementUser operation.
+type AdminGetManagementUserParams struct {
+	ID int32
+}
+
+func unpackAdminGetManagementUserParams(packed middleware.Parameters) (params AdminGetManagementUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetManagementUserParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetManagementUserParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetReviewParams is parameters of adminGetReview operation.
+type AdminGetReviewParams struct {
+	ID int32
+}
+
+func unpackAdminGetReviewParams(packed middleware.Parameters) (params AdminGetReviewParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetReviewParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetReviewParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetRoleParams is parameters of adminGetRole operation.
+type AdminGetRoleParams struct {
+	ID int32
+}
+
+func unpackAdminGetRoleParams(packed middleware.Parameters) (params AdminGetRoleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetRoleParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetRoleParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetRolePermissionsParams is parameters of adminGetRolePermissions operation.
+type AdminGetRolePermissionsParams struct {
+	RoleId int32
+}
+
+func unpackAdminGetRolePermissionsParams(packed middleware.Parameters) (params AdminGetRolePermissionsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "roleId",
+			In:   "path",
+		}
+		params.RoleId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetRolePermissionsParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetRolePermissionsParams, _ error) {
+	// Decode path: roleId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "roleId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.RoleId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "roleId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetStaffMemberParams is parameters of adminGetStaffMember operation.
+type AdminGetStaffMemberParams struct {
+	ID int32
+}
+
+func unpackAdminGetStaffMemberParams(packed middleware.Parameters) (params AdminGetStaffMemberParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetStaffMemberParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetStaffMemberParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminGetUserParams is parameters of adminGetUser operation.
+type AdminGetUserParams struct {
+	ID int32
+}
+
+func unpackAdminGetUserParams(packed middleware.Parameters) (params AdminGetUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminGetUserParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminGetUserParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListBannersParams is parameters of adminListBanners operation.
+type AdminListBannersParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListBannersParams(packed middleware.Parameters) (params AdminListBannersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListBannersParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListBannersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListBlogPostsParams is parameters of adminListBlogPosts operation.
+type AdminListBlogPostsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListBlogPostsParams(packed middleware.Parameters) (params AdminListBlogPostsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListBlogPostsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListCategoryQnaItemsParams is parameters of adminListCategoryQnaItems operation.
+type AdminListCategoryQnaItemsParams struct {
+	CategoryId int32
+}
+
+func unpackAdminListCategoryQnaItemsParams(packed middleware.Parameters) (params AdminListCategoryQnaItemsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "categoryId",
+			In:   "path",
+		}
+		params.CategoryId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminListCategoryQnaItemsParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminListCategoryQnaItemsParams, _ error) {
+	// Decode path: categoryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "categoryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.CategoryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "categoryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // AdminListCourseCategoriesParams is parameters of adminListCourseCategories operation.
 type AdminListCourseCategoriesParams struct {
 	Page    OptInt32 `json:",omitempty,omitzero"`
 	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
 }
 
 func unpackAdminListCourseCategoriesParams(packed middleware.Parameters) (params AdminListCourseCategoriesParams) {
@@ -167,6 +2240,24 @@ func unpackAdminListCourseCategoriesParams(packed middleware.Parameters) (params
 		}
 		if v, ok := packed[key]; ok {
 			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
 		}
 	}
 	return params
@@ -256,6 +2347,3541 @@ func decodeAdminListCourseCategoriesParams(args [0]string, argsEscaped bool, r *
 			Err:  err,
 		}
 	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListCourseLandingPagesParams is parameters of adminListCourseLandingPages operation.
+type AdminListCourseLandingPagesParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListCourseLandingPagesParams(packed middleware.Parameters) (params AdminListCourseLandingPagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListCourseLandingPagesParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListCourseLandingPagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListCourseLessonMembersParams is parameters of adminListCourseLessonMembers operation.
+type AdminListCourseLessonMembersParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListCourseLessonMembersParams(packed middleware.Parameters) (params AdminListCourseLessonMembersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListCourseLessonMembersParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListCourseLessonMembersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListCourseLessonReviewsParams is parameters of adminListCourseLessonReviews operation.
+type AdminListCourseLessonReviewsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListCourseLessonReviewsParams(packed middleware.Parameters) (params AdminListCourseLessonReviewsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListCourseLessonReviewsParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListCourseLessonReviewsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListCourseLessonsParams is parameters of adminListCourseLessons operation.
+type AdminListCourseLessonsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListCourseLessonsParams(packed middleware.Parameters) (params AdminListCourseLessonsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListCourseLessonsParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListCourseLessonsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListCoursesParams is parameters of adminListCourses operation.
+type AdminListCoursesParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListCoursesParams(packed middleware.Parameters) (params AdminListCoursesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListCoursesParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListCoursesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListLandingPageQnaItemsParams is parameters of adminListLandingPageQnaItems operation.
+type AdminListLandingPageQnaItemsParams struct {
+	LandingPageId int32
+}
+
+func unpackAdminListLandingPageQnaItemsParams(packed middleware.Parameters) (params AdminListLandingPageQnaItemsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "landingPageId",
+			In:   "path",
+		}
+		params.LandingPageId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminListLandingPageQnaItemsParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminListLandingPageQnaItemsParams, _ error) {
+	// Decode path: landingPageId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "landingPageId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.LandingPageId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "landingPageId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListLeadsParams is parameters of adminListLeads operation.
+type AdminListLeadsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListLeadsParams(packed middleware.Parameters) (params AdminListLeadsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListLeadsParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListLeadsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListManagementUsersParams is parameters of adminListManagementUsers operation.
+type AdminListManagementUsersParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListManagementUsersParams(packed middleware.Parameters) (params AdminListManagementUsersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListManagementUsersParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListManagementUsersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListMessagesParams is parameters of adminListMessages operation.
+type AdminListMessagesParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListMessagesParams(packed middleware.Parameters) (params AdminListMessagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListMessagesParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListMessagesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListReviewsParams is parameters of adminListReviews operation.
+type AdminListReviewsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListReviewsParams(packed middleware.Parameters) (params AdminListReviewsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListReviewsParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListReviewsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListRolesParams is parameters of adminListRoles operation.
+type AdminListRolesParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListRolesParams(packed middleware.Parameters) (params AdminListRolesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListRolesParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListRolesParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListStaffMembersParams is parameters of adminListStaffMembers operation.
+type AdminListStaffMembersParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListStaffMembersParams(packed middleware.Parameters) (params AdminListStaffMembersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListStaffMembersParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListStaffMembersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminListUsersParams is parameters of adminListUsers operation.
+type AdminListUsersParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackAdminListUsersParams(packed middleware.Parameters) (params AdminListUsersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeAdminListUsersParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminListUsersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminReviewCourseParams is parameters of adminReviewCourse operation.
+type AdminReviewCourseParams struct {
+	ID int32
+}
+
+func unpackAdminReviewCourseParams(packed middleware.Parameters) (params AdminReviewCourseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminReviewCourseParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminReviewCourseParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminReviewCourseLessonParams is parameters of adminReviewCourseLesson operation.
+type AdminReviewCourseLessonParams struct {
+	ID int32
+}
+
+func unpackAdminReviewCourseLessonParams(packed middleware.Parameters) (params AdminReviewCourseLessonParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminReviewCourseLessonParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminReviewCourseLessonParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminSearchUsersParams is parameters of adminSearchUsers operation.
+type AdminSearchUsersParams struct {
+	Q string
+}
+
+func unpackAdminSearchUsersParams(packed middleware.Parameters) (params AdminSearchUsersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "q",
+			In:   "query",
+		}
+		params.Q = packed[key].(string)
+	}
+	return params
+}
+
+func decodeAdminSearchUsersParams(args [0]string, argsEscaped bool, r *http.Request) (params AdminSearchUsersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: q.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Q = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "q",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminSetBlogPostRelatedCoursesParams is parameters of adminSetBlogPostRelatedCourses operation.
+type AdminSetBlogPostRelatedCoursesParams struct {
+	ID int32
+}
+
+func unpackAdminSetBlogPostRelatedCoursesParams(packed middleware.Parameters) (params AdminSetBlogPostRelatedCoursesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminSetBlogPostRelatedCoursesParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminSetBlogPostRelatedCoursesParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateBannerParams is parameters of adminUpdateBanner operation.
+type AdminUpdateBannerParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateBannerParams(packed middleware.Parameters) (params AdminUpdateBannerParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateBannerParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateBannerParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateBlogPostParams is parameters of adminUpdateBlogPost operation.
+type AdminUpdateBlogPostParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateBlogPostParams(packed middleware.Parameters) (params AdminUpdateBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateCategoryQnaItemParams is parameters of adminUpdateCategoryQnaItem operation.
+type AdminUpdateCategoryQnaItemParams struct {
+	CategoryId int32
+	ID         int32
+}
+
+func unpackAdminUpdateCategoryQnaItemParams(packed middleware.Parameters) (params AdminUpdateCategoryQnaItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "categoryId",
+			In:   "path",
+		}
+		params.CategoryId = packed[key].(int32)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateCategoryQnaItemParams(args [2]string, argsEscaped bool, r *http.Request) (params AdminUpdateCategoryQnaItemParams, _ error) {
+	// Decode path: categoryId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "categoryId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.CategoryId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "categoryId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateCourseParams is parameters of adminUpdateCourse operation.
+type AdminUpdateCourseParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateCourseParams(packed middleware.Parameters) (params AdminUpdateCourseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateCourseParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateCourseParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
 	return params, nil
 }
 
@@ -317,6 +5943,2075 @@ func decodeAdminUpdateCourseCategoryParams(args [1]string, argsEscaped bool, r *
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateCourseLandingPageParams is parameters of adminUpdateCourseLandingPage operation.
+type AdminUpdateCourseLandingPageParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateCourseLandingPageParams(packed middleware.Parameters) (params AdminUpdateCourseLandingPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateCourseLandingPageParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateCourseLandingPageParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateLandingPageQnaItemParams is parameters of adminUpdateLandingPageQnaItem operation.
+type AdminUpdateLandingPageQnaItemParams struct {
+	LandingPageId int32
+	ID            int32
+}
+
+func unpackAdminUpdateLandingPageQnaItemParams(packed middleware.Parameters) (params AdminUpdateLandingPageQnaItemParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "landingPageId",
+			In:   "path",
+		}
+		params.LandingPageId = packed[key].(int32)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateLandingPageQnaItemParams(args [2]string, argsEscaped bool, r *http.Request) (params AdminUpdateLandingPageQnaItemParams, _ error) {
+	// Decode path: landingPageId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "landingPageId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.LandingPageId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "landingPageId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateManagementUserParams is parameters of adminUpdateManagementUser operation.
+type AdminUpdateManagementUserParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateManagementUserParams(packed middleware.Parameters) (params AdminUpdateManagementUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateManagementUserParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateManagementUserParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateReviewParams is parameters of adminUpdateReview operation.
+type AdminUpdateReviewParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateReviewParams(packed middleware.Parameters) (params AdminUpdateReviewParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateReviewParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateReviewParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateRoleParams is parameters of adminUpdateRole operation.
+type AdminUpdateRoleParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateRoleParams(packed middleware.Parameters) (params AdminUpdateRoleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateRoleParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateRoleParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateRolePermissionsParams is parameters of adminUpdateRolePermissions operation.
+type AdminUpdateRolePermissionsParams struct {
+	RoleId int32
+}
+
+func unpackAdminUpdateRolePermissionsParams(packed middleware.Parameters) (params AdminUpdateRolePermissionsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "roleId",
+			In:   "path",
+		}
+		params.RoleId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateRolePermissionsParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateRolePermissionsParams, _ error) {
+	// Decode path: roleId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "roleId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.RoleId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "roleId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateStaffMemberParams is parameters of adminUpdateStaffMember operation.
+type AdminUpdateStaffMemberParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateStaffMemberParams(packed middleware.Parameters) (params AdminUpdateStaffMemberParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateStaffMemberParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateStaffMemberParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// AdminUpdateUserParams is parameters of adminUpdateUser operation.
+type AdminUpdateUserParams struct {
+	ID int32
+}
+
+func unpackAdminUpdateUserParams(packed middleware.Parameters) (params AdminUpdateUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeAdminUpdateUserParams(args [1]string, argsEscaped bool, r *http.Request) (params AdminUpdateUserParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// CheckLessonParams is parameters of checkLesson operation.
+type CheckLessonParams struct {
+	ID int32
+}
+
+func unpackCheckLessonParams(packed middleware.Parameters) (params CheckLessonParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeCheckLessonParams(args [1]string, argsEscaped bool, r *http.Request) (params CheckLessonParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// CheckPasswordResetTokenParams is parameters of checkPasswordResetToken operation.
+type CheckPasswordResetTokenParams struct {
+	Token string
+}
+
+func unpackCheckPasswordResetTokenParams(packed middleware.Parameters) (params CheckPasswordResetTokenParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "token",
+			In:   "path",
+		}
+		params.Token = packed[key].(string)
+	}
+	return params
+}
+
+func decodeCheckPasswordResetTokenParams(args [1]string, argsEscaped bool, r *http.Request) (params CheckPasswordResetTokenParams, _ error) {
+	// Decode path: token.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "token",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Token = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "token",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ConsumeMagicLinkParams is parameters of consumeMagicLink operation.
+type ConsumeMagicLinkParams struct {
+	Token string
+}
+
+func unpackConsumeMagicLinkParams(packed middleware.Parameters) (params ConsumeMagicLinkParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "token",
+			In:   "path",
+		}
+		params.Token = packed[key].(string)
+	}
+	return params
+}
+
+func decodeConsumeMagicLinkParams(args [1]string, argsEscaped bool, r *http.Request) (params ConsumeMagicLinkParams, _ error) {
+	// Decode path: token.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "token",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Token = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "token",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// CreateAssistantMessageParams is parameters of createAssistantMessage operation.
+type CreateAssistantMessageParams struct {
+	LessonId int32
+}
+
+func unpackCreateAssistantMessageParams(packed middleware.Parameters) (params CreateAssistantMessageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "lessonId",
+			In:   "path",
+		}
+		params.LessonId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeCreateAssistantMessageParams(args [1]string, argsEscaped bool, r *http.Request) (params CreateAssistantMessageParams, _ error) {
+	// Decode path: lessonId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "lessonId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.LessonId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "lessonId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DeletePasskeyParams is parameters of deletePasskey operation.
+type DeletePasskeyParams struct {
+	ID int32
+}
+
+func unpackDeletePasskeyParams(packed middleware.Parameters) (params DeletePasskeyParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeDeletePasskeyParams(args [1]string, argsEscaped bool, r *http.Request) (params DeletePasskeyParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetBlogPostParams is parameters of getBlogPost operation.
+type GetBlogPostParams struct {
+	Slug string
+}
+
+func unpackGetBlogPostParams(packed middleware.Parameters) (params GetBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "slug",
+			In:   "path",
+		}
+		params.Slug = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params GetBlogPostParams, _ error) {
+	// Decode path: slug.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "slug",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Slug = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "slug",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetCourseParams is parameters of getCourse operation.
+type GetCourseParams struct {
+	Slug string
+}
+
+func unpackGetCourseParams(packed middleware.Parameters) (params GetCourseParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "slug",
+			In:   "path",
+		}
+		params.Slug = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetCourseParams(args [1]string, argsEscaped bool, r *http.Request) (params GetCourseParams, _ error) {
+	// Decode path: slug.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "slug",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Slug = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "slug",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetCourseLessonParams is parameters of getCourseLesson operation.
+type GetCourseLessonParams struct {
+	CourseSlug string
+	Slug       string
+}
+
+func unpackGetCourseLessonParams(packed middleware.Parameters) (params GetCourseLessonParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "courseSlug",
+			In:   "path",
+		}
+		params.CourseSlug = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "slug",
+			In:   "path",
+		}
+		params.Slug = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetCourseLessonParams(args [2]string, argsEscaped bool, r *http.Request) (params GetCourseLessonParams, _ error) {
+	// Decode path: courseSlug.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "courseSlug",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.CourseSlug = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "courseSlug",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: slug.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "slug",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Slug = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "slug",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetNextBlogPostParams is parameters of getNextBlogPost operation.
+type GetNextBlogPostParams struct {
+	ID int32
+}
+
+func unpackGetNextBlogPostParams(packed middleware.Parameters) (params GetNextBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeGetNextBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params GetNextBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetPageParams is parameters of getPage operation.
+type GetPageParams struct {
+	Slug string
+}
+
+func unpackGetPageParams(packed middleware.Parameters) (params GetPageParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "slug",
+			In:   "path",
+		}
+		params.Slug = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetPageParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPageParams, _ error) {
+	// Decode path: slug.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "slug",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Slug = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "slug",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// GetPublicCourseCategoryParams is parameters of getPublicCourseCategory operation.
+type GetPublicCourseCategoryParams struct {
+	Slug string
+}
+
+func unpackGetPublicCourseCategoryParams(packed middleware.Parameters) (params GetPublicCourseCategoryParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "slug",
+			In:   "path",
+		}
+		params.Slug = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetPublicCourseCategoryParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPublicCourseCategoryParams, _ error) {
+	// Decode path: slug.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "slug",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Slug = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "slug",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// LikeBlogPostParams is parameters of likeBlogPost operation.
+type LikeBlogPostParams struct {
+	ID int32
+}
+
+func unpackLikeBlogPostParams(packed middleware.Parameters) (params LikeBlogPostParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "id",
+			In:   "path",
+		}
+		params.ID = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeLikeBlogPostParams(args [1]string, argsEscaped bool, r *http.Request) (params LikeBlogPostParams, _ error) {
+	// Decode path: id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.ID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListAssistantMessagesParams is parameters of listAssistantMessages operation.
+type ListAssistantMessagesParams struct {
+	LessonId int32
+}
+
+func unpackListAssistantMessagesParams(packed middleware.Parameters) (params ListAssistantMessagesParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "lessonId",
+			In:   "path",
+		}
+		params.LessonId = packed[key].(int32)
+	}
+	return params
+}
+
+func decodeListAssistantMessagesParams(args [1]string, argsEscaped bool, r *http.Request) (params ListAssistantMessagesParams, _ error) {
+	// Decode path: lessonId.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "lessonId",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt32(val)
+				if err != nil {
+					return err
+				}
+
+				params.LessonId = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "lessonId",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListBlogPostsParams is parameters of listBlogPosts operation.
+type ListBlogPostsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackListBlogPostsParams(packed middleware.Parameters) (params ListBlogPostsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeListBlogPostsParams(args [0]string, argsEscaped bool, r *http.Request) (params ListBlogPostsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// ListPublicReviewsParams is parameters of listPublicReviews operation.
+type ListPublicReviewsParams struct {
+	Page    OptInt32 `json:",omitempty,omitzero"`
+	PerPage OptInt32 `json:",omitempty,omitzero"`
+	// Sort field (ransack `sf`).
+	SortField OptString `json:",omitempty,omitzero"`
+	// Sort order (ransack `so`).
+	SortOrder OptListQuerySortOrder `json:",omitempty,omitzero"`
+}
+
+func unpackListPublicReviewsParams(packed middleware.Parameters) (params ListPublicReviewsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "page",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Page = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "perPage",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.PerPage = v.(OptInt32)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortField",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortField = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sortOrder",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.SortOrder = v.(OptListQuerySortOrder)
+		}
+	}
+	return params
+}
+
+func decodeListPublicReviewsParams(args [0]string, argsEscaped bool, r *http.Request) (params ListPublicReviewsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: page.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Page.SetTo(paramsDotPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "page",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: perPage.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPerPageVal int32
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToInt32(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPerPageVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.PerPage.SetTo(paramsDotPerPageVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "perPage",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortField.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortField",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortField.SetTo(paramsDotSortFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortField",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sortOrder.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sortOrder",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortOrderVal ListQuerySortOrder
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortOrderVal = ListQuerySortOrder(c)
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.SortOrder.SetTo(paramsDotSortOrderVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if value, ok := params.SortOrder.Get(); ok {
+					if err := func() error {
+						if err := value.Validate(); err != nil {
+							return err
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sortOrder",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// SwitchLocaleParams is parameters of switchLocale operation.
+type SwitchLocaleParams struct {
+	Locale Locale
+}
+
+func unpackSwitchLocaleParams(packed middleware.Parameters) (params SwitchLocaleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "locale",
+			In:   "query",
+		}
+		params.Locale = packed[key].(Locale)
+	}
+	return params
+}
+
+func decodeSwitchLocaleParams(args [0]string, argsEscaped bool, r *http.Request) (params SwitchLocaleParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: locale.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "locale",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Locale = Locale(c)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.Locale.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "locale",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdatePasswordParams is parameters of updatePassword operation.
+type UpdatePasswordParams struct {
+	Token string
+}
+
+func unpackUpdatePasswordParams(packed middleware.Parameters) (params UpdatePasswordParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "token",
+			In:   "path",
+		}
+		params.Token = packed[key].(string)
+	}
+	return params
+}
+
+func decodeUpdatePasswordParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdatePasswordParams, _ error) {
+	// Decode path: token.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "token",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.Token = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "token",
 			In:   "path",
 			Err:  err,
 		}

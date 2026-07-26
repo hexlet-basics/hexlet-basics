@@ -11,7 +11,12 @@ import (
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
+//
+// It embeds api.UnimplementedHandler so newly-added contract operations compile
+// as "not implemented" until their handler lands (contract-first, ADR-0001);
+// methods defined on Server override the embedded stubs.
 type Server struct {
+	api.UnimplementedHandler
 	db   *ent.Client
 	conv apiconv.Converter
 }

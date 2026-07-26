@@ -8,42 +8,534 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// AdminCreateBanner implements adminCreateBanner operation.
+	//
+	// POST /admin/banners
+	AdminCreateBanner(ctx context.Context, req *BannerInput) (AdminCreateBannerRes, error)
+	// AdminCreateBlogPost implements adminCreateBlogPost operation.
+	//
+	// POST /admin/blog_posts
+	AdminCreateBlogPost(ctx context.Context, req *BlogPostInput) (AdminCreateBlogPostRes, error)
+	// AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
+	//
+	// POST /admin/language_categories/{categoryId}/qna_items
+	AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
+	// AdminCreateCourse implements adminCreateCourse operation.
+	//
+	// POST /admin/languages
+	AdminCreateCourse(ctx context.Context, req *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
 	//
 	// Create a course category.
 	//
 	// POST /admin/language_categories
 	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
+	// AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
+	//
+	// POST /admin/language_landing_pages
+	AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
+	// AdminCreateCourseVersion implements adminCreateCourseVersion operation.
+	//
+	// Build a new version of the course exercises.
+	//
+	// POST /admin/languages/{id}/versions
+	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error)
+	// AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
+	//
+	// POST /admin/language_landing_pages/{landingPageId}/qna_items
+	AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
+	// AdminCreateReview implements adminCreateReview operation.
+	//
+	// POST /admin/reviews
+	AdminCreateReview(ctx context.Context, req *ReviewInput) (AdminCreateReviewRes, error)
+	// AdminCreateRole implements adminCreateRole operation.
+	//
+	// POST /admin/management/roles
+	AdminCreateRole(ctx context.Context, req *RoleInput) (AdminCreateRoleRes, error)
+	// AdminCreateStaffMember implements adminCreateStaffMember operation.
+	//
+	// POST /admin/management/staff_members
+	AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (AdminCreateStaffMemberRes, error)
+	// AdminCreateUser implements adminCreateUser operation.
+	//
+	// POST /admin/api/users
+	AdminCreateUser(ctx context.Context, req *UserInput) (AdminCreateUserRes, error)
+	// AdminDeleteBanner implements adminDeleteBanner operation.
+	//
+	// DELETE /admin/banners/{id}
+	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error
+	// AdminDeleteBlogPost implements adminDeleteBlogPost operation.
+	//
+	// DELETE /admin/blog_posts/{id}
+	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error
+	// AdminDeleteCategoryQnaItem implements adminDeleteCategoryQnaItem operation.
+	//
+	// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
+	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error
 	// AdminDeleteCourseCategory implements adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
 	// DELETE /admin/language_categories/{id}
 	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error
+	// AdminDeleteCourseLandingPage implements adminDeleteCourseLandingPage operation.
+	//
+	// DELETE /admin/language_landing_pages/{id}
+	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error
+	// AdminDeleteLandingPageQnaItem implements adminDeleteLandingPageQnaItem operation.
+	//
+	// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error
+	// AdminDeleteReview implements adminDeleteReview operation.
+	//
+	// DELETE /admin/reviews/{id}
+	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error
+	// AdminDeleteRole implements adminDeleteRole operation.
+	//
+	// DELETE /admin/management/roles/{id}
+	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error
+	// AdminDeleteStaffMember implements adminDeleteStaffMember operation.
+	//
+	// DELETE /admin/management/staff_members/{id}
+	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error
+	// AdminDeleteUser implements adminDeleteUser operation.
+	//
+	// DELETE /admin/api/users/{id}
+	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
+	// AdminGetBanner implements adminGetBanner operation.
+	//
+	// GET /admin/banners/{id}
+	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
+	// AdminGetBlogPost implements adminGetBlogPost operation.
+	//
+	// GET /admin/blog_posts/{id}
+	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
+	// AdminGetCourse implements adminGetCourse operation.
+	//
+	// GET /admin/languages/{id}
+	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory implements adminGetCourseCategory operation.
 	//
 	// Get a single course category.
 	//
 	// GET /admin/language_categories/{id}
-	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
+	// AdminGetCourseLandingPage implements adminGetCourseLandingPage operation.
+	//
+	// GET /admin/language_landing_pages/{id}
+	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
+	// AdminGetManagementUser implements adminGetManagementUser operation.
+	//
+	// GET /admin/management/users/{id}
+	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	// AdminGetReview implements adminGetReview operation.
+	//
+	// GET /admin/reviews/{id}
+	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
+	// AdminGetRole implements adminGetRole operation.
+	//
+	// GET /admin/management/roles/{id}
+	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
+	// AdminGetRolePermissions implements adminGetRolePermissions operation.
+	//
+	// The permission matrix for a role.
+	//
+	// GET /admin/management/role_permissions/{roleId}
+	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
+	// AdminGetStaffMember implements adminGetStaffMember operation.
+	//
+	// GET /admin/management/staff_members/{id}
+	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
+	// AdminGetUser implements adminGetUser operation.
+	//
+	// GET /admin/api/users/{id}
+	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	// AdminListBanners implements adminListBanners operation.
+	//
+	// GET /admin/banners
+	AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error)
+	// AdminListBlogPosts implements adminListBlogPosts operation.
+	//
+	// GET /admin/blog_posts
+	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (*BlogPostPage, error)
+	// AdminListCategoryQnaItems implements adminListCategoryQnaItems operation.
+	//
+	// GET /admin/language_categories/{categoryId}/qna_items
+	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) ([]QnaItem, error)
 	// AdminListCourseCategories implements adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
 	// GET /admin/language_categories
 	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error)
+	// AdminListCourseLandingPages implements adminListCourseLandingPages operation.
+	//
+	// GET /admin/language_landing_pages
+	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (*CourseLandingPagePage, error)
+	// AdminListCourseLessonMembers implements adminListCourseLessonMembers operation.
+	//
+	// GET /admin/language_lesson_members
+	AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (*CourseLessonMemberPage, error)
+	// AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
+	//
+	// GET /admin/language_lesson_reviews
+	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (*CourseLessonReviewPage, error)
+	// AdminListCourseLessons implements adminListCourseLessons operation.
+	//
+	// GET /admin/language_lessons
+	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (*CourseLessonListItemPage, error)
+	// AdminListCourses implements adminListCourses operation.
+	//
+	// GET /admin/languages
+	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (*CoursePage, error)
+	// AdminListLandingPageQnaItems implements adminListLandingPageQnaItems operation.
+	//
+	// GET /admin/language_landing_pages/{landingPageId}/qna_items
+	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) ([]QnaItem, error)
+	// AdminListLeads implements adminListLeads operation.
+	//
+	// GET /admin/leads
+	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (*LeadPage, error)
+	// AdminListManagementUsers implements adminListManagementUsers operation.
+	//
+	// GET /admin/management/users
+	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (*UserCrudPage, error)
+	// AdminListMessages implements adminListMessages operation.
+	//
+	// GET /admin/messages
+	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (*LessonAssistantMessagePage, error)
+	// AdminListReviews implements adminListReviews operation.
+	//
+	// GET /admin/reviews
+	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (*ReviewPage, error)
+	// AdminListRoles implements adminListRoles operation.
+	//
+	// GET /admin/management/roles
+	AdminListRoles(ctx context.Context, params AdminListRolesParams) (*StaffRolePage, error)
+	// AdminListStaffMembers implements adminListStaffMembers operation.
+	//
+	// GET /admin/management/staff_members
+	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (*StaffMemberPage, error)
+	// AdminListUsers implements adminListUsers operation.
+	//
+	// GET /admin/api/users
+	AdminListUsers(ctx context.Context, params AdminListUsersParams) (*UserCrudPage, error)
+	// AdminReviewCourse implements adminReviewCourse operation.
+	//
+	// Enqueue AI re-review of every current lesson version.
+	//
+	// POST /admin/languages/{id}/review
+	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error)
+	// AdminReviewCourseLesson implements adminReviewCourseLesson operation.
+	//
+	// Enqueue AI review for a single lesson.
+	//
+	// POST /admin/language_lessons/{id}/review
+	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
+	// AdminSearchUsers implements adminSearchUsers operation.
+	//
+	// Typeahead search by name/email.
+	//
+	// GET /admin/api/users/search
+	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) ([]UserCrud, error)
+	// AdminSetBlogPostRelatedCourses implements adminSetBlogPostRelatedCourses operation.
+	//
+	// Set the related/promoted courses for a post.
+	//
+	// POST /admin/blog_posts/{id}/related_courses
+	AdminSetBlogPostRelatedCourses(ctx context.Context, req *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
+	// AdminUpdateBanner implements adminUpdateBanner operation.
+	//
+	// PUT /admin/banners/{id}
+	AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
+	// AdminUpdateBlogPost implements adminUpdateBlogPost operation.
+	//
+	// PUT /admin/blog_posts/{id}
+	AdminUpdateBlogPost(ctx context.Context, req *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error)
+	// AdminUpdateCategoryQnaItem implements adminUpdateCategoryQnaItem operation.
+	//
+	// PUT /admin/language_categories/{categoryId}/qna_items/{id}
+	AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
+	// AdminUpdateCourse implements adminUpdateCourse operation.
+	//
+	// PUT /admin/languages/{id}
+	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
 	//
 	// Update a course category.
 	//
 	// PUT /admin/language_categories/{id}
 	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
+	// AdminUpdateCourseLandingPage implements adminUpdateCourseLandingPage operation.
+	//
+	// PUT /admin/language_landing_pages/{id}
+	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
+	// AdminUpdateLandingPageQnaItem implements adminUpdateLandingPageQnaItem operation.
+	//
+	// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+	AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
+	// AdminUpdateManagementUser implements adminUpdateManagementUser operation.
+	//
+	// PUT /admin/management/users/{id}
+	AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
+	// AdminUpdateReview implements adminUpdateReview operation.
+	//
+	// PUT /admin/reviews/{id}
+	AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
+	// AdminUpdateRole implements adminUpdateRole operation.
+	//
+	// PUT /admin/management/roles/{id}
+	AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
+	// AdminUpdateRolePermissions implements adminUpdateRolePermissions operation.
+	//
+	// Replace the permission matrix for a role.
+	//
+	// PUT /admin/management/role_permissions/{roleId}
+	AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
+	// AdminUpdateStaffMember implements adminUpdateStaffMember operation.
+	//
+	// PUT /admin/management/staff_members/{id}
+	AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
+	// AdminUpdateUser implements adminUpdateUser operation.
+	//
+	// PUT /admin/api/users/{id}
+	AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
+	// CheckLesson implements checkLesson operation.
+	//
+	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
+	// stream for the Docker-job model (see file header).
+	//
+	// POST /lessons/{id}/check
+	CheckLesson(ctx context.Context, req *CheckLessonInput, params CheckLessonParams) (CheckLessonRes, error)
+	// CheckPasswordResetToken implements checkPasswordResetToken operation.
+	//
+	// Validate a reset token before showing the form.
+	//
+	// GET /password/{token}/edit
+	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error)
+	// ConfirmPhoneAuth implements confirmPhoneAuth operation.
+	//
+	// Confirm the SMS code; sets the JWT cookie.
+	//
+	// POST /phone_auth/confirm
+	ConfirmPhoneAuth(ctx context.Context, req *PhoneConfirmInput) (ConfirmPhoneAuthRes, error)
+	// ConsumeMagicLink implements consumeMagicLink operation.
+	//
+	// Consume a magic link token; sets the JWT cookie.
+	//
+	// GET /magic_links/{token}
+	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error)
+	// CreateAssistantMessage implements createAssistantMessage operation.
+	//
+	// Ask the assistant. Enqueues generation (river job); the reply is delivered out-of-band. 202 =
+	// accepted, 429 = rate limited. SSE streaming is TBD.
+	//
+	// POST /ai/lessons/{lessonId}/messages
+	CreateAssistantMessage(ctx context.Context, req *AssistantMessageInput, params CreateAssistantMessageParams) (CreateAssistantMessageRes, error)
+	// CreateBookRequest implements createBookRequest operation.
+	//
+	// Request the book download link by email.
+	//
+	// POST /book/create_request
+	CreateBookRequest(ctx context.Context, req *BookRequestInput) (CreateBookRequestRes, error)
+	// CreateLead implements createLead operation.
+	//
+	// Submit a contact request.
+	//
+	// POST /leads
+	CreateLead(ctx context.Context, req *LeadInput) (CreateLeadRes, error)
+	// CreateMagicLink implements createMagicLink operation.
+	//
+	// Email a one-time sign-in link.
+	//
+	// POST /magic_links
+	CreateMagicLink(ctx context.Context, req *EmailInput) (CreateMagicLinkRes, error)
+	// CreatePasskey implements createPasskey operation.
+	//
+	// Register a new passkey for the current user.
+	//
+	// POST /account/passkeys
+	CreatePasskey(ctx context.Context, req *PasskeyRegistrationInput) (CreatePasskeyRes, error)
+	// CreatePasskeySession implements createPasskeySession operation.
+	//
+	// Complete a passkey login; sets the JWT cookie.
+	//
+	// POST /passkey_session
+	CreatePasskeySession(ctx context.Context, req *PasskeyAssertionInput) (CreatePasskeySessionRes, error)
+	// CreatePasswordReminder implements createPasswordReminder operation.
+	//
+	// Email a password-reset link.
+	//
+	// POST /remind_password
+	CreatePasswordReminder(ctx context.Context, req *EmailInput) (CreatePasswordReminderRes, error)
+	// CreatePhoneAuth implements createPhoneAuth operation.
+	//
+	// Send an SMS verification code.
+	//
+	// POST /phone_auth
+	CreatePhoneAuth(ctx context.Context, req *PhoneInput) (CreatePhoneAuthRes, error)
+	// CreateSession implements createSession operation.
+	//
+	// Log in with email + password; sets the JWT cookie.
+	//
+	// POST /session
+	CreateSession(ctx context.Context, req *SessionInput) (CreateSessionRes, error)
+	// CreateUser implements createUser operation.
+	//
+	// Sign up; sets the JWT cookie on success.
+	//
+	// POST /users
+	CreateUser(ctx context.Context, req *SignUpInput) (CreateUserRes, error)
+	// DeleteAccount implements deleteAccount operation.
+	//
+	// Delete the current user's account.
+	//
+	// DELETE /account/profile
+	DeleteAccount(ctx context.Context) (DeleteAccountRes, error)
+	// DeletePasskey implements deletePasskey operation.
+	//
+	// Remove a passkey.
+	//
+	// DELETE /account/passkeys/{id}
+	DeletePasskey(ctx context.Context, params DeletePasskeyParams) (DeletePasskeyRes, error)
+	// DeleteSession implements deleteSession operation.
+	//
+	// Log out; clears the JWT cookie.
+	//
+	// DELETE /session
+	DeleteSession(ctx context.Context) error
+	// GetBlogPost implements getBlogPost operation.
+	//
+	// A single blog post by slug.
+	//
+	// GET /blog_posts/{slug}
+	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
+	// GetCourse implements getCourse operation.
+	//
+	// Course landing page by slug.
+	//
+	// GET /languages/{slug}
+	GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error)
+	// GetCourseLesson implements getCourseLesson operation.
+	//
+	// Lesson player payload (theory, starter code, tests) by slug.
+	//
+	// GET /languages/{courseSlug}/lessons/{slug}
+	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error)
+	// GetCurrentUser implements getCurrentUser operation.
+	//
+	// Resolve the current user from the session cookie (for SSR).
+	//
+	// GET /me
+	GetCurrentUser(ctx context.Context) (*CurrentUser, error)
+	// GetMyDashboard implements getMyDashboard operation.
+	//
+	// The signed-in user's course dashboard.
+	//
+	// GET /my
+	GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error)
+	// GetNextBlogPost implements getNextBlogPost operation.
+	//
+	// The next post to read after this one.
+	//
+	// GET /blog_posts/{id}/next
+	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
+	// GetPage implements getPage operation.
+	//
+	// A static content page by slug.
+	//
+	// GET /pages/{slug}
+	GetPage(ctx context.Context, params GetPageParams) (GetPageRes, error)
+	// GetProfile implements getProfile operation.
+	//
+	// The editable profile of the current user.
+	//
+	// GET /account/profile/edit
+	GetProfile(ctx context.Context) (GetProfileRes, error)
+	// GetPublicCourseCategory implements getPublicCourseCategory operation.
+	//
+	// A category and the courses it groups.
+	//
+	// GET /language_categories/{slug}
+	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error)
+	// GetSitemap implements getSitemap operation.
+	//
+	// Everything the sitemap generator needs.
+	//
+	// GET /map
+	GetSitemap(ctx context.Context) (*Sitemap, error)
+	// LikeBlogPost implements likeBlogPost operation.
+	//
+	// Like a post (idempotent per visitor).
+	//
+	// POST /blog_posts/{id}/likes
+	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error)
+	// ListAssistantMessages implements listAssistantMessages operation.
+	//
+	// The assistant chat history for the current user in this lesson.
+	//
+	// GET /ai/lessons/{lessonId}/messages
+	ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (ListAssistantMessagesRes, error)
+	// ListBlogPosts implements listBlogPosts operation.
+	//
+	// Paginated published blog posts.
+	//
+	// GET /blog_posts
+	ListBlogPosts(ctx context.Context, params ListBlogPostsParams) (*BlogPostPage, error)
 	// ListCourses implements listCourses operation.
 	//
 	// List the published course catalog.
 	//
 	// GET /languages
 	ListCourses(ctx context.Context) ([]CourseCatalogItem, error)
+	// ListPasskeys implements listPasskeys operation.
+	//
+	// List the current user's passkeys.
+	//
+	// GET /account/passkeys
+	ListPasskeys(ctx context.Context) (ListPasskeysRes, error)
+	// ListPublicCourseCategories implements listPublicCourseCategories operation.
+	//
+	// List published categories.
+	//
+	// GET /language_categories
+	ListPublicCourseCategories(ctx context.Context) ([]CourseCategory, error)
+	// ListPublicReviews implements listPublicReviews operation.
+	//
+	// Paginated published student reviews.
+	//
+	// GET /reviews
+	ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (*ReviewPage, error)
+	// NewPasskey implements newPasskey operation.
+	//
+	// Begin a passkey registration ceremony.
+	//
+	// GET /account/passkeys/new
+	NewPasskey(ctx context.Context) (NewPasskeyRes, error)
+	// NewPasskeySession implements newPasskeySession operation.
+	//
+	// Begin a passkey login ceremony.
+	//
+	// GET /passkey_session/new
+	NewPasskeySession(ctx context.Context) (*PasskeyChallenge, error)
+	// SwitchLocale implements switchLocale operation.
+	//
+	// Persist the preferred UI locale on the session.
+	//
+	// GET /locale/switch
+	SwitchLocale(ctx context.Context, params SwitchLocaleParams) error
+	// UpdatePassword implements updatePassword operation.
+	//
+	// Set a new password using a reset token.
+	//
+	// PATCH /password/{token}
+	UpdatePassword(ctx context.Context, req *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error)
+	// UpdateProfile implements updateProfile operation.
+	//
+	// Update the current user's profile.
+	//
+	// PATCH /account/profile
+	UpdateProfile(ctx context.Context, req *ProfileInput) (UpdateProfileRes, error)
 }
 
 // Server implements http server based on OpenAPI v3 specification and

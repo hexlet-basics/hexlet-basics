@@ -1,0 +1,10 @@
+# ogen generator config (used by go:generate in gen.go).
+#
+# ogen 1.23 cannot yet generate multipart/form-data ("form content encoding"),
+# which the shared file-upload endpoint (POST /admin/attachments) uses. Skip
+# only that unsupported operation so the rest of the Go server still generates.
+# The endpoint stays in the OpenAPI contract for the hey-api frontend client;
+# its Go handler is a future wave (asset storage, ADR-0005).
+generator:
+  ignore_not_implemented:
+    - "form content encoding"

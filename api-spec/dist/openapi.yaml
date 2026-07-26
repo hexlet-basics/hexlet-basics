@@ -4,33 +4,645 @@ info:
   description: |-
     Hexlet Basics API.
 
+    Contract-first (ADR-0001): this TypeSpec compiles to `dist/openapi.yaml`
+    (`pnpm spec`), which drives BOTH the Go server (ogen validators) and the TS
+    frontend client + zod (hey-api, `pnpm generate`). Never hand-edit `dist/`.
+
     Naming: the domain concept is `Course`. The legacy Rails app called it
     `Language`; we keep `Language` ONLY in URL paths (e.g. `/languages`) for
-    backward compatibility, but every type/operation/schema uses `Course`.
+    backward compatibility (ADR-0002), but every type/operation/schema uses
+    `Course`. The full model/enum set lives in `models.tsp`.
   version: 0.0.0
 tags:
   - name: Courses
+  - name: Course Categories
+  - name: Blog
+  - name: Reviews
+  - name: Pages
+  - name: Leads
+  - name: Marketing
+  - name: Sitemap
+  - name: Auth
+  - name: User Area
+  - name: 'Admin: Attachments'
   - name: 'Admin: Course Categories'
+  - name: 'Admin: Banners'
+  - name: 'Admin: Blog Posts'
+  - name: 'Admin: Reviews'
+  - name: 'Admin: Courses'
+  - name: 'Admin: Course Landing Pages'
+  - name: 'Admin: Course Lessons'
+  - name: 'Admin: Course Lesson Members'
+  - name: 'Admin: Course Lesson Reviews'
+  - name: 'Admin: Leads'
+  - name: 'Admin: Messages'
+  - name: 'Admin: Users'
+  - name: 'Admin: Roles'
+  - name: 'Admin: Staff Members'
+  - name: Lesson Player
 paths:
+  /account/passkeys:
+    get:
+      operationId: listPasskeys
+      description: List the current user's passkeys.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserCredential'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - User Area
+    post:
+      operationId: createPasskey
+      description: Register a new passkey for the current user.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCredential'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - User Area
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasskeyRegistrationInput'
+  /account/passkeys/new:
+    get:
+      operationId: newPasskey
+      description: Begin a passkey registration ceremony.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyChallenge'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - User Area
+  /account/passkeys/{id}:
+    delete:
+      operationId: deletePasskey
+      description: Remove a passkey.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - User Area
+  /account/profile:
+    patch:
+      operationId: updateProfile
+      description: Update the current user's profile.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - User Area
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+    delete:
+      operationId: deleteAccount
+      description: Delete the current user's account.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - User Area
+  /account/profile/edit:
+    get:
+      operationId: getProfile
+      description: The editable profile of the current user.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - User Area
+  /admin/api/users:
+    get:
+      operationId: adminListUsers
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrudPage'
+      tags:
+        - 'Admin: Users'
+    post:
+      operationId: adminCreateUser
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrud'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+  /admin/api/users/search:
+    get:
+      operationId: adminSearchUsers
+      description: Typeahead search by name/email.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserCrud'
+      tags:
+        - 'Admin: Users'
+  /admin/api/users/{id}:
+    get:
+      operationId: adminGetUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrud'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Users'
+    put:
+      operationId: adminUpdateUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrud'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+    delete:
+      operationId: adminDeleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Users'
+  /admin/attachments:
+    post:
+      operationId: adminUploadAttachment
+      description: Upload a file; returns the attachment to reference from a form.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Attachments'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AttachmentUploadForm'
+            encoding:
+              file:
+                contentType: '*/*'
+  /admin/banners:
+    get:
+      operationId: adminListBanners
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BannerPage'
+      tags:
+        - 'Admin: Banners'
+    post:
+      operationId: adminCreateBanner
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Banner'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Banners'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BannerInput'
+  /admin/banners/{id}:
+    get:
+      operationId: adminGetBanner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Banner'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Banners'
+    put:
+      operationId: adminUpdateBanner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Banner'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Banners'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BannerInput'
+    delete:
+      operationId: adminDeleteBanner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Banners'
+  /admin/blog_posts:
+    get:
+      operationId: adminListBlogPosts
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPostPage'
+      tags:
+        - 'Admin: Blog Posts'
+    post:
+      operationId: adminCreateBlogPost
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Blog Posts'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogPostInput'
+  /admin/blog_posts/{id}:
+    get:
+      operationId: adminGetBlogPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Blog Posts'
+    put:
+      operationId: adminUpdateBlogPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Blog Posts'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogPostInput'
+    delete:
+      operationId: adminDeleteBlogPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Blog Posts'
+  /admin/blog_posts/{id}/related_courses:
+    post:
+      operationId: adminSetBlogPostRelatedCourses
+      description: Set the related/promoted courses for a post.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Blog Posts'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlogPostRelatedCoursesInput'
   /admin/language_categories:
     get:
       operationId: adminListCourseCategories
       description: List course categories (paginated).
       parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-          explode: false
-        - name: perPage
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-          explode: false
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
       responses:
         '200':
           description: The request has succeeded.
@@ -68,6 +680,120 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseCategoryInput'
+  /admin/language_categories/{categoryId}/qna_items:
+    get:
+      operationId: adminListCategoryQnaItems
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QnaItem'
+      tags:
+        - 'Admin: Course Categories'
+    post:
+      operationId: adminCreateCategoryQnaItem
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QnaItem'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Categories'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QnaItemInput'
+  /admin/language_categories/{categoryId}/qna_items/{id}:
+    put:
+      operationId: adminUpdateCategoryQnaItem
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QnaItem'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Categories'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QnaItemInput'
+    delete:
+      operationId: adminDeleteCategoryQnaItem
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Course Categories'
   /admin/language_categories/{id}:
     get:
       operationId: adminGetCourseCategory
@@ -86,6 +812,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
       tags:
         - 'Admin: Course Categories'
     put:
@@ -134,9 +866,1197 @@ paths:
             format: int32
       responses:
         '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
+          description: Empty 204 response for deletes and other content-less successes.
       tags:
         - 'Admin: Course Categories'
+  /admin/language_landing_pages:
+    get:
+      operationId: adminListCourseLandingPages
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPagePage'
+      tags:
+        - 'Admin: Course Landing Pages'
+    post:
+      operationId: adminCreateCourseLandingPage
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPage'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Landing Pages'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseLandingPageInput'
+  /admin/language_landing_pages/{id}:
+    get:
+      operationId: adminGetCourseLandingPage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPage'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Course Landing Pages'
+    put:
+      operationId: adminUpdateCourseLandingPage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLandingPage'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Landing Pages'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseLandingPageInput'
+    delete:
+      operationId: adminDeleteCourseLandingPage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Course Landing Pages'
+  /admin/language_landing_pages/{landingPageId}/qna_items:
+    get:
+      operationId: adminListLandingPageQnaItems
+      parameters:
+        - name: landingPageId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QnaItem'
+      tags:
+        - 'Admin: Course Landing Pages'
+    post:
+      operationId: adminCreateLandingPageQnaItem
+      parameters:
+        - name: landingPageId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QnaItem'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Landing Pages'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QnaItemInput'
+  /admin/language_landing_pages/{landingPageId}/qna_items/{id}:
+    put:
+      operationId: adminUpdateLandingPageQnaItem
+      parameters:
+        - name: landingPageId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QnaItem'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Landing Pages'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QnaItemInput'
+    delete:
+      operationId: adminDeleteLandingPageQnaItem
+      parameters:
+        - name: landingPageId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Course Landing Pages'
+  /admin/language_lesson_members:
+    get:
+      operationId: adminListCourseLessonMembers
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLessonMemberPage'
+      tags:
+        - 'Admin: Course Lesson Members'
+  /admin/language_lesson_reviews:
+    get:
+      operationId: adminListCourseLessonReviews
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLessonReviewPage'
+      tags:
+        - 'Admin: Course Lesson Reviews'
+  /admin/language_lessons:
+    get:
+      operationId: adminListCourseLessons
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLessonListItemPage'
+      tags:
+        - 'Admin: Course Lessons'
+  /admin/language_lessons/{id}/review:
+    post:
+      operationId: adminReviewCourseLesson
+      description: Enqueue AI review for a single lesson.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Course Lessons'
+  /admin/languages:
+    get:
+      operationId: adminListCourses
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursePage'
+      tags:
+        - 'Admin: Courses'
+    post:
+      operationId: adminCreateCourse
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Courses'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseInput'
+  /admin/languages/{id}:
+    get:
+      operationId: adminGetCourse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Courses'
+    put:
+      operationId: adminUpdateCourse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Courses'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseInput'
+  /admin/languages/{id}/review:
+    post:
+      operationId: adminReviewCourse
+      description: Enqueue AI re-review of every current lesson version.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Courses'
+  /admin/languages/{id}/versions:
+    post:
+      operationId: adminCreateCourseVersion
+      description: Build a new version of the course exercises.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseVersion'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Courses'
+  /admin/leads:
+    get:
+      operationId: adminListLeads
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadPage'
+      tags:
+        - 'Admin: Leads'
+  /admin/management/role_permissions/{roleId}:
+    get:
+      operationId: adminGetRolePermissions
+      description: The permission matrix for a role.
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRoleDetail'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Roles'
+    put:
+      operationId: adminUpdateRolePermissions
+      description: Replace the permission matrix for a role.
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRoleDetail'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Roles'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RolePermissionsInput'
+  /admin/management/roles:
+    get:
+      operationId: adminListRoles
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRolePage'
+      tags:
+        - 'Admin: Roles'
+    post:
+      operationId: adminCreateRole
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRoleDetail'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Roles'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleInput'
+  /admin/management/roles/{id}:
+    get:
+      operationId: adminGetRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRoleDetail'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Roles'
+    put:
+      operationId: adminUpdateRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffRoleDetail'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Roles'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleInput'
+    delete:
+      operationId: adminDeleteRole
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Roles'
+  /admin/management/staff_members:
+    get:
+      operationId: adminListStaffMembers
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMemberPage'
+      tags:
+        - 'Admin: Staff Members'
+    post:
+      operationId: adminCreateStaffMember
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMember'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Staff Members'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffMemberInput'
+  /admin/management/staff_members/{id}:
+    get:
+      operationId: adminGetStaffMember
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMember'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Staff Members'
+    put:
+      operationId: adminUpdateStaffMember
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffMember'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Staff Members'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffMemberInput'
+    delete:
+      operationId: adminDeleteStaffMember
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Staff Members'
+  /admin/management/users:
+    get:
+      operationId: adminListManagementUsers
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrudPage'
+      tags:
+        - 'Admin: Users'
+  /admin/management/users/{id}:
+    get:
+      operationId: adminGetManagementUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrud'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Users'
+    put:
+      operationId: adminUpdateManagementUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCrud'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Users'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+  /admin/messages:
+    get:
+      operationId: adminListMessages
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonAssistantMessagePage'
+      tags:
+        - 'Admin: Messages'
+  /admin/reviews:
+    get:
+      operationId: adminListReviews
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewPage'
+      tags:
+        - 'Admin: Reviews'
+    post:
+      operationId: adminCreateReview
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Reviews'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+  /admin/reviews/{id}:
+    get:
+      operationId: adminGetReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - 'Admin: Reviews'
+    put:
+      operationId: adminUpdateReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Reviews'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewInput'
+    delete:
+      operationId: adminDeleteReview
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - 'Admin: Reviews'
+  /ai/lessons/{lessonId}/messages:
+    get:
+      operationId: listAssistantMessages
+      description: The assistant chat history for the current user in this lesson.
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LessonAssistantMessage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - Lesson Player
+    post:
+      operationId: createAssistantMessage
+      description: |-
+        Ask the assistant. Enqueues generation (river job); the reply is delivered
+        out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '202':
+          description: The request has been accepted for processing, but processing has not yet completed.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - Lesson Player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssistantMessageInput'
+  /blog_posts:
+    get:
+      operationId: listBlogPosts
+      description: Paginated published blog posts.
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPostPage'
+      tags:
+        - Blog
+  /blog_posts/{id}/likes:
+    post:
+      operationId: likeBlogPost
+      description: Like a post (idempotent per visitor).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Blog
+  /blog_posts/{id}/next:
+    get:
+      operationId: getNextBlogPost
+      description: The next post to read after this one.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Blog
+  /blog_posts/{slug}:
+    get:
+      operationId: getBlogPost
+      description: A single blog post by slug.
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogPost'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Blog
+  /book/create_request:
+    post:
+      operationId: createBookRequest
+      description: Request the book download link by email.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Marketing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRequestInput'
+  /language_categories:
+    get:
+      operationId: listPublicCourseCategories
+      description: List published categories.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseCategory'
+      tags:
+        - Course Categories
+  /language_categories/{slug}:
+    get:
+      operationId: getPublicCourseCategory
+      description: A category and the courses it groups.
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategoryView'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Course Categories
   /languages:
     get:
       operationId: listCourses
@@ -153,8 +2073,896 @@ paths:
                   $ref: '#/components/schemas/CourseCatalogItem'
       tags:
         - Courses
+  /languages/{courseSlug}/lessons/{slug}:
+    get:
+      operationId: getCourseLesson
+      description: Lesson player payload (theory, starter code, tests) by slug.
+      parameters:
+        - name: courseSlug
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseLesson'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Courses
+  /languages/{slug}:
+    get:
+      operationId: getCourse
+      description: Course landing page by slug.
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseView'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Courses
+  /leads:
+    post:
+      operationId: createLead
+      description: Submit a contact request.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Leads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadInput'
+  /lessons/{id}/check:
+    post:
+      operationId: checkLesson
+      description: |-
+        Run a submitted solution and record progress. Synchronous to match legacy;
+        revisit as submit + stream for the Docker-job model (see file header).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonCheckingResponse'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Lesson Player
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckLessonInput'
+  /locale/switch:
+    get:
+      operationId: switchLocale
+      description: Persist the preferred UI locale on the session.
+      parameters:
+        - name: locale
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Locale'
+          explode: false
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - Auth
+  /magic_links:
+    post:
+      operationId: createMagicLink
+      description: Email a one-time sign-in link.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailInput'
+  /magic_links/{token}:
+    get:
+      operationId: consumeMagicLink
+      description: Consume a magic link token; sets the JWT cookie.
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Auth
+  /map:
+    get:
+      operationId: getSitemap
+      description: Everything the sitemap generator needs.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sitemap'
+      tags:
+        - Sitemap
+  /me:
+    get:
+      operationId: getCurrentUser
+      description: Resolve the current user from the session cookie (for SSR).
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+      tags:
+        - Auth
+  /my:
+    get:
+      operationId: getMyDashboard
+      description: The signed-in user's course dashboard.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyDashboard'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+      tags:
+        - User Area
+  /pages/{slug}:
+    get:
+      operationId: getPage
+      description: A static content page by slug.
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageContent'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Pages
+  /passkey_session:
+    post:
+      operationId: createPasskeySession
+      description: Complete a passkey login; sets the JWT cookie.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasskeyAssertionInput'
+  /passkey_session/new:
+    get:
+      operationId: newPasskeySession
+      description: Begin a passkey login ceremony.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyChallenge'
+      tags:
+        - Auth
+  /password/{token}:
+    patch:
+      operationId: updatePassword
+      description: Set a new password using a reset token.
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordInput'
+  /password/{token}/edit:
+    get:
+      operationId: checkPasswordResetToken
+      description: Validate a reset token before showing the form.
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      tags:
+        - Auth
+  /phone_auth:
+    post:
+      operationId: createPhoneAuth
+      description: Send an SMS verification code.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneInput'
+  /phone_auth/confirm:
+    post:
+      operationId: confirmPhoneAuth
+      description: Confirm the SMS code; sets the JWT cookie.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneConfirmInput'
+  /remind_password:
+    post:
+      operationId: createPasswordReminder
+      description: Email a password-reset link.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailInput'
+  /reviews:
+    get:
+      operationId: listPublicReviews
+      description: Paginated published student reviews.
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewPage'
+      tags:
+        - Reviews
+  /session:
+    post:
+      operationId: createSession
+      description: Log in with email + password; sets the JWT cookie.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionInput'
+    delete:
+      operationId: deleteSession
+      description: Log out; clears the JWT cookie.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+      tags:
+        - Auth
+  /users:
+    post:
+      operationId: createUser
+      description: Sign up; sets the JWT cookie on success.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpInput'
 components:
+  parameters:
+    ListQuery.page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    ListQuery.perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    ListQuery.sortField:
+      name: sortField
+      in: query
+      required: false
+      description: Sort field (ransack `sf`).
+      schema:
+        type: string
+      explode: false
+    ListQuery.sortOrder:
+      name: sortOrder
+      in: query
+      required: false
+      description: Sort order (ransack `so`).
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+      explode: false
   schemas:
+    AssistantMessageInput:
+      type: object
+      required:
+        - message
+        - output
+        - userCode
+      properties:
+        message:
+          type: string
+          minLength: 1
+        output:
+          type: string
+          nullable: true
+        userCode:
+          type: string
+          nullable: true
+      description: A prompt to the in-lesson assistant, carrying the editor context.
+    Attachment:
+      type: object
+      required:
+        - id
+        - url
+        - filename
+        - contentType
+        - byteSize
+      properties:
+        id:
+          type: integer
+          format: int32
+        url:
+          type: string
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+          format: int64
+      description: A stored blob (cover image, outcomes image) returned by the uploader.
+    AttachmentUploadForm:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+      required:
+        - file
+    Banner:
+      type: object
+      required:
+        - id
+        - locale
+        - body
+        - url
+        - background
+        - state
+        - startsAt
+        - finishesAt
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        locale:
+          $ref: '#/components/schemas/BannerLocale'
+        body:
+          type: string
+        url:
+          type: string
+          nullable: true
+        background:
+          $ref: '#/components/schemas/BannerBackground'
+        state:
+          $ref: '#/components/schemas/BannerState'
+        startsAt:
+          type: string
+          format: date-time
+          nullable: true
+        finishesAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A site banner (legacy: `Banner`).'
+    BannerBackground:
+      type: string
+      enum:
+        - cta_gradient
+        - dark
+        - blue
+      description: Banner display background.
+    BannerInput:
+      type: object
+      required:
+        - state
+        - background
+        - locale
+        - body
+        - url
+        - startsAt
+        - finishesAt
+      properties:
+        state:
+          $ref: '#/components/schemas/BannerState'
+        background:
+          $ref: '#/components/schemas/BannerBackground'
+        locale:
+          $ref: '#/components/schemas/BannerLocale'
+        body:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          nullable: true
+        startsAt:
+          type: string
+          format: date-time
+          nullable: true
+        finishesAt:
+          type: string
+          format: date-time
+          nullable: true
+    BannerLocale:
+      type: string
+      enum:
+        - ru
+        - en
+      description: Banners only target ru/en today (legacy `BannerLocale`).
+    BannerPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Banner'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    BannerState:
+      type: string
+      enum:
+        - draft
+        - published
+        - archived
+      description: Banner publication state.
+    BlogPost:
+      type: object
+      required:
+        - id
+        - creator
+        - name
+        - slug
+        - description
+        - state
+        - locale
+        - url
+        - richBodyHtml
+        - readingTime
+        - likesCount
+        - relatedCourseItemsCount
+        - coverThumbVariant
+        - coverListVariant
+        - coverMainVariant
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        creator:
+          $ref: '#/components/schemas/User'
+        name:
+          type: string
+          nullable: true
+        slug:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        state:
+          allOf:
+            - $ref: '#/components/schemas/BlogPostState'
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        url:
+          type: string
+        richBodyHtml:
+          type: string
+        readingTime:
+          type: integer
+          format: int32
+        likesCount:
+          type: integer
+          format: int32
+        relatedCourseItemsCount:
+          type: integer
+          format: int32
+        coverThumbVariant:
+          type: string
+          nullable: true
+        coverListVariant:
+          type: string
+          nullable: true
+        coverMainVariant:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A blog post (legacy: `BlogPost`).'
+    BlogPostInput:
+      type: object
+      required:
+        - name
+        - slug
+        - description
+        - state
+        - richBody
+        - coverAttachmentId
+      properties:
+        name:
+          type: string
+          nullable: true
+        slug:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        state:
+          allOf:
+            - $ref: '#/components/schemas/BlogPostState'
+          nullable: true
+        richBody:
+          type: string
+          description: Markdown/rich source; `richBodyHtml` is derived on read.
+        coverAttachmentId:
+          type: integer
+          format: int32
+          nullable: true
+          description: Attachment id from `POST /admin/attachments`, or null to keep/clear.
+    BlogPostPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlogPost'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    BlogPostRelatedCoursesInput:
+      type: object
+      required:
+        - courseIds
+      properties:
+        courseIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+      description: The set of courses promoted on a blog post.
+    BlogPostState:
+      type: string
+      enum:
+        - draft
+        - published
+        - archived
+      description: Blog post publication state.
+    BookRequestInput:
+      type: object
+      required:
+        - email
+        - fullName
+      properties:
+        email:
+          type: string
+          minLength: 1
+        fullName:
+          type: string
+          nullable: true
+      description: A request to download the free book (ru marketing funnel).
+    CheckLessonInput:
+      type: object
+      required:
+        - code
+        - versionId
+      properties:
+        code:
+          type: string
+          minLength: 1
+        versionId:
+          type: integer
+          format: int32
+          description: The lesson version the code was written against.
+      description: A submitted solution to run against the lesson's tests.
     Course:
       type: object
       required:
@@ -163,9 +2971,18 @@ components:
         - name
         - learnAs
         - progress
+        - categoryId
+        - currentVersionId
+        - currentVersion
+        - createdAt
         - membersCount
         - lessonsCount
-        - categoryId
+        - ratingCount
+        - ratingValue
+        - repositoryUrl
+        - hexletProgramLandingPage
+        - coverListVariant
+        - coverThumbVariant
       properties:
         id:
           type: integer
@@ -183,17 +3000,49 @@ components:
           allOf:
             - $ref: '#/components/schemas/CourseProgress'
           nullable: true
+        categoryId:
+          type: integer
+          format: int32
+          nullable: true
+        currentVersionId:
+          type: integer
+          format: int32
+          nullable: true
+        currentVersion:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CourseVersion'
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
         membersCount:
           type: integer
           format: int32
         lessonsCount:
           type: integer
           format: int32
-        categoryId:
+        ratingCount:
           type: integer
           format: int32
+        ratingValue:
+          type: number
+          format: double
+        repositoryUrl:
+          type: string
           nullable: true
-      description: 'A course (legacy: `Language`).'
+        hexletProgramLandingPage:
+          type: string
+          nullable: true
+        coverListVariant:
+          type: string
+          nullable: true
+        coverThumbVariant:
+          type: string
+          nullable: true
+      description: |-
+        A course (legacy: `Language`). Superset read model: the public catalog embeds
+        it, admin course screens read the full shape.
     CourseCatalogItem:
       type: object
       required:
@@ -234,7 +3083,9 @@ components:
           description: Course cover image URL; null until assets are re-uploaded.
         course:
           $ref: '#/components/schemas/Course'
-      description: 'A catalog entry as shown on the courses index (legacy: LanguageLandingPageForLists).'
+      description: |-
+        A catalog entry as shown on the courses index (legacy:
+        `LanguageLandingPageForLists`). Embeds the full course plus derived fields.
     CourseCategory:
       type: object
       required:
@@ -267,7 +3118,7 @@ components:
         createdAt:
           type: string
           format: date-time
-      description: 'A course category (legacy table: `language_categories`).'
+      description: 'A course category (legacy: `LanguageCategory` / table `language_categories`).'
     CourseCategoryInput:
       type: object
       required:
@@ -313,13 +3164,572 @@ components:
           type: integer
           format: int32
           description: Page size used for this response.
-      description: A page of results. Generic envelope reused by every admin list.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    CourseCategoryView:
+      type: object
+      required:
+        - category
+        - landingPages
+      properties:
+        category:
+          $ref: '#/components/schemas/CourseCategory'
+        landingPages:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseCatalogItem'
+      description: A category page with the courses it groups.
+    CourseInput:
+      type: object
+      required:
+        - slug
+        - learnAs
+        - progress
+        - hexletProgramLandingPage
+        - repositoryUrl
+        - coverAttachmentId
+      properties:
+        slug:
+          type: string
+          nullable: true
+        learnAs:
+          allOf:
+            - $ref: '#/components/schemas/CourseLearnAs'
+          nullable: true
+        progress:
+          allOf:
+            - $ref: '#/components/schemas/CourseProgress'
+          nullable: true
+        hexletProgramLandingPage:
+          type: string
+          nullable: true
+        repositoryUrl:
+          type: string
+          nullable: true
+        coverAttachmentId:
+          type: integer
+          format: int32
+          nullable: true
+          description: Attachment id from `POST /admin/attachments`, or null.
+    CourseLandingPage:
+      type: object
+      required:
+        - id
+        - courseId
+        - courseSlug
+        - createdAt
+        - slug
+        - name
+        - main
+        - listed
+        - state
+        - order
+        - metaTitle
+        - metaDescription
+        - header
+        - description
+        - usedInHeader
+        - usedInDescription
+        - outcomesHeader
+        - outcomesDescription
+        - outcomesImage
+        - duration
+        - membersCount
+      properties:
+        id:
+          type: integer
+          format: int32
+        courseId:
+          type: integer
+          format: int32
+        courseSlug:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        slug:
+          type: string
+        name:
+          type: string
+        main:
+          type: boolean
+          nullable: true
+        listed:
+          type: boolean
+          nullable: true
+        state:
+          allOf:
+            - $ref: '#/components/schemas/LandingPageState'
+          nullable: true
+        order:
+          type: string
+          nullable: true
+          description: Free-form ordering key (legacy stores it as a string).
+        metaTitle:
+          type: string
+        metaDescription:
+          type: string
+        header:
+          type: string
+        description:
+          type: string
+        usedInHeader:
+          type: string
+          nullable: true
+        usedInDescription:
+          type: string
+          nullable: true
+        outcomesHeader:
+          type: string
+          nullable: true
+        outcomesDescription:
+          type: string
+          nullable: true
+        outcomesImage:
+          type: string
+          nullable: true
+        duration:
+          type: integer
+          format: int32
+          description: Estimated duration in hours.
+        membersCount:
+          type: integer
+          format: int32
+      description: 'A marketing landing page for a course (legacy: `LanguageLandingPage`).'
+    CourseLandingPageInput:
+      type: object
+      required:
+        - courseId
+        - slug
+        - name
+        - main
+        - listed
+        - footer
+        - footerName
+        - state
+        - order
+        - landingPageToRedirectId
+        - metaTitle
+        - metaDescription
+        - header
+        - description
+        - usedInHeader
+        - usedInDescription
+        - outcomesHeader
+        - outcomesDescription
+        - outcomesImageAttachmentId
+      properties:
+        courseId:
+          type: integer
+          format: int32
+        slug:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        main:
+          type: boolean
+          nullable: true
+        listed:
+          type: boolean
+          nullable: true
+        footer:
+          type: boolean
+          nullable: true
+        footerName:
+          type: string
+          nullable: true
+        state:
+          allOf:
+            - $ref: '#/components/schemas/LandingPageState'
+          nullable: true
+        order:
+          type: string
+          nullable: true
+        landingPageToRedirectId:
+          type: integer
+          format: int32
+          nullable: true
+        metaTitle:
+          type: string
+          nullable: true
+        metaDescription:
+          type: string
+          nullable: true
+        header:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        usedInHeader:
+          type: string
+          nullable: true
+        usedInDescription:
+          type: string
+          nullable: true
+        outcomesHeader:
+          type: string
+          nullable: true
+        outcomesDescription:
+          type: string
+          nullable: true
+        outcomesImageAttachmentId:
+          type: integer
+          format: int32
+          nullable: true
+          description: Attachment id from `POST /admin/attachments`, or null.
+    CourseLandingPagePage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseLandingPage'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
     CourseLearnAs:
       type: string
       enum:
         - first_language
         - second_language
       description: How a course is meant to be learned.
+    CourseLesson:
+      type: object
+      required:
+        - course
+        - id
+        - name
+        - slug
+        - locale
+        - naturalOrder
+        - versionId
+        - version
+        - description
+        - instructions
+        - theory
+        - definitions
+        - tips
+        - preparedCode
+        - originalCode
+        - testCode
+        - sourceCodeUrl
+        - createdAt
+      properties:
+        course:
+          $ref: '#/components/schemas/Course'
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        slug:
+          type: string
+        locale:
+          type: string
+          nullable: true
+        naturalOrder:
+          type: integer
+          format: int32
+        versionId:
+          type: integer
+          format: int32
+        version:
+          type: integer
+          format: int32
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        instructions:
+          type: string
+          nullable: true
+        theory:
+          type: string
+          nullable: true
+        definitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonDefinition'
+        tips:
+          type: array
+          items:
+            type: string
+        preparedCode:
+          type: string
+          nullable: true
+        originalCode:
+          type: string
+          nullable: true
+        testCode:
+          type: string
+          nullable: true
+        sourceCodeUrl:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A single lesson (legacy: `LanguageLesson`).'
+    CourseLessonListItem:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - slug
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        slug:
+          type: string
+      description: 'A lesson as shown in admin lists (legacy: `LanguageLessonForLists`).'
+    CourseLessonListItemPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseLessonListItem'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    CourseLessonMember:
+      type: object
+      required:
+        - id
+        - userId
+        - state
+        - messagesCount
+        - createdAt
+        - courseSlug
+        - courseLessonSlug
+        - courseLessonName
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        state:
+          $ref: '#/components/schemas/MemberState'
+        messagesCount:
+          type: integer
+          format: int32
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        courseSlug:
+          type: string
+        courseLessonSlug:
+          type: string
+        courseLessonName:
+          type: string
+      description: "A user's participation in a lesson (legacy: `LanguageLessonMember`)."
+    CourseLessonMemberPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseLessonMember'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    CourseLessonReview:
+      type: object
+      required:
+        - id
+        - locale
+        - courseId
+        - courseLessonId
+        - courseLessonVersionId
+        - courseLessonVersionInfoId
+        - summary
+        - slug
+        - lessonNaturalOrder
+        - courseSlug
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        locale:
+          type: string
+        courseId:
+          type: integer
+          format: int32
+        courseLessonId:
+          type: integer
+          format: int32
+        courseLessonVersionId:
+          type: integer
+          format: int32
+        courseLessonVersionInfoId:
+          type: integer
+          format: int32
+        summary:
+          type: string
+        slug:
+          type: string
+        lessonNaturalOrder:
+          type: integer
+          format: int32
+        courseSlug:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      description: 'An AI-generated lesson review record (legacy: `LanguageLessonReview`).'
+    CourseLessonReviewPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseLessonReview'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    CourseMember:
+      type: object
+      required:
+        - id
+        - userId
+        - courseId
+        - state
+        - progress
+        - nextLessonName
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        courseId:
+          type: integer
+          format: int32
+        state:
+          allOf:
+            - $ref: '#/components/schemas/MemberState'
+          nullable: true
+        progress:
+          type: integer
+          format: int32
+          description: Completion percentage (0–100).
+        nextLessonName:
+          type: string
+          nullable: true
+      description: A member's enrollment/progress in a course (legacy `LanguageMember`).
+    CoursePage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
     CourseProgress:
       type: string
       enum:
@@ -327,6 +3737,1056 @@ components:
         - in_development
         - draft
       description: Publication/readiness state of a course.
+    CourseVersion:
+      type: object
+      required:
+        - id
+        - result
+        - state
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        result:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: A build/version of a course's exercises (legacy `LanguageVersion`).
+    CourseView:
+      type: object
+      required:
+        - course
+        - landingPage
+        - lessons
+        - member
+      properties:
+        course:
+          $ref: '#/components/schemas/Course'
+        landingPage:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CourseLandingPage'
+          nullable: true
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseLessonListItem'
+        member:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CourseMember'
+          nullable: true
+          description: The current user's membership, when signed in.
+      description: Everything the public course landing needs in one payload.
+    CurrentUser:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/User'
+          nullable: true
+      description: The current user resolved from the session cookie (null when anonymous).
+    EmailInput:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+    ForbiddenError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+      description: The caller is authenticated but lacks permission for this resource.
+    LandingPageState:
+      type: string
+      enum:
+        - draft
+        - archived
+        - published
+      description: Publication state shared by landing pages.
+    Lead:
+      type: object
+      required:
+        - id
+        - userId
+        - fullName
+        - email
+        - phone
+        - whatsapp
+        - telegram
+        - surveyAnswersData
+        - coursesData
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        fullName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        whatsapp:
+          type: string
+          nullable: true
+        telegram:
+          type: string
+          nullable: true
+        surveyAnswersData:
+          type: string
+          nullable: true
+        coursesData:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A sales lead (legacy: `Lead`).'
+    LeadInput:
+      type: object
+      required:
+        - contactMethod
+        - contactValue
+        - ymClientId
+      properties:
+        contactMethod:
+          type: string
+          enum:
+            - telegram
+            - phone
+            - whatsapp
+        contactValue:
+          type: string
+          minLength: 1
+        ymClientId:
+          type: string
+          nullable: true
+      description: 'A lead captured from a marketing form (legacy: `LeadCrud`).'
+    LeadPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lead'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    LessonAssistantMessage:
+      type: object
+      required:
+        - id
+        - role
+        - userId
+        - content
+        - courseSlug
+        - courseLessonSlug
+        - courseLessonName
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        role:
+          type: string
+        userId:
+          type: integer
+          format: int32
+          nullable: true
+        content:
+          type: string
+        courseSlug:
+          type: string
+        courseLessonSlug:
+          type: string
+        courseLessonName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      description: 'One message in the in-lesson AI chat (legacy: `AiMessage`).'
+    LessonAssistantMessagePage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonAssistantMessage'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    LessonCheckingResponse:
+      type: object
+      required:
+        - passed
+        - output
+        - result
+        - status
+        - lessonHasBeenFinished
+        - courseHasBeenFinished
+      properties:
+        passed:
+          type: boolean
+        output:
+          type: string
+        result:
+          type: string
+          enum:
+            - passed
+            - failed
+            - failed-infinity
+        status:
+          type: integer
+          format: int32
+        lessonHasBeenFinished:
+          type: boolean
+        courseHasBeenFinished:
+          type: boolean
+      description: 'Result of running a submitted solution (legacy: `LessonCheckingResponse`).'
+    LessonDefinition:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+      description: A lesson definition entry (name + description pair).
+    Locale:
+      type: string
+      enum:
+        - ru
+        - en
+        - es
+      description: UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+    MemberState:
+      type: string
+      enum:
+        - started
+        - finished
+      description: Course-membership lifecycle (legacy `MemberState`).
+    MyDashboard:
+      type: object
+      required:
+        - startedCourseMembers
+        - finishedCourseMembers
+        - landingPagesByCourseId
+      properties:
+        startedCourseMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseMember'
+        finishedCourseMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseMember'
+        landingPagesByCourseId:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CourseCatalogItem'
+          description: Landing page (catalog item) keyed by course id, for each membership.
+      description: "The signed-in user's dashboard (legacy: `MyController#show`)."
+    NotFoundError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+      description: A resource was not found.
+    PageContent:
+      type: object
+      required:
+        - slug
+        - title
+        - bodyHtml
+      properties:
+        slug:
+          type: string
+        title:
+          type: string
+        bodyHtml:
+          type: string
+      description: A static content page (about, authors, privacy, tos, cookie).
+    PasskeyAssertionInput:
+      type: object
+      required:
+        - credential
+      properties:
+        credential:
+          type: string
+          description: JSON-encoded assertion credential from `navigator.credentials.get`.
+    PasskeyChallenge:
+      type: object
+      required:
+        - options
+      properties:
+        options:
+          type: string
+          description: JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
+      description: |-
+        A WebAuthn ceremony payload. The challenge/options and the client response
+        are opaque JSON owned by `go-webauthn`; the contract carries them as strings
+        so the browser API round-trips them verbatim.
+    PasskeyRegistrationInput:
+      type: object
+      required:
+        - credential
+        - nickname
+      properties:
+        credential:
+          type: string
+          description: JSON-encoded registration credential from `navigator.credentials.create`.
+        nickname:
+          type: string
+          nullable: true
+    PermissionResource:
+      type: string
+      enum:
+        - blog_posts
+        - banners
+        - reviews
+        - leads
+        - messages
+        - language_categories
+        - language_lessons
+        - language_lesson_reviews
+        - language_lesson_members
+        - languages
+        - language_landing_pages
+      description: Admin resources a staff role can be granted permissions on.
+    PhoneConfirmInput:
+      type: object
+      required:
+        - phone
+        - code
+      properties:
+        phone:
+          type: string
+          minLength: 1
+        code:
+          type: string
+          minLength: 1
+    PhoneInput:
+      type: object
+      required:
+        - phone
+      properties:
+        phone:
+          type: string
+          minLength: 1
+    ProfileInput:
+      type: object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+      description: 'Profile edit form (legacy: `UserProfileForm`).'
+    QnaItem:
+      type: object
+      required:
+        - id
+        - question
+        - answer
+      properties:
+        id:
+          type: integer
+          format: int32
+        question:
+          type: string
+        answer:
+          type: string
+      description: A Q&A entry attached to a category or landing page (legacy QnA item).
+    QnaItemInput:
+      type: object
+      required:
+        - question
+        - answer
+      properties:
+        question:
+          type: string
+          minLength: 1
+        answer:
+          type: string
+          minLength: 1
+    ResetPasswordInput:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
+          minLength: 1
+      description: 'Password reset submission (legacy: `UserPassword`).'
+    Review:
+      type: object
+      required:
+        - id
+        - user
+        - course
+        - userId
+        - courseId
+        - body
+        - firstName
+        - lastName
+        - fullName
+        - state
+        - locale
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        user:
+          $ref: '#/components/schemas/User'
+        course:
+          $ref: '#/components/schemas/Course'
+        userId:
+          type: integer
+          format: int32
+        courseId:
+          type: integer
+          format: int32
+        body:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        fullName:
+          type: string
+          nullable: true
+        state:
+          allOf:
+            - $ref: '#/components/schemas/ReviewState'
+          nullable: true
+        locale:
+          allOf:
+            - $ref: '#/components/schemas/ReviewLocale'
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A student review/testimonial (legacy: `Review`).'
+    ReviewInput:
+      type: object
+      required:
+        - state
+        - pinned
+        - courseId
+        - userId
+        - body
+        - firstName
+        - lastName
+      properties:
+        state:
+          allOf:
+            - $ref: '#/components/schemas/ReviewState'
+          nullable: true
+        pinned:
+          type: boolean
+          nullable: true
+        courseId:
+          type: integer
+          format: int32
+          nullable: true
+        userId:
+          type: integer
+          format: int32
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+    ReviewLocale:
+      type: string
+      enum:
+        - ru
+        - en
+      description: Reviews only target ru/en today (legacy `ReviewLocale`).
+    ReviewPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    ReviewState:
+      type: string
+      enum:
+        - draft
+        - published
+        - archived
+      description: Review publication state.
+    RoleInput:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true
+    RolePermissionInput:
+      type: object
+      required:
+        - resource
+        - canIndex
+        - canCreate
+        - canUpdate
+        - canDestroy
+      properties:
+        resource:
+          $ref: '#/components/schemas/PermissionResource'
+        canIndex:
+          type: boolean
+        canCreate:
+          type: boolean
+        canUpdate:
+          type: boolean
+        canDestroy:
+          type: boolean
+      description: One permission row to set on a role.
+    RolePermissionsInput:
+      type: object
+      required:
+        - permissions
+      properties:
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolePermissionInput'
+      description: The full permission matrix submitted for a role.
+    SessionInput:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+      description: Email + password login.
+    SignUpInput:
+      type: object
+      required:
+        - firstName
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+      description: 'Sign-up form (legacy: `UserSignUpForm`).'
+    Sitemap:
+      type: object
+      required:
+        - landingPages
+        - lessons
+        - blogPosts
+      properties:
+        landingPages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SitemapCourseLandingPage'
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/SitemapCourseLesson'
+        blogPosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SitemapBlogPost'
+      description: Aggregated data for the XML sitemap / SEO index.
+    SitemapBlogPost:
+      type: object
+      required:
+        - id
+        - name
+        - slug
+        - locale
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        slug:
+          type: string
+        locale:
+          $ref: '#/components/schemas/Locale'
+      description: 'Minimal blog-post row for the sitemap (legacy: `SitemapBlogPost`).'
+    SitemapCourseLandingPage:
+      type: object
+      required:
+        - id
+        - courseId
+        - slug
+        - header
+        - locale
+      properties:
+        id:
+          type: integer
+          format: int32
+        courseId:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        header:
+          type: string
+        locale:
+          $ref: '#/components/schemas/Locale'
+      description: 'Minimal landing-page row for the sitemap (legacy: `LanguageSitemapLandingPage`).'
+    SitemapCourseLesson:
+      type: object
+      required:
+        - id
+        - courseId
+        - name
+        - slug
+        - naturalOrder
+        - locale
+      properties:
+        id:
+          type: integer
+          format: int32
+        courseId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        slug:
+          type: string
+        naturalOrder:
+          type: integer
+          format: int32
+        locale:
+          $ref: '#/components/schemas/Locale'
+      description: 'Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).'
+    StaffMember:
+      type: object
+      required:
+        - id
+        - userId
+        - roleId
+        - user
+        - role
+        - allowedLocales
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        roleId:
+          type: integer
+          format: int32
+        user:
+          $ref: '#/components/schemas/User'
+        role:
+          $ref: '#/components/schemas/StaffRole'
+        allowedLocales:
+          type: array
+          items:
+            type: string
+      description: 'A staff member: a user bound to a role (legacy: `StaffMember`).'
+    StaffMemberInput:
+      type: object
+      required:
+        - userId
+        - roleId
+        - allowedLocales
+      properties:
+        userId:
+          type: integer
+          format: int32
+        roleId:
+          type: integer
+          format: int32
+        allowedLocales:
+          type: array
+          items:
+            type: string
+    StaffMemberPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffMember'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    StaffRole:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - permissionsCount
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        permissionsCount:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A staff role (legacy: `StaffRole`).'
+    StaffRoleDetail:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - permissions
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffRolePermission'
+      description: 'A staff role with its full permission matrix (legacy: `StaffRoleCrud`).'
+    StaffRolePage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffRole'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    StaffRolePermission:
+      type: object
+      required:
+        - id
+        - roleId
+        - resource
+        - canIndex
+        - canCreate
+        - canUpdate
+        - canDestroy
+      properties:
+        id:
+          type: integer
+          format: int32
+        roleId:
+          type: integer
+          format: int32
+        resource:
+          $ref: '#/components/schemas/PermissionResource'
+        canIndex:
+          type: boolean
+        canCreate:
+          type: boolean
+        canUpdate:
+          type: boolean
+        canDestroy:
+          type: boolean
+      description: "One resource's permission bits for a role (legacy: `StaffRolePermission`)."
+    UnauthorizedError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+      description: The request is not authenticated (no/invalid session cookie).
+    User:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - name
+        - email
+        - admin
+        - canAccessAdmin
+        - assistantMessagesCount
+        - createdAt
+        - createdAtAsTimestamp
+        - type
+      properties:
+        id:
+          type: integer
+          format: int32
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        admin:
+          type: boolean
+          nullable: true
+        canAccessAdmin:
+          type: boolean
+        assistantMessagesCount:
+          type: integer
+          format: int32
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        createdAtAsTimestamp:
+          type: integer
+          format: int64
+          nullable: true
+        type:
+          type: string
+          enum:
+            - user
+      description: 'A user (legacy: `User`). Passwords are never part of a response.'
+    UserCredential:
+      type: object
+      required:
+        - id
+        - nickname
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        nickname:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A registered passkey/WebAuthn credential (legacy: `UserCredential`).'
+    UserCrud:
+      type: object
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+        - admin
+      properties:
+        id:
+          type: integer
+          format: int32
+        email:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        admin:
+          type: boolean
+          nullable: true
+      description: 'A user row as shown in admin lists/forms (legacy: `UserCrud`).'
+    UserCrudPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserCrud'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    UserInput:
+      type: object
+      required:
+        - email
+        - firstName
+        - lastName
+        - admin
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        admin:
+          type: boolean
+          nullable: true
     ValidationError:
       type: object
       required:

@@ -8,20 +8,930 @@ import (
 	"github.com/go-faster/errors"
 )
 
+// AdminDeleteBannerNoContent is response for AdminDeleteBanner operation.
+type AdminDeleteBannerNoContent struct{}
+
+// AdminDeleteBlogPostNoContent is response for AdminDeleteBlogPost operation.
+type AdminDeleteBlogPostNoContent struct{}
+
+// AdminDeleteCategoryQnaItemNoContent is response for AdminDeleteCategoryQnaItem operation.
+type AdminDeleteCategoryQnaItemNoContent struct{}
+
 // AdminDeleteCourseCategoryNoContent is response for AdminDeleteCourseCategory operation.
 type AdminDeleteCourseCategoryNoContent struct{}
 
-// A course (legacy: `Language`).
+// AdminDeleteCourseLandingPageNoContent is response for AdminDeleteCourseLandingPage operation.
+type AdminDeleteCourseLandingPageNoContent struct{}
+
+// AdminDeleteLandingPageQnaItemNoContent is response for AdminDeleteLandingPageQnaItem operation.
+type AdminDeleteLandingPageQnaItemNoContent struct{}
+
+// AdminDeleteReviewNoContent is response for AdminDeleteReview operation.
+type AdminDeleteReviewNoContent struct{}
+
+// AdminDeleteRoleNoContent is response for AdminDeleteRole operation.
+type AdminDeleteRoleNoContent struct{}
+
+// AdminDeleteStaffMemberNoContent is response for AdminDeleteStaffMember operation.
+type AdminDeleteStaffMemberNoContent struct{}
+
+// AdminDeleteUserNoContent is response for AdminDeleteUser operation.
+type AdminDeleteUserNoContent struct{}
+
+// AdminReviewCourseLessonNoContent is response for AdminReviewCourseLesson operation.
+type AdminReviewCourseLessonNoContent struct{}
+
+func (*AdminReviewCourseLessonNoContent) adminReviewCourseLessonRes() {}
+
+// AdminReviewCourseNoContent is response for AdminReviewCourse operation.
+type AdminReviewCourseNoContent struct{}
+
+func (*AdminReviewCourseNoContent) adminReviewCourseRes() {}
+
+// A prompt to the in-lesson assistant, carrying the editor context.
+// Ref: #/components/schemas/AssistantMessageInput
+type AssistantMessageInput struct {
+	Message  string    `json:"message"`
+	Output   NilString `json:"output"`
+	UserCode NilString `json:"userCode"`
+}
+
+// GetMessage returns the value of Message.
+func (s *AssistantMessageInput) GetMessage() string {
+	return s.Message
+}
+
+// GetOutput returns the value of Output.
+func (s *AssistantMessageInput) GetOutput() NilString {
+	return s.Output
+}
+
+// GetUserCode returns the value of UserCode.
+func (s *AssistantMessageInput) GetUserCode() NilString {
+	return s.UserCode
+}
+
+// SetMessage sets the value of Message.
+func (s *AssistantMessageInput) SetMessage(val string) {
+	s.Message = val
+}
+
+// SetOutput sets the value of Output.
+func (s *AssistantMessageInput) SetOutput(val NilString) {
+	s.Output = val
+}
+
+// SetUserCode sets the value of UserCode.
+func (s *AssistantMessageInput) SetUserCode(val NilString) {
+	s.UserCode = val
+}
+
+// A site banner (legacy: `Banner`).
+// Ref: #/components/schemas/Banner
+type Banner struct {
+	ID         int32            `json:"id"`
+	Locale     BannerLocale     `json:"locale"`
+	Body       string           `json:"body"`
+	URL        NilString        `json:"url"`
+	Background BannerBackground `json:"background"`
+	State      BannerState      `json:"state"`
+	StartsAt   NilDateTime      `json:"startsAt"`
+	FinishesAt NilDateTime      `json:"finishesAt"`
+	CreatedAt  time.Time        `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Banner) GetID() int32 {
+	return s.ID
+}
+
+// GetLocale returns the value of Locale.
+func (s *Banner) GetLocale() BannerLocale {
+	return s.Locale
+}
+
+// GetBody returns the value of Body.
+func (s *Banner) GetBody() string {
+	return s.Body
+}
+
+// GetURL returns the value of URL.
+func (s *Banner) GetURL() NilString {
+	return s.URL
+}
+
+// GetBackground returns the value of Background.
+func (s *Banner) GetBackground() BannerBackground {
+	return s.Background
+}
+
+// GetState returns the value of State.
+func (s *Banner) GetState() BannerState {
+	return s.State
+}
+
+// GetStartsAt returns the value of StartsAt.
+func (s *Banner) GetStartsAt() NilDateTime {
+	return s.StartsAt
+}
+
+// GetFinishesAt returns the value of FinishesAt.
+func (s *Banner) GetFinishesAt() NilDateTime {
+	return s.FinishesAt
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Banner) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Banner) SetID(val int32) {
+	s.ID = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *Banner) SetLocale(val BannerLocale) {
+	s.Locale = val
+}
+
+// SetBody sets the value of Body.
+func (s *Banner) SetBody(val string) {
+	s.Body = val
+}
+
+// SetURL sets the value of URL.
+func (s *Banner) SetURL(val NilString) {
+	s.URL = val
+}
+
+// SetBackground sets the value of Background.
+func (s *Banner) SetBackground(val BannerBackground) {
+	s.Background = val
+}
+
+// SetState sets the value of State.
+func (s *Banner) SetState(val BannerState) {
+	s.State = val
+}
+
+// SetStartsAt sets the value of StartsAt.
+func (s *Banner) SetStartsAt(val NilDateTime) {
+	s.StartsAt = val
+}
+
+// SetFinishesAt sets the value of FinishesAt.
+func (s *Banner) SetFinishesAt(val NilDateTime) {
+	s.FinishesAt = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Banner) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*Banner) adminCreateBannerRes() {}
+func (*Banner) adminGetBannerRes()    {}
+func (*Banner) adminUpdateBannerRes() {}
+
+// Banner display background.
+// Ref: #/components/schemas/BannerBackground
+type BannerBackground string
+
+const (
+	BannerBackgroundCtaGradient BannerBackground = "cta_gradient"
+	BannerBackgroundDark        BannerBackground = "dark"
+	BannerBackgroundBlue        BannerBackground = "blue"
+)
+
+// AllValues returns all BannerBackground values.
+func (BannerBackground) AllValues() []BannerBackground {
+	return []BannerBackground{
+		BannerBackgroundCtaGradient,
+		BannerBackgroundDark,
+		BannerBackgroundBlue,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BannerBackground) MarshalText() ([]byte, error) {
+	switch s {
+	case BannerBackgroundCtaGradient:
+		return []byte(s), nil
+	case BannerBackgroundDark:
+		return []byte(s), nil
+	case BannerBackgroundBlue:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BannerBackground) UnmarshalText(data []byte) error {
+	switch BannerBackground(data) {
+	case BannerBackgroundCtaGradient:
+		*s = BannerBackgroundCtaGradient
+		return nil
+	case BannerBackgroundDark:
+		*s = BannerBackgroundDark
+		return nil
+	case BannerBackgroundBlue:
+		*s = BannerBackgroundBlue
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/BannerInput
+type BannerInput struct {
+	State      BannerState      `json:"state"`
+	Background BannerBackground `json:"background"`
+	Locale     BannerLocale     `json:"locale"`
+	Body       string           `json:"body"`
+	URL        NilString        `json:"url"`
+	StartsAt   NilDateTime      `json:"startsAt"`
+	FinishesAt NilDateTime      `json:"finishesAt"`
+}
+
+// GetState returns the value of State.
+func (s *BannerInput) GetState() BannerState {
+	return s.State
+}
+
+// GetBackground returns the value of Background.
+func (s *BannerInput) GetBackground() BannerBackground {
+	return s.Background
+}
+
+// GetLocale returns the value of Locale.
+func (s *BannerInput) GetLocale() BannerLocale {
+	return s.Locale
+}
+
+// GetBody returns the value of Body.
+func (s *BannerInput) GetBody() string {
+	return s.Body
+}
+
+// GetURL returns the value of URL.
+func (s *BannerInput) GetURL() NilString {
+	return s.URL
+}
+
+// GetStartsAt returns the value of StartsAt.
+func (s *BannerInput) GetStartsAt() NilDateTime {
+	return s.StartsAt
+}
+
+// GetFinishesAt returns the value of FinishesAt.
+func (s *BannerInput) GetFinishesAt() NilDateTime {
+	return s.FinishesAt
+}
+
+// SetState sets the value of State.
+func (s *BannerInput) SetState(val BannerState) {
+	s.State = val
+}
+
+// SetBackground sets the value of Background.
+func (s *BannerInput) SetBackground(val BannerBackground) {
+	s.Background = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *BannerInput) SetLocale(val BannerLocale) {
+	s.Locale = val
+}
+
+// SetBody sets the value of Body.
+func (s *BannerInput) SetBody(val string) {
+	s.Body = val
+}
+
+// SetURL sets the value of URL.
+func (s *BannerInput) SetURL(val NilString) {
+	s.URL = val
+}
+
+// SetStartsAt sets the value of StartsAt.
+func (s *BannerInput) SetStartsAt(val NilDateTime) {
+	s.StartsAt = val
+}
+
+// SetFinishesAt sets the value of FinishesAt.
+func (s *BannerInput) SetFinishesAt(val NilDateTime) {
+	s.FinishesAt = val
+}
+
+// Banners only target ru/en today (legacy `BannerLocale`).
+// Ref: #/components/schemas/BannerLocale
+type BannerLocale string
+
+const (
+	BannerLocaleRu BannerLocale = "ru"
+	BannerLocaleEn BannerLocale = "en"
+)
+
+// AllValues returns all BannerLocale values.
+func (BannerLocale) AllValues() []BannerLocale {
+	return []BannerLocale{
+		BannerLocaleRu,
+		BannerLocaleEn,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BannerLocale) MarshalText() ([]byte, error) {
+	switch s {
+	case BannerLocaleRu:
+		return []byte(s), nil
+	case BannerLocaleEn:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BannerLocale) UnmarshalText(data []byte) error {
+	switch BannerLocale(data) {
+	case BannerLocaleRu:
+		*s = BannerLocaleRu
+		return nil
+	case BannerLocaleEn:
+		*s = BannerLocaleEn
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/BannerPage
+type BannerPage struct {
+	Items []Banner `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *BannerPage) GetItems() []Banner {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *BannerPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *BannerPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *BannerPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *BannerPage) SetItems(val []Banner) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *BannerPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *BannerPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *BannerPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// Banner publication state.
+// Ref: #/components/schemas/BannerState
+type BannerState string
+
+const (
+	BannerStateDraft     BannerState = "draft"
+	BannerStatePublished BannerState = "published"
+	BannerStateArchived  BannerState = "archived"
+)
+
+// AllValues returns all BannerState values.
+func (BannerState) AllValues() []BannerState {
+	return []BannerState{
+		BannerStateDraft,
+		BannerStatePublished,
+		BannerStateArchived,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BannerState) MarshalText() ([]byte, error) {
+	switch s {
+	case BannerStateDraft:
+		return []byte(s), nil
+	case BannerStatePublished:
+		return []byte(s), nil
+	case BannerStateArchived:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BannerState) UnmarshalText(data []byte) error {
+	switch BannerState(data) {
+	case BannerStateDraft:
+		*s = BannerStateDraft
+		return nil
+	case BannerStatePublished:
+		*s = BannerStatePublished
+		return nil
+	case BannerStateArchived:
+		*s = BannerStateArchived
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A blog post (legacy: `BlogPost`).
+// Ref: #/components/schemas/BlogPost
+type BlogPost struct {
+	ID                      int32            `json:"id"`
+	Creator                 User             `json:"creator"`
+	Name                    NilString        `json:"name"`
+	Slug                    NilString        `json:"slug"`
+	Description             NilString        `json:"description"`
+	State                   NilBlogPostState `json:"state"`
+	Locale                  NilString        `json:"locale"`
+	URL                     string           `json:"url"`
+	RichBodyHtml            string           `json:"richBodyHtml"`
+	ReadingTime             int32            `json:"readingTime"`
+	LikesCount              int32            `json:"likesCount"`
+	RelatedCourseItemsCount int32            `json:"relatedCourseItemsCount"`
+	CoverThumbVariant       NilString        `json:"coverThumbVariant"`
+	CoverListVariant        NilString        `json:"coverListVariant"`
+	CoverMainVariant        NilString        `json:"coverMainVariant"`
+	CreatedAt               time.Time        `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *BlogPost) GetID() int32 {
+	return s.ID
+}
+
+// GetCreator returns the value of Creator.
+func (s *BlogPost) GetCreator() User {
+	return s.Creator
+}
+
+// GetName returns the value of Name.
+func (s *BlogPost) GetName() NilString {
+	return s.Name
+}
+
+// GetSlug returns the value of Slug.
+func (s *BlogPost) GetSlug() NilString {
+	return s.Slug
+}
+
+// GetDescription returns the value of Description.
+func (s *BlogPost) GetDescription() NilString {
+	return s.Description
+}
+
+// GetState returns the value of State.
+func (s *BlogPost) GetState() NilBlogPostState {
+	return s.State
+}
+
+// GetLocale returns the value of Locale.
+func (s *BlogPost) GetLocale() NilString {
+	return s.Locale
+}
+
+// GetURL returns the value of URL.
+func (s *BlogPost) GetURL() string {
+	return s.URL
+}
+
+// GetRichBodyHtml returns the value of RichBodyHtml.
+func (s *BlogPost) GetRichBodyHtml() string {
+	return s.RichBodyHtml
+}
+
+// GetReadingTime returns the value of ReadingTime.
+func (s *BlogPost) GetReadingTime() int32 {
+	return s.ReadingTime
+}
+
+// GetLikesCount returns the value of LikesCount.
+func (s *BlogPost) GetLikesCount() int32 {
+	return s.LikesCount
+}
+
+// GetRelatedCourseItemsCount returns the value of RelatedCourseItemsCount.
+func (s *BlogPost) GetRelatedCourseItemsCount() int32 {
+	return s.RelatedCourseItemsCount
+}
+
+// GetCoverThumbVariant returns the value of CoverThumbVariant.
+func (s *BlogPost) GetCoverThumbVariant() NilString {
+	return s.CoverThumbVariant
+}
+
+// GetCoverListVariant returns the value of CoverListVariant.
+func (s *BlogPost) GetCoverListVariant() NilString {
+	return s.CoverListVariant
+}
+
+// GetCoverMainVariant returns the value of CoverMainVariant.
+func (s *BlogPost) GetCoverMainVariant() NilString {
+	return s.CoverMainVariant
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *BlogPost) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *BlogPost) SetID(val int32) {
+	s.ID = val
+}
+
+// SetCreator sets the value of Creator.
+func (s *BlogPost) SetCreator(val User) {
+	s.Creator = val
+}
+
+// SetName sets the value of Name.
+func (s *BlogPost) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *BlogPost) SetSlug(val NilString) {
+	s.Slug = val
+}
+
+// SetDescription sets the value of Description.
+func (s *BlogPost) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetState sets the value of State.
+func (s *BlogPost) SetState(val NilBlogPostState) {
+	s.State = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *BlogPost) SetLocale(val NilString) {
+	s.Locale = val
+}
+
+// SetURL sets the value of URL.
+func (s *BlogPost) SetURL(val string) {
+	s.URL = val
+}
+
+// SetRichBodyHtml sets the value of RichBodyHtml.
+func (s *BlogPost) SetRichBodyHtml(val string) {
+	s.RichBodyHtml = val
+}
+
+// SetReadingTime sets the value of ReadingTime.
+func (s *BlogPost) SetReadingTime(val int32) {
+	s.ReadingTime = val
+}
+
+// SetLikesCount sets the value of LikesCount.
+func (s *BlogPost) SetLikesCount(val int32) {
+	s.LikesCount = val
+}
+
+// SetRelatedCourseItemsCount sets the value of RelatedCourseItemsCount.
+func (s *BlogPost) SetRelatedCourseItemsCount(val int32) {
+	s.RelatedCourseItemsCount = val
+}
+
+// SetCoverThumbVariant sets the value of CoverThumbVariant.
+func (s *BlogPost) SetCoverThumbVariant(val NilString) {
+	s.CoverThumbVariant = val
+}
+
+// SetCoverListVariant sets the value of CoverListVariant.
+func (s *BlogPost) SetCoverListVariant(val NilString) {
+	s.CoverListVariant = val
+}
+
+// SetCoverMainVariant sets the value of CoverMainVariant.
+func (s *BlogPost) SetCoverMainVariant(val NilString) {
+	s.CoverMainVariant = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *BlogPost) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*BlogPost) adminCreateBlogPostRes()            {}
+func (*BlogPost) adminGetBlogPostRes()               {}
+func (*BlogPost) adminSetBlogPostRelatedCoursesRes() {}
+func (*BlogPost) adminUpdateBlogPostRes()            {}
+func (*BlogPost) getBlogPostRes()                    {}
+func (*BlogPost) getNextBlogPostRes()                {}
+func (*BlogPost) likeBlogPostRes()                   {}
+
+// Ref: #/components/schemas/BlogPostInput
+type BlogPostInput struct {
+	Name        NilString        `json:"name"`
+	Slug        NilString        `json:"slug"`
+	Description NilString        `json:"description"`
+	State       NilBlogPostState `json:"state"`
+	// Markdown/rich source; `richBodyHtml` is derived on read.
+	RichBody string `json:"richBody"`
+	// Attachment id from `POST /admin/attachments`, or null to keep/clear.
+	CoverAttachmentId NilInt32 `json:"coverAttachmentId"`
+}
+
+// GetName returns the value of Name.
+func (s *BlogPostInput) GetName() NilString {
+	return s.Name
+}
+
+// GetSlug returns the value of Slug.
+func (s *BlogPostInput) GetSlug() NilString {
+	return s.Slug
+}
+
+// GetDescription returns the value of Description.
+func (s *BlogPostInput) GetDescription() NilString {
+	return s.Description
+}
+
+// GetState returns the value of State.
+func (s *BlogPostInput) GetState() NilBlogPostState {
+	return s.State
+}
+
+// GetRichBody returns the value of RichBody.
+func (s *BlogPostInput) GetRichBody() string {
+	return s.RichBody
+}
+
+// GetCoverAttachmentId returns the value of CoverAttachmentId.
+func (s *BlogPostInput) GetCoverAttachmentId() NilInt32 {
+	return s.CoverAttachmentId
+}
+
+// SetName sets the value of Name.
+func (s *BlogPostInput) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *BlogPostInput) SetSlug(val NilString) {
+	s.Slug = val
+}
+
+// SetDescription sets the value of Description.
+func (s *BlogPostInput) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetState sets the value of State.
+func (s *BlogPostInput) SetState(val NilBlogPostState) {
+	s.State = val
+}
+
+// SetRichBody sets the value of RichBody.
+func (s *BlogPostInput) SetRichBody(val string) {
+	s.RichBody = val
+}
+
+// SetCoverAttachmentId sets the value of CoverAttachmentId.
+func (s *BlogPostInput) SetCoverAttachmentId(val NilInt32) {
+	s.CoverAttachmentId = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/BlogPostPage
+type BlogPostPage struct {
+	Items []BlogPost `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *BlogPostPage) GetItems() []BlogPost {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *BlogPostPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *BlogPostPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *BlogPostPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *BlogPostPage) SetItems(val []BlogPost) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *BlogPostPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *BlogPostPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *BlogPostPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// The set of courses promoted on a blog post.
+// Ref: #/components/schemas/BlogPostRelatedCoursesInput
+type BlogPostRelatedCoursesInput struct {
+	CourseIds []int32 `json:"courseIds"`
+}
+
+// GetCourseIds returns the value of CourseIds.
+func (s *BlogPostRelatedCoursesInput) GetCourseIds() []int32 {
+	return s.CourseIds
+}
+
+// SetCourseIds sets the value of CourseIds.
+func (s *BlogPostRelatedCoursesInput) SetCourseIds(val []int32) {
+	s.CourseIds = val
+}
+
+// Blog post publication state.
+// Ref: #/components/schemas/BlogPostState
+type BlogPostState string
+
+const (
+	BlogPostStateDraft     BlogPostState = "draft"
+	BlogPostStatePublished BlogPostState = "published"
+	BlogPostStateArchived  BlogPostState = "archived"
+)
+
+// AllValues returns all BlogPostState values.
+func (BlogPostState) AllValues() []BlogPostState {
+	return []BlogPostState{
+		BlogPostStateDraft,
+		BlogPostStatePublished,
+		BlogPostStateArchived,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s BlogPostState) MarshalText() ([]byte, error) {
+	switch s {
+	case BlogPostStateDraft:
+		return []byte(s), nil
+	case BlogPostStatePublished:
+		return []byte(s), nil
+	case BlogPostStateArchived:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *BlogPostState) UnmarshalText(data []byte) error {
+	switch BlogPostState(data) {
+	case BlogPostStateDraft:
+		*s = BlogPostStateDraft
+		return nil
+	case BlogPostStatePublished:
+		*s = BlogPostStatePublished
+		return nil
+	case BlogPostStateArchived:
+		*s = BlogPostStateArchived
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A request to download the free book (ru marketing funnel).
+// Ref: #/components/schemas/BookRequestInput
+type BookRequestInput struct {
+	Email    string    `json:"email"`
+	FullName NilString `json:"fullName"`
+}
+
+// GetEmail returns the value of Email.
+func (s *BookRequestInput) GetEmail() string {
+	return s.Email
+}
+
+// GetFullName returns the value of FullName.
+func (s *BookRequestInput) GetFullName() NilString {
+	return s.FullName
+}
+
+// SetEmail sets the value of Email.
+func (s *BookRequestInput) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetFullName sets the value of FullName.
+func (s *BookRequestInput) SetFullName(val NilString) {
+	s.FullName = val
+}
+
+// A submitted solution to run against the lesson's tests.
+// Ref: #/components/schemas/CheckLessonInput
+type CheckLessonInput struct {
+	Code string `json:"code"`
+	// The lesson version the code was written against.
+	VersionId int32 `json:"versionId"`
+}
+
+// GetCode returns the value of Code.
+func (s *CheckLessonInput) GetCode() string {
+	return s.Code
+}
+
+// GetVersionId returns the value of VersionId.
+func (s *CheckLessonInput) GetVersionId() int32 {
+	return s.VersionId
+}
+
+// SetCode sets the value of Code.
+func (s *CheckLessonInput) SetCode(val string) {
+	s.Code = val
+}
+
+// SetVersionId sets the value of VersionId.
+func (s *CheckLessonInput) SetVersionId(val int32) {
+	s.VersionId = val
+}
+
+// CheckPasswordResetTokenNoContent is response for CheckPasswordResetToken operation.
+type CheckPasswordResetTokenNoContent struct{}
+
+func (*CheckPasswordResetTokenNoContent) checkPasswordResetTokenRes() {}
+
+// A course (legacy: `Language`). Superset read model: the public catalog embeds it, admin course
+// screens read the full shape.
 // Ref: #/components/schemas/Course
 type Course struct {
-	ID           int32             `json:"id"`
-	Slug         string            `json:"slug"`
-	Name         NilString         `json:"name"`
-	LearnAs      NilCourseLearnAs  `json:"learnAs"`
-	Progress     NilCourseProgress `json:"progress"`
-	MembersCount int32             `json:"membersCount"`
-	LessonsCount int32             `json:"lessonsCount"`
-	CategoryId   NilInt32          `json:"categoryId"`
+	ID                       int32             `json:"id"`
+	Slug                     string            `json:"slug"`
+	Name                     NilString         `json:"name"`
+	LearnAs                  NilCourseLearnAs  `json:"learnAs"`
+	Progress                 NilCourseProgress `json:"progress"`
+	CategoryId               NilInt32          `json:"categoryId"`
+	CurrentVersionId         NilInt32          `json:"currentVersionId"`
+	CurrentVersion           NilCourseVersion  `json:"currentVersion"`
+	CreatedAt                time.Time         `json:"createdAt"`
+	MembersCount             int32             `json:"membersCount"`
+	LessonsCount             int32             `json:"lessonsCount"`
+	RatingCount              int32             `json:"ratingCount"`
+	RatingValue              float64           `json:"ratingValue"`
+	RepositoryUrl            NilString         `json:"repositoryUrl"`
+	HexletProgramLandingPage NilString         `json:"hexletProgramLandingPage"`
+	CoverListVariant         NilString         `json:"coverListVariant"`
+	CoverThumbVariant        NilString         `json:"coverThumbVariant"`
 }
 
 // GetID returns the value of ID.
@@ -49,6 +959,26 @@ func (s *Course) GetProgress() NilCourseProgress {
 	return s.Progress
 }
 
+// GetCategoryId returns the value of CategoryId.
+func (s *Course) GetCategoryId() NilInt32 {
+	return s.CategoryId
+}
+
+// GetCurrentVersionId returns the value of CurrentVersionId.
+func (s *Course) GetCurrentVersionId() NilInt32 {
+	return s.CurrentVersionId
+}
+
+// GetCurrentVersion returns the value of CurrentVersion.
+func (s *Course) GetCurrentVersion() NilCourseVersion {
+	return s.CurrentVersion
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Course) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
 // GetMembersCount returns the value of MembersCount.
 func (s *Course) GetMembersCount() int32 {
 	return s.MembersCount
@@ -59,9 +989,34 @@ func (s *Course) GetLessonsCount() int32 {
 	return s.LessonsCount
 }
 
-// GetCategoryId returns the value of CategoryId.
-func (s *Course) GetCategoryId() NilInt32 {
-	return s.CategoryId
+// GetRatingCount returns the value of RatingCount.
+func (s *Course) GetRatingCount() int32 {
+	return s.RatingCount
+}
+
+// GetRatingValue returns the value of RatingValue.
+func (s *Course) GetRatingValue() float64 {
+	return s.RatingValue
+}
+
+// GetRepositoryUrl returns the value of RepositoryUrl.
+func (s *Course) GetRepositoryUrl() NilString {
+	return s.RepositoryUrl
+}
+
+// GetHexletProgramLandingPage returns the value of HexletProgramLandingPage.
+func (s *Course) GetHexletProgramLandingPage() NilString {
+	return s.HexletProgramLandingPage
+}
+
+// GetCoverListVariant returns the value of CoverListVariant.
+func (s *Course) GetCoverListVariant() NilString {
+	return s.CoverListVariant
+}
+
+// GetCoverThumbVariant returns the value of CoverThumbVariant.
+func (s *Course) GetCoverThumbVariant() NilString {
+	return s.CoverThumbVariant
 }
 
 // SetID sets the value of ID.
@@ -89,6 +1044,26 @@ func (s *Course) SetProgress(val NilCourseProgress) {
 	s.Progress = val
 }
 
+// SetCategoryId sets the value of CategoryId.
+func (s *Course) SetCategoryId(val NilInt32) {
+	s.CategoryId = val
+}
+
+// SetCurrentVersionId sets the value of CurrentVersionId.
+func (s *Course) SetCurrentVersionId(val NilInt32) {
+	s.CurrentVersionId = val
+}
+
+// SetCurrentVersion sets the value of CurrentVersion.
+func (s *Course) SetCurrentVersion(val NilCourseVersion) {
+	s.CurrentVersion = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Course) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
 // SetMembersCount sets the value of MembersCount.
 func (s *Course) SetMembersCount(val int32) {
 	s.MembersCount = val
@@ -99,12 +1074,42 @@ func (s *Course) SetLessonsCount(val int32) {
 	s.LessonsCount = val
 }
 
-// SetCategoryId sets the value of CategoryId.
-func (s *Course) SetCategoryId(val NilInt32) {
-	s.CategoryId = val
+// SetRatingCount sets the value of RatingCount.
+func (s *Course) SetRatingCount(val int32) {
+	s.RatingCount = val
 }
 
-// A catalog entry as shown on the courses index (legacy: LanguageLandingPageForLists).
+// SetRatingValue sets the value of RatingValue.
+func (s *Course) SetRatingValue(val float64) {
+	s.RatingValue = val
+}
+
+// SetRepositoryUrl sets the value of RepositoryUrl.
+func (s *Course) SetRepositoryUrl(val NilString) {
+	s.RepositoryUrl = val
+}
+
+// SetHexletProgramLandingPage sets the value of HexletProgramLandingPage.
+func (s *Course) SetHexletProgramLandingPage(val NilString) {
+	s.HexletProgramLandingPage = val
+}
+
+// SetCoverListVariant sets the value of CoverListVariant.
+func (s *Course) SetCoverListVariant(val NilString) {
+	s.CoverListVariant = val
+}
+
+// SetCoverThumbVariant sets the value of CoverThumbVariant.
+func (s *Course) SetCoverThumbVariant(val NilString) {
+	s.CoverThumbVariant = val
+}
+
+func (*Course) adminCreateCourseRes() {}
+func (*Course) adminGetCourseRes()    {}
+func (*Course) adminUpdateCourseRes() {}
+
+// A catalog entry as shown on the courses index (legacy: `LanguageLandingPageForLists`). Embeds the
+// full course plus derived fields.
 // Ref: #/components/schemas/CourseCatalogItem
 type CourseCatalogItem struct {
 	ID           int32     `json:"id"`
@@ -210,7 +1215,7 @@ func (s *CourseCatalogItem) SetCourse(val Course) {
 	s.Course = val
 }
 
-// A course category (legacy table: `language_categories`).
+// A course category (legacy: `LanguageCategory` / table `language_categories`).
 // Ref: #/components/schemas/CourseCategory
 type CourseCategory struct {
 	ID          int32     `json:"id"`
@@ -293,6 +1298,7 @@ func (s *CourseCategory) SetCreatedAt(val time.Time) {
 }
 
 func (*CourseCategory) adminCreateCourseCategoryRes() {}
+func (*CourseCategory) adminGetCourseCategoryRes()    {}
 func (*CourseCategory) adminUpdateCourseCategoryRes() {}
 
 // Writable fields for creating or updating a course category.
@@ -344,7 +1350,8 @@ func (s *CourseCategoryInput) SetDescription(val NilString) {
 	s.Description = val
 }
 
-// A page of results. Generic envelope reused by every admin list.
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
 // Ref: #/components/schemas/CourseCategoryPage
 type CourseCategoryPage struct {
 	Items []CourseCategory `json:"items"`
@@ -396,6 +1403,615 @@ func (s *CourseCategoryPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
 
+// A category page with the courses it groups.
+// Ref: #/components/schemas/CourseCategoryView
+type CourseCategoryView struct {
+	Category     CourseCategory      `json:"category"`
+	LandingPages []CourseCatalogItem `json:"landingPages"`
+}
+
+// GetCategory returns the value of Category.
+func (s *CourseCategoryView) GetCategory() CourseCategory {
+	return s.Category
+}
+
+// GetLandingPages returns the value of LandingPages.
+func (s *CourseCategoryView) GetLandingPages() []CourseCatalogItem {
+	return s.LandingPages
+}
+
+// SetCategory sets the value of Category.
+func (s *CourseCategoryView) SetCategory(val CourseCategory) {
+	s.Category = val
+}
+
+// SetLandingPages sets the value of LandingPages.
+func (s *CourseCategoryView) SetLandingPages(val []CourseCatalogItem) {
+	s.LandingPages = val
+}
+
+func (*CourseCategoryView) getPublicCourseCategoryRes() {}
+
+// Ref: #/components/schemas/CourseInput
+type CourseInput struct {
+	Slug                     NilString         `json:"slug"`
+	LearnAs                  NilCourseLearnAs  `json:"learnAs"`
+	Progress                 NilCourseProgress `json:"progress"`
+	HexletProgramLandingPage NilString         `json:"hexletProgramLandingPage"`
+	RepositoryUrl            NilString         `json:"repositoryUrl"`
+	// Attachment id from `POST /admin/attachments`, or null.
+	CoverAttachmentId NilInt32 `json:"coverAttachmentId"`
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseInput) GetSlug() NilString {
+	return s.Slug
+}
+
+// GetLearnAs returns the value of LearnAs.
+func (s *CourseInput) GetLearnAs() NilCourseLearnAs {
+	return s.LearnAs
+}
+
+// GetProgress returns the value of Progress.
+func (s *CourseInput) GetProgress() NilCourseProgress {
+	return s.Progress
+}
+
+// GetHexletProgramLandingPage returns the value of HexletProgramLandingPage.
+func (s *CourseInput) GetHexletProgramLandingPage() NilString {
+	return s.HexletProgramLandingPage
+}
+
+// GetRepositoryUrl returns the value of RepositoryUrl.
+func (s *CourseInput) GetRepositoryUrl() NilString {
+	return s.RepositoryUrl
+}
+
+// GetCoverAttachmentId returns the value of CoverAttachmentId.
+func (s *CourseInput) GetCoverAttachmentId() NilInt32 {
+	return s.CoverAttachmentId
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseInput) SetSlug(val NilString) {
+	s.Slug = val
+}
+
+// SetLearnAs sets the value of LearnAs.
+func (s *CourseInput) SetLearnAs(val NilCourseLearnAs) {
+	s.LearnAs = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *CourseInput) SetProgress(val NilCourseProgress) {
+	s.Progress = val
+}
+
+// SetHexletProgramLandingPage sets the value of HexletProgramLandingPage.
+func (s *CourseInput) SetHexletProgramLandingPage(val NilString) {
+	s.HexletProgramLandingPage = val
+}
+
+// SetRepositoryUrl sets the value of RepositoryUrl.
+func (s *CourseInput) SetRepositoryUrl(val NilString) {
+	s.RepositoryUrl = val
+}
+
+// SetCoverAttachmentId sets the value of CoverAttachmentId.
+func (s *CourseInput) SetCoverAttachmentId(val NilInt32) {
+	s.CoverAttachmentId = val
+}
+
+// A marketing landing page for a course (legacy: `LanguageLandingPage`).
+// Ref: #/components/schemas/CourseLandingPage
+type CourseLandingPage struct {
+	ID         int32               `json:"id"`
+	CourseId   int32               `json:"courseId"`
+	CourseSlug string              `json:"courseSlug"`
+	CreatedAt  time.Time           `json:"createdAt"`
+	Slug       string              `json:"slug"`
+	Name       string              `json:"name"`
+	Main       NilBool             `json:"main"`
+	Listed     NilBool             `json:"listed"`
+	State      NilLandingPageState `json:"state"`
+	// Free-form ordering key (legacy stores it as a string).
+	Order               NilString `json:"order"`
+	MetaTitle           string    `json:"metaTitle"`
+	MetaDescription     string    `json:"metaDescription"`
+	Header              string    `json:"header"`
+	Description         string    `json:"description"`
+	UsedInHeader        NilString `json:"usedInHeader"`
+	UsedInDescription   NilString `json:"usedInDescription"`
+	OutcomesHeader      NilString `json:"outcomesHeader"`
+	OutcomesDescription NilString `json:"outcomesDescription"`
+	OutcomesImage       NilString `json:"outcomesImage"`
+	// Estimated duration in hours.
+	Duration     int32 `json:"duration"`
+	MembersCount int32 `json:"membersCount"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseLandingPage) GetID() int32 {
+	return s.ID
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *CourseLandingPage) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetCourseSlug returns the value of CourseSlug.
+func (s *CourseLandingPage) GetCourseSlug() string {
+	return s.CourseSlug
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CourseLandingPage) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseLandingPage) GetSlug() string {
+	return s.Slug
+}
+
+// GetName returns the value of Name.
+func (s *CourseLandingPage) GetName() string {
+	return s.Name
+}
+
+// GetMain returns the value of Main.
+func (s *CourseLandingPage) GetMain() NilBool {
+	return s.Main
+}
+
+// GetListed returns the value of Listed.
+func (s *CourseLandingPage) GetListed() NilBool {
+	return s.Listed
+}
+
+// GetState returns the value of State.
+func (s *CourseLandingPage) GetState() NilLandingPageState {
+	return s.State
+}
+
+// GetOrder returns the value of Order.
+func (s *CourseLandingPage) GetOrder() NilString {
+	return s.Order
+}
+
+// GetMetaTitle returns the value of MetaTitle.
+func (s *CourseLandingPage) GetMetaTitle() string {
+	return s.MetaTitle
+}
+
+// GetMetaDescription returns the value of MetaDescription.
+func (s *CourseLandingPage) GetMetaDescription() string {
+	return s.MetaDescription
+}
+
+// GetHeader returns the value of Header.
+func (s *CourseLandingPage) GetHeader() string {
+	return s.Header
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseLandingPage) GetDescription() string {
+	return s.Description
+}
+
+// GetUsedInHeader returns the value of UsedInHeader.
+func (s *CourseLandingPage) GetUsedInHeader() NilString {
+	return s.UsedInHeader
+}
+
+// GetUsedInDescription returns the value of UsedInDescription.
+func (s *CourseLandingPage) GetUsedInDescription() NilString {
+	return s.UsedInDescription
+}
+
+// GetOutcomesHeader returns the value of OutcomesHeader.
+func (s *CourseLandingPage) GetOutcomesHeader() NilString {
+	return s.OutcomesHeader
+}
+
+// GetOutcomesDescription returns the value of OutcomesDescription.
+func (s *CourseLandingPage) GetOutcomesDescription() NilString {
+	return s.OutcomesDescription
+}
+
+// GetOutcomesImage returns the value of OutcomesImage.
+func (s *CourseLandingPage) GetOutcomesImage() NilString {
+	return s.OutcomesImage
+}
+
+// GetDuration returns the value of Duration.
+func (s *CourseLandingPage) GetDuration() int32 {
+	return s.Duration
+}
+
+// GetMembersCount returns the value of MembersCount.
+func (s *CourseLandingPage) GetMembersCount() int32 {
+	return s.MembersCount
+}
+
+// SetID sets the value of ID.
+func (s *CourseLandingPage) SetID(val int32) {
+	s.ID = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *CourseLandingPage) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetCourseSlug sets the value of CourseSlug.
+func (s *CourseLandingPage) SetCourseSlug(val string) {
+	s.CourseSlug = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CourseLandingPage) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseLandingPage) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseLandingPage) SetName(val string) {
+	s.Name = val
+}
+
+// SetMain sets the value of Main.
+func (s *CourseLandingPage) SetMain(val NilBool) {
+	s.Main = val
+}
+
+// SetListed sets the value of Listed.
+func (s *CourseLandingPage) SetListed(val NilBool) {
+	s.Listed = val
+}
+
+// SetState sets the value of State.
+func (s *CourseLandingPage) SetState(val NilLandingPageState) {
+	s.State = val
+}
+
+// SetOrder sets the value of Order.
+func (s *CourseLandingPage) SetOrder(val NilString) {
+	s.Order = val
+}
+
+// SetMetaTitle sets the value of MetaTitle.
+func (s *CourseLandingPage) SetMetaTitle(val string) {
+	s.MetaTitle = val
+}
+
+// SetMetaDescription sets the value of MetaDescription.
+func (s *CourseLandingPage) SetMetaDescription(val string) {
+	s.MetaDescription = val
+}
+
+// SetHeader sets the value of Header.
+func (s *CourseLandingPage) SetHeader(val string) {
+	s.Header = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseLandingPage) SetDescription(val string) {
+	s.Description = val
+}
+
+// SetUsedInHeader sets the value of UsedInHeader.
+func (s *CourseLandingPage) SetUsedInHeader(val NilString) {
+	s.UsedInHeader = val
+}
+
+// SetUsedInDescription sets the value of UsedInDescription.
+func (s *CourseLandingPage) SetUsedInDescription(val NilString) {
+	s.UsedInDescription = val
+}
+
+// SetOutcomesHeader sets the value of OutcomesHeader.
+func (s *CourseLandingPage) SetOutcomesHeader(val NilString) {
+	s.OutcomesHeader = val
+}
+
+// SetOutcomesDescription sets the value of OutcomesDescription.
+func (s *CourseLandingPage) SetOutcomesDescription(val NilString) {
+	s.OutcomesDescription = val
+}
+
+// SetOutcomesImage sets the value of OutcomesImage.
+func (s *CourseLandingPage) SetOutcomesImage(val NilString) {
+	s.OutcomesImage = val
+}
+
+// SetDuration sets the value of Duration.
+func (s *CourseLandingPage) SetDuration(val int32) {
+	s.Duration = val
+}
+
+// SetMembersCount sets the value of MembersCount.
+func (s *CourseLandingPage) SetMembersCount(val int32) {
+	s.MembersCount = val
+}
+
+func (*CourseLandingPage) adminCreateCourseLandingPageRes() {}
+func (*CourseLandingPage) adminGetCourseLandingPageRes()    {}
+func (*CourseLandingPage) adminUpdateCourseLandingPageRes() {}
+
+// Ref: #/components/schemas/CourseLandingPageInput
+type CourseLandingPageInput struct {
+	CourseId                int32               `json:"courseId"`
+	Slug                    NilString           `json:"slug"`
+	Name                    NilString           `json:"name"`
+	Main                    NilBool             `json:"main"`
+	Listed                  NilBool             `json:"listed"`
+	Footer                  NilBool             `json:"footer"`
+	FooterName              NilString           `json:"footerName"`
+	State                   NilLandingPageState `json:"state"`
+	Order                   NilString           `json:"order"`
+	LandingPageToRedirectId NilInt32            `json:"landingPageToRedirectId"`
+	MetaTitle               NilString           `json:"metaTitle"`
+	MetaDescription         NilString           `json:"metaDescription"`
+	Header                  NilString           `json:"header"`
+	Description             NilString           `json:"description"`
+	UsedInHeader            NilString           `json:"usedInHeader"`
+	UsedInDescription       NilString           `json:"usedInDescription"`
+	OutcomesHeader          NilString           `json:"outcomesHeader"`
+	OutcomesDescription     NilString           `json:"outcomesDescription"`
+	// Attachment id from `POST /admin/attachments`, or null.
+	OutcomesImageAttachmentId NilInt32 `json:"outcomesImageAttachmentId"`
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *CourseLandingPageInput) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseLandingPageInput) GetSlug() NilString {
+	return s.Slug
+}
+
+// GetName returns the value of Name.
+func (s *CourseLandingPageInput) GetName() NilString {
+	return s.Name
+}
+
+// GetMain returns the value of Main.
+func (s *CourseLandingPageInput) GetMain() NilBool {
+	return s.Main
+}
+
+// GetListed returns the value of Listed.
+func (s *CourseLandingPageInput) GetListed() NilBool {
+	return s.Listed
+}
+
+// GetFooter returns the value of Footer.
+func (s *CourseLandingPageInput) GetFooter() NilBool {
+	return s.Footer
+}
+
+// GetFooterName returns the value of FooterName.
+func (s *CourseLandingPageInput) GetFooterName() NilString {
+	return s.FooterName
+}
+
+// GetState returns the value of State.
+func (s *CourseLandingPageInput) GetState() NilLandingPageState {
+	return s.State
+}
+
+// GetOrder returns the value of Order.
+func (s *CourseLandingPageInput) GetOrder() NilString {
+	return s.Order
+}
+
+// GetLandingPageToRedirectId returns the value of LandingPageToRedirectId.
+func (s *CourseLandingPageInput) GetLandingPageToRedirectId() NilInt32 {
+	return s.LandingPageToRedirectId
+}
+
+// GetMetaTitle returns the value of MetaTitle.
+func (s *CourseLandingPageInput) GetMetaTitle() NilString {
+	return s.MetaTitle
+}
+
+// GetMetaDescription returns the value of MetaDescription.
+func (s *CourseLandingPageInput) GetMetaDescription() NilString {
+	return s.MetaDescription
+}
+
+// GetHeader returns the value of Header.
+func (s *CourseLandingPageInput) GetHeader() NilString {
+	return s.Header
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseLandingPageInput) GetDescription() NilString {
+	return s.Description
+}
+
+// GetUsedInHeader returns the value of UsedInHeader.
+func (s *CourseLandingPageInput) GetUsedInHeader() NilString {
+	return s.UsedInHeader
+}
+
+// GetUsedInDescription returns the value of UsedInDescription.
+func (s *CourseLandingPageInput) GetUsedInDescription() NilString {
+	return s.UsedInDescription
+}
+
+// GetOutcomesHeader returns the value of OutcomesHeader.
+func (s *CourseLandingPageInput) GetOutcomesHeader() NilString {
+	return s.OutcomesHeader
+}
+
+// GetOutcomesDescription returns the value of OutcomesDescription.
+func (s *CourseLandingPageInput) GetOutcomesDescription() NilString {
+	return s.OutcomesDescription
+}
+
+// GetOutcomesImageAttachmentId returns the value of OutcomesImageAttachmentId.
+func (s *CourseLandingPageInput) GetOutcomesImageAttachmentId() NilInt32 {
+	return s.OutcomesImageAttachmentId
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *CourseLandingPageInput) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseLandingPageInput) SetSlug(val NilString) {
+	s.Slug = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseLandingPageInput) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetMain sets the value of Main.
+func (s *CourseLandingPageInput) SetMain(val NilBool) {
+	s.Main = val
+}
+
+// SetListed sets the value of Listed.
+func (s *CourseLandingPageInput) SetListed(val NilBool) {
+	s.Listed = val
+}
+
+// SetFooter sets the value of Footer.
+func (s *CourseLandingPageInput) SetFooter(val NilBool) {
+	s.Footer = val
+}
+
+// SetFooterName sets the value of FooterName.
+func (s *CourseLandingPageInput) SetFooterName(val NilString) {
+	s.FooterName = val
+}
+
+// SetState sets the value of State.
+func (s *CourseLandingPageInput) SetState(val NilLandingPageState) {
+	s.State = val
+}
+
+// SetOrder sets the value of Order.
+func (s *CourseLandingPageInput) SetOrder(val NilString) {
+	s.Order = val
+}
+
+// SetLandingPageToRedirectId sets the value of LandingPageToRedirectId.
+func (s *CourseLandingPageInput) SetLandingPageToRedirectId(val NilInt32) {
+	s.LandingPageToRedirectId = val
+}
+
+// SetMetaTitle sets the value of MetaTitle.
+func (s *CourseLandingPageInput) SetMetaTitle(val NilString) {
+	s.MetaTitle = val
+}
+
+// SetMetaDescription sets the value of MetaDescription.
+func (s *CourseLandingPageInput) SetMetaDescription(val NilString) {
+	s.MetaDescription = val
+}
+
+// SetHeader sets the value of Header.
+func (s *CourseLandingPageInput) SetHeader(val NilString) {
+	s.Header = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseLandingPageInput) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetUsedInHeader sets the value of UsedInHeader.
+func (s *CourseLandingPageInput) SetUsedInHeader(val NilString) {
+	s.UsedInHeader = val
+}
+
+// SetUsedInDescription sets the value of UsedInDescription.
+func (s *CourseLandingPageInput) SetUsedInDescription(val NilString) {
+	s.UsedInDescription = val
+}
+
+// SetOutcomesHeader sets the value of OutcomesHeader.
+func (s *CourseLandingPageInput) SetOutcomesHeader(val NilString) {
+	s.OutcomesHeader = val
+}
+
+// SetOutcomesDescription sets the value of OutcomesDescription.
+func (s *CourseLandingPageInput) SetOutcomesDescription(val NilString) {
+	s.OutcomesDescription = val
+}
+
+// SetOutcomesImageAttachmentId sets the value of OutcomesImageAttachmentId.
+func (s *CourseLandingPageInput) SetOutcomesImageAttachmentId(val NilInt32) {
+	s.OutcomesImageAttachmentId = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/CourseLandingPagePage
+type CourseLandingPagePage struct {
+	Items []CourseLandingPage `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *CourseLandingPagePage) GetItems() []CourseLandingPage {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *CourseLandingPagePage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *CourseLandingPagePage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *CourseLandingPagePage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *CourseLandingPagePage) SetItems(val []CourseLandingPage) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *CourseLandingPagePage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *CourseLandingPagePage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *CourseLandingPagePage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
 // How a course is meant to be learned.
 // Ref: #/components/schemas/CourseLearnAs
 type CourseLearnAs string
@@ -437,6 +2053,763 @@ func (s *CourseLearnAs) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// A single lesson (legacy: `LanguageLesson`).
+// Ref: #/components/schemas/CourseLesson
+type CourseLesson struct {
+	Course        Course             `json:"course"`
+	ID            int32              `json:"id"`
+	Name          NilString          `json:"name"`
+	Slug          string             `json:"slug"`
+	Locale        NilString          `json:"locale"`
+	NaturalOrder  int32              `json:"naturalOrder"`
+	VersionId     int32              `json:"versionId"`
+	Version       NilInt32           `json:"version"`
+	Description   NilString          `json:"description"`
+	Instructions  NilString          `json:"instructions"`
+	Theory        NilString          `json:"theory"`
+	Definitions   []LessonDefinition `json:"definitions"`
+	Tips          []string           `json:"tips"`
+	PreparedCode  NilString          `json:"preparedCode"`
+	OriginalCode  NilString          `json:"originalCode"`
+	TestCode      NilString          `json:"testCode"`
+	SourceCodeUrl NilString          `json:"sourceCodeUrl"`
+	CreatedAt     time.Time          `json:"createdAt"`
+}
+
+// GetCourse returns the value of Course.
+func (s *CourseLesson) GetCourse() Course {
+	return s.Course
+}
+
+// GetID returns the value of ID.
+func (s *CourseLesson) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CourseLesson) GetName() NilString {
+	return s.Name
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseLesson) GetSlug() string {
+	return s.Slug
+}
+
+// GetLocale returns the value of Locale.
+func (s *CourseLesson) GetLocale() NilString {
+	return s.Locale
+}
+
+// GetNaturalOrder returns the value of NaturalOrder.
+func (s *CourseLesson) GetNaturalOrder() int32 {
+	return s.NaturalOrder
+}
+
+// GetVersionId returns the value of VersionId.
+func (s *CourseLesson) GetVersionId() int32 {
+	return s.VersionId
+}
+
+// GetVersion returns the value of Version.
+func (s *CourseLesson) GetVersion() NilInt32 {
+	return s.Version
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseLesson) GetDescription() NilString {
+	return s.Description
+}
+
+// GetInstructions returns the value of Instructions.
+func (s *CourseLesson) GetInstructions() NilString {
+	return s.Instructions
+}
+
+// GetTheory returns the value of Theory.
+func (s *CourseLesson) GetTheory() NilString {
+	return s.Theory
+}
+
+// GetDefinitions returns the value of Definitions.
+func (s *CourseLesson) GetDefinitions() []LessonDefinition {
+	return s.Definitions
+}
+
+// GetTips returns the value of Tips.
+func (s *CourseLesson) GetTips() []string {
+	return s.Tips
+}
+
+// GetPreparedCode returns the value of PreparedCode.
+func (s *CourseLesson) GetPreparedCode() NilString {
+	return s.PreparedCode
+}
+
+// GetOriginalCode returns the value of OriginalCode.
+func (s *CourseLesson) GetOriginalCode() NilString {
+	return s.OriginalCode
+}
+
+// GetTestCode returns the value of TestCode.
+func (s *CourseLesson) GetTestCode() NilString {
+	return s.TestCode
+}
+
+// GetSourceCodeUrl returns the value of SourceCodeUrl.
+func (s *CourseLesson) GetSourceCodeUrl() NilString {
+	return s.SourceCodeUrl
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CourseLesson) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetCourse sets the value of Course.
+func (s *CourseLesson) SetCourse(val Course) {
+	s.Course = val
+}
+
+// SetID sets the value of ID.
+func (s *CourseLesson) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseLesson) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseLesson) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *CourseLesson) SetLocale(val NilString) {
+	s.Locale = val
+}
+
+// SetNaturalOrder sets the value of NaturalOrder.
+func (s *CourseLesson) SetNaturalOrder(val int32) {
+	s.NaturalOrder = val
+}
+
+// SetVersionId sets the value of VersionId.
+func (s *CourseLesson) SetVersionId(val int32) {
+	s.VersionId = val
+}
+
+// SetVersion sets the value of Version.
+func (s *CourseLesson) SetVersion(val NilInt32) {
+	s.Version = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseLesson) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetInstructions sets the value of Instructions.
+func (s *CourseLesson) SetInstructions(val NilString) {
+	s.Instructions = val
+}
+
+// SetTheory sets the value of Theory.
+func (s *CourseLesson) SetTheory(val NilString) {
+	s.Theory = val
+}
+
+// SetDefinitions sets the value of Definitions.
+func (s *CourseLesson) SetDefinitions(val []LessonDefinition) {
+	s.Definitions = val
+}
+
+// SetTips sets the value of Tips.
+func (s *CourseLesson) SetTips(val []string) {
+	s.Tips = val
+}
+
+// SetPreparedCode sets the value of PreparedCode.
+func (s *CourseLesson) SetPreparedCode(val NilString) {
+	s.PreparedCode = val
+}
+
+// SetOriginalCode sets the value of OriginalCode.
+func (s *CourseLesson) SetOriginalCode(val NilString) {
+	s.OriginalCode = val
+}
+
+// SetTestCode sets the value of TestCode.
+func (s *CourseLesson) SetTestCode(val NilString) {
+	s.TestCode = val
+}
+
+// SetSourceCodeUrl sets the value of SourceCodeUrl.
+func (s *CourseLesson) SetSourceCodeUrl(val NilString) {
+	s.SourceCodeUrl = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CourseLesson) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*CourseLesson) getCourseLessonRes() {}
+
+// A lesson as shown in admin lists (legacy: `LanguageLessonForLists`).
+// Ref: #/components/schemas/CourseLessonListItem
+type CourseLessonListItem struct {
+	ID          int32     `json:"id"`
+	Name        NilString `json:"name"`
+	Description NilString `json:"description"`
+	Slug        string    `json:"slug"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseLessonListItem) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CourseLessonListItem) GetName() NilString {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseLessonListItem) GetDescription() NilString {
+	return s.Description
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseLessonListItem) GetSlug() string {
+	return s.Slug
+}
+
+// SetID sets the value of ID.
+func (s *CourseLessonListItem) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseLessonListItem) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseLessonListItem) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseLessonListItem) SetSlug(val string) {
+	s.Slug = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/CourseLessonListItemPage
+type CourseLessonListItemPage struct {
+	Items []CourseLessonListItem `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *CourseLessonListItemPage) GetItems() []CourseLessonListItem {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *CourseLessonListItemPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *CourseLessonListItemPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *CourseLessonListItemPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *CourseLessonListItemPage) SetItems(val []CourseLessonListItem) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *CourseLessonListItemPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *CourseLessonListItemPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *CourseLessonListItemPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// A user's participation in a lesson (legacy: `LanguageLessonMember`).
+// Ref: #/components/schemas/CourseLessonMember
+type CourseLessonMember struct {
+	ID               int32       `json:"id"`
+	UserId           int32       `json:"userId"`
+	State            MemberState `json:"state"`
+	MessagesCount    NilInt32    `json:"messagesCount"`
+	CreatedAt        time.Time   `json:"createdAt"`
+	CourseSlug       string      `json:"courseSlug"`
+	CourseLessonSlug string      `json:"courseLessonSlug"`
+	CourseLessonName string      `json:"courseLessonName"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseLessonMember) GetID() int32 {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *CourseLessonMember) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetState returns the value of State.
+func (s *CourseLessonMember) GetState() MemberState {
+	return s.State
+}
+
+// GetMessagesCount returns the value of MessagesCount.
+func (s *CourseLessonMember) GetMessagesCount() NilInt32 {
+	return s.MessagesCount
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CourseLessonMember) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetCourseSlug returns the value of CourseSlug.
+func (s *CourseLessonMember) GetCourseSlug() string {
+	return s.CourseSlug
+}
+
+// GetCourseLessonSlug returns the value of CourseLessonSlug.
+func (s *CourseLessonMember) GetCourseLessonSlug() string {
+	return s.CourseLessonSlug
+}
+
+// GetCourseLessonName returns the value of CourseLessonName.
+func (s *CourseLessonMember) GetCourseLessonName() string {
+	return s.CourseLessonName
+}
+
+// SetID sets the value of ID.
+func (s *CourseLessonMember) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *CourseLessonMember) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetState sets the value of State.
+func (s *CourseLessonMember) SetState(val MemberState) {
+	s.State = val
+}
+
+// SetMessagesCount sets the value of MessagesCount.
+func (s *CourseLessonMember) SetMessagesCount(val NilInt32) {
+	s.MessagesCount = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CourseLessonMember) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetCourseSlug sets the value of CourseSlug.
+func (s *CourseLessonMember) SetCourseSlug(val string) {
+	s.CourseSlug = val
+}
+
+// SetCourseLessonSlug sets the value of CourseLessonSlug.
+func (s *CourseLessonMember) SetCourseLessonSlug(val string) {
+	s.CourseLessonSlug = val
+}
+
+// SetCourseLessonName sets the value of CourseLessonName.
+func (s *CourseLessonMember) SetCourseLessonName(val string) {
+	s.CourseLessonName = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/CourseLessonMemberPage
+type CourseLessonMemberPage struct {
+	Items []CourseLessonMember `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *CourseLessonMemberPage) GetItems() []CourseLessonMember {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *CourseLessonMemberPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *CourseLessonMemberPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *CourseLessonMemberPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *CourseLessonMemberPage) SetItems(val []CourseLessonMember) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *CourseLessonMemberPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *CourseLessonMemberPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *CourseLessonMemberPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// An AI-generated lesson review record (legacy: `LanguageLessonReview`).
+// Ref: #/components/schemas/CourseLessonReview
+type CourseLessonReview struct {
+	ID                        int32     `json:"id"`
+	Locale                    string    `json:"locale"`
+	CourseId                  int32     `json:"courseId"`
+	CourseLessonId            int32     `json:"courseLessonId"`
+	CourseLessonVersionId     int32     `json:"courseLessonVersionId"`
+	CourseLessonVersionInfoId int32     `json:"courseLessonVersionInfoId"`
+	Summary                   string    `json:"summary"`
+	Slug                      string    `json:"slug"`
+	LessonNaturalOrder        int32     `json:"lessonNaturalOrder"`
+	CourseSlug                string    `json:"courseSlug"`
+	CreatedAt                 time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseLessonReview) GetID() int32 {
+	return s.ID
+}
+
+// GetLocale returns the value of Locale.
+func (s *CourseLessonReview) GetLocale() string {
+	return s.Locale
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *CourseLessonReview) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetCourseLessonId returns the value of CourseLessonId.
+func (s *CourseLessonReview) GetCourseLessonId() int32 {
+	return s.CourseLessonId
+}
+
+// GetCourseLessonVersionId returns the value of CourseLessonVersionId.
+func (s *CourseLessonReview) GetCourseLessonVersionId() int32 {
+	return s.CourseLessonVersionId
+}
+
+// GetCourseLessonVersionInfoId returns the value of CourseLessonVersionInfoId.
+func (s *CourseLessonReview) GetCourseLessonVersionInfoId() int32 {
+	return s.CourseLessonVersionInfoId
+}
+
+// GetSummary returns the value of Summary.
+func (s *CourseLessonReview) GetSummary() string {
+	return s.Summary
+}
+
+// GetSlug returns the value of Slug.
+func (s *CourseLessonReview) GetSlug() string {
+	return s.Slug
+}
+
+// GetLessonNaturalOrder returns the value of LessonNaturalOrder.
+func (s *CourseLessonReview) GetLessonNaturalOrder() int32 {
+	return s.LessonNaturalOrder
+}
+
+// GetCourseSlug returns the value of CourseSlug.
+func (s *CourseLessonReview) GetCourseSlug() string {
+	return s.CourseSlug
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CourseLessonReview) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *CourseLessonReview) SetID(val int32) {
+	s.ID = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *CourseLessonReview) SetLocale(val string) {
+	s.Locale = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *CourseLessonReview) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetCourseLessonId sets the value of CourseLessonId.
+func (s *CourseLessonReview) SetCourseLessonId(val int32) {
+	s.CourseLessonId = val
+}
+
+// SetCourseLessonVersionId sets the value of CourseLessonVersionId.
+func (s *CourseLessonReview) SetCourseLessonVersionId(val int32) {
+	s.CourseLessonVersionId = val
+}
+
+// SetCourseLessonVersionInfoId sets the value of CourseLessonVersionInfoId.
+func (s *CourseLessonReview) SetCourseLessonVersionInfoId(val int32) {
+	s.CourseLessonVersionInfoId = val
+}
+
+// SetSummary sets the value of Summary.
+func (s *CourseLessonReview) SetSummary(val string) {
+	s.Summary = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *CourseLessonReview) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetLessonNaturalOrder sets the value of LessonNaturalOrder.
+func (s *CourseLessonReview) SetLessonNaturalOrder(val int32) {
+	s.LessonNaturalOrder = val
+}
+
+// SetCourseSlug sets the value of CourseSlug.
+func (s *CourseLessonReview) SetCourseSlug(val string) {
+	s.CourseSlug = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CourseLessonReview) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/CourseLessonReviewPage
+type CourseLessonReviewPage struct {
+	Items []CourseLessonReview `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *CourseLessonReviewPage) GetItems() []CourseLessonReview {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *CourseLessonReviewPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *CourseLessonReviewPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *CourseLessonReviewPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *CourseLessonReviewPage) SetItems(val []CourseLessonReview) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *CourseLessonReviewPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *CourseLessonReviewPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *CourseLessonReviewPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// A member's enrollment/progress in a course (legacy `LanguageMember`).
+// Ref: #/components/schemas/CourseMember
+type CourseMember struct {
+	ID       int32          `json:"id"`
+	UserId   int32          `json:"userId"`
+	CourseId int32          `json:"courseId"`
+	State    NilMemberState `json:"state"`
+	// Completion percentage (0–100).
+	Progress       int32     `json:"progress"`
+	NextLessonName NilString `json:"nextLessonName"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseMember) GetID() int32 {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *CourseMember) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *CourseMember) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetState returns the value of State.
+func (s *CourseMember) GetState() NilMemberState {
+	return s.State
+}
+
+// GetProgress returns the value of Progress.
+func (s *CourseMember) GetProgress() int32 {
+	return s.Progress
+}
+
+// GetNextLessonName returns the value of NextLessonName.
+func (s *CourseMember) GetNextLessonName() NilString {
+	return s.NextLessonName
+}
+
+// SetID sets the value of ID.
+func (s *CourseMember) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *CourseMember) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *CourseMember) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetState sets the value of State.
+func (s *CourseMember) SetState(val NilMemberState) {
+	s.State = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *CourseMember) SetProgress(val int32) {
+	s.Progress = val
+}
+
+// SetNextLessonName sets the value of NextLessonName.
+func (s *CourseMember) SetNextLessonName(val NilString) {
+	s.NextLessonName = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/CoursePage
+type CoursePage struct {
+	Items []Course `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *CoursePage) GetItems() []Course {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *CoursePage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *CoursePage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *CoursePage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *CoursePage) SetItems(val []Course) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *CoursePage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *CoursePage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *CoursePage) SetPerPage(val int32) {
+	s.PerPage = val
 }
 
 // Publication/readiness state of a course.
@@ -489,6 +2862,1108 @@ func (s *CourseProgress) UnmarshalText(data []byte) error {
 	}
 }
 
+// A build/version of a course's exercises (legacy `LanguageVersion`).
+// Ref: #/components/schemas/CourseVersion
+type CourseVersion struct {
+	ID        int32     `json:"id"`
+	Result    NilString `json:"result"`
+	State     NilString `json:"state"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseVersion) GetID() int32 {
+	return s.ID
+}
+
+// GetResult returns the value of Result.
+func (s *CourseVersion) GetResult() NilString {
+	return s.Result
+}
+
+// GetState returns the value of State.
+func (s *CourseVersion) GetState() NilString {
+	return s.State
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *CourseVersion) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *CourseVersion) SetID(val int32) {
+	s.ID = val
+}
+
+// SetResult sets the value of Result.
+func (s *CourseVersion) SetResult(val NilString) {
+	s.Result = val
+}
+
+// SetState sets the value of State.
+func (s *CourseVersion) SetState(val NilString) {
+	s.State = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *CourseVersion) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*CourseVersion) adminCreateCourseVersionRes() {}
+
+// Everything the public course landing needs in one payload.
+// Ref: #/components/schemas/CourseView
+type CourseView struct {
+	Course      Course                 `json:"course"`
+	LandingPage NilCourseLandingPage   `json:"landingPage"`
+	Lessons     []CourseLessonListItem `json:"lessons"`
+	// The current user's membership, when signed in.
+	Member NilCourseMember `json:"member"`
+}
+
+// GetCourse returns the value of Course.
+func (s *CourseView) GetCourse() Course {
+	return s.Course
+}
+
+// GetLandingPage returns the value of LandingPage.
+func (s *CourseView) GetLandingPage() NilCourseLandingPage {
+	return s.LandingPage
+}
+
+// GetLessons returns the value of Lessons.
+func (s *CourseView) GetLessons() []CourseLessonListItem {
+	return s.Lessons
+}
+
+// GetMember returns the value of Member.
+func (s *CourseView) GetMember() NilCourseMember {
+	return s.Member
+}
+
+// SetCourse sets the value of Course.
+func (s *CourseView) SetCourse(val Course) {
+	s.Course = val
+}
+
+// SetLandingPage sets the value of LandingPage.
+func (s *CourseView) SetLandingPage(val NilCourseLandingPage) {
+	s.LandingPage = val
+}
+
+// SetLessons sets the value of Lessons.
+func (s *CourseView) SetLessons(val []CourseLessonListItem) {
+	s.Lessons = val
+}
+
+// SetMember sets the value of Member.
+func (s *CourseView) SetMember(val NilCourseMember) {
+	s.Member = val
+}
+
+func (*CourseView) getCourseRes() {}
+
+// CreateAssistantMessageAccepted is response for CreateAssistantMessage operation.
+type CreateAssistantMessageAccepted struct{}
+
+func (*CreateAssistantMessageAccepted) createAssistantMessageRes() {}
+
+// CreateBookRequestNoContent is response for CreateBookRequest operation.
+type CreateBookRequestNoContent struct{}
+
+func (*CreateBookRequestNoContent) createBookRequestRes() {}
+
+// CreateMagicLinkNoContent is response for CreateMagicLink operation.
+type CreateMagicLinkNoContent struct{}
+
+func (*CreateMagicLinkNoContent) createMagicLinkRes() {}
+
+// CreatePasswordReminderNoContent is response for CreatePasswordReminder operation.
+type CreatePasswordReminderNoContent struct{}
+
+func (*CreatePasswordReminderNoContent) createPasswordReminderRes() {}
+
+// CreatePhoneAuthNoContent is response for CreatePhoneAuth operation.
+type CreatePhoneAuthNoContent struct{}
+
+func (*CreatePhoneAuthNoContent) createPhoneAuthRes() {}
+
+// The current user resolved from the session cookie (null when anonymous).
+// Ref: #/components/schemas/CurrentUser
+type CurrentUser struct {
+	User NilUser `json:"user"`
+}
+
+// GetUser returns the value of User.
+func (s *CurrentUser) GetUser() NilUser {
+	return s.User
+}
+
+// SetUser sets the value of User.
+func (s *CurrentUser) SetUser(val NilUser) {
+	s.User = val
+}
+
+// DeleteAccountNoContent is response for DeleteAccount operation.
+type DeleteAccountNoContent struct{}
+
+func (*DeleteAccountNoContent) deleteAccountRes() {}
+
+// DeletePasskeyNoContent is response for DeletePasskey operation.
+type DeletePasskeyNoContent struct{}
+
+func (*DeletePasskeyNoContent) deletePasskeyRes() {}
+
+// DeleteSessionNoContent is response for DeleteSession operation.
+type DeleteSessionNoContent struct{}
+
+// Ref: #/components/schemas/EmailInput
+type EmailInput struct {
+	Email string `json:"email"`
+}
+
+// GetEmail returns the value of Email.
+func (s *EmailInput) GetEmail() string {
+	return s.Email
+}
+
+// SetEmail sets the value of Email.
+func (s *EmailInput) SetEmail(val string) {
+	s.Email = val
+}
+
+// Publication state shared by landing pages.
+// Ref: #/components/schemas/LandingPageState
+type LandingPageState string
+
+const (
+	LandingPageStateDraft     LandingPageState = "draft"
+	LandingPageStateArchived  LandingPageState = "archived"
+	LandingPageStatePublished LandingPageState = "published"
+)
+
+// AllValues returns all LandingPageState values.
+func (LandingPageState) AllValues() []LandingPageState {
+	return []LandingPageState{
+		LandingPageStateDraft,
+		LandingPageStateArchived,
+		LandingPageStatePublished,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LandingPageState) MarshalText() ([]byte, error) {
+	switch s {
+	case LandingPageStateDraft:
+		return []byte(s), nil
+	case LandingPageStateArchived:
+		return []byte(s), nil
+	case LandingPageStatePublished:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LandingPageState) UnmarshalText(data []byte) error {
+	switch LandingPageState(data) {
+	case LandingPageStateDraft:
+		*s = LandingPageStateDraft
+		return nil
+	case LandingPageStateArchived:
+		*s = LandingPageStateArchived
+		return nil
+	case LandingPageStatePublished:
+		*s = LandingPageStatePublished
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A sales lead (legacy: `Lead`).
+// Ref: #/components/schemas/Lead
+type Lead struct {
+	ID                int32     `json:"id"`
+	UserId            int32     `json:"userId"`
+	FullName          NilString `json:"fullName"`
+	Email             NilString `json:"email"`
+	Phone             NilString `json:"phone"`
+	Whatsapp          NilString `json:"whatsapp"`
+	Telegram          NilString `json:"telegram"`
+	SurveyAnswersData NilString `json:"surveyAnswersData"`
+	CoursesData       NilString `json:"coursesData"`
+	CreatedAt         time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Lead) GetID() int32 {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *Lead) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetFullName returns the value of FullName.
+func (s *Lead) GetFullName() NilString {
+	return s.FullName
+}
+
+// GetEmail returns the value of Email.
+func (s *Lead) GetEmail() NilString {
+	return s.Email
+}
+
+// GetPhone returns the value of Phone.
+func (s *Lead) GetPhone() NilString {
+	return s.Phone
+}
+
+// GetWhatsapp returns the value of Whatsapp.
+func (s *Lead) GetWhatsapp() NilString {
+	return s.Whatsapp
+}
+
+// GetTelegram returns the value of Telegram.
+func (s *Lead) GetTelegram() NilString {
+	return s.Telegram
+}
+
+// GetSurveyAnswersData returns the value of SurveyAnswersData.
+func (s *Lead) GetSurveyAnswersData() NilString {
+	return s.SurveyAnswersData
+}
+
+// GetCoursesData returns the value of CoursesData.
+func (s *Lead) GetCoursesData() NilString {
+	return s.CoursesData
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Lead) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Lead) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *Lead) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetFullName sets the value of FullName.
+func (s *Lead) SetFullName(val NilString) {
+	s.FullName = val
+}
+
+// SetEmail sets the value of Email.
+func (s *Lead) SetEmail(val NilString) {
+	s.Email = val
+}
+
+// SetPhone sets the value of Phone.
+func (s *Lead) SetPhone(val NilString) {
+	s.Phone = val
+}
+
+// SetWhatsapp sets the value of Whatsapp.
+func (s *Lead) SetWhatsapp(val NilString) {
+	s.Whatsapp = val
+}
+
+// SetTelegram sets the value of Telegram.
+func (s *Lead) SetTelegram(val NilString) {
+	s.Telegram = val
+}
+
+// SetSurveyAnswersData sets the value of SurveyAnswersData.
+func (s *Lead) SetSurveyAnswersData(val NilString) {
+	s.SurveyAnswersData = val
+}
+
+// SetCoursesData sets the value of CoursesData.
+func (s *Lead) SetCoursesData(val NilString) {
+	s.CoursesData = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Lead) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*Lead) createLeadRes() {}
+
+// A lead captured from a marketing form (legacy: `LeadCrud`).
+// Ref: #/components/schemas/LeadInput
+type LeadInput struct {
+	ContactMethod LeadInputContactMethod `json:"contactMethod"`
+	ContactValue  string                 `json:"contactValue"`
+	YmClientId    NilString              `json:"ymClientId"`
+}
+
+// GetContactMethod returns the value of ContactMethod.
+func (s *LeadInput) GetContactMethod() LeadInputContactMethod {
+	return s.ContactMethod
+}
+
+// GetContactValue returns the value of ContactValue.
+func (s *LeadInput) GetContactValue() string {
+	return s.ContactValue
+}
+
+// GetYmClientId returns the value of YmClientId.
+func (s *LeadInput) GetYmClientId() NilString {
+	return s.YmClientId
+}
+
+// SetContactMethod sets the value of ContactMethod.
+func (s *LeadInput) SetContactMethod(val LeadInputContactMethod) {
+	s.ContactMethod = val
+}
+
+// SetContactValue sets the value of ContactValue.
+func (s *LeadInput) SetContactValue(val string) {
+	s.ContactValue = val
+}
+
+// SetYmClientId sets the value of YmClientId.
+func (s *LeadInput) SetYmClientId(val NilString) {
+	s.YmClientId = val
+}
+
+type LeadInputContactMethod string
+
+const (
+	LeadInputContactMethodTelegram LeadInputContactMethod = "telegram"
+	LeadInputContactMethodPhone    LeadInputContactMethod = "phone"
+	LeadInputContactMethodWhatsapp LeadInputContactMethod = "whatsapp"
+)
+
+// AllValues returns all LeadInputContactMethod values.
+func (LeadInputContactMethod) AllValues() []LeadInputContactMethod {
+	return []LeadInputContactMethod{
+		LeadInputContactMethodTelegram,
+		LeadInputContactMethodPhone,
+		LeadInputContactMethodWhatsapp,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LeadInputContactMethod) MarshalText() ([]byte, error) {
+	switch s {
+	case LeadInputContactMethodTelegram:
+		return []byte(s), nil
+	case LeadInputContactMethodPhone:
+		return []byte(s), nil
+	case LeadInputContactMethodWhatsapp:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LeadInputContactMethod) UnmarshalText(data []byte) error {
+	switch LeadInputContactMethod(data) {
+	case LeadInputContactMethodTelegram:
+		*s = LeadInputContactMethodTelegram
+		return nil
+	case LeadInputContactMethodPhone:
+		*s = LeadInputContactMethodPhone
+		return nil
+	case LeadInputContactMethodWhatsapp:
+		*s = LeadInputContactMethodWhatsapp
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/LeadPage
+type LeadPage struct {
+	Items []Lead `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *LeadPage) GetItems() []Lead {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *LeadPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *LeadPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *LeadPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *LeadPage) SetItems(val []Lead) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *LeadPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *LeadPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *LeadPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// One message in the in-lesson AI chat (legacy: `AiMessage`).
+// Ref: #/components/schemas/LessonAssistantMessage
+type LessonAssistantMessage struct {
+	ID               int32     `json:"id"`
+	Role             string    `json:"role"`
+	UserId           NilInt32  `json:"userId"`
+	Content          string    `json:"content"`
+	CourseSlug       string    `json:"courseSlug"`
+	CourseLessonSlug string    `json:"courseLessonSlug"`
+	CourseLessonName string    `json:"courseLessonName"`
+	CreatedAt        time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *LessonAssistantMessage) GetID() int32 {
+	return s.ID
+}
+
+// GetRole returns the value of Role.
+func (s *LessonAssistantMessage) GetRole() string {
+	return s.Role
+}
+
+// GetUserId returns the value of UserId.
+func (s *LessonAssistantMessage) GetUserId() NilInt32 {
+	return s.UserId
+}
+
+// GetContent returns the value of Content.
+func (s *LessonAssistantMessage) GetContent() string {
+	return s.Content
+}
+
+// GetCourseSlug returns the value of CourseSlug.
+func (s *LessonAssistantMessage) GetCourseSlug() string {
+	return s.CourseSlug
+}
+
+// GetCourseLessonSlug returns the value of CourseLessonSlug.
+func (s *LessonAssistantMessage) GetCourseLessonSlug() string {
+	return s.CourseLessonSlug
+}
+
+// GetCourseLessonName returns the value of CourseLessonName.
+func (s *LessonAssistantMessage) GetCourseLessonName() string {
+	return s.CourseLessonName
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *LessonAssistantMessage) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *LessonAssistantMessage) SetID(val int32) {
+	s.ID = val
+}
+
+// SetRole sets the value of Role.
+func (s *LessonAssistantMessage) SetRole(val string) {
+	s.Role = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *LessonAssistantMessage) SetUserId(val NilInt32) {
+	s.UserId = val
+}
+
+// SetContent sets the value of Content.
+func (s *LessonAssistantMessage) SetContent(val string) {
+	s.Content = val
+}
+
+// SetCourseSlug sets the value of CourseSlug.
+func (s *LessonAssistantMessage) SetCourseSlug(val string) {
+	s.CourseSlug = val
+}
+
+// SetCourseLessonSlug sets the value of CourseLessonSlug.
+func (s *LessonAssistantMessage) SetCourseLessonSlug(val string) {
+	s.CourseLessonSlug = val
+}
+
+// SetCourseLessonName sets the value of CourseLessonName.
+func (s *LessonAssistantMessage) SetCourseLessonName(val string) {
+	s.CourseLessonName = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *LessonAssistantMessage) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/LessonAssistantMessagePage
+type LessonAssistantMessagePage struct {
+	Items []LessonAssistantMessage `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *LessonAssistantMessagePage) GetItems() []LessonAssistantMessage {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *LessonAssistantMessagePage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *LessonAssistantMessagePage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *LessonAssistantMessagePage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *LessonAssistantMessagePage) SetItems(val []LessonAssistantMessage) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *LessonAssistantMessagePage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *LessonAssistantMessagePage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *LessonAssistantMessagePage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// Result of running a submitted solution (legacy: `LessonCheckingResponse`).
+// Ref: #/components/schemas/LessonCheckingResponse
+type LessonCheckingResponse struct {
+	Passed                bool                         `json:"passed"`
+	Output                string                       `json:"output"`
+	Result                LessonCheckingResponseResult `json:"result"`
+	Status                int32                        `json:"status"`
+	LessonHasBeenFinished bool                         `json:"lessonHasBeenFinished"`
+	CourseHasBeenFinished bool                         `json:"courseHasBeenFinished"`
+}
+
+// GetPassed returns the value of Passed.
+func (s *LessonCheckingResponse) GetPassed() bool {
+	return s.Passed
+}
+
+// GetOutput returns the value of Output.
+func (s *LessonCheckingResponse) GetOutput() string {
+	return s.Output
+}
+
+// GetResult returns the value of Result.
+func (s *LessonCheckingResponse) GetResult() LessonCheckingResponseResult {
+	return s.Result
+}
+
+// GetStatus returns the value of Status.
+func (s *LessonCheckingResponse) GetStatus() int32 {
+	return s.Status
+}
+
+// GetLessonHasBeenFinished returns the value of LessonHasBeenFinished.
+func (s *LessonCheckingResponse) GetLessonHasBeenFinished() bool {
+	return s.LessonHasBeenFinished
+}
+
+// GetCourseHasBeenFinished returns the value of CourseHasBeenFinished.
+func (s *LessonCheckingResponse) GetCourseHasBeenFinished() bool {
+	return s.CourseHasBeenFinished
+}
+
+// SetPassed sets the value of Passed.
+func (s *LessonCheckingResponse) SetPassed(val bool) {
+	s.Passed = val
+}
+
+// SetOutput sets the value of Output.
+func (s *LessonCheckingResponse) SetOutput(val string) {
+	s.Output = val
+}
+
+// SetResult sets the value of Result.
+func (s *LessonCheckingResponse) SetResult(val LessonCheckingResponseResult) {
+	s.Result = val
+}
+
+// SetStatus sets the value of Status.
+func (s *LessonCheckingResponse) SetStatus(val int32) {
+	s.Status = val
+}
+
+// SetLessonHasBeenFinished sets the value of LessonHasBeenFinished.
+func (s *LessonCheckingResponse) SetLessonHasBeenFinished(val bool) {
+	s.LessonHasBeenFinished = val
+}
+
+// SetCourseHasBeenFinished sets the value of CourseHasBeenFinished.
+func (s *LessonCheckingResponse) SetCourseHasBeenFinished(val bool) {
+	s.CourseHasBeenFinished = val
+}
+
+func (*LessonCheckingResponse) checkLessonRes() {}
+
+type LessonCheckingResponseResult string
+
+const (
+	LessonCheckingResponseResultPassed         LessonCheckingResponseResult = "passed"
+	LessonCheckingResponseResultFailed         LessonCheckingResponseResult = "failed"
+	LessonCheckingResponseResultFailedInfinity LessonCheckingResponseResult = "failed-infinity"
+)
+
+// AllValues returns all LessonCheckingResponseResult values.
+func (LessonCheckingResponseResult) AllValues() []LessonCheckingResponseResult {
+	return []LessonCheckingResponseResult{
+		LessonCheckingResponseResultPassed,
+		LessonCheckingResponseResultFailed,
+		LessonCheckingResponseResultFailedInfinity,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s LessonCheckingResponseResult) MarshalText() ([]byte, error) {
+	switch s {
+	case LessonCheckingResponseResultPassed:
+		return []byte(s), nil
+	case LessonCheckingResponseResultFailed:
+		return []byte(s), nil
+	case LessonCheckingResponseResultFailedInfinity:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *LessonCheckingResponseResult) UnmarshalText(data []byte) error {
+	switch LessonCheckingResponseResult(data) {
+	case LessonCheckingResponseResultPassed:
+		*s = LessonCheckingResponseResultPassed
+		return nil
+	case LessonCheckingResponseResultFailed:
+		*s = LessonCheckingResponseResultFailed
+		return nil
+	case LessonCheckingResponseResultFailedInfinity:
+		*s = LessonCheckingResponseResultFailedInfinity
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A lesson definition entry (name + description pair).
+// Ref: #/components/schemas/LessonDefinition
+type LessonDefinition struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *LessonDefinition) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *LessonDefinition) GetDescription() string {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *LessonDefinition) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *LessonDefinition) SetDescription(val string) {
+	s.Description = val
+}
+
+type ListAssistantMessagesOKApplicationJSON []LessonAssistantMessage
+
+func (*ListAssistantMessagesOKApplicationJSON) listAssistantMessagesRes() {}
+
+type ListPasskeysOKApplicationJSON []UserCredential
+
+func (*ListPasskeysOKApplicationJSON) listPasskeysRes() {}
+
+type ListQuerySortOrder string
+
+const (
+	ListQuerySortOrderAsc  ListQuerySortOrder = "asc"
+	ListQuerySortOrderDesc ListQuerySortOrder = "desc"
+)
+
+// AllValues returns all ListQuerySortOrder values.
+func (ListQuerySortOrder) AllValues() []ListQuerySortOrder {
+	return []ListQuerySortOrder{
+		ListQuerySortOrderAsc,
+		ListQuerySortOrderDesc,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ListQuerySortOrder) MarshalText() ([]byte, error) {
+	switch s {
+	case ListQuerySortOrderAsc:
+		return []byte(s), nil
+	case ListQuerySortOrderDesc:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ListQuerySortOrder) UnmarshalText(data []byte) error {
+	switch ListQuerySortOrder(data) {
+	case ListQuerySortOrderAsc:
+		*s = ListQuerySortOrderAsc
+		return nil
+	case ListQuerySortOrderDesc:
+		*s = ListQuerySortOrderDesc
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+// Ref: #/components/schemas/Locale
+type Locale string
+
+const (
+	LocaleRu Locale = "ru"
+	LocaleEn Locale = "en"
+	LocaleEs Locale = "es"
+)
+
+// AllValues returns all Locale values.
+func (Locale) AllValues() []Locale {
+	return []Locale{
+		LocaleRu,
+		LocaleEn,
+		LocaleEs,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s Locale) MarshalText() ([]byte, error) {
+	switch s {
+	case LocaleRu:
+		return []byte(s), nil
+	case LocaleEn:
+		return []byte(s), nil
+	case LocaleEs:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *Locale) UnmarshalText(data []byte) error {
+	switch Locale(data) {
+	case LocaleRu:
+		*s = LocaleRu
+		return nil
+	case LocaleEn:
+		*s = LocaleEn
+		return nil
+	case LocaleEs:
+		*s = LocaleEs
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Course-membership lifecycle (legacy `MemberState`).
+// Ref: #/components/schemas/MemberState
+type MemberState string
+
+const (
+	MemberStateStarted  MemberState = "started"
+	MemberStateFinished MemberState = "finished"
+)
+
+// AllValues returns all MemberState values.
+func (MemberState) AllValues() []MemberState {
+	return []MemberState{
+		MemberStateStarted,
+		MemberStateFinished,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s MemberState) MarshalText() ([]byte, error) {
+	switch s {
+	case MemberStateStarted:
+		return []byte(s), nil
+	case MemberStateFinished:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *MemberState) UnmarshalText(data []byte) error {
+	switch MemberState(data) {
+	case MemberStateStarted:
+		*s = MemberStateStarted
+		return nil
+	case MemberStateFinished:
+		*s = MemberStateFinished
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// The signed-in user's dashboard (legacy: `MyController#show`).
+// Ref: #/components/schemas/MyDashboard
+type MyDashboard struct {
+	StartedCourseMembers  []CourseMember `json:"startedCourseMembers"`
+	FinishedCourseMembers []CourseMember `json:"finishedCourseMembers"`
+	// Landing page (catalog item) keyed by course id, for each membership.
+	LandingPagesByCourseId MyDashboardLandingPagesByCourseId `json:"landingPagesByCourseId"`
+}
+
+// GetStartedCourseMembers returns the value of StartedCourseMembers.
+func (s *MyDashboard) GetStartedCourseMembers() []CourseMember {
+	return s.StartedCourseMembers
+}
+
+// GetFinishedCourseMembers returns the value of FinishedCourseMembers.
+func (s *MyDashboard) GetFinishedCourseMembers() []CourseMember {
+	return s.FinishedCourseMembers
+}
+
+// GetLandingPagesByCourseId returns the value of LandingPagesByCourseId.
+func (s *MyDashboard) GetLandingPagesByCourseId() MyDashboardLandingPagesByCourseId {
+	return s.LandingPagesByCourseId
+}
+
+// SetStartedCourseMembers sets the value of StartedCourseMembers.
+func (s *MyDashboard) SetStartedCourseMembers(val []CourseMember) {
+	s.StartedCourseMembers = val
+}
+
+// SetFinishedCourseMembers sets the value of FinishedCourseMembers.
+func (s *MyDashboard) SetFinishedCourseMembers(val []CourseMember) {
+	s.FinishedCourseMembers = val
+}
+
+// SetLandingPagesByCourseId sets the value of LandingPagesByCourseId.
+func (s *MyDashboard) SetLandingPagesByCourseId(val MyDashboardLandingPagesByCourseId) {
+	s.LandingPagesByCourseId = val
+}
+
+func (*MyDashboard) getMyDashboardRes() {}
+
+// Landing page (catalog item) keyed by course id, for each membership.
+type MyDashboardLandingPagesByCourseId map[string]CourseCatalogItem
+
+func (s *MyDashboardLandingPagesByCourseId) init() MyDashboardLandingPagesByCourseId {
+	m := *s
+	if m == nil {
+		m = map[string]CourseCatalogItem{}
+		*s = m
+	}
+	return m
+}
+
+// NewNilBlogPostState returns new NilBlogPostState with value set to v.
+func NewNilBlogPostState(v BlogPostState) NilBlogPostState {
+	return NilBlogPostState{
+		Value: v,
+	}
+}
+
+// NilBlogPostState is nullable BlogPostState.
+type NilBlogPostState struct {
+	Value BlogPostState
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilBlogPostState) SetTo(v BlogPostState) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilBlogPostState) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilBlogPostState) SetToNull() {
+	o.Null = true
+	var v BlogPostState
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilBlogPostState) Get() (v BlogPostState, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilBlogPostState) Or(d BlogPostState) BlogPostState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilBool returns new NilBool with value set to v.
+func NewNilBool(v bool) NilBool {
+	return NilBool{
+		Value: v,
+	}
+}
+
+// NilBool is nullable bool.
+type NilBool struct {
+	Value bool
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilBool) SetTo(v bool) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilBool) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilBool) SetToNull() {
+	o.Null = true
+	var v bool
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilBool) Get() (v bool, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilCourseLandingPage returns new NilCourseLandingPage with value set to v.
+func NewNilCourseLandingPage(v CourseLandingPage) NilCourseLandingPage {
+	return NilCourseLandingPage{
+		Value: v,
+	}
+}
+
+// NilCourseLandingPage is nullable CourseLandingPage.
+type NilCourseLandingPage struct {
+	Value CourseLandingPage
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilCourseLandingPage) SetTo(v CourseLandingPage) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilCourseLandingPage) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilCourseLandingPage) SetToNull() {
+	o.Null = true
+	var v CourseLandingPage
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilCourseLandingPage) Get() (v CourseLandingPage, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilCourseLandingPage) Or(d CourseLandingPage) CourseLandingPage {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilCourseLearnAs returns new NilCourseLearnAs with value set to v.
 func NewNilCourseLearnAs(v CourseLearnAs) NilCourseLearnAs {
 	return NilCourseLearnAs{
@@ -528,6 +4003,51 @@ func (o NilCourseLearnAs) Get() (v CourseLearnAs, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilCourseLearnAs) Or(d CourseLearnAs) CourseLearnAs {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilCourseMember returns new NilCourseMember with value set to v.
+func NewNilCourseMember(v CourseMember) NilCourseMember {
+	return NilCourseMember{
+		Value: v,
+	}
+}
+
+// NilCourseMember is nullable CourseMember.
+type NilCourseMember struct {
+	Value CourseMember
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilCourseMember) SetTo(v CourseMember) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilCourseMember) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilCourseMember) SetToNull() {
+	o.Null = true
+	var v CourseMember
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilCourseMember) Get() (v CourseMember, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilCourseMember) Or(d CourseMember) CourseMember {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -579,6 +4099,96 @@ func (o NilCourseProgress) Or(d CourseProgress) CourseProgress {
 	return d
 }
 
+// NewNilCourseVersion returns new NilCourseVersion with value set to v.
+func NewNilCourseVersion(v CourseVersion) NilCourseVersion {
+	return NilCourseVersion{
+		Value: v,
+	}
+}
+
+// NilCourseVersion is nullable CourseVersion.
+type NilCourseVersion struct {
+	Value CourseVersion
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilCourseVersion) SetTo(v CourseVersion) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilCourseVersion) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilCourseVersion) SetToNull() {
+	o.Null = true
+	var v CourseVersion
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilCourseVersion) Get() (v CourseVersion, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilCourseVersion) Or(d CourseVersion) CourseVersion {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilDateTime returns new NilDateTime with value set to v.
+func NewNilDateTime(v time.Time) NilDateTime {
+	return NilDateTime{
+		Value: v,
+	}
+}
+
+// NilDateTime is nullable time.Time.
+type NilDateTime struct {
+	Value time.Time
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilDateTime) SetTo(v time.Time) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilDateTime) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilDateTime) SetToNull() {
+	o.Null = true
+	var v time.Time
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilDateTime) Get() (v time.Time, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilInt32 returns new NilInt32 with value set to v.
 func NewNilInt32(v int32) NilInt32 {
 	return NilInt32{
@@ -618,6 +4228,231 @@ func (o NilInt32) Get() (v int32, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilInt32) Or(d int32) int32 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilInt64 returns new NilInt64 with value set to v.
+func NewNilInt64(v int64) NilInt64 {
+	return NilInt64{
+		Value: v,
+	}
+}
+
+// NilInt64 is nullable int64.
+type NilInt64 struct {
+	Value int64
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilInt64) SetTo(v int64) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilInt64) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilInt64) SetToNull() {
+	o.Null = true
+	var v int64
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilInt64) Get() (v int64, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilInt64) Or(d int64) int64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilLandingPageState returns new NilLandingPageState with value set to v.
+func NewNilLandingPageState(v LandingPageState) NilLandingPageState {
+	return NilLandingPageState{
+		Value: v,
+	}
+}
+
+// NilLandingPageState is nullable LandingPageState.
+type NilLandingPageState struct {
+	Value LandingPageState
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilLandingPageState) SetTo(v LandingPageState) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilLandingPageState) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilLandingPageState) SetToNull() {
+	o.Null = true
+	var v LandingPageState
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilLandingPageState) Get() (v LandingPageState, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilLandingPageState) Or(d LandingPageState) LandingPageState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilMemberState returns new NilMemberState with value set to v.
+func NewNilMemberState(v MemberState) NilMemberState {
+	return NilMemberState{
+		Value: v,
+	}
+}
+
+// NilMemberState is nullable MemberState.
+type NilMemberState struct {
+	Value MemberState
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilMemberState) SetTo(v MemberState) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilMemberState) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilMemberState) SetToNull() {
+	o.Null = true
+	var v MemberState
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilMemberState) Get() (v MemberState, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilMemberState) Or(d MemberState) MemberState {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilReviewLocale returns new NilReviewLocale with value set to v.
+func NewNilReviewLocale(v ReviewLocale) NilReviewLocale {
+	return NilReviewLocale{
+		Value: v,
+	}
+}
+
+// NilReviewLocale is nullable ReviewLocale.
+type NilReviewLocale struct {
+	Value ReviewLocale
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilReviewLocale) SetTo(v ReviewLocale) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilReviewLocale) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilReviewLocale) SetToNull() {
+	o.Null = true
+	var v ReviewLocale
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilReviewLocale) Get() (v ReviewLocale, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilReviewLocale) Or(d ReviewLocale) ReviewLocale {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilReviewState returns new NilReviewState with value set to v.
+func NewNilReviewState(v ReviewState) NilReviewState {
+	return NilReviewState{
+		Value: v,
+	}
+}
+
+// NilReviewState is nullable ReviewState.
+type NilReviewState struct {
+	Value ReviewState
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilReviewState) SetTo(v ReviewState) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilReviewState) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilReviewState) SetToNull() {
+	o.Null = true
+	var v ReviewState
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilReviewState) Get() (v ReviewState, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilReviewState) Or(d ReviewState) ReviewState {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -669,6 +4504,92 @@ func (o NilString) Or(d string) string {
 	return d
 }
 
+// NewNilUser returns new NilUser with value set to v.
+func NewNilUser(v User) NilUser {
+	return NilUser{
+		Value: v,
+	}
+}
+
+// NilUser is nullable User.
+type NilUser struct {
+	Value User
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilUser) SetTo(v User) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilUser) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilUser) SetToNull() {
+	o.Null = true
+	var v User
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilUser) Get() (v User, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilUser) Or(d User) User {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// A resource was not found.
+// Ref: #/components/schemas/NotFoundError
+type NotFoundError struct {
+	Message string `json:"message"`
+}
+
+// GetMessage returns the value of Message.
+func (s *NotFoundError) GetMessage() string {
+	return s.Message
+}
+
+// SetMessage sets the value of Message.
+func (s *NotFoundError) SetMessage(val string) {
+	s.Message = val
+}
+
+func (*NotFoundError) adminCreateCourseVersionRes()  {}
+func (*NotFoundError) adminGetBannerRes()            {}
+func (*NotFoundError) adminGetBlogPostRes()          {}
+func (*NotFoundError) adminGetCourseCategoryRes()    {}
+func (*NotFoundError) adminGetCourseLandingPageRes() {}
+func (*NotFoundError) adminGetCourseRes()            {}
+func (*NotFoundError) adminGetManagementUserRes()    {}
+func (*NotFoundError) adminGetReviewRes()            {}
+func (*NotFoundError) adminGetRolePermissionsRes()   {}
+func (*NotFoundError) adminGetRoleRes()              {}
+func (*NotFoundError) adminGetStaffMemberRes()       {}
+func (*NotFoundError) adminGetUserRes()              {}
+func (*NotFoundError) adminReviewCourseLessonRes()   {}
+func (*NotFoundError) adminReviewCourseRes()         {}
+func (*NotFoundError) checkPasswordResetTokenRes()   {}
+func (*NotFoundError) consumeMagicLinkRes()          {}
+func (*NotFoundError) deletePasskeyRes()             {}
+func (*NotFoundError) getBlogPostRes()               {}
+func (*NotFoundError) getCourseLessonRes()           {}
+func (*NotFoundError) getCourseRes()                 {}
+func (*NotFoundError) getNextBlogPostRes()           {}
+func (*NotFoundError) getPageRes()                   {}
+func (*NotFoundError) getPublicCourseCategoryRes()   {}
+func (*NotFoundError) likeBlogPostRes()              {}
+
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
 	return OptInt32{
@@ -715,6 +4636,2035 @@ func (o OptInt32) Or(d int32) int32 {
 	return d
 }
 
+// NewOptListQuerySortOrder returns new OptListQuerySortOrder with value set to v.
+func NewOptListQuerySortOrder(v ListQuerySortOrder) OptListQuerySortOrder {
+	return OptListQuerySortOrder{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptListQuerySortOrder is optional ListQuerySortOrder.
+type OptListQuerySortOrder struct {
+	Value ListQuerySortOrder
+	Set   bool
+}
+
+// IsSet returns true if OptListQuerySortOrder was set.
+func (o OptListQuerySortOrder) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptListQuerySortOrder) Reset() {
+	var v ListQuerySortOrder
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptListQuerySortOrder) SetTo(v ListQuerySortOrder) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptListQuerySortOrder) Get() (v ListQuerySortOrder, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptListQuerySortOrder) Or(d ListQuerySortOrder) ListQuerySortOrder {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// A static content page (about, authors, privacy, tos, cookie).
+// Ref: #/components/schemas/PageContent
+type PageContent struct {
+	Slug     string `json:"slug"`
+	Title    string `json:"title"`
+	BodyHtml string `json:"bodyHtml"`
+}
+
+// GetSlug returns the value of Slug.
+func (s *PageContent) GetSlug() string {
+	return s.Slug
+}
+
+// GetTitle returns the value of Title.
+func (s *PageContent) GetTitle() string {
+	return s.Title
+}
+
+// GetBodyHtml returns the value of BodyHtml.
+func (s *PageContent) GetBodyHtml() string {
+	return s.BodyHtml
+}
+
+// SetSlug sets the value of Slug.
+func (s *PageContent) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetTitle sets the value of Title.
+func (s *PageContent) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetBodyHtml sets the value of BodyHtml.
+func (s *PageContent) SetBodyHtml(val string) {
+	s.BodyHtml = val
+}
+
+func (*PageContent) getPageRes() {}
+
+// Ref: #/components/schemas/PasskeyAssertionInput
+type PasskeyAssertionInput struct {
+	// JSON-encoded assertion credential from `navigator.credentials.get`.
+	Credential string `json:"credential"`
+}
+
+// GetCredential returns the value of Credential.
+func (s *PasskeyAssertionInput) GetCredential() string {
+	return s.Credential
+}
+
+// SetCredential sets the value of Credential.
+func (s *PasskeyAssertionInput) SetCredential(val string) {
+	s.Credential = val
+}
+
+// A WebAuthn ceremony payload. The challenge/options and the client response are opaque JSON owned by
+// `go-webauthn`; the contract carries them as strings so the browser API round-trips them verbatim.
+// Ref: #/components/schemas/PasskeyChallenge
+type PasskeyChallenge struct {
+	// JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
+	Options string `json:"options"`
+}
+
+// GetOptions returns the value of Options.
+func (s *PasskeyChallenge) GetOptions() string {
+	return s.Options
+}
+
+// SetOptions sets the value of Options.
+func (s *PasskeyChallenge) SetOptions(val string) {
+	s.Options = val
+}
+
+func (*PasskeyChallenge) newPasskeyRes() {}
+
+// Ref: #/components/schemas/PasskeyRegistrationInput
+type PasskeyRegistrationInput struct {
+	// JSON-encoded registration credential from `navigator.credentials.create`.
+	Credential string    `json:"credential"`
+	Nickname   NilString `json:"nickname"`
+}
+
+// GetCredential returns the value of Credential.
+func (s *PasskeyRegistrationInput) GetCredential() string {
+	return s.Credential
+}
+
+// GetNickname returns the value of Nickname.
+func (s *PasskeyRegistrationInput) GetNickname() NilString {
+	return s.Nickname
+}
+
+// SetCredential sets the value of Credential.
+func (s *PasskeyRegistrationInput) SetCredential(val string) {
+	s.Credential = val
+}
+
+// SetNickname sets the value of Nickname.
+func (s *PasskeyRegistrationInput) SetNickname(val NilString) {
+	s.Nickname = val
+}
+
+// Admin resources a staff role can be granted permissions on.
+// Ref: #/components/schemas/PermissionResource
+type PermissionResource string
+
+const (
+	PermissionResourceBlogPosts             PermissionResource = "blog_posts"
+	PermissionResourceBanners               PermissionResource = "banners"
+	PermissionResourceReviews               PermissionResource = "reviews"
+	PermissionResourceLeads                 PermissionResource = "leads"
+	PermissionResourceMessages              PermissionResource = "messages"
+	PermissionResourceLanguageCategories    PermissionResource = "language_categories"
+	PermissionResourceLanguageLessons       PermissionResource = "language_lessons"
+	PermissionResourceLanguageLessonReviews PermissionResource = "language_lesson_reviews"
+	PermissionResourceLanguageLessonMembers PermissionResource = "language_lesson_members"
+	PermissionResourceLanguages             PermissionResource = "languages"
+	PermissionResourceLanguageLandingPages  PermissionResource = "language_landing_pages"
+)
+
+// AllValues returns all PermissionResource values.
+func (PermissionResource) AllValues() []PermissionResource {
+	return []PermissionResource{
+		PermissionResourceBlogPosts,
+		PermissionResourceBanners,
+		PermissionResourceReviews,
+		PermissionResourceLeads,
+		PermissionResourceMessages,
+		PermissionResourceLanguageCategories,
+		PermissionResourceLanguageLessons,
+		PermissionResourceLanguageLessonReviews,
+		PermissionResourceLanguageLessonMembers,
+		PermissionResourceLanguages,
+		PermissionResourceLanguageLandingPages,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s PermissionResource) MarshalText() ([]byte, error) {
+	switch s {
+	case PermissionResourceBlogPosts:
+		return []byte(s), nil
+	case PermissionResourceBanners:
+		return []byte(s), nil
+	case PermissionResourceReviews:
+		return []byte(s), nil
+	case PermissionResourceLeads:
+		return []byte(s), nil
+	case PermissionResourceMessages:
+		return []byte(s), nil
+	case PermissionResourceLanguageCategories:
+		return []byte(s), nil
+	case PermissionResourceLanguageLessons:
+		return []byte(s), nil
+	case PermissionResourceLanguageLessonReviews:
+		return []byte(s), nil
+	case PermissionResourceLanguageLessonMembers:
+		return []byte(s), nil
+	case PermissionResourceLanguages:
+		return []byte(s), nil
+	case PermissionResourceLanguageLandingPages:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *PermissionResource) UnmarshalText(data []byte) error {
+	switch PermissionResource(data) {
+	case PermissionResourceBlogPosts:
+		*s = PermissionResourceBlogPosts
+		return nil
+	case PermissionResourceBanners:
+		*s = PermissionResourceBanners
+		return nil
+	case PermissionResourceReviews:
+		*s = PermissionResourceReviews
+		return nil
+	case PermissionResourceLeads:
+		*s = PermissionResourceLeads
+		return nil
+	case PermissionResourceMessages:
+		*s = PermissionResourceMessages
+		return nil
+	case PermissionResourceLanguageCategories:
+		*s = PermissionResourceLanguageCategories
+		return nil
+	case PermissionResourceLanguageLessons:
+		*s = PermissionResourceLanguageLessons
+		return nil
+	case PermissionResourceLanguageLessonReviews:
+		*s = PermissionResourceLanguageLessonReviews
+		return nil
+	case PermissionResourceLanguageLessonMembers:
+		*s = PermissionResourceLanguageLessonMembers
+		return nil
+	case PermissionResourceLanguages:
+		*s = PermissionResourceLanguages
+		return nil
+	case PermissionResourceLanguageLandingPages:
+		*s = PermissionResourceLanguageLandingPages
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/PhoneConfirmInput
+type PhoneConfirmInput struct {
+	Phone string `json:"phone"`
+	Code  string `json:"code"`
+}
+
+// GetPhone returns the value of Phone.
+func (s *PhoneConfirmInput) GetPhone() string {
+	return s.Phone
+}
+
+// GetCode returns the value of Code.
+func (s *PhoneConfirmInput) GetCode() string {
+	return s.Code
+}
+
+// SetPhone sets the value of Phone.
+func (s *PhoneConfirmInput) SetPhone(val string) {
+	s.Phone = val
+}
+
+// SetCode sets the value of Code.
+func (s *PhoneConfirmInput) SetCode(val string) {
+	s.Code = val
+}
+
+// Ref: #/components/schemas/PhoneInput
+type PhoneInput struct {
+	Phone string `json:"phone"`
+}
+
+// GetPhone returns the value of Phone.
+func (s *PhoneInput) GetPhone() string {
+	return s.Phone
+}
+
+// SetPhone sets the value of Phone.
+func (s *PhoneInput) SetPhone(val string) {
+	s.Phone = val
+}
+
+// Profile edit form (legacy: `UserProfileForm`).
+// Ref: #/components/schemas/ProfileInput
+type ProfileInput struct {
+	FirstName NilString `json:"firstName"`
+	LastName  NilString `json:"lastName"`
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *ProfileInput) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *ProfileInput) GetLastName() NilString {
+	return s.LastName
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *ProfileInput) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *ProfileInput) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// A Q&A entry attached to a category or landing page (legacy QnA item).
+// Ref: #/components/schemas/QnaItem
+type QnaItem struct {
+	ID       int32  `json:"id"`
+	Question string `json:"question"`
+	Answer   string `json:"answer"`
+}
+
+// GetID returns the value of ID.
+func (s *QnaItem) GetID() int32 {
+	return s.ID
+}
+
+// GetQuestion returns the value of Question.
+func (s *QnaItem) GetQuestion() string {
+	return s.Question
+}
+
+// GetAnswer returns the value of Answer.
+func (s *QnaItem) GetAnswer() string {
+	return s.Answer
+}
+
+// SetID sets the value of ID.
+func (s *QnaItem) SetID(val int32) {
+	s.ID = val
+}
+
+// SetQuestion sets the value of Question.
+func (s *QnaItem) SetQuestion(val string) {
+	s.Question = val
+}
+
+// SetAnswer sets the value of Answer.
+func (s *QnaItem) SetAnswer(val string) {
+	s.Answer = val
+}
+
+func (*QnaItem) adminCreateCategoryQnaItemRes()    {}
+func (*QnaItem) adminCreateLandingPageQnaItemRes() {}
+func (*QnaItem) adminUpdateCategoryQnaItemRes()    {}
+func (*QnaItem) adminUpdateLandingPageQnaItemRes() {}
+
+// Ref: #/components/schemas/QnaItemInput
+type QnaItemInput struct {
+	Question string `json:"question"`
+	Answer   string `json:"answer"`
+}
+
+// GetQuestion returns the value of Question.
+func (s *QnaItemInput) GetQuestion() string {
+	return s.Question
+}
+
+// GetAnswer returns the value of Answer.
+func (s *QnaItemInput) GetAnswer() string {
+	return s.Answer
+}
+
+// SetQuestion sets the value of Question.
+func (s *QnaItemInput) SetQuestion(val string) {
+	s.Question = val
+}
+
+// SetAnswer sets the value of Answer.
+func (s *QnaItemInput) SetAnswer(val string) {
+	s.Answer = val
+}
+
+// Password reset submission (legacy: `UserPassword`).
+// Ref: #/components/schemas/ResetPasswordInput
+type ResetPasswordInput struct {
+	Password string `json:"password"`
+}
+
+// GetPassword returns the value of Password.
+func (s *ResetPasswordInput) GetPassword() string {
+	return s.Password
+}
+
+// SetPassword sets the value of Password.
+func (s *ResetPasswordInput) SetPassword(val string) {
+	s.Password = val
+}
+
+// A student review/testimonial (legacy: `Review`).
+// Ref: #/components/schemas/Review
+type Review struct {
+	ID        int32           `json:"id"`
+	User      User            `json:"user"`
+	Course    Course          `json:"course"`
+	UserId    int32           `json:"userId"`
+	CourseId  int32           `json:"courseId"`
+	Body      NilString       `json:"body"`
+	FirstName NilString       `json:"firstName"`
+	LastName  NilString       `json:"lastName"`
+	FullName  NilString       `json:"fullName"`
+	State     NilReviewState  `json:"state"`
+	Locale    NilReviewLocale `json:"locale"`
+	CreatedAt time.Time       `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *Review) GetID() int32 {
+	return s.ID
+}
+
+// GetUser returns the value of User.
+func (s *Review) GetUser() User {
+	return s.User
+}
+
+// GetCourse returns the value of Course.
+func (s *Review) GetCourse() Course {
+	return s.Course
+}
+
+// GetUserId returns the value of UserId.
+func (s *Review) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *Review) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetBody returns the value of Body.
+func (s *Review) GetBody() NilString {
+	return s.Body
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *Review) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *Review) GetLastName() NilString {
+	return s.LastName
+}
+
+// GetFullName returns the value of FullName.
+func (s *Review) GetFullName() NilString {
+	return s.FullName
+}
+
+// GetState returns the value of State.
+func (s *Review) GetState() NilReviewState {
+	return s.State
+}
+
+// GetLocale returns the value of Locale.
+func (s *Review) GetLocale() NilReviewLocale {
+	return s.Locale
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *Review) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *Review) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUser sets the value of User.
+func (s *Review) SetUser(val User) {
+	s.User = val
+}
+
+// SetCourse sets the value of Course.
+func (s *Review) SetCourse(val Course) {
+	s.Course = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *Review) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *Review) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetBody sets the value of Body.
+func (s *Review) SetBody(val NilString) {
+	s.Body = val
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *Review) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *Review) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// SetFullName sets the value of FullName.
+func (s *Review) SetFullName(val NilString) {
+	s.FullName = val
+}
+
+// SetState sets the value of State.
+func (s *Review) SetState(val NilReviewState) {
+	s.State = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *Review) SetLocale(val NilReviewLocale) {
+	s.Locale = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *Review) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*Review) adminCreateReviewRes() {}
+func (*Review) adminGetReviewRes()    {}
+func (*Review) adminUpdateReviewRes() {}
+
+// Ref: #/components/schemas/ReviewInput
+type ReviewInput struct {
+	State     NilReviewState `json:"state"`
+	Pinned    NilBool        `json:"pinned"`
+	CourseId  NilInt32       `json:"courseId"`
+	UserId    NilInt32       `json:"userId"`
+	Body      NilString      `json:"body"`
+	FirstName NilString      `json:"firstName"`
+	LastName  NilString      `json:"lastName"`
+}
+
+// GetState returns the value of State.
+func (s *ReviewInput) GetState() NilReviewState {
+	return s.State
+}
+
+// GetPinned returns the value of Pinned.
+func (s *ReviewInput) GetPinned() NilBool {
+	return s.Pinned
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *ReviewInput) GetCourseId() NilInt32 {
+	return s.CourseId
+}
+
+// GetUserId returns the value of UserId.
+func (s *ReviewInput) GetUserId() NilInt32 {
+	return s.UserId
+}
+
+// GetBody returns the value of Body.
+func (s *ReviewInput) GetBody() NilString {
+	return s.Body
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *ReviewInput) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *ReviewInput) GetLastName() NilString {
+	return s.LastName
+}
+
+// SetState sets the value of State.
+func (s *ReviewInput) SetState(val NilReviewState) {
+	s.State = val
+}
+
+// SetPinned sets the value of Pinned.
+func (s *ReviewInput) SetPinned(val NilBool) {
+	s.Pinned = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *ReviewInput) SetCourseId(val NilInt32) {
+	s.CourseId = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *ReviewInput) SetUserId(val NilInt32) {
+	s.UserId = val
+}
+
+// SetBody sets the value of Body.
+func (s *ReviewInput) SetBody(val NilString) {
+	s.Body = val
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *ReviewInput) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *ReviewInput) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// Reviews only target ru/en today (legacy `ReviewLocale`).
+// Ref: #/components/schemas/ReviewLocale
+type ReviewLocale string
+
+const (
+	ReviewLocaleRu ReviewLocale = "ru"
+	ReviewLocaleEn ReviewLocale = "en"
+)
+
+// AllValues returns all ReviewLocale values.
+func (ReviewLocale) AllValues() []ReviewLocale {
+	return []ReviewLocale{
+		ReviewLocaleRu,
+		ReviewLocaleEn,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ReviewLocale) MarshalText() ([]byte, error) {
+	switch s {
+	case ReviewLocaleRu:
+		return []byte(s), nil
+	case ReviewLocaleEn:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ReviewLocale) UnmarshalText(data []byte) error {
+	switch ReviewLocale(data) {
+	case ReviewLocaleRu:
+		*s = ReviewLocaleRu
+		return nil
+	case ReviewLocaleEn:
+		*s = ReviewLocaleEn
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/ReviewPage
+type ReviewPage struct {
+	Items []Review `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *ReviewPage) GetItems() []Review {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *ReviewPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *ReviewPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *ReviewPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *ReviewPage) SetItems(val []Review) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *ReviewPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *ReviewPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *ReviewPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// Review publication state.
+// Ref: #/components/schemas/ReviewState
+type ReviewState string
+
+const (
+	ReviewStateDraft     ReviewState = "draft"
+	ReviewStatePublished ReviewState = "published"
+	ReviewStateArchived  ReviewState = "archived"
+)
+
+// AllValues returns all ReviewState values.
+func (ReviewState) AllValues() []ReviewState {
+	return []ReviewState{
+		ReviewStateDraft,
+		ReviewStatePublished,
+		ReviewStateArchived,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ReviewState) MarshalText() ([]byte, error) {
+	switch s {
+	case ReviewStateDraft:
+		return []byte(s), nil
+	case ReviewStatePublished:
+		return []byte(s), nil
+	case ReviewStateArchived:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ReviewState) UnmarshalText(data []byte) error {
+	switch ReviewState(data) {
+	case ReviewStateDraft:
+		*s = ReviewStateDraft
+		return nil
+	case ReviewStatePublished:
+		*s = ReviewStatePublished
+		return nil
+	case ReviewStateArchived:
+		*s = ReviewStateArchived
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/RoleInput
+type RoleInput struct {
+	Name        string    `json:"name"`
+	Description NilString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *RoleInput) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *RoleInput) GetDescription() NilString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *RoleInput) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *RoleInput) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// One permission row to set on a role.
+// Ref: #/components/schemas/RolePermissionInput
+type RolePermissionInput struct {
+	Resource   PermissionResource `json:"resource"`
+	CanIndex   bool               `json:"canIndex"`
+	CanCreate  bool               `json:"canCreate"`
+	CanUpdate  bool               `json:"canUpdate"`
+	CanDestroy bool               `json:"canDestroy"`
+}
+
+// GetResource returns the value of Resource.
+func (s *RolePermissionInput) GetResource() PermissionResource {
+	return s.Resource
+}
+
+// GetCanIndex returns the value of CanIndex.
+func (s *RolePermissionInput) GetCanIndex() bool {
+	return s.CanIndex
+}
+
+// GetCanCreate returns the value of CanCreate.
+func (s *RolePermissionInput) GetCanCreate() bool {
+	return s.CanCreate
+}
+
+// GetCanUpdate returns the value of CanUpdate.
+func (s *RolePermissionInput) GetCanUpdate() bool {
+	return s.CanUpdate
+}
+
+// GetCanDestroy returns the value of CanDestroy.
+func (s *RolePermissionInput) GetCanDestroy() bool {
+	return s.CanDestroy
+}
+
+// SetResource sets the value of Resource.
+func (s *RolePermissionInput) SetResource(val PermissionResource) {
+	s.Resource = val
+}
+
+// SetCanIndex sets the value of CanIndex.
+func (s *RolePermissionInput) SetCanIndex(val bool) {
+	s.CanIndex = val
+}
+
+// SetCanCreate sets the value of CanCreate.
+func (s *RolePermissionInput) SetCanCreate(val bool) {
+	s.CanCreate = val
+}
+
+// SetCanUpdate sets the value of CanUpdate.
+func (s *RolePermissionInput) SetCanUpdate(val bool) {
+	s.CanUpdate = val
+}
+
+// SetCanDestroy sets the value of CanDestroy.
+func (s *RolePermissionInput) SetCanDestroy(val bool) {
+	s.CanDestroy = val
+}
+
+// The full permission matrix submitted for a role.
+// Ref: #/components/schemas/RolePermissionsInput
+type RolePermissionsInput struct {
+	Permissions []RolePermissionInput `json:"permissions"`
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *RolePermissionsInput) GetPermissions() []RolePermissionInput {
+	return s.Permissions
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *RolePermissionsInput) SetPermissions(val []RolePermissionInput) {
+	s.Permissions = val
+}
+
+// Email + password login.
+// Ref: #/components/schemas/SessionInput
+type SessionInput struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// GetEmail returns the value of Email.
+func (s *SessionInput) GetEmail() string {
+	return s.Email
+}
+
+// GetPassword returns the value of Password.
+func (s *SessionInput) GetPassword() string {
+	return s.Password
+}
+
+// SetEmail sets the value of Email.
+func (s *SessionInput) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SessionInput) SetPassword(val string) {
+	s.Password = val
+}
+
+// Sign-up form (legacy: `UserSignUpForm`).
+// Ref: #/components/schemas/SignUpInput
+type SignUpInput struct {
+	FirstName NilString `json:"firstName"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *SignUpInput) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetEmail returns the value of Email.
+func (s *SignUpInput) GetEmail() string {
+	return s.Email
+}
+
+// GetPassword returns the value of Password.
+func (s *SignUpInput) GetPassword() string {
+	return s.Password
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *SignUpInput) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetEmail sets the value of Email.
+func (s *SignUpInput) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetPassword sets the value of Password.
+func (s *SignUpInput) SetPassword(val string) {
+	s.Password = val
+}
+
+// Aggregated data for the XML sitemap / SEO index.
+// Ref: #/components/schemas/Sitemap
+type Sitemap struct {
+	LandingPages []SitemapCourseLandingPage `json:"landingPages"`
+	Lessons      []SitemapCourseLesson      `json:"lessons"`
+	BlogPosts    []SitemapBlogPost          `json:"blogPosts"`
+}
+
+// GetLandingPages returns the value of LandingPages.
+func (s *Sitemap) GetLandingPages() []SitemapCourseLandingPage {
+	return s.LandingPages
+}
+
+// GetLessons returns the value of Lessons.
+func (s *Sitemap) GetLessons() []SitemapCourseLesson {
+	return s.Lessons
+}
+
+// GetBlogPosts returns the value of BlogPosts.
+func (s *Sitemap) GetBlogPosts() []SitemapBlogPost {
+	return s.BlogPosts
+}
+
+// SetLandingPages sets the value of LandingPages.
+func (s *Sitemap) SetLandingPages(val []SitemapCourseLandingPage) {
+	s.LandingPages = val
+}
+
+// SetLessons sets the value of Lessons.
+func (s *Sitemap) SetLessons(val []SitemapCourseLesson) {
+	s.Lessons = val
+}
+
+// SetBlogPosts sets the value of BlogPosts.
+func (s *Sitemap) SetBlogPosts(val []SitemapBlogPost) {
+	s.BlogPosts = val
+}
+
+// Minimal blog-post row for the sitemap (legacy: `SitemapBlogPost`).
+// Ref: #/components/schemas/SitemapBlogPost
+type SitemapBlogPost struct {
+	ID     int32  `json:"id"`
+	Name   string `json:"name"`
+	Slug   string `json:"slug"`
+	Locale Locale `json:"locale"`
+}
+
+// GetID returns the value of ID.
+func (s *SitemapBlogPost) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *SitemapBlogPost) GetName() string {
+	return s.Name
+}
+
+// GetSlug returns the value of Slug.
+func (s *SitemapBlogPost) GetSlug() string {
+	return s.Slug
+}
+
+// GetLocale returns the value of Locale.
+func (s *SitemapBlogPost) GetLocale() Locale {
+	return s.Locale
+}
+
+// SetID sets the value of ID.
+func (s *SitemapBlogPost) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *SitemapBlogPost) SetName(val string) {
+	s.Name = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *SitemapBlogPost) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *SitemapBlogPost) SetLocale(val Locale) {
+	s.Locale = val
+}
+
+// Minimal landing-page row for the sitemap (legacy: `LanguageSitemapLandingPage`).
+// Ref: #/components/schemas/SitemapCourseLandingPage
+type SitemapCourseLandingPage struct {
+	ID       int32  `json:"id"`
+	CourseId int32  `json:"courseId"`
+	Slug     string `json:"slug"`
+	Header   string `json:"header"`
+	Locale   Locale `json:"locale"`
+}
+
+// GetID returns the value of ID.
+func (s *SitemapCourseLandingPage) GetID() int32 {
+	return s.ID
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *SitemapCourseLandingPage) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetSlug returns the value of Slug.
+func (s *SitemapCourseLandingPage) GetSlug() string {
+	return s.Slug
+}
+
+// GetHeader returns the value of Header.
+func (s *SitemapCourseLandingPage) GetHeader() string {
+	return s.Header
+}
+
+// GetLocale returns the value of Locale.
+func (s *SitemapCourseLandingPage) GetLocale() Locale {
+	return s.Locale
+}
+
+// SetID sets the value of ID.
+func (s *SitemapCourseLandingPage) SetID(val int32) {
+	s.ID = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *SitemapCourseLandingPage) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *SitemapCourseLandingPage) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetHeader sets the value of Header.
+func (s *SitemapCourseLandingPage) SetHeader(val string) {
+	s.Header = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *SitemapCourseLandingPage) SetLocale(val Locale) {
+	s.Locale = val
+}
+
+// Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).
+// Ref: #/components/schemas/SitemapCourseLesson
+type SitemapCourseLesson struct {
+	ID           int32  `json:"id"`
+	CourseId     int32  `json:"courseId"`
+	Name         string `json:"name"`
+	Slug         string `json:"slug"`
+	NaturalOrder int32  `json:"naturalOrder"`
+	Locale       Locale `json:"locale"`
+}
+
+// GetID returns the value of ID.
+func (s *SitemapCourseLesson) GetID() int32 {
+	return s.ID
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *SitemapCourseLesson) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetName returns the value of Name.
+func (s *SitemapCourseLesson) GetName() string {
+	return s.Name
+}
+
+// GetSlug returns the value of Slug.
+func (s *SitemapCourseLesson) GetSlug() string {
+	return s.Slug
+}
+
+// GetNaturalOrder returns the value of NaturalOrder.
+func (s *SitemapCourseLesson) GetNaturalOrder() int32 {
+	return s.NaturalOrder
+}
+
+// GetLocale returns the value of Locale.
+func (s *SitemapCourseLesson) GetLocale() Locale {
+	return s.Locale
+}
+
+// SetID sets the value of ID.
+func (s *SitemapCourseLesson) SetID(val int32) {
+	s.ID = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *SitemapCourseLesson) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetName sets the value of Name.
+func (s *SitemapCourseLesson) SetName(val string) {
+	s.Name = val
+}
+
+// SetSlug sets the value of Slug.
+func (s *SitemapCourseLesson) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetNaturalOrder sets the value of NaturalOrder.
+func (s *SitemapCourseLesson) SetNaturalOrder(val int32) {
+	s.NaturalOrder = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *SitemapCourseLesson) SetLocale(val Locale) {
+	s.Locale = val
+}
+
+// A staff member: a user bound to a role (legacy: `StaffMember`).
+// Ref: #/components/schemas/StaffMember
+type StaffMember struct {
+	ID             int32     `json:"id"`
+	UserId         int32     `json:"userId"`
+	RoleId         int32     `json:"roleId"`
+	User           User      `json:"user"`
+	Role           StaffRole `json:"role"`
+	AllowedLocales []string  `json:"allowedLocales"`
+}
+
+// GetID returns the value of ID.
+func (s *StaffMember) GetID() int32 {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *StaffMember) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetRoleId returns the value of RoleId.
+func (s *StaffMember) GetRoleId() int32 {
+	return s.RoleId
+}
+
+// GetUser returns the value of User.
+func (s *StaffMember) GetUser() User {
+	return s.User
+}
+
+// GetRole returns the value of Role.
+func (s *StaffMember) GetRole() StaffRole {
+	return s.Role
+}
+
+// GetAllowedLocales returns the value of AllowedLocales.
+func (s *StaffMember) GetAllowedLocales() []string {
+	return s.AllowedLocales
+}
+
+// SetID sets the value of ID.
+func (s *StaffMember) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *StaffMember) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetRoleId sets the value of RoleId.
+func (s *StaffMember) SetRoleId(val int32) {
+	s.RoleId = val
+}
+
+// SetUser sets the value of User.
+func (s *StaffMember) SetUser(val User) {
+	s.User = val
+}
+
+// SetRole sets the value of Role.
+func (s *StaffMember) SetRole(val StaffRole) {
+	s.Role = val
+}
+
+// SetAllowedLocales sets the value of AllowedLocales.
+func (s *StaffMember) SetAllowedLocales(val []string) {
+	s.AllowedLocales = val
+}
+
+func (*StaffMember) adminCreateStaffMemberRes() {}
+func (*StaffMember) adminGetStaffMemberRes()    {}
+func (*StaffMember) adminUpdateStaffMemberRes() {}
+
+// Ref: #/components/schemas/StaffMemberInput
+type StaffMemberInput struct {
+	UserId         int32    `json:"userId"`
+	RoleId         int32    `json:"roleId"`
+	AllowedLocales []string `json:"allowedLocales"`
+}
+
+// GetUserId returns the value of UserId.
+func (s *StaffMemberInput) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetRoleId returns the value of RoleId.
+func (s *StaffMemberInput) GetRoleId() int32 {
+	return s.RoleId
+}
+
+// GetAllowedLocales returns the value of AllowedLocales.
+func (s *StaffMemberInput) GetAllowedLocales() []string {
+	return s.AllowedLocales
+}
+
+// SetUserId sets the value of UserId.
+func (s *StaffMemberInput) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetRoleId sets the value of RoleId.
+func (s *StaffMemberInput) SetRoleId(val int32) {
+	s.RoleId = val
+}
+
+// SetAllowedLocales sets the value of AllowedLocales.
+func (s *StaffMemberInput) SetAllowedLocales(val []string) {
+	s.AllowedLocales = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/StaffMemberPage
+type StaffMemberPage struct {
+	Items []StaffMember `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *StaffMemberPage) GetItems() []StaffMember {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *StaffMemberPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *StaffMemberPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *StaffMemberPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *StaffMemberPage) SetItems(val []StaffMember) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *StaffMemberPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *StaffMemberPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *StaffMemberPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// A staff role (legacy: `StaffRole`).
+// Ref: #/components/schemas/StaffRole
+type StaffRole struct {
+	ID               int32     `json:"id"`
+	Name             string    `json:"name"`
+	Description      NilString `json:"description"`
+	PermissionsCount int32     `json:"permissionsCount"`
+	CreatedAt        time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *StaffRole) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *StaffRole) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *StaffRole) GetDescription() NilString {
+	return s.Description
+}
+
+// GetPermissionsCount returns the value of PermissionsCount.
+func (s *StaffRole) GetPermissionsCount() int32 {
+	return s.PermissionsCount
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *StaffRole) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *StaffRole) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *StaffRole) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *StaffRole) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetPermissionsCount sets the value of PermissionsCount.
+func (s *StaffRole) SetPermissionsCount(val int32) {
+	s.PermissionsCount = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *StaffRole) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
+// Ref: #/components/schemas/StaffRoleDetail
+type StaffRoleDetail struct {
+	ID          int32                 `json:"id"`
+	Name        string                `json:"name"`
+	Description NilString             `json:"description"`
+	Permissions []StaffRolePermission `json:"permissions"`
+}
+
+// GetID returns the value of ID.
+func (s *StaffRoleDetail) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *StaffRoleDetail) GetName() string {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *StaffRoleDetail) GetDescription() NilString {
+	return s.Description
+}
+
+// GetPermissions returns the value of Permissions.
+func (s *StaffRoleDetail) GetPermissions() []StaffRolePermission {
+	return s.Permissions
+}
+
+// SetID sets the value of ID.
+func (s *StaffRoleDetail) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *StaffRoleDetail) SetName(val string) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *StaffRoleDetail) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetPermissions sets the value of Permissions.
+func (s *StaffRoleDetail) SetPermissions(val []StaffRolePermission) {
+	s.Permissions = val
+}
+
+func (*StaffRoleDetail) adminCreateRoleRes()            {}
+func (*StaffRoleDetail) adminGetRolePermissionsRes()    {}
+func (*StaffRoleDetail) adminGetRoleRes()               {}
+func (*StaffRoleDetail) adminUpdateRolePermissionsRes() {}
+func (*StaffRoleDetail) adminUpdateRoleRes()            {}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/StaffRolePage
+type StaffRolePage struct {
+	Items []StaffRole `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *StaffRolePage) GetItems() []StaffRole {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *StaffRolePage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *StaffRolePage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *StaffRolePage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *StaffRolePage) SetItems(val []StaffRole) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *StaffRolePage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *StaffRolePage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *StaffRolePage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// One resource's permission bits for a role (legacy: `StaffRolePermission`).
+// Ref: #/components/schemas/StaffRolePermission
+type StaffRolePermission struct {
+	ID         int32              `json:"id"`
+	RoleId     int32              `json:"roleId"`
+	Resource   PermissionResource `json:"resource"`
+	CanIndex   bool               `json:"canIndex"`
+	CanCreate  bool               `json:"canCreate"`
+	CanUpdate  bool               `json:"canUpdate"`
+	CanDestroy bool               `json:"canDestroy"`
+}
+
+// GetID returns the value of ID.
+func (s *StaffRolePermission) GetID() int32 {
+	return s.ID
+}
+
+// GetRoleId returns the value of RoleId.
+func (s *StaffRolePermission) GetRoleId() int32 {
+	return s.RoleId
+}
+
+// GetResource returns the value of Resource.
+func (s *StaffRolePermission) GetResource() PermissionResource {
+	return s.Resource
+}
+
+// GetCanIndex returns the value of CanIndex.
+func (s *StaffRolePermission) GetCanIndex() bool {
+	return s.CanIndex
+}
+
+// GetCanCreate returns the value of CanCreate.
+func (s *StaffRolePermission) GetCanCreate() bool {
+	return s.CanCreate
+}
+
+// GetCanUpdate returns the value of CanUpdate.
+func (s *StaffRolePermission) GetCanUpdate() bool {
+	return s.CanUpdate
+}
+
+// GetCanDestroy returns the value of CanDestroy.
+func (s *StaffRolePermission) GetCanDestroy() bool {
+	return s.CanDestroy
+}
+
+// SetID sets the value of ID.
+func (s *StaffRolePermission) SetID(val int32) {
+	s.ID = val
+}
+
+// SetRoleId sets the value of RoleId.
+func (s *StaffRolePermission) SetRoleId(val int32) {
+	s.RoleId = val
+}
+
+// SetResource sets the value of Resource.
+func (s *StaffRolePermission) SetResource(val PermissionResource) {
+	s.Resource = val
+}
+
+// SetCanIndex sets the value of CanIndex.
+func (s *StaffRolePermission) SetCanIndex(val bool) {
+	s.CanIndex = val
+}
+
+// SetCanCreate sets the value of CanCreate.
+func (s *StaffRolePermission) SetCanCreate(val bool) {
+	s.CanCreate = val
+}
+
+// SetCanUpdate sets the value of CanUpdate.
+func (s *StaffRolePermission) SetCanUpdate(val bool) {
+	s.CanUpdate = val
+}
+
+// SetCanDestroy sets the value of CanDestroy.
+func (s *StaffRolePermission) SetCanDestroy(val bool) {
+	s.CanDestroy = val
+}
+
+// SwitchLocaleNoContent is response for SwitchLocale operation.
+type SwitchLocaleNoContent struct{}
+
+// The request is not authenticated (no/invalid session cookie).
+// Ref: #/components/schemas/UnauthorizedError
+type UnauthorizedError struct {
+	Message string `json:"message"`
+}
+
+// GetMessage returns the value of Message.
+func (s *UnauthorizedError) GetMessage() string {
+	return s.Message
+}
+
+// SetMessage sets the value of Message.
+func (s *UnauthorizedError) SetMessage(val string) {
+	s.Message = val
+}
+
+func (*UnauthorizedError) createAssistantMessageRes() {}
+func (*UnauthorizedError) deleteAccountRes()          {}
+func (*UnauthorizedError) getMyDashboardRes()         {}
+func (*UnauthorizedError) getProfileRes()             {}
+func (*UnauthorizedError) listAssistantMessagesRes()  {}
+func (*UnauthorizedError) listPasskeysRes()           {}
+func (*UnauthorizedError) newPasskeyRes()             {}
+
+// UpdatePasswordNoContent is response for UpdatePassword operation.
+type UpdatePasswordNoContent struct{}
+
+func (*UpdatePasswordNoContent) updatePasswordRes() {}
+
+// A user (legacy: `User`). Passwords are never part of a response.
+// Ref: #/components/schemas/User
+type User struct {
+	ID                     int32     `json:"id"`
+	FirstName              NilString `json:"firstName"`
+	LastName               NilString `json:"lastName"`
+	Name                   NilString `json:"name"`
+	Email                  NilString `json:"email"`
+	Admin                  NilBool   `json:"admin"`
+	CanAccessAdmin         bool      `json:"canAccessAdmin"`
+	AssistantMessagesCount NilInt32  `json:"assistantMessagesCount"`
+	CreatedAt              time.Time `json:"createdAt"`
+	CreatedAtAsTimestamp   NilInt64  `json:"createdAtAsTimestamp"`
+	Type                   UserType  `json:"type"`
+}
+
+// GetID returns the value of ID.
+func (s *User) GetID() int32 {
+	return s.ID
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *User) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *User) GetLastName() NilString {
+	return s.LastName
+}
+
+// GetName returns the value of Name.
+func (s *User) GetName() NilString {
+	return s.Name
+}
+
+// GetEmail returns the value of Email.
+func (s *User) GetEmail() NilString {
+	return s.Email
+}
+
+// GetAdmin returns the value of Admin.
+func (s *User) GetAdmin() NilBool {
+	return s.Admin
+}
+
+// GetCanAccessAdmin returns the value of CanAccessAdmin.
+func (s *User) GetCanAccessAdmin() bool {
+	return s.CanAccessAdmin
+}
+
+// GetAssistantMessagesCount returns the value of AssistantMessagesCount.
+func (s *User) GetAssistantMessagesCount() NilInt32 {
+	return s.AssistantMessagesCount
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *User) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetCreatedAtAsTimestamp returns the value of CreatedAtAsTimestamp.
+func (s *User) GetCreatedAtAsTimestamp() NilInt64 {
+	return s.CreatedAtAsTimestamp
+}
+
+// GetType returns the value of Type.
+func (s *User) GetType() UserType {
+	return s.Type
+}
+
+// SetID sets the value of ID.
+func (s *User) SetID(val int32) {
+	s.ID = val
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *User) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *User) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// SetName sets the value of Name.
+func (s *User) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetEmail sets the value of Email.
+func (s *User) SetEmail(val NilString) {
+	s.Email = val
+}
+
+// SetAdmin sets the value of Admin.
+func (s *User) SetAdmin(val NilBool) {
+	s.Admin = val
+}
+
+// SetCanAccessAdmin sets the value of CanAccessAdmin.
+func (s *User) SetCanAccessAdmin(val bool) {
+	s.CanAccessAdmin = val
+}
+
+// SetAssistantMessagesCount sets the value of AssistantMessagesCount.
+func (s *User) SetAssistantMessagesCount(val NilInt32) {
+	s.AssistantMessagesCount = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *User) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetCreatedAtAsTimestamp sets the value of CreatedAtAsTimestamp.
+func (s *User) SetCreatedAtAsTimestamp(val NilInt64) {
+	s.CreatedAtAsTimestamp = val
+}
+
+// SetType sets the value of Type.
+func (s *User) SetType(val UserType) {
+	s.Type = val
+}
+
+func (*User) confirmPhoneAuthRes()     {}
+func (*User) consumeMagicLinkRes()     {}
+func (*User) createPasskeySessionRes() {}
+func (*User) createSessionRes()        {}
+func (*User) createUserRes()           {}
+func (*User) getProfileRes()           {}
+func (*User) updateProfileRes()        {}
+
+// A registered passkey/WebAuthn credential (legacy: `UserCredential`).
+// Ref: #/components/schemas/UserCredential
+type UserCredential struct {
+	ID        int32     `json:"id"`
+	Nickname  NilString `json:"nickname"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+// GetID returns the value of ID.
+func (s *UserCredential) GetID() int32 {
+	return s.ID
+}
+
+// GetNickname returns the value of Nickname.
+func (s *UserCredential) GetNickname() NilString {
+	return s.Nickname
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *UserCredential) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// SetID sets the value of ID.
+func (s *UserCredential) SetID(val int32) {
+	s.ID = val
+}
+
+// SetNickname sets the value of Nickname.
+func (s *UserCredential) SetNickname(val NilString) {
+	s.Nickname = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *UserCredential) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+func (*UserCredential) createPasskeyRes() {}
+
+// A user row as shown in admin lists/forms (legacy: `UserCrud`).
+// Ref: #/components/schemas/UserCrud
+type UserCrud struct {
+	ID        int32     `json:"id"`
+	Email     NilString `json:"email"`
+	FirstName NilString `json:"firstName"`
+	LastName  NilString `json:"lastName"`
+	Admin     NilBool   `json:"admin"`
+}
+
+// GetID returns the value of ID.
+func (s *UserCrud) GetID() int32 {
+	return s.ID
+}
+
+// GetEmail returns the value of Email.
+func (s *UserCrud) GetEmail() NilString {
+	return s.Email
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *UserCrud) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *UserCrud) GetLastName() NilString {
+	return s.LastName
+}
+
+// GetAdmin returns the value of Admin.
+func (s *UserCrud) GetAdmin() NilBool {
+	return s.Admin
+}
+
+// SetID sets the value of ID.
+func (s *UserCrud) SetID(val int32) {
+	s.ID = val
+}
+
+// SetEmail sets the value of Email.
+func (s *UserCrud) SetEmail(val NilString) {
+	s.Email = val
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *UserCrud) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *UserCrud) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// SetAdmin sets the value of Admin.
+func (s *UserCrud) SetAdmin(val NilBool) {
+	s.Admin = val
+}
+
+func (*UserCrud) adminCreateUserRes()           {}
+func (*UserCrud) adminGetManagementUserRes()    {}
+func (*UserCrud) adminGetUserRes()              {}
+func (*UserCrud) adminUpdateManagementUserRes() {}
+func (*UserCrud) adminUpdateUserRes()           {}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/UserCrudPage
+type UserCrudPage struct {
+	Items []UserCrud `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *UserCrudPage) GetItems() []UserCrud {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *UserCrudPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *UserCrudPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *UserCrudPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *UserCrudPage) SetItems(val []UserCrud) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *UserCrudPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *UserCrudPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *UserCrudPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// Ref: #/components/schemas/UserInput
+type UserInput struct {
+	Email     string    `json:"email"`
+	FirstName NilString `json:"firstName"`
+	LastName  NilString `json:"lastName"`
+	Admin     NilBool   `json:"admin"`
+}
+
+// GetEmail returns the value of Email.
+func (s *UserInput) GetEmail() string {
+	return s.Email
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *UserInput) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *UserInput) GetLastName() NilString {
+	return s.LastName
+}
+
+// GetAdmin returns the value of Admin.
+func (s *UserInput) GetAdmin() NilBool {
+	return s.Admin
+}
+
+// SetEmail sets the value of Email.
+func (s *UserInput) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *UserInput) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *UserInput) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// SetAdmin sets the value of Admin.
+func (s *UserInput) SetAdmin(val NilBool) {
+	s.Admin = val
+}
+
+type UserType string
+
+const (
+	UserTypeUser UserType = "user"
+)
+
+// AllValues returns all UserType values.
+func (UserType) AllValues() []UserType {
+	return []UserType{
+		UserTypeUser,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s UserType) MarshalText() ([]byte, error) {
+	switch s {
+	case UserTypeUser:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *UserType) UnmarshalText(data []byte) error {
+	switch UserType(data) {
+	case UserTypeUser:
+		*s = UserTypeUser
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Field-level validation errors, keyed by field name (each value is the list of messages for that
 // field). Returned when a write fails validation — including constraints the schema cannot express,
 // like uniqueness.
@@ -733,8 +6683,44 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 	s.Errors = val
 }
 
-func (*ValidationError) adminCreateCourseCategoryRes() {}
-func (*ValidationError) adminUpdateCourseCategoryRes() {}
+func (*ValidationError) adminCreateBannerRes()              {}
+func (*ValidationError) adminCreateBlogPostRes()            {}
+func (*ValidationError) adminCreateCategoryQnaItemRes()     {}
+func (*ValidationError) adminCreateCourseCategoryRes()      {}
+func (*ValidationError) adminCreateCourseLandingPageRes()   {}
+func (*ValidationError) adminCreateCourseRes()              {}
+func (*ValidationError) adminCreateLandingPageQnaItemRes()  {}
+func (*ValidationError) adminCreateReviewRes()              {}
+func (*ValidationError) adminCreateRoleRes()                {}
+func (*ValidationError) adminCreateStaffMemberRes()         {}
+func (*ValidationError) adminCreateUserRes()                {}
+func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
+func (*ValidationError) adminUpdateBannerRes()              {}
+func (*ValidationError) adminUpdateBlogPostRes()            {}
+func (*ValidationError) adminUpdateCategoryQnaItemRes()     {}
+func (*ValidationError) adminUpdateCourseCategoryRes()      {}
+func (*ValidationError) adminUpdateCourseLandingPageRes()   {}
+func (*ValidationError) adminUpdateCourseRes()              {}
+func (*ValidationError) adminUpdateLandingPageQnaItemRes()  {}
+func (*ValidationError) adminUpdateManagementUserRes()      {}
+func (*ValidationError) adminUpdateReviewRes()              {}
+func (*ValidationError) adminUpdateRolePermissionsRes()     {}
+func (*ValidationError) adminUpdateRoleRes()                {}
+func (*ValidationError) adminUpdateStaffMemberRes()         {}
+func (*ValidationError) adminUpdateUserRes()                {}
+func (*ValidationError) checkLessonRes()                    {}
+func (*ValidationError) confirmPhoneAuthRes()               {}
+func (*ValidationError) createBookRequestRes()              {}
+func (*ValidationError) createLeadRes()                     {}
+func (*ValidationError) createMagicLinkRes()                {}
+func (*ValidationError) createPasskeyRes()                  {}
+func (*ValidationError) createPasskeySessionRes()           {}
+func (*ValidationError) createPasswordReminderRes()         {}
+func (*ValidationError) createPhoneAuthRes()                {}
+func (*ValidationError) createSessionRes()                  {}
+func (*ValidationError) createUserRes()                     {}
+func (*ValidationError) updatePasswordRes()                 {}
+func (*ValidationError) updateProfileRes()                  {}
 
 type ValidationErrorErrors map[string][]string
 

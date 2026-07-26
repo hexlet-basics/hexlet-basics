@@ -50,9 +50,11 @@ func TestAdminGetCourseCategory(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
 
-	got, err := srv.AdminGetCourseCategory(ctx, api.AdminGetCourseCategoryParams{ID: 1})
+	res, err := srv.AdminGetCourseCategory(ctx, api.AdminGetCourseCategoryParams{ID: 1})
 	require.NoError(t, err)
 
+	got, ok := res.(*api.CourseCategory)
+	require.True(t, ok, "expected a category, got %T", res)
 	assert.Equal(t, int32(1), got.ID)
 	assert.Equal(t, "Programming", got.Name.Value)
 	assert.Equal(t, "programming-en", got.Slug.Value)

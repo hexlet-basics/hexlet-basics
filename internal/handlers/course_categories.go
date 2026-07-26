@@ -48,9 +48,12 @@ func (s *Server) AdminListCourseCategories(ctx context.Context, params api.Admin
 	}, nil
 }
 
-// AdminGetCourseCategory returns a single course category by id.
-func (s *Server) AdminGetCourseCategory(ctx context.Context, params api.AdminGetCourseCategoryParams) (*api.CourseCategory, error) {
+// AdminGetCourseCategory returns a single course category by id, or 404.
+func (s *Server) AdminGetCourseCategory(ctx context.Context, params api.AdminGetCourseCategoryParams) (api.AdminGetCourseCategoryRes, error) {
 	row, err := s.db.CourseCategory.Get(ctx, int(params.ID))
+	if ent.IsNotFound(err) {
+		return &api.NotFoundError{Message: "course category not found"}, nil
+	}
 	if err != nil {
 		return nil, err
 	}
