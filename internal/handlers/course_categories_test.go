@@ -17,6 +17,27 @@ func newServer(t *testing.T) *handlers.Server {
 	return handlers.NewServer(testsupport.NewClient(t))
 }
 
+// categoryBySlug resolves a fixture category by its stable business key. Fixture
+// ids are Rails crc32 ids (large, not hand-picked), so tests key off slug and
+// read the id back rather than hard-coding it.
+func categoryBySlug(t *testing.T, srv *handlers.Server, slug string) api.CourseCategory {
+	t.Helper()
+	page, err := srv.AdminListCourseCategories(context.Background(), api.AdminListCourseCategoriesParams{
+		PerPage: api.NewOptInt32(100),
+	})
+	require.NoError(t, err)
+	for _, it := range page.Items {
+		if it.Slug.Value == slug {
+			return it
+		}
+	}
+	t.Fatalf("category with slug %q not found", slug)
+	return api.CourseCategory{}
+}
+
+// legacy language/categories.yml seeds these six.
+const totalCategories = 6
+
 func TestAdminListCourseCategories(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
@@ -24,10 +45,12 @@ func TestAdminListCourseCategories(t *testing.T) {
 	page, err := srv.AdminListCourseCategories(ctx, api.AdminListCourseCategoriesParams{})
 	require.NoError(t, err)
 
-	assert.Equal(t, int32(3), page.Total)
-	assert.Len(t, page.Items, 3)
-	// Newest first (id desc): fixture id 3 leads.
-	assert.Equal(t, int32(3), page.Items[0].ID)
+	assert.Equal(t, int32(totalCategories), page.Total)
+	assert.Len(t, page.Items, totalCategories)
+	// Newest first: ids strictly descending.
+	for i := 1; i < len(page.Items); i++ {
+		assert.Greater(t, page.Items[i-1].ID, page.Items[i].ID)
+	}
 }
 
 func TestAdminListCourseCategoriesPaginated(t *testing.T) {
@@ -40,24 +63,36 @@ func TestAdminListCourseCategoriesPaginated(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	assert.Equal(t, int32(3), page.Total)
+	assert.Equal(t, int32(totalCategories), page.Total)
 	assert.Equal(t, int32(2), page.Page)
-	assert.Len(t, page.Items, 1) // 3 rows, page 2 of size 2 -> 1 row
-	assert.Equal(t, int32(1), page.Items[0].ID)
+	assert.Len(t, page.Items, 2) // 6 rows, page 2 of size 2 -> 2nd pair
 }
 
 func TestAdminGetCourseCategory(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
 
-	res, err := srv.AdminGetCourseCategory(ctx, api.AdminGetCourseCategoryParams{ID: 1})
+	want := categoryBySlug(t, srv, "programming-en")
+
+	res, err := srv.AdminGetCourseCategory(ctx, api.AdminGetCourseCategoryParams{ID: want.ID})
 	require.NoError(t, err)
 
 	got, ok := res.(*api.CourseCategory)
 	require.True(t, ok, "expected a category, got %T", res)
-	assert.Equal(t, int32(1), got.ID)
+	assert.Equal(t, want.ID, got.ID)
 	assert.Equal(t, "Programming", got.Name.Value)
 	assert.Equal(t, "programming-en", got.Slug.Value)
+}
+
+func TestAdminGetCourseCategoryNotFound(t *testing.T) {
+	srv := newServer(t)
+	ctx := context.Background()
+
+	res, err := srv.AdminGetCourseCategory(ctx, api.AdminGetCourseCategoryParams{ID: 999999999})
+	require.NoError(t, err)
+
+	_, ok := res.(*api.NotFoundError)
+	require.True(t, ok, "expected a not-found error, got %T", res)
 }
 
 func TestAdminCreateCourseCategory(t *testing.T) {
@@ -81,7 +116,7 @@ func TestAdminCreateCourseCategory(t *testing.T) {
 	// It is now listable.
 	page, err := srv.AdminListCourseCategories(ctx, api.AdminListCourseCategoriesParams{})
 	require.NoError(t, err)
-	assert.Equal(t, int32(4), page.Total)
+	assert.Equal(t, int32(totalCategories+1), page.Total)
 }
 
 func TestAdminCreateCourseCategoryDuplicateName(t *testing.T) {
@@ -89,7 +124,7 @@ func TestAdminCreateCourseCategoryDuplicateName(t *testing.T) {
 	ctx := context.Background()
 
 	res, err := srv.AdminCreateCourseCategory(ctx, &api.CourseCategoryInput{
-		Name:        "Programming", // fixture id 1
+		Name:        "Programming", // programming-en's name
 		Header:      "Some other header",
 		Slug:        "some-other-slug",
 		Description: api.NilString{Null: true},
@@ -105,12 +140,14 @@ func TestAdminUpdateCourseCategory(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
 
+	target := categoryBySlug(t, srv, "programming-en")
+
 	res, err := srv.AdminUpdateCourseCategory(ctx, &api.CourseCategoryInput{
 		Name:        "Programming Updated",
-		Header:      "Programming courses",
-		Slug:        "programming-en",
+		Header:      target.Header.Value,
+		Slug:        target.Slug.Value,
 		Description: api.NilString{Null: true}, // clears the column
-	}, api.AdminUpdateCourseCategoryParams{ID: 1})
+	}, api.AdminUpdateCourseCategoryParams{ID: target.ID})
 	require.NoError(t, err)
 
 	updated, ok := res.(*api.CourseCategory)
@@ -123,13 +160,15 @@ func TestAdminUpdateCourseCategoryDuplicateName(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
 
-	// Rename id 1 to id 2's name -> conflict.
+	target := categoryBySlug(t, srv, "programming-en")
+
+	// Rename to another category's name -> conflict.
 	res, err := srv.AdminUpdateCourseCategory(ctx, &api.CourseCategoryInput{
-		Name:        "Frontend", // fixture id 2
-		Header:      "Programming courses",
-		Slug:        "programming-en",
+		Name:        "Frontend", // frontend-en's name
+		Header:      target.Header.Value,
+		Slug:        target.Slug.Value,
 		Description: api.NilString{Null: true},
-	}, api.AdminUpdateCourseCategoryParams{ID: 1})
+	}, api.AdminUpdateCourseCategoryParams{ID: target.ID})
 	require.NoError(t, err)
 
 	verr, ok := res.(*api.ValidationError)
@@ -141,13 +180,15 @@ func TestAdminUpdateCourseCategoryKeepsOwnValues(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
 
+	target := categoryBySlug(t, srv, "programming-en")
+
 	// Updating a record with its own unchanged unique values must not conflict.
 	res, err := srv.AdminUpdateCourseCategory(ctx, &api.CourseCategoryInput{
-		Name:        "Programming",
-		Header:      "Programming courses",
-		Slug:        "programming-en",
+		Name:        target.Name.Value,
+		Header:      target.Header.Value,
+		Slug:        target.Slug.Value,
 		Description: api.NewNilString("Now with a description"),
-	}, api.AdminUpdateCourseCategoryParams{ID: 1})
+	}, api.AdminUpdateCourseCategoryParams{ID: target.ID})
 	require.NoError(t, err)
 
 	_, ok := res.(*api.CourseCategory)
@@ -158,10 +199,12 @@ func TestAdminDeleteCourseCategory(t *testing.T) {
 	srv := newServer(t)
 	ctx := context.Background()
 
-	err := srv.AdminDeleteCourseCategory(ctx, api.AdminDeleteCourseCategoryParams{ID: 3})
+	target := categoryBySlug(t, srv, "layouting-en")
+
+	err := srv.AdminDeleteCourseCategory(ctx, api.AdminDeleteCourseCategoryParams{ID: target.ID})
 	require.NoError(t, err)
 
 	page, err := srv.AdminListCourseCategories(ctx, api.AdminListCourseCategoriesParams{})
 	require.NoError(t, err)
-	assert.Equal(t, int32(2), page.Total)
+	assert.Equal(t, int32(totalCategories-1), page.Total)
 }
