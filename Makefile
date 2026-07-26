@@ -138,6 +138,24 @@ build-web:
 clean:
 	rm -rf bin dist
 
+# ---------------------------------------------------------------------------
+# Maintenance
+# ---------------------------------------------------------------------------
+
+## deps-update: bump Go + frontend + api-spec dependencies to latest
+deps-update:
+	go get -u ./...
+	go mod tidy
+	npx --yes npm-check-updates -u
+	pnpm install
+	cd api-spec && npx --yes npm-check-updates -u && pnpm install
+	@echo ">> deps bumped — run 'make gen-all' then 'make lint test' to verify"
+
+## update-skills: update the project's agent skills
+update-skills:
+	npx --yes skills update --project --yes
+
 .PHONY: help setup services-start services-stop dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
-	lint lint-go lint-web lint-fix test build build-api build-web clean
+	lint lint-go lint-web lint-fix test build build-api build-web clean \
+	deps-update update-skills
