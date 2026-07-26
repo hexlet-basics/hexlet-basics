@@ -9,22 +9,12 @@ import (
 	"hexletbasics/internal/api"
 )
 
-// defaultPerPage matches the legacy pagy default page size.
-const defaultPerPage = 20
-
 // AdminListCourseCategories returns a page of course categories, newest first.
 //
 // URL stays `/admin/language_categories` for backward-compat; the domain
 // concept is a course category.
 func (s *Server) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (*api.CourseCategoryPage, error) {
-	page := int32(1)
-	if v, ok := params.Page.Get(); ok && v > 0 {
-		page = v
-	}
-	perPage := int32(defaultPerPage)
-	if v, ok := params.PerPage.Get(); ok && v > 0 {
-		perPage = v
-	}
+	page := newPagination(params.Page, params.PerPage)
 
 	total, err := s.db.CourseCategory.Query().Count(ctx)
 	if err != nil {
@@ -33,8 +23,8 @@ func (s *Server) AdminListCourseCategories(ctx context.Context, params api.Admin
 
 	rows, err := s.db.CourseCategory.Query().
 		Order(ent.Desc(coursecategory.FieldID)).
-		Offset(int((page - 1) * perPage)).
-		Limit(int(perPage)).
+		Offset(page.Offset()).
+		Limit(page.Limit()).
 		All(ctx)
 	if err != nil {
 		return nil, err
@@ -43,8 +33,8 @@ func (s *Server) AdminListCourseCategories(ctx context.Context, params api.Admin
 	return &api.CourseCategoryPage{
 		Items:   s.conv.ToCourseCategories(rows),
 		Total:   int32(total),
-		Page:    page,
-		PerPage: perPage,
+		Page:    page.Page,
+		PerPage: page.PerPage,
 	}, nil
 }
 
