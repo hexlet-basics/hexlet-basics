@@ -128,6 +128,19 @@ lint-fix:
 # Test
 # ---------------------------------------------------------------------------
 
+## db-load-schema: load db/structure.sql into the test DB with a version-pinned
+## psql (docker), so the runner's own psql can't choke on the dump. Works in CI
+## and locally against the Postgres at 127.0.0.1:54330.
+db-load-schema:
+	docker run --rm --network host -e PGPASSWORD=postgres \
+		-v "$(CURDIR)/db:/db:ro" postgres:17-alpine \
+		psql -h 127.0.0.1 -p 54330 -U postgres -d code_basics_test \
+		-v ON_ERROR_STOP=1 -q -f /db/structure.sql
+
+## test-prepare: ready the test DB for `make test` (load the schema snapshot).
+## Fixtures are committed under fixtures/ and loaded by testfixtures at runtime.
+test-prepare: db-load-schema
+
 ## test: run the Go test suite
 test:
 	go test ./...
@@ -167,7 +180,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help setup services-start services-stop db-dump-schema dev dev-api dev-web dev-spec \
+.PHONY: help setup services-start services-stop db-dump-schema db-load-schema test-prepare dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-web clean \
 	deps-update update-skills

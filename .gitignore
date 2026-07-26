@@ -30,7 +30,6 @@ dist/
 .ruby-lsp/
 .tanstack/
 stats.html
-fixtures/
 
 # NOTE: generated pipeline artifacts are intentionally tracked so contract
 # changes are reviewable in diffs and reproducible without running generators:

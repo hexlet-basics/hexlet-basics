@@ -1,0 +1,250 @@
+# Fixtures for `languages`, exported from the legacy Rails fixtures by
+# `make fixtures-import`. Loaded by testfixtures inside each test's rollback
+# transaction. Regenerate; do not hand-tune unless you stop regenerating.
+- id: 82481401
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 965227298
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page: https://ru.hexlet.io/courses
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 2
+  progress: completed
+  slug: javascript
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 207281424
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 207281424
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: ruby
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 322905520
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 322905520
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: 1c
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 378610130
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 378610130
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: php
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 410646757
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 329547961
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: html
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 414575699
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 522730299
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 1
+  progress: completed
+  slug: typescript
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 596063838
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 564295009
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: pre-course-javascript
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 599909531
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 599909531
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page: https://ru.hexlet.io/courses
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: elixir
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 617920698
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 617920698
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: python
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 912823128
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 912823128
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: second_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: go
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 953067225
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 953067225
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: css
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 995840764
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 995840764
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: csharp
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:
+- id: 1058727635
+  category_id:
+  created_at: '2026-07-26 20:50:29'
+  current_version_id: 1058727635
+  docker_image:
+  exercise_filename:
+  exercise_test_filename:
+  extension:
+  hexlet_program_landing_page:
+  learn_as: first_language
+  lessons_count: 0
+  members_count: 0
+  name:
+  order: 10
+  progress: completed
+  slug: java
+  state:
+  updated_at: '2026-07-26 20:50:29'
+  upload_id:

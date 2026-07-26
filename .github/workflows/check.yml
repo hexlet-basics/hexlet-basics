@@ -65,15 +65,9 @@ jobs:
 
       - uses: jdx/mise-action@v2
 
-      # The DB schema is owned by legacy Rails during the cutover (ADR-0002); the
-      # Go repo carries a snapshot in db/structure.sql (regenerate with
-      # `make db-dump-schema`). Load it with a matching pg client (the dump uses
-      # psql 17.5+ `\restrict`), so the runner's own psql version can't break it.
-      - name: Load database schema
-        run: |
-          docker run --rm --network host -e PGPASSWORD=postgres \
-            -v "${{ github.workspace }}/db:/db:ro" postgres:17-alpine \
-            psql -h 127.0.0.1 -p 54330 -U postgres -d code_basics_test \
-            -v ON_ERROR_STOP=1 -q -f /db/structure.sql
+      # Ready the test DB: load the snapshotted Rails-owned schema (ADR-0002).
+      # Fixtures are committed under fixtures/ and loaded by testfixtures at
+      # runtime, so no fixture generation (or Rails) is needed here.
+      - run: make test-prepare
 
       - run: make test

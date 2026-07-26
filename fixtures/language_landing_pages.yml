@@ -1,0 +1,731 @@
+# Fixtures for `language_landing_pages`, exported from the legacy Rails fixtures by
+# `make fixtures-import`. Loaded by testfixtures inside each test's rollback
+# transaction. Regenerate; do not hand-tune unless you stop regenerating.
+- id: 59175011
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы Go
+  header: Курс Go
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 912823128
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс Go
+  name: Go
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы Go»
+  slug: go-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется Go?
+- id: 88212034
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы Ruby
+  header: Курс Ruby
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 207281424
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс Ruby
+  name: Ruby
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы Ruby»
+  slug: ruby-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется Ruby?
+- id: 102732589
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Java Basics
+  header: Java Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 1058727635
+  listed: true
+  locale: en
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Java Course
+  name: Java
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the Java Basics course
+  slug: java-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is Java used?
+- id: 167370329
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы Java
+  header: Курс Java
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 1058727635
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс Java
+  name: Java
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы Java»
+  slug: java-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется Java?
+- id: 178540350
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Ruby Basics
+  header: Ruby Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 207281424
+  listed: true
+  locale: en
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Ruby Course
+  name: Ruby
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the Ruby Basics course
+  slug: ruby-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is Ruby used?
+- id: 207666459
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Go Basics
+  header: Go Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 912823128
+  listed: true
+  locale: en
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Go Course
+  name: Go
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the Go Basics course
+  slug: go-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is Go used?
+- id: 238244035
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы JavaScript (архив)
+  header: Архивный курс JavaScript
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 82481401
+  listed: true
+  locale: ru
+  main:
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Архивный курс JavaScript
+  name: JavaScript (архив)
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы JavaScript»
+  slug: javascript-ru-archived
+  state: archived
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется JavaScript?
+- id: 341643033
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы Python
+  header: Курс Python
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 617920698
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс Python
+  name: Python
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы Python»
+  slug: python-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется Python?
+- id: 369218935
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы Elixir
+  header: Курс Elixir
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 599909531
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс Elixir
+  name: Elixir
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы Elixir»
+  slug: elixir-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется Elixir?
+- id: 369896861
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы TypeScript
+  header: Курс TypeScript
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 414575699
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс TypeScript
+  name: TypeScript
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы TypeScript»
+  slug: typescript-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется TypeScript?
+- id: 673653274
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы HTML
+  header: Курс HTML
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 410646757
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс HTML
+  name: HTML
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы HTML»
+  slug: html-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется HTML?
+- id: 821163262
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: C# Basics
+  header: C# Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 995840764
+  listed: true
+  locale: en
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: C# Course
+  name: C#
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the C# Basics course
+  slug: csharp-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is C# used?
+- id: 866612940
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы JavaScript
+  header: Курс JavaScript
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 82481401
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс JavaScript
+  name: JavaScript
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы JavaScript»
+  slug: javascript-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется JavaScript?
+- id: 896432903
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы PHP
+  header: Курс PHP
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 378610130
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс PHP
+  name: PHP
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы PHP»
+  slug: php-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется PHP?
+- id: 900268625
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы CSS
+  header: Курс CSS
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 953067225
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс CSS
+  name: CSS
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы CSS»
+  slug: css-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется CSS?
+- id: 934052201
+  created_at: '2026-07-26 20:50:29'
+  description: Programming learning is an interesting and exciting process. The syntax
+    of the language is the simplest and shortest path, without which it is impossible
+    to start. This free online JavaScript course will introduce you to the basic concepts
+    of the language. Learn the basics and write your first JS programs
+  footer: true
+  footer_name: Frontend
+  header: Frontend Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 82481401
+  listed: true
+  locale: en
+  main:
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Frontend Course
+  name: Frontend
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the Frontend course
+  slug: frontend-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is frontend development used?
+- id: 944426005
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Фронтенд
+  header: Курс «Фронтенд»
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 82481401
+  listed: true
+  locale: ru
+  main:
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс «Фронтенд»
+  name: Фронтенд
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Фронтенд»
+  slug: frontend-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется фронтенд-разработка?
+- id: 978276149
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: CSS Basics
+  header: CSS Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 953067225
+  listed: true
+  locale: en
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: CSS Course
+  name: CSS
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the CSS Basics course
+  slug: css-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is CSS used?
+- id: 982005375
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: PHP Basics
+  header: PHP Course
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 378610130
+  listed: true
+  locale: en
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: PHP Course
+  name: PHP
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: What you will learn on the PHP Basics course
+  slug: php-en
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Where is PHP used?
+- id: 995631485
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы Node.js
+  header: Курс Node.js
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 82481401
+  listed: true
+  locale: ru
+  main:
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс Node.js
+  name: Node.js
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы Node.js»
+  slug: nodejs-ru
+  state: draft
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется Node.js?
+- id: 1040414131
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: false
+  footer_name: Курс программирования
+  header: Курс 1C
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 322905520
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс 1C
+  name: 1C
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы 1C»
+  slug: 1c-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется 1C?
+- id: 1058519430
+  created_at: '2026-07-26 20:50:29'
+  description: Изучите язык программирования в интерактивной онлайн-среде. Десятки
+    заданий прямо в браузере с поддержкой ИИ-ассистента.
+  footer: true
+  footer_name: Основы C#
+  header: Курс C#
+  landing_page_to_redirect_id:
+  language_category_id:
+  language_id: 995840764
+  listed: true
+  locale: ru
+  main: true
+  meta_description: Бесплатный онлайн-курс по программированию от сообщества Хекслет
+    для старта с нуля.
+  meta_title: Курс C#
+  name: C#
+  order:
+  outcomes_description: 'Разберётесь в базовом синтаксисе языка, научитесь читать
+    чужой код и писать собственные программы. После курса сможете создавать простые
+    приложения и уверенно продолжить обучение.
+
+    '
+  outcomes_header: Чему научитесь на курсе «Основы C#»
+  slug: csharp-ru
+  state: published
+  updated_at: '2026-07-26 20:50:29'
+  used_in_description: 'Этот язык программирования используют в реальных проектах:
+    от веб-разработки и автоматизации до серверных приложений и внутренних сервисов.
+    Большое сообщество и обилие практических задач помогают быстрее войти в профессию.
+
+    '
+  used_in_header: Где используется C#?
