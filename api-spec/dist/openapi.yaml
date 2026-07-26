@@ -10,7 +10,156 @@ info:
   version: 0.0.0
 tags:
   - name: Courses
+  - name: 'Admin: Course Categories'
 paths:
+  /admin/language_categories:
+    get:
+      operationId: adminListCourseCategories
+      description: List course categories (paginated).
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - total
+                  - page
+                  - perPage
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CourseCategory'
+                  total:
+                    type: integer
+                    format: int32
+                    description: Total rows across all pages (before pagination).
+                  page:
+                    type: integer
+                    format: int32
+                    description: 1-based page number this response represents.
+                  perPage:
+                    type: integer
+                    format: int32
+                    description: Page size used for this response.
+                description: A page of results. Generic envelope reused by every admin list.
+      tags:
+        - 'Admin: Course Categories'
+    post:
+      operationId: adminCreateCourseCategory
+      description: Create a course category.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategory'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Categories'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseCategoryInput'
+  /admin/language_categories/{id}:
+    get:
+      operationId: adminGetCourseCategory
+      description: Get a single course category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategory'
+      tags:
+        - 'Admin: Course Categories'
+    put:
+      operationId: adminUpdateCourseCategory
+      description: Update a course category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategory'
+        '422':
+          description: |-
+            Field-level validation errors, keyed by field name (each value is the list
+            of messages for that field). Returned when a write fails validation —
+            including constraints the schema cannot express, like uniqueness.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+      tags:
+        - 'Admin: Course Categories'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseCategoryInput'
+    delete:
+      operationId: adminDeleteCourseCategory
+      description: Delete a course category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - 'Admin: Course Categories'
   /languages:
     get:
       operationId: listCourses
@@ -109,6 +258,60 @@ components:
         course:
           $ref: '#/components/schemas/Course'
       description: 'A catalog entry as shown on the courses index (legacy: LanguageLandingPageForLists).'
+    CourseCategory:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - header
+        - description
+        - locale
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        header:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      description: 'A course category (legacy table: `language_categories`).'
+    CourseCategoryInput:
+      type: object
+      required:
+        - name
+        - header
+        - slug
+        - description
+      properties:
+        name:
+          type: string
+          minLength: 1
+        header:
+          type: string
+          minLength: 1
+        slug:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          nullable: true
+      description: Writable fields for creating or updating a course category.
     CourseLearnAs:
       type: string
       enum:
@@ -122,3 +325,18 @@ components:
         - in_development
         - draft
       description: Publication/readiness state of a course.
+    ValidationError:
+      type: object
+      required:
+        - errors
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      description: |-
+        Field-level validation errors, keyed by field name (each value is the list
+        of messages for that field). Returned when a write fails validation —
+        including constraints the schema cannot express, like uniqueness.
