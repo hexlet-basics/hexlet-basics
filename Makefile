@@ -13,11 +13,10 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## setup: install all deps (go, frontend, api-spec)
+## setup: install all deps (go, frontend + api-spec share the root package.json)
 setup:
 	go mod download
 	pnpm install
-	cd api-spec && pnpm install
 
 # ---------------------------------------------------------------------------
 # Services (local Postgres in Docker; schema is still owned by legacy Rails)
@@ -55,7 +54,7 @@ dev-web:
 
 ## dev-spec: watch TypeSpec and re-emit OpenAPI on change
 dev-spec:
-	cd api-spec && pnpm watch
+	pnpm spec:watch
 
 # ---------------------------------------------------------------------------
 # Code generation (contract is the source of truth — see ADR-0001)
@@ -66,7 +65,7 @@ gen: gen-spec gen-api gen-client
 
 ## gen-spec: compile TypeSpec to api-spec/dist/openapi.yaml
 gen-spec:
-	cd api-spec && pnpm build
+	pnpm spec
 
 ## gen-api: generate the ogen Go server from OpenAPI
 gen-api:
@@ -142,13 +141,12 @@ clean:
 # Maintenance
 # ---------------------------------------------------------------------------
 
-## deps-update: bump Go + frontend + api-spec dependencies to latest
+## deps-update: bump Go + frontend (incl. api-spec) dependencies to latest
 deps-update:
 	go get -u ./...
 	go mod tidy
 	npx --yes npm-check-updates -u
 	pnpm install
-	cd api-spec && npx --yes npm-check-updates -u && pnpm install
 	@echo ">> deps bumped — run 'make gen-all' then 'make lint test' to verify"
 
 ## update-skills: update the project's agent skills

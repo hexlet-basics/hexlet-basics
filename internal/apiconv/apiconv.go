@@ -13,7 +13,7 @@ import (
 	"hexletbasics/internal/api"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen hexletbasics/internal/apiconv
+//go:generate go tool goverter gen hexletbasics/internal/apiconv
 
 // Converter maps ent rows to the generated API DTOs.
 //
