@@ -1,5 +1,5 @@
 allowBuilds:
   '@sentry/cli': set this to true or false
   '@swc/core': set this to true or false
+  lefthook: true
   sharp: set this to true or false
-  simple-git-hooks: set this to true or false

@@ -1,0 +1,11 @@
+# Git hooks managed by lefthook (installed via the `prepare` npm script).
+# Rails/legacy keeps its own hooks under legacy/.
+commit-msg:
+  commands:
+    commitlint:
+      run: npx --no -- commitlint --edit {1}
+
+pre-push:
+  commands:
+    lint:
+      run: make lint

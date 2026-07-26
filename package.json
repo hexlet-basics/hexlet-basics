@@ -13,7 +13,7 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "preview": "vite preview",
-    "postinstall": "simple-git-hooks"
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@mantine/core": "^9.4.2",
@@ -30,6 +30,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@hey-api/openapi-ts": "^0.99.0",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
@@ -37,6 +39,7 @@
     "@vitejs/plugin-react": "^6.0.3",
     "concurrently": "^10.0.4",
     "i18next-cli": "^1.67.3",
+    "lefthook": "^2.1.10",
     "typescript": "~5.9.3",
     "vite": "^8.1.1"
   }
