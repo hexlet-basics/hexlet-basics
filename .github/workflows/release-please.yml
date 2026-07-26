@@ -1,0 +1,75 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      # Bare semver (X.Y.Z) for the Docker tag / chart version; the `v` prefix
+      # lives only in the git tag (tag_name), never in the image tag.
+      version: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+    steps:
+      # Maintains a "release PR" from conventional commits: bumps package.json
+      # (and any extra-files) and CHANGELOG.md. Merging that PR cuts a vX.Y.Z
+      # tag + GitHub Release. Config: release-please-config.json +
+      # .release-please-manifest.json.
+      - uses: googleapis/release-please-action@v5
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ---------------------------------------------------------------------------
+  # Image build — WIRED BUT DEFERRED.
+  #
+  # There is no Dockerfile for the Go API / Node SSR yet (see ADR-0008: prod is
+  # two processes). This job is fully wired to push to GHCR with the built-in
+  # GITHUB_TOKEN — no extra secrets. To enable it, once a Dockerfile exists:
+  #   1. drop the `&& false` guard in the `if:` below,
+  #   2. set `file:` to the Dockerfile path (and add SSR image steps if split).
+  # It runs in the same workflow run as release-please (triggered by the real
+  # push to main), so a `release: published` trigger is not needed — releases
+  # published by GITHUB_TOKEN do not trigger other workflows.
+  # ---------------------------------------------------------------------------
+  build-image:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' && false }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE_NAME: ghcr.io/${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build & push app image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          # file: Dockerfile   # TODO: add when the Go API Dockerfile lands
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ needs.release-please.outputs.version }}
+            ${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
