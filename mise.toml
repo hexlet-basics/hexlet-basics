@@ -1,3 +1,7 @@
 [tools]
 go = "1.26.5"
 golangci-lint = "2.12.2"
+# testfixtures CLI: loads the fixtures/ snapshot into the test DB (make
+# test-prepare). Not `go install`-able (nested module, no own tags), so pull the
+# release binary from GitHub.
+"github:go-testfixtures/testfixtures" = "3.19.0"
