@@ -2,16 +2,12 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { client } from "@/client/client.gen";
 
-// Headers to forward from the incoming SSR request to the Go API. Server-only
-// (the client impl is a no-op), so the header import is stripped from the
-// browser bundle — the browser sends the JWT cookie itself via
-// `credentials: "include"`.
-const forwardedHeaders = createIsomorphicFn()
-  .server((): Record<string, string> => {
-    const cookie = getRequestHeader("cookie");
-    return cookie ? { cookie } : {};
-  })
-  .client((): Record<string, string> => ({}));
+// Read the incoming SSR request's cookie header. Server-only (the client impl
+// is a no-op), so the server import is stripped from the browser bundle — the
+// browser sends the JWT cookie itself via `credentials: "include"`.
+const getRequestCookie = createIsomorphicFn()
+  .server(() => getRequestHeader("cookie"))
+  .client(() => undefined);
 
 // The generated hey-api client is a singleton. During SSR the Node process
 // reaches Go over the internal network (API_URL); in the browser it uses the
@@ -32,9 +28,8 @@ client.setConfig({
 // request-scoped isomorphic fn (Start's async request context), not by mutating
 // shared client state.
 client.interceptors.request.use((request) => {
-  for (const [key, value] of Object.entries(forwardedHeaders())) {
-    request.headers.set(key, value);
-  }
+  const cookie = getRequestCookie();
+  if (cookie) request.headers.set("cookie", cookie);
   return request;
 });
 
