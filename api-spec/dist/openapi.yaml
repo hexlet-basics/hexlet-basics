@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: Hexlet Basics API
+  description: |-
+    Hexlet Basics API.
+
+    Naming: the domain concept is `Course`. The legacy Rails app called it
+    `Language`; we keep `Language` ONLY in URL paths (e.g. `/languages`) for
+    backward compatibility, but every type/operation/schema uses `Course`.
+  version: 0.0.0
+tags:
+  - name: Courses
+paths:
+  /languages:
+    get:
+      operationId: listCourses
+      description: List the published course catalog.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseCatalogItem'
+      tags:
+        - Courses
+components:
+  schemas:
+    Course:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - learnAs
+        - progress
+        - membersCount
+        - lessonsCount
+        - categoryId
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        name:
+          type: string
+          nullable: true
+        learnAs:
+          allOf:
+            - $ref: '#/components/schemas/CourseLearnAs'
+          nullable: true
+        progress:
+          allOf:
+            - $ref: '#/components/schemas/CourseProgress'
+          nullable: true
+        membersCount:
+          type: integer
+          format: int32
+        lessonsCount:
+          type: integer
+          format: int32
+        categoryId:
+          type: integer
+          format: int32
+          nullable: true
+      description: 'A course (legacy: `Language`).'
+    CourseCatalogItem:
+      type: object
+      required:
+        - id
+        - slug
+        - header
+        - name
+        - locale
+        - membersCount
+        - duration
+        - coverUrl
+        - course
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        header:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        membersCount:
+          type: integer
+          format: int32
+        duration:
+          type: integer
+          format: int32
+          description: Estimated duration in hours (derived from lesson count).
+        coverUrl:
+          type: string
+          nullable: true
+          description: Course cover image URL; null until assets are re-uploaded.
+        course:
+          $ref: '#/components/schemas/Course'
+      description: 'A catalog entry as shown on the courses index (legacy: LanguageLandingPageForLists).'
+    CourseLearnAs:
+      type: string
+      enum:
+        - first_language
+        - second_language
+      description: How a course is meant to be learned.
+    CourseProgress:
+      type: string
+      enum:
+        - completed
+        - in_development
+        - draft
+      description: Publication/readiness state of a course.

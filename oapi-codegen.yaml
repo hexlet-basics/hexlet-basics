@@ -1,0 +1,11 @@
+# oapi-codegen config: generate Echo strict-server + models from the
+# TypeSpec-emitted OpenAPI contract. Regenerate with `make generate`.
+package: api
+output: internal/api/api.gen.go
+generate:
+  models: true
+  echo-server: true
+  strict-server: true
+  embedded-spec: true
+output-options:
+  skip-prune: true

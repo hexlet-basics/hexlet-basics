@@ -13,10 +13,12 @@
       "!**/*.css",
       "!**/*.scss",
       "!**/*.svg",
+      "!test",
       "!public",
-      "!legacy",
-      "!src/client",
-      "!api-spec/dist"
+      "!app/assets/builds",
+      "!app/javascript/generated",
+      "!app/javascript/routes.*",
+      "!app/javascript/types/serializers"
     ]
   },
   "formatter": {
