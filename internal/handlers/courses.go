@@ -2,77 +2,58 @@ package handlers
 
 import (
 	"context"
+	"sort"
 
-	"github.com/jackc/pgx/v5/pgxpool"
-
+	"hexletbasics/ent"
+	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 )
 
-// Server implements the generated api.StrictServerInterface backed by Postgres.
+// Server implements the generated ogen api.Handler backed by ent.
 type Server struct {
-	db *pgxpool.Pool
+	db   *ent.Client
+	conv apiconv.Converter
 }
 
-func NewServer(db *pgxpool.Pool) *Server {
-	return &Server{db: db}
+func NewServer(db *ent.Client) *Server {
+	return &Server{db: db, conv: &apiconv.ConverterImpl{}}
 }
 
 // ListCourses returns the published course catalog.
 //
 // URL stays `/languages` for backward-compat; the domain concept is Course.
-// Mirrors the legacy Ruby scope: listed landing pages joined to their language,
-// ordered by the language display order.
-func (s *Server) ListCourses(ctx context.Context, _ api.ListCoursesRequestObject) (api.ListCoursesResponseObject, error) {
-	const query = `
-		SELECT
-			lp.id, lp.slug, lp.header, lp.name, lp.locale,
-			l.id, l.slug, l.name, l.learn_as, l.progress,
-			l.members_count, l.lessons_count, l.category_id
-		FROM language_landing_pages lp
-		JOIN languages l ON l.id = lp.language_id
-		WHERE lp.listed = true
-		ORDER BY l."order" NULLS LAST, l.id
-	`
-
-	rows, err := s.db.Query(ctx, query)
+// Mirrors the legacy scope: listed landing pages joined to their Course,
+// ordered by the Course display order (NULLS LAST), then Course id.
+func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
+	pages, err := s.db.LandingPage.Query().
+		Where(landingpage.Listed(true)).
+		WithCourse().
+		All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
-	items := []api.CourseCatalogItem{}
-	for rows.Next() {
-		var (
-			item    api.CourseCatalogItem
-			course  api.Course
-			learnAs *string
-			progr   *string
-		)
-		if err := rows.Scan(
-			&item.Id, &item.Slug, &item.Header, &item.Name, &item.Locale,
-			&course.Id, &course.Slug, &course.Name, &learnAs, &progr,
-			&course.MembersCount, &course.LessonsCount, &course.CategoryId,
-		); err != nil {
-			return nil, err
+	// Order by the Course's integer `order` (NULLS LAST), then Course id. The
+	// legacy query had no tie-breaker among a Course's several listed landing
+	// pages, leaving that order undefined; we add landing page id last so the
+	// catalog is deterministic.
+	sort.SliceStable(pages, func(i, j int) bool {
+		ci, cj := pages[i].Edges.Course, pages[j].Edges.Course
+		oi, oj := ci.Order, cj.Order
+		switch {
+		case oi != nil && oj != nil && *oi != *oj:
+			return *oi < *oj
+		case oi != nil && oj == nil:
+			return true
+		case oi == nil && oj != nil:
+			return false
 		}
-		if learnAs != nil {
-			v := api.CourseLearnAs(*learnAs)
-			course.LearnAs = &v
+		if ci.ID != cj.ID {
+			return ci.ID < cj.ID
 		}
-		if progr != nil {
-			v := api.CourseProgress(*progr)
-			course.Progress = &v
-		}
-		item.MembersCount = course.MembersCount
-		// Legacy: duration = lessons_count * 15 minutes, rendered in hours.
-		item.Duration = course.LessonsCount * 15 / 60
-		// coverUrl stays nil until course cover assets are re-uploaded.
-		item.Course = course
-		items = append(items, item)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
+		return pages[i].ID < pages[j].ID
+	})
 
-	return api.ListCourses200JSONResponse(items), nil
+	return s.conv.ToCatalogItems(pages), nil
 }
