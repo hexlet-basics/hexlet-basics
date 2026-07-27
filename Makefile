@@ -13,9 +13,12 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## setup: install all deps (mise-pinned tools + go modules + frontend/api-spec via root package.json)
-setup:
+## install: install the mise-pinned toolchain (go, golangci-lint, atlas, testfixtures)
+install:
 	mise install
+
+## setup: full local bootstrap (install toolchain + seed .env + go/frontend deps)
+setup: install
 	cp -n .env.example .env || true
 	go mod download
 	pnpm install
@@ -189,7 +192,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help setup services-start services-stop migrate-new test-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
+.PHONY: help install setup services-start services-stop migrate-new test-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-web clean \
 	deps-update update-skills

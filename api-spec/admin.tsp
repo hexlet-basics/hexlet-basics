@@ -123,17 +123,25 @@ model BannerInput {
 @route("/admin/banners")
 @tag("Admin: Banners")
 interface AdminBanners {
+  /** List banners (paginated). */
   @get @operationId("adminListBanners") list(...ListQuery): Page<Banner>;
 
-  @get @route("/{id}") @operationId("adminGetBanner") get(@path id: int32): Banner | NotFoundError;
+  /** Get a single banner. A missing id surfaces as 404 via the central
+      ent-error handler, not a typed union member. */
+  @get @route("/{id}") @operationId("adminGetBanner") get(@path id: int32): Banner;
 
+  /** Create a banner. A body violating the schema (e.g. an empty `body`)
+      surfaces as 400 via the central handler; banners carry no uniqueness
+      constraint, so there is no 409 path. */
   @post @operationId("adminCreateBanner") create(@body body: BannerInput): {
     @statusCode statusCode: 201;
     @body banner: Banner;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateBanner") update(@path id: int32, @body body: BannerInput): Banner | ValidationError;
+  /** Update a banner. A missing id surfaces as 404 via the central handler. */
+  @put @route("/{id}") @operationId("adminUpdateBanner") update(@path id: int32, @body body: BannerInput): Banner;
 
+  /** Delete a banner. */
   @delete @route("/{id}") @operationId("adminDeleteBanner") delete(@path id: int32): NoContent;
 }
 
