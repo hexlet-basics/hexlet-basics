@@ -1331,17 +1331,6 @@ export type AdminCreateUserData = {
   url: '/admin/api/users';
 };
 
-export type AdminCreateUserErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateUserError = AdminCreateUserErrors[keyof AdminCreateUserErrors];
-
 export type AdminCreateUserResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -1396,15 +1385,6 @@ export type AdminGetUserData = {
   url: '/admin/api/users/{id}';
 };
 
-export type AdminGetUserErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetUserError = AdminGetUserErrors[keyof AdminGetUserErrors];
-
 export type AdminGetUserResponses = {
   /**
    * The request has succeeded.
@@ -1422,17 +1402,6 @@ export type AdminUpdateUserData = {
   query?: never;
   url: '/admin/api/users/{id}';
 };
-
-export type AdminUpdateUserErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
 
 export type AdminUpdateUserResponses = {
   /**

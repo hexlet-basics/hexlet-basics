@@ -137,3 +137,24 @@ func (c *ConverterImpl) ToLeads(source []*ent.Lead) []api.Lead {
 	}
 	return apiLeadList
 }
+func (c *ConverterImpl) ToUserCrud(source *ent.User) api.UserCrud {
+	var apiUserCrud api.UserCrud
+	if source != nil {
+		apiUserCrud.ID = Int32FromInt((*source).ID)
+		apiUserCrud.Email = NilStringFromPtr((*source).Email)
+		apiUserCrud.FirstName = NilStringFromPtr((*source).FirstName)
+		apiUserCrud.LastName = NilStringFromPtr((*source).LastName)
+		apiUserCrud.Admin = NilBoolFromPtr((*source).Admin)
+	}
+	return apiUserCrud
+}
+func (c *ConverterImpl) ToUserCruds(source []*ent.User) []api.UserCrud {
+	var apiUserCrudList []api.UserCrud
+	if source != nil {
+		apiUserCrudList = make([]api.UserCrud, len(source))
+		for i := 0; i < len(source); i++ {
+			apiUserCrudList[i] = c.ToUserCrud(source[i])
+		}
+	}
+	return apiUserCrudList
+}

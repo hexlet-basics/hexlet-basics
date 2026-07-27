@@ -62,8 +62,11 @@ type Handler interface {
 	AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (AdminCreateStaffMemberRes, error)
 	// AdminCreateUser implements adminCreateUser operation.
 	//
+	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
+	// handler.
+	//
 	// POST /admin/api/users
-	AdminCreateUser(ctx context.Context, req *UserInput) (AdminCreateUserRes, error)
+	AdminCreateUser(ctx context.Context, req *UserInput) (*UserCrud, error)
 	// AdminDeleteBanner implements adminDeleteBanner operation.
 	//
 	// Delete a banner.
@@ -158,8 +161,11 @@ type Handler interface {
 	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
 	// AdminGetUser implements adminGetUser operation.
 	//
+	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
+	// member.
+	//
 	// GET /admin/api/users/{id}
-	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error)
 	// AdminListBanners implements adminListBanners operation.
 	//
 	// List banners (paginated).
@@ -313,8 +319,11 @@ type Handler interface {
 	AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
 	// AdminUpdateUser implements adminUpdateUser operation.
 	//
+	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
+	// handler.
+	//
 	// PUT /admin/api/users/{id}
-	AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
+	AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (*UserCrud, error)
 	// CheckLesson implements checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +

@@ -1624,6 +1624,9 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 
 // handleAdminCreateUserRequest handles adminCreateUser operation.
 //
+// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
+// handler.
+//
 // POST /admin/api/users
 func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -1714,7 +1717,7 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminCreateUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1730,7 +1733,7 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *UserInput
 			Params   = struct{}
-			Response = AdminCreateUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4605,6 +4608,9 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 
 // handleAdminGetUserRequest handles adminGetUser operation.
 //
+// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
+// member.
+//
 // GET /admin/api/users/{id}
 func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -4690,7 +4696,7 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response AdminGetUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4711,7 +4717,7 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = AdminGetUserParams
-			Response = AdminGetUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9801,6 +9807,9 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 
 // handleAdminUpdateUserRequest handles adminUpdateUser operation.
 //
+// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
+// handler.
+//
 // PUT /admin/api/users/{id}
 func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -9901,7 +9910,7 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminUpdateUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9922,7 +9931,7 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = *UserInput
 			Params   = AdminUpdateUserParams
-			Response = AdminUpdateUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

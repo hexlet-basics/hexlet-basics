@@ -1,0 +1,26 @@
+# Fixtures for `users`, HAND-CURATED (the admin CRUD surface maps only id, email,
+# first_name, last_name, admin). `make fixtures-import` is non-destructive and
+# skips existing files, so this survives re-imports. Loaded by testfixtures
+# inside each test's rollback transaction; only the mapped + NOT NULL columns are
+# set, the rest default to null.
+- id: 1001
+  email: alice@example.com
+  first_name: Alice
+  last_name: Anderson
+  admin: true
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1002
+  email: bob@example.com
+  first_name: Bob
+  last_name: Brown
+  admin: false
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
+- id: 1003
+  email: carol@example.com
+  first_name: Carol
+  last_name: Clark
+  admin:
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'

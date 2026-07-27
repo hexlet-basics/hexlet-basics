@@ -23,3 +23,6 @@ type LandingPage func(*sql.Selector)
 
 // Lead is the predicate function for lead builders.
 type Lead func(*sql.Selector)
+
+// User is the predicate function for user builders.
+type User func(*sql.Selector)

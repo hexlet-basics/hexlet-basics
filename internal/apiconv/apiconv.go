@@ -26,6 +26,7 @@ import (
 // goverter:extend StringFromPtr
 // goverter:extend NilStringFromPtr
 // goverter:extend NilInt32FromPtr
+// goverter:extend NilBoolFromPtr
 // goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
 // goverter:extend NilProgressFromPtr
@@ -72,6 +73,12 @@ type Converter interface {
 	ToLead(source *ent.Lead) api.Lead
 
 	ToLeads(source []*ent.Lead) []api.Lead
+
+	// UserCrud is the admin list/form projection of a user: id + the four
+	// directly-editable columns. All fields map by name from the ent row.
+	ToUserCrud(source *ent.User) api.UserCrud
+
+	ToUserCruds(source []*ent.User) []api.UserCrud
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -98,6 +105,14 @@ func NilInt32FromPtr(v *int) api.NilInt32 {
 		return api.NilInt32{Null: true}
 	}
 	return api.NewNilInt32(int32(*v))
+}
+
+// NilBoolFromPtr bridges a nullable ent bool column to ogen's NilBool.
+func NilBoolFromPtr(v *bool) api.NilBool {
+	if v == nil {
+		return api.NilBool{Null: true}
+	}
+	return api.NewNilBool(*v)
 }
 
 // NilDateTimeFromPtr bridges a nullable ent time column to ogen's NilDateTime.

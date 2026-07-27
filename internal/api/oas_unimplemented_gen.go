@@ -100,8 +100,11 @@ func (UnimplementedHandler) AdminCreateStaffMember(ctx context.Context, req *Sta
 
 // AdminCreateUser implements adminCreateUser operation.
 //
+// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
+// handler.
+//
 // POST /admin/api/users
-func (UnimplementedHandler) AdminCreateUser(ctx context.Context, req *UserInput) (r AdminCreateUserRes, _ error) {
+func (UnimplementedHandler) AdminCreateUser(ctx context.Context, req *UserInput) (r *UserCrud, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -259,8 +262,11 @@ func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params Admi
 
 // AdminGetUser implements adminGetUser operation.
 //
+// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
+// member.
+//
 // GET /admin/api/users/{id}
-func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUserParams) (r AdminGetUserRes, _ error) {
+func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUserParams) (r *UserCrud, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -516,8 +522,11 @@ func (UnimplementedHandler) AdminUpdateStaffMember(ctx context.Context, req *Sta
 
 // AdminUpdateUser implements adminUpdateUser operation.
 //
+// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
+// handler.
+//
 // PUT /admin/api/users/{id}
-func (UnimplementedHandler) AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (r AdminUpdateUserRes, _ error) {
+func (UnimplementedHandler) AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (r *UserCrud, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

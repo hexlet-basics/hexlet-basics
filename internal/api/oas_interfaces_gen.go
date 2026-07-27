@@ -37,10 +37,6 @@ type AdminCreateStaffMemberRes interface {
 	adminCreateStaffMemberRes()
 }
 
-type AdminCreateUserRes interface {
-	adminCreateUserRes()
-}
-
 type AdminGetBlogPostRes interface {
 	adminGetBlogPostRes()
 }
@@ -71,10 +67,6 @@ type AdminGetRoleRes interface {
 
 type AdminGetStaffMemberRes interface {
 	adminGetStaffMemberRes()
-}
-
-type AdminGetUserRes interface {
-	adminGetUserRes()
 }
 
 type AdminReviewCourseLessonRes interface {
@@ -127,10 +119,6 @@ type AdminUpdateRoleRes interface {
 
 type AdminUpdateStaffMemberRes interface {
 	adminUpdateStaffMemberRes()
-}
-
-type AdminUpdateUserRes interface {
-	adminUpdateUserRes()
 }
 
 type CheckLessonRes interface {

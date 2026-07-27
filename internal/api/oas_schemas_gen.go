@@ -4566,7 +4566,6 @@ func (*NotFoundError) adminGetReviewRes()            {}
 func (*NotFoundError) adminGetRolePermissionsRes()   {}
 func (*NotFoundError) adminGetRoleRes()              {}
 func (*NotFoundError) adminGetStaffMemberRes()       {}
-func (*NotFoundError) adminGetUserRes()              {}
 func (*NotFoundError) adminReviewCourseLessonRes()   {}
 func (*NotFoundError) adminReviewCourseRes()         {}
 func (*NotFoundError) checkPasswordResetTokenRes()   {}
@@ -6514,11 +6513,8 @@ func (s *UserCrud) SetAdmin(val NilBool) {
 	s.Admin = val
 }
 
-func (*UserCrud) adminCreateUserRes()           {}
 func (*UserCrud) adminGetManagementUserRes()    {}
-func (*UserCrud) adminGetUserRes()              {}
 func (*UserCrud) adminUpdateManagementUserRes() {}
-func (*UserCrud) adminUpdateUserRes()           {}
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
@@ -6681,7 +6677,6 @@ func (*ValidationError) adminCreateLandingPageQnaItemRes()  {}
 func (*ValidationError) adminCreateReviewRes()              {}
 func (*ValidationError) adminCreateRoleRes()                {}
 func (*ValidationError) adminCreateStaffMemberRes()         {}
-func (*ValidationError) adminCreateUserRes()                {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUpdateCategoryQnaItemRes()     {}
@@ -6693,7 +6688,6 @@ func (*ValidationError) adminUpdateReviewRes()              {}
 func (*ValidationError) adminUpdateRolePermissionsRes()     {}
 func (*ValidationError) adminUpdateRoleRes()                {}
 func (*ValidationError) adminUpdateStaffMemberRes()         {}
-func (*ValidationError) adminUpdateUserRes()                {}
 func (*ValidationError) checkLessonRes()                    {}
 func (*ValidationError) confirmPhoneAuthRes()               {}
 func (*ValidationError) createBookRequestRes()              {}

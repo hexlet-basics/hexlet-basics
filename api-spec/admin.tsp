@@ -399,14 +399,20 @@ interface AdminUsers {
   /** Typeahead search by name/email. */
   @get @route("/search") @operationId("adminSearchUsers") search(@query q: string): UserCrud[];
 
-  @get @route("/{id}") @operationId("adminGetUser") get(@path id: int32): UserCrud | NotFoundError;
+  /** Get a single user. A missing id surfaces as 404 via the central ent-error
+      handler, not a typed union member. */
+  @get @route("/{id}") @operationId("adminGetUser") get(@path id: int32): UserCrud;
 
+  /** Create a user. A duplicate email is a DB unique constraint, surfaced as 409
+      by the central ent-error handler. */
   @post @operationId("adminCreateUser") create(@body body: UserInput): {
     @statusCode statusCode: 201;
     @body user: UserCrud;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | ValidationError;
+  /** Update a user. 404 (missing) and 409 (duplicate email) both flow through
+      the central ent-error handler. */
+  @put @route("/{id}") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud;
 
   @delete @route("/{id}") @operationId("adminDeleteUser") delete(@path id: int32): NoContent;
 }

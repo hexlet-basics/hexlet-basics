@@ -82,8 +82,11 @@ type Invoker interface {
 	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error)
 	// AdminCreateUser invokes adminCreateUser operation.
 	//
+	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
+	// handler.
+	//
 	// POST /admin/api/users
-	AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error)
+	AdminCreateUser(ctx context.Context, request *UserInput) (*UserCrud, error)
 	// AdminDeleteBanner invokes adminDeleteBanner operation.
 	//
 	// Delete a banner.
@@ -178,8 +181,11 @@ type Invoker interface {
 	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
 	// AdminGetUser invokes adminGetUser operation.
 	//
+	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
+	// member.
+	//
 	// GET /admin/api/users/{id}
-	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error)
 	// AdminListBanners invokes adminListBanners operation.
 	//
 	// List banners (paginated).
@@ -333,8 +339,11 @@ type Invoker interface {
 	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
 	// AdminUpdateUser invokes adminUpdateUser operation.
 	//
+	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
+	// handler.
+	//
 	// PUT /admin/api/users/{id}
-	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
+	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (*UserCrud, error)
 	// CheckLesson invokes checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -1567,13 +1576,16 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 
 // AdminCreateUser invokes adminCreateUser operation.
 //
+// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
+// handler.
+//
 // POST /admin/api/users
-func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error) {
+func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (*UserCrud, error) {
 	res, err := c.sendAdminCreateUser(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (res AdminCreateUserRes, err error) {
+func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -3618,13 +3630,16 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 
 // AdminGetUser invokes adminGetUser operation.
 //
+// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
+// member.
+//
 // GET /admin/api/users/{id}
-func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error) {
+func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminGetUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams) (res AdminGetUserRes, err error) {
+func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7793,13 +7808,16 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 
 // AdminUpdateUser invokes adminUpdateUser operation.
 //
+// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
+// handler.
+//
 // PUT /admin/api/users/{id}
-func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error) {
+func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminUpdateUser(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (res AdminUpdateUserRes, err error) {
+func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

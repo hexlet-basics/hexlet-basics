@@ -216,6 +216,9 @@ paths:
         - 'Admin: Users'
     post:
       operationId: adminCreateUser
+      description: |-
+        Create a user. A duplicate email is a DB unique constraint, surfaced as 409
+              by the central ent-error handler.
       parameters: []
       responses:
         '201':
@@ -224,15 +227,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Users'
       requestBody:
@@ -266,6 +260,9 @@ paths:
   /admin/api/users/{id}:
     get:
       operationId: adminGetUser
+      description: |-
+        Get a single user. A missing id surfaces as 404 via the central ent-error
+              handler, not a typed union member.
       parameters:
         - name: id
           in: path
@@ -280,16 +277,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
       tags:
         - 'Admin: Users'
     put:
       operationId: adminUpdateUser
+      description: |-
+        Update a user. 404 (missing) and 409 (duplicate email) both flow through
+              the central ent-error handler.
       parameters:
         - name: id
           in: path
@@ -304,15 +298,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Users'
       requestBody:
