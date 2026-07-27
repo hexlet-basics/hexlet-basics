@@ -129,6 +129,40 @@ var (
 		Columns:    LeadsColumns,
 		PrimaryKey: []*schema.Column{LeadsColumns[0]},
 	}
+	// ReviewsColumns holds the columns for the "reviews" table.
+	ReviewsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "body", Type: field.TypeString, Nullable: true},
+		{Name: "first_name", Type: field.TypeString, Nullable: true},
+		{Name: "last_name", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "pinned", Type: field.TypeBool, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
+	}
+	// ReviewsTable holds the schema information for the "reviews" table.
+	ReviewsTable = &schema.Table{
+		Name:       "reviews",
+		Columns:    ReviewsColumns,
+		PrimaryKey: []*schema.Column{ReviewsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "reviews_languages_course",
+				Columns:    []*schema.Column{ReviewsColumns[9]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "reviews_users_user",
+				Columns:    []*schema.Column{ReviewsColumns[10]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -136,6 +170,7 @@ var (
 		{Name: "first_name", Type: field.TypeString, Nullable: true},
 		{Name: "last_name", Type: field.TypeString, Nullable: true},
 		{Name: "admin", Type: field.TypeBool, Nullable: true},
+		{Name: "assistant_messages_count", Type: field.TypeInt, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
@@ -153,6 +188,7 @@ var (
 		LanguageVersionsTable,
 		LanguageLandingPagesTable,
 		LeadsTable,
+		ReviewsTable,
 		UsersTable,
 	}
 )
@@ -172,4 +208,6 @@ func init() {
 	LanguageLandingPagesTable.Annotation = &entsql.Annotation{
 		Table: "language_landing_pages",
 	}
+	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
+	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
 }

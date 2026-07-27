@@ -30,6 +30,8 @@ import (
 // goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
 // goverter:extend NilProgressFromPtr
+// goverter:extend NilReviewStateFromPtr
+// goverter:extend NilReviewLocaleFromPtr
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
 type Converter interface {
@@ -79,6 +81,27 @@ type Converter interface {
 	ToUserCrud(source *ent.User) api.UserCrud
 
 	ToUserCruds(source []*ent.User) []api.UserCrud
+
+	// User is the rich serializer projection (mirrors UserResource): the direct
+	// columns plus the computed name, can_access_admin, created_at timestamp and
+	// the constant "user" type discriminator.
+	// goverter:map . Name | userName
+	// goverter:map . CanAccessAdmin | userCanAccessAdmin
+	// goverter:map . CreatedAtAsTimestamp | userCreatedAtAsTimestamp
+	// goverter:map . Type | userType
+	ToUser(source *ent.User) api.User
+
+	// Review embeds the full course and user (loaded via WithCourse/WithUser).
+	// courseId is the legacy `language_id` column; full_name joins the review's
+	// own first/last name (mirrors ReviewResource#full_name).
+	// goverter:map Edges.Course Course
+	// goverter:map Edges.User User
+	// goverter:map LanguageID CourseId
+	// goverter:map UserID UserId
+	// goverter:map . FullName | reviewFullName
+	ToReview(source *ent.Review) api.Review
+
+	ToReviews(source []*ent.Review) []api.Review
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -148,6 +171,57 @@ func coverURLNull(*ent.LandingPage) api.NilString {
 // name can be derived from the associated user (legacy serializer behavior).
 func leadFullNameNull(*ent.Lead) api.NilString {
 	return api.NilString{Null: true}
+}
+
+// NilReviewStateFromPtr bridges a nullable ent string to ogen's NilReviewState.
+func NilReviewStateFromPtr(v *string) api.NilReviewState {
+	if v == nil {
+		return api.NilReviewState{Null: true}
+	}
+	return api.NewNilReviewState(api.ReviewState(*v))
+}
+
+// NilReviewLocaleFromPtr bridges a nullable ent string to ogen's NilReviewLocale.
+func NilReviewLocaleFromPtr(v *string) api.NilReviewLocale {
+	if v == nil {
+		return api.NilReviewLocale{Null: true}
+	}
+	return api.NewNilReviewLocale(api.ReviewLocale(*v))
+}
+
+// joinName joins a first/last name pair with a single space, treating a nil
+// component as empty — mirrors the Ruby `[first, last].join(" ")` serializers.
+func joinName(first, last *string) string {
+	return lo.FromPtr(first) + " " + lo.FromPtr(last)
+}
+
+// userName mirrors UserResource#name.
+func userName(u *ent.User) api.NilString {
+	return api.NewNilString(joinName(u.FirstName, u.LastName))
+}
+
+// userCanAccessAdmin mirrors UserResource#can_access_admin. Staff membership is
+// not modeled yet, so this reflects the admin flag only; it will gain the staff
+// check once the management schema lands (parity TODO, like ratingCount).
+func userCanAccessAdmin(u *ent.User) bool {
+	return lo.FromPtr(u.Admin)
+}
+
+// userCreatedAtAsTimestamp mirrors UserResource#created_at_as_timestamp (a Unix
+// epoch used by the GTM/Wootric integration); always present.
+func userCreatedAtAsTimestamp(u *ent.User) api.NilInt64 {
+	return api.NewNilInt64(u.CreatedAt.Unix())
+}
+
+// userType is the constant "user" discriminator from UserResource.
+func userType(*ent.User) api.UserType {
+	return api.UserTypeUser
+}
+
+// reviewFullName mirrors ReviewResource#full_name: the review's own first/last
+// name (the reviewer's display name, not the associated user's).
+func reviewFullName(r *ent.Review) api.NilString {
+	return api.NewNilString(joinName(r.FirstName, r.LastName))
 }
 
 // NilCourseVersionFromEnt bridges the current_version association to ogen's

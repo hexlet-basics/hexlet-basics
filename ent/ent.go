@@ -12,6 +12,7 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/lead"
+	"hexletbasics/ent/review"
 	"hexletbasics/ent/user"
 	"reflect"
 	"sync"
@@ -85,6 +86,7 @@ func checkColumn(t, c string) error {
 			courseversion.Table:  courseversion.ValidColumn,
 			landingpage.Table:    landingpage.ValidColumn,
 			lead.Table:           lead.ValidColumn,
+			review.Table:         review.ValidColumn,
 			user.Table:           user.ValidColumn,
 		})
 	})

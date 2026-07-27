@@ -24,6 +24,8 @@ type Tx struct {
 	LandingPage *LandingPageClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
+	// Review is the client for interacting with the Review builders.
+	Review *ReviewClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -163,6 +165,7 @@ func (tx *Tx) init() {
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
+	tx.Review = NewReviewClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

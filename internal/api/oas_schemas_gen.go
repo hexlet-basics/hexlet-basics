@@ -4562,7 +4562,6 @@ func (*NotFoundError) adminGetBlogPostRes()          {}
 func (*NotFoundError) adminGetCourseLandingPageRes() {}
 func (*NotFoundError) adminGetCourseRes()            {}
 func (*NotFoundError) adminGetManagementUserRes()    {}
-func (*NotFoundError) adminGetReviewRes()            {}
 func (*NotFoundError) adminGetRolePermissionsRes()   {}
 func (*NotFoundError) adminGetRoleRes()              {}
 func (*NotFoundError) adminGetStaffMemberRes()       {}
@@ -5215,10 +5214,6 @@ func (s *Review) SetLocale(val NilReviewLocale) {
 func (s *Review) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
-
-func (*Review) adminCreateReviewRes() {}
-func (*Review) adminGetReviewRes()    {}
-func (*Review) adminUpdateReviewRes() {}
 
 // Ref: #/components/schemas/ReviewInput
 type ReviewInput struct {
@@ -6674,7 +6669,6 @@ func (*ValidationError) adminCreateCategoryQnaItemRes()     {}
 func (*ValidationError) adminCreateCourseLandingPageRes()   {}
 func (*ValidationError) adminCreateCourseRes()              {}
 func (*ValidationError) adminCreateLandingPageQnaItemRes()  {}
-func (*ValidationError) adminCreateReviewRes()              {}
 func (*ValidationError) adminCreateRoleRes()                {}
 func (*ValidationError) adminCreateStaffMemberRes()         {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
@@ -6684,7 +6678,6 @@ func (*ValidationError) adminUpdateCourseLandingPageRes()   {}
 func (*ValidationError) adminUpdateCourseRes()              {}
 func (*ValidationError) adminUpdateLandingPageQnaItemRes()  {}
 func (*ValidationError) adminUpdateManagementUserRes()      {}
-func (*ValidationError) adminUpdateReviewRes()              {}
 func (*ValidationError) adminUpdateRolePermissionsRes()     {}
 func (*ValidationError) adminUpdateRoleRes()                {}
 func (*ValidationError) adminUpdateStaffMemberRes()         {}

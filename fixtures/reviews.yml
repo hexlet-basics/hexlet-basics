@@ -1,0 +1,28 @@
+# Fixtures for `reviews`, HAND-CURATED. `language_id` points at courses from
+# languages.yml (ruby=207281424, 1c=322905520, both with a current version) and
+# `user_id` at users.yml, so the embedded course/user render in tests.
+# testfixtures disables referential integrity during load and wraps each test in
+# a rollback transaction. first_name/last_name are the reviewer's own display
+# name (distinct from the linked user).
+- id: 5001
+  body: Отличный курс, всё понятно
+  first_name: Ivan
+  last_name: Petrov
+  language_id: 207281424
+  user_id: 1001
+  locale: ru
+  pinned: true
+  state: published
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 5002
+  body: Great course
+  first_name: John
+  last_name: Doe
+  language_id: 322905520
+  user_id: 1002
+  locale: en
+  pinned: false
+  state: draft
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

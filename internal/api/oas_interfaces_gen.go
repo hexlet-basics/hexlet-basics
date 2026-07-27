@@ -25,10 +25,6 @@ type AdminCreateLandingPageQnaItemRes interface {
 	adminCreateLandingPageQnaItemRes()
 }
 
-type AdminCreateReviewRes interface {
-	adminCreateReviewRes()
-}
-
 type AdminCreateRoleRes interface {
 	adminCreateRoleRes()
 }
@@ -51,10 +47,6 @@ type AdminGetCourseRes interface {
 
 type AdminGetManagementUserRes interface {
 	adminGetManagementUserRes()
-}
-
-type AdminGetReviewRes interface {
-	adminGetReviewRes()
 }
 
 type AdminGetRolePermissionsRes interface {
@@ -103,10 +95,6 @@ type AdminUpdateLandingPageQnaItemRes interface {
 
 type AdminUpdateManagementUserRes interface {
 	adminUpdateManagementUserRes()
-}
-
-type AdminUpdateReviewRes interface {
-	adminUpdateReviewRes()
 }
 
 type AdminUpdateRolePermissionsRes interface {

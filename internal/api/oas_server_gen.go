@@ -51,7 +51,7 @@ type Handler interface {
 	// AdminCreateReview implements adminCreateReview operation.
 	//
 	// POST /admin/reviews
-	AdminCreateReview(ctx context.Context, req *ReviewInput) (AdminCreateReviewRes, error)
+	AdminCreateReview(ctx context.Context, req *ReviewInput) (*Review, error)
 	// AdminCreateRole implements adminCreateRole operation.
 	//
 	// POST /admin/management/roles
@@ -143,8 +143,11 @@ type Handler interface {
 	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
 	// AdminGetReview implements adminGetReview operation.
 	//
+	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
+	// union member.
+	//
 	// GET /admin/reviews/{id}
-	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
+	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
 	// AdminGetRole implements adminGetRole operation.
 	//
 	// GET /admin/management/roles/{id}
@@ -301,8 +304,10 @@ type Handler interface {
 	AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
 	// AdminUpdateReview implements adminUpdateReview operation.
 	//
+	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// PUT /admin/reviews/{id}
-	AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
+	AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (*Review, error)
 	// AdminUpdateRole implements adminUpdateRole operation.
 	//
 	// PUT /admin/management/roles/{id}

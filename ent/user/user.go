@@ -21,6 +21,8 @@ const (
 	FieldLastName = "last_name"
 	// FieldAdmin holds the string denoting the admin field in the database.
 	FieldAdmin = "admin"
+	// FieldAssistantMessagesCount holds the string denoting the assistant_messages_count field in the database.
+	FieldAssistantMessagesCount = "assistant_messages_count"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -36,6 +38,7 @@ var Columns = []string{
 	FieldFirstName,
 	FieldLastName,
 	FieldAdmin,
+	FieldAssistantMessagesCount,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -85,6 +88,11 @@ func ByLastName(opts ...sql.OrderTermOption) OrderOption {
 // ByAdmin orders the results by the admin field.
 func ByAdmin(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAdmin, opts...).ToFunc()
+}
+
+// ByAssistantMessagesCount orders the results by the assistant_messages_count field.
+func ByAssistantMessagesCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAssistantMessagesCount, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

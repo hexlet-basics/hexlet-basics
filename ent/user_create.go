@@ -76,6 +76,20 @@ func (_c *UserCreate) SetNillableAdmin(v *bool) *UserCreate {
 	return _c
 }
 
+// SetAssistantMessagesCount sets the "assistant_messages_count" field.
+func (_c *UserCreate) SetAssistantMessagesCount(v int) *UserCreate {
+	_c.mutation.SetAssistantMessagesCount(v)
+	return _c
+}
+
+// SetNillableAssistantMessagesCount sets the "assistant_messages_count" field if the given value is not nil.
+func (_c *UserCreate) SetNillableAssistantMessagesCount(v *int) *UserCreate {
+	if v != nil {
+		_c.SetAssistantMessagesCount(*v)
+	}
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *UserCreate) SetCreatedAt(v time.Time) *UserCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -198,6 +212,10 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Admin(); ok {
 		_spec.SetField(user.FieldAdmin, field.TypeBool, value)
 		_node.Admin = &value
+	}
+	if value, ok := _c.mutation.AssistantMessagesCount(); ok {
+		_spec.SetField(user.FieldAssistantMessagesCount, field.TypeInt, value)
+		_node.AssistantMessagesCount = &value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)

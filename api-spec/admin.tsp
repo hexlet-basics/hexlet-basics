@@ -207,14 +207,18 @@ model ReviewInput {
 interface AdminReviews {
   @get @operationId("adminListReviews") list(...ListQuery): Page<Review>;
 
-  @get @route("/{id}") @operationId("adminGetReview") get(@path id: int32): Review | NotFoundError;
+  /** Get a single review. A missing id surfaces as 404 via the central
+      ent-error handler, not a typed union member. */
+  @get @route("/{id}") @operationId("adminGetReview") get(@path id: int32): Review;
 
   @post @operationId("adminCreateReview") create(@body body: ReviewInput): {
     @statusCode statusCode: 201;
     @body review: Review;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review | ValidationError;
+  /** Update a review. A missing id surfaces as 404 via the central ent-error
+      handler. */
+  @put @route("/{id}") @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review;
 
   @delete @route("/{id}") @operationId("adminDeleteReview") delete(@path id: int32): NoContent;
 }

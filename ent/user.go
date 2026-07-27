@@ -25,6 +25,8 @@ type User struct {
 	LastName *string `json:"last_name,omitempty"`
 	// Admin holds the value of the "admin" field.
 	Admin *bool `json:"admin,omitempty"`
+	// AssistantMessagesCount holds the value of the "assistant_messages_count" field.
+	AssistantMessagesCount *int `json:"assistant_messages_count,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -39,7 +41,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldAdmin:
 			values[i] = new(sql.NullBool)
-		case user.FieldID:
+		case user.FieldID, user.FieldAssistantMessagesCount:
 			values[i] = new(sql.NullInt64)
 		case user.FieldEmail, user.FieldFirstName, user.FieldLastName:
 			values[i] = new(sql.NullString)
@@ -93,6 +95,13 @@ func (_m *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Admin = new(bool)
 				*_m.Admin = value.Bool
+			}
+		case user.FieldAssistantMessagesCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field assistant_messages_count", values[i])
+			} else if value.Valid {
+				_m.AssistantMessagesCount = new(int)
+				*_m.AssistantMessagesCount = int(value.Int64)
 			}
 		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -159,6 +168,11 @@ func (_m *User) String() string {
 	builder.WriteString(", ")
 	if v := _m.Admin; v != nil {
 		builder.WriteString("admin=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.AssistantMessagesCount; v != nil {
+		builder.WriteString("assistant_messages_count=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")

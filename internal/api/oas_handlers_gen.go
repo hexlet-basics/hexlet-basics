@@ -1291,7 +1291,7 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminCreateReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1307,7 +1307,7 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *ReviewInput
 			Params   = struct{}
-			Response = AdminCreateReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4042,6 +4042,9 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 
 // handleAdminGetReviewRequest handles adminGetReview operation.
 //
+// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
+// union member.
+//
 // GET /admin/reviews/{id}
 func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -4127,7 +4130,7 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminGetReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4148,7 +4151,7 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetReviewParams
-			Response = AdminGetReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9181,6 +9184,8 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 
 // handleAdminUpdateReviewRequest handles adminUpdateReview operation.
 //
+// Update a review. A missing id surfaces as 404 via the central ent-error handler.
+//
 // PUT /admin/reviews/{id}
 func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -9281,7 +9286,7 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminUpdateReviewRes
+	var response *Review
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9302,7 +9307,7 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *ReviewInput
 			Params   = AdminUpdateReviewParams
-			Response = AdminUpdateReviewRes
+			Response = *Review
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

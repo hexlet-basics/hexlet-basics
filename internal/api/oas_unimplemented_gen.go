@@ -80,7 +80,7 @@ func (UnimplementedHandler) AdminCreateLandingPageQnaItem(ctx context.Context, r
 // AdminCreateReview implements adminCreateReview operation.
 //
 // POST /admin/reviews
-func (UnimplementedHandler) AdminCreateReview(ctx context.Context, req *ReviewInput) (r AdminCreateReviewRes, _ error) {
+func (UnimplementedHandler) AdminCreateReview(ctx context.Context, req *ReviewInput) (r *Review, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -232,8 +232,11 @@ func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params A
 
 // AdminGetReview implements adminGetReview operation.
 //
+// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
+// union member.
+//
 // GET /admin/reviews/{id}
-func (UnimplementedHandler) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (r AdminGetReviewRes, _ error) {
+func (UnimplementedHandler) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (r *Review, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -492,8 +495,10 @@ func (UnimplementedHandler) AdminUpdateManagementUser(ctx context.Context, req *
 
 // AdminUpdateReview implements adminUpdateReview operation.
 //
+// Update a review. A missing id surfaces as 404 via the central ent-error handler.
+//
 // PUT /admin/reviews/{id}
-func (UnimplementedHandler) AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (r AdminUpdateReviewRes, _ error) {
+func (UnimplementedHandler) AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (r *Review, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

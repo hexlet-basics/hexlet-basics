@@ -28,6 +28,7 @@ func (User) Fields() []ent.Field {
 		field.String("first_name").Optional().Nillable(),
 		field.String("last_name").Optional().Nillable(),
 		field.Bool("admin").Optional().Nillable(),
+		field.Int("assistant_messages_count").Optional().Nillable(),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}

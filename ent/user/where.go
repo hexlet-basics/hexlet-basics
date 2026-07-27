@@ -74,6 +74,11 @@ func Admin(v bool) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldAdmin, v))
 }
 
+// AssistantMessagesCount applies equality check predicate on the "assistant_messages_count" field. It's identical to AssistantMessagesCountEQ.
+func AssistantMessagesCount(v int) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldAssistantMessagesCount, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedAt, v))
@@ -327,6 +332,56 @@ func AdminIsNil() predicate.User {
 // AdminNotNil applies the NotNil predicate on the "admin" field.
 func AdminNotNil() predicate.User {
 	return predicate.User(sql.FieldNotNull(FieldAdmin))
+}
+
+// AssistantMessagesCountEQ applies the EQ predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountEQ(v int) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldAssistantMessagesCount, v))
+}
+
+// AssistantMessagesCountNEQ applies the NEQ predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountNEQ(v int) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldAssistantMessagesCount, v))
+}
+
+// AssistantMessagesCountIn applies the In predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountIn(vs ...int) predicate.User {
+	return predicate.User(sql.FieldIn(FieldAssistantMessagesCount, vs...))
+}
+
+// AssistantMessagesCountNotIn applies the NotIn predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountNotIn(vs ...int) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldAssistantMessagesCount, vs...))
+}
+
+// AssistantMessagesCountGT applies the GT predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountGT(v int) predicate.User {
+	return predicate.User(sql.FieldGT(FieldAssistantMessagesCount, v))
+}
+
+// AssistantMessagesCountGTE applies the GTE predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountGTE(v int) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldAssistantMessagesCount, v))
+}
+
+// AssistantMessagesCountLT applies the LT predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountLT(v int) predicate.User {
+	return predicate.User(sql.FieldLT(FieldAssistantMessagesCount, v))
+}
+
+// AssistantMessagesCountLTE applies the LTE predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountLTE(v int) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldAssistantMessagesCount, v))
+}
+
+// AssistantMessagesCountIsNil applies the IsNil predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldAssistantMessagesCount))
+}
+
+// AssistantMessagesCountNotNil applies the NotNil predicate on the "assistant_messages_count" field.
+func AssistantMessagesCountNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldAssistantMessagesCount))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

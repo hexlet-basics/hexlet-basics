@@ -137,6 +137,51 @@ func (c *ConverterImpl) ToLeads(source []*ent.Lead) []api.Lead {
 	}
 	return apiLeadList
 }
+func (c *ConverterImpl) ToReview(source *ent.Review) api.Review {
+	var apiReview api.Review
+	if source != nil {
+		apiReview.ID = Int32FromInt((*source).ID)
+		apiReview.User = c.ToUser((*source).Edges.User)
+		apiReview.Course = c.ToCourse((*source).Edges.Course)
+		apiReview.UserId = Int32FromInt((*source).UserID)
+		apiReview.CourseId = Int32FromInt((*source).LanguageID)
+		apiReview.Body = NilStringFromPtr((*source).Body)
+		apiReview.FirstName = NilStringFromPtr((*source).FirstName)
+		apiReview.LastName = NilStringFromPtr((*source).LastName)
+		apiReview.FullName = reviewFullName(source)
+		apiReview.State = NilReviewStateFromPtr((*source).State)
+		apiReview.Locale = NilReviewLocaleFromPtr((*source).Locale)
+		apiReview.CreatedAt = TimeIdentity((*source).CreatedAt)
+	}
+	return apiReview
+}
+func (c *ConverterImpl) ToReviews(source []*ent.Review) []api.Review {
+	var apiReviewList []api.Review
+	if source != nil {
+		apiReviewList = make([]api.Review, len(source))
+		for i := 0; i < len(source); i++ {
+			apiReviewList[i] = c.ToReview(source[i])
+		}
+	}
+	return apiReviewList
+}
+func (c *ConverterImpl) ToUser(source *ent.User) api.User {
+	var apiUser api.User
+	if source != nil {
+		apiUser.ID = Int32FromInt((*source).ID)
+		apiUser.FirstName = NilStringFromPtr((*source).FirstName)
+		apiUser.LastName = NilStringFromPtr((*source).LastName)
+		apiUser.Name = userName(source)
+		apiUser.Email = NilStringFromPtr((*source).Email)
+		apiUser.Admin = NilBoolFromPtr((*source).Admin)
+		apiUser.CanAccessAdmin = userCanAccessAdmin(source)
+		apiUser.AssistantMessagesCount = NilInt32FromPtr((*source).AssistantMessagesCount)
+		apiUser.CreatedAt = TimeIdentity((*source).CreatedAt)
+		apiUser.CreatedAtAsTimestamp = userCreatedAtAsTimestamp(source)
+		apiUser.Type = userType(source)
+	}
+	return apiUser
+}
 func (c *ConverterImpl) ToUserCrud(source *ent.User) api.UserCrud {
 	var apiUserCrud api.UserCrud
 	if source != nil {

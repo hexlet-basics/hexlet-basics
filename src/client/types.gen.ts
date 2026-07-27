@@ -2865,17 +2865,6 @@ export type AdminCreateReviewData = {
   url: '/admin/reviews';
 };
 
-export type AdminCreateReviewErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateReviewError = AdminCreateReviewErrors[keyof AdminCreateReviewErrors];
-
 export type AdminCreateReviewResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -2912,15 +2901,6 @@ export type AdminGetReviewData = {
   url: '/admin/reviews/{id}';
 };
 
-export type AdminGetReviewErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetReviewError = AdminGetReviewErrors[keyof AdminGetReviewErrors];
-
 export type AdminGetReviewResponses = {
   /**
    * The request has succeeded.
@@ -2938,17 +2918,6 @@ export type AdminUpdateReviewData = {
   query?: never;
   url: '/admin/reviews/{id}';
 };
-
-export type AdminUpdateReviewErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateReviewError = AdminUpdateReviewErrors[keyof AdminUpdateReviewErrors];
 
 export type AdminUpdateReviewResponses = {
   /**

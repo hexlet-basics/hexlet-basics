@@ -108,6 +108,33 @@ func (_u *UserUpdate) ClearAdmin() *UserUpdate {
 	return _u
 }
 
+// SetAssistantMessagesCount sets the "assistant_messages_count" field.
+func (_u *UserUpdate) SetAssistantMessagesCount(v int) *UserUpdate {
+	_u.mutation.ResetAssistantMessagesCount()
+	_u.mutation.SetAssistantMessagesCount(v)
+	return _u
+}
+
+// SetNillableAssistantMessagesCount sets the "assistant_messages_count" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableAssistantMessagesCount(v *int) *UserUpdate {
+	if v != nil {
+		_u.SetAssistantMessagesCount(*v)
+	}
+	return _u
+}
+
+// AddAssistantMessagesCount adds value to the "assistant_messages_count" field.
+func (_u *UserUpdate) AddAssistantMessagesCount(v int) *UserUpdate {
+	_u.mutation.AddAssistantMessagesCount(v)
+	return _u
+}
+
+// ClearAssistantMessagesCount clears the value of the "assistant_messages_count" field.
+func (_u *UserUpdate) ClearAssistantMessagesCount() *UserUpdate {
+	_u.mutation.ClearAssistantMessagesCount()
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *UserUpdate) SetUpdatedAt(v time.Time) *UserUpdate {
 	_u.mutation.SetUpdatedAt(v)
@@ -187,6 +214,15 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.AdminCleared() {
 		_spec.ClearField(user.FieldAdmin, field.TypeBool)
+	}
+	if value, ok := _u.mutation.AssistantMessagesCount(); ok {
+		_spec.SetField(user.FieldAssistantMessagesCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedAssistantMessagesCount(); ok {
+		_spec.AddField(user.FieldAssistantMessagesCount, field.TypeInt, value)
+	}
+	if _u.mutation.AssistantMessagesCountCleared() {
+		_spec.ClearField(user.FieldAssistantMessagesCount, field.TypeInt)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)
@@ -288,6 +324,33 @@ func (_u *UserUpdateOne) SetNillableAdmin(v *bool) *UserUpdateOne {
 // ClearAdmin clears the value of the "admin" field.
 func (_u *UserUpdateOne) ClearAdmin() *UserUpdateOne {
 	_u.mutation.ClearAdmin()
+	return _u
+}
+
+// SetAssistantMessagesCount sets the "assistant_messages_count" field.
+func (_u *UserUpdateOne) SetAssistantMessagesCount(v int) *UserUpdateOne {
+	_u.mutation.ResetAssistantMessagesCount()
+	_u.mutation.SetAssistantMessagesCount(v)
+	return _u
+}
+
+// SetNillableAssistantMessagesCount sets the "assistant_messages_count" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableAssistantMessagesCount(v *int) *UserUpdateOne {
+	if v != nil {
+		_u.SetAssistantMessagesCount(*v)
+	}
+	return _u
+}
+
+// AddAssistantMessagesCount adds value to the "assistant_messages_count" field.
+func (_u *UserUpdateOne) AddAssistantMessagesCount(v int) *UserUpdateOne {
+	_u.mutation.AddAssistantMessagesCount(v)
+	return _u
+}
+
+// ClearAssistantMessagesCount clears the value of the "assistant_messages_count" field.
+func (_u *UserUpdateOne) ClearAssistantMessagesCount() *UserUpdateOne {
+	_u.mutation.ClearAssistantMessagesCount()
 	return _u
 }
 
@@ -400,6 +463,15 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.AdminCleared() {
 		_spec.ClearField(user.FieldAdmin, field.TypeBool)
+	}
+	if value, ok := _u.mutation.AssistantMessagesCount(); ok {
+		_spec.SetField(user.FieldAssistantMessagesCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedAssistantMessagesCount(); ok {
+		_spec.AddField(user.FieldAssistantMessagesCount, field.TypeInt, value)
+	}
+	if _u.mutation.AssistantMessagesCountCleared() {
+		_spec.ClearField(user.FieldAssistantMessagesCount, field.TypeInt)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(user.FieldUpdatedAt, field.TypeTime, value)

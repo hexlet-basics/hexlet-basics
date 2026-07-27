@@ -71,7 +71,7 @@ type Invoker interface {
 	// AdminCreateReview invokes adminCreateReview operation.
 	//
 	// POST /admin/reviews
-	AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error)
+	AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error)
 	// AdminCreateRole invokes adminCreateRole operation.
 	//
 	// POST /admin/management/roles
@@ -163,8 +163,11 @@ type Invoker interface {
 	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
 	// AdminGetReview invokes adminGetReview operation.
 	//
+	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
+	// union member.
+	//
 	// GET /admin/reviews/{id}
-	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
+	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
 	// AdminGetRole invokes adminGetRole operation.
 	//
 	// GET /admin/management/roles/{id}
@@ -321,8 +324,10 @@ type Invoker interface {
 	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
 	// AdminUpdateReview invokes adminUpdateReview operation.
 	//
+	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// PUT /admin/reviews/{id}
-	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
+	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (*Review, error)
 	// AdminUpdateRole invokes adminUpdateRole operation.
 	//
 	// PUT /admin/management/roles/{id}
@@ -1334,12 +1339,12 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 // AdminCreateReview invokes adminCreateReview operation.
 //
 // POST /admin/reviews
-func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error) {
+func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error) {
 	res, err := c.sendAdminCreateReview(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput) (res AdminCreateReviewRes, err error) {
+func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -3244,13 +3249,16 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 
 // AdminGetReview invokes adminGetReview operation.
 //
+// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
+// union member.
+//
 // GET /admin/reviews/{id}
-func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error) {
+func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error) {
 	res, err := c.sendAdminGetReview(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewParams) (res AdminGetReviewRes, err error) {
+func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetReview"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7410,13 +7418,15 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 
 // AdminUpdateReview invokes adminUpdateReview operation.
 //
+// Update a review. A missing id surfaces as 404 via the central ent-error handler.
+//
 // PUT /admin/reviews/{id}
-func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error) {
+func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (*Review, error) {
 	res, err := c.sendAdminUpdateReview(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (res AdminUpdateReviewRes, err error) {
+func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (res *Review, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateReview"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
