@@ -63,6 +63,15 @@ type Converter interface {
 	ToBanner(source *ent.Banner) api.Banner
 
 	ToBanners(source []*ent.Banner) []api.Banner
+
+	// Lead.FullName is derived from the associated user in the legacy serializer;
+	// until the User schema lands it stays null (contract allows it). UserID
+	// carries the DB casing, so it is mapped explicitly to the api's UserId.
+	// goverter:map UserID UserId
+	// goverter:map . FullName | leadFullNameNull
+	ToLead(source *ent.Lead) api.Lead
+
+	ToLeads(source []*ent.Lead) []api.Lead
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -117,6 +126,12 @@ func NilProgressFromPtr(v *string) api.NilCourseProgress {
 
 // coverURLNull keeps CoverUrl null until course cover assets are re-uploaded.
 func coverURLNull(*ent.LandingPage) api.NilString {
+	return api.NilString{Null: true}
+}
+
+// leadFullNameNull keeps Lead.FullName null until the User schema lands and the
+// name can be derived from the associated user (legacy serializer behavior).
+func leadFullNameNull(*ent.Lead) api.NilString {
 	return api.NilString{Null: true}
 }
 

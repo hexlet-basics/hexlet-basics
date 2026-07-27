@@ -20,3 +20,6 @@ type CourseVersion func(*sql.Selector)
 
 // LandingPage is the predicate function for landingpage builders.
 type LandingPage func(*sql.Selector)
+
+// Lead is the predicate function for lead builders.
+type Lead func(*sql.Selector)

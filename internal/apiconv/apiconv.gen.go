@@ -111,3 +111,29 @@ func (c *ConverterImpl) ToCourseCategory(source *ent.CourseCategory) api.CourseC
 	}
 	return apiCourseCategory
 }
+func (c *ConverterImpl) ToLead(source *ent.Lead) api.Lead {
+	var apiLead api.Lead
+	if source != nil {
+		apiLead.ID = Int32FromInt((*source).ID)
+		apiLead.UserId = Int32FromInt((*source).UserID)
+		apiLead.FullName = leadFullNameNull(source)
+		apiLead.Email = NilStringFromPtr((*source).Email)
+		apiLead.Phone = NilStringFromPtr((*source).Phone)
+		apiLead.Whatsapp = NilStringFromPtr((*source).Whatsapp)
+		apiLead.Telegram = NilStringFromPtr((*source).Telegram)
+		apiLead.SurveyAnswersData = NilStringFromPtr((*source).SurveyAnswersData)
+		apiLead.CoursesData = NilStringFromPtr((*source).CoursesData)
+		apiLead.CreatedAt = TimeIdentity((*source).CreatedAt)
+	}
+	return apiLead
+}
+func (c *ConverterImpl) ToLeads(source []*ent.Lead) []api.Lead {
+	var apiLeadList []api.Lead
+	if source != nil {
+		apiLeadList = make([]api.Lead, len(source))
+		for i := 0; i < len(source); i++ {
+			apiLeadList[i] = c.ToLead(source[i])
+		}
+	}
+	return apiLeadList
+}

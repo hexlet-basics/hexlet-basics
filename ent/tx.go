@@ -22,6 +22,8 @@ type Tx struct {
 	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
+	// Lead is the client for interacting with the Lead builders.
+	Lead *LeadClient
 
 	// lazily loaded.
 	client     *Client
@@ -158,6 +160,7 @@ func (tx *Tx) init() {
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
+	tx.Lead = NewLeadClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

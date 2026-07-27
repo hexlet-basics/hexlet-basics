@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/lead"
 	"hexletbasics/ent/predicate"
 	"sync"
 	"time"
@@ -33,6 +34,7 @@ const (
 	TypeCourseCategory = "CourseCategory"
 	TypeCourseVersion  = "CourseVersion"
 	TypeLandingPage    = "LandingPage"
+	TypeLead           = "Lead"
 )
 
 // BannerMutation represents an operation that mutates the Banner nodes in the graph.
@@ -4135,4 +4137,861 @@ func (m *LandingPageMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPage edge %s", name)
+}
+
+// LeadMutation represents an operation that mutates the Lead nodes in the graph.
+type LeadMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *int
+	user_id             *int
+	adduser_id          *int
+	email               *string
+	phone               *string
+	whatsapp            *string
+	telegram            *string
+	survey_answers_data *string
+	courses_data        *string
+	created_at          *time.Time
+	clearedFields       map[string]struct{}
+	done                bool
+	oldValue            func(context.Context) (*Lead, error)
+	predicates          []predicate.Lead
+}
+
+var _ ent.Mutation = (*LeadMutation)(nil)
+
+// leadOption allows management of the mutation configuration using functional options.
+type leadOption func(*LeadMutation)
+
+// newLeadMutation creates new mutation for the Lead entity.
+func newLeadMutation(c config, op Op, opts ...leadOption) *LeadMutation {
+	m := &LeadMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLead,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLeadID sets the ID field of the mutation.
+func withLeadID(id int) leadOption {
+	return func(m *LeadMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Lead
+		)
+		m.oldValue = func(ctx context.Context) (*Lead, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Lead.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLead sets the old Lead of the mutation.
+func withLead(node *Lead) leadOption {
+	return func(m *LeadMutation) {
+		m.oldValue = func(context.Context) (*Lead, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LeadMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LeadMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LeadMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LeadMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Lead.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *LeadMutation) SetUserID(i int) {
+	m.user_id = &i
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *LeadMutation) UserID() (r int, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldUserID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds i to the "user_id" field.
+func (m *LeadMutation) AddUserID(i int) {
+	if m.adduser_id != nil {
+		*m.adduser_id += i
+	} else {
+		m.adduser_id = &i
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *LeadMutation) AddedUserID() (r int, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *LeadMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
+}
+
+// SetEmail sets the "email" field.
+func (m *LeadMutation) SetEmail(s string) {
+	m.email = &s
+}
+
+// Email returns the value of the "email" field in the mutation.
+func (m *LeadMutation) Email() (r string, exists bool) {
+	v := m.email
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEmail returns the old "email" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldEmail(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEmail is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEmail requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEmail: %w", err)
+	}
+	return oldValue.Email, nil
+}
+
+// ClearEmail clears the value of the "email" field.
+func (m *LeadMutation) ClearEmail() {
+	m.email = nil
+	m.clearedFields[lead.FieldEmail] = struct{}{}
+}
+
+// EmailCleared returns if the "email" field was cleared in this mutation.
+func (m *LeadMutation) EmailCleared() bool {
+	_, ok := m.clearedFields[lead.FieldEmail]
+	return ok
+}
+
+// ResetEmail resets all changes to the "email" field.
+func (m *LeadMutation) ResetEmail() {
+	m.email = nil
+	delete(m.clearedFields, lead.FieldEmail)
+}
+
+// SetPhone sets the "phone" field.
+func (m *LeadMutation) SetPhone(s string) {
+	m.phone = &s
+}
+
+// Phone returns the value of the "phone" field in the mutation.
+func (m *LeadMutation) Phone() (r string, exists bool) {
+	v := m.phone
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPhone returns the old "phone" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldPhone(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPhone is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPhone requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPhone: %w", err)
+	}
+	return oldValue.Phone, nil
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (m *LeadMutation) ClearPhone() {
+	m.phone = nil
+	m.clearedFields[lead.FieldPhone] = struct{}{}
+}
+
+// PhoneCleared returns if the "phone" field was cleared in this mutation.
+func (m *LeadMutation) PhoneCleared() bool {
+	_, ok := m.clearedFields[lead.FieldPhone]
+	return ok
+}
+
+// ResetPhone resets all changes to the "phone" field.
+func (m *LeadMutation) ResetPhone() {
+	m.phone = nil
+	delete(m.clearedFields, lead.FieldPhone)
+}
+
+// SetWhatsapp sets the "whatsapp" field.
+func (m *LeadMutation) SetWhatsapp(s string) {
+	m.whatsapp = &s
+}
+
+// Whatsapp returns the value of the "whatsapp" field in the mutation.
+func (m *LeadMutation) Whatsapp() (r string, exists bool) {
+	v := m.whatsapp
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWhatsapp returns the old "whatsapp" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldWhatsapp(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWhatsapp is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWhatsapp requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWhatsapp: %w", err)
+	}
+	return oldValue.Whatsapp, nil
+}
+
+// ClearWhatsapp clears the value of the "whatsapp" field.
+func (m *LeadMutation) ClearWhatsapp() {
+	m.whatsapp = nil
+	m.clearedFields[lead.FieldWhatsapp] = struct{}{}
+}
+
+// WhatsappCleared returns if the "whatsapp" field was cleared in this mutation.
+func (m *LeadMutation) WhatsappCleared() bool {
+	_, ok := m.clearedFields[lead.FieldWhatsapp]
+	return ok
+}
+
+// ResetWhatsapp resets all changes to the "whatsapp" field.
+func (m *LeadMutation) ResetWhatsapp() {
+	m.whatsapp = nil
+	delete(m.clearedFields, lead.FieldWhatsapp)
+}
+
+// SetTelegram sets the "telegram" field.
+func (m *LeadMutation) SetTelegram(s string) {
+	m.telegram = &s
+}
+
+// Telegram returns the value of the "telegram" field in the mutation.
+func (m *LeadMutation) Telegram() (r string, exists bool) {
+	v := m.telegram
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTelegram returns the old "telegram" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldTelegram(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTelegram is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTelegram requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTelegram: %w", err)
+	}
+	return oldValue.Telegram, nil
+}
+
+// ClearTelegram clears the value of the "telegram" field.
+func (m *LeadMutation) ClearTelegram() {
+	m.telegram = nil
+	m.clearedFields[lead.FieldTelegram] = struct{}{}
+}
+
+// TelegramCleared returns if the "telegram" field was cleared in this mutation.
+func (m *LeadMutation) TelegramCleared() bool {
+	_, ok := m.clearedFields[lead.FieldTelegram]
+	return ok
+}
+
+// ResetTelegram resets all changes to the "telegram" field.
+func (m *LeadMutation) ResetTelegram() {
+	m.telegram = nil
+	delete(m.clearedFields, lead.FieldTelegram)
+}
+
+// SetSurveyAnswersData sets the "survey_answers_data" field.
+func (m *LeadMutation) SetSurveyAnswersData(s string) {
+	m.survey_answers_data = &s
+}
+
+// SurveyAnswersData returns the value of the "survey_answers_data" field in the mutation.
+func (m *LeadMutation) SurveyAnswersData() (r string, exists bool) {
+	v := m.survey_answers_data
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSurveyAnswersData returns the old "survey_answers_data" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldSurveyAnswersData(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSurveyAnswersData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSurveyAnswersData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSurveyAnswersData: %w", err)
+	}
+	return oldValue.SurveyAnswersData, nil
+}
+
+// ClearSurveyAnswersData clears the value of the "survey_answers_data" field.
+func (m *LeadMutation) ClearSurveyAnswersData() {
+	m.survey_answers_data = nil
+	m.clearedFields[lead.FieldSurveyAnswersData] = struct{}{}
+}
+
+// SurveyAnswersDataCleared returns if the "survey_answers_data" field was cleared in this mutation.
+func (m *LeadMutation) SurveyAnswersDataCleared() bool {
+	_, ok := m.clearedFields[lead.FieldSurveyAnswersData]
+	return ok
+}
+
+// ResetSurveyAnswersData resets all changes to the "survey_answers_data" field.
+func (m *LeadMutation) ResetSurveyAnswersData() {
+	m.survey_answers_data = nil
+	delete(m.clearedFields, lead.FieldSurveyAnswersData)
+}
+
+// SetCoursesData sets the "courses_data" field.
+func (m *LeadMutation) SetCoursesData(s string) {
+	m.courses_data = &s
+}
+
+// CoursesData returns the value of the "courses_data" field in the mutation.
+func (m *LeadMutation) CoursesData() (r string, exists bool) {
+	v := m.courses_data
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoursesData returns the old "courses_data" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldCoursesData(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoursesData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoursesData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoursesData: %w", err)
+	}
+	return oldValue.CoursesData, nil
+}
+
+// ClearCoursesData clears the value of the "courses_data" field.
+func (m *LeadMutation) ClearCoursesData() {
+	m.courses_data = nil
+	m.clearedFields[lead.FieldCoursesData] = struct{}{}
+}
+
+// CoursesDataCleared returns if the "courses_data" field was cleared in this mutation.
+func (m *LeadMutation) CoursesDataCleared() bool {
+	_, ok := m.clearedFields[lead.FieldCoursesData]
+	return ok
+}
+
+// ResetCoursesData resets all changes to the "courses_data" field.
+func (m *LeadMutation) ResetCoursesData() {
+	m.courses_data = nil
+	delete(m.clearedFields, lead.FieldCoursesData)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LeadMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LeadMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LeadMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// Where appends a list predicates to the LeadMutation builder.
+func (m *LeadMutation) Where(ps ...predicate.Lead) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LeadMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LeadMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Lead, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LeadMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LeadMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Lead).
+func (m *LeadMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LeadMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.user_id != nil {
+		fields = append(fields, lead.FieldUserID)
+	}
+	if m.email != nil {
+		fields = append(fields, lead.FieldEmail)
+	}
+	if m.phone != nil {
+		fields = append(fields, lead.FieldPhone)
+	}
+	if m.whatsapp != nil {
+		fields = append(fields, lead.FieldWhatsapp)
+	}
+	if m.telegram != nil {
+		fields = append(fields, lead.FieldTelegram)
+	}
+	if m.survey_answers_data != nil {
+		fields = append(fields, lead.FieldSurveyAnswersData)
+	}
+	if m.courses_data != nil {
+		fields = append(fields, lead.FieldCoursesData)
+	}
+	if m.created_at != nil {
+		fields = append(fields, lead.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LeadMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case lead.FieldUserID:
+		return m.UserID()
+	case lead.FieldEmail:
+		return m.Email()
+	case lead.FieldPhone:
+		return m.Phone()
+	case lead.FieldWhatsapp:
+		return m.Whatsapp()
+	case lead.FieldTelegram:
+		return m.Telegram()
+	case lead.FieldSurveyAnswersData:
+		return m.SurveyAnswersData()
+	case lead.FieldCoursesData:
+		return m.CoursesData()
+	case lead.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LeadMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case lead.FieldUserID:
+		return m.OldUserID(ctx)
+	case lead.FieldEmail:
+		return m.OldEmail(ctx)
+	case lead.FieldPhone:
+		return m.OldPhone(ctx)
+	case lead.FieldWhatsapp:
+		return m.OldWhatsapp(ctx)
+	case lead.FieldTelegram:
+		return m.OldTelegram(ctx)
+	case lead.FieldSurveyAnswersData:
+		return m.OldSurveyAnswersData(ctx)
+	case lead.FieldCoursesData:
+		return m.OldCoursesData(ctx)
+	case lead.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown Lead field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LeadMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case lead.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case lead.FieldEmail:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEmail(v)
+		return nil
+	case lead.FieldPhone:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPhone(v)
+		return nil
+	case lead.FieldWhatsapp:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWhatsapp(v)
+		return nil
+	case lead.FieldTelegram:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTelegram(v)
+		return nil
+	case lead.FieldSurveyAnswersData:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSurveyAnswersData(v)
+		return nil
+	case lead.FieldCoursesData:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoursesData(v)
+		return nil
+	case lead.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Lead field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LeadMutation) AddedFields() []string {
+	var fields []string
+	if m.adduser_id != nil {
+		fields = append(fields, lead.FieldUserID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LeadMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case lead.FieldUserID:
+		return m.AddedUserID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LeadMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case lead.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Lead numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LeadMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(lead.FieldEmail) {
+		fields = append(fields, lead.FieldEmail)
+	}
+	if m.FieldCleared(lead.FieldPhone) {
+		fields = append(fields, lead.FieldPhone)
+	}
+	if m.FieldCleared(lead.FieldWhatsapp) {
+		fields = append(fields, lead.FieldWhatsapp)
+	}
+	if m.FieldCleared(lead.FieldTelegram) {
+		fields = append(fields, lead.FieldTelegram)
+	}
+	if m.FieldCleared(lead.FieldSurveyAnswersData) {
+		fields = append(fields, lead.FieldSurveyAnswersData)
+	}
+	if m.FieldCleared(lead.FieldCoursesData) {
+		fields = append(fields, lead.FieldCoursesData)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LeadMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LeadMutation) ClearField(name string) error {
+	switch name {
+	case lead.FieldEmail:
+		m.ClearEmail()
+		return nil
+	case lead.FieldPhone:
+		m.ClearPhone()
+		return nil
+	case lead.FieldWhatsapp:
+		m.ClearWhatsapp()
+		return nil
+	case lead.FieldTelegram:
+		m.ClearTelegram()
+		return nil
+	case lead.FieldSurveyAnswersData:
+		m.ClearSurveyAnswersData()
+		return nil
+	case lead.FieldCoursesData:
+		m.ClearCoursesData()
+		return nil
+	}
+	return fmt.Errorf("unknown Lead nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LeadMutation) ResetField(name string) error {
+	switch name {
+	case lead.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case lead.FieldEmail:
+		m.ResetEmail()
+		return nil
+	case lead.FieldPhone:
+		m.ResetPhone()
+		return nil
+	case lead.FieldWhatsapp:
+		m.ResetWhatsapp()
+		return nil
+	case lead.FieldTelegram:
+		m.ResetTelegram()
+		return nil
+	case lead.FieldSurveyAnswersData:
+		m.ResetSurveyAnswersData()
+		return nil
+	case lead.FieldCoursesData:
+		m.ResetCoursesData()
+		return nil
+	case lead.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown Lead field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LeadMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LeadMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LeadMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LeadMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LeadMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LeadMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LeadMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Lead unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LeadMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Lead edge %s", name)
 }

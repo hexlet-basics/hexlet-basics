@@ -16,6 +16,7 @@ import (
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/lead"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -38,6 +39,8 @@ type Client struct {
 	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
+	// Lead is the client for interacting with the Lead builders.
+	Lead *LeadClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -54,6 +57,7 @@ func (c *Client) init() {
 	c.CourseCategory = NewCourseCategoryClient(c.config)
 	c.CourseVersion = NewCourseVersionClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
+	c.Lead = NewLeadClient(c.config)
 }
 
 type (
@@ -151,6 +155,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CourseCategory: NewCourseCategoryClient(cfg),
 		CourseVersion:  NewCourseVersionClient(cfg),
 		LandingPage:    NewLandingPageClient(cfg),
+		Lead:           NewLeadClient(cfg),
 	}, nil
 }
 
@@ -175,6 +180,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CourseCategory: NewCourseCategoryClient(cfg),
 		CourseVersion:  NewCourseVersionClient(cfg),
 		LandingPage:    NewLandingPageClient(cfg),
+		Lead:           NewLeadClient(cfg),
 	}, nil
 }
 
@@ -203,21 +209,21 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Banner.Use(hooks...)
-	c.Course.Use(hooks...)
-	c.CourseCategory.Use(hooks...)
-	c.CourseVersion.Use(hooks...)
-	c.LandingPage.Use(hooks...)
+	for _, n := range []interface{ Use(...Hook) }{
+		c.Banner, c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage, c.Lead,
+	} {
+		n.Use(hooks...)
+	}
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Banner.Intercept(interceptors...)
-	c.Course.Intercept(interceptors...)
-	c.CourseCategory.Intercept(interceptors...)
-	c.CourseVersion.Intercept(interceptors...)
-	c.LandingPage.Intercept(interceptors...)
+	for _, n := range []interface{ Intercept(...Interceptor) }{
+		c.Banner, c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage, c.Lead,
+	} {
+		n.Intercept(interceptors...)
+	}
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -233,6 +239,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.CourseVersion.mutate(ctx, m)
 	case *LandingPageMutation:
 		return c.LandingPage.mutate(ctx, m)
+	case *LeadMutation:
+		return c.Lead.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -951,12 +959,146 @@ func (c *LandingPageClient) mutate(ctx context.Context, m *LandingPageMutation) 
 	}
 }
 
+// LeadClient is a client for the Lead schema.
+type LeadClient struct {
+	config
+}
+
+// NewLeadClient returns a client for the Lead from the given config.
+func NewLeadClient(c config) *LeadClient {
+	return &LeadClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `lead.Hooks(f(g(h())))`.
+func (c *LeadClient) Use(hooks ...Hook) {
+	c.hooks.Lead = append(c.hooks.Lead, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `lead.Intercept(f(g(h())))`.
+func (c *LeadClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Lead = append(c.inters.Lead, interceptors...)
+}
+
+// Create returns a builder for creating a Lead entity.
+func (c *LeadClient) Create() *LeadCreate {
+	mutation := newLeadMutation(c.config, OpCreate)
+	return &LeadCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Lead entities.
+func (c *LeadClient) CreateBulk(builders ...*LeadCreate) *LeadCreateBulk {
+	return &LeadCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LeadClient) MapCreateBulk(slice any, setFunc func(*LeadCreate, int)) *LeadCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LeadCreateBulk{err: fmt.Errorf("calling to LeadClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LeadCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LeadCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Lead.
+func (c *LeadClient) Update() *LeadUpdate {
+	mutation := newLeadMutation(c.config, OpUpdate)
+	return &LeadUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LeadClient) UpdateOne(_m *Lead) *LeadUpdateOne {
+	mutation := newLeadMutation(c.config, OpUpdateOne, withLead(_m))
+	return &LeadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LeadClient) UpdateOneID(id int) *LeadUpdateOne {
+	mutation := newLeadMutation(c.config, OpUpdateOne, withLeadID(id))
+	return &LeadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Lead.
+func (c *LeadClient) Delete() *LeadDelete {
+	mutation := newLeadMutation(c.config, OpDelete)
+	return &LeadDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LeadClient) DeleteOne(_m *Lead) *LeadDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LeadClient) DeleteOneID(id int) *LeadDeleteOne {
+	builder := c.Delete().Where(lead.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LeadDeleteOne{builder}
+}
+
+// Query returns a query builder for Lead.
+func (c *LeadClient) Query() *LeadQuery {
+	return &LeadQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLead},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Lead entity by its id.
+func (c *LeadClient) Get(ctx context.Context, id int) (*Lead, error) {
+	return c.Query().Where(lead.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LeadClient) GetX(ctx context.Context, id int) *Lead {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LeadClient) Hooks() []Hook {
+	return c.hooks.Lead
+}
+
+// Interceptors returns the client interceptors.
+func (c *LeadClient) Interceptors() []Interceptor {
+	return c.inters.Lead
+}
+
+func (c *LeadClient) mutate(ctx context.Context, m *LeadMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LeadCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LeadUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LeadUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LeadDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Lead mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Banner, Course, CourseCategory, CourseVersion, LandingPage []ent.Hook
+		Banner, Course, CourseCategory, CourseVersion, LandingPage, Lead []ent.Hook
 	}
 	inters struct {
-		Banner, Course, CourseCategory, CourseVersion, LandingPage []ent.Interceptor
+		Banner, Course, CourseCategory, CourseVersion, LandingPage,
+		Lead []ent.Interceptor
 	}
 )
