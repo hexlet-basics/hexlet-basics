@@ -99,17 +99,6 @@ func NilDateTimeFromPtr(v *time.Time) api.NilDateTime {
 	return api.NewNilDateTime(*v)
 }
 
-// Banner's state/background/locale live as plain strings in the DB (legacy
-// string-backed enums); these narrow each column to its ogen enum type. The
-// value is trusted: it was written through the same enum-validated contract.
-func BannerLocaleFromString(v string) api.BannerLocale { return api.BannerLocale(v) }
-
-// BannerBackgroundFromString narrows the banner background column to its enum.
-func BannerBackgroundFromString(v string) api.BannerBackground { return api.BannerBackground(v) }
-
-// BannerStateFromString narrows the banner state column to its enum.
-func BannerStateFromString(v string) api.BannerState { return api.BannerState(v) }
-
 // NilLearnAsFromPtr bridges a nullable ent string to ogen's NilCourseLearnAs.
 func NilLearnAsFromPtr(v *string) api.NilCourseLearnAs {
 	if v == nil {

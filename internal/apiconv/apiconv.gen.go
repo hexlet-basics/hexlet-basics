@@ -14,11 +14,11 @@ func (c *ConverterImpl) ToBanner(source *ent.Banner) api.Banner {
 	var apiBanner api.Banner
 	if source != nil {
 		apiBanner.ID = Int32FromInt((*source).ID)
-		apiBanner.Locale = BannerLocaleFromString((*source).Locale)
+		apiBanner.Locale = api.BannerLocale((*source).Locale)
 		apiBanner.Body = (*source).Body
 		apiBanner.URL = NilStringFromPtr((*source).URL)
-		apiBanner.Background = BannerBackgroundFromString((*source).Background)
-		apiBanner.State = BannerStateFromString((*source).State)
+		apiBanner.Background = api.BannerBackground((*source).Background)
+		apiBanner.State = api.BannerState((*source).State)
 		apiBanner.StartsAt = NilDateTimeFromPtr((*source).StartsAt)
 		apiBanner.FinishesAt = NilDateTimeFromPtr((*source).FinishesAt)
 		apiBanner.CreatedAt = TimeIdentity((*source).CreatedAt)
