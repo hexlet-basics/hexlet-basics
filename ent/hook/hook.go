@@ -116,6 +116,18 @@ func (f ReviewFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ReviewMutation", m)
 }
 
+// The StaffMemberFunc type is an adapter to allow the use of ordinary
+// function as StaffMember mutator.
+type StaffMemberFunc func(context.Context, *ent.StaffMemberMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StaffMemberFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StaffMemberMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StaffMemberMutation", m)
+}
+
 // The StaffRoleFunc type is an adapter to allow the use of ordinary
 // function as StaffRole mutator.
 type StaffRoleFunc func(context.Context, *ent.StaffRoleMutation) (ent.Value, error)

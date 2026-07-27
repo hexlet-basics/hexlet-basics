@@ -15,6 +15,7 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/review"
+	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
@@ -93,6 +94,7 @@ func checkColumn(t, c string) error {
 			landingpageqnaitem.Table:  landingpageqnaitem.ValidColumn,
 			lead.Table:                lead.ValidColumn,
 			review.Table:              review.ValidColumn,
+			staffmember.Table:         staffmember.ValidColumn,
 			staffrole.Table:           staffrole.ValidColumn,
 			staffrolepermission.Table: staffrolepermission.ValidColumn,
 			user.Table:                user.ValidColumn,

@@ -9,6 +9,7 @@ package apiconv
 import (
 	"time"
 
+	"github.com/lib/pq"
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
@@ -34,6 +35,7 @@ import (
 // goverter:extend NilReviewLocaleFromPtr
 // goverter:extend NilLandingPageStateFromPtr
 // goverter:extend PermissionResourceFromString
+// goverter:extend LocalesFromPq
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
 type Converter interface {
@@ -143,6 +145,16 @@ type Converter interface {
 
 	// goverter:map RoleID RoleId
 	ToStaffRolePermission(source *ent.StaffRolePermission) api.StaffRolePermission
+
+	// StaffMember embeds the full user and role (loaded via WithUser/WithRole);
+	// allowedLocales is the native pg array bridged by LocalesFromPq.
+	// goverter:map UserID UserId
+	// goverter:map RoleID RoleId
+	// goverter:map Edges.User User
+	// goverter:map Edges.Role Role
+	ToStaffMember(source *ent.StaffMember) api.StaffMember
+
+	ToStaffMembers(source []*ent.StaffMember) []api.StaffMember
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -289,6 +301,13 @@ func courseDuration(c *ent.Course) int32 {
 // to the api's PermissionResource enum.
 func PermissionResourceFromString(v string) api.PermissionResource {
 	return api.PermissionResource(v)
+}
+
+// LocalesFromPq bridges the native pg text-array column to the api's plain
+// []string (pq.StringArray is a []string, but goverter needs the named-type
+// conversion spelled out).
+func LocalesFromPq(v pq.StringArray) []string {
+	return []string(v)
 }
 
 // staffRolePermissionsCount is the size of the role's loaded permissions edge,

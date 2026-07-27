@@ -208,6 +208,35 @@ var (
 			},
 		},
 	}
+	// StaffMembersColumns holds the columns for the "staff_members" table.
+	StaffMembersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "allowed_locales", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "role_id", Type: field.TypeInt},
+	}
+	// StaffMembersTable holds the schema information for the "staff_members" table.
+	StaffMembersTable = &schema.Table{
+		Name:       "staff_members",
+		Columns:    StaffMembersColumns,
+		PrimaryKey: []*schema.Column{StaffMembersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "staff_members_users_user",
+				Columns:    []*schema.Column{StaffMembersColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "staff_members_staff_member_roles_role",
+				Columns:    []*schema.Column{StaffMembersColumns[5]},
+				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// StaffMemberRolesColumns holds the columns for the "staff_member_roles" table.
 	StaffMemberRolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -276,6 +305,7 @@ var (
 		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
 		ReviewsTable,
+		StaffMembersTable,
 		StaffMemberRolesTable,
 		StaffMemberRolePermissionsTable,
 		UsersTable,
@@ -305,6 +335,8 @@ func init() {
 	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
+	StaffMembersTable.ForeignKeys[0].RefTable = UsersTable
+	StaffMembersTable.ForeignKeys[1].RefTable = StaffMemberRolesTable
 	StaffMemberRolesTable.Annotation = &entsql.Annotation{
 		Table: "staff_member_roles",
 	}

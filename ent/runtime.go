@@ -12,6 +12,7 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
+	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
@@ -114,6 +115,18 @@ func init() {
 	review.DefaultUpdatedAt = reviewDescUpdatedAt.Default.(func() time.Time)
 	// review.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	review.UpdateDefaultUpdatedAt = reviewDescUpdatedAt.UpdateDefault.(func() time.Time)
+	staffmemberFields := schema.StaffMember{}.Fields()
+	_ = staffmemberFields
+	// staffmemberDescCreatedAt is the schema descriptor for created_at field.
+	staffmemberDescCreatedAt := staffmemberFields[3].Descriptor()
+	// staffmember.DefaultCreatedAt holds the default value on creation for the created_at field.
+	staffmember.DefaultCreatedAt = staffmemberDescCreatedAt.Default.(func() time.Time)
+	// staffmemberDescUpdatedAt is the schema descriptor for updated_at field.
+	staffmemberDescUpdatedAt := staffmemberFields[4].Descriptor()
+	// staffmember.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	staffmember.DefaultUpdatedAt = staffmemberDescUpdatedAt.Default.(func() time.Time)
+	// staffmember.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	staffmember.UpdateDefaultUpdatedAt = staffmemberDescUpdatedAt.UpdateDefault.(func() time.Time)
 	staffroleFields := schema.StaffRole{}.Fields()
 	_ = staffroleFields
 	// staffroleDescCreatedAt is the schema descriptor for created_at field.

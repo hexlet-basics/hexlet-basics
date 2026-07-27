@@ -250,6 +250,28 @@ func (c *ConverterImpl) ToReviews(source []*ent.Review) []api.Review {
 	}
 	return apiReviewList
 }
+func (c *ConverterImpl) ToStaffMember(source *ent.StaffMember) api.StaffMember {
+	var apiStaffMember api.StaffMember
+	if source != nil {
+		apiStaffMember.ID = Int32FromInt((*source).ID)
+		apiStaffMember.UserId = Int32FromInt((*source).UserID)
+		apiStaffMember.RoleId = Int32FromInt((*source).RoleID)
+		apiStaffMember.User = c.ToUser((*source).Edges.User)
+		apiStaffMember.Role = c.ToStaffRole((*source).Edges.Role)
+		apiStaffMember.AllowedLocales = LocalesFromPq((*source).AllowedLocales)
+	}
+	return apiStaffMember
+}
+func (c *ConverterImpl) ToStaffMembers(source []*ent.StaffMember) []api.StaffMember {
+	var apiStaffMemberList []api.StaffMember
+	if source != nil {
+		apiStaffMemberList = make([]api.StaffMember, len(source))
+		for i := 0; i < len(source); i++ {
+			apiStaffMemberList[i] = c.ToStaffMember(source[i])
+		}
+	}
+	return apiStaffMemberList
+}
 func (c *ConverterImpl) ToStaffRole(source *ent.StaffRole) api.StaffRole {
 	var apiStaffRole api.StaffRole
 	if source != nil {
