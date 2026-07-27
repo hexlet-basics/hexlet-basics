@@ -1,199 +1,205 @@
 # AGENTS Guide
 
-This file is for coding agents working in `hexlet-basics`.
-Prefer these instructions over generic Rails or React defaults.
+This file (surfaced to Claude Code via the `CLAUDE.md` symlink) is for coding
+agents working at the **root** of `hexlet-basics`. The root is the Go rewrite;
+the original Rails app lives in `legacy/` with its own `AGENTS.md`/`CLAUDE.md`.
+Prefer these instructions over generic Go or React defaults.
 
-## Project Overview
-- Backend: Ruby on Rails app in `app/`.
-- Frontend: InertiaJS + React 19 + TypeScript + Vite in `app/javascript/`.
-- Tests: Minitest for Ruby, Vitest available for frontend.
-- Package manager: `pnpm`.
-- Main orchestration: `make` targets in `Makefile`.
+## What This Repo Is (Read First)
 
-## Instruction Sources Checked
-- Existing repo guidance found in `/Users/kirillmokevnin/projects/hexlet-basics/AGENTS.md` and replaced with this expanded version.
-- No `.cursorrules` file found.
-- No files found under `.cursor/rules/`.
-- No `.github/copilot-instructions.md` file found.
-- If any of those files are added later, merge their rules into this document instead of ignoring them.
+`hexlet-basics` is mid-migration from Rails to Go. Two apps coexist in one repo:
 
-## Repository Layout
-- `app/controllers/`: Rails controllers, many render Inertia pages.
-- `app/models/`: Active Record models and form objects.
-- `app/services/`, `app/lib/`, `app/handlers/`: service and integration logic.
-- `app/resources/`: serializer/resource objects returned to the frontend.
-- `app/javascript/pages/`: route-level Inertia pages.
-- `app/javascript/components/`: shared React components.
-- `app/javascript/hooks/`: reusable frontend hooks.
-- `app/javascript/types/`: shared TS types and generated serializer types.
-- `config/routes.rb`: main route map; check it before adding endpoints or page paths.
-- `test/`: Minitest unit, controller, job, mailer, and system tests.
+- **Root = the new stack.** A Go API (`cmd/`, `internal/`, `ent/`) whose HTTP
+  contract is generated from a TypeSpec definition (`api-spec/`), plus a
+  TanStack Start (React 19 + TypeScript) frontend in `src/`.
+- **`legacy/` = the Rails app** being replaced (Rails + Inertia + React). It has
+  its own Makefile, package.json, and agent guide. When your work is inside
+  `legacy/`, follow `legacy/AGENTS.md`, not this file.
 
-## Setup And Dev Commands
-- `make setup` - copy `.env.local`, run `bin/setup --skip-server`, load fixtures, install JS deps, install git hooks.
-- `make dev` - run the local app stack via `overmind` and `Procfile.dev`.
-- `make staging` - run the staging-like local stack.
-- `make services-start` / `make services-stop` - start or stop local Postgres in Docker.
-- `make db-reset` - reset DB and reload fixtures.
-- `make sync` - sync locales, fixtures, TS types, routes, browserlist data.
-- `make build-assets` - precompile Rails/Vite assets.
+The plan of record is **hard cutover at parity** (no long side-by-side run),
+keeping backward-compat only on bcrypt passwords and URL routes. See
+`docs/STACK.md` for the dependency plan and `docs/adr/0001`–`0008` for the
+binding architecture decisions. **Read the relevant ADR before changing how a
+subsystem works** — they are the source of truth for why each library was
+chosen, and several decisions (contract-first, hard cutover) constrain how you
+should implement.
 
-## Lint And Typecheck Commands
-- `make lint` - full local lint gate; runs locale checks, Biome, TypeScript build, and RuboCop.
-- `make lint-fix` - auto-fix RuboCop and Biome issues where possible.
-- `pnpm exec biome check app/javascript/path/to/file.tsx` - lint a single frontend file.
-- `pnpm exec biome check --fix app/javascript/path/to/file.tsx` - auto-fix one frontend file.
-- `pnpm tsc --build` - run the TypeScript project build check.
-- `bin/rubocop` - run Ruby linting.
-- `bin/rubocop app/controllers/web/users_controller.rb` - lint one Ruby file.
+## Architecture: The Contract-First Pipeline
 
-## Test Commands
-- `make test` - run the Rails test suite.
-- `make test-system` - run Rails system tests.
-- `make test-frontend` - run Vitest once.
-- `make test-frontend-watch` - run Vitest in watch mode.
-- `make test-all` - run backend, frontend, and system tests.
+This is the single most important thing to understand (ADR-0001). The HTTP
+contract is the source of truth, and both the Go server and the TS client are
+**generated** from it. The flow is one-directional:
 
-## Single Test Commands
-- `bin/rails test test/controllers/web/sessions_controller_test.rb` - run one Ruby test file.
-- `bin/rails test test/controllers/web/sessions_controller_test.rb:11` - run one Minitest by line number.
-- `bin/rails test test/models/lead_test.rb:1` - use line targeting when the file has many tests.
-- `bin/rails test:system test/system/pages_test.rb` - run one system test file.
-- `pnpm vitest run app/javascript/path/to/file.test.ts` - run one Vitest file.
-- `pnpm vitest run -t "test name"` - run Vitest tests matching a name.
-- `pnpm vitest app/javascript/path/to/file.test.ts` - run one frontend file in watch mode.
+```
+api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──ogen──▶  internal/api/   (Go server: routing, validation, types)
+  (you edit)                    (generated)             └──hey-api▶  src/client/     (TS client + TanStack Query hooks)
+```
 
-## High-Value Agent Workflow
-- Before editing, read nearby files and follow local conventions instead of introducing new patterns.
-- Prefer focused changes; this codebase mixes Rails, Inertia, generated types, and event code.
-- After changing Ruby code, run the narrowest relevant Rails test first.
-- After changing TypeScript or React code, run Biome and `pnpm tsc --build` at minimum.
-- Before finishing substantial work, run `make lint` plus the most relevant tests if time permits.
-- Do not edit generated outputs casually; regenerate them with the provided sync tasks when needed.
+- You hand-write **TypeSpec** in `api-spec/*.tsp` (`main.tsp`, `public.tsp`,
+  `auth.tsp`, `admin.tsp`, `lesson-player.tsp`, `models.tsp`, `common.tsp`).
+- `make gen` runs the whole pipeline: `gen-spec` (TypeSpec → OpenAPI) →
+  `gen-api` (`go generate ./internal/apigen`, ogen → `internal/api/`) →
+  `gen-client` (openapi-ts → `src/client/`).
+- **Never hand-edit `internal/api/oas_*_gen.go`, `api-spec/dist/`, or the
+  generated TS client.** Change the `.tsp`, run `make gen`, commit the outputs.
+- Adding a contract operation adds a method to the generated `api.Handler`
+  interface. Until you implement it, the embedded `api.UnimplementedHandler`
+  keeps it compiling as "not implemented" — so the build never breaks on a
+  contract addition; you fill in the handler after.
+- ogen **cannot generate multipart** endpoints (see `ogen.yml` skips) — handle
+  those outside the generated layer.
 
-## Ruby And Rails Style
-- Follow RuboCop Rails Omakase; the repo inherits `rubocop-rails-omakase`.
-- Most Ruby files use double-quoted strings and `# frozen_string_literal: true` when present; preserve existing style in each file.
-- Use small controller actions that prepare data, set flash/meta, and delegate domain work to models, services, handlers, or events.
-- Keep business logic out of views.
-- Prefer expressive names like `signed_up_event_data` over short temporary names.
-- Use guard clauses and small helper methods when actions become dense.
-- Respect existing concern usage such as authentication, locale, browser, flash, and event concerns.
+## Architecture: Handlers, DI, and Data
 
-## Ruby Types And Contracts
-- Sorbet is used in parts of the codebase, especially events, handlers, services, and some forms.
-- Preserve existing `# typed:` sigils.
-- Add `sig` blocks only where the surrounding code already uses Sorbet or where the file is clearly typed.
-- Use `T.must` only when the invariant is genuinely guaranteed nearby.
-- Do not start broad Sorbet migrations in unrelated work.
+- **Handlers** live in `internal/handlers/`. `Server` (in `courses.go`) embeds
+  `api.UnimplementedHandler` and implements contract methods; it holds an
+  `*ent.Client` and an `apiconv.Converter`. Handler methods run ent queries and
+  return generated `api.*` types.
+- **ent → api conversion** is in `internal/apiconv/` (`apiconv.go` hand-written,
+  `apiconv.gen.go` generated). Keep DB entities out of the API surface; convert
+  through this layer. API models mirror the serializers, not `schema.rb`.
+- **Push ordering/filtering into SQL** via ent query builders (see the ordered
+  `LandingPage.Query()` in `courses.go`), not into Go post-processing.
+- **DI** is `samber/do` v2, wired in `internal/di/container.go`. Providers
+  resolve their own deps from the injector, so the plain constructors
+  (`store.NewClient`, `handlers.NewServer`, `api.NewServer`) stay
+  injector-agnostic and are usable directly in tests. `cmd/server/main.go`
+  invokes the `*http.Server` and drives graceful shutdown. Add a new service by
+  adding a `do.Provide` block, not by threading it through constructors.
+- **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
+  client with `make gen-ent` (`go generate ./ent`) after editing a schema.
+- Other `internal/` packages: `config/` (env config via `caarlos0/env`),
+  `logging/` (`slog` + `tint`), `store/` (ent client construction), `slugs/`,
+  `ids/`, `apiconv/`, `testsupport/`.
 
-## Ruby Error Handling
-- Rescue specific exceptions instead of broad `StandardError` unless the file already has a deliberate boundary catch.
-- Keep rescue logic close to the failure boundary, as seen in controllers that recover from validation or uniqueness errors.
-- Prefer validation errors, result objects, or redirects with flash over silent failure.
-- Avoid swallowing exceptions without user-visible handling, logging, or a clear fallback.
-- Preserve existing failure flows such as `flash.inertia`, redirects, and form rehydration.
+## Database & Migrations (atlas owns the schema)
 
-## Rails Controller And Resource Conventions
-- Many HTML routes render Inertia pages with `render inertia: true, props: { ... }`.
-- Backend-to-frontend payloads often go through resource classes in `app/resources/`.
-- When adding new page props, keep them serializable and shaped for TS consumers.
-- Reuse named route helpers from Rails and generated JS routes rather than hardcoding paths.
-- Check `config/routes.rb` before creating new controllers or page locations.
+- **atlas** owns the schema going forward (versioned SQL in `migrations/`,
+  config in `atlas.hcl`). The baseline is the retired Rails schema. This is *not*
+  ent auto-migrate and *not* Rails migrations.
+- New schema change: edit `ent/schema`, then `make migrate-new NAME=...` to
+  scaffold a migration to hand-author, then `atlas migrate hash`.
+- Local Postgres runs in Docker on port **54330** (via `make services-start`)
+  to avoid clashing with a `5432` DB.
 
-## Frontend Style
-- TypeScript is `strict`; write code that passes without relying on implicit `any`.
-- Use the `@/` alias for imports from `app/javascript/`.
-- Keep `import type` statements separate for type-only imports when possible.
-- Existing frontend formatting uses Biome defaults with spaces and single quotes in many files; run Biome instead of hand-formatting.
-- Prefer functional React components.
-- Route-level pages commonly use default exports; preserve file-local convention.
-- Shared reusable components may use either named or default exports; follow the surrounding folder's pattern.
-- Prefer existing hooks and helpers such as `useAppForm`, `useDataTableProps`, and route helpers before introducing new abstractions.
-- Do not invent a second path alias system.
+## Setup & Dev Commands (run from repo root)
 
-## Frontend Naming And Data Conventions
-- Match current naming patterns: `Props`, `payload`, `form`, `grid`, `pagy`, `...Dto`, `...Resource`, `...Event`.
-- Keep page component names aligned with route semantics such as `Index`, `Show`, `New`, and `Edit` when the folder already uses them.
-- Prefer serializer/resource-backed types from `@/types` or `@/types/serializers` for server data.
-- Reuse generated route helpers from `@/routes.js` instead of string URLs.
-- Reuse existing i18n patterns with `useTranslation()` and selector callbacks like `t(($) => $.sessions.new.title)`.
+- `make setup` — `go mod download` + `pnpm install` (root package.json is shared
+  by the frontend and the api-spec tooling).
+- `make services-start` / `make services-stop` — local Postgres in Docker.
+- `make dev` — run API (air live-reload, `:3001`) + Vite frontend together.
+- `make dev-api` — Go API only (air). `make dev-web` — Vite only.
+- `make dev-spec` — watch TypeSpec and re-emit OpenAPI on change.
+- Tooling versions are pinned in `mise.toml` (go, golangci-lint, atlas,
+  testfixtures CLI). Use `pnpm`, never `npm`/`npx` directly for JS deps.
 
-## Frontend Error Handling
-- Prefer form-library callbacks like `onError` and server-provided validation state over ad hoc try/catch in components.
-- Surface request failures in the established UI flow, not only in console logs.
-- Reset or sanitize sensitive fields such as passwords on failed auth forms when matching existing behavior.
-- Keep client code aligned with Rails response shapes and Inertia redirects.
+## Codegen Commands
 
-## Generated And Synced Files
-- NEVER hand-edit, hand-reformat, or piecemeal-regenerate a generated file.
-  Change the source, then run the sync target and commit whatever it produces.
-  Do not reason about a generated file's internal formatting — regenerate it.
-- NEVER restore a generated file from git (no `git checkout`/`git restore` of it,
-  no reverting to an old copy). If a generated file is wrong or stale, run its
-  generator and regenerate it from the current source — never recover the old
-  bytes. Generated files are outputs, not history to preserve.
-- The generated (do-not-edit) files and their generators:
-  - `app/javascript/routes.js`, `app/javascript/routes.d.ts` — JS route helpers,
-    from `bin/rails js:routes` (via `make sync-types`).
-  - `app/javascript/types/serializers/**` — serializer/resource TS types, from
-    `bin/rails typelizer:generate:refresh` (via `make sync-types`).
-  - `app/javascript/generated/**` (e.g. `event_names.ts`) — event exports, from
-    `bin/rails app:export_events_to_ts` (via `make sync-types`).
-  - `app/javascript/locales/{en,ru,es}/translation.ts` — frontend i18n
-    resources, and `app/javascript/types/resources.d.ts` +
-    `app/javascript/types/i18next.d.ts` — their TS types, all from
-    `i18next-cli` (via `make sync-locales`). Add/adjust string values in
-    `translation.ts`, then regenerate; never edit `resources.d.ts` /
-    `i18next.d.ts` directly.
-  - `sorbet/rbi/**` — Sorbet RBIs, from `bin/tapioca` (via `make sync-sorbet`).
-  - `CHANGELOG.md`, the `version` in `package.json` and
-    `k8s/app-chart/Chart.yaml` — from release-please; never bump by hand.
-  - `db/schema.rb` — from migrations (`bin/rails db:migrate`).
-- Source files you DO edit by hand: `config/locales/*.yml` are the Rails-side
-  locale source (i18n-tasks keeps them normalized); `config/routes.rb`, models,
-  serializers, and event classes are the sources the generators read from.
-- After a change that affects routes, events, enums, i18n keys, serializer-backed
-  TS types, or gems/DSL, run `make sync` (or the specific `make sync-locales` /
-  `make sync-types` / `make sync-sorbet`), then `make lint-fix` if needed, and
-  commit the regenerated outputs alongside your source change.
+- `make gen` — full contract pipeline (spec → ogen server → hey-api client).
+- `make gen-spec` / `make gen-api` / `make gen-client` — individual stages.
+- `make gen-ent` — regenerate the ent ORM from `ent/schema`.
+- `make gen-all` — `gen-ent` + `gen`. `make tidy` — `go mod tidy`.
+- After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
+  and commit the regenerated outputs alongside the source change.
 
-## Testing Guidance
-- Prefer targeted tests first, then broader suites.
-- For controller or model changes, add or update a nearby `_test.rb` file under `test/`.
-- Use fixtures from `test/fixtures/`; the suite loads all fixtures by default.
-- Starting data in tests comes ONLY from fixtures; never build/create records in a test to set up initial state. Transitioning a fixture record inside the test (e.g. firing an AASM event) is fine.
-- Check states and enum-like attributes with predicate methods (`version.created?`, `version.built?`), never by comparing the raw string (`version.state == "created"`).
-- Never chain operations: any operation (e.g. `reload`, an event, a save) is its own statement, never chained inside another expression. `version.reload` on its own line, then `assert { version.result == ... }` — not `assert { version.reload.result == ... }`.
-- Use `assert { expr }` blocks for assertions.
-- System tests are reserved for user-visible flows that need browser coverage.
-- Frontend tests are not widespread today; if you add Vitest coverage, keep it narrow and fast.
-- Do not leave failing tests behind if the touched area can be tested locally.
+## Lint & Typecheck
 
-## Git And Delivery Notes
-- Pre-push hook runs `make lint`; expect pushes to require a clean lint state.
-- Keep PRs and commits focused; mention migrations, generated artifacts, or infra changes explicitly.
-- Never commit secrets from `.env.local`, credentials files, or external service configs.
-- If you touch ops directories like `k8s/`, `ansible/`, or `terraform/`, call that out clearly in handoff notes.
+- `make lint` — Go (`gofmt` check, `go vet`, `golangci-lint`) + frontend
+  (`biome check`, `tsc -b`). The pre-push hook runs this; pushes need it clean.
+- `make lint-fix` — `gofmt -w`, `golangci-lint --fix`, `pnpm lint:fix`.
+- Single frontend file: `pnpm exec biome check [--write] src/path/to/file.tsx`.
+- Go vet/build only: `go vet ./...`, `go build ./...`.
+
+## Test
+
+- `make test` — the Go suite (`go test ./...`).
+- `make test-prepare` — ready the test DB **before** `make test`: applies atlas
+  migrations (`test-migrate`) then loads the committed `fixtures/` snapshot
+  (`test-load-fixtures` via the testfixtures CLI). CI does exactly this.
+- Single package / test: `go test ./internal/handlers/`,
+  `go test ./internal/handlers/ -run TestListCourses -v`.
+- **Fixtures** in `fixtures/` are the starting data (converted from the legacy
+  Rails set via `make fixtures-import`, which borrows the Rails runtime). Their
+  ids are legacy crc32 values, so **assert on business facts (slug, order),
+  never on raw ids** — see `courses_test.go` for the pattern.
+- Tests use `stretchr/testify` (`require`/`assert`); handler tests build a
+  `Server` directly via the `newServer(t)` helper in `testsupport`.
+
+## Build
+
+- `make build` — `build-api` (`go build -o bin/server ./cmd/server`) +
+  `build-web` (`pnpm build`). `make clean` removes `bin/` and `dist/`.
+
+## Frontend (`src/`)
+
+- TanStack Start (SSR, ADR-0008) + React 19 + TypeScript (`strict`) + Vite.
+  Routing is file-based under `src/routes/`; `routeTree.gen.ts` is **generated**
+  — don't hand-edit it. UI uses Mantine; data fetching uses TanStack Query hooks
+  generated by hey-api into `src/client/`.
+- Call the API through the **generated client / Query hooks**, not hand-written
+  `fetch`. If an endpoint is missing, add it in TypeSpec and regenerate.
+- State: `zustand`; validation: `zod`; i18n: `i18next` + `react-i18next`
+  (`src/locales/`, config via `i18next-cli`). Animation: `motion`.
+- Frontend formatting is Biome (single quotes, spaces) — run Biome, don't
+  hand-format.
+
+## Generated / Do-Not-Edit Files (root)
+
+Change the source, run the generator, commit the output. Never hand-edit or
+`git restore` a generated file — regenerate it from current source.
+
+- `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `make gen-spec`.
+- `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `make gen-api`.
+- `src/client/**` (hey-api TS client + Query hooks) ← OpenAPI via `make gen-client`.
+- `ent/**` (except `ent/schema/`) ← `ent/schema` via `make gen-ent`.
+- `internal/apiconv/apiconv.gen.go` — generated converter.
+- `src/routeTree.gen.ts` — TanStack Router route tree.
+- `CHANGELOG.md` and `version` in `package.json` — release-please; never bump
+  by hand.
+- Sources you DO edit: `api-spec/*.tsp`, `ent/schema/*.go`, Go handlers,
+  `src/locales` string values, `migrations/` (hand-authored, then `atlas migrate hash`).
+
+## Go Style
+
+- `gofmt`-clean, passes `go vet` and `golangci-lint` (config governs `cmd`,
+  `internal`, `ent/schema`; generated files are skipped).
+- Match the surrounding package: doc comments on exported types/functions
+  explaining *why* (the existing files are heavily commented on rationale —
+  mirror that density on non-obvious logic, e.g. why an ordering has a specific
+  tie-breaker), constructors return concrete types, errors wrapped with context.
+- Return early on errors; don't swallow them. Keep DB access in handlers/ent and
+  API types at the boundary — convert via `apiconv`.
 
 ## Conventional Commits & Releases
-- Every commit follows [Conventional Commits](https://www.conventionalcommits.org/) (`<type>(<scope>?): <description>`); `commitlint` enforces the allowed types. Commit messages are in English.
-- Releases are cut by `release-please` from commit history: it maintains a release PR that bumps `package.json`, `k8s/app-chart/Chart.yaml` (`$.version`) and `CHANGELOG.md`; merging it tags `vX.Y.Z` and builds the image.
-- Type → semver bump (config: `release-please-config.json`). While the version is pre-1.0, `bump-patch-for-minor-pre-major` and `bump-minor-pre-major` shift bumps down one level:
-  - `feat` — user-visible feature. Pre-1.0: patch (post-1.0: minor).
-  - `fix` — user-visible bug fix. Patch.
-  - `perf` — user-visible speedup. Patch.
-  - `revert` — revert. Patch.
-  - `chore` — routine work with a side effect but no feature/fix goal. Patch (via `extra-release-commit-types`).
-  - `build` — build/Docker changes. Patch (via `extra-release-commit-types`).
-  - `refactor`, `test`, `docs`, `ci`, `style` — no release.
-  - Breaking change — `type!:` or `BREAKING CHANGE:` in the body. Pre-1.0: minor (post-1.0: major).
-- Changelog sections (`changelog-sections`): Features, Bug Fixes, Performance Improvements, Reverts, Miscellaneous (`chore`), Build System (`build`). Other types stay out of the changelog.
-- Commit body explains *why*, not *what* (the diff shows what).
 
-## Practical Defaults For Agents
-- Use `make` targets first when a task maps cleanly to them.
-- Prefer minimal diffs over broad refactors.
-- Preserve mixed typed and untyped Ruby; do not "normalize" unrelated files.
-- Preserve Inertia + Rails patterns instead of replacing them with API-only patterns.
-- When unsure whether something is generated, search for the producing task before editing.
+- Every commit follows [Conventional Commits](https://www.conventionalcommits.org/)
+  (`<type>(<scope>?): <description>`); `commitlint` (commit-msg hook) enforces
+  types. Commit messages are in English; the body explains *why*, not *what*.
+- Releases are cut by `release-please` (config `release-please-config.json`,
+  same type→bump rules as legacy). It maintains a release PR bumping
+  `package.json` and `CHANGELOG.md`; merging it tags `vX.Y.Z`.
+- Type → bump (pre-1.0, so bumps shift down one level): `feat` → patch,
+  `fix`/`perf`/`revert` → patch, `chore`/`build` → patch (via
+  `extra-release-commit-types`), breaking (`type!:` / `BREAKING CHANGE:`) →
+  minor. `refactor`/`test`/`docs`/`ci`/`style` → no release. Changelog sections:
+  Features, Bug Fixes, Performance Improvements, Reverts, Miscellaneous
+  (`chore`), Build System (`build`).
+
+## High-Value Agent Workflow
+
+- Confirm you're working at the root (Go) vs `legacy/` (Rails) and follow the
+  right guide.
+- To change the API: edit TypeSpec → `make gen` → implement/adjust the Go
+  handler and, if needed, the frontend client usage → run the narrowest Go test.
+- After Go changes: `go build ./...`, then `go test ./...` (or a single package);
+  `make test-prepare` first if the test needs the DB.
+- After frontend changes: `pnpm exec biome check` and `tsc -b` (`pnpm check`).
+- Before finishing substantial work: `make lint` and the most relevant tests.
+- Prefer minimal diffs; don't start broad refactors or "normalize" unrelated
+  files. When unsure whether a file is generated, find its generator before
+  editing (`grep` the Makefile / `go:generate` directives).
+
+## Ops
+
+- Infra (`k8s/`, `terraform/`) currently lives under `legacy/`. If you touch it,
+  call out the change clearly in handoff notes. Never commit secrets.
