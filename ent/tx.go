@@ -30,6 +30,10 @@ type Tx struct {
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
+	// StaffRole is the client for interacting with the StaffRole builders.
+	StaffRole *StaffRoleClient
+	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
+	StaffRolePermission *StaffRolePermissionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -172,6 +176,8 @@ func (tx *Tx) init() {
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
+	tx.StaffRole = NewStaffRoleClient(tx.config)
+	tx.StaffRolePermission = NewStaffRolePermissionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

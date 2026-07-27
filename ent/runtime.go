@@ -12,6 +12,8 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
+	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
 	"time"
 )
@@ -112,6 +114,46 @@ func init() {
 	review.DefaultUpdatedAt = reviewDescUpdatedAt.Default.(func() time.Time)
 	// review.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	review.UpdateDefaultUpdatedAt = reviewDescUpdatedAt.UpdateDefault.(func() time.Time)
+	staffroleFields := schema.StaffRole{}.Fields()
+	_ = staffroleFields
+	// staffroleDescCreatedAt is the schema descriptor for created_at field.
+	staffroleDescCreatedAt := staffroleFields[2].Descriptor()
+	// staffrole.DefaultCreatedAt holds the default value on creation for the created_at field.
+	staffrole.DefaultCreatedAt = staffroleDescCreatedAt.Default.(func() time.Time)
+	// staffroleDescUpdatedAt is the schema descriptor for updated_at field.
+	staffroleDescUpdatedAt := staffroleFields[3].Descriptor()
+	// staffrole.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	staffrole.DefaultUpdatedAt = staffroleDescUpdatedAt.Default.(func() time.Time)
+	// staffrole.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	staffrole.UpdateDefaultUpdatedAt = staffroleDescUpdatedAt.UpdateDefault.(func() time.Time)
+	staffrolepermissionFields := schema.StaffRolePermission{}.Fields()
+	_ = staffrolepermissionFields
+	// staffrolepermissionDescCanIndex is the schema descriptor for can_index field.
+	staffrolepermissionDescCanIndex := staffrolepermissionFields[2].Descriptor()
+	// staffrolepermission.DefaultCanIndex holds the default value on creation for the can_index field.
+	staffrolepermission.DefaultCanIndex = staffrolepermissionDescCanIndex.Default.(bool)
+	// staffrolepermissionDescCanCreate is the schema descriptor for can_create field.
+	staffrolepermissionDescCanCreate := staffrolepermissionFields[3].Descriptor()
+	// staffrolepermission.DefaultCanCreate holds the default value on creation for the can_create field.
+	staffrolepermission.DefaultCanCreate = staffrolepermissionDescCanCreate.Default.(bool)
+	// staffrolepermissionDescCanUpdate is the schema descriptor for can_update field.
+	staffrolepermissionDescCanUpdate := staffrolepermissionFields[4].Descriptor()
+	// staffrolepermission.DefaultCanUpdate holds the default value on creation for the can_update field.
+	staffrolepermission.DefaultCanUpdate = staffrolepermissionDescCanUpdate.Default.(bool)
+	// staffrolepermissionDescCanDestroy is the schema descriptor for can_destroy field.
+	staffrolepermissionDescCanDestroy := staffrolepermissionFields[5].Descriptor()
+	// staffrolepermission.DefaultCanDestroy holds the default value on creation for the can_destroy field.
+	staffrolepermission.DefaultCanDestroy = staffrolepermissionDescCanDestroy.Default.(bool)
+	// staffrolepermissionDescCreatedAt is the schema descriptor for created_at field.
+	staffrolepermissionDescCreatedAt := staffrolepermissionFields[6].Descriptor()
+	// staffrolepermission.DefaultCreatedAt holds the default value on creation for the created_at field.
+	staffrolepermission.DefaultCreatedAt = staffrolepermissionDescCreatedAt.Default.(func() time.Time)
+	// staffrolepermissionDescUpdatedAt is the schema descriptor for updated_at field.
+	staffrolepermissionDescUpdatedAt := staffrolepermissionFields[7].Descriptor()
+	// staffrolepermission.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	staffrolepermission.DefaultUpdatedAt = staffrolepermissionDescUpdatedAt.Default.(func() time.Time)
+	// staffrolepermission.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	staffrolepermission.UpdateDefaultUpdatedAt = staffrolepermissionDescUpdatedAt.UpdateDefault.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for created_at field.

@@ -1,0 +1,21 @@
+# Fixtures for `staff_member_role_permissions`, HAND-CURATED. Two rows for the
+# "editor" role (9001): blog_posts (index) and banners (index + create). Unique
+# on (role_id, resource). Resources are PermissionResource enum values.
+- id: 9101
+  role_id: 9001
+  resource: blog_posts
+  can_index: true
+  can_create: false
+  can_update: false
+  can_destroy: false
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 9102
+  role_id: 9001
+  resource: banners
+  can_index: true
+  can_create: true
+  can_update: false
+  can_destroy: false
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

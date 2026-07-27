@@ -33,6 +33,7 @@ import (
 // goverter:extend NilReviewStateFromPtr
 // goverter:extend NilReviewLocaleFromPtr
 // goverter:extend NilLandingPageStateFromPtr
+// goverter:extend PermissionResourceFromString
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
 type Converter interface {
@@ -127,6 +128,21 @@ type Converter interface {
 	ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage
 
 	ToCourseLandingPages(source []*ent.LandingPage) []api.CourseLandingPage
+
+	// StaffRole is the list projection: permissionsCount is the size of the
+	// loaded permissions edge.
+	// goverter:map . PermissionsCount | staffRolePermissionsCount
+	ToStaffRole(source *ent.StaffRole) api.StaffRole
+
+	ToStaffRoles(source []*ent.StaffRole) []api.StaffRole
+
+	// StaffRoleDetail carries the full permission matrix (loaded via
+	// WithPermissions).
+	// goverter:map Edges.Permissions Permissions
+	ToStaffRoleDetail(source *ent.StaffRole) api.StaffRoleDetail
+
+	// goverter:map RoleID RoleId
+	ToStaffRolePermission(source *ent.StaffRolePermission) api.StaffRolePermission
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -267,6 +283,18 @@ func courseDuration(c *ent.Course) int32 {
 		return 0
 	}
 	return int32(c.LessonsCount * 15 / 60)
+}
+
+// PermissionResourceFromString bridges the ent resource column (a plain string)
+// to the api's PermissionResource enum.
+func PermissionResourceFromString(v string) api.PermissionResource {
+	return api.PermissionResource(v)
+}
+
+// staffRolePermissionsCount is the size of the role's loaded permissions edge,
+// mirroring StaffRoleResource#permissions_count.
+func staffRolePermissionsCount(r *ent.StaffRole) int32 {
+	return int32(len(r.Edges.Permissions))
 }
 
 // landingOutcomesImageNull keeps OutcomesImage null until the landing-page

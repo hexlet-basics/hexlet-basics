@@ -15,6 +15,8 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/review"
+	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
 	"reflect"
 	"sync"
@@ -82,16 +84,18 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			banner.Table:             banner.ValidColumn,
-			categoryqnaitem.Table:    categoryqnaitem.ValidColumn,
-			course.Table:             course.ValidColumn,
-			coursecategory.Table:     coursecategory.ValidColumn,
-			courseversion.Table:      courseversion.ValidColumn,
-			landingpage.Table:        landingpage.ValidColumn,
-			landingpageqnaitem.Table: landingpageqnaitem.ValidColumn,
-			lead.Table:               lead.ValidColumn,
-			review.Table:             review.ValidColumn,
-			user.Table:               user.ValidColumn,
+			banner.Table:              banner.ValidColumn,
+			categoryqnaitem.Table:     categoryqnaitem.ValidColumn,
+			course.Table:              course.ValidColumn,
+			coursecategory.Table:      coursecategory.ValidColumn,
+			courseversion.Table:       courseversion.ValidColumn,
+			landingpage.Table:         landingpage.ValidColumn,
+			landingpageqnaitem.Table:  landingpageqnaitem.ValidColumn,
+			lead.Table:                lead.ValidColumn,
+			review.Table:              review.ValidColumn,
+			staffrole.Table:           staffrole.ValidColumn,
+			staffrolepermission.Table: staffrolepermission.ValidColumn,
+			user.Table:                user.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

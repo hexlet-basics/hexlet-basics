@@ -208,6 +208,46 @@ var (
 			},
 		},
 	}
+	// StaffMemberRolesColumns holds the columns for the "staff_member_roles" table.
+	StaffMemberRolesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// StaffMemberRolesTable holds the schema information for the "staff_member_roles" table.
+	StaffMemberRolesTable = &schema.Table{
+		Name:       "staff_member_roles",
+		Columns:    StaffMemberRolesColumns,
+		PrimaryKey: []*schema.Column{StaffMemberRolesColumns[0]},
+	}
+	// StaffMemberRolePermissionsColumns holds the columns for the "staff_member_role_permissions" table.
+	StaffMemberRolePermissionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "resource", Type: field.TypeString},
+		{Name: "can_index", Type: field.TypeBool, Default: false},
+		{Name: "can_create", Type: field.TypeBool, Default: false},
+		{Name: "can_update", Type: field.TypeBool, Default: false},
+		{Name: "can_destroy", Type: field.TypeBool, Default: false},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "role_id", Type: field.TypeInt},
+	}
+	// StaffMemberRolePermissionsTable holds the schema information for the "staff_member_role_permissions" table.
+	StaffMemberRolePermissionsTable = &schema.Table{
+		Name:       "staff_member_role_permissions",
+		Columns:    StaffMemberRolePermissionsColumns,
+		PrimaryKey: []*schema.Column{StaffMemberRolePermissionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "staff_member_role_permissions_staff_member_roles_permissions",
+				Columns:    []*schema.Column{StaffMemberRolePermissionsColumns[8]},
+				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -236,6 +276,8 @@ var (
 		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
 		ReviewsTable,
+		StaffMemberRolesTable,
+		StaffMemberRolePermissionsTable,
 		UsersTable,
 	}
 )
@@ -263,4 +305,11 @@ func init() {
 	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
+	StaffMemberRolesTable.Annotation = &entsql.Annotation{
+		Table: "staff_member_roles",
+	}
+	StaffMemberRolePermissionsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
+	StaffMemberRolePermissionsTable.Annotation = &entsql.Annotation{
+		Table: "staff_member_role_permissions",
+	}
 }

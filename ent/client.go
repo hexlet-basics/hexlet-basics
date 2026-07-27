@@ -20,6 +20,8 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/review"
+	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
 
 	"entgo.io/ent"
@@ -51,6 +53,10 @@ type Client struct {
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
+	// StaffRole is the client for interacting with the StaffRole builders.
+	StaffRole *StaffRoleClient
+	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
+	StaffRolePermission *StaffRolePermissionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -73,6 +79,8 @@ func (c *Client) init() {
 	c.LandingPageQnaItem = NewLandingPageQnaItemClient(c.config)
 	c.Lead = NewLeadClient(c.config)
 	c.Review = NewReviewClient(c.config)
+	c.StaffRole = NewStaffRoleClient(c.config)
+	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -164,18 +172,20 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		Banner:             NewBannerClient(cfg),
-		CategoryQnaItem:    NewCategoryQnaItemClient(cfg),
-		Course:             NewCourseClient(cfg),
-		CourseCategory:     NewCourseCategoryClient(cfg),
-		CourseVersion:      NewCourseVersionClient(cfg),
-		LandingPage:        NewLandingPageClient(cfg),
-		LandingPageQnaItem: NewLandingPageQnaItemClient(cfg),
-		Lead:               NewLeadClient(cfg),
-		Review:             NewReviewClient(cfg),
-		User:               NewUserClient(cfg),
+		ctx:                 ctx,
+		config:              cfg,
+		Banner:              NewBannerClient(cfg),
+		CategoryQnaItem:     NewCategoryQnaItemClient(cfg),
+		Course:              NewCourseClient(cfg),
+		CourseCategory:      NewCourseCategoryClient(cfg),
+		CourseVersion:       NewCourseVersionClient(cfg),
+		LandingPage:         NewLandingPageClient(cfg),
+		LandingPageQnaItem:  NewLandingPageQnaItemClient(cfg),
+		Lead:                NewLeadClient(cfg),
+		Review:              NewReviewClient(cfg),
+		StaffRole:           NewStaffRoleClient(cfg),
+		StaffRolePermission: NewStaffRolePermissionClient(cfg),
+		User:                NewUserClient(cfg),
 	}, nil
 }
 
@@ -193,18 +203,20 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		Banner:             NewBannerClient(cfg),
-		CategoryQnaItem:    NewCategoryQnaItemClient(cfg),
-		Course:             NewCourseClient(cfg),
-		CourseCategory:     NewCourseCategoryClient(cfg),
-		CourseVersion:      NewCourseVersionClient(cfg),
-		LandingPage:        NewLandingPageClient(cfg),
-		LandingPageQnaItem: NewLandingPageQnaItemClient(cfg),
-		Lead:               NewLeadClient(cfg),
-		Review:             NewReviewClient(cfg),
-		User:               NewUserClient(cfg),
+		ctx:                 ctx,
+		config:              cfg,
+		Banner:              NewBannerClient(cfg),
+		CategoryQnaItem:     NewCategoryQnaItemClient(cfg),
+		Course:              NewCourseClient(cfg),
+		CourseCategory:      NewCourseCategoryClient(cfg),
+		CourseVersion:       NewCourseVersionClient(cfg),
+		LandingPage:         NewLandingPageClient(cfg),
+		LandingPageQnaItem:  NewLandingPageQnaItemClient(cfg),
+		Lead:                NewLeadClient(cfg),
+		Review:              NewReviewClient(cfg),
+		StaffRole:           NewStaffRoleClient(cfg),
+		StaffRolePermission: NewStaffRolePermissionClient(cfg),
+		User:                NewUserClient(cfg),
 	}, nil
 }
 
@@ -235,7 +247,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory, c.CourseVersion,
-		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.User,
+		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -246,7 +259,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory, c.CourseVersion,
-		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.User,
+		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -273,6 +287,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Lead.mutate(ctx, m)
 	case *ReviewMutation:
 		return c.Review.mutate(ctx, m)
+	case *StaffRoleMutation:
+		return c.StaffRole.mutate(ctx, m)
+	case *StaffRolePermissionMutation:
+		return c.StaffRolePermission.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -1557,6 +1575,304 @@ func (c *ReviewClient) mutate(ctx context.Context, m *ReviewMutation) (Value, er
 	}
 }
 
+// StaffRoleClient is a client for the StaffRole schema.
+type StaffRoleClient struct {
+	config
+}
+
+// NewStaffRoleClient returns a client for the StaffRole from the given config.
+func NewStaffRoleClient(c config) *StaffRoleClient {
+	return &StaffRoleClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `staffrole.Hooks(f(g(h())))`.
+func (c *StaffRoleClient) Use(hooks ...Hook) {
+	c.hooks.StaffRole = append(c.hooks.StaffRole, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `staffrole.Intercept(f(g(h())))`.
+func (c *StaffRoleClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StaffRole = append(c.inters.StaffRole, interceptors...)
+}
+
+// Create returns a builder for creating a StaffRole entity.
+func (c *StaffRoleClient) Create() *StaffRoleCreate {
+	mutation := newStaffRoleMutation(c.config, OpCreate)
+	return &StaffRoleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of StaffRole entities.
+func (c *StaffRoleClient) CreateBulk(builders ...*StaffRoleCreate) *StaffRoleCreateBulk {
+	return &StaffRoleCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StaffRoleClient) MapCreateBulk(slice any, setFunc func(*StaffRoleCreate, int)) *StaffRoleCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StaffRoleCreateBulk{err: fmt.Errorf("calling to StaffRoleClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StaffRoleCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StaffRoleCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for StaffRole.
+func (c *StaffRoleClient) Update() *StaffRoleUpdate {
+	mutation := newStaffRoleMutation(c.config, OpUpdate)
+	return &StaffRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StaffRoleClient) UpdateOne(_m *StaffRole) *StaffRoleUpdateOne {
+	mutation := newStaffRoleMutation(c.config, OpUpdateOne, withStaffRole(_m))
+	return &StaffRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StaffRoleClient) UpdateOneID(id int) *StaffRoleUpdateOne {
+	mutation := newStaffRoleMutation(c.config, OpUpdateOne, withStaffRoleID(id))
+	return &StaffRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for StaffRole.
+func (c *StaffRoleClient) Delete() *StaffRoleDelete {
+	mutation := newStaffRoleMutation(c.config, OpDelete)
+	return &StaffRoleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StaffRoleClient) DeleteOne(_m *StaffRole) *StaffRoleDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StaffRoleClient) DeleteOneID(id int) *StaffRoleDeleteOne {
+	builder := c.Delete().Where(staffrole.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StaffRoleDeleteOne{builder}
+}
+
+// Query returns a query builder for StaffRole.
+func (c *StaffRoleClient) Query() *StaffRoleQuery {
+	return &StaffRoleQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStaffRole},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a StaffRole entity by its id.
+func (c *StaffRoleClient) Get(ctx context.Context, id int) (*StaffRole, error) {
+	return c.Query().Where(staffrole.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StaffRoleClient) GetX(ctx context.Context, id int) *StaffRole {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryPermissions queries the permissions edge of a StaffRole.
+func (c *StaffRoleClient) QueryPermissions(_m *StaffRole) *StaffRolePermissionQuery {
+	query := (&StaffRolePermissionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(staffrole.Table, staffrole.FieldID, id),
+			sqlgraph.To(staffrolepermission.Table, staffrolepermission.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.PermissionsTable, staffrole.PermissionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *StaffRoleClient) Hooks() []Hook {
+	return c.hooks.StaffRole
+}
+
+// Interceptors returns the client interceptors.
+func (c *StaffRoleClient) Interceptors() []Interceptor {
+	return c.inters.StaffRole
+}
+
+func (c *StaffRoleClient) mutate(ctx context.Context, m *StaffRoleMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StaffRoleCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StaffRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StaffRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StaffRoleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown StaffRole mutation op: %q", m.Op())
+	}
+}
+
+// StaffRolePermissionClient is a client for the StaffRolePermission schema.
+type StaffRolePermissionClient struct {
+	config
+}
+
+// NewStaffRolePermissionClient returns a client for the StaffRolePermission from the given config.
+func NewStaffRolePermissionClient(c config) *StaffRolePermissionClient {
+	return &StaffRolePermissionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `staffrolepermission.Hooks(f(g(h())))`.
+func (c *StaffRolePermissionClient) Use(hooks ...Hook) {
+	c.hooks.StaffRolePermission = append(c.hooks.StaffRolePermission, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `staffrolepermission.Intercept(f(g(h())))`.
+func (c *StaffRolePermissionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StaffRolePermission = append(c.inters.StaffRolePermission, interceptors...)
+}
+
+// Create returns a builder for creating a StaffRolePermission entity.
+func (c *StaffRolePermissionClient) Create() *StaffRolePermissionCreate {
+	mutation := newStaffRolePermissionMutation(c.config, OpCreate)
+	return &StaffRolePermissionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of StaffRolePermission entities.
+func (c *StaffRolePermissionClient) CreateBulk(builders ...*StaffRolePermissionCreate) *StaffRolePermissionCreateBulk {
+	return &StaffRolePermissionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StaffRolePermissionClient) MapCreateBulk(slice any, setFunc func(*StaffRolePermissionCreate, int)) *StaffRolePermissionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StaffRolePermissionCreateBulk{err: fmt.Errorf("calling to StaffRolePermissionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StaffRolePermissionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StaffRolePermissionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for StaffRolePermission.
+func (c *StaffRolePermissionClient) Update() *StaffRolePermissionUpdate {
+	mutation := newStaffRolePermissionMutation(c.config, OpUpdate)
+	return &StaffRolePermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StaffRolePermissionClient) UpdateOne(_m *StaffRolePermission) *StaffRolePermissionUpdateOne {
+	mutation := newStaffRolePermissionMutation(c.config, OpUpdateOne, withStaffRolePermission(_m))
+	return &StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StaffRolePermissionClient) UpdateOneID(id int) *StaffRolePermissionUpdateOne {
+	mutation := newStaffRolePermissionMutation(c.config, OpUpdateOne, withStaffRolePermissionID(id))
+	return &StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for StaffRolePermission.
+func (c *StaffRolePermissionClient) Delete() *StaffRolePermissionDelete {
+	mutation := newStaffRolePermissionMutation(c.config, OpDelete)
+	return &StaffRolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StaffRolePermissionClient) DeleteOne(_m *StaffRolePermission) *StaffRolePermissionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StaffRolePermissionClient) DeleteOneID(id int) *StaffRolePermissionDeleteOne {
+	builder := c.Delete().Where(staffrolepermission.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StaffRolePermissionDeleteOne{builder}
+}
+
+// Query returns a query builder for StaffRolePermission.
+func (c *StaffRolePermissionClient) Query() *StaffRolePermissionQuery {
+	return &StaffRolePermissionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStaffRolePermission},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a StaffRolePermission entity by its id.
+func (c *StaffRolePermissionClient) Get(ctx context.Context, id int) (*StaffRolePermission, error) {
+	return c.Query().Where(staffrolepermission.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StaffRolePermissionClient) GetX(ctx context.Context, id int) *StaffRolePermission {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryRole queries the role edge of a StaffRolePermission.
+func (c *StaffRolePermissionClient) QueryRole(_m *StaffRolePermission) *StaffRoleQuery {
+	query := (&StaffRoleClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(staffrolepermission.Table, staffrolepermission.FieldID, id),
+			sqlgraph.To(staffrole.Table, staffrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, staffrolepermission.RoleTable, staffrolepermission.RoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *StaffRolePermissionClient) Hooks() []Hook {
+	return c.hooks.StaffRolePermission
+}
+
+// Interceptors returns the client interceptors.
+func (c *StaffRolePermissionClient) Interceptors() []Interceptor {
+	return c.inters.StaffRolePermission
+}
+
+func (c *StaffRolePermissionClient) mutate(ctx context.Context, m *StaffRolePermissionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StaffRolePermissionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StaffRolePermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StaffRolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown StaffRolePermission mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -1694,10 +2010,12 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 type (
 	hooks struct {
 		Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion, LandingPage,
-		LandingPageQnaItem, Lead, Review, User []ent.Hook
+		LandingPageQnaItem, Lead, Review, StaffRole, StaffRolePermission,
+		User []ent.Hook
 	}
 	inters struct {
 		Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion, LandingPage,
-		LandingPageQnaItem, Lead, Review, User []ent.Interceptor
+		LandingPageQnaItem, Lead, Review, StaffRole, StaffRolePermission,
+		User []ent.Interceptor
 	}
 )

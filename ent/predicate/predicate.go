@@ -33,5 +33,11 @@ type Lead func(*sql.Selector)
 // Review is the predicate function for review builders.
 type Review func(*sql.Selector)
 
+// StaffRole is the predicate function for staffrole builders.
+type StaffRole func(*sql.Selector)
+
+// StaffRolePermission is the predicate function for staffrolepermission builders.
+type StaffRolePermission func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
