@@ -54,12 +54,15 @@ type Handler interface {
 	AdminCreateReview(ctx context.Context, req *ReviewInput) (*Review, error)
 	// AdminCreateRole implements adminCreateRole operation.
 	//
+	// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
+	// handler.
+	//
 	// POST /admin/management/roles
-	AdminCreateRole(ctx context.Context, req *RoleInput) (AdminCreateRoleRes, error)
+	AdminCreateRole(ctx context.Context, req *RoleInput) (*StaffRoleDetail, error)
 	// AdminCreateStaffMember implements adminCreateStaffMember operation.
 	//
 	// POST /admin/management/staff_members
-	AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (AdminCreateStaffMemberRes, error)
+	AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (*StaffMember, error)
 	// AdminCreateUser implements adminCreateUser operation.
 	//
 	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
@@ -142,8 +145,10 @@ type Handler interface {
 	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminGetManagementUser implements adminGetManagementUser operation.
 	//
+	// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// GET /admin/management/users/{id}
-	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error)
 	// AdminGetReview implements adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -153,18 +158,21 @@ type Handler interface {
 	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
 	// AdminGetRole implements adminGetRole operation.
 	//
+	// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
+	// handler.
+	//
 	// GET /admin/management/roles/{id}
-	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
+	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error)
 	// AdminGetRolePermissions implements adminGetRolePermissions operation.
 	//
 	// The permission matrix for a role.
 	//
 	// GET /admin/management/role_permissions/{roleId}
-	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
+	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminGetStaffMember implements adminGetStaffMember operation.
 	//
 	// GET /admin/management/staff_members/{id}
-	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
+	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error)
 	// AdminGetUser implements adminGetUser operation.
 	//
 	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
@@ -312,7 +320,7 @@ type Handler interface {
 	// AdminUpdateManagementUser implements adminUpdateManagementUser operation.
 	//
 	// PUT /admin/management/users/{id}
-	AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
+	AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error)
 	// AdminUpdateReview implements adminUpdateReview operation.
 	//
 	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
@@ -322,17 +330,17 @@ type Handler interface {
 	// AdminUpdateRole implements adminUpdateRole operation.
 	//
 	// PUT /admin/management/roles/{id}
-	AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
+	AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error)
 	// AdminUpdateRolePermissions implements adminUpdateRolePermissions operation.
 	//
 	// Replace the permission matrix for a role.
 	//
 	// PUT /admin/management/role_permissions/{roleId}
-	AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
+	AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminUpdateStaffMember implements adminUpdateStaffMember operation.
 	//
 	// PUT /admin/management/staff_members/{id}
-	AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
+	AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error)
 	// AdminUpdateUser implements adminUpdateUser operation.
 	//
 	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error

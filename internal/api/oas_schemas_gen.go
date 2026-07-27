@@ -4556,10 +4556,6 @@ func (s *NotFoundError) SetMessage(val string) {
 func (*NotFoundError) adminCreateCourseVersionRes() {}
 func (*NotFoundError) adminGetBlogPostRes()         {}
 func (*NotFoundError) adminGetCourseRes()           {}
-func (*NotFoundError) adminGetManagementUserRes()   {}
-func (*NotFoundError) adminGetRolePermissionsRes()  {}
-func (*NotFoundError) adminGetRoleRes()             {}
-func (*NotFoundError) adminGetStaffMemberRes()      {}
 func (*NotFoundError) adminReviewCourseLessonRes()  {}
 func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
@@ -5888,10 +5884,6 @@ func (s *StaffMember) SetAllowedLocales(val []string) {
 	s.AllowedLocales = val
 }
 
-func (*StaffMember) adminCreateStaffMemberRes() {}
-func (*StaffMember) adminGetStaffMemberRes()    {}
-func (*StaffMember) adminUpdateStaffMemberRes() {}
-
 // Ref: #/components/schemas/StaffMemberInput
 type StaffMemberInput struct {
 	UserId         int32    `json:"userId"`
@@ -6090,12 +6082,6 @@ func (s *StaffRoleDetail) SetDescription(val NilString) {
 func (s *StaffRoleDetail) SetPermissions(val []StaffRolePermission) {
 	s.Permissions = val
 }
-
-func (*StaffRoleDetail) adminCreateRoleRes()            {}
-func (*StaffRoleDetail) adminGetRolePermissionsRes()    {}
-func (*StaffRoleDetail) adminGetRoleRes()               {}
-func (*StaffRoleDetail) adminUpdateRolePermissionsRes() {}
-func (*StaffRoleDetail) adminUpdateRoleRes()            {}
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
@@ -6498,9 +6484,6 @@ func (s *UserCrud) SetAdmin(val NilBool) {
 	s.Admin = val
 }
 
-func (*UserCrud) adminGetManagementUserRes()    {}
-func (*UserCrud) adminUpdateManagementUserRes() {}
-
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
 // Ref: #/components/schemas/UserCrudPage
@@ -6656,15 +6639,9 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 
 func (*ValidationError) adminCreateBlogPostRes()            {}
 func (*ValidationError) adminCreateCourseRes()              {}
-func (*ValidationError) adminCreateRoleRes()                {}
-func (*ValidationError) adminCreateStaffMemberRes()         {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUpdateCourseRes()              {}
-func (*ValidationError) adminUpdateManagementUserRes()      {}
-func (*ValidationError) adminUpdateRolePermissionsRes()     {}
-func (*ValidationError) adminUpdateRoleRes()                {}
-func (*ValidationError) adminUpdateStaffMemberRes()         {}
 func (*ValidationError) checkLessonRes()                    {}
 func (*ValidationError) confirmPhoneAuthRes()               {}
 func (*ValidationError) createBookRequestRes()              {}

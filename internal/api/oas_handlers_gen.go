@@ -1342,6 +1342,9 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 
 // handleAdminCreateRoleRequest handles adminCreateRole operation.
 //
+// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
+// handler.
+//
 // POST /admin/management/roles
 func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -1432,7 +1435,7 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminCreateRoleRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1448,7 +1451,7 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *RoleInput
 			Params   = struct{}
-			Response = AdminCreateRoleRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1573,7 +1576,7 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 		}
 	}()
 
-	var response AdminCreateStaffMemberRes
+	var response *StaffMember
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1589,7 +1592,7 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 		type (
 			Request  = *StaffMemberInput
 			Params   = struct{}
-			Response = AdminCreateStaffMemberRes
+			Response = *StaffMember
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3904,6 +3907,8 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 
 // handleAdminGetManagementUserRequest handles adminGetManagementUser operation.
 //
+// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
+//
 // GET /admin/management/users/{id}
 func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -3989,7 +3994,7 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminGetManagementUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4010,7 +4015,7 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminGetManagementUserParams
-			Response = AdminGetManagementUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4189,6 +4194,9 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 
 // handleAdminGetRoleRequest handles adminGetRole operation.
 //
+// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
+// handler.
+//
 // GET /admin/management/roles/{id}
 func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -4274,7 +4282,7 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response AdminGetRoleRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4295,7 +4303,7 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = AdminGetRoleParams
-			Response = AdminGetRoleRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4417,7 +4425,7 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 
 	var rawBody []byte
 
-	var response AdminGetRolePermissionsRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4438,7 +4446,7 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = AdminGetRolePermissionsParams
-			Response = AdminGetRolePermissionsRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4558,7 +4566,7 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 
 	var rawBody []byte
 
-	var response AdminGetStaffMemberRes
+	var response *StaffMember
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4579,7 +4587,7 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = AdminGetStaffMemberParams
-			Response = AdminGetStaffMemberRes
+			Response = *StaffMember
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9139,7 +9147,7 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 		}
 	}()
 
-	var response AdminUpdateManagementUserRes
+	var response *UserCrud
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9160,7 +9168,7 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 		type (
 			Request  = *UserInput
 			Params   = AdminUpdateManagementUserParams
-			Response = AdminUpdateManagementUserRes
+			Response = *UserCrud
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9453,7 +9461,7 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 		}
 	}()
 
-	var response AdminUpdateRoleRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9474,7 +9482,7 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = *RoleInput
 			Params   = AdminUpdateRoleParams
-			Response = AdminUpdateRoleRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9611,7 +9619,7 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 		}
 	}()
 
-	var response AdminUpdateRolePermissionsRes
+	var response *StaffRoleDetail
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9632,7 +9640,7 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 		type (
 			Request  = *RolePermissionsInput
 			Params   = AdminUpdateRolePermissionsParams
-			Response = AdminUpdateRolePermissionsRes
+			Response = *StaffRoleDetail
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9767,7 +9775,7 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 		}
 	}()
 
-	var response AdminUpdateStaffMemberRes
+	var response *StaffMember
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9788,7 +9796,7 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 		type (
 			Request  = *StaffMemberInput
 			Params   = AdminUpdateStaffMemberParams
-			Response = AdminUpdateStaffMemberRes
+			Response = *StaffMember
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

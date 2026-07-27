@@ -74,12 +74,15 @@ type Invoker interface {
 	AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error)
 	// AdminCreateRole invokes adminCreateRole operation.
 	//
+	// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
+	// handler.
+	//
 	// POST /admin/management/roles
-	AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error)
+	AdminCreateRole(ctx context.Context, request *RoleInput) (*StaffRoleDetail, error)
 	// AdminCreateStaffMember invokes adminCreateStaffMember operation.
 	//
 	// POST /admin/management/staff_members
-	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error)
+	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (*StaffMember, error)
 	// AdminCreateUser invokes adminCreateUser operation.
 	//
 	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
@@ -162,8 +165,10 @@ type Invoker interface {
 	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminGetManagementUser invokes adminGetManagementUser operation.
 	//
+	// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// GET /admin/management/users/{id}
-	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
+	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error)
 	// AdminGetReview invokes adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
@@ -173,18 +178,21 @@ type Invoker interface {
 	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
 	// AdminGetRole invokes adminGetRole operation.
 	//
+	// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
+	// handler.
+	//
 	// GET /admin/management/roles/{id}
-	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
+	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error)
 	// AdminGetRolePermissions invokes adminGetRolePermissions operation.
 	//
 	// The permission matrix for a role.
 	//
 	// GET /admin/management/role_permissions/{roleId}
-	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
+	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminGetStaffMember invokes adminGetStaffMember operation.
 	//
 	// GET /admin/management/staff_members/{id}
-	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
+	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error)
 	// AdminGetUser invokes adminGetUser operation.
 	//
 	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
@@ -332,7 +340,7 @@ type Invoker interface {
 	// AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 	//
 	// PUT /admin/management/users/{id}
-	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
+	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error)
 	// AdminUpdateReview invokes adminUpdateReview operation.
 	//
 	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
@@ -342,17 +350,17 @@ type Invoker interface {
 	// AdminUpdateRole invokes adminUpdateRole operation.
 	//
 	// PUT /admin/management/roles/{id}
-	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
+	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error)
 	// AdminUpdateRolePermissions invokes adminUpdateRolePermissions operation.
 	//
 	// Replace the permission matrix for a role.
 	//
 	// PUT /admin/management/role_permissions/{roleId}
-	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
+	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error)
 	// AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 	//
 	// PUT /admin/management/staff_members/{id}
-	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
+	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error)
 	// AdminUpdateUser invokes adminUpdateUser operation.
 	//
 	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
@@ -1430,13 +1438,16 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 
 // AdminCreateRole invokes adminCreateRole operation.
 //
+// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
+// handler.
+//
 // POST /admin/management/roles
-func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error) {
+func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminCreateRole(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (res AdminCreateRoleRes, err error) {
+func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateRole"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1512,12 +1523,12 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 // AdminCreateStaffMember invokes adminCreateStaffMember operation.
 //
 // POST /admin/management/staff_members
-func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error) {
+func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (*StaffMember, error) {
 	res, err := c.sendAdminCreateStaffMember(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (res AdminCreateStaffMemberRes, err error) {
+func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (res *StaffMember, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -3167,13 +3178,15 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 
 // AdminGetManagementUser invokes adminGetManagementUser operation.
 //
+// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
+//
 // GET /admin/management/users/{id}
-func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error) {
+func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminGetManagementUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (res AdminGetManagementUserRes, err error) {
+func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetManagementUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3362,13 +3375,16 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 
 // AdminGetRole invokes adminGetRole operation.
 //
+// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
+// handler.
+//
 // GET /admin/management/roles/{id}
-func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error) {
+func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminGetRole(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams) (res AdminGetRoleRes, err error) {
+func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRole"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3461,12 +3477,12 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 // The permission matrix for a role.
 //
 // GET /admin/management/role_permissions/{roleId}
-func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error) {
+func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminGetRolePermissions(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (res AdminGetRolePermissionsRes, err error) {
+func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3557,12 +3573,12 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 // AdminGetStaffMember invokes adminGetStaffMember operation.
 //
 // GET /admin/management/staff_members/{id}
-func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error) {
+func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error) {
 	res, err := c.sendAdminGetStaffMember(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (res AdminGetStaffMemberRes, err error) {
+func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (res *StaffMember, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetStaffMember"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7342,12 +7358,12 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 // AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 //
 // PUT /admin/management/users/{id}
-func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error) {
+func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error) {
 	res, err := c.sendAdminUpdateManagementUser(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (res AdminUpdateManagementUserRes, err error) {
+func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (res *UserCrud, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateManagementUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7542,12 +7558,12 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 // AdminUpdateRole invokes adminUpdateRole operation.
 //
 // PUT /admin/management/roles/{id}
-func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error) {
+func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminUpdateRole(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (res AdminUpdateRoleRes, err error) {
+func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRole"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7643,12 +7659,12 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 // Replace the permission matrix for a role.
 //
 // PUT /admin/management/role_permissions/{roleId}
-func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error) {
+func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error) {
 	res, err := c.sendAdminUpdateRolePermissions(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (res AdminUpdateRolePermissionsRes, err error) {
+func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (res *StaffRoleDetail, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7742,12 +7758,12 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 // AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 //
 // PUT /admin/management/staff_members/{id}
-func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error) {
+func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error) {
 	res, err := c.sendAdminUpdateStaffMember(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (res AdminUpdateStaffMemberRes, err error) {
+func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (res *StaffMember, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

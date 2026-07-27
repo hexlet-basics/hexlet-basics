@@ -2343,15 +2343,6 @@ export type AdminGetRolePermissionsData = {
   url: '/admin/management/role_permissions/{roleId}';
 };
 
-export type AdminGetRolePermissionsErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetRolePermissionsError = AdminGetRolePermissionsErrors[keyof AdminGetRolePermissionsErrors];
-
 export type AdminGetRolePermissionsResponses = {
   /**
    * The request has succeeded.
@@ -2369,17 +2360,6 @@ export type AdminUpdateRolePermissionsData = {
   query?: never;
   url: '/admin/management/role_permissions/{roleId}';
 };
-
-export type AdminUpdateRolePermissionsErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateRolePermissionsError = AdminUpdateRolePermissionsErrors[keyof AdminUpdateRolePermissionsErrors];
 
 export type AdminUpdateRolePermissionsResponses = {
   /**
@@ -2424,17 +2404,6 @@ export type AdminCreateRoleData = {
   url: '/admin/management/roles';
 };
 
-export type AdminCreateRoleErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateRoleError = AdminCreateRoleErrors[keyof AdminCreateRoleErrors];
-
 export type AdminCreateRoleResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -2471,15 +2440,6 @@ export type AdminGetRoleData = {
   url: '/admin/management/roles/{id}';
 };
 
-export type AdminGetRoleErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetRoleError = AdminGetRoleErrors[keyof AdminGetRoleErrors];
-
 export type AdminGetRoleResponses = {
   /**
    * The request has succeeded.
@@ -2497,17 +2457,6 @@ export type AdminUpdateRoleData = {
   query?: never;
   url: '/admin/management/roles/{id}';
 };
-
-export type AdminUpdateRoleErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateRoleError = AdminUpdateRoleErrors[keyof AdminUpdateRoleErrors];
 
 export type AdminUpdateRoleResponses = {
   /**
@@ -2552,17 +2501,6 @@ export type AdminCreateStaffMemberData = {
   url: '/admin/management/staff_members';
 };
 
-export type AdminCreateStaffMemberErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateStaffMemberError = AdminCreateStaffMemberErrors[keyof AdminCreateStaffMemberErrors];
-
 export type AdminCreateStaffMemberResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -2599,15 +2537,6 @@ export type AdminGetStaffMemberData = {
   url: '/admin/management/staff_members/{id}';
 };
 
-export type AdminGetStaffMemberErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetStaffMemberError = AdminGetStaffMemberErrors[keyof AdminGetStaffMemberErrors];
-
 export type AdminGetStaffMemberResponses = {
   /**
    * The request has succeeded.
@@ -2625,17 +2554,6 @@ export type AdminUpdateStaffMemberData = {
   query?: never;
   url: '/admin/management/staff_members/{id}';
 };
-
-export type AdminUpdateStaffMemberErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateStaffMemberError = AdminUpdateStaffMemberErrors[keyof AdminUpdateStaffMemberErrors];
 
 export type AdminUpdateStaffMemberResponses = {
   /**
@@ -2682,15 +2600,6 @@ export type AdminGetManagementUserData = {
   url: '/admin/management/users/{id}';
 };
 
-export type AdminGetManagementUserErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetManagementUserError = AdminGetManagementUserErrors[keyof AdminGetManagementUserErrors];
-
 export type AdminGetManagementUserResponses = {
   /**
    * The request has succeeded.
@@ -2708,17 +2617,6 @@ export type AdminUpdateManagementUserData = {
   query?: never;
   url: '/admin/management/users/{id}';
 };
-
-export type AdminUpdateManagementUserErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateManagementUserError = AdminUpdateManagementUserErrors[keyof AdminUpdateManagementUserErrors];
 
 export type AdminUpdateManagementUserResponses = {
   /**

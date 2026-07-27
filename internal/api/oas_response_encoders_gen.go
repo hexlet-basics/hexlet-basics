@@ -181,66 +181,30 @@ func encodeAdminCreateReviewResponse(response *Review, w http.ResponseWriter, sp
 	return nil
 }
 
-func encodeAdminCreateRoleResponse(response AdminCreateRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeAdminCreateRoleResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminCreateStaffMemberResponse(response AdminCreateStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMember:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeAdminCreateStaffMemberResponse(response *StaffMember, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminCreateUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
@@ -417,35 +381,17 @@ func encodeAdminGetCourseLandingPageResponse(response *CourseLandingPage, w http
 	return nil
 }
 
-func encodeAdminGetManagementUserResponse(response AdminGetManagementUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetManagementUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminGetReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
@@ -461,97 +407,43 @@ func encodeAdminGetReviewResponse(response *Review, w http.ResponseWriter, span 
 	return nil
 }
 
-func encodeAdminGetRoleResponse(response AdminGetRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetRoleResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminGetRolePermissionsResponse(response AdminGetRolePermissionsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetRolePermissionsResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminGetStaffMemberResponse(response AdminGetStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMember:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetStaffMemberResponse(response *StaffMember, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminGetUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
@@ -1019,35 +911,17 @@ func encodeAdminUpdateLandingPageQnaItemResponse(response *QnaItem, w http.Respo
 	return nil
 }
 
-func encodeAdminUpdateManagementUserResponse(response AdminUpdateManagementUserRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *UserCrud:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUpdateManagementUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminUpdateReviewResponse(response *Review, w http.ResponseWriter, span trace.Span) error {
@@ -1063,97 +937,43 @@ func encodeAdminUpdateReviewResponse(response *Review, w http.ResponseWriter, sp
 	return nil
 }
 
-func encodeAdminUpdateRoleResponse(response AdminUpdateRoleRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUpdateRoleResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminUpdateRolePermissionsResponse(response AdminUpdateRolePermissionsRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffRoleDetail:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUpdateRolePermissionsResponse(response *StaffRoleDetail, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
-func encodeAdminUpdateStaffMemberResponse(response AdminUpdateStaffMemberRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *StaffMember:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUpdateStaffMemberResponse(response *StaffMember, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminUpdateUserResponse(response *UserCrud, w http.ResponseWriter, span trace.Span) error {

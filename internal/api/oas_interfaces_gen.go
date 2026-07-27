@@ -13,36 +13,12 @@ type AdminCreateCourseVersionRes interface {
 	adminCreateCourseVersionRes()
 }
 
-type AdminCreateRoleRes interface {
-	adminCreateRoleRes()
-}
-
-type AdminCreateStaffMemberRes interface {
-	adminCreateStaffMemberRes()
-}
-
 type AdminGetBlogPostRes interface {
 	adminGetBlogPostRes()
 }
 
 type AdminGetCourseRes interface {
 	adminGetCourseRes()
-}
-
-type AdminGetManagementUserRes interface {
-	adminGetManagementUserRes()
-}
-
-type AdminGetRolePermissionsRes interface {
-	adminGetRolePermissionsRes()
-}
-
-type AdminGetRoleRes interface {
-	adminGetRoleRes()
-}
-
-type AdminGetStaffMemberRes interface {
-	adminGetStaffMemberRes()
 }
 
 type AdminReviewCourseLessonRes interface {
@@ -63,22 +39,6 @@ type AdminUpdateBlogPostRes interface {
 
 type AdminUpdateCourseRes interface {
 	adminUpdateCourseRes()
-}
-
-type AdminUpdateManagementUserRes interface {
-	adminUpdateManagementUserRes()
-}
-
-type AdminUpdateRolePermissionsRes interface {
-	adminUpdateRolePermissionsRes()
-}
-
-type AdminUpdateRoleRes interface {
-	adminUpdateRoleRes()
-}
-
-type AdminUpdateStaffMemberRes interface {
-	adminUpdateStaffMemberRes()
 }
 
 type CheckLessonRes interface {

@@ -443,14 +443,18 @@ model RoleInput {
 interface AdminRoles {
   @get @operationId("adminListRoles") list(...ListQuery): Page<StaffRole>;
 
-  @get @route("/{id}") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | NotFoundError;
+  /** Get a role with its permission matrix. A missing id surfaces as 404 via
+      the central ent-error handler. */
+  @get @route("/{id}") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail;
 
+  /** Create a role. A duplicate name is a DB unique constraint, surfaced as 409
+      by the central ent-error handler. */
   @post @operationId("adminCreateRole") create(@body body: RoleInput): {
     @statusCode statusCode: 201;
     @body role: StaffRoleDetail;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | ValidationError;
+  @put @route("/{id}") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail;
 
   @delete @route("/{id}") @operationId("adminDeleteRole") delete(@path id: int32): NoContent;
 }
@@ -473,10 +477,10 @@ model RolePermissionsInput {
 @tag("Admin: Roles")
 interface AdminRolePermissions {
   /** The permission matrix for a role. */
-  @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | NotFoundError;
+  @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail;
 
   /** Replace the permission matrix for a role. */
-  @put @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ValidationError;
+  @put @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail;
 }
 
 model StaffMemberInput {
@@ -490,14 +494,14 @@ model StaffMemberInput {
 interface AdminStaffMembers {
   @get @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember>;
 
-  @get @route("/{id}") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | NotFoundError;
+  @get @route("/{id}") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember;
 
   @post @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
     @statusCode statusCode: 201;
     @body staffMember: StaffMember;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | ValidationError;
+  @put @route("/{id}") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember;
 
   @delete @route("/{id}") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent;
 }
@@ -507,7 +511,9 @@ interface AdminStaffMembers {
 interface AdminManagementUsers {
   @get @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud>;
 
-  @get @route("/{id}") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | NotFoundError;
+  /** Get a management user. A missing id surfaces as 404 via the central
+      ent-error handler. */
+  @get @route("/{id}") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud;
 
-  @put @route("/{id}") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | ValidationError;
+  @put @route("/{id}") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud;
 }

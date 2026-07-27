@@ -86,15 +86,18 @@ func (UnimplementedHandler) AdminCreateReview(ctx context.Context, req *ReviewIn
 
 // AdminCreateRole implements adminCreateRole operation.
 //
+// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
+// handler.
+//
 // POST /admin/management/roles
-func (UnimplementedHandler) AdminCreateRole(ctx context.Context, req *RoleInput) (r AdminCreateRoleRes, _ error) {
+func (UnimplementedHandler) AdminCreateRole(ctx context.Context, req *RoleInput) (r *StaffRoleDetail, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateStaffMember implements adminCreateStaffMember operation.
 //
 // POST /admin/management/staff_members
-func (UnimplementedHandler) AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (r AdminCreateStaffMemberRes, _ error) {
+func (UnimplementedHandler) AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (r *StaffMember, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -228,8 +231,10 @@ func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, param
 
 // AdminGetManagementUser implements adminGetManagementUser operation.
 //
+// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
+//
 // GET /admin/management/users/{id}
-func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (r AdminGetManagementUserRes, _ error) {
+func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (r *UserCrud, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -245,8 +250,11 @@ func (UnimplementedHandler) AdminGetReview(ctx context.Context, params AdminGetR
 
 // AdminGetRole implements adminGetRole operation.
 //
+// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
+// handler.
+//
 // GET /admin/management/roles/{id}
-func (UnimplementedHandler) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (r AdminGetRoleRes, _ error) {
+func (UnimplementedHandler) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (r *StaffRoleDetail, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -255,14 +263,14 @@ func (UnimplementedHandler) AdminGetRole(ctx context.Context, params AdminGetRol
 // The permission matrix for a role.
 //
 // GET /admin/management/role_permissions/{roleId}
-func (UnimplementedHandler) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (r AdminGetRolePermissionsRes, _ error) {
+func (UnimplementedHandler) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (r *StaffRoleDetail, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminGetStaffMember implements adminGetStaffMember operation.
 //
 // GET /admin/management/staff_members/{id}
-func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (r AdminGetStaffMemberRes, _ error) {
+func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (r *StaffMember, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -500,7 +508,7 @@ func (UnimplementedHandler) AdminUpdateLandingPageQnaItem(ctx context.Context, r
 // AdminUpdateManagementUser implements adminUpdateManagementUser operation.
 //
 // PUT /admin/management/users/{id}
-func (UnimplementedHandler) AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (r AdminUpdateManagementUserRes, _ error) {
+func (UnimplementedHandler) AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (r *UserCrud, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -516,7 +524,7 @@ func (UnimplementedHandler) AdminUpdateReview(ctx context.Context, req *ReviewIn
 // AdminUpdateRole implements adminUpdateRole operation.
 //
 // PUT /admin/management/roles/{id}
-func (UnimplementedHandler) AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (r AdminUpdateRoleRes, _ error) {
+func (UnimplementedHandler) AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (r *StaffRoleDetail, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -525,14 +533,14 @@ func (UnimplementedHandler) AdminUpdateRole(ctx context.Context, req *RoleInput,
 // Replace the permission matrix for a role.
 //
 // PUT /admin/management/role_permissions/{roleId}
-func (UnimplementedHandler) AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (r AdminUpdateRolePermissionsRes, _ error) {
+func (UnimplementedHandler) AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (r *StaffRoleDetail, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminUpdateStaffMember implements adminUpdateStaffMember operation.
 //
 // PUT /admin/management/staff_members/{id}
-func (UnimplementedHandler) AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (r AdminUpdateStaffMemberRes, _ error) {
+func (UnimplementedHandler) AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (r *StaffMember, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
