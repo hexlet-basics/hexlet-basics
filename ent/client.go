@@ -11,6 +11,7 @@ import (
 
 	"hexletbasics/ent/migrate"
 
+	"hexletbasics/ent/banner"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/landingpage"
@@ -26,6 +27,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Banner is the client for interacting with the Banner builders.
+	Banner *BannerClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
@@ -43,6 +46,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Banner = NewBannerClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
@@ -138,6 +142,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:            ctx,
 		config:         cfg,
+		Banner:         NewBannerClient(cfg),
 		Course:         NewCourseClient(cfg),
 		CourseCategory: NewCourseCategoryClient(cfg),
 		LandingPage:    NewLandingPageClient(cfg),
@@ -160,6 +165,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:            ctx,
 		config:         cfg,
+		Banner:         NewBannerClient(cfg),
 		Course:         NewCourseClient(cfg),
 		CourseCategory: NewCourseCategoryClient(cfg),
 		LandingPage:    NewLandingPageClient(cfg),
@@ -169,7 +175,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Course.
+//		Banner.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -191,6 +197,7 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Banner.Use(hooks...)
 	c.Course.Use(hooks...)
 	c.CourseCategory.Use(hooks...)
 	c.LandingPage.Use(hooks...)
@@ -199,6 +206,7 @@ func (c *Client) Use(hooks ...Hook) {
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.Banner.Intercept(interceptors...)
 	c.Course.Intercept(interceptors...)
 	c.CourseCategory.Intercept(interceptors...)
 	c.LandingPage.Intercept(interceptors...)
@@ -207,6 +215,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *BannerMutation:
+		return c.Banner.mutate(ctx, m)
 	case *CourseMutation:
 		return c.Course.mutate(ctx, m)
 	case *CourseCategoryMutation:
@@ -215,6 +225,139 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.LandingPage.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// BannerClient is a client for the Banner schema.
+type BannerClient struct {
+	config
+}
+
+// NewBannerClient returns a client for the Banner from the given config.
+func NewBannerClient(c config) *BannerClient {
+	return &BannerClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `banner.Hooks(f(g(h())))`.
+func (c *BannerClient) Use(hooks ...Hook) {
+	c.hooks.Banner = append(c.hooks.Banner, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `banner.Intercept(f(g(h())))`.
+func (c *BannerClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Banner = append(c.inters.Banner, interceptors...)
+}
+
+// Create returns a builder for creating a Banner entity.
+func (c *BannerClient) Create() *BannerCreate {
+	mutation := newBannerMutation(c.config, OpCreate)
+	return &BannerCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Banner entities.
+func (c *BannerClient) CreateBulk(builders ...*BannerCreate) *BannerCreateBulk {
+	return &BannerCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BannerClient) MapCreateBulk(slice any, setFunc func(*BannerCreate, int)) *BannerCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BannerCreateBulk{err: fmt.Errorf("calling to BannerClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BannerCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BannerCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Banner.
+func (c *BannerClient) Update() *BannerUpdate {
+	mutation := newBannerMutation(c.config, OpUpdate)
+	return &BannerUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BannerClient) UpdateOne(_m *Banner) *BannerUpdateOne {
+	mutation := newBannerMutation(c.config, OpUpdateOne, withBanner(_m))
+	return &BannerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BannerClient) UpdateOneID(id int) *BannerUpdateOne {
+	mutation := newBannerMutation(c.config, OpUpdateOne, withBannerID(id))
+	return &BannerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Banner.
+func (c *BannerClient) Delete() *BannerDelete {
+	mutation := newBannerMutation(c.config, OpDelete)
+	return &BannerDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BannerClient) DeleteOne(_m *Banner) *BannerDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BannerClient) DeleteOneID(id int) *BannerDeleteOne {
+	builder := c.Delete().Where(banner.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BannerDeleteOne{builder}
+}
+
+// Query returns a query builder for Banner.
+func (c *BannerClient) Query() *BannerQuery {
+	return &BannerQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBanner},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Banner entity by its id.
+func (c *BannerClient) Get(ctx context.Context, id int) (*Banner, error) {
+	return c.Query().Where(banner.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BannerClient) GetX(ctx context.Context, id int) *Banner {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *BannerClient) Hooks() []Hook {
+	return c.hooks.Banner
+}
+
+// Interceptors returns the client interceptors.
+func (c *BannerClient) Interceptors() []Interceptor {
+	return c.inters.Banner
+}
+
+func (c *BannerClient) mutate(ctx context.Context, m *BannerMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BannerCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BannerUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BannerUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BannerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Banner mutation op: %q", m.Op())
 	}
 }
 
@@ -652,9 +795,9 @@ func (c *LandingPageClient) mutate(ctx context.Context, m *LandingPageMutation) 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Course, CourseCategory, LandingPage []ent.Hook
+		Banner, Course, CourseCategory, LandingPage []ent.Hook
 	}
 	inters struct {
-		Course, CourseCategory, LandingPage []ent.Interceptor
+		Banner, Course, CourseCategory, LandingPage []ent.Interceptor
 	}
 )

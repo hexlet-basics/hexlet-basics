@@ -10,6 +10,31 @@ import (
 
 type ConverterImpl struct{}
 
+func (c *ConverterImpl) ToBanner(source *ent.Banner) api.Banner {
+	var apiBanner api.Banner
+	if source != nil {
+		apiBanner.ID = Int32FromInt((*source).ID)
+		apiBanner.Locale = BannerLocaleFromString((*source).Locale)
+		apiBanner.Body = (*source).Body
+		apiBanner.URL = NilStringFromPtr((*source).URL)
+		apiBanner.Background = BannerBackgroundFromString((*source).Background)
+		apiBanner.State = BannerStateFromString((*source).State)
+		apiBanner.StartsAt = NilDateTimeFromPtr((*source).StartsAt)
+		apiBanner.FinishesAt = NilDateTimeFromPtr((*source).FinishesAt)
+		apiBanner.CreatedAt = TimeIdentity((*source).CreatedAt)
+	}
+	return apiBanner
+}
+func (c *ConverterImpl) ToBanners(source []*ent.Banner) []api.Banner {
+	var apiBannerList []api.Banner
+	if source != nil {
+		apiBannerList = make([]api.Banner, len(source))
+		for i := 0; i < len(source); i++ {
+			apiBannerList[i] = c.ToBanner(source[i])
+		}
+	}
+	return apiBannerList
+}
 func (c *ConverterImpl) ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem {
 	var apiCourseCatalogItem api.CourseCatalogItem
 	if source != nil {
@@ -48,9 +73,9 @@ func (c *ConverterImpl) ToCourse(source *ent.Course) api.Course {
 		apiCourse.Name = NilStringFromPtr((*source).Name)
 		apiCourse.LearnAs = NilLearnAsFromPtr((*source).LearnAs)
 		apiCourse.Progress = NilProgressFromPtr((*source).Progress)
+		apiCourse.CategoryId = NilInt32FromPtr((*source).CategoryID)
 		apiCourse.MembersCount = Int32FromInt((*source).MembersCount)
 		apiCourse.LessonsCount = Int32FromInt((*source).LessonsCount)
-		apiCourse.CategoryId = NilInt32FromPtr((*source).CategoryID)
 	}
 	return apiCourse
 }

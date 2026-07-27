@@ -370,6 +370,7 @@ paths:
   /admin/banners:
     get:
       operationId: adminListBanners
+      description: List banners (paginated).
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
@@ -386,6 +387,10 @@ paths:
         - 'Admin: Banners'
     post:
       operationId: adminCreateBanner
+      description: |-
+        Create a banner. A body violating the schema (e.g. an empty `body`)
+              surfaces as 400 via the central handler; banners carry no uniqueness
+              constraint, so there is no 409 path.
       parameters: []
       responses:
         '201':
@@ -394,15 +399,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Banners'
       requestBody:
@@ -414,6 +410,9 @@ paths:
   /admin/banners/{id}:
     get:
       operationId: adminGetBanner
+      description: |-
+        Get a single banner. A missing id surfaces as 404 via the central
+              ent-error handler, not a typed union member.
       parameters:
         - name: id
           in: path
@@ -428,16 +427,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
       tags:
         - 'Admin: Banners'
     put:
       operationId: adminUpdateBanner
+      description: Update a banner. A missing id surfaces as 404 via the central handler.
       parameters:
         - name: id
           in: path
@@ -452,15 +446,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Banners'
       requestBody:
@@ -471,6 +456,7 @@ paths:
               $ref: '#/components/schemas/BannerInput'
     delete:
       operationId: adminDeleteBanner
+      description: Delete a banner.
       parameters:
         - name: id
           in: path

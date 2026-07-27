@@ -35,6 +35,9 @@ func (c *codeRecorder) Unwrap() http.ResponseWriter {
 
 // handleAdminCreateBannerRequest handles adminCreateBanner operation.
 //
+// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
+// handler; banners carry no uniqueness constraint, so there is no 409 path.
+//
 // POST /admin/banners
 func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -125,7 +128,7 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminCreateBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -141,7 +144,7 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *BannerInput
 			Params   = struct{}
-			Response = AdminCreateBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1762,6 +1765,8 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 
 // handleAdminDeleteBannerRequest handles adminDeleteBanner operation.
 //
+// Delete a banner.
+//
 // DELETE /admin/banners/{id}
 func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -3182,6 +3187,9 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 
 // handleAdminGetBannerRequest handles adminGetBanner operation.
 //
+// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
+// union member.
+//
 // GET /admin/banners/{id}
 func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -3267,7 +3275,7 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminGetBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3288,7 +3296,7 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetBannerParams
-			Response = AdminGetBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4737,6 +4745,8 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 }
 
 // handleAdminListBannersRequest handles adminListBanners operation.
+//
+// List banners (paginated).
 //
 // GET /admin/banners
 func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -7904,6 +7914,8 @@ func (s *Server) handleAdminSetBlogPostRelatedCoursesRequest(args [1]string, arg
 
 // handleAdminUpdateBannerRequest handles adminUpdateBanner operation.
 //
+// Update a banner. A missing id surfaces as 404 via the central handler.
+//
 // PUT /admin/banners/{id}
 func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -8004,7 +8016,7 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminUpdateBannerRes
+	var response *Banner
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8025,7 +8037,7 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *BannerInput
 			Params   = AdminUpdateBannerParams
-			Response = AdminUpdateBannerRes
+			Response = *Banner
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

@@ -13,15 +13,20 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## install: install the mise-pinned toolchain (go, golangci-lint, atlas, testfixtures)
-install:
+## prepare: install the mise-pinned toolchain (go, golangci-lint, atlas, testfixtures)
+prepare:
 	mise install
 
-## setup: full local bootstrap (install toolchain + seed .env + go/frontend deps)
-setup: install
-	cp -n .env.example .env || true
+## install: install project dependencies (go modules + frontend/api-spec via root package.json)
+install:
 	go mod download
 	pnpm install
+
+## setup: full local bootstrap (toolchain + seed .env + install deps)
+setup:
+	$(MAKE) prepare
+	cp -n .env.example .env || true
+	$(MAKE) install
 
 # ---------------------------------------------------------------------------
 # Services (local Postgres in Docker; schema is still owned by legacy Rails)
@@ -192,7 +197,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help install setup services-start services-stop migrate-new test-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
+.PHONY: help prepare install setup services-start services-stop migrate-new test-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-web clean \
 	deps-update update-skills

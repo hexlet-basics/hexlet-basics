@@ -26,8 +26,12 @@ import (
 // goverter:extend StringFromPtr
 // goverter:extend NilStringFromPtr
 // goverter:extend NilInt32FromPtr
+// goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
 // goverter:extend NilProgressFromPtr
+// goverter:extend BannerLocaleFromString
+// goverter:extend BannerBackgroundFromString
+// goverter:extend BannerStateFromString
 // goverter:extend TimeIdentity
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
@@ -39,11 +43,29 @@ type Converter interface {
 	ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem
 
 	// goverter:map CategoryID CategoryId
+	// The rest of api.Course has no ent.Course source yet — it mirrors the legacy
+	// serializer, which drew these from associations/version/rating/cover data
+	// not carried on the courses table. They stay null/zero until those subsystems
+	// are migrated, exactly as they already serialize today (same idiom as the
+	// Duration/CoverUrl bridges above).
+	// goverter:ignore CurrentVersionId
+	// goverter:ignore CurrentVersion
+	// goverter:ignore CreatedAt
+	// goverter:ignore RatingCount
+	// goverter:ignore RatingValue
+	// goverter:ignore RepositoryUrl
+	// goverter:ignore HexletProgramLandingPage
+	// goverter:ignore CoverListVariant
+	// goverter:ignore CoverThumbVariant
 	ToCourse(source *ent.Course) api.Course
 
 	ToCourseCategory(source *ent.CourseCategory) api.CourseCategory
 
 	ToCourseCategories(source []*ent.CourseCategory) []api.CourseCategory
+
+	ToBanner(source *ent.Banner) api.Banner
+
+	ToBanners(source []*ent.Banner) []api.Banner
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -71,6 +93,25 @@ func NilInt32FromPtr(v *int) api.NilInt32 {
 	}
 	return api.NewNilInt32(int32(*v))
 }
+
+// NilDateTimeFromPtr bridges a nullable ent time column to ogen's NilDateTime.
+func NilDateTimeFromPtr(v *time.Time) api.NilDateTime {
+	if v == nil {
+		return api.NilDateTime{Null: true}
+	}
+	return api.NewNilDateTime(*v)
+}
+
+// Banner's state/background/locale live as plain strings in the DB (legacy
+// string-backed enums); these narrow each column to its ogen enum type. The
+// value is trusted: it was written through the same enum-validated contract.
+func BannerLocaleFromString(v string) api.BannerLocale { return api.BannerLocale(v) }
+
+// BannerBackgroundFromString narrows the banner background column to its enum.
+func BannerBackgroundFromString(v string) api.BannerBackground { return api.BannerBackground(v) }
+
+// BannerStateFromString narrows the banner state column to its enum.
+func BannerStateFromString(v string) api.BannerState { return api.BannerState(v) }
 
 // NilLearnAsFromPtr bridges a nullable ent string to ogen's NilCourseLearnAs.
 func NilLearnAsFromPtr(v *string) api.NilCourseLearnAs {

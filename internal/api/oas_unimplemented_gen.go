@@ -15,8 +15,11 @@ var _ Handler = UnimplementedHandler{}
 
 // AdminCreateBanner implements adminCreateBanner operation.
 //
+// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
+// handler; banners carry no uniqueness constraint, so there is no 409 path.
+//
 // POST /admin/banners
-func (UnimplementedHandler) AdminCreateBanner(ctx context.Context, req *BannerInput) (r AdminCreateBannerRes, _ error) {
+func (UnimplementedHandler) AdminCreateBanner(ctx context.Context, req *BannerInput) (r *Banner, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -104,6 +107,8 @@ func (UnimplementedHandler) AdminCreateUser(ctx context.Context, req *UserInput)
 
 // AdminDeleteBanner implements adminDeleteBanner operation.
 //
+// Delete a banner.
+//
 // DELETE /admin/banners/{id}
 func (UnimplementedHandler) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error {
 	return ht.ErrNotImplemented
@@ -176,8 +181,11 @@ func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDel
 
 // AdminGetBanner implements adminGetBanner operation.
 //
+// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
+// union member.
+//
 // GET /admin/banners/{id}
-func (UnimplementedHandler) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (r AdminGetBannerRes, _ error) {
+func (UnimplementedHandler) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (r *Banner, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -257,6 +265,8 @@ func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUse
 }
 
 // AdminListBanners implements adminListBanners operation.
+//
+// List banners (paginated).
 //
 // GET /admin/banners
 func (UnimplementedHandler) AdminListBanners(ctx context.Context, params AdminListBannersParams) (r *BannerPage, _ error) {
@@ -415,8 +425,10 @@ func (UnimplementedHandler) AdminSetBlogPostRelatedCourses(ctx context.Context, 
 
 // AdminUpdateBanner implements adminUpdateBanner operation.
 //
+// Update a banner. A missing id surfaces as 404 via the central handler.
+//
 // PUT /admin/banners/{id}
-func (UnimplementedHandler) AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (r AdminUpdateBannerRes, _ error) {
+func (UnimplementedHandler) AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (r *Banner, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

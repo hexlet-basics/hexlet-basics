@@ -9,6 +9,25 @@ import (
 )
 
 var (
+	// BannersColumns holds the columns for the "banners" table.
+	BannersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "background", Type: field.TypeString, Default: "cta_gradient"},
+		{Name: "body", Type: field.TypeString},
+		{Name: "locale", Type: field.TypeString},
+		{Name: "state", Type: field.TypeString, Default: "draft"},
+		{Name: "url", Type: field.TypeString, Nullable: true},
+		{Name: "starts_at", Type: field.TypeTime, Nullable: true},
+		{Name: "finishes_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// BannersTable holds the schema information for the "banners" table.
+	BannersTable = &schema.Table{
+		Name:       "banners",
+		Columns:    BannersColumns,
+		PrimaryKey: []*schema.Column{BannersColumns[0]},
+	}
 	// LanguagesColumns holds the columns for the "languages" table.
 	LanguagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -70,6 +89,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		BannersTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
 		LanguageLandingPagesTable,

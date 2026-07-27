@@ -190,10 +190,6 @@ func (s *Banner) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*Banner) adminCreateBannerRes() {}
-func (*Banner) adminGetBannerRes()    {}
-func (*Banner) adminUpdateBannerRes() {}
-
 // Banner display background.
 // Ref: #/components/schemas/BannerBackground
 type BannerBackground string
@@ -4562,7 +4558,6 @@ func (s *NotFoundError) SetMessage(val string) {
 }
 
 func (*NotFoundError) adminCreateCourseVersionRes()  {}
-func (*NotFoundError) adminGetBannerRes()            {}
 func (*NotFoundError) adminGetBlogPostRes()          {}
 func (*NotFoundError) adminGetCourseLandingPageRes() {}
 func (*NotFoundError) adminGetCourseRes()            {}
@@ -6678,7 +6673,6 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 	s.Errors = val
 }
 
-func (*ValidationError) adminCreateBannerRes()              {}
 func (*ValidationError) adminCreateBlogPostRes()            {}
 func (*ValidationError) adminCreateCategoryQnaItemRes()     {}
 func (*ValidationError) adminCreateCourseLandingPageRes()   {}
@@ -6689,7 +6683,6 @@ func (*ValidationError) adminCreateRoleRes()                {}
 func (*ValidationError) adminCreateStaffMemberRes()         {}
 func (*ValidationError) adminCreateUserRes()                {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
-func (*ValidationError) adminUpdateBannerRes()              {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUpdateCategoryQnaItemRes()     {}
 func (*ValidationError) adminUpdateCourseLandingPageRes()   {}

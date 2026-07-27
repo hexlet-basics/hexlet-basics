@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"hexletbasics/ent/banner"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/schema"
 	"time"
@@ -12,6 +13,26 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	bannerFields := schema.Banner{}.Fields()
+	_ = bannerFields
+	// bannerDescBackground is the schema descriptor for background field.
+	bannerDescBackground := bannerFields[0].Descriptor()
+	// banner.DefaultBackground holds the default value on creation for the background field.
+	banner.DefaultBackground = bannerDescBackground.Default.(string)
+	// bannerDescState is the schema descriptor for state field.
+	bannerDescState := bannerFields[3].Descriptor()
+	// banner.DefaultState holds the default value on creation for the state field.
+	banner.DefaultState = bannerDescState.Default.(string)
+	// bannerDescCreatedAt is the schema descriptor for created_at field.
+	bannerDescCreatedAt := bannerFields[7].Descriptor()
+	// banner.DefaultCreatedAt holds the default value on creation for the created_at field.
+	banner.DefaultCreatedAt = bannerDescCreatedAt.Default.(func() time.Time)
+	// bannerDescUpdatedAt is the schema descriptor for updated_at field.
+	bannerDescUpdatedAt := bannerFields[8].Descriptor()
+	// banner.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	banner.DefaultUpdatedAt = bannerDescUpdatedAt.Default.(func() time.Time)
+	// banner.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	banner.UpdateDefaultUpdatedAt = bannerDescUpdatedAt.UpdateDefault.(func() time.Time)
 	coursecategoryFields := schema.CourseCategory{}.Fields()
 	_ = coursecategoryFields
 	// coursecategoryDescCreatedAt is the schema descriptor for created_at field.

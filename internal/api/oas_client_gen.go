@@ -30,8 +30,11 @@ func trimTrailingSlashes(u *url.URL) {
 type Invoker interface {
 	// AdminCreateBanner invokes adminCreateBanner operation.
 	//
+	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
+	// handler; banners carry no uniqueness constraint, so there is no 409 path.
+	//
 	// POST /admin/banners
-	AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error)
+	AdminCreateBanner(ctx context.Context, request *BannerInput) (*Banner, error)
 	// AdminCreateBlogPost invokes adminCreateBlogPost operation.
 	//
 	// POST /admin/blog_posts
@@ -83,6 +86,8 @@ type Invoker interface {
 	AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error)
 	// AdminDeleteBanner invokes adminDeleteBanner operation.
 	//
+	// Delete a banner.
+	//
 	// DELETE /admin/banners/{id}
 	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error
 	// AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
@@ -125,8 +130,11 @@ type Invoker interface {
 	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
 	// AdminGetBanner invokes adminGetBanner operation.
 	//
+	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
+	// union member.
+	//
 	// GET /admin/banners/{id}
-	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
+	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error)
 	// AdminGetBlogPost invokes adminGetBlogPost operation.
 	//
 	// GET /admin/blog_posts/{id}
@@ -173,6 +181,8 @@ type Invoker interface {
 	// GET /admin/api/users/{id}
 	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
 	// AdminListBanners invokes adminListBanners operation.
+	//
+	// List banners (paginated).
 	//
 	// GET /admin/banners
 	AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error)
@@ -268,8 +278,10 @@ type Invoker interface {
 	AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
 	// AdminUpdateBanner invokes adminUpdateBanner operation.
 	//
+	// Update a banner. A missing id surfaces as 404 via the central handler.
+	//
 	// PUT /admin/banners/{id}
-	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
+	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (*Banner, error)
 	// AdminUpdateBlogPost invokes adminUpdateBlogPost operation.
 	//
 	// PUT /admin/blog_posts/{id}
@@ -602,13 +614,16 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 
 // AdminCreateBanner invokes adminCreateBanner operation.
 //
+// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
+// handler; banners carry no uniqueness constraint, so there is no 409 path.
+//
 // POST /admin/banners
-func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error) {
+func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (*Banner, error) {
 	res, err := c.sendAdminCreateBanner(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput) (res AdminCreateBannerRes, err error) {
+func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1633,6 +1648,8 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 
 // AdminDeleteBanner invokes adminDeleteBanner operation.
 //
+// Delete a banner.
+//
 // DELETE /admin/banners/{id}
 func (c *Client) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error {
 	_, err := c.sendAdminDeleteBanner(ctx, params)
@@ -2633,13 +2650,16 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 
 // AdminGetBanner invokes adminGetBanner operation.
 //
+// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
+// union member.
+//
 // GET /admin/banners/{id}
-func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error) {
+func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error) {
 	res, err := c.sendAdminGetBanner(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerParams) (res AdminGetBannerRes, err error) {
+func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBanner"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3693,6 +3713,8 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 }
 
 // AdminListBanners invokes adminListBanners operation.
+//
+// List banners (paginated).
 //
 // GET /admin/banners
 func (c *Client) AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error) {
@@ -6538,13 +6560,15 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 
 // AdminUpdateBanner invokes adminUpdateBanner operation.
 //
+// Update a banner. A missing id surfaces as 404 via the central handler.
+//
 // PUT /admin/banners/{id}
-func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error) {
+func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (*Banner, error) {
 	res, err := c.sendAdminUpdateBanner(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (res AdminUpdateBannerRes, err error) {
+func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (res *Banner, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBanner"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

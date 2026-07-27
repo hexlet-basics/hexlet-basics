@@ -1504,17 +1504,6 @@ export type AdminCreateBannerData = {
   url: '/admin/banners';
 };
 
-export type AdminCreateBannerErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateBannerError = AdminCreateBannerErrors[keyof AdminCreateBannerErrors];
-
 export type AdminCreateBannerResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -1551,15 +1540,6 @@ export type AdminGetBannerData = {
   url: '/admin/banners/{id}';
 };
 
-export type AdminGetBannerErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetBannerError = AdminGetBannerErrors[keyof AdminGetBannerErrors];
-
 export type AdminGetBannerResponses = {
   /**
    * The request has succeeded.
@@ -1577,17 +1557,6 @@ export type AdminUpdateBannerData = {
   query?: never;
   url: '/admin/banners/{id}';
 };
-
-export type AdminUpdateBannerErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateBannerError = AdminUpdateBannerErrors[keyof AdminUpdateBannerErrors];
 
 export type AdminUpdateBannerResponses = {
   /**

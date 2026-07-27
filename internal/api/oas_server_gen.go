@@ -10,8 +10,11 @@ import (
 type Handler interface {
 	// AdminCreateBanner implements adminCreateBanner operation.
 	//
+	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
+	// handler; banners carry no uniqueness constraint, so there is no 409 path.
+	//
 	// POST /admin/banners
-	AdminCreateBanner(ctx context.Context, req *BannerInput) (AdminCreateBannerRes, error)
+	AdminCreateBanner(ctx context.Context, req *BannerInput) (*Banner, error)
 	// AdminCreateBlogPost implements adminCreateBlogPost operation.
 	//
 	// POST /admin/blog_posts
@@ -63,6 +66,8 @@ type Handler interface {
 	AdminCreateUser(ctx context.Context, req *UserInput) (AdminCreateUserRes, error)
 	// AdminDeleteBanner implements adminDeleteBanner operation.
 	//
+	// Delete a banner.
+	//
 	// DELETE /admin/banners/{id}
 	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error
 	// AdminDeleteBlogPost implements adminDeleteBlogPost operation.
@@ -105,8 +110,11 @@ type Handler interface {
 	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
 	// AdminGetBanner implements adminGetBanner operation.
 	//
+	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
+	// union member.
+	//
 	// GET /admin/banners/{id}
-	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
+	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error)
 	// AdminGetBlogPost implements adminGetBlogPost operation.
 	//
 	// GET /admin/blog_posts/{id}
@@ -153,6 +161,8 @@ type Handler interface {
 	// GET /admin/api/users/{id}
 	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
 	// AdminListBanners implements adminListBanners operation.
+	//
+	// List banners (paginated).
 	//
 	// GET /admin/banners
 	AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error)
@@ -248,8 +258,10 @@ type Handler interface {
 	AdminSetBlogPostRelatedCourses(ctx context.Context, req *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
 	// AdminUpdateBanner implements adminUpdateBanner operation.
 	//
+	// Update a banner. A missing id surfaces as 404 via the central handler.
+	//
 	// PUT /admin/banners/{id}
-	AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
+	AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (*Banner, error)
 	// AdminUpdateBlogPost implements adminUpdateBlogPost operation.
 	//
 	// PUT /admin/blog_posts/{id}
