@@ -29,9 +29,6 @@ import (
 // goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
 // goverter:extend NilProgressFromPtr
-// goverter:extend BannerLocaleFromString
-// goverter:extend BannerBackgroundFromString
-// goverter:extend BannerStateFromString
 // goverter:extend TimeIdentity
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem

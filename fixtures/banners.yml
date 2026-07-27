@@ -1,0 +1,25 @@
+# Fixtures for `banners`, HAND-CURATED (not exported from legacy — the Rails
+# fixture set has no banners). `make fixtures-import` is non-destructive and
+# skips existing files, so this survives re-imports. Small integer ids are safe:
+# banners have no FK graph, so they never mix with the crc32-id generated sets.
+# Loaded by testfixtures inside each test's rollback transaction.
+- id: 1
+  background: cta_gradient
+  body: Скидка 50% на все курсы
+  locale: ru
+  state: published
+  url: https://ru.hexlet.io/pricing
+  starts_at:
+  finishes_at:
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 2
+  background: dark
+  body: Black Friday sale
+  locale: en
+  state: draft
+  url:
+  starts_at:
+  finishes_at:
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

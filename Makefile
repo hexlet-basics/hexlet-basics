@@ -23,10 +23,8 @@ install:
 	pnpm install
 
 ## setup: full local bootstrap (toolchain + seed .env + install deps)
-setup:
-	$(MAKE) prepare
+setup: prepare install
 	cp -n .env.example .env || true
-	$(MAKE) install
 
 # ---------------------------------------------------------------------------
 # Services (local Postgres in Docker; schema is still owned by legacy Rails)
