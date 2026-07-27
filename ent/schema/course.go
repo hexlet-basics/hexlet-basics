@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -27,15 +29,25 @@ func (Course) Fields() []ent.Field {
 		field.String("name").Optional().Nillable(),
 		field.String("learn_as").Optional().Nillable(),
 		field.String("progress").Optional().Nillable(),
+		field.String("hexlet_program_landing_page").Optional().Nillable(),
 		field.Int("members_count"),
 		field.Int("lessons_count"),
 		field.Int("category_id").Optional().Nillable(),
+		field.Int("current_version_id").Optional().Nillable(),
 		field.Int("order").Optional().Nillable(),
+		field.Time("created_at").Default(time.Now).Immutable(),
 	}
 }
 
 func (Course) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("landing_pages", LandingPage.Type),
+		// current_version is the specific version a course points at via its
+		// `current_version_id` column (belongs-to), distinct from a course's
+		// full version history. The FK lives on this (languages) table, so the
+		// edge owns the field.
+		edge.To("current_version", CourseVersion.Type).
+			Field("current_version_id").
+			Unique(),
 	}
 }

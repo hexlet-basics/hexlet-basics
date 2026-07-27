@@ -29,6 +29,7 @@ import (
 // goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
 // goverter:extend NilProgressFromPtr
+// goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
@@ -39,21 +40,20 @@ type Converter interface {
 	// goverter:ignore Duration
 	ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem
 
+	// Every api.Course field maps from real ent data, mirroring LanguageResource:
+	// direct columns (createdAt, currentVersionId, hexletProgramLandingPage), the
+	// current_version association, and the serializer's computed fields as bridges
+	// below. Only the ActiveStorage cover variants stay deferred (same reason as
+	// CourseCatalogItem.CoverUrl — blob assets are not migrated yet).
 	// goverter:map CategoryID CategoryId
-	// The rest of api.Course has no ent.Course source yet — it mirrors the legacy
-	// serializer, which drew these from associations/version/rating/cover data
-	// not carried on the courses table. They stay null/zero until those subsystems
-	// are migrated, exactly as they already serialize today (same idiom as the
-	// Duration/CoverUrl bridges above).
-	// goverter:ignore CurrentVersionId
-	// goverter:ignore CurrentVersion
-	// goverter:ignore CreatedAt
-	// goverter:ignore RatingCount
-	// goverter:ignore RatingValue
-	// goverter:ignore RepositoryUrl
-	// goverter:ignore HexletProgramLandingPage
-	// goverter:ignore CoverListVariant
-	// goverter:ignore CoverThumbVariant
+	// goverter:map CurrentVersionID CurrentVersionId
+	// goverter:map Edges.CurrentVersion CurrentVersion
+	// goverter:map . RepositoryUrl | repositoryURL
+	// goverter:map . HexletProgramLandingPage | hexletProgramLandingPage
+	// goverter:map . RatingCount | ratingCount
+	// goverter:map . RatingValue | ratingValue
+	// goverter:map . CoverListVariant | coverVariantNull
+	// goverter:map . CoverThumbVariant | coverVariantNull
 	ToCourse(source *ent.Course) api.Course
 
 	ToCourseCategory(source *ent.CourseCategory) api.CourseCategory
@@ -117,5 +117,57 @@ func NilProgressFromPtr(v *string) api.NilCourseProgress {
 
 // coverURLNull keeps CoverUrl null until course cover assets are re-uploaded.
 func coverURLNull(*ent.LandingPage) api.NilString {
+	return api.NilString{Null: true}
+}
+
+// NilCourseVersionFromEnt bridges the current_version association to ogen's
+// NilCourseVersion. The four exposed fields are mapped inline: constructing the
+// Nil wrapper is the irreducible part goverter cannot infer, so hand-mapping the
+// small CourseVersion body alongside it keeps the whole bridge in one place.
+func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
+	if v == nil {
+		return api.NilCourseVersion{Null: true}
+	}
+	return api.NewNilCourseVersion(api.CourseVersion{
+		ID:        int32(v.ID),
+		Result:    NilStringFromPtr(v.Result),
+		State:     NilStringFromPtr(v.State),
+		CreatedAt: v.CreatedAt,
+	})
+}
+
+// repositoryURL derives the exercises repo URL from the course slug, mirroring
+// Language#repository_url. It is always present (the legacy method never returns
+// nil), so the nullable API field carries a value.
+func repositoryURL(c *ent.Course) api.NilString {
+	return api.NewNilString("https://github.com/hexlet-basics/exercises-" + lo.FromPtr(c.Slug))
+}
+
+// hexletProgramLandingPage applies the legacy `.presence` semantics: a blank
+// column reads as null rather than an empty string.
+func hexletProgramLandingPage(c *ent.Course) api.NilString {
+	if c.HexletProgramLandingPage == nil || *c.HexletProgramLandingPage == "" {
+		return api.NilString{Null: true}
+	}
+	return api.NewNilString(*c.HexletProgramLandingPage)
+}
+
+// ratingCount reproduces the legacy serializer's placeholder rating count. The
+// real aggregate over reviews is not implemented yet (the legacy code carries
+// the same TODO); this keeps parity until it is.
+func ratingCount(*ent.Course) int32 { return 89 }
+
+// ratingValue reproduces the legacy serializer's placeholder rating: a fixed
+// value keyed off id parity, pending a real reviews aggregate.
+func ratingValue(c *ent.Course) float64 {
+	if c.ID%2 == 0 {
+		return 4
+	}
+	return 5
+}
+
+// coverVariantNull keeps the cover variant URLs null until course cover assets
+// are migrated to blob storage (same deferral as coverURLNull).
+func coverVariantNull(*ent.Course) api.NilString {
 	return api.NilString{Null: true}
 }

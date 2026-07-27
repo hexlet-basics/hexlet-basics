@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"reflect"
 	"sync"
@@ -79,6 +80,7 @@ func checkColumn(t, c string) error {
 			banner.Table:         banner.ValidColumn,
 			course.Table:         course.ValidColumn,
 			coursecategory.Table: coursecategory.ValidColumn,
+			courseversion.Table:  courseversion.ValidColumn,
 			landingpage.Table:    landingpage.ValidColumn,
 		})
 	})

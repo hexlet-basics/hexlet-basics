@@ -15,5 +15,8 @@ type Course func(*sql.Selector)
 // CourseCategory is the predicate function for coursecategory builders.
 type CourseCategory func(*sql.Selector)
 
+// CourseVersion is the predicate function for courseversion builders.
+type CourseVersion func(*sql.Selector)
+
 // LandingPage is the predicate function for landingpage builders.
 type LandingPage func(*sql.Selector)

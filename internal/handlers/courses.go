@@ -39,7 +39,11 @@ func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, erro
 	// catalog is deterministic. All ordering happens in SQL.
 	pages, err := s.db.LandingPage.Query().
 		Where(landingpage.Listed(true)).
-		WithCourse().
+		WithCourse(func(q *ent.CourseQuery) {
+			// current_version populates Course.currentVersion in apiconv; without
+			// eager-loading it the edge is nil and the field serializes as null.
+			q.WithCurrentVersion()
+		}).
 		Order(
 			landingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
 			// language_id is the FK to Course, so it equals the Course id — order

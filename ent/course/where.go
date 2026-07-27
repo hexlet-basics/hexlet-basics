@@ -4,6 +4,7 @@ package course
 
 import (
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -74,6 +75,11 @@ func Progress(v string) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldProgress, v))
 }
 
+// HexletProgramLandingPage applies equality check predicate on the "hexlet_program_landing_page" field. It's identical to HexletProgramLandingPageEQ.
+func HexletProgramLandingPage(v string) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldHexletProgramLandingPage, v))
+}
+
 // MembersCount applies equality check predicate on the "members_count" field. It's identical to MembersCountEQ.
 func MembersCount(v int) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldMembersCount, v))
@@ -89,9 +95,19 @@ func CategoryID(v int) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldCategoryID, v))
 }
 
+// CurrentVersionID applies equality check predicate on the "current_version_id" field. It's identical to CurrentVersionIDEQ.
+func CurrentVersionID(v int) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldCurrentVersionID, v))
+}
+
 // Order applies equality check predicate on the "order" field. It's identical to OrderEQ.
 func Order(v int) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldOrder, v))
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldCreatedAt, v))
 }
 
 // SlugEQ applies the EQ predicate on the "slug" field.
@@ -394,6 +410,81 @@ func ProgressContainsFold(v string) predicate.Course {
 	return predicate.Course(sql.FieldContainsFold(FieldProgress, v))
 }
 
+// HexletProgramLandingPageEQ applies the EQ predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageEQ(v string) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageNEQ applies the NEQ predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageNEQ(v string) predicate.Course {
+	return predicate.Course(sql.FieldNEQ(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageIn applies the In predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageIn(vs ...string) predicate.Course {
+	return predicate.Course(sql.FieldIn(FieldHexletProgramLandingPage, vs...))
+}
+
+// HexletProgramLandingPageNotIn applies the NotIn predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageNotIn(vs ...string) predicate.Course {
+	return predicate.Course(sql.FieldNotIn(FieldHexletProgramLandingPage, vs...))
+}
+
+// HexletProgramLandingPageGT applies the GT predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageGT(v string) predicate.Course {
+	return predicate.Course(sql.FieldGT(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageGTE applies the GTE predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageGTE(v string) predicate.Course {
+	return predicate.Course(sql.FieldGTE(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageLT applies the LT predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageLT(v string) predicate.Course {
+	return predicate.Course(sql.FieldLT(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageLTE applies the LTE predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageLTE(v string) predicate.Course {
+	return predicate.Course(sql.FieldLTE(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageContains applies the Contains predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageContains(v string) predicate.Course {
+	return predicate.Course(sql.FieldContains(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageHasPrefix applies the HasPrefix predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageHasPrefix(v string) predicate.Course {
+	return predicate.Course(sql.FieldHasPrefix(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageHasSuffix applies the HasSuffix predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageHasSuffix(v string) predicate.Course {
+	return predicate.Course(sql.FieldHasSuffix(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageIsNil applies the IsNil predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageIsNil() predicate.Course {
+	return predicate.Course(sql.FieldIsNull(FieldHexletProgramLandingPage))
+}
+
+// HexletProgramLandingPageNotNil applies the NotNil predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageNotNil() predicate.Course {
+	return predicate.Course(sql.FieldNotNull(FieldHexletProgramLandingPage))
+}
+
+// HexletProgramLandingPageEqualFold applies the EqualFold predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageEqualFold(v string) predicate.Course {
+	return predicate.Course(sql.FieldEqualFold(FieldHexletProgramLandingPage, v))
+}
+
+// HexletProgramLandingPageContainsFold applies the ContainsFold predicate on the "hexlet_program_landing_page" field.
+func HexletProgramLandingPageContainsFold(v string) predicate.Course {
+	return predicate.Course(sql.FieldContainsFold(FieldHexletProgramLandingPage, v))
+}
+
 // MembersCountEQ applies the EQ predicate on the "members_count" field.
 func MembersCountEQ(v int) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldMembersCount, v))
@@ -524,6 +615,36 @@ func CategoryIDNotNil() predicate.Course {
 	return predicate.Course(sql.FieldNotNull(FieldCategoryID))
 }
 
+// CurrentVersionIDEQ applies the EQ predicate on the "current_version_id" field.
+func CurrentVersionIDEQ(v int) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldCurrentVersionID, v))
+}
+
+// CurrentVersionIDNEQ applies the NEQ predicate on the "current_version_id" field.
+func CurrentVersionIDNEQ(v int) predicate.Course {
+	return predicate.Course(sql.FieldNEQ(FieldCurrentVersionID, v))
+}
+
+// CurrentVersionIDIn applies the In predicate on the "current_version_id" field.
+func CurrentVersionIDIn(vs ...int) predicate.Course {
+	return predicate.Course(sql.FieldIn(FieldCurrentVersionID, vs...))
+}
+
+// CurrentVersionIDNotIn applies the NotIn predicate on the "current_version_id" field.
+func CurrentVersionIDNotIn(vs ...int) predicate.Course {
+	return predicate.Course(sql.FieldNotIn(FieldCurrentVersionID, vs...))
+}
+
+// CurrentVersionIDIsNil applies the IsNil predicate on the "current_version_id" field.
+func CurrentVersionIDIsNil() predicate.Course {
+	return predicate.Course(sql.FieldIsNull(FieldCurrentVersionID))
+}
+
+// CurrentVersionIDNotNil applies the NotNil predicate on the "current_version_id" field.
+func CurrentVersionIDNotNil() predicate.Course {
+	return predicate.Course(sql.FieldNotNull(FieldCurrentVersionID))
+}
+
 // OrderEQ applies the EQ predicate on the "order" field.
 func OrderEQ(v int) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldOrder, v))
@@ -574,6 +695,46 @@ func OrderNotNil() predicate.Course {
 	return predicate.Course(sql.FieldNotNull(FieldOrder))
 }
 
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.Course {
+	return predicate.Course(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.Course {
+	return predicate.Course(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.Course {
+	return predicate.Course(sql.FieldLTE(FieldCreatedAt, v))
+}
+
 // HasLandingPages applies the HasEdge predicate on the "landing_pages" edge.
 func HasLandingPages() predicate.Course {
 	return predicate.Course(func(s *sql.Selector) {
@@ -589,6 +750,29 @@ func HasLandingPages() predicate.Course {
 func HasLandingPagesWith(preds ...predicate.LandingPage) predicate.Course {
 	return predicate.Course(func(s *sql.Selector) {
 		step := newLandingPagesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCurrentVersion applies the HasEdge predicate on the "current_version" edge.
+func HasCurrentVersion() predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, CurrentVersionTable, CurrentVersionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCurrentVersionWith applies the HasEdge predicate on the "current_version" edge with a given conditions (other predicates).
+func HasCurrentVersionWith(preds ...predicate.CourseVersion) predicate.Course {
+	return predicate.Course(func(s *sql.Selector) {
+		step := newCurrentVersionStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

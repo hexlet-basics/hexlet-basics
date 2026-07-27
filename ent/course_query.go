@@ -7,6 +7,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"math"
@@ -20,11 +21,12 @@ import (
 // CourseQuery is the builder for querying Course entities.
 type CourseQuery struct {
 	config
-	ctx              *QueryContext
-	order            []course.OrderOption
-	inters           []Interceptor
-	predicates       []predicate.Course
-	withLandingPages *LandingPageQuery
+	ctx                *QueryContext
+	order              []course.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.Course
+	withLandingPages   *LandingPageQuery
+	withCurrentVersion *CourseVersionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -76,6 +78,28 @@ func (_q *CourseQuery) QueryLandingPages() *LandingPageQuery {
 			sqlgraph.From(course.Table, course.FieldID, selector),
 			sqlgraph.To(landingpage.Table, landingpage.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, course.LandingPagesTable, course.LandingPagesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCurrentVersion chains the current query on the "current_version" edge.
+func (_q *CourseQuery) QueryCurrentVersion() *CourseVersionQuery {
+	query := (&CourseVersionClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(course.Table, course.FieldID, selector),
+			sqlgraph.To(courseversion.Table, courseversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, course.CurrentVersionTable, course.CurrentVersionColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -270,12 +294,13 @@ func (_q *CourseQuery) Clone() *CourseQuery {
 		return nil
 	}
 	return &CourseQuery{
-		config:           _q.config,
-		ctx:              _q.ctx.Clone(),
-		order:            append([]course.OrderOption{}, _q.order...),
-		inters:           append([]Interceptor{}, _q.inters...),
-		predicates:       append([]predicate.Course{}, _q.predicates...),
-		withLandingPages: _q.withLandingPages.Clone(),
+		config:             _q.config,
+		ctx:                _q.ctx.Clone(),
+		order:              append([]course.OrderOption{}, _q.order...),
+		inters:             append([]Interceptor{}, _q.inters...),
+		predicates:         append([]predicate.Course{}, _q.predicates...),
+		withLandingPages:   _q.withLandingPages.Clone(),
+		withCurrentVersion: _q.withCurrentVersion.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -290,6 +315,17 @@ func (_q *CourseQuery) WithLandingPages(opts ...func(*LandingPageQuery)) *Course
 		opt(query)
 	}
 	_q.withLandingPages = query
+	return _q
+}
+
+// WithCurrentVersion tells the query-builder to eager-load the nodes that are connected to
+// the "current_version" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CourseQuery) WithCurrentVersion(opts ...func(*CourseVersionQuery)) *CourseQuery {
+	query := (&CourseVersionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCurrentVersion = query
 	return _q
 }
 
@@ -371,8 +407,9 @@ func (_q *CourseQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cours
 	var (
 		nodes       = []*Course{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withLandingPages != nil,
+			_q.withCurrentVersion != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -397,6 +434,12 @@ func (_q *CourseQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cours
 		if err := _q.loadLandingPages(ctx, query, nodes,
 			func(n *Course) { n.Edges.LandingPages = []*LandingPage{} },
 			func(n *Course, e *LandingPage) { n.Edges.LandingPages = append(n.Edges.LandingPages, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withCurrentVersion; query != nil {
+		if err := _q.loadCurrentVersion(ctx, query, nodes, nil,
+			func(n *Course, e *CourseVersion) { n.Edges.CurrentVersion = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -433,6 +476,38 @@ func (_q *CourseQuery) loadLandingPages(ctx context.Context, query *LandingPageQ
 	}
 	return nil
 }
+func (_q *CourseQuery) loadCurrentVersion(ctx context.Context, query *CourseVersionQuery, nodes []*Course, init func(*Course), assign func(*Course, *CourseVersion)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Course)
+	for i := range nodes {
+		if nodes[i].CurrentVersionID == nil {
+			continue
+		}
+		fk := *nodes[i].CurrentVersionID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(courseversion.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "current_version_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *CourseQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -458,6 +533,9 @@ func (_q *CourseQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != course.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withCurrentVersion != nil {
+			_spec.Node.AddColumnOnce(course.FieldCurrentVersionID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

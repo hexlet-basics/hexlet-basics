@@ -35,16 +35,27 @@ var (
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "learn_as", Type: field.TypeString, Nullable: true},
 		{Name: "progress", Type: field.TypeString, Nullable: true},
+		{Name: "hexlet_program_landing_page", Type: field.TypeString, Nullable: true},
 		{Name: "members_count", Type: field.TypeInt},
 		{Name: "lessons_count", Type: field.TypeInt},
 		{Name: "category_id", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "current_version_id", Type: field.TypeInt, Nullable: true},
 	}
 	// LanguagesTable holds the schema information for the "languages" table.
 	LanguagesTable = &schema.Table{
 		Name:       "languages",
 		Columns:    LanguagesColumns,
 		PrimaryKey: []*schema.Column{LanguagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "languages_language_versions_current_version",
+				Columns:    []*schema.Column{LanguagesColumns[11]},
+				RefColumns: []*schema.Column{LanguageVersionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// LanguageCategoriesColumns holds the columns for the "language_categories" table.
 	LanguageCategoriesColumns = []*schema.Column{
@@ -62,6 +73,19 @@ var (
 		Name:       "language_categories",
 		Columns:    LanguageCategoriesColumns,
 		PrimaryKey: []*schema.Column{LanguageCategoriesColumns[0]},
+	}
+	// LanguageVersionsColumns holds the columns for the "language_versions" table.
+	LanguageVersionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "result", Type: field.TypeString, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// LanguageVersionsTable holds the schema information for the "language_versions" table.
+	LanguageVersionsTable = &schema.Table{
+		Name:       "language_versions",
+		Columns:    LanguageVersionsColumns,
+		PrimaryKey: []*schema.Column{LanguageVersionsColumns[0]},
 	}
 	// LanguageLandingPagesColumns holds the columns for the "language_landing_pages" table.
 	LanguageLandingPagesColumns = []*schema.Column{
@@ -92,16 +116,21 @@ var (
 		BannersTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
+		LanguageVersionsTable,
 		LanguageLandingPagesTable,
 	}
 )
 
 func init() {
+	LanguagesTable.ForeignKeys[0].RefTable = LanguageVersionsTable
 	LanguagesTable.Annotation = &entsql.Annotation{
 		Table: "languages",
 	}
 	LanguageCategoriesTable.Annotation = &entsql.Annotation{
 		Table: "language_categories",
+	}
+	LanguageVersionsTable.Annotation = &entsql.Annotation{
+		Table: "language_versions",
 	}
 	LanguageLandingPagesTable.ForeignKeys[0].RefTable = LanguagesTable
 	LanguageLandingPagesTable.Annotation = &entsql.Annotation{

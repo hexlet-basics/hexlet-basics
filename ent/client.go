@@ -14,6 +14,7 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 
 	"entgo.io/ent"
@@ -33,6 +34,8 @@ type Client struct {
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseVersion is the client for interacting with the CourseVersion builders.
+	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
 }
@@ -49,6 +52,7 @@ func (c *Client) init() {
 	c.Banner = NewBannerClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
+	c.CourseVersion = NewCourseVersionClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
 }
 
@@ -145,6 +149,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Banner:         NewBannerClient(cfg),
 		Course:         NewCourseClient(cfg),
 		CourseCategory: NewCourseCategoryClient(cfg),
+		CourseVersion:  NewCourseVersionClient(cfg),
 		LandingPage:    NewLandingPageClient(cfg),
 	}, nil
 }
@@ -168,6 +173,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Banner:         NewBannerClient(cfg),
 		Course:         NewCourseClient(cfg),
 		CourseCategory: NewCourseCategoryClient(cfg),
+		CourseVersion:  NewCourseVersionClient(cfg),
 		LandingPage:    NewLandingPageClient(cfg),
 	}, nil
 }
@@ -200,6 +206,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Banner.Use(hooks...)
 	c.Course.Use(hooks...)
 	c.CourseCategory.Use(hooks...)
+	c.CourseVersion.Use(hooks...)
 	c.LandingPage.Use(hooks...)
 }
 
@@ -209,6 +216,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Banner.Intercept(interceptors...)
 	c.Course.Intercept(interceptors...)
 	c.CourseCategory.Intercept(interceptors...)
+	c.CourseVersion.Intercept(interceptors...)
 	c.LandingPage.Intercept(interceptors...)
 }
 
@@ -221,6 +229,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Course.mutate(ctx, m)
 	case *CourseCategoryMutation:
 		return c.CourseCategory.mutate(ctx, m)
+	case *CourseVersionMutation:
+		return c.CourseVersion.mutate(ctx, m)
 	case *LandingPageMutation:
 		return c.LandingPage.mutate(ctx, m)
 	default:
@@ -485,6 +495,22 @@ func (c *CourseClient) QueryLandingPages(_m *Course) *LandingPageQuery {
 	return query
 }
 
+// QueryCurrentVersion queries the current_version edge of a Course.
+func (c *CourseClient) QueryCurrentVersion(_m *Course) *CourseVersionQuery {
+	query := (&CourseVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(course.Table, course.FieldID, id),
+			sqlgraph.To(courseversion.Table, courseversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, course.CurrentVersionTable, course.CurrentVersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseClient) Hooks() []Hook {
 	return c.hooks.Course
@@ -643,6 +669,139 @@ func (c *CourseCategoryClient) mutate(ctx context.Context, m *CourseCategoryMuta
 	}
 }
 
+// CourseVersionClient is a client for the CourseVersion schema.
+type CourseVersionClient struct {
+	config
+}
+
+// NewCourseVersionClient returns a client for the CourseVersion from the given config.
+func NewCourseVersionClient(c config) *CourseVersionClient {
+	return &CourseVersionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `courseversion.Hooks(f(g(h())))`.
+func (c *CourseVersionClient) Use(hooks ...Hook) {
+	c.hooks.CourseVersion = append(c.hooks.CourseVersion, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `courseversion.Intercept(f(g(h())))`.
+func (c *CourseVersionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CourseVersion = append(c.inters.CourseVersion, interceptors...)
+}
+
+// Create returns a builder for creating a CourseVersion entity.
+func (c *CourseVersionClient) Create() *CourseVersionCreate {
+	mutation := newCourseVersionMutation(c.config, OpCreate)
+	return &CourseVersionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CourseVersion entities.
+func (c *CourseVersionClient) CreateBulk(builders ...*CourseVersionCreate) *CourseVersionCreateBulk {
+	return &CourseVersionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CourseVersionClient) MapCreateBulk(slice any, setFunc func(*CourseVersionCreate, int)) *CourseVersionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CourseVersionCreateBulk{err: fmt.Errorf("calling to CourseVersionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CourseVersionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CourseVersionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CourseVersion.
+func (c *CourseVersionClient) Update() *CourseVersionUpdate {
+	mutation := newCourseVersionMutation(c.config, OpUpdate)
+	return &CourseVersionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CourseVersionClient) UpdateOne(_m *CourseVersion) *CourseVersionUpdateOne {
+	mutation := newCourseVersionMutation(c.config, OpUpdateOne, withCourseVersion(_m))
+	return &CourseVersionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CourseVersionClient) UpdateOneID(id int) *CourseVersionUpdateOne {
+	mutation := newCourseVersionMutation(c.config, OpUpdateOne, withCourseVersionID(id))
+	return &CourseVersionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CourseVersion.
+func (c *CourseVersionClient) Delete() *CourseVersionDelete {
+	mutation := newCourseVersionMutation(c.config, OpDelete)
+	return &CourseVersionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CourseVersionClient) DeleteOne(_m *CourseVersion) *CourseVersionDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CourseVersionClient) DeleteOneID(id int) *CourseVersionDeleteOne {
+	builder := c.Delete().Where(courseversion.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CourseVersionDeleteOne{builder}
+}
+
+// Query returns a query builder for CourseVersion.
+func (c *CourseVersionClient) Query() *CourseVersionQuery {
+	return &CourseVersionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCourseVersion},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CourseVersion entity by its id.
+func (c *CourseVersionClient) Get(ctx context.Context, id int) (*CourseVersion, error) {
+	return c.Query().Where(courseversion.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CourseVersionClient) GetX(ctx context.Context, id int) *CourseVersion {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CourseVersionClient) Hooks() []Hook {
+	return c.hooks.CourseVersion
+}
+
+// Interceptors returns the client interceptors.
+func (c *CourseVersionClient) Interceptors() []Interceptor {
+	return c.inters.CourseVersion
+}
+
+func (c *CourseVersionClient) mutate(ctx context.Context, m *CourseVersionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CourseVersionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CourseVersionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CourseVersionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CourseVersionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CourseVersion mutation op: %q", m.Op())
+	}
+}
+
 // LandingPageClient is a client for the LandingPage schema.
 type LandingPageClient struct {
 	config
@@ -795,9 +954,9 @@ func (c *LandingPageClient) mutate(ctx context.Context, m *LandingPageMutation) 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Banner, Course, CourseCategory, LandingPage []ent.Hook
+		Banner, Course, CourseCategory, CourseVersion, LandingPage []ent.Hook
 	}
 	inters struct {
-		Banner, Course, CourseCategory, LandingPage []ent.Interceptor
+		Banner, Course, CourseCategory, CourseVersion, LandingPage []ent.Interceptor
 	}
 )

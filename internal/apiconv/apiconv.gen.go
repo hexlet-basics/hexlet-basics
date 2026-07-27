@@ -74,8 +74,17 @@ func (c *ConverterImpl) ToCourse(source *ent.Course) api.Course {
 		apiCourse.LearnAs = NilLearnAsFromPtr((*source).LearnAs)
 		apiCourse.Progress = NilProgressFromPtr((*source).Progress)
 		apiCourse.CategoryId = NilInt32FromPtr((*source).CategoryID)
+		apiCourse.CurrentVersionId = NilInt32FromPtr((*source).CurrentVersionID)
+		apiCourse.CurrentVersion = NilCourseVersionFromEnt((*source).Edges.CurrentVersion)
+		apiCourse.CreatedAt = TimeIdentity((*source).CreatedAt)
 		apiCourse.MembersCount = Int32FromInt((*source).MembersCount)
 		apiCourse.LessonsCount = Int32FromInt((*source).LessonsCount)
+		apiCourse.RatingCount = ratingCount(source)
+		apiCourse.RatingValue = ratingValue(source)
+		apiCourse.RepositoryUrl = repositoryURL(source)
+		apiCourse.HexletProgramLandingPage = hexletProgramLandingPage(source)
+		apiCourse.CoverListVariant = coverVariantNull(source)
+		apiCourse.CoverThumbVariant = coverVariantNull(source)
 	}
 	return apiCourse
 }

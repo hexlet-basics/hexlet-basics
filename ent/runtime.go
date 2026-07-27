@@ -4,7 +4,9 @@ package ent
 
 import (
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/schema"
 	"time"
 )
@@ -33,6 +35,12 @@ func init() {
 	banner.DefaultUpdatedAt = bannerDescUpdatedAt.Default.(func() time.Time)
 	// banner.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	banner.UpdateDefaultUpdatedAt = bannerDescUpdatedAt.UpdateDefault.(func() time.Time)
+	courseFields := schema.Course{}.Fields()
+	_ = courseFields
+	// courseDescCreatedAt is the schema descriptor for created_at field.
+	courseDescCreatedAt := courseFields[10].Descriptor()
+	// course.DefaultCreatedAt holds the default value on creation for the created_at field.
+	course.DefaultCreatedAt = courseDescCreatedAt.Default.(func() time.Time)
 	coursecategoryFields := schema.CourseCategory{}.Fields()
 	_ = coursecategoryFields
 	// coursecategoryDescCreatedAt is the schema descriptor for created_at field.
@@ -45,4 +53,10 @@ func init() {
 	coursecategory.DefaultUpdatedAt = coursecategoryDescUpdatedAt.Default.(func() time.Time)
 	// coursecategory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	coursecategory.UpdateDefaultUpdatedAt = coursecategoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	courseversionFields := schema.CourseVersion{}.Fields()
+	_ = courseversionFields
+	// courseversionDescCreatedAt is the schema descriptor for created_at field.
+	courseversionDescCreatedAt := courseversionFields[2].Descriptor()
+	// courseversion.DefaultCreatedAt holds the default value on creation for the created_at field.
+	courseversion.DefaultCreatedAt = courseversionDescCreatedAt.Default.(func() time.Time)
 }

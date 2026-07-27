@@ -18,6 +18,8 @@ type Tx struct {
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseVersion is the client for interacting with the CourseVersion builders.
+	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
 
@@ -154,6 +156,7 @@ func (tx *Tx) init() {
 	tx.Banner = NewBannerClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
+	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
 }
 

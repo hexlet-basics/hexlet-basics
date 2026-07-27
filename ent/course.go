@@ -5,7 +5,9 @@ package ent
 import (
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courseversion"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -24,14 +26,20 @@ type Course struct {
 	LearnAs *string `json:"learn_as,omitempty"`
 	// Progress holds the value of the "progress" field.
 	Progress *string `json:"progress,omitempty"`
+	// HexletProgramLandingPage holds the value of the "hexlet_program_landing_page" field.
+	HexletProgramLandingPage *string `json:"hexlet_program_landing_page,omitempty"`
 	// MembersCount holds the value of the "members_count" field.
 	MembersCount int `json:"members_count,omitempty"`
 	// LessonsCount holds the value of the "lessons_count" field.
 	LessonsCount int `json:"lessons_count,omitempty"`
 	// CategoryID holds the value of the "category_id" field.
 	CategoryID *int `json:"category_id,omitempty"`
+	// CurrentVersionID holds the value of the "current_version_id" field.
+	CurrentVersionID *int `json:"current_version_id,omitempty"`
 	// Order holds the value of the "order" field.
 	Order *int `json:"order,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CourseQuery when eager-loading is set.
 	Edges        CourseEdges `json:"edges"`
@@ -42,9 +50,11 @@ type Course struct {
 type CourseEdges struct {
 	// LandingPages holds the value of the landing_pages edge.
 	LandingPages []*LandingPage `json:"landing_pages,omitempty"`
+	// CurrentVersion holds the value of the current_version edge.
+	CurrentVersion *CourseVersion `json:"current_version,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // LandingPagesOrErr returns the LandingPages value or an error if the edge
@@ -56,15 +66,28 @@ func (e CourseEdges) LandingPagesOrErr() ([]*LandingPage, error) {
 	return nil, &NotLoadedError{edge: "landing_pages"}
 }
 
+// CurrentVersionOrErr returns the CurrentVersion value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CourseEdges) CurrentVersionOrErr() (*CourseVersion, error) {
+	if e.CurrentVersion != nil {
+		return e.CurrentVersion, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: courseversion.Label}
+	}
+	return nil, &NotLoadedError{edge: "current_version"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Course) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case course.FieldID, course.FieldMembersCount, course.FieldLessonsCount, course.FieldCategoryID, course.FieldOrder:
+		case course.FieldID, course.FieldMembersCount, course.FieldLessonsCount, course.FieldCategoryID, course.FieldCurrentVersionID, course.FieldOrder:
 			values[i] = new(sql.NullInt64)
-		case course.FieldSlug, course.FieldName, course.FieldLearnAs, course.FieldProgress:
+		case course.FieldSlug, course.FieldName, course.FieldLearnAs, course.FieldProgress, course.FieldHexletProgramLandingPage:
 			values[i] = new(sql.NullString)
+		case course.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -114,6 +137,13 @@ func (_m *Course) assignValues(columns []string, values []any) error {
 				_m.Progress = new(string)
 				*_m.Progress = value.String
 			}
+		case course.FieldHexletProgramLandingPage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field hexlet_program_landing_page", values[i])
+			} else if value.Valid {
+				_m.HexletProgramLandingPage = new(string)
+				*_m.HexletProgramLandingPage = value.String
+			}
 		case course.FieldMembersCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field members_count", values[i])
@@ -133,12 +163,25 @@ func (_m *Course) assignValues(columns []string, values []any) error {
 				_m.CategoryID = new(int)
 				*_m.CategoryID = int(value.Int64)
 			}
+		case course.FieldCurrentVersionID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field current_version_id", values[i])
+			} else if value.Valid {
+				_m.CurrentVersionID = new(int)
+				*_m.CurrentVersionID = int(value.Int64)
+			}
 		case course.FieldOrder:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field order", values[i])
 			} else if value.Valid {
 				_m.Order = new(int)
 				*_m.Order = int(value.Int64)
+			}
+		case course.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -156,6 +199,11 @@ func (_m *Course) Value(name string) (ent.Value, error) {
 // QueryLandingPages queries the "landing_pages" edge of the Course entity.
 func (_m *Course) QueryLandingPages() *LandingPageQuery {
 	return NewCourseClient(_m.config).QueryLandingPages(_m)
+}
+
+// QueryCurrentVersion queries the "current_version" edge of the Course entity.
+func (_m *Course) QueryCurrentVersion() *CourseVersionQuery {
+	return NewCourseClient(_m.config).QueryCurrentVersion(_m)
 }
 
 // Update returns a builder for updating this Course.
@@ -201,6 +249,11 @@ func (_m *Course) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
+	if v := _m.HexletProgramLandingPage; v != nil {
+		builder.WriteString("hexlet_program_landing_page=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
 	builder.WriteString("members_count=")
 	builder.WriteString(fmt.Sprintf("%v", _m.MembersCount))
 	builder.WriteString(", ")
@@ -212,10 +265,18 @@ func (_m *Course) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
+	if v := _m.CurrentVersionID; v != nil {
+		builder.WriteString("current_version_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
 	if v := _m.Order; v != nil {
 		builder.WriteString("order=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

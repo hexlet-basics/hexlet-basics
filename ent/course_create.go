@@ -7,7 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -76,6 +78,20 @@ func (_c *CourseCreate) SetNillableProgress(v *string) *CourseCreate {
 	return _c
 }
 
+// SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
+func (_c *CourseCreate) SetHexletProgramLandingPage(v string) *CourseCreate {
+	_c.mutation.SetHexletProgramLandingPage(v)
+	return _c
+}
+
+// SetNillableHexletProgramLandingPage sets the "hexlet_program_landing_page" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableHexletProgramLandingPage(v *string) *CourseCreate {
+	if v != nil {
+		_c.SetHexletProgramLandingPage(*v)
+	}
+	return _c
+}
+
 // SetMembersCount sets the "members_count" field.
 func (_c *CourseCreate) SetMembersCount(v int) *CourseCreate {
 	_c.mutation.SetMembersCount(v)
@@ -102,6 +118,20 @@ func (_c *CourseCreate) SetNillableCategoryID(v *int) *CourseCreate {
 	return _c
 }
 
+// SetCurrentVersionID sets the "current_version_id" field.
+func (_c *CourseCreate) SetCurrentVersionID(v int) *CourseCreate {
+	_c.mutation.SetCurrentVersionID(v)
+	return _c
+}
+
+// SetNillableCurrentVersionID sets the "current_version_id" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableCurrentVersionID(v *int) *CourseCreate {
+	if v != nil {
+		_c.SetCurrentVersionID(*v)
+	}
+	return _c
+}
+
 // SetOrder sets the "order" field.
 func (_c *CourseCreate) SetOrder(v int) *CourseCreate {
 	_c.mutation.SetOrder(v)
@@ -112,6 +142,20 @@ func (_c *CourseCreate) SetOrder(v int) *CourseCreate {
 func (_c *CourseCreate) SetNillableOrder(v *int) *CourseCreate {
 	if v != nil {
 		_c.SetOrder(*v)
+	}
+	return _c
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (_c *CourseCreate) SetCreatedAt(v time.Time) *CourseCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableCreatedAt(v *time.Time) *CourseCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
 	}
 	return _c
 }
@@ -131,6 +175,11 @@ func (_c *CourseCreate) AddLandingPages(v ...*LandingPage) *CourseCreate {
 	return _c.AddLandingPageIDs(ids...)
 }
 
+// SetCurrentVersion sets the "current_version" edge to the CourseVersion entity.
+func (_c *CourseCreate) SetCurrentVersion(v *CourseVersion) *CourseCreate {
+	return _c.SetCurrentVersionID(v.ID)
+}
+
 // Mutation returns the CourseMutation object of the builder.
 func (_c *CourseCreate) Mutation() *CourseMutation {
 	return _c.mutation
@@ -138,6 +187,7 @@ func (_c *CourseCreate) Mutation() *CourseMutation {
 
 // Save creates the Course in the database.
 func (_c *CourseCreate) Save(ctx context.Context) (*Course, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -163,6 +213,14 @@ func (_c *CourseCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *CourseCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := course.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *CourseCreate) check() error {
 	if _, ok := _c.mutation.MembersCount(); !ok {
@@ -170,6 +228,9 @@ func (_c *CourseCreate) check() error {
 	}
 	if _, ok := _c.mutation.LessonsCount(); !ok {
 		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "Course.lessons_count"`)}
+	}
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Course.created_at"`)}
 	}
 	return nil
 }
@@ -213,6 +274,10 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		_spec.SetField(course.FieldProgress, field.TypeString, value)
 		_node.Progress = &value
 	}
+	if value, ok := _c.mutation.HexletProgramLandingPage(); ok {
+		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
+		_node.HexletProgramLandingPage = &value
+	}
 	if value, ok := _c.mutation.MembersCount(); ok {
 		_spec.SetField(course.FieldMembersCount, field.TypeInt, value)
 		_node.MembersCount = value
@@ -229,6 +294,10 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		_spec.SetField(course.FieldOrder, field.TypeInt, value)
 		_node.Order = &value
 	}
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(course.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
 	if nodes := _c.mutation.LandingPagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -243,6 +312,23 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CurrentVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   course.CurrentVersionTable,
+			Columns: []string{course.CurrentVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.CurrentVersionID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -266,6 +352,7 @@ func (_c *CourseCreateBulk) Save(ctx context.Context) ([]*Course, error) {
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*CourseMutation)
 				if !ok {

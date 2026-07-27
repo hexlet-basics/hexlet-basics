@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 
@@ -108,6 +109,26 @@ func (_u *CourseUpdate) ClearProgress() *CourseUpdate {
 	return _u
 }
 
+// SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
+func (_u *CourseUpdate) SetHexletProgramLandingPage(v string) *CourseUpdate {
+	_u.mutation.SetHexletProgramLandingPage(v)
+	return _u
+}
+
+// SetNillableHexletProgramLandingPage sets the "hexlet_program_landing_page" field if the given value is not nil.
+func (_u *CourseUpdate) SetNillableHexletProgramLandingPage(v *string) *CourseUpdate {
+	if v != nil {
+		_u.SetHexletProgramLandingPage(*v)
+	}
+	return _u
+}
+
+// ClearHexletProgramLandingPage clears the value of the "hexlet_program_landing_page" field.
+func (_u *CourseUpdate) ClearHexletProgramLandingPage() *CourseUpdate {
+	_u.mutation.ClearHexletProgramLandingPage()
+	return _u
+}
+
 // SetMembersCount sets the "members_count" field.
 func (_u *CourseUpdate) SetMembersCount(v int) *CourseUpdate {
 	_u.mutation.ResetMembersCount()
@@ -177,6 +198,26 @@ func (_u *CourseUpdate) ClearCategoryID() *CourseUpdate {
 	return _u
 }
 
+// SetCurrentVersionID sets the "current_version_id" field.
+func (_u *CourseUpdate) SetCurrentVersionID(v int) *CourseUpdate {
+	_u.mutation.SetCurrentVersionID(v)
+	return _u
+}
+
+// SetNillableCurrentVersionID sets the "current_version_id" field if the given value is not nil.
+func (_u *CourseUpdate) SetNillableCurrentVersionID(v *int) *CourseUpdate {
+	if v != nil {
+		_u.SetCurrentVersionID(*v)
+	}
+	return _u
+}
+
+// ClearCurrentVersionID clears the value of the "current_version_id" field.
+func (_u *CourseUpdate) ClearCurrentVersionID() *CourseUpdate {
+	_u.mutation.ClearCurrentVersionID()
+	return _u
+}
+
 // SetOrder sets the "order" field.
 func (_u *CourseUpdate) SetOrder(v int) *CourseUpdate {
 	_u.mutation.ResetOrder()
@@ -219,6 +260,11 @@ func (_u *CourseUpdate) AddLandingPages(v ...*LandingPage) *CourseUpdate {
 	return _u.AddLandingPageIDs(ids...)
 }
 
+// SetCurrentVersion sets the "current_version" edge to the CourseVersion entity.
+func (_u *CourseUpdate) SetCurrentVersion(v *CourseVersion) *CourseUpdate {
+	return _u.SetCurrentVersionID(v.ID)
+}
+
 // Mutation returns the CourseMutation object of the builder.
 func (_u *CourseUpdate) Mutation() *CourseMutation {
 	return _u.mutation
@@ -243,6 +289,12 @@ func (_u *CourseUpdate) RemoveLandingPages(v ...*LandingPage) *CourseUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveLandingPageIDs(ids...)
+}
+
+// ClearCurrentVersion clears the "current_version" edge to the CourseVersion entity.
+func (_u *CourseUpdate) ClearCurrentVersion() *CourseUpdate {
+	_u.mutation.ClearCurrentVersion()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -304,6 +356,12 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.ProgressCleared() {
 		_spec.ClearField(course.FieldProgress, field.TypeString)
+	}
+	if value, ok := _u.mutation.HexletProgramLandingPage(); ok {
+		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
+	}
+	if _u.mutation.HexletProgramLandingPageCleared() {
+		_spec.ClearField(course.FieldHexletProgramLandingPage, field.TypeString)
 	}
 	if value, ok := _u.mutation.MembersCount(); ok {
 		_spec.SetField(course.FieldMembersCount, field.TypeInt, value)
@@ -373,6 +431,35 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CurrentVersionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   course.CurrentVersionTable,
+			Columns: []string{course.CurrentVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CurrentVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   course.CurrentVersionTable,
+			Columns: []string{course.CurrentVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -480,6 +567,26 @@ func (_u *CourseUpdateOne) ClearProgress() *CourseUpdateOne {
 	return _u
 }
 
+// SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
+func (_u *CourseUpdateOne) SetHexletProgramLandingPage(v string) *CourseUpdateOne {
+	_u.mutation.SetHexletProgramLandingPage(v)
+	return _u
+}
+
+// SetNillableHexletProgramLandingPage sets the "hexlet_program_landing_page" field if the given value is not nil.
+func (_u *CourseUpdateOne) SetNillableHexletProgramLandingPage(v *string) *CourseUpdateOne {
+	if v != nil {
+		_u.SetHexletProgramLandingPage(*v)
+	}
+	return _u
+}
+
+// ClearHexletProgramLandingPage clears the value of the "hexlet_program_landing_page" field.
+func (_u *CourseUpdateOne) ClearHexletProgramLandingPage() *CourseUpdateOne {
+	_u.mutation.ClearHexletProgramLandingPage()
+	return _u
+}
+
 // SetMembersCount sets the "members_count" field.
 func (_u *CourseUpdateOne) SetMembersCount(v int) *CourseUpdateOne {
 	_u.mutation.ResetMembersCount()
@@ -549,6 +656,26 @@ func (_u *CourseUpdateOne) ClearCategoryID() *CourseUpdateOne {
 	return _u
 }
 
+// SetCurrentVersionID sets the "current_version_id" field.
+func (_u *CourseUpdateOne) SetCurrentVersionID(v int) *CourseUpdateOne {
+	_u.mutation.SetCurrentVersionID(v)
+	return _u
+}
+
+// SetNillableCurrentVersionID sets the "current_version_id" field if the given value is not nil.
+func (_u *CourseUpdateOne) SetNillableCurrentVersionID(v *int) *CourseUpdateOne {
+	if v != nil {
+		_u.SetCurrentVersionID(*v)
+	}
+	return _u
+}
+
+// ClearCurrentVersionID clears the value of the "current_version_id" field.
+func (_u *CourseUpdateOne) ClearCurrentVersionID() *CourseUpdateOne {
+	_u.mutation.ClearCurrentVersionID()
+	return _u
+}
+
 // SetOrder sets the "order" field.
 func (_u *CourseUpdateOne) SetOrder(v int) *CourseUpdateOne {
 	_u.mutation.ResetOrder()
@@ -591,6 +718,11 @@ func (_u *CourseUpdateOne) AddLandingPages(v ...*LandingPage) *CourseUpdateOne {
 	return _u.AddLandingPageIDs(ids...)
 }
 
+// SetCurrentVersion sets the "current_version" edge to the CourseVersion entity.
+func (_u *CourseUpdateOne) SetCurrentVersion(v *CourseVersion) *CourseUpdateOne {
+	return _u.SetCurrentVersionID(v.ID)
+}
+
 // Mutation returns the CourseMutation object of the builder.
 func (_u *CourseUpdateOne) Mutation() *CourseMutation {
 	return _u.mutation
@@ -615,6 +747,12 @@ func (_u *CourseUpdateOne) RemoveLandingPages(v ...*LandingPage) *CourseUpdateOn
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveLandingPageIDs(ids...)
+}
+
+// ClearCurrentVersion clears the "current_version" edge to the CourseVersion entity.
+func (_u *CourseUpdateOne) ClearCurrentVersion() *CourseUpdateOne {
+	_u.mutation.ClearCurrentVersion()
+	return _u
 }
 
 // Where appends a list predicates to the CourseUpdate builder.
@@ -707,6 +845,12 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 	if _u.mutation.ProgressCleared() {
 		_spec.ClearField(course.FieldProgress, field.TypeString)
 	}
+	if value, ok := _u.mutation.HexletProgramLandingPage(); ok {
+		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
+	}
+	if _u.mutation.HexletProgramLandingPageCleared() {
+		_spec.ClearField(course.FieldHexletProgramLandingPage, field.TypeString)
+	}
 	if value, ok := _u.mutation.MembersCount(); ok {
 		_spec.SetField(course.FieldMembersCount, field.TypeInt, value)
 	}
@@ -775,6 +919,35 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CurrentVersionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   course.CurrentVersionTable,
+			Columns: []string{course.CurrentVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CurrentVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   course.CurrentVersionTable,
+			Columns: []string{course.CurrentVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -3,6 +3,8 @@
 package course
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -20,16 +22,24 @@ const (
 	FieldLearnAs = "learn_as"
 	// FieldProgress holds the string denoting the progress field in the database.
 	FieldProgress = "progress"
+	// FieldHexletProgramLandingPage holds the string denoting the hexlet_program_landing_page field in the database.
+	FieldHexletProgramLandingPage = "hexlet_program_landing_page"
 	// FieldMembersCount holds the string denoting the members_count field in the database.
 	FieldMembersCount = "members_count"
 	// FieldLessonsCount holds the string denoting the lessons_count field in the database.
 	FieldLessonsCount = "lessons_count"
 	// FieldCategoryID holds the string denoting the category_id field in the database.
 	FieldCategoryID = "category_id"
+	// FieldCurrentVersionID holds the string denoting the current_version_id field in the database.
+	FieldCurrentVersionID = "current_version_id"
 	// FieldOrder holds the string denoting the order field in the database.
 	FieldOrder = "order"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// EdgeLandingPages holds the string denoting the landing_pages edge name in mutations.
 	EdgeLandingPages = "landing_pages"
+	// EdgeCurrentVersion holds the string denoting the current_version edge name in mutations.
+	EdgeCurrentVersion = "current_version"
 	// Table holds the table name of the course in the database.
 	Table = "languages"
 	// LandingPagesTable is the table that holds the landing_pages relation/edge.
@@ -39,6 +49,13 @@ const (
 	LandingPagesInverseTable = "language_landing_pages"
 	// LandingPagesColumn is the table column denoting the landing_pages relation/edge.
 	LandingPagesColumn = "language_id"
+	// CurrentVersionTable is the table that holds the current_version relation/edge.
+	CurrentVersionTable = "languages"
+	// CurrentVersionInverseTable is the table name for the CourseVersion entity.
+	// It exists in this package in order to avoid circular dependency with the "courseversion" package.
+	CurrentVersionInverseTable = "language_versions"
+	// CurrentVersionColumn is the table column denoting the current_version relation/edge.
+	CurrentVersionColumn = "current_version_id"
 )
 
 // Columns holds all SQL columns for course fields.
@@ -48,10 +65,13 @@ var Columns = []string{
 	FieldName,
 	FieldLearnAs,
 	FieldProgress,
+	FieldHexletProgramLandingPage,
 	FieldMembersCount,
 	FieldLessonsCount,
 	FieldCategoryID,
+	FieldCurrentVersionID,
 	FieldOrder,
+	FieldCreatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -63,6 +83,11 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+)
 
 // OrderOption defines the ordering options for the Course queries.
 type OrderOption func(*sql.Selector)
@@ -92,6 +117,11 @@ func ByProgress(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProgress, opts...).ToFunc()
 }
 
+// ByHexletProgramLandingPage orders the results by the hexlet_program_landing_page field.
+func ByHexletProgramLandingPage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHexletProgramLandingPage, opts...).ToFunc()
+}
+
 // ByMembersCount orders the results by the members_count field.
 func ByMembersCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMembersCount, opts...).ToFunc()
@@ -107,9 +137,19 @@ func ByCategoryID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCategoryID, opts...).ToFunc()
 }
 
+// ByCurrentVersionID orders the results by the current_version_id field.
+func ByCurrentVersionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCurrentVersionID, opts...).ToFunc()
+}
+
 // ByOrder orders the results by the order field.
 func ByOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrder, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByLandingPagesCount orders the results by landing_pages count.
@@ -125,10 +165,24 @@ func ByLandingPages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newLandingPagesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByCurrentVersionField orders the results by current_version field.
+func ByCurrentVersionField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCurrentVersionStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newLandingPagesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(LandingPagesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, LandingPagesTable, LandingPagesColumn),
+	)
+}
+func newCurrentVersionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CurrentVersionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, CurrentVersionTable, CurrentVersionColumn),
 	)
 }
