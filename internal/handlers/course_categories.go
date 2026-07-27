@@ -13,39 +13,21 @@ import (
 // URL stays `/admin/language_categories` for backward-compat; the domain
 // concept is a course category.
 func (s *Server) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (*api.CourseCategoryPage, error) {
-	page := newPagination(params.Page, params.PerPage)
-
-	total, err := s.db.CourseCategory.Query().Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := s.db.CourseCategory.Query().
-		Order(ent.Desc(coursecategory.FieldID)).
-		Offset(page.Offset()).
-		Limit(page.Limit()).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.CourseCategoryPage{
-		Items:   s.conv.ToCourseCategories(rows),
-		Total:   int32(total),
-		Page:    page.Page,
-		PerPage: page.PerPage,
-	}, nil
+	return listPage(ctx, params.Page, params.PerPage,
+		func() *ent.CourseCategoryQuery {
+			return s.db.CourseCategory.Query().Order(ent.Desc(coursecategory.FieldID))
+		},
+		s.conv.ToCourseCategories,
+		func(items []api.CourseCategory, total, page, perPage int32) *api.CourseCategoryPage {
+			return &api.CourseCategoryPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminGetCourseCategory returns a single course category by id. A missing id
 // returns ent's not-found error, which the central ErrorHandler maps to 404.
 func (s *Server) AdminGetCourseCategory(ctx context.Context, params api.AdminGetCourseCategoryParams) (*api.CourseCategory, error) {
-	row, err := s.db.CourseCategory.Get(ctx, int(params.ID))
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToCourseCategory(row)
-	return &item, nil
+	return getOne(ctx, int(params.ID), s.db.CourseCategory.Get, s.conv.ToCourseCategory)
 }
 
 // AdminCreateCourseCategory creates a course category.

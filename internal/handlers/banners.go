@@ -11,39 +11,19 @@ import (
 
 // AdminListBanners returns a page of banners, newest first.
 func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (*api.BannerPage, error) {
-	page := newPagination(params.Page, params.PerPage)
-
-	total, err := s.db.Banner.Query().Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := s.db.Banner.Query().
-		Order(ent.Desc(banner.FieldID)).
-		Offset(page.Offset()).
-		Limit(page.Limit()).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.BannerPage{
-		Items:   s.conv.ToBanners(rows),
-		Total:   int32(total),
-		Page:    page.Page,
-		PerPage: page.PerPage,
-	}, nil
+	return listPage(ctx, params.Page, params.PerPage,
+		func() *ent.BannerQuery { return s.db.Banner.Query().Order(ent.Desc(banner.FieldID)) },
+		s.conv.ToBanners,
+		func(items []api.Banner, total, page, perPage int32) *api.BannerPage {
+			return &api.BannerPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminGetBanner returns a single banner by id. A missing id returns ent's
 // not-found error, which the central ErrorHandler maps to 404.
 func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (*api.Banner, error) {
-	row, err := s.db.Banner.Get(ctx, int(params.ID))
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToBanner(row)
-	return &item, nil
+	return getOne(ctx, int(params.ID), s.db.Banner.Get, s.conv.ToBanner)
 }
 
 // AdminCreateBanner creates a banner.

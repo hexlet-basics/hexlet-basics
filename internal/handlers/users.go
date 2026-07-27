@@ -13,28 +13,13 @@ const searchUsersLimit = 20
 
 // AdminListUsers returns a page of users, newest first.
 func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (*api.UserCrudPage, error) {
-	page := newPagination(params.Page, params.PerPage)
-
-	total, err := s.db.User.Query().Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := s.db.User.Query().
-		Order(ent.Desc(user.FieldID)).
-		Offset(page.Offset()).
-		Limit(page.Limit()).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.UserCrudPage{
-		Items:   s.conv.ToUserCruds(rows),
-		Total:   int32(total),
-		Page:    page.Page,
-		PerPage: page.PerPage,
-	}, nil
+	return listPage(ctx, params.Page, params.PerPage,
+		func() *ent.UserQuery { return s.db.User.Query().Order(ent.Desc(user.FieldID)) },
+		s.conv.ToUserCruds,
+		func(items []api.UserCrud, total, page, perPage int32) *api.UserCrudPage {
+			return &api.UserCrudPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminSearchUsers is the admin typeahead: a case-insensitive substring match on
@@ -64,12 +49,7 @@ func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUse
 // AdminGetUser returns a single user by id. A missing id returns ent's not-found
 // error, which the central ErrorHandler maps to 404.
 func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams) (*api.UserCrud, error) {
-	row, err := s.db.User.Get(ctx, int(params.ID))
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToUserCrud(row)
-	return &item, nil
+	return getOne(ctx, int(params.ID), s.db.User.Get, s.conv.ToUserCrud)
 }
 
 // AdminCreateUser creates a user.

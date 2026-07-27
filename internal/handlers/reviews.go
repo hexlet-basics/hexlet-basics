@@ -18,39 +18,24 @@ func withReviewEdges(q *ent.ReviewQuery) *ent.ReviewQuery {
 
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (*api.ReviewPage, error) {
-	page := newPagination(params.Page, params.PerPage)
-
-	total, err := s.db.Review.Query().Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := withReviewEdges(s.db.Review.Query()).
-		Order(ent.Desc(review.FieldID)).
-		Offset(page.Offset()).
-		Limit(page.Limit()).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &api.ReviewPage{
-		Items:   s.conv.ToReviews(rows),
-		Total:   int32(total),
-		Page:    page.Page,
-		PerPage: page.PerPage,
-	}, nil
+	return listPage(ctx, params.Page, params.PerPage,
+		func() *ent.ReviewQuery { return withReviewEdges(s.db.Review.Query()).Order(ent.Desc(review.FieldID)) },
+		s.conv.ToReviews,
+		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
+			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
 }
 
 // AdminGetReview returns a single review by id. A missing id returns ent's
 // not-found error, which the central ErrorHandler maps to 404.
 func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewParams) (*api.Review, error) {
-	row, err := withReviewEdges(s.db.Review.Query().Where(review.ID(int(params.ID)))).Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	item := s.conv.ToReview(row)
-	return &item, nil
+	return getOne(ctx, int(params.ID),
+		func(ctx context.Context, id int) (*ent.Review, error) {
+			return withReviewEdges(s.db.Review.Query().Where(review.ID(id))).Only(ctx)
+		},
+		s.conv.ToReview,
+	)
 }
 
 // AdminCreateReview creates a review. courseId (language_id) and userId are
