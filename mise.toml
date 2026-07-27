@@ -1,6 +1,9 @@
 [tools]
 go = "1.26.5"
 golangci-lint = "2.12.2"
+# atlas: owns the DB schema going forward (versioned migrations). `make
+# test-migrate` applies migrations/ to the test DB; new changes = atlas migrate new.
+atlas = "1.2.0"
 # testfixtures CLI: loads the fixtures/ snapshot into the test DB (make
 # test-prepare). Not `go install`-able (nested module, no own tags), so pull the
 # release binary from GitHub.

@@ -56,9 +56,9 @@ jobs:
           --health-retries 5
 
     env:
-      # Matches internal/testsupport defaultTestDSN. The schema is Rails-owned
-      # during the cutover (ADR-0002) — ent only reads it, never migrates — so
-      # `make test-prepare` loads the db/structure.sql snapshot and the fixtures.
+      # Matches internal/testsupport defaultTestDSN. Atlas owns the schema
+      # (baseline = the retired Rails schema; ent only reads it, never migrates),
+      # so `make test-prepare` applies the atlas migrations and loads the fixtures.
       TEST_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:54330/code_basics_test
 
     steps:

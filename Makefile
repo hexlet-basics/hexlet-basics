@@ -36,14 +36,6 @@ services-start:
 services-stop:
 	docker stop code_basics_postgres
 
-## db-dump-schema: refresh db/structure.sql from the (Rails-owned) test DB
-# The schema is owned by legacy Rails during the cutover (ADR-0002). CI loads
-# this snapshot into a fresh Postgres before `go test`. Rerun after any Rails
-# migration so the snapshot does not drift.
-db-dump-schema:
-	docker exec code_basics_postgres pg_dump -U postgres \
-		--schema-only --no-owner --no-privileges code_basics_test > db/structure.sql
-
 # ---------------------------------------------------------------------------
 # Dev (run the stack)
 # ---------------------------------------------------------------------------
@@ -128,30 +120,33 @@ lint-fix:
 # Test
 # ---------------------------------------------------------------------------
 
-# Test DB coordinates (override to target a scratch DB, e.g. DB_NAME=code_basics_scratch).
+# Test DB coordinates (override to target a scratch DB, e.g. DB_NAME=some_test).
 DB_HOST ?= 127.0.0.1
 DB_PORT ?= 54330
 DB_NAME ?= code_basics_test
+DB_URL  ?= postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
-## db-load-schema: load db/structure.sql into the test DB with a version-pinned
-## psql (docker), so the runner's own psql can't choke on the dump. Expects a
-## fresh DB (the dump is CREATE-only).
-db-load-schema:
-	docker run --rm --network host -e PGPASSWORD=postgres \
-		-v "$(CURDIR)/db:/db:ro" postgres:17-alpine \
-		psql -h $(DB_HOST) -p $(DB_PORT) -U postgres -d $(DB_NAME) \
-		-v ON_ERROR_STOP=1 -q -f /db/structure.sql
+## migrate-new: scaffold a new empty migration to hand-author, e.g.
+## `make migrate-new NAME=add_widgets`. Edit it, then `atlas migrate hash`.
+migrate-new:
+	atlas migrate new $(NAME) --dir "file://migrations"
+	atlas migrate hash --dir "file://migrations"
+
+## test-migrate: apply the atlas migrations (schema) to the test DB. Atlas owns
+## the schema now (baseline = the retired Rails schema); this replaces the old
+## structure.sql load.
+test-migrate:
+	atlas migrate apply --env local --url "$(DB_URL)&search_path=public"
 
 ## test-load-fixtures: load the committed fixtures/ snapshot into the test DB via
 ## the testfixtures CLI (provided by mise). sslmode=disable because the CLI's
 ## lib/pq driver defaults to requiring SSL, which the local/CI Postgres doesn't serve.
 test-load-fixtures:
-	testfixtures -d postgres -D fixtures \
-		-c "postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable"
+	testfixtures -d postgres -D fixtures -c "$(DB_URL)"
 
-## test-prepare: ready the test DB for `make test` — load the schema snapshot,
-## then the fixtures baseline. Run once before `make test` (CI does exactly this).
-test-prepare: db-load-schema test-load-fixtures
+## test-prepare: ready the test DB for `make test` — apply migrations, then load
+## the fixtures baseline. Run once before `make test` (CI does exactly this).
+test-prepare: test-migrate test-load-fixtures
 
 ## test: run the Go test suite
 test:
@@ -192,7 +187,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help setup services-start services-stop db-dump-schema db-load-schema test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
+.PHONY: help setup services-start services-stop migrate-new test-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-web clean \
 	deps-update update-skills
