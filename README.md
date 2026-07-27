@@ -1,102 +1,94 @@
-[![github action status](https://github.com/hexlet-basics/hexlet-basics/actions/workflows/build.yml/badge.svg?event=push)](https://github.com/hexlet-basics/hexlet-basics/actions/workflows/build.yml)
+[![check](https://github.com/hexlet-basics/hexlet-basics/actions/workflows/check.yml/badge.svg?event=push)](https://github.com/hexlet-basics/hexlet-basics/actions/workflows/check.yml)
 
 # hexlet-basics
+
+This repository is mid-migration from Rails to Go. The **root** is the new stack
+— a Go API whose HTTP contract is generated from TypeSpec, plus a TanStack Start
+(React 19 + TypeScript) frontend. The original **Rails app lives in `legacy/`**
+with its own README and Makefile.
+
+- Go API: `cmd/`, `internal/`, `ent/`
+- API contract (source of truth): `api-spec/*.tsp` → `api-spec/dist/openapi.yaml`
+- Frontend: `src/`
+- Architecture decisions: [`docs/STACK.md`](./docs/STACK.md), [`docs/adr/`](./docs/adr)
 
 ## Setup
 
 ### Requirements
 
-- make
-- docker
-- ruby = 4.0.6
-- node = 26.5.0
+- `make`, `docker`
+- [`mise`](https://mise.jdx.dev) — provisions the pinned toolchain from
+  `mise.toml` (`go`, `golangci-lint`, `atlas`, `testfixtures`). Run `mise install`.
+- `node` = 26.5.0 and [`pnpm`](https://pnpm.io)
+- [`air`](https://github.com/air-verse/air) for API live-reload:
+  `go install github.com/air-verse/air@latest`
 
 ### Run
 
-1. Install system deps
+1. Install dependencies (Go modules + frontend/api-spec packages):
+
+   ```bash
+   make setup
+   ```
+
+2. Start local Postgres (Docker):
+
+   ```bash
+   make services-start
+   ```
+
+   Postgres is published on port `54330` so it does not conflict with a local
+   database on `5432`. The server reads `DATABASE_URL` / `ADDR` from the
+   environment but defaults to this local DB and `:3001`, so no config is needed
+   for local dev.
+
+3. Run the stack (Go API on `:3001` with live-reload + Vite frontend):
+
+   ```bash
+   make dev
+   ```
+
+   Run one side alone with `make dev-api` or `make dev-web`.
+
+## Code Generation
+
+The HTTP contract is the source of truth (see
+[ADR-0001](./docs/adr/0001-contract-first-pipeline-with-ogen.md)). Edit the
+TypeSpec in `api-spec/*.tsp`, then regenerate — never hand-edit generated files.
 
 ```bash
-# Ubuntu
-make setup-ubuntu
-
-# MacOS
-make setup-macos
+make gen       # TypeSpec -> OpenAPI -> ogen Go server + hey-api TS client
+make gen-ent   # regenerate the ent ORM from ent/schema
+make gen-all   # gen-ent + gen
+make dev-spec  # watch TypeSpec and re-emit OpenAPI on change
 ```
 
-2. Run services (pg)
+## Lint & Test
 
 ```bash
-make services-start
+make lint          # gofmt + go vet + golangci-lint, and biome + tsc
+make lint-fix      # auto-fix Go formatting and frontend lint
+
+make test-prepare  # apply atlas migrations + load fixtures/ into the test DB
+make test          # go test ./...
 ```
 
-By default the local Postgres is published on port `54330`, so it does not conflict with another local database on `5432`.
+Run `make test-prepare` once before `make test` (CI does the same). The schema
+is owned by [atlas](https://atlasgo.io) migrations in `migrations/`; scaffold a
+change with `make migrate-new NAME=...`. Fixtures in `fixtures/` are the test
+starting data.
 
-
-3. Setup app
+## Build
 
 ```bash
-make setup
+make build  # go build -o bin/server ./cmd/server, and pnpm build
 ```
 
-4. Run
+## Releases
 
-```bash
-make dev # run server
-```
-
-
-Open https://code-basics.localhost
-
-Port `3000` is the internal Puma app port. Do not open `https://localhost:3000` directly; local HTTPS goes through Caddy on `https://code-basics.localhost`.
-
-Admin Access: (login: `full@test.io`, password: `password`)
-
-5. Development And Testing
-
-```bash
-make test # run tests
-
-# load language (course)
-make language-load L=php
-
-make sync # sync locales, types, fixtures
-```
-
-### Production
-
-Kube access
-
-```bash
-# make k8s-macos-setup or make k8s-ubuntu-setup
-export TWC_TOKEN=<your token>
-```
-
-### Deploy
-
-- Create new tag via command:
-
-  ```bash
-  make next-tag
-  ```
-
-- Wait notification about ready tag in Slack channel `#sideprojects-code-auto` or wait [Github Actions](https://github.com/hexlet-basics/hexlet-basics/actions/workflows/release.yml)
-- Change version in [k8s/hb-app-chart/values.yaml](/k8s/hb-app-chart/values.yaml) and then:
-
-  ```bash
-  make -C k8s helm-upgrade-app
-  ```
-
-## TODO
-
-1. switch to yandex postbox (smtp)
-1. theme switcher
-1. <https://github.com/DavidWells/analytics>
-1. auth: vk id, yandex id, google id (except ru)
-1. upload course image in admin interface (and remove devicon)
-1. configus => dotenv
-1. Check if yandex.market is used
-1. primary keys: integer = bigint
-1. add rss to blog
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
+(enforced by `commitlint`). `release-please` maintains a release PR that bumps
+`package.json` and `CHANGELOG.md`; merging it tags `vX.Y.Z`.
 
 ---
 
