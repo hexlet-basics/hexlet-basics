@@ -10,6 +10,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
 
 	"hexletbasics/ent"
@@ -28,6 +31,17 @@ func main() {
 	// Held before shutdown: ent.Client exposes Close, not a do Shutdowner, so it
 	// is closed explicitly once the injector has drained the HTTP server.
 	db := do.MustInvoke[*ent.Client](injector)
+	// The river job queue and its pgx pool are likewise closed explicitly (they
+	// are not do Shutdowners).
+	riverClient := do.MustInvoke[*river.Client[pgx.Tx]](injector)
+	pool := do.MustInvoke[*pgxpool.Pool](injector)
+
+	// Start processing background jobs. Start returns once the client is running;
+	// workers run until Stop drains them during shutdown.
+	if err := riverClient.Start(context.Background()); err != nil {
+		logger.Error("starting job queue", "err", err)
+		os.Exit(1)
+	}
 
 	go func() {
 		logger.Info("backend listening", "addr", srv.Addr)
@@ -52,6 +66,12 @@ func main() {
 	if report := injector.ShutdownWithContext(shutdownCtx); !report.Succeed {
 		logger.Error("shutdown reported errors", "err", report.Error())
 	}
+	// Drain in-flight jobs before dropping the pool and DB (workers stop first,
+	// then their connection pool, then ent's handle).
+	if err := riverClient.Stop(shutdownCtx); err != nil {
+		logger.Error("stopping job queue", "err", err)
+	}
+	pool.Close()
 	if err := db.Close(); err != nil {
 		logger.Error("closing database", "err", err)
 	}

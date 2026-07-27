@@ -2,10 +2,14 @@
 package di
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/riverqueue/river"
 	"github.com/rs/cors"
 	"github.com/samber/do/v2"
 
@@ -13,6 +17,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/logging"
 	"hexletbasics/internal/store"
 )
@@ -50,6 +55,17 @@ func New() *do.RootScope {
 
 	do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
 		return handlers.NewServer(do.MustInvoke[*ent.Client](i)), nil
+	})
+
+	// pgx pool + river client back the background-job queue (ADR-0004). The pool
+	// is separate from ent's database/sql handle because riverpgxv5 needs a
+	// native *pgxpool.Pool.
+	do.Provide(injector, func(i do.Injector) (*pgxpool.Pool, error) {
+		return store.NewPool(context.Background(), do.MustInvoke[*config.Config](i).DatabaseURL)
+	})
+
+	do.Provide(injector, func(i do.Injector) (*river.Client[pgx.Tx], error) {
+		return jobs.NewClient(do.MustInvoke[*pgxpool.Pool](i))
 	})
 
 	do.Provide(injector, func(i do.Injector) (*api.Server, error) {
