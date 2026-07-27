@@ -11,8 +11,13 @@ import (
 
 	"hexletbasics/ent/migrate"
 
+	"hexletbasics/ent/actiontextrichtext"
+	"hexletbasics/ent/activestorageattachment"
+	"hexletbasics/ent/activestorageblob"
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -37,10 +42,20 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// ActionTextRichText is the client for interacting with the ActionTextRichText builders.
+	ActionTextRichText *ActionTextRichTextClient
+	// ActiveStorageAttachment is the client for interacting with the ActiveStorageAttachment builders.
+	ActiveStorageAttachment *ActiveStorageAttachmentClient
+	// ActiveStorageBlob is the client for interacting with the ActiveStorageBlob builders.
+	ActiveStorageBlob *ActiveStorageBlobClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
+	// BlogPost is the client for interacting with the BlogPost builders.
+	BlogPost *BlogPostClient
+	// BlogPostLike is the client for interacting with the BlogPostLike builders.
+	BlogPostLike *BlogPostLikeClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
@@ -76,8 +91,13 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.ActionTextRichText = NewActionTextRichTextClient(c.config)
+	c.ActiveStorageAttachment = NewActiveStorageAttachmentClient(c.config)
+	c.ActiveStorageBlob = NewActiveStorageBlobClient(c.config)
 	c.Attachment = NewAttachmentClient(c.config)
 	c.Banner = NewBannerClient(c.config)
+	c.BlogPost = NewBlogPostClient(c.config)
+	c.BlogPostLike = NewBlogPostLikeClient(c.config)
 	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
@@ -180,22 +200,27 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                 ctx,
-		config:              cfg,
-		Attachment:          NewAttachmentClient(cfg),
-		Banner:              NewBannerClient(cfg),
-		CategoryQnaItem:     NewCategoryQnaItemClient(cfg),
-		Course:              NewCourseClient(cfg),
-		CourseCategory:      NewCourseCategoryClient(cfg),
-		CourseVersion:       NewCourseVersionClient(cfg),
-		LandingPage:         NewLandingPageClient(cfg),
-		LandingPageQnaItem:  NewLandingPageQnaItemClient(cfg),
-		Lead:                NewLeadClient(cfg),
-		Review:              NewReviewClient(cfg),
-		StaffMember:         NewStaffMemberClient(cfg),
-		StaffRole:           NewStaffRoleClient(cfg),
-		StaffRolePermission: NewStaffRolePermissionClient(cfg),
-		User:                NewUserClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		ActionTextRichText:      NewActionTextRichTextClient(cfg),
+		ActiveStorageAttachment: NewActiveStorageAttachmentClient(cfg),
+		ActiveStorageBlob:       NewActiveStorageBlobClient(cfg),
+		Attachment:              NewAttachmentClient(cfg),
+		Banner:                  NewBannerClient(cfg),
+		BlogPost:                NewBlogPostClient(cfg),
+		BlogPostLike:            NewBlogPostLikeClient(cfg),
+		CategoryQnaItem:         NewCategoryQnaItemClient(cfg),
+		Course:                  NewCourseClient(cfg),
+		CourseCategory:          NewCourseCategoryClient(cfg),
+		CourseVersion:           NewCourseVersionClient(cfg),
+		LandingPage:             NewLandingPageClient(cfg),
+		LandingPageQnaItem:      NewLandingPageQnaItemClient(cfg),
+		Lead:                    NewLeadClient(cfg),
+		Review:                  NewReviewClient(cfg),
+		StaffMember:             NewStaffMemberClient(cfg),
+		StaffRole:               NewStaffRoleClient(cfg),
+		StaffRolePermission:     NewStaffRolePermissionClient(cfg),
+		User:                    NewUserClient(cfg),
 	}, nil
 }
 
@@ -213,29 +238,34 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                 ctx,
-		config:              cfg,
-		Attachment:          NewAttachmentClient(cfg),
-		Banner:              NewBannerClient(cfg),
-		CategoryQnaItem:     NewCategoryQnaItemClient(cfg),
-		Course:              NewCourseClient(cfg),
-		CourseCategory:      NewCourseCategoryClient(cfg),
-		CourseVersion:       NewCourseVersionClient(cfg),
-		LandingPage:         NewLandingPageClient(cfg),
-		LandingPageQnaItem:  NewLandingPageQnaItemClient(cfg),
-		Lead:                NewLeadClient(cfg),
-		Review:              NewReviewClient(cfg),
-		StaffMember:         NewStaffMemberClient(cfg),
-		StaffRole:           NewStaffRoleClient(cfg),
-		StaffRolePermission: NewStaffRolePermissionClient(cfg),
-		User:                NewUserClient(cfg),
+		ctx:                     ctx,
+		config:                  cfg,
+		ActionTextRichText:      NewActionTextRichTextClient(cfg),
+		ActiveStorageAttachment: NewActiveStorageAttachmentClient(cfg),
+		ActiveStorageBlob:       NewActiveStorageBlobClient(cfg),
+		Attachment:              NewAttachmentClient(cfg),
+		Banner:                  NewBannerClient(cfg),
+		BlogPost:                NewBlogPostClient(cfg),
+		BlogPostLike:            NewBlogPostLikeClient(cfg),
+		CategoryQnaItem:         NewCategoryQnaItemClient(cfg),
+		Course:                  NewCourseClient(cfg),
+		CourseCategory:          NewCourseCategoryClient(cfg),
+		CourseVersion:           NewCourseVersionClient(cfg),
+		LandingPage:             NewLandingPageClient(cfg),
+		LandingPageQnaItem:      NewLandingPageQnaItemClient(cfg),
+		Lead:                    NewLeadClient(cfg),
+		Review:                  NewReviewClient(cfg),
+		StaffMember:             NewStaffMemberClient(cfg),
+		StaffRole:               NewStaffRoleClient(cfg),
+		StaffRolePermission:     NewStaffRolePermissionClient(cfg),
+		User:                    NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Attachment.
+//		ActionTextRichText.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -258,9 +288,11 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Attachment, c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review,
-		c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.ActionTextRichText, c.ActiveStorageAttachment, c.ActiveStorageBlob,
+		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
+		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
+		c.LandingPageQnaItem, c.Lead, c.Review, c.StaffMember, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -270,9 +302,11 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Attachment, c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review,
-		c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.ActionTextRichText, c.ActiveStorageAttachment, c.ActiveStorageBlob,
+		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
+		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
+		c.LandingPageQnaItem, c.Lead, c.Review, c.StaffMember, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -281,10 +315,20 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *ActionTextRichTextMutation:
+		return c.ActionTextRichText.mutate(ctx, m)
+	case *ActiveStorageAttachmentMutation:
+		return c.ActiveStorageAttachment.mutate(ctx, m)
+	case *ActiveStorageBlobMutation:
+		return c.ActiveStorageBlob.mutate(ctx, m)
 	case *AttachmentMutation:
 		return c.Attachment.mutate(ctx, m)
 	case *BannerMutation:
 		return c.Banner.mutate(ctx, m)
+	case *BlogPostMutation:
+		return c.BlogPost.mutate(ctx, m)
+	case *BlogPostLikeMutation:
+		return c.BlogPostLike.mutate(ctx, m)
 	case *CategoryQnaItemMutation:
 		return c.CategoryQnaItem.mutate(ctx, m)
 	case *CourseMutation:
@@ -311,6 +355,421 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// ActionTextRichTextClient is a client for the ActionTextRichText schema.
+type ActionTextRichTextClient struct {
+	config
+}
+
+// NewActionTextRichTextClient returns a client for the ActionTextRichText from the given config.
+func NewActionTextRichTextClient(c config) *ActionTextRichTextClient {
+	return &ActionTextRichTextClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `actiontextrichtext.Hooks(f(g(h())))`.
+func (c *ActionTextRichTextClient) Use(hooks ...Hook) {
+	c.hooks.ActionTextRichText = append(c.hooks.ActionTextRichText, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `actiontextrichtext.Intercept(f(g(h())))`.
+func (c *ActionTextRichTextClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ActionTextRichText = append(c.inters.ActionTextRichText, interceptors...)
+}
+
+// Create returns a builder for creating a ActionTextRichText entity.
+func (c *ActionTextRichTextClient) Create() *ActionTextRichTextCreate {
+	mutation := newActionTextRichTextMutation(c.config, OpCreate)
+	return &ActionTextRichTextCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ActionTextRichText entities.
+func (c *ActionTextRichTextClient) CreateBulk(builders ...*ActionTextRichTextCreate) *ActionTextRichTextCreateBulk {
+	return &ActionTextRichTextCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ActionTextRichTextClient) MapCreateBulk(slice any, setFunc func(*ActionTextRichTextCreate, int)) *ActionTextRichTextCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ActionTextRichTextCreateBulk{err: fmt.Errorf("calling to ActionTextRichTextClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ActionTextRichTextCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ActionTextRichTextCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ActionTextRichText.
+func (c *ActionTextRichTextClient) Update() *ActionTextRichTextUpdate {
+	mutation := newActionTextRichTextMutation(c.config, OpUpdate)
+	return &ActionTextRichTextUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ActionTextRichTextClient) UpdateOne(_m *ActionTextRichText) *ActionTextRichTextUpdateOne {
+	mutation := newActionTextRichTextMutation(c.config, OpUpdateOne, withActionTextRichText(_m))
+	return &ActionTextRichTextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ActionTextRichTextClient) UpdateOneID(id int) *ActionTextRichTextUpdateOne {
+	mutation := newActionTextRichTextMutation(c.config, OpUpdateOne, withActionTextRichTextID(id))
+	return &ActionTextRichTextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ActionTextRichText.
+func (c *ActionTextRichTextClient) Delete() *ActionTextRichTextDelete {
+	mutation := newActionTextRichTextMutation(c.config, OpDelete)
+	return &ActionTextRichTextDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ActionTextRichTextClient) DeleteOne(_m *ActionTextRichText) *ActionTextRichTextDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ActionTextRichTextClient) DeleteOneID(id int) *ActionTextRichTextDeleteOne {
+	builder := c.Delete().Where(actiontextrichtext.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ActionTextRichTextDeleteOne{builder}
+}
+
+// Query returns a query builder for ActionTextRichText.
+func (c *ActionTextRichTextClient) Query() *ActionTextRichTextQuery {
+	return &ActionTextRichTextQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeActionTextRichText},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ActionTextRichText entity by its id.
+func (c *ActionTextRichTextClient) Get(ctx context.Context, id int) (*ActionTextRichText, error) {
+	return c.Query().Where(actiontextrichtext.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ActionTextRichTextClient) GetX(ctx context.Context, id int) *ActionTextRichText {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ActionTextRichTextClient) Hooks() []Hook {
+	return c.hooks.ActionTextRichText
+}
+
+// Interceptors returns the client interceptors.
+func (c *ActionTextRichTextClient) Interceptors() []Interceptor {
+	return c.inters.ActionTextRichText
+}
+
+func (c *ActionTextRichTextClient) mutate(ctx context.Context, m *ActionTextRichTextMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ActionTextRichTextCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ActionTextRichTextUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ActionTextRichTextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ActionTextRichTextDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ActionTextRichText mutation op: %q", m.Op())
+	}
+}
+
+// ActiveStorageAttachmentClient is a client for the ActiveStorageAttachment schema.
+type ActiveStorageAttachmentClient struct {
+	config
+}
+
+// NewActiveStorageAttachmentClient returns a client for the ActiveStorageAttachment from the given config.
+func NewActiveStorageAttachmentClient(c config) *ActiveStorageAttachmentClient {
+	return &ActiveStorageAttachmentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `activestorageattachment.Hooks(f(g(h())))`.
+func (c *ActiveStorageAttachmentClient) Use(hooks ...Hook) {
+	c.hooks.ActiveStorageAttachment = append(c.hooks.ActiveStorageAttachment, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `activestorageattachment.Intercept(f(g(h())))`.
+func (c *ActiveStorageAttachmentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ActiveStorageAttachment = append(c.inters.ActiveStorageAttachment, interceptors...)
+}
+
+// Create returns a builder for creating a ActiveStorageAttachment entity.
+func (c *ActiveStorageAttachmentClient) Create() *ActiveStorageAttachmentCreate {
+	mutation := newActiveStorageAttachmentMutation(c.config, OpCreate)
+	return &ActiveStorageAttachmentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ActiveStorageAttachment entities.
+func (c *ActiveStorageAttachmentClient) CreateBulk(builders ...*ActiveStorageAttachmentCreate) *ActiveStorageAttachmentCreateBulk {
+	return &ActiveStorageAttachmentCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ActiveStorageAttachmentClient) MapCreateBulk(slice any, setFunc func(*ActiveStorageAttachmentCreate, int)) *ActiveStorageAttachmentCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ActiveStorageAttachmentCreateBulk{err: fmt.Errorf("calling to ActiveStorageAttachmentClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ActiveStorageAttachmentCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ActiveStorageAttachmentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ActiveStorageAttachment.
+func (c *ActiveStorageAttachmentClient) Update() *ActiveStorageAttachmentUpdate {
+	mutation := newActiveStorageAttachmentMutation(c.config, OpUpdate)
+	return &ActiveStorageAttachmentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ActiveStorageAttachmentClient) UpdateOne(_m *ActiveStorageAttachment) *ActiveStorageAttachmentUpdateOne {
+	mutation := newActiveStorageAttachmentMutation(c.config, OpUpdateOne, withActiveStorageAttachment(_m))
+	return &ActiveStorageAttachmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ActiveStorageAttachmentClient) UpdateOneID(id int) *ActiveStorageAttachmentUpdateOne {
+	mutation := newActiveStorageAttachmentMutation(c.config, OpUpdateOne, withActiveStorageAttachmentID(id))
+	return &ActiveStorageAttachmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ActiveStorageAttachment.
+func (c *ActiveStorageAttachmentClient) Delete() *ActiveStorageAttachmentDelete {
+	mutation := newActiveStorageAttachmentMutation(c.config, OpDelete)
+	return &ActiveStorageAttachmentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ActiveStorageAttachmentClient) DeleteOne(_m *ActiveStorageAttachment) *ActiveStorageAttachmentDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ActiveStorageAttachmentClient) DeleteOneID(id int) *ActiveStorageAttachmentDeleteOne {
+	builder := c.Delete().Where(activestorageattachment.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ActiveStorageAttachmentDeleteOne{builder}
+}
+
+// Query returns a query builder for ActiveStorageAttachment.
+func (c *ActiveStorageAttachmentClient) Query() *ActiveStorageAttachmentQuery {
+	return &ActiveStorageAttachmentQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeActiveStorageAttachment},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ActiveStorageAttachment entity by its id.
+func (c *ActiveStorageAttachmentClient) Get(ctx context.Context, id int) (*ActiveStorageAttachment, error) {
+	return c.Query().Where(activestorageattachment.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ActiveStorageAttachmentClient) GetX(ctx context.Context, id int) *ActiveStorageAttachment {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBlob queries the blob edge of a ActiveStorageAttachment.
+func (c *ActiveStorageAttachmentClient) QueryBlob(_m *ActiveStorageAttachment) *ActiveStorageBlobQuery {
+	query := (&ActiveStorageBlobClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(activestorageattachment.Table, activestorageattachment.FieldID, id),
+			sqlgraph.To(activestorageblob.Table, activestorageblob.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, activestorageattachment.BlobTable, activestorageattachment.BlobColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ActiveStorageAttachmentClient) Hooks() []Hook {
+	return c.hooks.ActiveStorageAttachment
+}
+
+// Interceptors returns the client interceptors.
+func (c *ActiveStorageAttachmentClient) Interceptors() []Interceptor {
+	return c.inters.ActiveStorageAttachment
+}
+
+func (c *ActiveStorageAttachmentClient) mutate(ctx context.Context, m *ActiveStorageAttachmentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ActiveStorageAttachmentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ActiveStorageAttachmentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ActiveStorageAttachmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ActiveStorageAttachmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ActiveStorageAttachment mutation op: %q", m.Op())
+	}
+}
+
+// ActiveStorageBlobClient is a client for the ActiveStorageBlob schema.
+type ActiveStorageBlobClient struct {
+	config
+}
+
+// NewActiveStorageBlobClient returns a client for the ActiveStorageBlob from the given config.
+func NewActiveStorageBlobClient(c config) *ActiveStorageBlobClient {
+	return &ActiveStorageBlobClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `activestorageblob.Hooks(f(g(h())))`.
+func (c *ActiveStorageBlobClient) Use(hooks ...Hook) {
+	c.hooks.ActiveStorageBlob = append(c.hooks.ActiveStorageBlob, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `activestorageblob.Intercept(f(g(h())))`.
+func (c *ActiveStorageBlobClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ActiveStorageBlob = append(c.inters.ActiveStorageBlob, interceptors...)
+}
+
+// Create returns a builder for creating a ActiveStorageBlob entity.
+func (c *ActiveStorageBlobClient) Create() *ActiveStorageBlobCreate {
+	mutation := newActiveStorageBlobMutation(c.config, OpCreate)
+	return &ActiveStorageBlobCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ActiveStorageBlob entities.
+func (c *ActiveStorageBlobClient) CreateBulk(builders ...*ActiveStorageBlobCreate) *ActiveStorageBlobCreateBulk {
+	return &ActiveStorageBlobCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ActiveStorageBlobClient) MapCreateBulk(slice any, setFunc func(*ActiveStorageBlobCreate, int)) *ActiveStorageBlobCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ActiveStorageBlobCreateBulk{err: fmt.Errorf("calling to ActiveStorageBlobClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ActiveStorageBlobCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ActiveStorageBlobCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ActiveStorageBlob.
+func (c *ActiveStorageBlobClient) Update() *ActiveStorageBlobUpdate {
+	mutation := newActiveStorageBlobMutation(c.config, OpUpdate)
+	return &ActiveStorageBlobUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ActiveStorageBlobClient) UpdateOne(_m *ActiveStorageBlob) *ActiveStorageBlobUpdateOne {
+	mutation := newActiveStorageBlobMutation(c.config, OpUpdateOne, withActiveStorageBlob(_m))
+	return &ActiveStorageBlobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ActiveStorageBlobClient) UpdateOneID(id int) *ActiveStorageBlobUpdateOne {
+	mutation := newActiveStorageBlobMutation(c.config, OpUpdateOne, withActiveStorageBlobID(id))
+	return &ActiveStorageBlobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ActiveStorageBlob.
+func (c *ActiveStorageBlobClient) Delete() *ActiveStorageBlobDelete {
+	mutation := newActiveStorageBlobMutation(c.config, OpDelete)
+	return &ActiveStorageBlobDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ActiveStorageBlobClient) DeleteOne(_m *ActiveStorageBlob) *ActiveStorageBlobDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ActiveStorageBlobClient) DeleteOneID(id int) *ActiveStorageBlobDeleteOne {
+	builder := c.Delete().Where(activestorageblob.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ActiveStorageBlobDeleteOne{builder}
+}
+
+// Query returns a query builder for ActiveStorageBlob.
+func (c *ActiveStorageBlobClient) Query() *ActiveStorageBlobQuery {
+	return &ActiveStorageBlobQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeActiveStorageBlob},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ActiveStorageBlob entity by its id.
+func (c *ActiveStorageBlobClient) Get(ctx context.Context, id int) (*ActiveStorageBlob, error) {
+	return c.Query().Where(activestorageblob.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ActiveStorageBlobClient) GetX(ctx context.Context, id int) *ActiveStorageBlob {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ActiveStorageBlobClient) Hooks() []Hook {
+	return c.hooks.ActiveStorageBlob
+}
+
+// Interceptors returns the client interceptors.
+func (c *ActiveStorageBlobClient) Interceptors() []Interceptor {
+	return c.inters.ActiveStorageBlob
+}
+
+func (c *ActiveStorageBlobClient) mutate(ctx context.Context, m *ActiveStorageBlobMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ActiveStorageBlobCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ActiveStorageBlobUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ActiveStorageBlobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ActiveStorageBlobDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ActiveStorageBlob mutation op: %q", m.Op())
 	}
 }
 
@@ -577,6 +1036,288 @@ func (c *BannerClient) mutate(ctx context.Context, m *BannerMutation) (Value, er
 		return (&BannerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Banner mutation op: %q", m.Op())
+	}
+}
+
+// BlogPostClient is a client for the BlogPost schema.
+type BlogPostClient struct {
+	config
+}
+
+// NewBlogPostClient returns a client for the BlogPost from the given config.
+func NewBlogPostClient(c config) *BlogPostClient {
+	return &BlogPostClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `blogpost.Hooks(f(g(h())))`.
+func (c *BlogPostClient) Use(hooks ...Hook) {
+	c.hooks.BlogPost = append(c.hooks.BlogPost, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `blogpost.Intercept(f(g(h())))`.
+func (c *BlogPostClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BlogPost = append(c.inters.BlogPost, interceptors...)
+}
+
+// Create returns a builder for creating a BlogPost entity.
+func (c *BlogPostClient) Create() *BlogPostCreate {
+	mutation := newBlogPostMutation(c.config, OpCreate)
+	return &BlogPostCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BlogPost entities.
+func (c *BlogPostClient) CreateBulk(builders ...*BlogPostCreate) *BlogPostCreateBulk {
+	return &BlogPostCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BlogPostClient) MapCreateBulk(slice any, setFunc func(*BlogPostCreate, int)) *BlogPostCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BlogPostCreateBulk{err: fmt.Errorf("calling to BlogPostClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BlogPostCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BlogPostCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BlogPost.
+func (c *BlogPostClient) Update() *BlogPostUpdate {
+	mutation := newBlogPostMutation(c.config, OpUpdate)
+	return &BlogPostUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BlogPostClient) UpdateOne(_m *BlogPost) *BlogPostUpdateOne {
+	mutation := newBlogPostMutation(c.config, OpUpdateOne, withBlogPost(_m))
+	return &BlogPostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BlogPostClient) UpdateOneID(id int) *BlogPostUpdateOne {
+	mutation := newBlogPostMutation(c.config, OpUpdateOne, withBlogPostID(id))
+	return &BlogPostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BlogPost.
+func (c *BlogPostClient) Delete() *BlogPostDelete {
+	mutation := newBlogPostMutation(c.config, OpDelete)
+	return &BlogPostDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BlogPostClient) DeleteOne(_m *BlogPost) *BlogPostDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BlogPostClient) DeleteOneID(id int) *BlogPostDeleteOne {
+	builder := c.Delete().Where(blogpost.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BlogPostDeleteOne{builder}
+}
+
+// Query returns a query builder for BlogPost.
+func (c *BlogPostClient) Query() *BlogPostQuery {
+	return &BlogPostQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBlogPost},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BlogPost entity by its id.
+func (c *BlogPostClient) Get(ctx context.Context, id int) (*BlogPost, error) {
+	return c.Query().Where(blogpost.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BlogPostClient) GetX(ctx context.Context, id int) *BlogPost {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCreator queries the creator edge of a BlogPost.
+func (c *BlogPostClient) QueryCreator(_m *BlogPost) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(blogpost.Table, blogpost.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, blogpost.CreatorTable, blogpost.CreatorColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *BlogPostClient) Hooks() []Hook {
+	return c.hooks.BlogPost
+}
+
+// Interceptors returns the client interceptors.
+func (c *BlogPostClient) Interceptors() []Interceptor {
+	return c.inters.BlogPost
+}
+
+func (c *BlogPostClient) mutate(ctx context.Context, m *BlogPostMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BlogPostCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BlogPostUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BlogPostUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BlogPostDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BlogPost mutation op: %q", m.Op())
+	}
+}
+
+// BlogPostLikeClient is a client for the BlogPostLike schema.
+type BlogPostLikeClient struct {
+	config
+}
+
+// NewBlogPostLikeClient returns a client for the BlogPostLike from the given config.
+func NewBlogPostLikeClient(c config) *BlogPostLikeClient {
+	return &BlogPostLikeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `blogpostlike.Hooks(f(g(h())))`.
+func (c *BlogPostLikeClient) Use(hooks ...Hook) {
+	c.hooks.BlogPostLike = append(c.hooks.BlogPostLike, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `blogpostlike.Intercept(f(g(h())))`.
+func (c *BlogPostLikeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BlogPostLike = append(c.inters.BlogPostLike, interceptors...)
+}
+
+// Create returns a builder for creating a BlogPostLike entity.
+func (c *BlogPostLikeClient) Create() *BlogPostLikeCreate {
+	mutation := newBlogPostLikeMutation(c.config, OpCreate)
+	return &BlogPostLikeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BlogPostLike entities.
+func (c *BlogPostLikeClient) CreateBulk(builders ...*BlogPostLikeCreate) *BlogPostLikeCreateBulk {
+	return &BlogPostLikeCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BlogPostLikeClient) MapCreateBulk(slice any, setFunc func(*BlogPostLikeCreate, int)) *BlogPostLikeCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BlogPostLikeCreateBulk{err: fmt.Errorf("calling to BlogPostLikeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BlogPostLikeCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BlogPostLikeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BlogPostLike.
+func (c *BlogPostLikeClient) Update() *BlogPostLikeUpdate {
+	mutation := newBlogPostLikeMutation(c.config, OpUpdate)
+	return &BlogPostLikeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BlogPostLikeClient) UpdateOne(_m *BlogPostLike) *BlogPostLikeUpdateOne {
+	mutation := newBlogPostLikeMutation(c.config, OpUpdateOne, withBlogPostLike(_m))
+	return &BlogPostLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BlogPostLikeClient) UpdateOneID(id int) *BlogPostLikeUpdateOne {
+	mutation := newBlogPostLikeMutation(c.config, OpUpdateOne, withBlogPostLikeID(id))
+	return &BlogPostLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BlogPostLike.
+func (c *BlogPostLikeClient) Delete() *BlogPostLikeDelete {
+	mutation := newBlogPostLikeMutation(c.config, OpDelete)
+	return &BlogPostLikeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BlogPostLikeClient) DeleteOne(_m *BlogPostLike) *BlogPostLikeDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BlogPostLikeClient) DeleteOneID(id int) *BlogPostLikeDeleteOne {
+	builder := c.Delete().Where(blogpostlike.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BlogPostLikeDeleteOne{builder}
+}
+
+// Query returns a query builder for BlogPostLike.
+func (c *BlogPostLikeClient) Query() *BlogPostLikeQuery {
+	return &BlogPostLikeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBlogPostLike},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BlogPostLike entity by its id.
+func (c *BlogPostLikeClient) Get(ctx context.Context, id int) (*BlogPostLike, error) {
+	return c.Query().Where(blogpostlike.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BlogPostLikeClient) GetX(ctx context.Context, id int) *BlogPostLike {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *BlogPostLikeClient) Hooks() []Hook {
+	return c.hooks.BlogPostLike
+}
+
+// Interceptors returns the client interceptors.
+func (c *BlogPostLikeClient) Interceptors() []Interceptor {
+	return c.inters.BlogPostLike
+}
+
+func (c *BlogPostLikeClient) mutate(ctx context.Context, m *BlogPostLikeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BlogPostLikeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BlogPostLikeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BlogPostLikeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BlogPostLikeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BlogPostLike mutation op: %q", m.Op())
 	}
 }
 
@@ -2323,13 +3064,15 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Attachment, Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion,
-		LandingPage, LandingPageQnaItem, Lead, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Hook
+		ActionTextRichText, ActiveStorageAttachment, ActiveStorageBlob, Attachment,
+		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
+		CourseVersion, LandingPage, LandingPageQnaItem, Lead, Review, StaffMember,
+		StaffRole, StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
-		Attachment, Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion,
-		LandingPage, LandingPageQnaItem, Lead, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Interceptor
+		ActionTextRichText, ActiveStorageAttachment, ActiveStorageBlob, Attachment,
+		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
+		CourseVersion, LandingPage, LandingPageQnaItem, Lead, Review, StaffMember,
+		StaffRole, StaffRolePermission, User []ent.Interceptor
 	}
 )

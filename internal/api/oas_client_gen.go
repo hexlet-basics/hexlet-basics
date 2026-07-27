@@ -144,7 +144,7 @@ type Invoker interface {
 	// AdminGetBlogPost invokes adminGetBlogPost operation.
 	//
 	// GET /admin/blog_posts/{id}
-	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
+	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error)
 	// AdminGetCourse invokes adminGetCourse operation.
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
@@ -2791,12 +2791,12 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 // AdminGetBlogPost invokes adminGetBlogPost operation.
 //
 // GET /admin/blog_posts/{id}
-func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error) {
+func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error) {
 	res, err := c.sendAdminGetBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (res AdminGetBlogPostRes, err error) {
+func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (res *BlogPost, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),

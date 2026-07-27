@@ -124,7 +124,7 @@ type Handler interface {
 	// AdminGetBlogPost implements adminGetBlogPost operation.
 	//
 	// GET /admin/blog_posts/{id}
-	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
+	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error)
 	// AdminGetCourse implements adminGetCourse operation.
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.

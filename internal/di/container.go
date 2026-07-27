@@ -55,7 +55,7 @@ func New() *do.RootScope {
 	})
 
 	do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
-		return handlers.NewServer(do.MustInvoke[*ent.Client](i)), nil
+		return handlers.NewServer(do.MustInvoke[*ent.Client](i), do.MustInvoke[*config.Config](i)), nil
 	})
 
 	// Blob bucket for uploaded assets (ADR-0005). Closed explicitly in main.go on

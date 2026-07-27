@@ -1,0 +1,11 @@
+# Fixtures for `action_text_rich_texts` (Rails ActionText's polymorphic body
+# store). Only the BlogPost rich_body for post 6001 is seeded; post 6002 has no
+# row, so its richBodyHtml reads as "". The body is display-ready HTML (the new
+# Mantine-editor model); reading time counts 5 words -> 1 minute.
+- id: 10001
+  name: rich_body
+  record_id: 6001
+  record_type: BlogPost
+  body: '<p>Hello <strong>world</strong> from the blog</p>'
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

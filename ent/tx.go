@@ -12,10 +12,20 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// ActionTextRichText is the client for interacting with the ActionTextRichText builders.
+	ActionTextRichText *ActionTextRichTextClient
+	// ActiveStorageAttachment is the client for interacting with the ActiveStorageAttachment builders.
+	ActiveStorageAttachment *ActiveStorageAttachmentClient
+	// ActiveStorageBlob is the client for interacting with the ActiveStorageBlob builders.
+	ActiveStorageBlob *ActiveStorageBlobClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
+	// BlogPost is the client for interacting with the BlogPost builders.
+	BlogPost *BlogPostClient
+	// BlogPostLike is the client for interacting with the BlogPostLike builders.
+	BlogPostLike *BlogPostLikeClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
@@ -171,8 +181,13 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.ActionTextRichText = NewActionTextRichTextClient(tx.config)
+	tx.ActiveStorageAttachment = NewActiveStorageAttachmentClient(tx.config)
+	tx.ActiveStorageBlob = NewActiveStorageBlobClient(tx.config)
 	tx.Attachment = NewAttachmentClient(tx.config)
 	tx.Banner = NewBannerClient(tx.config)
+	tx.BlogPost = NewBlogPostClient(tx.config)
+	tx.BlogPostLike = NewBlogPostLikeClient(tx.config)
 	tx.CategoryQnaItem = NewCategoryQnaItemClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
@@ -194,7 +209,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Attachment.QueryXXX(), the query will be executed
+// applies a query, for example: ActionTextRichText.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

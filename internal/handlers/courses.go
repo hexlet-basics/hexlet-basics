@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/config"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -17,14 +18,19 @@ import (
 // It embeds api.UnimplementedHandler so newly-added contract operations compile
 // as "not implemented" until their handler lands (contract-first, ADR-0001);
 // methods defined on Server override the embedded stubs.
+//
+// cfg supplies the public hosts used to build absolute URLs in read models
+// (canonical page URLs via AppHost, self-served asset URLs via PublicURL) —
+// there is no *http.Request at the ogen handler boundary to derive them from.
 type Server struct {
 	api.UnimplementedHandler
 	db   *ent.Client
 	conv apiconv.Converter
+	cfg  *config.Config
 }
 
-func NewServer(db *ent.Client) *Server {
-	return &Server{db: db, conv: &apiconv.ConverterImpl{}}
+func NewServer(db *ent.Client, cfg *config.Config) *Server {
+	return &Server{db: db, conv: &apiconv.ConverterImpl{}, cfg: cfg}
 }
 
 // ListCourses returns the published course catalog.

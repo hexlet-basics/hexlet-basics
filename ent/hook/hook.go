@@ -8,6 +8,42 @@ import (
 	"hexletbasics/ent"
 )
 
+// The ActionTextRichTextFunc type is an adapter to allow the use of ordinary
+// function as ActionTextRichText mutator.
+type ActionTextRichTextFunc func(context.Context, *ent.ActionTextRichTextMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ActionTextRichTextFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ActionTextRichTextMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActionTextRichTextMutation", m)
+}
+
+// The ActiveStorageAttachmentFunc type is an adapter to allow the use of ordinary
+// function as ActiveStorageAttachment mutator.
+type ActiveStorageAttachmentFunc func(context.Context, *ent.ActiveStorageAttachmentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ActiveStorageAttachmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ActiveStorageAttachmentMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActiveStorageAttachmentMutation", m)
+}
+
+// The ActiveStorageBlobFunc type is an adapter to allow the use of ordinary
+// function as ActiveStorageBlob mutator.
+type ActiveStorageBlobFunc func(context.Context, *ent.ActiveStorageBlobMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ActiveStorageBlobFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ActiveStorageBlobMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActiveStorageBlobMutation", m)
+}
+
 // The AttachmentFunc type is an adapter to allow the use of ordinary
 // function as Attachment mutator.
 type AttachmentFunc func(context.Context, *ent.AttachmentMutation) (ent.Value, error)
@@ -30,6 +66,30 @@ func (f BannerFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BannerMutation", m)
+}
+
+// The BlogPostFunc type is an adapter to allow the use of ordinary
+// function as BlogPost mutator.
+type BlogPostFunc func(context.Context, *ent.BlogPostMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BlogPostFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BlogPostMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BlogPostMutation", m)
+}
+
+// The BlogPostLikeFunc type is an adapter to allow the use of ordinary
+// function as BlogPostLike mutator.
+type BlogPostLikeFunc func(context.Context, *ent.BlogPostLikeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BlogPostLikeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BlogPostLikeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BlogPostLikeMutation", m)
 }
 
 // The CategoryQnaItemFunc type is an adapter to allow the use of ordinary

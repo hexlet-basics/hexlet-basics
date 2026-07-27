@@ -27,8 +27,16 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 )
+
+// testConfig gives handlers fixed public hosts so URL-building assertions are
+// deterministic (independent of the ambient env a `config.Load` would read).
+var testConfig = &config.Config{
+	AppHost:   "code-basics.com",
+	PublicURL: "http://localhost:3001",
+}
 
 const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
 
@@ -95,7 +103,7 @@ func NewHarness(t *testing.T) *Harness {
 
 	db := NewClient(t)
 
-	srv, err := api.NewServer(handlers.NewServer(db), api.WithErrorHandler(handlers.APIErrorHandler))
+	srv, err := api.NewServer(handlers.NewServer(db, testConfig), api.WithErrorHandler(handlers.APIErrorHandler))
 	if err != nil {
 		t.Fatalf("new api server: %v", err)
 	}

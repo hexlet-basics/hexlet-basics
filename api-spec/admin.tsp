@@ -172,7 +172,9 @@ model BlogPostRelatedCoursesInput {
 interface AdminBlogPosts {
   @get @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost>;
 
-  @get @route("/{id}") @operationId("adminGetBlogPost") get(@path id: int32): BlogPost | NotFoundError;
+  // 404 comes from the central APIErrorHandler (ent not-found), like every other
+  // admin get — so no explicit NotFoundError union here.
+  @get @route("/{id}") @operationId("adminGetBlogPost") get(@path id: int32): BlogPost;
 
   @post @operationId("adminCreateBlogPost") create(@body body: BlogPostInput): {
     @statusCode statusCode: 201;

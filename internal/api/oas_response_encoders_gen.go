@@ -275,35 +275,17 @@ func encodeAdminGetBannerResponse(response *Banner, w http.ResponseWriter, span 
 	return nil
 }
 
-func encodeAdminGetBlogPostResponse(response AdminGetBlogPostRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *BlogPost:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetBlogPostResponse(response *BlogPost, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminGetCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {

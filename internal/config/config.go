@@ -16,6 +16,14 @@ type Config struct {
 	// (fileblob) in dev, s3blob in prod, chosen by URL scheme. The dev default
 	// writes under ./storage (created on first open) so uploads survive restarts.
 	BlobBucketURL string `env:"BLOB_BUCKET_URL" envDefault:"file://./storage?create_dir=true"`
+	// AppHost is the public site host used to build canonical page URLs (e.g. a
+	// blog post's `url`), mirroring legacy AppHost.canonical. HTTPS is assumed in
+	// prod; the default matches the legacy default.
+	AppHost string `env:"APP_HOST" envDefault:"code-basics.com"`
+	// PublicURL is this server's own public origin, used to build absolute asset
+	// URLs it serves itself (the `/storage/{key}` blob read path). Separate from
+	// AppHost because the API may sit on a different host than the site.
+	PublicURL string `env:"PUBLIC_URL" envDefault:"http://localhost:3001"`
 }
 
 // Load reads configuration from environment variables, applying defaults.

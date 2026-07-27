@@ -198,7 +198,7 @@ func (UnimplementedHandler) AdminGetBanner(ctx context.Context, params AdminGetB
 // AdminGetBlogPost implements adminGetBlogPost operation.
 //
 // GET /admin/blog_posts/{id}
-func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (r AdminGetBlogPostRes, _ error) {
+func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (r *BlogPost, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

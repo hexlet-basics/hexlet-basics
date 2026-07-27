@@ -3422,7 +3422,7 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response AdminGetBlogPostRes
+	var response *BlogPost
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3443,7 +3443,7 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminGetBlogPostParams
-			Response = AdminGetBlogPostRes
+			Response = *BlogPost
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

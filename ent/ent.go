@@ -6,8 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/actiontextrichtext"
+	"hexletbasics/ent/activestorageattachment"
+	"hexletbasics/ent/activestorageblob"
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -86,20 +91,25 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			attachment.Table:          attachment.ValidColumn,
-			banner.Table:              banner.ValidColumn,
-			categoryqnaitem.Table:     categoryqnaitem.ValidColumn,
-			course.Table:              course.ValidColumn,
-			coursecategory.Table:      coursecategory.ValidColumn,
-			courseversion.Table:       courseversion.ValidColumn,
-			landingpage.Table:         landingpage.ValidColumn,
-			landingpageqnaitem.Table:  landingpageqnaitem.ValidColumn,
-			lead.Table:                lead.ValidColumn,
-			review.Table:              review.ValidColumn,
-			staffmember.Table:         staffmember.ValidColumn,
-			staffrole.Table:           staffrole.ValidColumn,
-			staffrolepermission.Table: staffrolepermission.ValidColumn,
-			user.Table:                user.ValidColumn,
+			actiontextrichtext.Table:      actiontextrichtext.ValidColumn,
+			activestorageattachment.Table: activestorageattachment.ValidColumn,
+			activestorageblob.Table:       activestorageblob.ValidColumn,
+			attachment.Table:              attachment.ValidColumn,
+			banner.Table:                  banner.ValidColumn,
+			blogpost.Table:                blogpost.ValidColumn,
+			blogpostlike.Table:            blogpostlike.ValidColumn,
+			categoryqnaitem.Table:         categoryqnaitem.ValidColumn,
+			course.Table:                  course.ValidColumn,
+			coursecategory.Table:          coursecategory.ValidColumn,
+			courseversion.Table:           courseversion.ValidColumn,
+			landingpage.Table:             landingpage.ValidColumn,
+			landingpageqnaitem.Table:      landingpageqnaitem.ValidColumn,
+			lead.Table:                    lead.ValidColumn,
+			review.Table:                  review.ValidColumn,
+			staffmember.Table:             staffmember.ValidColumn,
+			staffrole.Table:               staffrole.ValidColumn,
+			staffrolepermission.Table:     staffrolepermission.ValidColumn,
+			user.Table:                    user.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

@@ -515,12 +515,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
       tags:
         - 'Admin: Blog Posts'
     put:

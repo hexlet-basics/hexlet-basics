@@ -6,11 +6,26 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// ActionTextRichText is the predicate function for actiontextrichtext builders.
+type ActionTextRichText func(*sql.Selector)
+
+// ActiveStorageAttachment is the predicate function for activestorageattachment builders.
+type ActiveStorageAttachment func(*sql.Selector)
+
+// ActiveStorageBlob is the predicate function for activestorageblob builders.
+type ActiveStorageBlob func(*sql.Selector)
+
 // Attachment is the predicate function for attachment builders.
 type Attachment func(*sql.Selector)
 
 // Banner is the predicate function for banner builders.
 type Banner func(*sql.Selector)
+
+// BlogPost is the predicate function for blogpost builders.
+type BlogPost func(*sql.Selector)
+
+// BlogPostLike is the predicate function for blogpostlike builders.
+type BlogPostLike func(*sql.Selector)
 
 // CategoryQnaItem is the predicate function for categoryqnaitem builders.
 type CategoryQnaItem func(*sql.Selector)

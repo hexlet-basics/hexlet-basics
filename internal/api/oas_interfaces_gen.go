@@ -9,10 +9,6 @@ type AdminCreateCourseVersionRes interface {
 	adminCreateCourseVersionRes()
 }
 
-type AdminGetBlogPostRes interface {
-	adminGetBlogPostRes()
-}
-
 type AdminReviewCourseLessonRes interface {
 	adminReviewCourseLessonRes()
 }

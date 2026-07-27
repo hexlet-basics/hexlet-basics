@@ -9,6 +9,55 @@ import (
 )
 
 var (
+	// ActionTextRichTextsColumns holds the columns for the "action_text_rich_texts" table.
+	ActionTextRichTextsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "record_id", Type: field.TypeInt},
+		{Name: "record_type", Type: field.TypeString},
+		{Name: "body", Type: field.TypeString, Nullable: true, Size: 2147483647},
+	}
+	// ActionTextRichTextsTable holds the schema information for the "action_text_rich_texts" table.
+	ActionTextRichTextsTable = &schema.Table{
+		Name:       "action_text_rich_texts",
+		Columns:    ActionTextRichTextsColumns,
+		PrimaryKey: []*schema.Column{ActionTextRichTextsColumns[0]},
+	}
+	// ActiveStorageAttachmentsColumns holds the columns for the "active_storage_attachments" table.
+	ActiveStorageAttachmentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "record_id", Type: field.TypeInt},
+		{Name: "record_type", Type: field.TypeString},
+		{Name: "blob_id", Type: field.TypeInt},
+	}
+	// ActiveStorageAttachmentsTable holds the schema information for the "active_storage_attachments" table.
+	ActiveStorageAttachmentsTable = &schema.Table{
+		Name:       "active_storage_attachments",
+		Columns:    ActiveStorageAttachmentsColumns,
+		PrimaryKey: []*schema.Column{ActiveStorageAttachmentsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "active_storage_attachments_active_storage_blobs_blob",
+				Columns:    []*schema.Column{ActiveStorageAttachmentsColumns[4]},
+				RefColumns: []*schema.Column{ActiveStorageBlobsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// ActiveStorageBlobsColumns holds the columns for the "active_storage_blobs" table.
+	ActiveStorageBlobsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "key", Type: field.TypeString},
+		{Name: "filename", Type: field.TypeString},
+		{Name: "content_type", Type: field.TypeString, Nullable: true},
+	}
+	// ActiveStorageBlobsTable holds the schema information for the "active_storage_blobs" table.
+	ActiveStorageBlobsTable = &schema.Table{
+		Name:       "active_storage_blobs",
+		Columns:    ActiveStorageBlobsColumns,
+		PrimaryKey: []*schema.Column{ActiveStorageBlobsColumns[0]},
+	}
 	// AttachmentsColumns holds the columns for the "attachments" table.
 	AttachmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -42,6 +91,44 @@ var (
 		Name:       "banners",
 		Columns:    BannersColumns,
 		PrimaryKey: []*schema.Column{BannersColumns[0]},
+	}
+	// BlogPostsColumns holds the columns for the "blog_posts" table.
+	BlogPostsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "slug", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt, Nullable: true},
+		{Name: "related_language_items_count", Type: field.TypeInt, Default: 0},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "creator_id", Type: field.TypeInt},
+	}
+	// BlogPostsTable holds the schema information for the "blog_posts" table.
+	BlogPostsTable = &schema.Table{
+		Name:       "blog_posts",
+		Columns:    BlogPostsColumns,
+		PrimaryKey: []*schema.Column{BlogPostsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "blog_posts_users_creator",
+				Columns:    []*schema.Column{BlogPostsColumns[9]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// BlogPostLikesColumns holds the columns for the "blog_post_likes" table.
+	BlogPostLikesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "blog_post_id", Type: field.TypeInt},
+	}
+	// BlogPostLikesTable holds the schema information for the "blog_post_likes" table.
+	BlogPostLikesTable = &schema.Table{
+		Name:       "blog_post_likes",
+		Columns:    BlogPostLikesColumns,
+		PrimaryKey: []*schema.Column{BlogPostLikesColumns[0]},
 	}
 	// LanguageCategoryQnaItemsColumns holds the columns for the "language_category_qna_items" table.
 	LanguageCategoryQnaItemsColumns = []*schema.Column{
@@ -312,8 +399,13 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ActionTextRichTextsTable,
+		ActiveStorageAttachmentsTable,
+		ActiveStorageBlobsTable,
 		AttachmentsTable,
 		BannersTable,
+		BlogPostsTable,
+		BlogPostLikesTable,
 		LanguageCategoryQnaItemsTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
@@ -330,6 +422,17 @@ var (
 )
 
 func init() {
+	ActionTextRichTextsTable.Annotation = &entsql.Annotation{
+		Table: "action_text_rich_texts",
+	}
+	ActiveStorageAttachmentsTable.ForeignKeys[0].RefTable = ActiveStorageBlobsTable
+	ActiveStorageAttachmentsTable.Annotation = &entsql.Annotation{
+		Table: "active_storage_attachments",
+	}
+	ActiveStorageBlobsTable.Annotation = &entsql.Annotation{
+		Table: "active_storage_blobs",
+	}
+	BlogPostsTable.ForeignKeys[0].RefTable = UsersTable
 	LanguageCategoryQnaItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_category_qna_items",
 	}

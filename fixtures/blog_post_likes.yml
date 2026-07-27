@@ -1,0 +1,12 @@
+# Fixtures for `blog_post_likes`. Two likes on post 6001 (likesCount = 2); post
+# 6002 has none (likesCount = 0). user_id points at users.yml.
+- id: 9001
+  blog_post_id: 6001
+  user_id: 1001
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 9002
+  blog_post_id: 6001
+  user_id: 1002
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

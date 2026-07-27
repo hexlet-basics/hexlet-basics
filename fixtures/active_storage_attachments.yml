@@ -1,0 +1,9 @@
+# Fixtures for `active_storage_attachments` (ActiveStorage's polymorphic join).
+# Binds blog post 6001's `cover` to blob 7001; post 6002 has no cover row, so its
+# cover variants read as null.
+- id: 8001
+  name: cover
+  record_id: 6001
+  record_type: BlogPost
+  blob_id: 7001
+  created_at: '2026-07-26 20:50:29'

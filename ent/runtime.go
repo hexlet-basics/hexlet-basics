@@ -5,6 +5,7 @@ package ent
 import (
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -50,6 +51,12 @@ func init() {
 	banner.DefaultUpdatedAt = bannerDescUpdatedAt.Default.(func() time.Time)
 	// banner.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	banner.UpdateDefaultUpdatedAt = bannerDescUpdatedAt.UpdateDefault.(func() time.Time)
+	blogpostFields := schema.BlogPost{}.Fields()
+	_ = blogpostFields
+	// blogpostDescRelatedLanguageItemsCount is the schema descriptor for related_language_items_count field.
+	blogpostDescRelatedLanguageItemsCount := blogpostFields[7].Descriptor()
+	// blogpost.DefaultRelatedLanguageItemsCount holds the default value on creation for the related_language_items_count field.
+	blogpost.DefaultRelatedLanguageItemsCount = blogpostDescRelatedLanguageItemsCount.Default.(int)
 	categoryqnaitemFields := schema.CategoryQnaItem{}.Fields()
 	_ = categoryqnaitemFields
 	// categoryqnaitemDescCreatedAt is the schema descriptor for created_at field.

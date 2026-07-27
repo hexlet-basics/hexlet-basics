@@ -649,7 +649,6 @@ func (s *BlogPost) SetCreatedAt(val time.Time) {
 }
 
 func (*BlogPost) adminCreateBlogPostRes()            {}
-func (*BlogPost) adminGetBlogPostRes()               {}
 func (*BlogPost) adminSetBlogPostRelatedCoursesRes() {}
 func (*BlogPost) adminUpdateBlogPostRes()            {}
 func (*BlogPost) getBlogPostRes()                    {}
@@ -4550,7 +4549,6 @@ func (s *NotFoundError) SetMessage(val string) {
 }
 
 func (*NotFoundError) adminCreateCourseVersionRes() {}
-func (*NotFoundError) adminGetBlogPostRes()         {}
 func (*NotFoundError) adminReviewCourseLessonRes()  {}
 func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}

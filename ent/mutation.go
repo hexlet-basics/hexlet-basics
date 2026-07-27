@@ -6,8 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/actiontextrichtext"
+	"hexletbasics/ent/activestorageattachment"
+	"hexletbasics/ent/activestorageblob"
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -38,21 +43,1606 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAttachment          = "Attachment"
-	TypeBanner              = "Banner"
-	TypeCategoryQnaItem     = "CategoryQnaItem"
-	TypeCourse              = "Course"
-	TypeCourseCategory      = "CourseCategory"
-	TypeCourseVersion       = "CourseVersion"
-	TypeLandingPage         = "LandingPage"
-	TypeLandingPageQnaItem  = "LandingPageQnaItem"
-	TypeLead                = "Lead"
-	TypeReview              = "Review"
-	TypeStaffMember         = "StaffMember"
-	TypeStaffRole           = "StaffRole"
-	TypeStaffRolePermission = "StaffRolePermission"
-	TypeUser                = "User"
+	TypeActionTextRichText      = "ActionTextRichText"
+	TypeActiveStorageAttachment = "ActiveStorageAttachment"
+	TypeActiveStorageBlob       = "ActiveStorageBlob"
+	TypeAttachment              = "Attachment"
+	TypeBanner                  = "Banner"
+	TypeBlogPost                = "BlogPost"
+	TypeBlogPostLike            = "BlogPostLike"
+	TypeCategoryQnaItem         = "CategoryQnaItem"
+	TypeCourse                  = "Course"
+	TypeCourseCategory          = "CourseCategory"
+	TypeCourseVersion           = "CourseVersion"
+	TypeLandingPage             = "LandingPage"
+	TypeLandingPageQnaItem      = "LandingPageQnaItem"
+	TypeLead                    = "Lead"
+	TypeReview                  = "Review"
+	TypeStaffMember             = "StaffMember"
+	TypeStaffRole               = "StaffRole"
+	TypeStaffRolePermission     = "StaffRolePermission"
+	TypeUser                    = "User"
 )
+
+// ActionTextRichTextMutation represents an operation that mutates the ActionTextRichText nodes in the graph.
+type ActionTextRichTextMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	name          *string
+	record_id     *int
+	addrecord_id  *int
+	record_type   *string
+	body          *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*ActionTextRichText, error)
+	predicates    []predicate.ActionTextRichText
+}
+
+var _ ent.Mutation = (*ActionTextRichTextMutation)(nil)
+
+// actiontextrichtextOption allows management of the mutation configuration using functional options.
+type actiontextrichtextOption func(*ActionTextRichTextMutation)
+
+// newActionTextRichTextMutation creates new mutation for the ActionTextRichText entity.
+func newActionTextRichTextMutation(c config, op Op, opts ...actiontextrichtextOption) *ActionTextRichTextMutation {
+	m := &ActionTextRichTextMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeActionTextRichText,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withActionTextRichTextID sets the ID field of the mutation.
+func withActionTextRichTextID(id int) actiontextrichtextOption {
+	return func(m *ActionTextRichTextMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ActionTextRichText
+		)
+		m.oldValue = func(ctx context.Context) (*ActionTextRichText, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ActionTextRichText.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withActionTextRichText sets the old ActionTextRichText of the mutation.
+func withActionTextRichText(node *ActionTextRichText) actiontextrichtextOption {
+	return func(m *ActionTextRichTextMutation) {
+		m.oldValue = func(context.Context) (*ActionTextRichText, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ActionTextRichTextMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ActionTextRichTextMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ActionTextRichTextMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ActionTextRichTextMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ActionTextRichText.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *ActionTextRichTextMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *ActionTextRichTextMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the ActionTextRichText entity.
+// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionTextRichTextMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *ActionTextRichTextMutation) ResetName() {
+	m.name = nil
+}
+
+// SetRecordID sets the "record_id" field.
+func (m *ActionTextRichTextMutation) SetRecordID(i int) {
+	m.record_id = &i
+	m.addrecord_id = nil
+}
+
+// RecordID returns the value of the "record_id" field in the mutation.
+func (m *ActionTextRichTextMutation) RecordID() (r int, exists bool) {
+	v := m.record_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRecordID returns the old "record_id" field's value of the ActionTextRichText entity.
+// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionTextRichTextMutation) OldRecordID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRecordID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRecordID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRecordID: %w", err)
+	}
+	return oldValue.RecordID, nil
+}
+
+// AddRecordID adds i to the "record_id" field.
+func (m *ActionTextRichTextMutation) AddRecordID(i int) {
+	if m.addrecord_id != nil {
+		*m.addrecord_id += i
+	} else {
+		m.addrecord_id = &i
+	}
+}
+
+// AddedRecordID returns the value that was added to the "record_id" field in this mutation.
+func (m *ActionTextRichTextMutation) AddedRecordID() (r int, exists bool) {
+	v := m.addrecord_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRecordID resets all changes to the "record_id" field.
+func (m *ActionTextRichTextMutation) ResetRecordID() {
+	m.record_id = nil
+	m.addrecord_id = nil
+}
+
+// SetRecordType sets the "record_type" field.
+func (m *ActionTextRichTextMutation) SetRecordType(s string) {
+	m.record_type = &s
+}
+
+// RecordType returns the value of the "record_type" field in the mutation.
+func (m *ActionTextRichTextMutation) RecordType() (r string, exists bool) {
+	v := m.record_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRecordType returns the old "record_type" field's value of the ActionTextRichText entity.
+// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionTextRichTextMutation) OldRecordType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRecordType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRecordType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRecordType: %w", err)
+	}
+	return oldValue.RecordType, nil
+}
+
+// ResetRecordType resets all changes to the "record_type" field.
+func (m *ActionTextRichTextMutation) ResetRecordType() {
+	m.record_type = nil
+}
+
+// SetBody sets the "body" field.
+func (m *ActionTextRichTextMutation) SetBody(s string) {
+	m.body = &s
+}
+
+// Body returns the value of the "body" field in the mutation.
+func (m *ActionTextRichTextMutation) Body() (r string, exists bool) {
+	v := m.body
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBody returns the old "body" field's value of the ActionTextRichText entity.
+// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActionTextRichTextMutation) OldBody(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBody is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBody requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBody: %w", err)
+	}
+	return oldValue.Body, nil
+}
+
+// ClearBody clears the value of the "body" field.
+func (m *ActionTextRichTextMutation) ClearBody() {
+	m.body = nil
+	m.clearedFields[actiontextrichtext.FieldBody] = struct{}{}
+}
+
+// BodyCleared returns if the "body" field was cleared in this mutation.
+func (m *ActionTextRichTextMutation) BodyCleared() bool {
+	_, ok := m.clearedFields[actiontextrichtext.FieldBody]
+	return ok
+}
+
+// ResetBody resets all changes to the "body" field.
+func (m *ActionTextRichTextMutation) ResetBody() {
+	m.body = nil
+	delete(m.clearedFields, actiontextrichtext.FieldBody)
+}
+
+// Where appends a list predicates to the ActionTextRichTextMutation builder.
+func (m *ActionTextRichTextMutation) Where(ps ...predicate.ActionTextRichText) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ActionTextRichTextMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ActionTextRichTextMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ActionTextRichText, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ActionTextRichTextMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ActionTextRichTextMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ActionTextRichText).
+func (m *ActionTextRichTextMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ActionTextRichTextMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.name != nil {
+		fields = append(fields, actiontextrichtext.FieldName)
+	}
+	if m.record_id != nil {
+		fields = append(fields, actiontextrichtext.FieldRecordID)
+	}
+	if m.record_type != nil {
+		fields = append(fields, actiontextrichtext.FieldRecordType)
+	}
+	if m.body != nil {
+		fields = append(fields, actiontextrichtext.FieldBody)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ActionTextRichTextMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case actiontextrichtext.FieldName:
+		return m.Name()
+	case actiontextrichtext.FieldRecordID:
+		return m.RecordID()
+	case actiontextrichtext.FieldRecordType:
+		return m.RecordType()
+	case actiontextrichtext.FieldBody:
+		return m.Body()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ActionTextRichTextMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case actiontextrichtext.FieldName:
+		return m.OldName(ctx)
+	case actiontextrichtext.FieldRecordID:
+		return m.OldRecordID(ctx)
+	case actiontextrichtext.FieldRecordType:
+		return m.OldRecordType(ctx)
+	case actiontextrichtext.FieldBody:
+		return m.OldBody(ctx)
+	}
+	return nil, fmt.Errorf("unknown ActionTextRichText field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActionTextRichTextMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case actiontextrichtext.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case actiontextrichtext.FieldRecordID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRecordID(v)
+		return nil
+	case actiontextrichtext.FieldRecordType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRecordType(v)
+		return nil
+	case actiontextrichtext.FieldBody:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBody(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActionTextRichText field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ActionTextRichTextMutation) AddedFields() []string {
+	var fields []string
+	if m.addrecord_id != nil {
+		fields = append(fields, actiontextrichtext.FieldRecordID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ActionTextRichTextMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case actiontextrichtext.FieldRecordID:
+		return m.AddedRecordID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActionTextRichTextMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case actiontextrichtext.FieldRecordID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRecordID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActionTextRichText numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ActionTextRichTextMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(actiontextrichtext.FieldBody) {
+		fields = append(fields, actiontextrichtext.FieldBody)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ActionTextRichTextMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ActionTextRichTextMutation) ClearField(name string) error {
+	switch name {
+	case actiontextrichtext.FieldBody:
+		m.ClearBody()
+		return nil
+	}
+	return fmt.Errorf("unknown ActionTextRichText nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ActionTextRichTextMutation) ResetField(name string) error {
+	switch name {
+	case actiontextrichtext.FieldName:
+		m.ResetName()
+		return nil
+	case actiontextrichtext.FieldRecordID:
+		m.ResetRecordID()
+		return nil
+	case actiontextrichtext.FieldRecordType:
+		m.ResetRecordType()
+		return nil
+	case actiontextrichtext.FieldBody:
+		m.ResetBody()
+		return nil
+	}
+	return fmt.Errorf("unknown ActionTextRichText field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ActionTextRichTextMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ActionTextRichTextMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ActionTextRichTextMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ActionTextRichTextMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ActionTextRichTextMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ActionTextRichTextMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ActionTextRichTextMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown ActionTextRichText unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ActionTextRichTextMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown ActionTextRichText edge %s", name)
+}
+
+// ActiveStorageAttachmentMutation represents an operation that mutates the ActiveStorageAttachment nodes in the graph.
+type ActiveStorageAttachmentMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	name          *string
+	record_id     *int
+	addrecord_id  *int
+	record_type   *string
+	clearedFields map[string]struct{}
+	blob          *int
+	clearedblob   bool
+	done          bool
+	oldValue      func(context.Context) (*ActiveStorageAttachment, error)
+	predicates    []predicate.ActiveStorageAttachment
+}
+
+var _ ent.Mutation = (*ActiveStorageAttachmentMutation)(nil)
+
+// activestorageattachmentOption allows management of the mutation configuration using functional options.
+type activestorageattachmentOption func(*ActiveStorageAttachmentMutation)
+
+// newActiveStorageAttachmentMutation creates new mutation for the ActiveStorageAttachment entity.
+func newActiveStorageAttachmentMutation(c config, op Op, opts ...activestorageattachmentOption) *ActiveStorageAttachmentMutation {
+	m := &ActiveStorageAttachmentMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeActiveStorageAttachment,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withActiveStorageAttachmentID sets the ID field of the mutation.
+func withActiveStorageAttachmentID(id int) activestorageattachmentOption {
+	return func(m *ActiveStorageAttachmentMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ActiveStorageAttachment
+		)
+		m.oldValue = func(ctx context.Context) (*ActiveStorageAttachment, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ActiveStorageAttachment.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withActiveStorageAttachment sets the old ActiveStorageAttachment of the mutation.
+func withActiveStorageAttachment(node *ActiveStorageAttachment) activestorageattachmentOption {
+	return func(m *ActiveStorageAttachmentMutation) {
+		m.oldValue = func(context.Context) (*ActiveStorageAttachment, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ActiveStorageAttachmentMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ActiveStorageAttachmentMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ActiveStorageAttachmentMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ActiveStorageAttachmentMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ActiveStorageAttachment.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *ActiveStorageAttachmentMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *ActiveStorageAttachmentMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the ActiveStorageAttachment entity.
+// If the ActiveStorageAttachment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageAttachmentMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *ActiveStorageAttachmentMutation) ResetName() {
+	m.name = nil
+}
+
+// SetRecordID sets the "record_id" field.
+func (m *ActiveStorageAttachmentMutation) SetRecordID(i int) {
+	m.record_id = &i
+	m.addrecord_id = nil
+}
+
+// RecordID returns the value of the "record_id" field in the mutation.
+func (m *ActiveStorageAttachmentMutation) RecordID() (r int, exists bool) {
+	v := m.record_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRecordID returns the old "record_id" field's value of the ActiveStorageAttachment entity.
+// If the ActiveStorageAttachment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageAttachmentMutation) OldRecordID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRecordID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRecordID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRecordID: %w", err)
+	}
+	return oldValue.RecordID, nil
+}
+
+// AddRecordID adds i to the "record_id" field.
+func (m *ActiveStorageAttachmentMutation) AddRecordID(i int) {
+	if m.addrecord_id != nil {
+		*m.addrecord_id += i
+	} else {
+		m.addrecord_id = &i
+	}
+}
+
+// AddedRecordID returns the value that was added to the "record_id" field in this mutation.
+func (m *ActiveStorageAttachmentMutation) AddedRecordID() (r int, exists bool) {
+	v := m.addrecord_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRecordID resets all changes to the "record_id" field.
+func (m *ActiveStorageAttachmentMutation) ResetRecordID() {
+	m.record_id = nil
+	m.addrecord_id = nil
+}
+
+// SetRecordType sets the "record_type" field.
+func (m *ActiveStorageAttachmentMutation) SetRecordType(s string) {
+	m.record_type = &s
+}
+
+// RecordType returns the value of the "record_type" field in the mutation.
+func (m *ActiveStorageAttachmentMutation) RecordType() (r string, exists bool) {
+	v := m.record_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRecordType returns the old "record_type" field's value of the ActiveStorageAttachment entity.
+// If the ActiveStorageAttachment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageAttachmentMutation) OldRecordType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRecordType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRecordType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRecordType: %w", err)
+	}
+	return oldValue.RecordType, nil
+}
+
+// ResetRecordType resets all changes to the "record_type" field.
+func (m *ActiveStorageAttachmentMutation) ResetRecordType() {
+	m.record_type = nil
+}
+
+// SetBlobID sets the "blob_id" field.
+func (m *ActiveStorageAttachmentMutation) SetBlobID(i int) {
+	m.blob = &i
+}
+
+// BlobID returns the value of the "blob_id" field in the mutation.
+func (m *ActiveStorageAttachmentMutation) BlobID() (r int, exists bool) {
+	v := m.blob
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBlobID returns the old "blob_id" field's value of the ActiveStorageAttachment entity.
+// If the ActiveStorageAttachment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageAttachmentMutation) OldBlobID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBlobID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBlobID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBlobID: %w", err)
+	}
+	return oldValue.BlobID, nil
+}
+
+// ResetBlobID resets all changes to the "blob_id" field.
+func (m *ActiveStorageAttachmentMutation) ResetBlobID() {
+	m.blob = nil
+}
+
+// ClearBlob clears the "blob" edge to the ActiveStorageBlob entity.
+func (m *ActiveStorageAttachmentMutation) ClearBlob() {
+	m.clearedblob = true
+	m.clearedFields[activestorageattachment.FieldBlobID] = struct{}{}
+}
+
+// BlobCleared reports if the "blob" edge to the ActiveStorageBlob entity was cleared.
+func (m *ActiveStorageAttachmentMutation) BlobCleared() bool {
+	return m.clearedblob
+}
+
+// BlobIDs returns the "blob" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BlobID instead. It exists only for internal usage by the builders.
+func (m *ActiveStorageAttachmentMutation) BlobIDs() (ids []int) {
+	if id := m.blob; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBlob resets all changes to the "blob" edge.
+func (m *ActiveStorageAttachmentMutation) ResetBlob() {
+	m.blob = nil
+	m.clearedblob = false
+}
+
+// Where appends a list predicates to the ActiveStorageAttachmentMutation builder.
+func (m *ActiveStorageAttachmentMutation) Where(ps ...predicate.ActiveStorageAttachment) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ActiveStorageAttachmentMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ActiveStorageAttachmentMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ActiveStorageAttachment, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ActiveStorageAttachmentMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ActiveStorageAttachmentMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ActiveStorageAttachment).
+func (m *ActiveStorageAttachmentMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ActiveStorageAttachmentMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.name != nil {
+		fields = append(fields, activestorageattachment.FieldName)
+	}
+	if m.record_id != nil {
+		fields = append(fields, activestorageattachment.FieldRecordID)
+	}
+	if m.record_type != nil {
+		fields = append(fields, activestorageattachment.FieldRecordType)
+	}
+	if m.blob != nil {
+		fields = append(fields, activestorageattachment.FieldBlobID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ActiveStorageAttachmentMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case activestorageattachment.FieldName:
+		return m.Name()
+	case activestorageattachment.FieldRecordID:
+		return m.RecordID()
+	case activestorageattachment.FieldRecordType:
+		return m.RecordType()
+	case activestorageattachment.FieldBlobID:
+		return m.BlobID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ActiveStorageAttachmentMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case activestorageattachment.FieldName:
+		return m.OldName(ctx)
+	case activestorageattachment.FieldRecordID:
+		return m.OldRecordID(ctx)
+	case activestorageattachment.FieldRecordType:
+		return m.OldRecordType(ctx)
+	case activestorageattachment.FieldBlobID:
+		return m.OldBlobID(ctx)
+	}
+	return nil, fmt.Errorf("unknown ActiveStorageAttachment field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActiveStorageAttachmentMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case activestorageattachment.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case activestorageattachment.FieldRecordID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRecordID(v)
+		return nil
+	case activestorageattachment.FieldRecordType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRecordType(v)
+		return nil
+	case activestorageattachment.FieldBlobID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBlobID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageAttachment field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ActiveStorageAttachmentMutation) AddedFields() []string {
+	var fields []string
+	if m.addrecord_id != nil {
+		fields = append(fields, activestorageattachment.FieldRecordID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ActiveStorageAttachmentMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case activestorageattachment.FieldRecordID:
+		return m.AddedRecordID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActiveStorageAttachmentMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case activestorageattachment.FieldRecordID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRecordID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageAttachment numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ActiveStorageAttachmentMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ActiveStorageAttachmentMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ActiveStorageAttachmentMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ActiveStorageAttachment nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ActiveStorageAttachmentMutation) ResetField(name string) error {
+	switch name {
+	case activestorageattachment.FieldName:
+		m.ResetName()
+		return nil
+	case activestorageattachment.FieldRecordID:
+		m.ResetRecordID()
+		return nil
+	case activestorageattachment.FieldRecordType:
+		m.ResetRecordType()
+		return nil
+	case activestorageattachment.FieldBlobID:
+		m.ResetBlobID()
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageAttachment field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ActiveStorageAttachmentMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.blob != nil {
+		edges = append(edges, activestorageattachment.EdgeBlob)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ActiveStorageAttachmentMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case activestorageattachment.EdgeBlob:
+		if id := m.blob; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ActiveStorageAttachmentMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ActiveStorageAttachmentMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ActiveStorageAttachmentMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedblob {
+		edges = append(edges, activestorageattachment.EdgeBlob)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ActiveStorageAttachmentMutation) EdgeCleared(name string) bool {
+	switch name {
+	case activestorageattachment.EdgeBlob:
+		return m.clearedblob
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ActiveStorageAttachmentMutation) ClearEdge(name string) error {
+	switch name {
+	case activestorageattachment.EdgeBlob:
+		m.ClearBlob()
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageAttachment unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ActiveStorageAttachmentMutation) ResetEdge(name string) error {
+	switch name {
+	case activestorageattachment.EdgeBlob:
+		m.ResetBlob()
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageAttachment edge %s", name)
+}
+
+// ActiveStorageBlobMutation represents an operation that mutates the ActiveStorageBlob nodes in the graph.
+type ActiveStorageBlobMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	key           *string
+	filename      *string
+	content_type  *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*ActiveStorageBlob, error)
+	predicates    []predicate.ActiveStorageBlob
+}
+
+var _ ent.Mutation = (*ActiveStorageBlobMutation)(nil)
+
+// activestorageblobOption allows management of the mutation configuration using functional options.
+type activestorageblobOption func(*ActiveStorageBlobMutation)
+
+// newActiveStorageBlobMutation creates new mutation for the ActiveStorageBlob entity.
+func newActiveStorageBlobMutation(c config, op Op, opts ...activestorageblobOption) *ActiveStorageBlobMutation {
+	m := &ActiveStorageBlobMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeActiveStorageBlob,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withActiveStorageBlobID sets the ID field of the mutation.
+func withActiveStorageBlobID(id int) activestorageblobOption {
+	return func(m *ActiveStorageBlobMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ActiveStorageBlob
+		)
+		m.oldValue = func(ctx context.Context) (*ActiveStorageBlob, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ActiveStorageBlob.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withActiveStorageBlob sets the old ActiveStorageBlob of the mutation.
+func withActiveStorageBlob(node *ActiveStorageBlob) activestorageblobOption {
+	return func(m *ActiveStorageBlobMutation) {
+		m.oldValue = func(context.Context) (*ActiveStorageBlob, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ActiveStorageBlobMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ActiveStorageBlobMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ActiveStorageBlobMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ActiveStorageBlobMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ActiveStorageBlob.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetKey sets the "key" field.
+func (m *ActiveStorageBlobMutation) SetKey(s string) {
+	m.key = &s
+}
+
+// Key returns the value of the "key" field in the mutation.
+func (m *ActiveStorageBlobMutation) Key() (r string, exists bool) {
+	v := m.key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldKey returns the old "key" field's value of the ActiveStorageBlob entity.
+// If the ActiveStorageBlob object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageBlobMutation) OldKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldKey: %w", err)
+	}
+	return oldValue.Key, nil
+}
+
+// ResetKey resets all changes to the "key" field.
+func (m *ActiveStorageBlobMutation) ResetKey() {
+	m.key = nil
+}
+
+// SetFilename sets the "filename" field.
+func (m *ActiveStorageBlobMutation) SetFilename(s string) {
+	m.filename = &s
+}
+
+// Filename returns the value of the "filename" field in the mutation.
+func (m *ActiveStorageBlobMutation) Filename() (r string, exists bool) {
+	v := m.filename
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFilename returns the old "filename" field's value of the ActiveStorageBlob entity.
+// If the ActiveStorageBlob object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageBlobMutation) OldFilename(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFilename is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFilename requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFilename: %w", err)
+	}
+	return oldValue.Filename, nil
+}
+
+// ResetFilename resets all changes to the "filename" field.
+func (m *ActiveStorageBlobMutation) ResetFilename() {
+	m.filename = nil
+}
+
+// SetContentType sets the "content_type" field.
+func (m *ActiveStorageBlobMutation) SetContentType(s string) {
+	m.content_type = &s
+}
+
+// ContentType returns the value of the "content_type" field in the mutation.
+func (m *ActiveStorageBlobMutation) ContentType() (r string, exists bool) {
+	v := m.content_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContentType returns the old "content_type" field's value of the ActiveStorageBlob entity.
+// If the ActiveStorageBlob object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ActiveStorageBlobMutation) OldContentType(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContentType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContentType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContentType: %w", err)
+	}
+	return oldValue.ContentType, nil
+}
+
+// ClearContentType clears the value of the "content_type" field.
+func (m *ActiveStorageBlobMutation) ClearContentType() {
+	m.content_type = nil
+	m.clearedFields[activestorageblob.FieldContentType] = struct{}{}
+}
+
+// ContentTypeCleared returns if the "content_type" field was cleared in this mutation.
+func (m *ActiveStorageBlobMutation) ContentTypeCleared() bool {
+	_, ok := m.clearedFields[activestorageblob.FieldContentType]
+	return ok
+}
+
+// ResetContentType resets all changes to the "content_type" field.
+func (m *ActiveStorageBlobMutation) ResetContentType() {
+	m.content_type = nil
+	delete(m.clearedFields, activestorageblob.FieldContentType)
+}
+
+// Where appends a list predicates to the ActiveStorageBlobMutation builder.
+func (m *ActiveStorageBlobMutation) Where(ps ...predicate.ActiveStorageBlob) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ActiveStorageBlobMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ActiveStorageBlobMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ActiveStorageBlob, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ActiveStorageBlobMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ActiveStorageBlobMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ActiveStorageBlob).
+func (m *ActiveStorageBlobMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ActiveStorageBlobMutation) Fields() []string {
+	fields := make([]string, 0, 3)
+	if m.key != nil {
+		fields = append(fields, activestorageblob.FieldKey)
+	}
+	if m.filename != nil {
+		fields = append(fields, activestorageblob.FieldFilename)
+	}
+	if m.content_type != nil {
+		fields = append(fields, activestorageblob.FieldContentType)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ActiveStorageBlobMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case activestorageblob.FieldKey:
+		return m.Key()
+	case activestorageblob.FieldFilename:
+		return m.Filename()
+	case activestorageblob.FieldContentType:
+		return m.ContentType()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ActiveStorageBlobMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case activestorageblob.FieldKey:
+		return m.OldKey(ctx)
+	case activestorageblob.FieldFilename:
+		return m.OldFilename(ctx)
+	case activestorageblob.FieldContentType:
+		return m.OldContentType(ctx)
+	}
+	return nil, fmt.Errorf("unknown ActiveStorageBlob field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActiveStorageBlobMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case activestorageblob.FieldKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetKey(v)
+		return nil
+	case activestorageblob.FieldFilename:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFilename(v)
+		return nil
+	case activestorageblob.FieldContentType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContentType(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageBlob field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ActiveStorageBlobMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ActiveStorageBlobMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ActiveStorageBlobMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown ActiveStorageBlob numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ActiveStorageBlobMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(activestorageblob.FieldContentType) {
+		fields = append(fields, activestorageblob.FieldContentType)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ActiveStorageBlobMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ActiveStorageBlobMutation) ClearField(name string) error {
+	switch name {
+	case activestorageblob.FieldContentType:
+		m.ClearContentType()
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageBlob nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ActiveStorageBlobMutation) ResetField(name string) error {
+	switch name {
+	case activestorageblob.FieldKey:
+		m.ResetKey()
+		return nil
+	case activestorageblob.FieldFilename:
+		m.ResetFilename()
+		return nil
+	case activestorageblob.FieldContentType:
+		m.ResetContentType()
+		return nil
+	}
+	return fmt.Errorf("unknown ActiveStorageBlob field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ActiveStorageBlobMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ActiveStorageBlobMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ActiveStorageBlobMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ActiveStorageBlobMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ActiveStorageBlobMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ActiveStorageBlobMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ActiveStorageBlobMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown ActiveStorageBlob unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ActiveStorageBlobMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown ActiveStorageBlob edge %s", name)
+}
 
 // AttachmentMutation represents an operation that mutates the Attachment nodes in the graph.
 type AttachmentMutation struct {
@@ -1448,6 +3038,1367 @@ func (m *BannerMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *BannerMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Banner edge %s", name)
+}
+
+// BlogPostMutation represents an operation that mutates the BlogPost nodes in the graph.
+type BlogPostMutation struct {
+	config
+	op                              Op
+	typ                             string
+	id                              *int
+	name                            *string
+	slug                            *string
+	description                     *string
+	locale                          *string
+	state                           *string
+	language_id                     *int
+	addlanguage_id                  *int
+	related_language_items_count    *int
+	addrelated_language_items_count *int
+	created_at                      *time.Time
+	clearedFields                   map[string]struct{}
+	creator                         *int
+	clearedcreator                  bool
+	done                            bool
+	oldValue                        func(context.Context) (*BlogPost, error)
+	predicates                      []predicate.BlogPost
+}
+
+var _ ent.Mutation = (*BlogPostMutation)(nil)
+
+// blogpostOption allows management of the mutation configuration using functional options.
+type blogpostOption func(*BlogPostMutation)
+
+// newBlogPostMutation creates new mutation for the BlogPost entity.
+func newBlogPostMutation(c config, op Op, opts ...blogpostOption) *BlogPostMutation {
+	m := &BlogPostMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBlogPost,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBlogPostID sets the ID field of the mutation.
+func withBlogPostID(id int) blogpostOption {
+	return func(m *BlogPostMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BlogPost
+		)
+		m.oldValue = func(ctx context.Context) (*BlogPost, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BlogPost.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBlogPost sets the old BlogPost of the mutation.
+func withBlogPost(node *BlogPost) blogpostOption {
+	return func(m *BlogPostMutation) {
+		m.oldValue = func(context.Context) (*BlogPost, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BlogPostMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BlogPostMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BlogPostMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BlogPostMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BlogPost.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *BlogPostMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *BlogPostMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *BlogPostMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[blogpost.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *BlogPostMutation) NameCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *BlogPostMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, blogpost.FieldName)
+}
+
+// SetSlug sets the "slug" field.
+func (m *BlogPostMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *BlogPostMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldSlug(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (m *BlogPostMutation) ClearSlug() {
+	m.slug = nil
+	m.clearedFields[blogpost.FieldSlug] = struct{}{}
+}
+
+// SlugCleared returns if the "slug" field was cleared in this mutation.
+func (m *BlogPostMutation) SlugCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldSlug]
+	return ok
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *BlogPostMutation) ResetSlug() {
+	m.slug = nil
+	delete(m.clearedFields, blogpost.FieldSlug)
+}
+
+// SetDescription sets the "description" field.
+func (m *BlogPostMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *BlogPostMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *BlogPostMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[blogpost.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *BlogPostMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *BlogPostMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, blogpost.FieldDescription)
+}
+
+// SetLocale sets the "locale" field.
+func (m *BlogPostMutation) SetLocale(s string) {
+	m.locale = &s
+}
+
+// Locale returns the value of the "locale" field in the mutation.
+func (m *BlogPostMutation) Locale() (r string, exists bool) {
+	v := m.locale
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLocale returns the old "locale" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldLocale(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLocale is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLocale requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLocale: %w", err)
+	}
+	return oldValue.Locale, nil
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (m *BlogPostMutation) ClearLocale() {
+	m.locale = nil
+	m.clearedFields[blogpost.FieldLocale] = struct{}{}
+}
+
+// LocaleCleared returns if the "locale" field was cleared in this mutation.
+func (m *BlogPostMutation) LocaleCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldLocale]
+	return ok
+}
+
+// ResetLocale resets all changes to the "locale" field.
+func (m *BlogPostMutation) ResetLocale() {
+	m.locale = nil
+	delete(m.clearedFields, blogpost.FieldLocale)
+}
+
+// SetState sets the "state" field.
+func (m *BlogPostMutation) SetState(s string) {
+	m.state = &s
+}
+
+// State returns the value of the "state" field in the mutation.
+func (m *BlogPostMutation) State() (r string, exists bool) {
+	v := m.state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldState returns the old "state" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldState(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
+	}
+	return oldValue.State, nil
+}
+
+// ClearState clears the value of the "state" field.
+func (m *BlogPostMutation) ClearState() {
+	m.state = nil
+	m.clearedFields[blogpost.FieldState] = struct{}{}
+}
+
+// StateCleared returns if the "state" field was cleared in this mutation.
+func (m *BlogPostMutation) StateCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldState]
+	return ok
+}
+
+// ResetState resets all changes to the "state" field.
+func (m *BlogPostMutation) ResetState() {
+	m.state = nil
+	delete(m.clearedFields, blogpost.FieldState)
+}
+
+// SetCreatorID sets the "creator_id" field.
+func (m *BlogPostMutation) SetCreatorID(i int) {
+	m.creator = &i
+}
+
+// CreatorID returns the value of the "creator_id" field in the mutation.
+func (m *BlogPostMutation) CreatorID() (r int, exists bool) {
+	v := m.creator
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatorID returns the old "creator_id" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldCreatorID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatorID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatorID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatorID: %w", err)
+	}
+	return oldValue.CreatorID, nil
+}
+
+// ResetCreatorID resets all changes to the "creator_id" field.
+func (m *BlogPostMutation) ResetCreatorID() {
+	m.creator = nil
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *BlogPostMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *BlogPostMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldLanguageID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *BlogPostMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *BlogPostMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (m *BlogPostMutation) ClearLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+	m.clearedFields[blogpost.FieldLanguageID] = struct{}{}
+}
+
+// LanguageIDCleared returns if the "language_id" field was cleared in this mutation.
+func (m *BlogPostMutation) LanguageIDCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldLanguageID]
+	return ok
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *BlogPostMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+	delete(m.clearedFields, blogpost.FieldLanguageID)
+}
+
+// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
+func (m *BlogPostMutation) SetRelatedLanguageItemsCount(i int) {
+	m.related_language_items_count = &i
+	m.addrelated_language_items_count = nil
+}
+
+// RelatedLanguageItemsCount returns the value of the "related_language_items_count" field in the mutation.
+func (m *BlogPostMutation) RelatedLanguageItemsCount() (r int, exists bool) {
+	v := m.related_language_items_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRelatedLanguageItemsCount returns the old "related_language_items_count" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldRelatedLanguageItemsCount(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRelatedLanguageItemsCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRelatedLanguageItemsCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRelatedLanguageItemsCount: %w", err)
+	}
+	return oldValue.RelatedLanguageItemsCount, nil
+}
+
+// AddRelatedLanguageItemsCount adds i to the "related_language_items_count" field.
+func (m *BlogPostMutation) AddRelatedLanguageItemsCount(i int) {
+	if m.addrelated_language_items_count != nil {
+		*m.addrelated_language_items_count += i
+	} else {
+		m.addrelated_language_items_count = &i
+	}
+}
+
+// AddedRelatedLanguageItemsCount returns the value that was added to the "related_language_items_count" field in this mutation.
+func (m *BlogPostMutation) AddedRelatedLanguageItemsCount() (r int, exists bool) {
+	v := m.addrelated_language_items_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRelatedLanguageItemsCount resets all changes to the "related_language_items_count" field.
+func (m *BlogPostMutation) ResetRelatedLanguageItemsCount() {
+	m.related_language_items_count = nil
+	m.addrelated_language_items_count = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *BlogPostMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *BlogPostMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *BlogPostMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// ClearCreator clears the "creator" edge to the User entity.
+func (m *BlogPostMutation) ClearCreator() {
+	m.clearedcreator = true
+	m.clearedFields[blogpost.FieldCreatorID] = struct{}{}
+}
+
+// CreatorCleared reports if the "creator" edge to the User entity was cleared.
+func (m *BlogPostMutation) CreatorCleared() bool {
+	return m.clearedcreator
+}
+
+// CreatorIDs returns the "creator" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CreatorID instead. It exists only for internal usage by the builders.
+func (m *BlogPostMutation) CreatorIDs() (ids []int) {
+	if id := m.creator; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCreator resets all changes to the "creator" edge.
+func (m *BlogPostMutation) ResetCreator() {
+	m.creator = nil
+	m.clearedcreator = false
+}
+
+// Where appends a list predicates to the BlogPostMutation builder.
+func (m *BlogPostMutation) Where(ps ...predicate.BlogPost) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the BlogPostMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *BlogPostMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.BlogPost, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *BlogPostMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *BlogPostMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (BlogPost).
+func (m *BlogPostMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BlogPostMutation) Fields() []string {
+	fields := make([]string, 0, 9)
+	if m.name != nil {
+		fields = append(fields, blogpost.FieldName)
+	}
+	if m.slug != nil {
+		fields = append(fields, blogpost.FieldSlug)
+	}
+	if m.description != nil {
+		fields = append(fields, blogpost.FieldDescription)
+	}
+	if m.locale != nil {
+		fields = append(fields, blogpost.FieldLocale)
+	}
+	if m.state != nil {
+		fields = append(fields, blogpost.FieldState)
+	}
+	if m.creator != nil {
+		fields = append(fields, blogpost.FieldCreatorID)
+	}
+	if m.language_id != nil {
+		fields = append(fields, blogpost.FieldLanguageID)
+	}
+	if m.related_language_items_count != nil {
+		fields = append(fields, blogpost.FieldRelatedLanguageItemsCount)
+	}
+	if m.created_at != nil {
+		fields = append(fields, blogpost.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BlogPostMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case blogpost.FieldName:
+		return m.Name()
+	case blogpost.FieldSlug:
+		return m.Slug()
+	case blogpost.FieldDescription:
+		return m.Description()
+	case blogpost.FieldLocale:
+		return m.Locale()
+	case blogpost.FieldState:
+		return m.State()
+	case blogpost.FieldCreatorID:
+		return m.CreatorID()
+	case blogpost.FieldLanguageID:
+		return m.LanguageID()
+	case blogpost.FieldRelatedLanguageItemsCount:
+		return m.RelatedLanguageItemsCount()
+	case blogpost.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BlogPostMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case blogpost.FieldName:
+		return m.OldName(ctx)
+	case blogpost.FieldSlug:
+		return m.OldSlug(ctx)
+	case blogpost.FieldDescription:
+		return m.OldDescription(ctx)
+	case blogpost.FieldLocale:
+		return m.OldLocale(ctx)
+	case blogpost.FieldState:
+		return m.OldState(ctx)
+	case blogpost.FieldCreatorID:
+		return m.OldCreatorID(ctx)
+	case blogpost.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case blogpost.FieldRelatedLanguageItemsCount:
+		return m.OldRelatedLanguageItemsCount(ctx)
+	case blogpost.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown BlogPost field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case blogpost.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case blogpost.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
+		return nil
+	case blogpost.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case blogpost.FieldLocale:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLocale(v)
+		return nil
+	case blogpost.FieldState:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetState(v)
+		return nil
+	case blogpost.FieldCreatorID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatorID(v)
+		return nil
+	case blogpost.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case blogpost.FieldRelatedLanguageItemsCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRelatedLanguageItemsCount(v)
+		return nil
+	case blogpost.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPost field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BlogPostMutation) AddedFields() []string {
+	var fields []string
+	if m.addlanguage_id != nil {
+		fields = append(fields, blogpost.FieldLanguageID)
+	}
+	if m.addrelated_language_items_count != nil {
+		fields = append(fields, blogpost.FieldRelatedLanguageItemsCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BlogPostMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case blogpost.FieldLanguageID:
+		return m.AddedLanguageID()
+	case blogpost.FieldRelatedLanguageItemsCount:
+		return m.AddedRelatedLanguageItemsCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BlogPostMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case blogpost.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
+	case blogpost.FieldRelatedLanguageItemsCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRelatedLanguageItemsCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPost numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BlogPostMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(blogpost.FieldName) {
+		fields = append(fields, blogpost.FieldName)
+	}
+	if m.FieldCleared(blogpost.FieldSlug) {
+		fields = append(fields, blogpost.FieldSlug)
+	}
+	if m.FieldCleared(blogpost.FieldDescription) {
+		fields = append(fields, blogpost.FieldDescription)
+	}
+	if m.FieldCleared(blogpost.FieldLocale) {
+		fields = append(fields, blogpost.FieldLocale)
+	}
+	if m.FieldCleared(blogpost.FieldState) {
+		fields = append(fields, blogpost.FieldState)
+	}
+	if m.FieldCleared(blogpost.FieldLanguageID) {
+		fields = append(fields, blogpost.FieldLanguageID)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BlogPostMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BlogPostMutation) ClearField(name string) error {
+	switch name {
+	case blogpost.FieldName:
+		m.ClearName()
+		return nil
+	case blogpost.FieldSlug:
+		m.ClearSlug()
+		return nil
+	case blogpost.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case blogpost.FieldLocale:
+		m.ClearLocale()
+		return nil
+	case blogpost.FieldState:
+		m.ClearState()
+		return nil
+	case blogpost.FieldLanguageID:
+		m.ClearLanguageID()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPost nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BlogPostMutation) ResetField(name string) error {
+	switch name {
+	case blogpost.FieldName:
+		m.ResetName()
+		return nil
+	case blogpost.FieldSlug:
+		m.ResetSlug()
+		return nil
+	case blogpost.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case blogpost.FieldLocale:
+		m.ResetLocale()
+		return nil
+	case blogpost.FieldState:
+		m.ResetState()
+		return nil
+	case blogpost.FieldCreatorID:
+		m.ResetCreatorID()
+		return nil
+	case blogpost.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case blogpost.FieldRelatedLanguageItemsCount:
+		m.ResetRelatedLanguageItemsCount()
+		return nil
+	case blogpost.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPost field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BlogPostMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.creator != nil {
+		edges = append(edges, blogpost.EdgeCreator)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BlogPostMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case blogpost.EdgeCreator:
+		if id := m.creator; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BlogPostMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BlogPostMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BlogPostMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedcreator {
+		edges = append(edges, blogpost.EdgeCreator)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BlogPostMutation) EdgeCleared(name string) bool {
+	switch name {
+	case blogpost.EdgeCreator:
+		return m.clearedcreator
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BlogPostMutation) ClearEdge(name string) error {
+	switch name {
+	case blogpost.EdgeCreator:
+		m.ClearCreator()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPost unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BlogPostMutation) ResetEdge(name string) error {
+	switch name {
+	case blogpost.EdgeCreator:
+		m.ResetCreator()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPost edge %s", name)
+}
+
+// BlogPostLikeMutation represents an operation that mutates the BlogPostLike nodes in the graph.
+type BlogPostLikeMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int
+	blog_post_id    *int
+	addblog_post_id *int
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*BlogPostLike, error)
+	predicates      []predicate.BlogPostLike
+}
+
+var _ ent.Mutation = (*BlogPostLikeMutation)(nil)
+
+// blogpostlikeOption allows management of the mutation configuration using functional options.
+type blogpostlikeOption func(*BlogPostLikeMutation)
+
+// newBlogPostLikeMutation creates new mutation for the BlogPostLike entity.
+func newBlogPostLikeMutation(c config, op Op, opts ...blogpostlikeOption) *BlogPostLikeMutation {
+	m := &BlogPostLikeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBlogPostLike,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBlogPostLikeID sets the ID field of the mutation.
+func withBlogPostLikeID(id int) blogpostlikeOption {
+	return func(m *BlogPostLikeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BlogPostLike
+		)
+		m.oldValue = func(ctx context.Context) (*BlogPostLike, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BlogPostLike.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBlogPostLike sets the old BlogPostLike of the mutation.
+func withBlogPostLike(node *BlogPostLike) blogpostlikeOption {
+	return func(m *BlogPostLikeMutation) {
+		m.oldValue = func(context.Context) (*BlogPostLike, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BlogPostLikeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BlogPostLikeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BlogPostLikeMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BlogPostLikeMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BlogPostLike.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetBlogPostID sets the "blog_post_id" field.
+func (m *BlogPostLikeMutation) SetBlogPostID(i int) {
+	m.blog_post_id = &i
+	m.addblog_post_id = nil
+}
+
+// BlogPostID returns the value of the "blog_post_id" field in the mutation.
+func (m *BlogPostLikeMutation) BlogPostID() (r int, exists bool) {
+	v := m.blog_post_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBlogPostID returns the old "blog_post_id" field's value of the BlogPostLike entity.
+// If the BlogPostLike object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostLikeMutation) OldBlogPostID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBlogPostID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBlogPostID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBlogPostID: %w", err)
+	}
+	return oldValue.BlogPostID, nil
+}
+
+// AddBlogPostID adds i to the "blog_post_id" field.
+func (m *BlogPostLikeMutation) AddBlogPostID(i int) {
+	if m.addblog_post_id != nil {
+		*m.addblog_post_id += i
+	} else {
+		m.addblog_post_id = &i
+	}
+}
+
+// AddedBlogPostID returns the value that was added to the "blog_post_id" field in this mutation.
+func (m *BlogPostLikeMutation) AddedBlogPostID() (r int, exists bool) {
+	v := m.addblog_post_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBlogPostID resets all changes to the "blog_post_id" field.
+func (m *BlogPostLikeMutation) ResetBlogPostID() {
+	m.blog_post_id = nil
+	m.addblog_post_id = nil
+}
+
+// Where appends a list predicates to the BlogPostLikeMutation builder.
+func (m *BlogPostLikeMutation) Where(ps ...predicate.BlogPostLike) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the BlogPostLikeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *BlogPostLikeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.BlogPostLike, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *BlogPostLikeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *BlogPostLikeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (BlogPostLike).
+func (m *BlogPostLikeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BlogPostLikeMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.blog_post_id != nil {
+		fields = append(fields, blogpostlike.FieldBlogPostID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BlogPostLikeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case blogpostlike.FieldBlogPostID:
+		return m.BlogPostID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BlogPostLikeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case blogpostlike.FieldBlogPostID:
+		return m.OldBlogPostID(ctx)
+	}
+	return nil, fmt.Errorf("unknown BlogPostLike field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BlogPostLikeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case blogpostlike.FieldBlogPostID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBlogPostID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostLike field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BlogPostLikeMutation) AddedFields() []string {
+	var fields []string
+	if m.addblog_post_id != nil {
+		fields = append(fields, blogpostlike.FieldBlogPostID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BlogPostLikeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case blogpostlike.FieldBlogPostID:
+		return m.AddedBlogPostID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BlogPostLikeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case blogpostlike.FieldBlogPostID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBlogPostID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostLike numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BlogPostLikeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BlogPostLikeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BlogPostLikeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown BlogPostLike nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BlogPostLikeMutation) ResetField(name string) error {
+	switch name {
+	case blogpostlike.FieldBlogPostID:
+		m.ResetBlogPostID()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostLike field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BlogPostLikeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BlogPostLikeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BlogPostLikeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BlogPostLikeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BlogPostLikeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BlogPostLikeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BlogPostLikeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown BlogPostLike unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BlogPostLikeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown BlogPostLike edge %s", name)
 }
 
 // CategoryQnaItemMutation represents an operation that mutates the CategoryQnaItem nodes in the graph.

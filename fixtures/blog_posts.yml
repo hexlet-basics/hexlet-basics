@@ -1,0 +1,25 @@
+# Fixtures for `blog_posts`, HAND-CURATED. Admin read maps id, name, slug,
+# description, locale, state, creator_id (embedded creator from users.yml),
+# related_language_items_count. The rich body, cover, and likes live in their own
+# tables (action_text_rich_texts / active_storage_* / blog_post_likes).
+# 6001 is the "full" post (rich body + cover + 2 likes); 6002 has none of those.
+- id: 6001
+  name: Hello world
+  slug: hello-world
+  description: The very first post
+  locale: ru
+  state: published
+  creator_id: 1001
+  related_language_items_count: 3
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 6002
+  name: Second post
+  slug: second-post
+  description: A draft
+  locale: en
+  state: draft
+  creator_id: 1002
+  related_language_items_count: 0
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

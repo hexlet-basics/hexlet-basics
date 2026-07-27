@@ -1617,15 +1617,6 @@ export type AdminGetBlogPostData = {
   url: '/admin/blog_posts/{id}';
 };
 
-export type AdminGetBlogPostErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetBlogPostError = AdminGetBlogPostErrors[keyof AdminGetBlogPostErrors];
-
 export type AdminGetBlogPostResponses = {
   /**
    * The request has succeeded.
