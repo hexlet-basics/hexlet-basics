@@ -1733,10 +1733,6 @@ func (s *CourseLandingPage) SetMembersCount(val int32) {
 	s.MembersCount = val
 }
 
-func (*CourseLandingPage) adminCreateCourseLandingPageRes() {}
-func (*CourseLandingPage) adminGetCourseLandingPageRes()    {}
-func (*CourseLandingPage) adminUpdateCourseLandingPageRes() {}
-
 // Ref: #/components/schemas/CourseLandingPageInput
 type CourseLandingPageInput struct {
 	CourseId                int32               `json:"courseId"`
@@ -4557,26 +4553,25 @@ func (s *NotFoundError) SetMessage(val string) {
 	s.Message = val
 }
 
-func (*NotFoundError) adminCreateCourseVersionRes()  {}
-func (*NotFoundError) adminGetBlogPostRes()          {}
-func (*NotFoundError) adminGetCourseLandingPageRes() {}
-func (*NotFoundError) adminGetCourseRes()            {}
-func (*NotFoundError) adminGetManagementUserRes()    {}
-func (*NotFoundError) adminGetRolePermissionsRes()   {}
-func (*NotFoundError) adminGetRoleRes()              {}
-func (*NotFoundError) adminGetStaffMemberRes()       {}
-func (*NotFoundError) adminReviewCourseLessonRes()   {}
-func (*NotFoundError) adminReviewCourseRes()         {}
-func (*NotFoundError) checkPasswordResetTokenRes()   {}
-func (*NotFoundError) consumeMagicLinkRes()          {}
-func (*NotFoundError) deletePasskeyRes()             {}
-func (*NotFoundError) getBlogPostRes()               {}
-func (*NotFoundError) getCourseLessonRes()           {}
-func (*NotFoundError) getCourseRes()                 {}
-func (*NotFoundError) getNextBlogPostRes()           {}
-func (*NotFoundError) getPageRes()                   {}
-func (*NotFoundError) getPublicCourseCategoryRes()   {}
-func (*NotFoundError) likeBlogPostRes()              {}
+func (*NotFoundError) adminCreateCourseVersionRes() {}
+func (*NotFoundError) adminGetBlogPostRes()         {}
+func (*NotFoundError) adminGetCourseRes()           {}
+func (*NotFoundError) adminGetManagementUserRes()   {}
+func (*NotFoundError) adminGetRolePermissionsRes()  {}
+func (*NotFoundError) adminGetRoleRes()             {}
+func (*NotFoundError) adminGetStaffMemberRes()      {}
+func (*NotFoundError) adminReviewCourseLessonRes()  {}
+func (*NotFoundError) adminReviewCourseRes()        {}
+func (*NotFoundError) checkPasswordResetTokenRes()  {}
+func (*NotFoundError) consumeMagicLinkRes()         {}
+func (*NotFoundError) deletePasskeyRes()            {}
+func (*NotFoundError) getBlogPostRes()              {}
+func (*NotFoundError) getCourseLessonRes()          {}
+func (*NotFoundError) getCourseRes()                {}
+func (*NotFoundError) getNextBlogPostRes()          {}
+func (*NotFoundError) getPageRes()                  {}
+func (*NotFoundError) getPublicCourseCategoryRes()  {}
+func (*NotFoundError) likeBlogPostRes()             {}
 
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
@@ -6660,13 +6655,11 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 }
 
 func (*ValidationError) adminCreateBlogPostRes()            {}
-func (*ValidationError) adminCreateCourseLandingPageRes()   {}
 func (*ValidationError) adminCreateCourseRes()              {}
 func (*ValidationError) adminCreateRoleRes()                {}
 func (*ValidationError) adminCreateStaffMemberRes()         {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
-func (*ValidationError) adminUpdateCourseLandingPageRes()   {}
 func (*ValidationError) adminUpdateCourseRes()              {}
 func (*ValidationError) adminUpdateManagementUserRes()      {}
 func (*ValidationError) adminUpdateRolePermissionsRes()     {}

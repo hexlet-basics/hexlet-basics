@@ -37,7 +37,7 @@ type Handler interface {
 	// AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 	//
 	// POST /admin/language_landing_pages
-	AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
+	AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (*CourseLandingPage, error)
 	// AdminCreateCourseVersion implements adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
@@ -135,8 +135,11 @@ type Handler interface {
 	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
 	// AdminGetCourseLandingPage implements adminGetCourseLandingPage operation.
 	//
+	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
+	// typed union member.
+	//
 	// GET /admin/language_landing_pages/{id}
-	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
+	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminGetManagementUser implements adminGetManagementUser operation.
 	//
 	// GET /admin/management/users/{id}
@@ -295,8 +298,10 @@ type Handler interface {
 	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
 	// AdminUpdateCourseLandingPage implements adminUpdateCourseLandingPage operation.
 	//
+	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// PUT /admin/language_landing_pages/{id}
-	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
+	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminUpdateLandingPageQnaItem implements adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central

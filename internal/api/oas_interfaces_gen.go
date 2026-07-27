@@ -5,10 +5,6 @@ type AdminCreateBlogPostRes interface {
 	adminCreateBlogPostRes()
 }
 
-type AdminCreateCourseLandingPageRes interface {
-	adminCreateCourseLandingPageRes()
-}
-
 type AdminCreateCourseRes interface {
 	adminCreateCourseRes()
 }
@@ -27,10 +23,6 @@ type AdminCreateStaffMemberRes interface {
 
 type AdminGetBlogPostRes interface {
 	adminGetBlogPostRes()
-}
-
-type AdminGetCourseLandingPageRes interface {
-	adminGetCourseLandingPageRes()
 }
 
 type AdminGetCourseRes interface {
@@ -67,10 +59,6 @@ type AdminSetBlogPostRelatedCoursesRes interface {
 
 type AdminUpdateBlogPostRes interface {
 	adminUpdateBlogPostRes()
-}
-
-type AdminUpdateCourseLandingPageRes interface {
-	adminUpdateCourseLandingPageRes()
 }
 
 type AdminUpdateCourseRes interface {

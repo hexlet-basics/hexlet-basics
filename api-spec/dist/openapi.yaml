@@ -834,15 +834,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:
@@ -854,6 +845,9 @@ paths:
   /admin/language_landing_pages/{id}:
     get:
       operationId: adminGetCourseLandingPage
+      description: |-
+        Get a single landing page. A missing id surfaces as 404 via the central
+              ent-error handler, not a typed union member.
       parameters:
         - name: id
           in: path
@@ -868,16 +862,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
       tags:
         - 'Admin: Course Landing Pages'
     put:
       operationId: adminUpdateCourseLandingPage
+      description: |-
+        Update a landing page. A missing id surfaces as 404 via the central
+              ent-error handler.
       parameters:
         - name: id
           in: path
@@ -892,15 +883,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:

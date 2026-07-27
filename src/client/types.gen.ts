@@ -1898,17 +1898,6 @@ export type AdminCreateCourseLandingPageData = {
   url: '/admin/language_landing_pages';
 };
 
-export type AdminCreateCourseLandingPageErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateCourseLandingPageError = AdminCreateCourseLandingPageErrors[keyof AdminCreateCourseLandingPageErrors];
-
 export type AdminCreateCourseLandingPageResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -1945,15 +1934,6 @@ export type AdminGetCourseLandingPageData = {
   url: '/admin/language_landing_pages/{id}';
 };
 
-export type AdminGetCourseLandingPageErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetCourseLandingPageError = AdminGetCourseLandingPageErrors[keyof AdminGetCourseLandingPageErrors];
-
 export type AdminGetCourseLandingPageResponses = {
   /**
    * The request has succeeded.
@@ -1971,17 +1951,6 @@ export type AdminUpdateCourseLandingPageData = {
   query?: never;
   url: '/admin/language_landing_pages/{id}';
 };
-
-export type AdminUpdateCourseLandingPageErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateCourseLandingPageError = AdminUpdateCourseLandingPageErrors[keyof AdminUpdateCourseLandingPageErrors];
 
 export type AdminUpdateCourseLandingPageResponses = {
   /**

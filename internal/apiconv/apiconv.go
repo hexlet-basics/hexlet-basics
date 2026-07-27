@@ -32,6 +32,7 @@ import (
 // goverter:extend NilProgressFromPtr
 // goverter:extend NilReviewStateFromPtr
 // goverter:extend NilReviewLocaleFromPtr
+// goverter:extend NilLandingPageStateFromPtr
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
 type Converter interface {
@@ -112,6 +113,20 @@ type Converter interface {
 	ToLandingPageQnaItem(source *ent.LandingPageQnaItem) api.QnaItem
 
 	ToLandingPageQnaItems(source []*ent.LandingPageQnaItem) []api.QnaItem
+
+	// CourseLandingPage is the admin projection of a landing page. courseSlug,
+	// duration and membersCount come from the associated course (loaded via
+	// WithCourse); outcomesImage stays null until blob assets are migrated (same
+	// deferral as the course cover). Required-string fields resolve from nullable
+	// columns via StringFromPtr.
+	// goverter:map LanguageID CourseId
+	// goverter:map Edges.Course.Slug CourseSlug
+	// goverter:map Edges.Course.MembersCount MembersCount
+	// goverter:map Edges.Course Duration | courseDuration
+	// goverter:map . OutcomesImage | landingOutcomesImageNull
+	ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage
+
+	ToCourseLandingPages(source []*ent.LandingPage) []api.CourseLandingPage
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -232,6 +247,33 @@ func userType(*ent.User) api.UserType {
 // name (the reviewer's display name, not the associated user's).
 func reviewFullName(r *ent.Review) api.NilString {
 	return api.NewNilString(joinName(r.FirstName, r.LastName))
+}
+
+// NilLandingPageStateFromPtr bridges a nullable ent string to ogen's
+// NilLandingPageState.
+func NilLandingPageStateFromPtr(v *string) api.NilLandingPageState {
+	if v == nil {
+		return api.NilLandingPageState{Null: true}
+	}
+	return api.NewNilLandingPageState(api.LandingPageState(*v))
+}
+
+// courseDuration mirrors Language#duration: estimated hours from the lesson
+// count (lessons_count * 15 minutes, integer-divided to hours). Guards nil
+// because a listed landing page may reference a course absent from the current
+// query (or fixture) set — then duration reads as 0, matching `|| 0` upstream.
+func courseDuration(c *ent.Course) int32 {
+	if c == nil {
+		return 0
+	}
+	return int32(c.LessonsCount * 15 / 60)
+}
+
+// landingOutcomesImageNull keeps OutcomesImage null until the landing-page
+// outcomes image is migrated to blob storage (same deferral as the course
+// cover — see coverURLNull).
+func landingOutcomesImageNull(*ent.LandingPage) api.NilString {
+	return api.NilString{Null: true}
 }
 
 // NilCourseVersionFromEnt bridges the current_version association to ogen's

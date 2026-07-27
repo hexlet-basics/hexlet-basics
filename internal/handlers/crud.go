@@ -62,6 +62,19 @@ func listAll[E any, A any](
 	return conv(rows), nil
 }
 
+// applyNil applies a nullable API field to an ent update builder: a null value
+// clears the column, a present value sets it. set/clear are the builder's bound
+// Set*/Clear* methods (their fluent return is ignored). This is the update-side
+// counterpart to SetNillable* used on create — SetNillable* skips nil instead of
+// clearing, so without this every update handler would branch per field.
+func applyNil[T any, B any](null bool, val T, set func(T) B, clear func() B) {
+	if null {
+		clear()
+	} else {
+		set(val)
+	}
+}
+
 // getOne fetches a single row by id and converts it, returning a pointer to the
 // API value. The fetch error (including ent's not-found) is returned as-is for
 // the central ErrorHandler to map to 404. This is the shared body every

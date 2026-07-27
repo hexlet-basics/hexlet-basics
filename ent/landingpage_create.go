@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/landingpage"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -96,6 +97,216 @@ func (_c *LandingPageCreate) SetNillableListed(v *bool) *LandingPageCreate {
 	return _c
 }
 
+// SetMain sets the "main" field.
+func (_c *LandingPageCreate) SetMain(v bool) *LandingPageCreate {
+	_c.mutation.SetMain(v)
+	return _c
+}
+
+// SetNillableMain sets the "main" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableMain(v *bool) *LandingPageCreate {
+	if v != nil {
+		_c.SetMain(*v)
+	}
+	return _c
+}
+
+// SetState sets the "state" field.
+func (_c *LandingPageCreate) SetState(v string) *LandingPageCreate {
+	_c.mutation.SetState(v)
+	return _c
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableState(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetState(*v)
+	}
+	return _c
+}
+
+// SetOrder sets the "order" field.
+func (_c *LandingPageCreate) SetOrder(v string) *LandingPageCreate {
+	_c.mutation.SetOrder(v)
+	return _c
+}
+
+// SetNillableOrder sets the "order" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableOrder(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetOrder(*v)
+	}
+	return _c
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (_c *LandingPageCreate) SetMetaTitle(v string) *LandingPageCreate {
+	_c.mutation.SetMetaTitle(v)
+	return _c
+}
+
+// SetNillableMetaTitle sets the "meta_title" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableMetaTitle(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetMetaTitle(*v)
+	}
+	return _c
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (_c *LandingPageCreate) SetMetaDescription(v string) *LandingPageCreate {
+	_c.mutation.SetMetaDescription(v)
+	return _c
+}
+
+// SetNillableMetaDescription sets the "meta_description" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableMetaDescription(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetMetaDescription(*v)
+	}
+	return _c
+}
+
+// SetDescription sets the "description" field.
+func (_c *LandingPageCreate) SetDescription(v string) *LandingPageCreate {
+	_c.mutation.SetDescription(v)
+	return _c
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableDescription(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetDescription(*v)
+	}
+	return _c
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (_c *LandingPageCreate) SetUsedInHeader(v string) *LandingPageCreate {
+	_c.mutation.SetUsedInHeader(v)
+	return _c
+}
+
+// SetNillableUsedInHeader sets the "used_in_header" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableUsedInHeader(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetUsedInHeader(*v)
+	}
+	return _c
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (_c *LandingPageCreate) SetUsedInDescription(v string) *LandingPageCreate {
+	_c.mutation.SetUsedInDescription(v)
+	return _c
+}
+
+// SetNillableUsedInDescription sets the "used_in_description" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableUsedInDescription(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetUsedInDescription(*v)
+	}
+	return _c
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (_c *LandingPageCreate) SetOutcomesHeader(v string) *LandingPageCreate {
+	_c.mutation.SetOutcomesHeader(v)
+	return _c
+}
+
+// SetNillableOutcomesHeader sets the "outcomes_header" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableOutcomesHeader(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetOutcomesHeader(*v)
+	}
+	return _c
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (_c *LandingPageCreate) SetOutcomesDescription(v string) *LandingPageCreate {
+	_c.mutation.SetOutcomesDescription(v)
+	return _c
+}
+
+// SetNillableOutcomesDescription sets the "outcomes_description" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableOutcomesDescription(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetOutcomesDescription(*v)
+	}
+	return _c
+}
+
+// SetFooter sets the "footer" field.
+func (_c *LandingPageCreate) SetFooter(v bool) *LandingPageCreate {
+	_c.mutation.SetFooter(v)
+	return _c
+}
+
+// SetNillableFooter sets the "footer" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableFooter(v *bool) *LandingPageCreate {
+	if v != nil {
+		_c.SetFooter(*v)
+	}
+	return _c
+}
+
+// SetFooterName sets the "footer_name" field.
+func (_c *LandingPageCreate) SetFooterName(v string) *LandingPageCreate {
+	_c.mutation.SetFooterName(v)
+	return _c
+}
+
+// SetNillableFooterName sets the "footer_name" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableFooterName(v *string) *LandingPageCreate {
+	if v != nil {
+		_c.SetFooterName(*v)
+	}
+	return _c
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (_c *LandingPageCreate) SetLandingPageToRedirectID(v int) *LandingPageCreate {
+	_c.mutation.SetLandingPageToRedirectID(v)
+	return _c
+}
+
+// SetNillableLandingPageToRedirectID sets the "landing_page_to_redirect_id" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableLandingPageToRedirectID(v *int) *LandingPageCreate {
+	if v != nil {
+		_c.SetLandingPageToRedirectID(*v)
+	}
+	return _c
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (_c *LandingPageCreate) SetCreatedAt(v time.Time) *LandingPageCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableCreatedAt(v *time.Time) *LandingPageCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LandingPageCreate) SetUpdatedAt(v time.Time) *LandingPageCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableUpdatedAt(v *time.Time) *LandingPageCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_c *LandingPageCreate) SetCourseID(id int) *LandingPageCreate {
 	_c.mutation.SetCourseID(id)
@@ -114,6 +325,7 @@ func (_c *LandingPageCreate) Mutation() *LandingPageMutation {
 
 // Save creates the LandingPage in the database.
 func (_c *LandingPageCreate) Save(ctx context.Context) (*LandingPage, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -139,10 +351,28 @@ func (_c *LandingPageCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *LandingPageCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := landingpage.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := landingpage.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *LandingPageCreate) check() error {
 	if _, ok := _c.mutation.LanguageID(); !ok {
 		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "LandingPage.language_id"`)}
+	}
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LandingPage.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LandingPage.updated_at"`)}
 	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "LandingPage.course"`)}
@@ -193,6 +423,66 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 		_spec.SetField(landingpage.FieldListed, field.TypeBool, value)
 		_node.Listed = &value
 	}
+	if value, ok := _c.mutation.Main(); ok {
+		_spec.SetField(landingpage.FieldMain, field.TypeBool, value)
+		_node.Main = &value
+	}
+	if value, ok := _c.mutation.State(); ok {
+		_spec.SetField(landingpage.FieldState, field.TypeString, value)
+		_node.State = &value
+	}
+	if value, ok := _c.mutation.Order(); ok {
+		_spec.SetField(landingpage.FieldOrder, field.TypeString, value)
+		_node.Order = &value
+	}
+	if value, ok := _c.mutation.MetaTitle(); ok {
+		_spec.SetField(landingpage.FieldMetaTitle, field.TypeString, value)
+		_node.MetaTitle = &value
+	}
+	if value, ok := _c.mutation.MetaDescription(); ok {
+		_spec.SetField(landingpage.FieldMetaDescription, field.TypeString, value)
+		_node.MetaDescription = &value
+	}
+	if value, ok := _c.mutation.Description(); ok {
+		_spec.SetField(landingpage.FieldDescription, field.TypeString, value)
+		_node.Description = &value
+	}
+	if value, ok := _c.mutation.UsedInHeader(); ok {
+		_spec.SetField(landingpage.FieldUsedInHeader, field.TypeString, value)
+		_node.UsedInHeader = &value
+	}
+	if value, ok := _c.mutation.UsedInDescription(); ok {
+		_spec.SetField(landingpage.FieldUsedInDescription, field.TypeString, value)
+		_node.UsedInDescription = &value
+	}
+	if value, ok := _c.mutation.OutcomesHeader(); ok {
+		_spec.SetField(landingpage.FieldOutcomesHeader, field.TypeString, value)
+		_node.OutcomesHeader = &value
+	}
+	if value, ok := _c.mutation.OutcomesDescription(); ok {
+		_spec.SetField(landingpage.FieldOutcomesDescription, field.TypeString, value)
+		_node.OutcomesDescription = &value
+	}
+	if value, ok := _c.mutation.Footer(); ok {
+		_spec.SetField(landingpage.FieldFooter, field.TypeBool, value)
+		_node.Footer = &value
+	}
+	if value, ok := _c.mutation.FooterName(); ok {
+		_spec.SetField(landingpage.FieldFooterName, field.TypeString, value)
+		_node.FooterName = &value
+	}
+	if value, ok := _c.mutation.LandingPageToRedirectID(); ok {
+		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+		_node.LandingPageToRedirectID = &value
+	}
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(landingpage.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -231,6 +521,7 @@ func (_c *LandingPageCreateBulk) Save(ctx context.Context) ([]*LandingPage, erro
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*LandingPageMutation)
 				if !ok {

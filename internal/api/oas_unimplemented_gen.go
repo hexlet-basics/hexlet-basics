@@ -57,7 +57,7 @@ func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *
 // AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 //
 // POST /admin/language_landing_pages
-func (UnimplementedHandler) AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (r AdminCreateCourseLandingPageRes, _ error) {
+func (UnimplementedHandler) AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (r *CourseLandingPage, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -218,8 +218,11 @@ func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params A
 
 // AdminGetCourseLandingPage implements adminGetCourseLandingPage operation.
 //
+// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
+// typed union member.
+//
 // GET /admin/language_landing_pages/{id}
-func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (r AdminGetCourseLandingPageRes, _ error) {
+func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (r *CourseLandingPage, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -477,8 +480,10 @@ func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *
 
 // AdminUpdateCourseLandingPage implements adminUpdateCourseLandingPage operation.
 //
+// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
+//
 // PUT /admin/language_landing_pages/{id}
-func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (r AdminUpdateCourseLandingPageRes, _ error) {
+func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (r *CourseLandingPage, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

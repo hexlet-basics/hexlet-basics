@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
@@ -75,6 +76,18 @@ func init() {
 	courseversionDescCreatedAt := courseversionFields[2].Descriptor()
 	// courseversion.DefaultCreatedAt holds the default value on creation for the created_at field.
 	courseversion.DefaultCreatedAt = courseversionDescCreatedAt.Default.(func() time.Time)
+	landingpageFields := schema.LandingPage{}.Fields()
+	_ = landingpageFields
+	// landingpageDescCreatedAt is the schema descriptor for created_at field.
+	landingpageDescCreatedAt := landingpageFields[19].Descriptor()
+	// landingpage.DefaultCreatedAt holds the default value on creation for the created_at field.
+	landingpage.DefaultCreatedAt = landingpageDescCreatedAt.Default.(func() time.Time)
+	// landingpageDescUpdatedAt is the schema descriptor for updated_at field.
+	landingpageDescUpdatedAt := landingpageFields[20].Descriptor()
+	// landingpage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	landingpage.DefaultUpdatedAt = landingpageDescUpdatedAt.Default.(func() time.Time)
+	// landingpage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	landingpage.UpdateDefaultUpdatedAt = landingpageDescUpdatedAt.UpdateDefault.(func() time.Time)
 	landingpageqnaitemFields := schema.LandingPageQnaItem{}.Fields()
 	_ = landingpageqnaitemFields
 	// landingpageqnaitemDescCreatedAt is the schema descriptor for created_at field.

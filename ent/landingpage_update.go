@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -142,6 +143,279 @@ func (_u *LandingPageUpdate) ClearListed() *LandingPageUpdate {
 	return _u
 }
 
+// SetMain sets the "main" field.
+func (_u *LandingPageUpdate) SetMain(v bool) *LandingPageUpdate {
+	_u.mutation.SetMain(v)
+	return _u
+}
+
+// SetNillableMain sets the "main" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableMain(v *bool) *LandingPageUpdate {
+	if v != nil {
+		_u.SetMain(*v)
+	}
+	return _u
+}
+
+// ClearMain clears the value of the "main" field.
+func (_u *LandingPageUpdate) ClearMain() *LandingPageUpdate {
+	_u.mutation.ClearMain()
+	return _u
+}
+
+// SetState sets the "state" field.
+func (_u *LandingPageUpdate) SetState(v string) *LandingPageUpdate {
+	_u.mutation.SetState(v)
+	return _u
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableState(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetState(*v)
+	}
+	return _u
+}
+
+// ClearState clears the value of the "state" field.
+func (_u *LandingPageUpdate) ClearState() *LandingPageUpdate {
+	_u.mutation.ClearState()
+	return _u
+}
+
+// SetOrder sets the "order" field.
+func (_u *LandingPageUpdate) SetOrder(v string) *LandingPageUpdate {
+	_u.mutation.SetOrder(v)
+	return _u
+}
+
+// SetNillableOrder sets the "order" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableOrder(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetOrder(*v)
+	}
+	return _u
+}
+
+// ClearOrder clears the value of the "order" field.
+func (_u *LandingPageUpdate) ClearOrder() *LandingPageUpdate {
+	_u.mutation.ClearOrder()
+	return _u
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (_u *LandingPageUpdate) SetMetaTitle(v string) *LandingPageUpdate {
+	_u.mutation.SetMetaTitle(v)
+	return _u
+}
+
+// SetNillableMetaTitle sets the "meta_title" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableMetaTitle(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetMetaTitle(*v)
+	}
+	return _u
+}
+
+// ClearMetaTitle clears the value of the "meta_title" field.
+func (_u *LandingPageUpdate) ClearMetaTitle() *LandingPageUpdate {
+	_u.mutation.ClearMetaTitle()
+	return _u
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (_u *LandingPageUpdate) SetMetaDescription(v string) *LandingPageUpdate {
+	_u.mutation.SetMetaDescription(v)
+	return _u
+}
+
+// SetNillableMetaDescription sets the "meta_description" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableMetaDescription(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetMetaDescription(*v)
+	}
+	return _u
+}
+
+// ClearMetaDescription clears the value of the "meta_description" field.
+func (_u *LandingPageUpdate) ClearMetaDescription() *LandingPageUpdate {
+	_u.mutation.ClearMetaDescription()
+	return _u
+}
+
+// SetDescription sets the "description" field.
+func (_u *LandingPageUpdate) SetDescription(v string) *LandingPageUpdate {
+	_u.mutation.SetDescription(v)
+	return _u
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableDescription(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetDescription(*v)
+	}
+	return _u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (_u *LandingPageUpdate) ClearDescription() *LandingPageUpdate {
+	_u.mutation.ClearDescription()
+	return _u
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (_u *LandingPageUpdate) SetUsedInHeader(v string) *LandingPageUpdate {
+	_u.mutation.SetUsedInHeader(v)
+	return _u
+}
+
+// SetNillableUsedInHeader sets the "used_in_header" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableUsedInHeader(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetUsedInHeader(*v)
+	}
+	return _u
+}
+
+// ClearUsedInHeader clears the value of the "used_in_header" field.
+func (_u *LandingPageUpdate) ClearUsedInHeader() *LandingPageUpdate {
+	_u.mutation.ClearUsedInHeader()
+	return _u
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (_u *LandingPageUpdate) SetUsedInDescription(v string) *LandingPageUpdate {
+	_u.mutation.SetUsedInDescription(v)
+	return _u
+}
+
+// SetNillableUsedInDescription sets the "used_in_description" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableUsedInDescription(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetUsedInDescription(*v)
+	}
+	return _u
+}
+
+// ClearUsedInDescription clears the value of the "used_in_description" field.
+func (_u *LandingPageUpdate) ClearUsedInDescription() *LandingPageUpdate {
+	_u.mutation.ClearUsedInDescription()
+	return _u
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (_u *LandingPageUpdate) SetOutcomesHeader(v string) *LandingPageUpdate {
+	_u.mutation.SetOutcomesHeader(v)
+	return _u
+}
+
+// SetNillableOutcomesHeader sets the "outcomes_header" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableOutcomesHeader(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetOutcomesHeader(*v)
+	}
+	return _u
+}
+
+// ClearOutcomesHeader clears the value of the "outcomes_header" field.
+func (_u *LandingPageUpdate) ClearOutcomesHeader() *LandingPageUpdate {
+	_u.mutation.ClearOutcomesHeader()
+	return _u
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (_u *LandingPageUpdate) SetOutcomesDescription(v string) *LandingPageUpdate {
+	_u.mutation.SetOutcomesDescription(v)
+	return _u
+}
+
+// SetNillableOutcomesDescription sets the "outcomes_description" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableOutcomesDescription(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetOutcomesDescription(*v)
+	}
+	return _u
+}
+
+// ClearOutcomesDescription clears the value of the "outcomes_description" field.
+func (_u *LandingPageUpdate) ClearOutcomesDescription() *LandingPageUpdate {
+	_u.mutation.ClearOutcomesDescription()
+	return _u
+}
+
+// SetFooter sets the "footer" field.
+func (_u *LandingPageUpdate) SetFooter(v bool) *LandingPageUpdate {
+	_u.mutation.SetFooter(v)
+	return _u
+}
+
+// SetNillableFooter sets the "footer" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableFooter(v *bool) *LandingPageUpdate {
+	if v != nil {
+		_u.SetFooter(*v)
+	}
+	return _u
+}
+
+// ClearFooter clears the value of the "footer" field.
+func (_u *LandingPageUpdate) ClearFooter() *LandingPageUpdate {
+	_u.mutation.ClearFooter()
+	return _u
+}
+
+// SetFooterName sets the "footer_name" field.
+func (_u *LandingPageUpdate) SetFooterName(v string) *LandingPageUpdate {
+	_u.mutation.SetFooterName(v)
+	return _u
+}
+
+// SetNillableFooterName sets the "footer_name" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableFooterName(v *string) *LandingPageUpdate {
+	if v != nil {
+		_u.SetFooterName(*v)
+	}
+	return _u
+}
+
+// ClearFooterName clears the value of the "footer_name" field.
+func (_u *LandingPageUpdate) ClearFooterName() *LandingPageUpdate {
+	_u.mutation.ClearFooterName()
+	return _u
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (_u *LandingPageUpdate) SetLandingPageToRedirectID(v int) *LandingPageUpdate {
+	_u.mutation.ResetLandingPageToRedirectID()
+	_u.mutation.SetLandingPageToRedirectID(v)
+	return _u
+}
+
+// SetNillableLandingPageToRedirectID sets the "landing_page_to_redirect_id" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableLandingPageToRedirectID(v *int) *LandingPageUpdate {
+	if v != nil {
+		_u.SetLandingPageToRedirectID(*v)
+	}
+	return _u
+}
+
+// AddLandingPageToRedirectID adds value to the "landing_page_to_redirect_id" field.
+func (_u *LandingPageUpdate) AddLandingPageToRedirectID(v int) *LandingPageUpdate {
+	_u.mutation.AddLandingPageToRedirectID(v)
+	return _u
+}
+
+// ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
+func (_u *LandingPageUpdate) ClearLandingPageToRedirectID() *LandingPageUpdate {
+	_u.mutation.ClearLandingPageToRedirectID()
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LandingPageUpdate) SetUpdatedAt(v time.Time) *LandingPageUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_u *LandingPageUpdate) SetCourseID(id int) *LandingPageUpdate {
 	_u.mutation.SetCourseID(id)
@@ -166,6 +440,7 @@ func (_u *LandingPageUpdate) ClearCourse() *LandingPageUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *LandingPageUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -188,6 +463,14 @@ func (_u *LandingPageUpdate) Exec(ctx context.Context) error {
 func (_u *LandingPageUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LandingPageUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := landingpage.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -240,6 +523,90 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if _u.mutation.ListedCleared() {
 		_spec.ClearField(landingpage.FieldListed, field.TypeBool)
+	}
+	if value, ok := _u.mutation.Main(); ok {
+		_spec.SetField(landingpage.FieldMain, field.TypeBool, value)
+	}
+	if _u.mutation.MainCleared() {
+		_spec.ClearField(landingpage.FieldMain, field.TypeBool)
+	}
+	if value, ok := _u.mutation.State(); ok {
+		_spec.SetField(landingpage.FieldState, field.TypeString, value)
+	}
+	if _u.mutation.StateCleared() {
+		_spec.ClearField(landingpage.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.Order(); ok {
+		_spec.SetField(landingpage.FieldOrder, field.TypeString, value)
+	}
+	if _u.mutation.OrderCleared() {
+		_spec.ClearField(landingpage.FieldOrder, field.TypeString)
+	}
+	if value, ok := _u.mutation.MetaTitle(); ok {
+		_spec.SetField(landingpage.FieldMetaTitle, field.TypeString, value)
+	}
+	if _u.mutation.MetaTitleCleared() {
+		_spec.ClearField(landingpage.FieldMetaTitle, field.TypeString)
+	}
+	if value, ok := _u.mutation.MetaDescription(); ok {
+		_spec.SetField(landingpage.FieldMetaDescription, field.TypeString, value)
+	}
+	if _u.mutation.MetaDescriptionCleared() {
+		_spec.ClearField(landingpage.FieldMetaDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.Description(); ok {
+		_spec.SetField(landingpage.FieldDescription, field.TypeString, value)
+	}
+	if _u.mutation.DescriptionCleared() {
+		_spec.ClearField(landingpage.FieldDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.UsedInHeader(); ok {
+		_spec.SetField(landingpage.FieldUsedInHeader, field.TypeString, value)
+	}
+	if _u.mutation.UsedInHeaderCleared() {
+		_spec.ClearField(landingpage.FieldUsedInHeader, field.TypeString)
+	}
+	if value, ok := _u.mutation.UsedInDescription(); ok {
+		_spec.SetField(landingpage.FieldUsedInDescription, field.TypeString, value)
+	}
+	if _u.mutation.UsedInDescriptionCleared() {
+		_spec.ClearField(landingpage.FieldUsedInDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutcomesHeader(); ok {
+		_spec.SetField(landingpage.FieldOutcomesHeader, field.TypeString, value)
+	}
+	if _u.mutation.OutcomesHeaderCleared() {
+		_spec.ClearField(landingpage.FieldOutcomesHeader, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutcomesDescription(); ok {
+		_spec.SetField(landingpage.FieldOutcomesDescription, field.TypeString, value)
+	}
+	if _u.mutation.OutcomesDescriptionCleared() {
+		_spec.ClearField(landingpage.FieldOutcomesDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.Footer(); ok {
+		_spec.SetField(landingpage.FieldFooter, field.TypeBool, value)
+	}
+	if _u.mutation.FooterCleared() {
+		_spec.ClearField(landingpage.FieldFooter, field.TypeBool)
+	}
+	if value, ok := _u.mutation.FooterName(); ok {
+		_spec.SetField(landingpage.FieldFooterName, field.TypeString, value)
+	}
+	if _u.mutation.FooterNameCleared() {
+		_spec.ClearField(landingpage.FieldFooterName, field.TypeString)
+	}
+	if value, ok := _u.mutation.LandingPageToRedirectID(); ok {
+		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLandingPageToRedirectID(); ok {
+		_spec.AddField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+	}
+	if _u.mutation.LandingPageToRedirectIDCleared() {
+		_spec.ClearField(landingpage.FieldLandingPageToRedirectID, field.TypeInt)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -404,6 +771,279 @@ func (_u *LandingPageUpdateOne) ClearListed() *LandingPageUpdateOne {
 	return _u
 }
 
+// SetMain sets the "main" field.
+func (_u *LandingPageUpdateOne) SetMain(v bool) *LandingPageUpdateOne {
+	_u.mutation.SetMain(v)
+	return _u
+}
+
+// SetNillableMain sets the "main" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableMain(v *bool) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetMain(*v)
+	}
+	return _u
+}
+
+// ClearMain clears the value of the "main" field.
+func (_u *LandingPageUpdateOne) ClearMain() *LandingPageUpdateOne {
+	_u.mutation.ClearMain()
+	return _u
+}
+
+// SetState sets the "state" field.
+func (_u *LandingPageUpdateOne) SetState(v string) *LandingPageUpdateOne {
+	_u.mutation.SetState(v)
+	return _u
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableState(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetState(*v)
+	}
+	return _u
+}
+
+// ClearState clears the value of the "state" field.
+func (_u *LandingPageUpdateOne) ClearState() *LandingPageUpdateOne {
+	_u.mutation.ClearState()
+	return _u
+}
+
+// SetOrder sets the "order" field.
+func (_u *LandingPageUpdateOne) SetOrder(v string) *LandingPageUpdateOne {
+	_u.mutation.SetOrder(v)
+	return _u
+}
+
+// SetNillableOrder sets the "order" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableOrder(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetOrder(*v)
+	}
+	return _u
+}
+
+// ClearOrder clears the value of the "order" field.
+func (_u *LandingPageUpdateOne) ClearOrder() *LandingPageUpdateOne {
+	_u.mutation.ClearOrder()
+	return _u
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (_u *LandingPageUpdateOne) SetMetaTitle(v string) *LandingPageUpdateOne {
+	_u.mutation.SetMetaTitle(v)
+	return _u
+}
+
+// SetNillableMetaTitle sets the "meta_title" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableMetaTitle(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetMetaTitle(*v)
+	}
+	return _u
+}
+
+// ClearMetaTitle clears the value of the "meta_title" field.
+func (_u *LandingPageUpdateOne) ClearMetaTitle() *LandingPageUpdateOne {
+	_u.mutation.ClearMetaTitle()
+	return _u
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (_u *LandingPageUpdateOne) SetMetaDescription(v string) *LandingPageUpdateOne {
+	_u.mutation.SetMetaDescription(v)
+	return _u
+}
+
+// SetNillableMetaDescription sets the "meta_description" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableMetaDescription(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetMetaDescription(*v)
+	}
+	return _u
+}
+
+// ClearMetaDescription clears the value of the "meta_description" field.
+func (_u *LandingPageUpdateOne) ClearMetaDescription() *LandingPageUpdateOne {
+	_u.mutation.ClearMetaDescription()
+	return _u
+}
+
+// SetDescription sets the "description" field.
+func (_u *LandingPageUpdateOne) SetDescription(v string) *LandingPageUpdateOne {
+	_u.mutation.SetDescription(v)
+	return _u
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableDescription(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetDescription(*v)
+	}
+	return _u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (_u *LandingPageUpdateOne) ClearDescription() *LandingPageUpdateOne {
+	_u.mutation.ClearDescription()
+	return _u
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (_u *LandingPageUpdateOne) SetUsedInHeader(v string) *LandingPageUpdateOne {
+	_u.mutation.SetUsedInHeader(v)
+	return _u
+}
+
+// SetNillableUsedInHeader sets the "used_in_header" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableUsedInHeader(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetUsedInHeader(*v)
+	}
+	return _u
+}
+
+// ClearUsedInHeader clears the value of the "used_in_header" field.
+func (_u *LandingPageUpdateOne) ClearUsedInHeader() *LandingPageUpdateOne {
+	_u.mutation.ClearUsedInHeader()
+	return _u
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (_u *LandingPageUpdateOne) SetUsedInDescription(v string) *LandingPageUpdateOne {
+	_u.mutation.SetUsedInDescription(v)
+	return _u
+}
+
+// SetNillableUsedInDescription sets the "used_in_description" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableUsedInDescription(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetUsedInDescription(*v)
+	}
+	return _u
+}
+
+// ClearUsedInDescription clears the value of the "used_in_description" field.
+func (_u *LandingPageUpdateOne) ClearUsedInDescription() *LandingPageUpdateOne {
+	_u.mutation.ClearUsedInDescription()
+	return _u
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (_u *LandingPageUpdateOne) SetOutcomesHeader(v string) *LandingPageUpdateOne {
+	_u.mutation.SetOutcomesHeader(v)
+	return _u
+}
+
+// SetNillableOutcomesHeader sets the "outcomes_header" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableOutcomesHeader(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetOutcomesHeader(*v)
+	}
+	return _u
+}
+
+// ClearOutcomesHeader clears the value of the "outcomes_header" field.
+func (_u *LandingPageUpdateOne) ClearOutcomesHeader() *LandingPageUpdateOne {
+	_u.mutation.ClearOutcomesHeader()
+	return _u
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (_u *LandingPageUpdateOne) SetOutcomesDescription(v string) *LandingPageUpdateOne {
+	_u.mutation.SetOutcomesDescription(v)
+	return _u
+}
+
+// SetNillableOutcomesDescription sets the "outcomes_description" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableOutcomesDescription(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetOutcomesDescription(*v)
+	}
+	return _u
+}
+
+// ClearOutcomesDescription clears the value of the "outcomes_description" field.
+func (_u *LandingPageUpdateOne) ClearOutcomesDescription() *LandingPageUpdateOne {
+	_u.mutation.ClearOutcomesDescription()
+	return _u
+}
+
+// SetFooter sets the "footer" field.
+func (_u *LandingPageUpdateOne) SetFooter(v bool) *LandingPageUpdateOne {
+	_u.mutation.SetFooter(v)
+	return _u
+}
+
+// SetNillableFooter sets the "footer" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableFooter(v *bool) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetFooter(*v)
+	}
+	return _u
+}
+
+// ClearFooter clears the value of the "footer" field.
+func (_u *LandingPageUpdateOne) ClearFooter() *LandingPageUpdateOne {
+	_u.mutation.ClearFooter()
+	return _u
+}
+
+// SetFooterName sets the "footer_name" field.
+func (_u *LandingPageUpdateOne) SetFooterName(v string) *LandingPageUpdateOne {
+	_u.mutation.SetFooterName(v)
+	return _u
+}
+
+// SetNillableFooterName sets the "footer_name" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableFooterName(v *string) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetFooterName(*v)
+	}
+	return _u
+}
+
+// ClearFooterName clears the value of the "footer_name" field.
+func (_u *LandingPageUpdateOne) ClearFooterName() *LandingPageUpdateOne {
+	_u.mutation.ClearFooterName()
+	return _u
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (_u *LandingPageUpdateOne) SetLandingPageToRedirectID(v int) *LandingPageUpdateOne {
+	_u.mutation.ResetLandingPageToRedirectID()
+	_u.mutation.SetLandingPageToRedirectID(v)
+	return _u
+}
+
+// SetNillableLandingPageToRedirectID sets the "landing_page_to_redirect_id" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableLandingPageToRedirectID(v *int) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetLandingPageToRedirectID(*v)
+	}
+	return _u
+}
+
+// AddLandingPageToRedirectID adds value to the "landing_page_to_redirect_id" field.
+func (_u *LandingPageUpdateOne) AddLandingPageToRedirectID(v int) *LandingPageUpdateOne {
+	_u.mutation.AddLandingPageToRedirectID(v)
+	return _u
+}
+
+// ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
+func (_u *LandingPageUpdateOne) ClearLandingPageToRedirectID() *LandingPageUpdateOne {
+	_u.mutation.ClearLandingPageToRedirectID()
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LandingPageUpdateOne) SetUpdatedAt(v time.Time) *LandingPageUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_u *LandingPageUpdateOne) SetCourseID(id int) *LandingPageUpdateOne {
 	_u.mutation.SetCourseID(id)
@@ -441,6 +1081,7 @@ func (_u *LandingPageUpdateOne) Select(field string, fields ...string) *LandingP
 
 // Save executes the query and returns the updated LandingPage entity.
 func (_u *LandingPageUpdateOne) Save(ctx context.Context) (*LandingPage, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -463,6 +1104,14 @@ func (_u *LandingPageUpdateOne) Exec(ctx context.Context) error {
 func (_u *LandingPageUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LandingPageUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := landingpage.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -532,6 +1181,90 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 	}
 	if _u.mutation.ListedCleared() {
 		_spec.ClearField(landingpage.FieldListed, field.TypeBool)
+	}
+	if value, ok := _u.mutation.Main(); ok {
+		_spec.SetField(landingpage.FieldMain, field.TypeBool, value)
+	}
+	if _u.mutation.MainCleared() {
+		_spec.ClearField(landingpage.FieldMain, field.TypeBool)
+	}
+	if value, ok := _u.mutation.State(); ok {
+		_spec.SetField(landingpage.FieldState, field.TypeString, value)
+	}
+	if _u.mutation.StateCleared() {
+		_spec.ClearField(landingpage.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.Order(); ok {
+		_spec.SetField(landingpage.FieldOrder, field.TypeString, value)
+	}
+	if _u.mutation.OrderCleared() {
+		_spec.ClearField(landingpage.FieldOrder, field.TypeString)
+	}
+	if value, ok := _u.mutation.MetaTitle(); ok {
+		_spec.SetField(landingpage.FieldMetaTitle, field.TypeString, value)
+	}
+	if _u.mutation.MetaTitleCleared() {
+		_spec.ClearField(landingpage.FieldMetaTitle, field.TypeString)
+	}
+	if value, ok := _u.mutation.MetaDescription(); ok {
+		_spec.SetField(landingpage.FieldMetaDescription, field.TypeString, value)
+	}
+	if _u.mutation.MetaDescriptionCleared() {
+		_spec.ClearField(landingpage.FieldMetaDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.Description(); ok {
+		_spec.SetField(landingpage.FieldDescription, field.TypeString, value)
+	}
+	if _u.mutation.DescriptionCleared() {
+		_spec.ClearField(landingpage.FieldDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.UsedInHeader(); ok {
+		_spec.SetField(landingpage.FieldUsedInHeader, field.TypeString, value)
+	}
+	if _u.mutation.UsedInHeaderCleared() {
+		_spec.ClearField(landingpage.FieldUsedInHeader, field.TypeString)
+	}
+	if value, ok := _u.mutation.UsedInDescription(); ok {
+		_spec.SetField(landingpage.FieldUsedInDescription, field.TypeString, value)
+	}
+	if _u.mutation.UsedInDescriptionCleared() {
+		_spec.ClearField(landingpage.FieldUsedInDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutcomesHeader(); ok {
+		_spec.SetField(landingpage.FieldOutcomesHeader, field.TypeString, value)
+	}
+	if _u.mutation.OutcomesHeaderCleared() {
+		_spec.ClearField(landingpage.FieldOutcomesHeader, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutcomesDescription(); ok {
+		_spec.SetField(landingpage.FieldOutcomesDescription, field.TypeString, value)
+	}
+	if _u.mutation.OutcomesDescriptionCleared() {
+		_spec.ClearField(landingpage.FieldOutcomesDescription, field.TypeString)
+	}
+	if value, ok := _u.mutation.Footer(); ok {
+		_spec.SetField(landingpage.FieldFooter, field.TypeBool, value)
+	}
+	if _u.mutation.FooterCleared() {
+		_spec.ClearField(landingpage.FieldFooter, field.TypeBool)
+	}
+	if value, ok := _u.mutation.FooterName(); ok {
+		_spec.SetField(landingpage.FieldFooterName, field.TypeString, value)
+	}
+	if _u.mutation.FooterNameCleared() {
+		_spec.ClearField(landingpage.FieldFooterName, field.TypeString)
+	}
+	if value, ok := _u.mutation.LandingPageToRedirectID(); ok {
+		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLandingPageToRedirectID(); ok {
+		_spec.AddField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+	}
+	if _u.mutation.LandingPageToRedirectIDCleared() {
+		_spec.ClearField(landingpage.FieldLandingPageToRedirectID, field.TypeInt)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{

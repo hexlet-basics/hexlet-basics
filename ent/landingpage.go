@@ -7,6 +7,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/landingpage"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -29,6 +30,36 @@ type LandingPage struct {
 	Locale *string `json:"locale,omitempty"`
 	// Listed holds the value of the "listed" field.
 	Listed *bool `json:"listed,omitempty"`
+	// Main holds the value of the "main" field.
+	Main *bool `json:"main,omitempty"`
+	// State holds the value of the "state" field.
+	State *string `json:"state,omitempty"`
+	// Order holds the value of the "order" field.
+	Order *string `json:"order,omitempty"`
+	// MetaTitle holds the value of the "meta_title" field.
+	MetaTitle *string `json:"meta_title,omitempty"`
+	// MetaDescription holds the value of the "meta_description" field.
+	MetaDescription *string `json:"meta_description,omitempty"`
+	// Description holds the value of the "description" field.
+	Description *string `json:"description,omitempty"`
+	// UsedInHeader holds the value of the "used_in_header" field.
+	UsedInHeader *string `json:"used_in_header,omitempty"`
+	// UsedInDescription holds the value of the "used_in_description" field.
+	UsedInDescription *string `json:"used_in_description,omitempty"`
+	// OutcomesHeader holds the value of the "outcomes_header" field.
+	OutcomesHeader *string `json:"outcomes_header,omitempty"`
+	// OutcomesDescription holds the value of the "outcomes_description" field.
+	OutcomesDescription *string `json:"outcomes_description,omitempty"`
+	// Footer holds the value of the "footer" field.
+	Footer *bool `json:"footer,omitempty"`
+	// FooterName holds the value of the "footer_name" field.
+	FooterName *string `json:"footer_name,omitempty"`
+	// LandingPageToRedirectID holds the value of the "landing_page_to_redirect_id" field.
+	LandingPageToRedirectID *int `json:"landing_page_to_redirect_id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the LandingPageQuery when eager-loading is set.
 	Edges        LandingPageEdges `json:"edges"`
@@ -60,12 +91,14 @@ func (*LandingPage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case landingpage.FieldListed:
+		case landingpage.FieldListed, landingpage.FieldMain, landingpage.FieldFooter:
 			values[i] = new(sql.NullBool)
-		case landingpage.FieldID, landingpage.FieldLanguageID:
+		case landingpage.FieldID, landingpage.FieldLanguageID, landingpage.FieldLandingPageToRedirectID:
 			values[i] = new(sql.NullInt64)
-		case landingpage.FieldSlug, landingpage.FieldHeader, landingpage.FieldName, landingpage.FieldLocale:
+		case landingpage.FieldSlug, landingpage.FieldHeader, landingpage.FieldName, landingpage.FieldLocale, landingpage.FieldState, landingpage.FieldOrder, landingpage.FieldMetaTitle, landingpage.FieldMetaDescription, landingpage.FieldDescription, landingpage.FieldUsedInHeader, landingpage.FieldUsedInDescription, landingpage.FieldOutcomesHeader, landingpage.FieldOutcomesDescription, landingpage.FieldFooterName:
 			values[i] = new(sql.NullString)
+		case landingpage.FieldCreatedAt, landingpage.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -127,6 +160,109 @@ func (_m *LandingPage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Listed = new(bool)
 				*_m.Listed = value.Bool
+			}
+		case landingpage.FieldMain:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field main", values[i])
+			} else if value.Valid {
+				_m.Main = new(bool)
+				*_m.Main = value.Bool
+			}
+		case landingpage.FieldState:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field state", values[i])
+			} else if value.Valid {
+				_m.State = new(string)
+				*_m.State = value.String
+			}
+		case landingpage.FieldOrder:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field order", values[i])
+			} else if value.Valid {
+				_m.Order = new(string)
+				*_m.Order = value.String
+			}
+		case landingpage.FieldMetaTitle:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field meta_title", values[i])
+			} else if value.Valid {
+				_m.MetaTitle = new(string)
+				*_m.MetaTitle = value.String
+			}
+		case landingpage.FieldMetaDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field meta_description", values[i])
+			} else if value.Valid {
+				_m.MetaDescription = new(string)
+				*_m.MetaDescription = value.String
+			}
+		case landingpage.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				_m.Description = new(string)
+				*_m.Description = value.String
+			}
+		case landingpage.FieldUsedInHeader:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field used_in_header", values[i])
+			} else if value.Valid {
+				_m.UsedInHeader = new(string)
+				*_m.UsedInHeader = value.String
+			}
+		case landingpage.FieldUsedInDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field used_in_description", values[i])
+			} else if value.Valid {
+				_m.UsedInDescription = new(string)
+				*_m.UsedInDescription = value.String
+			}
+		case landingpage.FieldOutcomesHeader:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field outcomes_header", values[i])
+			} else if value.Valid {
+				_m.OutcomesHeader = new(string)
+				*_m.OutcomesHeader = value.String
+			}
+		case landingpage.FieldOutcomesDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field outcomes_description", values[i])
+			} else if value.Valid {
+				_m.OutcomesDescription = new(string)
+				*_m.OutcomesDescription = value.String
+			}
+		case landingpage.FieldFooter:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field footer", values[i])
+			} else if value.Valid {
+				_m.Footer = new(bool)
+				*_m.Footer = value.Bool
+			}
+		case landingpage.FieldFooterName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field footer_name", values[i])
+			} else if value.Valid {
+				_m.FooterName = new(string)
+				*_m.FooterName = value.String
+			}
+		case landingpage.FieldLandingPageToRedirectID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field landing_page_to_redirect_id", values[i])
+			} else if value.Valid {
+				_m.LandingPageToRedirectID = new(int)
+				*_m.LandingPageToRedirectID = int(value.Int64)
+			}
+		case landingpage.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case landingpage.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -196,6 +332,77 @@ func (_m *LandingPage) String() string {
 		builder.WriteString("listed=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	if v := _m.Main; v != nil {
+		builder.WriteString("main=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.State; v != nil {
+		builder.WriteString("state=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Order; v != nil {
+		builder.WriteString("order=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.MetaTitle; v != nil {
+		builder.WriteString("meta_title=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.MetaDescription; v != nil {
+		builder.WriteString("meta_description=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Description; v != nil {
+		builder.WriteString("description=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.UsedInHeader; v != nil {
+		builder.WriteString("used_in_header=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.UsedInDescription; v != nil {
+		builder.WriteString("used_in_description=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.OutcomesHeader; v != nil {
+		builder.WriteString("outcomes_header=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.OutcomesDescription; v != nil {
+		builder.WriteString("outcomes_description=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Footer; v != nil {
+		builder.WriteString("footer=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.FooterName; v != nil {
+		builder.WriteString("footer_name=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.LandingPageToRedirectID; v != nil {
+		builder.WriteString("landing_page_to_redirect_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

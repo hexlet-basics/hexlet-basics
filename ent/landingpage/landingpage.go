@@ -3,6 +3,8 @@
 package landingpage
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -24,6 +26,36 @@ const (
 	FieldLocale = "locale"
 	// FieldListed holds the string denoting the listed field in the database.
 	FieldListed = "listed"
+	// FieldMain holds the string denoting the main field in the database.
+	FieldMain = "main"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
+	// FieldOrder holds the string denoting the order field in the database.
+	FieldOrder = "order"
+	// FieldMetaTitle holds the string denoting the meta_title field in the database.
+	FieldMetaTitle = "meta_title"
+	// FieldMetaDescription holds the string denoting the meta_description field in the database.
+	FieldMetaDescription = "meta_description"
+	// FieldDescription holds the string denoting the description field in the database.
+	FieldDescription = "description"
+	// FieldUsedInHeader holds the string denoting the used_in_header field in the database.
+	FieldUsedInHeader = "used_in_header"
+	// FieldUsedInDescription holds the string denoting the used_in_description field in the database.
+	FieldUsedInDescription = "used_in_description"
+	// FieldOutcomesHeader holds the string denoting the outcomes_header field in the database.
+	FieldOutcomesHeader = "outcomes_header"
+	// FieldOutcomesDescription holds the string denoting the outcomes_description field in the database.
+	FieldOutcomesDescription = "outcomes_description"
+	// FieldFooter holds the string denoting the footer field in the database.
+	FieldFooter = "footer"
+	// FieldFooterName holds the string denoting the footer_name field in the database.
+	FieldFooterName = "footer_name"
+	// FieldLandingPageToRedirectID holds the string denoting the landing_page_to_redirect_id field in the database.
+	FieldLandingPageToRedirectID = "landing_page_to_redirect_id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// EdgeCourse holds the string denoting the course edge name in mutations.
 	EdgeCourse = "course"
 	// Table holds the table name of the landingpage in the database.
@@ -46,6 +78,21 @@ var Columns = []string{
 	FieldName,
 	FieldLocale,
 	FieldListed,
+	FieldMain,
+	FieldState,
+	FieldOrder,
+	FieldMetaTitle,
+	FieldMetaDescription,
+	FieldDescription,
+	FieldUsedInHeader,
+	FieldUsedInDescription,
+	FieldOutcomesHeader,
+	FieldOutcomesDescription,
+	FieldFooter,
+	FieldFooterName,
+	FieldLandingPageToRedirectID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -57,6 +104,15 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
+)
 
 // OrderOption defines the ordering options for the LandingPage queries.
 type OrderOption func(*sql.Selector)
@@ -94,6 +150,81 @@ func ByLocale(opts ...sql.OrderTermOption) OrderOption {
 // ByListed orders the results by the listed field.
 func ByListed(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldListed, opts...).ToFunc()
+}
+
+// ByMain orders the results by the main field.
+func ByMain(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMain, opts...).ToFunc()
+}
+
+// ByState orders the results by the state field.
+func ByState(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldState, opts...).ToFunc()
+}
+
+// ByOrder orders the results by the order field.
+func ByOrder(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOrder, opts...).ToFunc()
+}
+
+// ByMetaTitle orders the results by the meta_title field.
+func ByMetaTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetaTitle, opts...).ToFunc()
+}
+
+// ByMetaDescription orders the results by the meta_description field.
+func ByMetaDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetaDescription, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByUsedInHeader orders the results by the used_in_header field.
+func ByUsedInHeader(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUsedInHeader, opts...).ToFunc()
+}
+
+// ByUsedInDescription orders the results by the used_in_description field.
+func ByUsedInDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUsedInDescription, opts...).ToFunc()
+}
+
+// ByOutcomesHeader orders the results by the outcomes_header field.
+func ByOutcomesHeader(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutcomesHeader, opts...).ToFunc()
+}
+
+// ByOutcomesDescription orders the results by the outcomes_description field.
+func ByOutcomesDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutcomesDescription, opts...).ToFunc()
+}
+
+// ByFooter orders the results by the footer field.
+func ByFooter(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFooter, opts...).ToFunc()
+}
+
+// ByFooterName orders the results by the footer_name field.
+func ByFooterName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFooterName, opts...).ToFunc()
+}
+
+// ByLandingPageToRedirectID orders the results by the landing_page_to_redirect_id field.
+func ByLandingPageToRedirectID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLandingPageToRedirectID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByCourseField orders the results by course field.

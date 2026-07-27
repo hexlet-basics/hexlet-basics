@@ -57,7 +57,7 @@ type Invoker interface {
 	// AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 	//
 	// POST /admin/language_landing_pages
-	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
+	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (*CourseLandingPage, error)
 	// AdminCreateCourseVersion invokes adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
@@ -155,8 +155,11 @@ type Invoker interface {
 	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
 	// AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 	//
+	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
+	// typed union member.
+	//
 	// GET /admin/language_landing_pages/{id}
-	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
+	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminGetManagementUser invokes adminGetManagementUser operation.
 	//
 	// GET /admin/management/users/{id}
@@ -315,8 +318,10 @@ type Invoker interface {
 	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
 	// AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 	//
+	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// PUT /admin/language_landing_pages/{id}
-	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
+	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error)
 	// AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
@@ -1065,12 +1070,12 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 // AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 //
 // POST /admin/language_landing_pages
-func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error) {
+func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (*CourseLandingPage, error) {
 	res, err := c.sendAdminCreateCourseLandingPage(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (res AdminCreateCourseLandingPageRes, err error) {
+func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -3063,13 +3068,16 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 
 // AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 //
+// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
+// typed union member.
+//
 // GET /admin/language_landing_pages/{id}
-func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error) {
+func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminGetCourseLandingPage(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (res AdminGetCourseLandingPageRes, err error) {
+func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -7111,13 +7119,15 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 
 // AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 //
+// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
+//
 // PUT /admin/language_landing_pages/{id}
-func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error) {
+func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error) {
 	res, err := c.sendAdminUpdateCourseLandingPage(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (res AdminUpdateCourseLandingPageRes, err error) {
+func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (res *CourseLandingPage, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

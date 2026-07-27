@@ -851,7 +851,7 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 		}
 	}()
 
-	var response AdminCreateCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -867,7 +867,7 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 		type (
 			Request  = *CourseLandingPageInput
 			Params   = struct{}
-			Response = AdminCreateCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3760,6 +3760,9 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 
 // handleAdminGetCourseLandingPageRequest handles adminGetCourseLandingPage operation.
 //
+// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
+// typed union member.
+//
 // GET /admin/language_landing_pages/{id}
 func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -3845,7 +3848,7 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response AdminGetCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3866,7 +3869,7 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseLandingPageParams
-			Response = AdminGetCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8715,6 +8718,8 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 
 // handleAdminUpdateCourseLandingPageRequest handles adminUpdateCourseLandingPage operation.
 //
+// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
+//
 // PUT /admin/language_landing_pages/{id}
 func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -8815,7 +8820,7 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 		}
 	}()
 
-	var response AdminUpdateCourseLandingPageRes
+	var response *CourseLandingPage
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8836,7 +8841,7 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 		type (
 			Request  = *CourseLandingPageInput
 			Params   = AdminUpdateCourseLandingPageParams
-			Response = AdminUpdateCourseLandingPageRes
+			Response = *CourseLandingPage
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

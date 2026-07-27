@@ -111,35 +111,17 @@ func encodeAdminCreateCourseCategoryResponse(response *CourseCategory, w http.Re
 	return nil
 }
 
-func encodeAdminCreateCourseLandingPageResponse(response AdminCreateCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeAdminCreateCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminCreateCourseVersionResponse(response AdminCreateCourseVersionRes, w http.ResponseWriter, span trace.Span) error {
@@ -422,35 +404,17 @@ func encodeAdminGetCourseCategoryResponse(response *CourseCategory, w http.Respo
 	return nil
 }
 
-func encodeAdminGetCourseLandingPageResponse(response AdminGetCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminGetManagementUserResponse(response AdminGetManagementUserRes, w http.ResponseWriter, span trace.Span) error {
@@ -1029,35 +993,17 @@ func encodeAdminUpdateCourseCategoryResponse(response *CourseCategory, w http.Re
 	return nil
 }
 
-func encodeAdminUpdateCourseLandingPageResponse(response AdminUpdateCourseLandingPageRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLandingPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUpdateCourseLandingPageResponse(response *CourseLandingPage, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminUpdateLandingPageQnaItemResponse(response *QnaItem, w http.ResponseWriter, span trace.Span) error {

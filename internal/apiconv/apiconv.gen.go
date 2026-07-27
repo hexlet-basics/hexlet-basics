@@ -130,6 +130,53 @@ func (c *ConverterImpl) ToCourseCategory(source *ent.CourseCategory) api.CourseC
 	}
 	return apiCourseCategory
 }
+func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage {
+	var apiCourseLandingPage api.CourseLandingPage
+	if source != nil {
+		apiCourseLandingPage.ID = Int32FromInt((*source).ID)
+		apiCourseLandingPage.CourseId = Int32FromInt((*source).LanguageID)
+		var pString *string
+		if (*source).Edges.Course != nil {
+			pString = (*source).Edges.Course.Slug
+		}
+		apiCourseLandingPage.CourseSlug = StringFromPtr(pString)
+		apiCourseLandingPage.CreatedAt = TimeIdentity((*source).CreatedAt)
+		apiCourseLandingPage.Slug = StringFromPtr((*source).Slug)
+		apiCourseLandingPage.Name = StringFromPtr((*source).Name)
+		apiCourseLandingPage.Main = NilBoolFromPtr((*source).Main)
+		apiCourseLandingPage.Listed = NilBoolFromPtr((*source).Listed)
+		apiCourseLandingPage.State = NilLandingPageStateFromPtr((*source).State)
+		apiCourseLandingPage.Order = NilStringFromPtr((*source).Order)
+		apiCourseLandingPage.MetaTitle = StringFromPtr((*source).MetaTitle)
+		apiCourseLandingPage.MetaDescription = StringFromPtr((*source).MetaDescription)
+		apiCourseLandingPage.Header = StringFromPtr((*source).Header)
+		apiCourseLandingPage.Description = StringFromPtr((*source).Description)
+		apiCourseLandingPage.UsedInHeader = NilStringFromPtr((*source).UsedInHeader)
+		apiCourseLandingPage.UsedInDescription = NilStringFromPtr((*source).UsedInDescription)
+		apiCourseLandingPage.OutcomesHeader = NilStringFromPtr((*source).OutcomesHeader)
+		apiCourseLandingPage.OutcomesDescription = NilStringFromPtr((*source).OutcomesDescription)
+		apiCourseLandingPage.OutcomesImage = landingOutcomesImageNull(source)
+		apiCourseLandingPage.Duration = courseDuration((*source).Edges.Course)
+		var pInt *int
+		if (*source).Edges.Course != nil {
+			pInt = &(*source).Edges.Course.MembersCount
+		}
+		if pInt != nil {
+			apiCourseLandingPage.MembersCount = Int32FromInt(*pInt)
+		}
+	}
+	return apiCourseLandingPage
+}
+func (c *ConverterImpl) ToCourseLandingPages(source []*ent.LandingPage) []api.CourseLandingPage {
+	var apiCourseLandingPageList []api.CourseLandingPage
+	if source != nil {
+		apiCourseLandingPageList = make([]api.CourseLandingPage, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseLandingPageList[i] = c.ToCourseLandingPage(source[i])
+		}
+	}
+	return apiCourseLandingPageList
+}
 func (c *ConverterImpl) ToLandingPageQnaItem(source *ent.LandingPageQnaItem) api.QnaItem {
 	var apiQnaItem api.QnaItem
 	if source != nil {

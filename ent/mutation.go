@@ -4005,20 +4005,36 @@ func (m *CourseVersionMutation) ResetEdge(name string) error {
 // LandingPageMutation represents an operation that mutates the LandingPage nodes in the graph.
 type LandingPageMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	slug          *string
-	header        *string
-	name          *string
-	locale        *string
-	listed        *bool
-	clearedFields map[string]struct{}
-	course        *int
-	clearedcourse bool
-	done          bool
-	oldValue      func(context.Context) (*LandingPage, error)
-	predicates    []predicate.LandingPage
+	op                             Op
+	typ                            string
+	id                             *int
+	slug                           *string
+	header                         *string
+	name                           *string
+	locale                         *string
+	listed                         *bool
+	main                           *bool
+	state                          *string
+	_order                         *string
+	meta_title                     *string
+	meta_description               *string
+	description                    *string
+	used_in_header                 *string
+	used_in_description            *string
+	outcomes_header                *string
+	outcomes_description           *string
+	footer                         *bool
+	footer_name                    *string
+	landing_page_to_redirect_id    *int
+	addlanding_page_to_redirect_id *int
+	created_at                     *time.Time
+	updated_at                     *time.Time
+	clearedFields                  map[string]struct{}
+	course                         *int
+	clearedcourse                  bool
+	done                           bool
+	oldValue                       func(context.Context) (*LandingPage, error)
+	predicates                     []predicate.LandingPage
 }
 
 var _ ent.Mutation = (*LandingPageMutation)(nil)
@@ -4400,6 +4416,736 @@ func (m *LandingPageMutation) ResetListed() {
 	delete(m.clearedFields, landingpage.FieldListed)
 }
 
+// SetMain sets the "main" field.
+func (m *LandingPageMutation) SetMain(b bool) {
+	m.main = &b
+}
+
+// Main returns the value of the "main" field in the mutation.
+func (m *LandingPageMutation) Main() (r bool, exists bool) {
+	v := m.main
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMain returns the old "main" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldMain(ctx context.Context) (v *bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMain is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMain requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMain: %w", err)
+	}
+	return oldValue.Main, nil
+}
+
+// ClearMain clears the value of the "main" field.
+func (m *LandingPageMutation) ClearMain() {
+	m.main = nil
+	m.clearedFields[landingpage.FieldMain] = struct{}{}
+}
+
+// MainCleared returns if the "main" field was cleared in this mutation.
+func (m *LandingPageMutation) MainCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldMain]
+	return ok
+}
+
+// ResetMain resets all changes to the "main" field.
+func (m *LandingPageMutation) ResetMain() {
+	m.main = nil
+	delete(m.clearedFields, landingpage.FieldMain)
+}
+
+// SetState sets the "state" field.
+func (m *LandingPageMutation) SetState(s string) {
+	m.state = &s
+}
+
+// State returns the value of the "state" field in the mutation.
+func (m *LandingPageMutation) State() (r string, exists bool) {
+	v := m.state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldState returns the old "state" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldState(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
+	}
+	return oldValue.State, nil
+}
+
+// ClearState clears the value of the "state" field.
+func (m *LandingPageMutation) ClearState() {
+	m.state = nil
+	m.clearedFields[landingpage.FieldState] = struct{}{}
+}
+
+// StateCleared returns if the "state" field was cleared in this mutation.
+func (m *LandingPageMutation) StateCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldState]
+	return ok
+}
+
+// ResetState resets all changes to the "state" field.
+func (m *LandingPageMutation) ResetState() {
+	m.state = nil
+	delete(m.clearedFields, landingpage.FieldState)
+}
+
+// SetOrder sets the "order" field.
+func (m *LandingPageMutation) SetOrder(s string) {
+	m._order = &s
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *LandingPageMutation) Order() (r string, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldOrder(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// ClearOrder clears the value of the "order" field.
+func (m *LandingPageMutation) ClearOrder() {
+	m._order = nil
+	m.clearedFields[landingpage.FieldOrder] = struct{}{}
+}
+
+// OrderCleared returns if the "order" field was cleared in this mutation.
+func (m *LandingPageMutation) OrderCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldOrder]
+	return ok
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *LandingPageMutation) ResetOrder() {
+	m._order = nil
+	delete(m.clearedFields, landingpage.FieldOrder)
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (m *LandingPageMutation) SetMetaTitle(s string) {
+	m.meta_title = &s
+}
+
+// MetaTitle returns the value of the "meta_title" field in the mutation.
+func (m *LandingPageMutation) MetaTitle() (r string, exists bool) {
+	v := m.meta_title
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMetaTitle returns the old "meta_title" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldMetaTitle(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMetaTitle is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMetaTitle requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMetaTitle: %w", err)
+	}
+	return oldValue.MetaTitle, nil
+}
+
+// ClearMetaTitle clears the value of the "meta_title" field.
+func (m *LandingPageMutation) ClearMetaTitle() {
+	m.meta_title = nil
+	m.clearedFields[landingpage.FieldMetaTitle] = struct{}{}
+}
+
+// MetaTitleCleared returns if the "meta_title" field was cleared in this mutation.
+func (m *LandingPageMutation) MetaTitleCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldMetaTitle]
+	return ok
+}
+
+// ResetMetaTitle resets all changes to the "meta_title" field.
+func (m *LandingPageMutation) ResetMetaTitle() {
+	m.meta_title = nil
+	delete(m.clearedFields, landingpage.FieldMetaTitle)
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (m *LandingPageMutation) SetMetaDescription(s string) {
+	m.meta_description = &s
+}
+
+// MetaDescription returns the value of the "meta_description" field in the mutation.
+func (m *LandingPageMutation) MetaDescription() (r string, exists bool) {
+	v := m.meta_description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMetaDescription returns the old "meta_description" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldMetaDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMetaDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMetaDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMetaDescription: %w", err)
+	}
+	return oldValue.MetaDescription, nil
+}
+
+// ClearMetaDescription clears the value of the "meta_description" field.
+func (m *LandingPageMutation) ClearMetaDescription() {
+	m.meta_description = nil
+	m.clearedFields[landingpage.FieldMetaDescription] = struct{}{}
+}
+
+// MetaDescriptionCleared returns if the "meta_description" field was cleared in this mutation.
+func (m *LandingPageMutation) MetaDescriptionCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldMetaDescription]
+	return ok
+}
+
+// ResetMetaDescription resets all changes to the "meta_description" field.
+func (m *LandingPageMutation) ResetMetaDescription() {
+	m.meta_description = nil
+	delete(m.clearedFields, landingpage.FieldMetaDescription)
+}
+
+// SetDescription sets the "description" field.
+func (m *LandingPageMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *LandingPageMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *LandingPageMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[landingpage.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *LandingPageMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *LandingPageMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, landingpage.FieldDescription)
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (m *LandingPageMutation) SetUsedInHeader(s string) {
+	m.used_in_header = &s
+}
+
+// UsedInHeader returns the value of the "used_in_header" field in the mutation.
+func (m *LandingPageMutation) UsedInHeader() (r string, exists bool) {
+	v := m.used_in_header
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUsedInHeader returns the old "used_in_header" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldUsedInHeader(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUsedInHeader is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUsedInHeader requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUsedInHeader: %w", err)
+	}
+	return oldValue.UsedInHeader, nil
+}
+
+// ClearUsedInHeader clears the value of the "used_in_header" field.
+func (m *LandingPageMutation) ClearUsedInHeader() {
+	m.used_in_header = nil
+	m.clearedFields[landingpage.FieldUsedInHeader] = struct{}{}
+}
+
+// UsedInHeaderCleared returns if the "used_in_header" field was cleared in this mutation.
+func (m *LandingPageMutation) UsedInHeaderCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldUsedInHeader]
+	return ok
+}
+
+// ResetUsedInHeader resets all changes to the "used_in_header" field.
+func (m *LandingPageMutation) ResetUsedInHeader() {
+	m.used_in_header = nil
+	delete(m.clearedFields, landingpage.FieldUsedInHeader)
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (m *LandingPageMutation) SetUsedInDescription(s string) {
+	m.used_in_description = &s
+}
+
+// UsedInDescription returns the value of the "used_in_description" field in the mutation.
+func (m *LandingPageMutation) UsedInDescription() (r string, exists bool) {
+	v := m.used_in_description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUsedInDescription returns the old "used_in_description" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldUsedInDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUsedInDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUsedInDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUsedInDescription: %w", err)
+	}
+	return oldValue.UsedInDescription, nil
+}
+
+// ClearUsedInDescription clears the value of the "used_in_description" field.
+func (m *LandingPageMutation) ClearUsedInDescription() {
+	m.used_in_description = nil
+	m.clearedFields[landingpage.FieldUsedInDescription] = struct{}{}
+}
+
+// UsedInDescriptionCleared returns if the "used_in_description" field was cleared in this mutation.
+func (m *LandingPageMutation) UsedInDescriptionCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldUsedInDescription]
+	return ok
+}
+
+// ResetUsedInDescription resets all changes to the "used_in_description" field.
+func (m *LandingPageMutation) ResetUsedInDescription() {
+	m.used_in_description = nil
+	delete(m.clearedFields, landingpage.FieldUsedInDescription)
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (m *LandingPageMutation) SetOutcomesHeader(s string) {
+	m.outcomes_header = &s
+}
+
+// OutcomesHeader returns the value of the "outcomes_header" field in the mutation.
+func (m *LandingPageMutation) OutcomesHeader() (r string, exists bool) {
+	v := m.outcomes_header
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutcomesHeader returns the old "outcomes_header" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldOutcomesHeader(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutcomesHeader is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutcomesHeader requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutcomesHeader: %w", err)
+	}
+	return oldValue.OutcomesHeader, nil
+}
+
+// ClearOutcomesHeader clears the value of the "outcomes_header" field.
+func (m *LandingPageMutation) ClearOutcomesHeader() {
+	m.outcomes_header = nil
+	m.clearedFields[landingpage.FieldOutcomesHeader] = struct{}{}
+}
+
+// OutcomesHeaderCleared returns if the "outcomes_header" field was cleared in this mutation.
+func (m *LandingPageMutation) OutcomesHeaderCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldOutcomesHeader]
+	return ok
+}
+
+// ResetOutcomesHeader resets all changes to the "outcomes_header" field.
+func (m *LandingPageMutation) ResetOutcomesHeader() {
+	m.outcomes_header = nil
+	delete(m.clearedFields, landingpage.FieldOutcomesHeader)
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (m *LandingPageMutation) SetOutcomesDescription(s string) {
+	m.outcomes_description = &s
+}
+
+// OutcomesDescription returns the value of the "outcomes_description" field in the mutation.
+func (m *LandingPageMutation) OutcomesDescription() (r string, exists bool) {
+	v := m.outcomes_description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutcomesDescription returns the old "outcomes_description" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldOutcomesDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutcomesDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutcomesDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutcomesDescription: %w", err)
+	}
+	return oldValue.OutcomesDescription, nil
+}
+
+// ClearOutcomesDescription clears the value of the "outcomes_description" field.
+func (m *LandingPageMutation) ClearOutcomesDescription() {
+	m.outcomes_description = nil
+	m.clearedFields[landingpage.FieldOutcomesDescription] = struct{}{}
+}
+
+// OutcomesDescriptionCleared returns if the "outcomes_description" field was cleared in this mutation.
+func (m *LandingPageMutation) OutcomesDescriptionCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldOutcomesDescription]
+	return ok
+}
+
+// ResetOutcomesDescription resets all changes to the "outcomes_description" field.
+func (m *LandingPageMutation) ResetOutcomesDescription() {
+	m.outcomes_description = nil
+	delete(m.clearedFields, landingpage.FieldOutcomesDescription)
+}
+
+// SetFooter sets the "footer" field.
+func (m *LandingPageMutation) SetFooter(b bool) {
+	m.footer = &b
+}
+
+// Footer returns the value of the "footer" field in the mutation.
+func (m *LandingPageMutation) Footer() (r bool, exists bool) {
+	v := m.footer
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFooter returns the old "footer" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldFooter(ctx context.Context) (v *bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFooter is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFooter requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFooter: %w", err)
+	}
+	return oldValue.Footer, nil
+}
+
+// ClearFooter clears the value of the "footer" field.
+func (m *LandingPageMutation) ClearFooter() {
+	m.footer = nil
+	m.clearedFields[landingpage.FieldFooter] = struct{}{}
+}
+
+// FooterCleared returns if the "footer" field was cleared in this mutation.
+func (m *LandingPageMutation) FooterCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldFooter]
+	return ok
+}
+
+// ResetFooter resets all changes to the "footer" field.
+func (m *LandingPageMutation) ResetFooter() {
+	m.footer = nil
+	delete(m.clearedFields, landingpage.FieldFooter)
+}
+
+// SetFooterName sets the "footer_name" field.
+func (m *LandingPageMutation) SetFooterName(s string) {
+	m.footer_name = &s
+}
+
+// FooterName returns the value of the "footer_name" field in the mutation.
+func (m *LandingPageMutation) FooterName() (r string, exists bool) {
+	v := m.footer_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFooterName returns the old "footer_name" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldFooterName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFooterName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFooterName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFooterName: %w", err)
+	}
+	return oldValue.FooterName, nil
+}
+
+// ClearFooterName clears the value of the "footer_name" field.
+func (m *LandingPageMutation) ClearFooterName() {
+	m.footer_name = nil
+	m.clearedFields[landingpage.FieldFooterName] = struct{}{}
+}
+
+// FooterNameCleared returns if the "footer_name" field was cleared in this mutation.
+func (m *LandingPageMutation) FooterNameCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldFooterName]
+	return ok
+}
+
+// ResetFooterName resets all changes to the "footer_name" field.
+func (m *LandingPageMutation) ResetFooterName() {
+	m.footer_name = nil
+	delete(m.clearedFields, landingpage.FieldFooterName)
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (m *LandingPageMutation) SetLandingPageToRedirectID(i int) {
+	m.landing_page_to_redirect_id = &i
+	m.addlanding_page_to_redirect_id = nil
+}
+
+// LandingPageToRedirectID returns the value of the "landing_page_to_redirect_id" field in the mutation.
+func (m *LandingPageMutation) LandingPageToRedirectID() (r int, exists bool) {
+	v := m.landing_page_to_redirect_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLandingPageToRedirectID returns the old "landing_page_to_redirect_id" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldLandingPageToRedirectID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLandingPageToRedirectID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLandingPageToRedirectID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLandingPageToRedirectID: %w", err)
+	}
+	return oldValue.LandingPageToRedirectID, nil
+}
+
+// AddLandingPageToRedirectID adds i to the "landing_page_to_redirect_id" field.
+func (m *LandingPageMutation) AddLandingPageToRedirectID(i int) {
+	if m.addlanding_page_to_redirect_id != nil {
+		*m.addlanding_page_to_redirect_id += i
+	} else {
+		m.addlanding_page_to_redirect_id = &i
+	}
+}
+
+// AddedLandingPageToRedirectID returns the value that was added to the "landing_page_to_redirect_id" field in this mutation.
+func (m *LandingPageMutation) AddedLandingPageToRedirectID() (r int, exists bool) {
+	v := m.addlanding_page_to_redirect_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
+func (m *LandingPageMutation) ClearLandingPageToRedirectID() {
+	m.landing_page_to_redirect_id = nil
+	m.addlanding_page_to_redirect_id = nil
+	m.clearedFields[landingpage.FieldLandingPageToRedirectID] = struct{}{}
+}
+
+// LandingPageToRedirectIDCleared returns if the "landing_page_to_redirect_id" field was cleared in this mutation.
+func (m *LandingPageMutation) LandingPageToRedirectIDCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldLandingPageToRedirectID]
+	return ok
+}
+
+// ResetLandingPageToRedirectID resets all changes to the "landing_page_to_redirect_id" field.
+func (m *LandingPageMutation) ResetLandingPageToRedirectID() {
+	m.landing_page_to_redirect_id = nil
+	m.addlanding_page_to_redirect_id = nil
+	delete(m.clearedFields, landingpage.FieldLandingPageToRedirectID)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LandingPageMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LandingPageMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LandingPageMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LandingPageMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LandingPageMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LandingPageMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // SetCourseID sets the "course" edge to the Course entity by id.
 func (m *LandingPageMutation) SetCourseID(id int) {
 	m.course = &id
@@ -4474,7 +5220,7 @@ func (m *LandingPageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LandingPageMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 21)
 	if m.course != nil {
 		fields = append(fields, landingpage.FieldLanguageID)
 	}
@@ -4492,6 +5238,51 @@ func (m *LandingPageMutation) Fields() []string {
 	}
 	if m.listed != nil {
 		fields = append(fields, landingpage.FieldListed)
+	}
+	if m.main != nil {
+		fields = append(fields, landingpage.FieldMain)
+	}
+	if m.state != nil {
+		fields = append(fields, landingpage.FieldState)
+	}
+	if m._order != nil {
+		fields = append(fields, landingpage.FieldOrder)
+	}
+	if m.meta_title != nil {
+		fields = append(fields, landingpage.FieldMetaTitle)
+	}
+	if m.meta_description != nil {
+		fields = append(fields, landingpage.FieldMetaDescription)
+	}
+	if m.description != nil {
+		fields = append(fields, landingpage.FieldDescription)
+	}
+	if m.used_in_header != nil {
+		fields = append(fields, landingpage.FieldUsedInHeader)
+	}
+	if m.used_in_description != nil {
+		fields = append(fields, landingpage.FieldUsedInDescription)
+	}
+	if m.outcomes_header != nil {
+		fields = append(fields, landingpage.FieldOutcomesHeader)
+	}
+	if m.outcomes_description != nil {
+		fields = append(fields, landingpage.FieldOutcomesDescription)
+	}
+	if m.footer != nil {
+		fields = append(fields, landingpage.FieldFooter)
+	}
+	if m.footer_name != nil {
+		fields = append(fields, landingpage.FieldFooterName)
+	}
+	if m.landing_page_to_redirect_id != nil {
+		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
+	}
+	if m.created_at != nil {
+		fields = append(fields, landingpage.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, landingpage.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -4513,6 +5304,36 @@ func (m *LandingPageMutation) Field(name string) (ent.Value, bool) {
 		return m.Locale()
 	case landingpage.FieldListed:
 		return m.Listed()
+	case landingpage.FieldMain:
+		return m.Main()
+	case landingpage.FieldState:
+		return m.State()
+	case landingpage.FieldOrder:
+		return m.Order()
+	case landingpage.FieldMetaTitle:
+		return m.MetaTitle()
+	case landingpage.FieldMetaDescription:
+		return m.MetaDescription()
+	case landingpage.FieldDescription:
+		return m.Description()
+	case landingpage.FieldUsedInHeader:
+		return m.UsedInHeader()
+	case landingpage.FieldUsedInDescription:
+		return m.UsedInDescription()
+	case landingpage.FieldOutcomesHeader:
+		return m.OutcomesHeader()
+	case landingpage.FieldOutcomesDescription:
+		return m.OutcomesDescription()
+	case landingpage.FieldFooter:
+		return m.Footer()
+	case landingpage.FieldFooterName:
+		return m.FooterName()
+	case landingpage.FieldLandingPageToRedirectID:
+		return m.LandingPageToRedirectID()
+	case landingpage.FieldCreatedAt:
+		return m.CreatedAt()
+	case landingpage.FieldUpdatedAt:
+		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -4534,6 +5355,36 @@ func (m *LandingPageMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldLocale(ctx)
 	case landingpage.FieldListed:
 		return m.OldListed(ctx)
+	case landingpage.FieldMain:
+		return m.OldMain(ctx)
+	case landingpage.FieldState:
+		return m.OldState(ctx)
+	case landingpage.FieldOrder:
+		return m.OldOrder(ctx)
+	case landingpage.FieldMetaTitle:
+		return m.OldMetaTitle(ctx)
+	case landingpage.FieldMetaDescription:
+		return m.OldMetaDescription(ctx)
+	case landingpage.FieldDescription:
+		return m.OldDescription(ctx)
+	case landingpage.FieldUsedInHeader:
+		return m.OldUsedInHeader(ctx)
+	case landingpage.FieldUsedInDescription:
+		return m.OldUsedInDescription(ctx)
+	case landingpage.FieldOutcomesHeader:
+		return m.OldOutcomesHeader(ctx)
+	case landingpage.FieldOutcomesDescription:
+		return m.OldOutcomesDescription(ctx)
+	case landingpage.FieldFooter:
+		return m.OldFooter(ctx)
+	case landingpage.FieldFooterName:
+		return m.OldFooterName(ctx)
+	case landingpage.FieldLandingPageToRedirectID:
+		return m.OldLandingPageToRedirectID(ctx)
+	case landingpage.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case landingpage.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LandingPage field %s", name)
 }
@@ -4585,6 +5436,111 @@ func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetListed(v)
 		return nil
+	case landingpage.FieldMain:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMain(v)
+		return nil
+	case landingpage.FieldState:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetState(v)
+		return nil
+	case landingpage.FieldOrder:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
+	case landingpage.FieldMetaTitle:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMetaTitle(v)
+		return nil
+	case landingpage.FieldMetaDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMetaDescription(v)
+		return nil
+	case landingpage.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case landingpage.FieldUsedInHeader:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUsedInHeader(v)
+		return nil
+	case landingpage.FieldUsedInDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUsedInDescription(v)
+		return nil
+	case landingpage.FieldOutcomesHeader:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutcomesHeader(v)
+		return nil
+	case landingpage.FieldOutcomesDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutcomesDescription(v)
+		return nil
+	case landingpage.FieldFooter:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFooter(v)
+		return nil
+	case landingpage.FieldFooterName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFooterName(v)
+		return nil
+	case landingpage.FieldLandingPageToRedirectID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLandingPageToRedirectID(v)
+		return nil
+	case landingpage.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case landingpage.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown LandingPage field %s", name)
 }
@@ -4593,6 +5549,9 @@ func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *LandingPageMutation) AddedFields() []string {
 	var fields []string
+	if m.addlanding_page_to_redirect_id != nil {
+		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
+	}
 	return fields
 }
 
@@ -4601,6 +5560,8 @@ func (m *LandingPageMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *LandingPageMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case landingpage.FieldLandingPageToRedirectID:
+		return m.AddedLandingPageToRedirectID()
 	}
 	return nil, false
 }
@@ -4610,6 +5571,13 @@ func (m *LandingPageMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *LandingPageMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case landingpage.FieldLandingPageToRedirectID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLandingPageToRedirectID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown LandingPage numeric field %s", name)
 }
@@ -4632,6 +5600,45 @@ func (m *LandingPageMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(landingpage.FieldListed) {
 		fields = append(fields, landingpage.FieldListed)
+	}
+	if m.FieldCleared(landingpage.FieldMain) {
+		fields = append(fields, landingpage.FieldMain)
+	}
+	if m.FieldCleared(landingpage.FieldState) {
+		fields = append(fields, landingpage.FieldState)
+	}
+	if m.FieldCleared(landingpage.FieldOrder) {
+		fields = append(fields, landingpage.FieldOrder)
+	}
+	if m.FieldCleared(landingpage.FieldMetaTitle) {
+		fields = append(fields, landingpage.FieldMetaTitle)
+	}
+	if m.FieldCleared(landingpage.FieldMetaDescription) {
+		fields = append(fields, landingpage.FieldMetaDescription)
+	}
+	if m.FieldCleared(landingpage.FieldDescription) {
+		fields = append(fields, landingpage.FieldDescription)
+	}
+	if m.FieldCleared(landingpage.FieldUsedInHeader) {
+		fields = append(fields, landingpage.FieldUsedInHeader)
+	}
+	if m.FieldCleared(landingpage.FieldUsedInDescription) {
+		fields = append(fields, landingpage.FieldUsedInDescription)
+	}
+	if m.FieldCleared(landingpage.FieldOutcomesHeader) {
+		fields = append(fields, landingpage.FieldOutcomesHeader)
+	}
+	if m.FieldCleared(landingpage.FieldOutcomesDescription) {
+		fields = append(fields, landingpage.FieldOutcomesDescription)
+	}
+	if m.FieldCleared(landingpage.FieldFooter) {
+		fields = append(fields, landingpage.FieldFooter)
+	}
+	if m.FieldCleared(landingpage.FieldFooterName) {
+		fields = append(fields, landingpage.FieldFooterName)
+	}
+	if m.FieldCleared(landingpage.FieldLandingPageToRedirectID) {
+		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
 	}
 	return fields
 }
@@ -4662,6 +5669,45 @@ func (m *LandingPageMutation) ClearField(name string) error {
 	case landingpage.FieldListed:
 		m.ClearListed()
 		return nil
+	case landingpage.FieldMain:
+		m.ClearMain()
+		return nil
+	case landingpage.FieldState:
+		m.ClearState()
+		return nil
+	case landingpage.FieldOrder:
+		m.ClearOrder()
+		return nil
+	case landingpage.FieldMetaTitle:
+		m.ClearMetaTitle()
+		return nil
+	case landingpage.FieldMetaDescription:
+		m.ClearMetaDescription()
+		return nil
+	case landingpage.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case landingpage.FieldUsedInHeader:
+		m.ClearUsedInHeader()
+		return nil
+	case landingpage.FieldUsedInDescription:
+		m.ClearUsedInDescription()
+		return nil
+	case landingpage.FieldOutcomesHeader:
+		m.ClearOutcomesHeader()
+		return nil
+	case landingpage.FieldOutcomesDescription:
+		m.ClearOutcomesDescription()
+		return nil
+	case landingpage.FieldFooter:
+		m.ClearFooter()
+		return nil
+	case landingpage.FieldFooterName:
+		m.ClearFooterName()
+		return nil
+	case landingpage.FieldLandingPageToRedirectID:
+		m.ClearLandingPageToRedirectID()
+		return nil
 	}
 	return fmt.Errorf("unknown LandingPage nullable field %s", name)
 }
@@ -4687,6 +5733,51 @@ func (m *LandingPageMutation) ResetField(name string) error {
 		return nil
 	case landingpage.FieldListed:
 		m.ResetListed()
+		return nil
+	case landingpage.FieldMain:
+		m.ResetMain()
+		return nil
+	case landingpage.FieldState:
+		m.ResetState()
+		return nil
+	case landingpage.FieldOrder:
+		m.ResetOrder()
+		return nil
+	case landingpage.FieldMetaTitle:
+		m.ResetMetaTitle()
+		return nil
+	case landingpage.FieldMetaDescription:
+		m.ResetMetaDescription()
+		return nil
+	case landingpage.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case landingpage.FieldUsedInHeader:
+		m.ResetUsedInHeader()
+		return nil
+	case landingpage.FieldUsedInDescription:
+		m.ResetUsedInDescription()
+		return nil
+	case landingpage.FieldOutcomesHeader:
+		m.ResetOutcomesHeader()
+		return nil
+	case landingpage.FieldOutcomesDescription:
+		m.ResetOutcomesDescription()
+		return nil
+	case landingpage.FieldFooter:
+		m.ResetFooter()
+		return nil
+	case landingpage.FieldFooterName:
+		m.ResetFooterName()
+		return nil
+	case landingpage.FieldLandingPageToRedirectID:
+		m.ResetLandingPageToRedirectID()
+		return nil
+	case landingpage.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case landingpage.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPage field %s", name)

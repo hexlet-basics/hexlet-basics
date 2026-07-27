@@ -4,6 +4,7 @@ package landingpage
 
 import (
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -82,6 +83,81 @@ func Locale(v string) predicate.LandingPage {
 // Listed applies equality check predicate on the "listed" field. It's identical to ListedEQ.
 func Listed(v bool) predicate.LandingPage {
 	return predicate.LandingPage(sql.FieldEQ(FieldListed, v))
+}
+
+// Main applies equality check predicate on the "main" field. It's identical to MainEQ.
+func Main(v bool) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldMain, v))
+}
+
+// State applies equality check predicate on the "state" field. It's identical to StateEQ.
+func State(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldState, v))
+}
+
+// Order applies equality check predicate on the "order" field. It's identical to OrderEQ.
+func Order(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldOrder, v))
+}
+
+// MetaTitle applies equality check predicate on the "meta_title" field. It's identical to MetaTitleEQ.
+func MetaTitle(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldMetaTitle, v))
+}
+
+// MetaDescription applies equality check predicate on the "meta_description" field. It's identical to MetaDescriptionEQ.
+func MetaDescription(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldMetaDescription, v))
+}
+
+// Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
+func Description(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldDescription, v))
+}
+
+// UsedInHeader applies equality check predicate on the "used_in_header" field. It's identical to UsedInHeaderEQ.
+func UsedInHeader(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldUsedInHeader, v))
+}
+
+// UsedInDescription applies equality check predicate on the "used_in_description" field. It's identical to UsedInDescriptionEQ.
+func UsedInDescription(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldUsedInDescription, v))
+}
+
+// OutcomesHeader applies equality check predicate on the "outcomes_header" field. It's identical to OutcomesHeaderEQ.
+func OutcomesHeader(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldOutcomesHeader, v))
+}
+
+// OutcomesDescription applies equality check predicate on the "outcomes_description" field. It's identical to OutcomesDescriptionEQ.
+func OutcomesDescription(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldOutcomesDescription, v))
+}
+
+// Footer applies equality check predicate on the "footer" field. It's identical to FooterEQ.
+func Footer(v bool) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldFooter, v))
+}
+
+// FooterName applies equality check predicate on the "footer_name" field. It's identical to FooterNameEQ.
+func FooterName(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldFooterName, v))
+}
+
+// LandingPageToRedirectID applies equality check predicate on the "landing_page_to_redirect_id" field. It's identical to LandingPageToRedirectIDEQ.
+func LandingPageToRedirectID(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldLandingPageToRedirectID, v))
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
 // LanguageIDEQ applies the EQ predicate on the "language_id" field.
@@ -422,6 +498,926 @@ func ListedIsNil() predicate.LandingPage {
 // ListedNotNil applies the NotNil predicate on the "listed" field.
 func ListedNotNil() predicate.LandingPage {
 	return predicate.LandingPage(sql.FieldNotNull(FieldListed))
+}
+
+// MainEQ applies the EQ predicate on the "main" field.
+func MainEQ(v bool) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldMain, v))
+}
+
+// MainNEQ applies the NEQ predicate on the "main" field.
+func MainNEQ(v bool) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldMain, v))
+}
+
+// MainIsNil applies the IsNil predicate on the "main" field.
+func MainIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldMain))
+}
+
+// MainNotNil applies the NotNil predicate on the "main" field.
+func MainNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldMain))
+}
+
+// StateEQ applies the EQ predicate on the "state" field.
+func StateEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldState, v))
+}
+
+// StateNEQ applies the NEQ predicate on the "state" field.
+func StateNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldState, v))
+}
+
+// StateIn applies the In predicate on the "state" field.
+func StateIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldState, vs...))
+}
+
+// StateNotIn applies the NotIn predicate on the "state" field.
+func StateNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldState, vs...))
+}
+
+// StateGT applies the GT predicate on the "state" field.
+func StateGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldState, v))
+}
+
+// StateGTE applies the GTE predicate on the "state" field.
+func StateGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldState, v))
+}
+
+// StateLT applies the LT predicate on the "state" field.
+func StateLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldState, v))
+}
+
+// StateLTE applies the LTE predicate on the "state" field.
+func StateLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldState, v))
+}
+
+// StateContains applies the Contains predicate on the "state" field.
+func StateContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldState, v))
+}
+
+// StateHasPrefix applies the HasPrefix predicate on the "state" field.
+func StateHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldState, v))
+}
+
+// StateHasSuffix applies the HasSuffix predicate on the "state" field.
+func StateHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldState, v))
+}
+
+// StateIsNil applies the IsNil predicate on the "state" field.
+func StateIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldState))
+}
+
+// StateNotNil applies the NotNil predicate on the "state" field.
+func StateNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldState))
+}
+
+// StateEqualFold applies the EqualFold predicate on the "state" field.
+func StateEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldState, v))
+}
+
+// StateContainsFold applies the ContainsFold predicate on the "state" field.
+func StateContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldState, v))
+}
+
+// OrderEQ applies the EQ predicate on the "order" field.
+func OrderEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldOrder, v))
+}
+
+// OrderNEQ applies the NEQ predicate on the "order" field.
+func OrderNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldOrder, v))
+}
+
+// OrderIn applies the In predicate on the "order" field.
+func OrderIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldOrder, vs...))
+}
+
+// OrderNotIn applies the NotIn predicate on the "order" field.
+func OrderNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldOrder, vs...))
+}
+
+// OrderGT applies the GT predicate on the "order" field.
+func OrderGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldOrder, v))
+}
+
+// OrderGTE applies the GTE predicate on the "order" field.
+func OrderGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldOrder, v))
+}
+
+// OrderLT applies the LT predicate on the "order" field.
+func OrderLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldOrder, v))
+}
+
+// OrderLTE applies the LTE predicate on the "order" field.
+func OrderLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldOrder, v))
+}
+
+// OrderContains applies the Contains predicate on the "order" field.
+func OrderContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldOrder, v))
+}
+
+// OrderHasPrefix applies the HasPrefix predicate on the "order" field.
+func OrderHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldOrder, v))
+}
+
+// OrderHasSuffix applies the HasSuffix predicate on the "order" field.
+func OrderHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldOrder, v))
+}
+
+// OrderIsNil applies the IsNil predicate on the "order" field.
+func OrderIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldOrder))
+}
+
+// OrderNotNil applies the NotNil predicate on the "order" field.
+func OrderNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldOrder))
+}
+
+// OrderEqualFold applies the EqualFold predicate on the "order" field.
+func OrderEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldOrder, v))
+}
+
+// OrderContainsFold applies the ContainsFold predicate on the "order" field.
+func OrderContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldOrder, v))
+}
+
+// MetaTitleEQ applies the EQ predicate on the "meta_title" field.
+func MetaTitleEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldMetaTitle, v))
+}
+
+// MetaTitleNEQ applies the NEQ predicate on the "meta_title" field.
+func MetaTitleNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldMetaTitle, v))
+}
+
+// MetaTitleIn applies the In predicate on the "meta_title" field.
+func MetaTitleIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldMetaTitle, vs...))
+}
+
+// MetaTitleNotIn applies the NotIn predicate on the "meta_title" field.
+func MetaTitleNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldMetaTitle, vs...))
+}
+
+// MetaTitleGT applies the GT predicate on the "meta_title" field.
+func MetaTitleGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldMetaTitle, v))
+}
+
+// MetaTitleGTE applies the GTE predicate on the "meta_title" field.
+func MetaTitleGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldMetaTitle, v))
+}
+
+// MetaTitleLT applies the LT predicate on the "meta_title" field.
+func MetaTitleLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldMetaTitle, v))
+}
+
+// MetaTitleLTE applies the LTE predicate on the "meta_title" field.
+func MetaTitleLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldMetaTitle, v))
+}
+
+// MetaTitleContains applies the Contains predicate on the "meta_title" field.
+func MetaTitleContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldMetaTitle, v))
+}
+
+// MetaTitleHasPrefix applies the HasPrefix predicate on the "meta_title" field.
+func MetaTitleHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldMetaTitle, v))
+}
+
+// MetaTitleHasSuffix applies the HasSuffix predicate on the "meta_title" field.
+func MetaTitleHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldMetaTitle, v))
+}
+
+// MetaTitleIsNil applies the IsNil predicate on the "meta_title" field.
+func MetaTitleIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldMetaTitle))
+}
+
+// MetaTitleNotNil applies the NotNil predicate on the "meta_title" field.
+func MetaTitleNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldMetaTitle))
+}
+
+// MetaTitleEqualFold applies the EqualFold predicate on the "meta_title" field.
+func MetaTitleEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldMetaTitle, v))
+}
+
+// MetaTitleContainsFold applies the ContainsFold predicate on the "meta_title" field.
+func MetaTitleContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldMetaTitle, v))
+}
+
+// MetaDescriptionEQ applies the EQ predicate on the "meta_description" field.
+func MetaDescriptionEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldMetaDescription, v))
+}
+
+// MetaDescriptionNEQ applies the NEQ predicate on the "meta_description" field.
+func MetaDescriptionNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldMetaDescription, v))
+}
+
+// MetaDescriptionIn applies the In predicate on the "meta_description" field.
+func MetaDescriptionIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldMetaDescription, vs...))
+}
+
+// MetaDescriptionNotIn applies the NotIn predicate on the "meta_description" field.
+func MetaDescriptionNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldMetaDescription, vs...))
+}
+
+// MetaDescriptionGT applies the GT predicate on the "meta_description" field.
+func MetaDescriptionGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldMetaDescription, v))
+}
+
+// MetaDescriptionGTE applies the GTE predicate on the "meta_description" field.
+func MetaDescriptionGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldMetaDescription, v))
+}
+
+// MetaDescriptionLT applies the LT predicate on the "meta_description" field.
+func MetaDescriptionLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldMetaDescription, v))
+}
+
+// MetaDescriptionLTE applies the LTE predicate on the "meta_description" field.
+func MetaDescriptionLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldMetaDescription, v))
+}
+
+// MetaDescriptionContains applies the Contains predicate on the "meta_description" field.
+func MetaDescriptionContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldMetaDescription, v))
+}
+
+// MetaDescriptionHasPrefix applies the HasPrefix predicate on the "meta_description" field.
+func MetaDescriptionHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldMetaDescription, v))
+}
+
+// MetaDescriptionHasSuffix applies the HasSuffix predicate on the "meta_description" field.
+func MetaDescriptionHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldMetaDescription, v))
+}
+
+// MetaDescriptionIsNil applies the IsNil predicate on the "meta_description" field.
+func MetaDescriptionIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldMetaDescription))
+}
+
+// MetaDescriptionNotNil applies the NotNil predicate on the "meta_description" field.
+func MetaDescriptionNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldMetaDescription))
+}
+
+// MetaDescriptionEqualFold applies the EqualFold predicate on the "meta_description" field.
+func MetaDescriptionEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldMetaDescription, v))
+}
+
+// MetaDescriptionContainsFold applies the ContainsFold predicate on the "meta_description" field.
+func MetaDescriptionContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldMetaDescription, v))
+}
+
+// DescriptionEQ applies the EQ predicate on the "description" field.
+func DescriptionEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldDescription, v))
+}
+
+// DescriptionNEQ applies the NEQ predicate on the "description" field.
+func DescriptionNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldDescription, v))
+}
+
+// DescriptionIn applies the In predicate on the "description" field.
+func DescriptionIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldDescription, vs...))
+}
+
+// DescriptionNotIn applies the NotIn predicate on the "description" field.
+func DescriptionNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldDescription, vs...))
+}
+
+// DescriptionGT applies the GT predicate on the "description" field.
+func DescriptionGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldDescription, v))
+}
+
+// DescriptionGTE applies the GTE predicate on the "description" field.
+func DescriptionGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldDescription, v))
+}
+
+// DescriptionLT applies the LT predicate on the "description" field.
+func DescriptionLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldDescription, v))
+}
+
+// DescriptionLTE applies the LTE predicate on the "description" field.
+func DescriptionLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldDescription, v))
+}
+
+// DescriptionContains applies the Contains predicate on the "description" field.
+func DescriptionContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldDescription, v))
+}
+
+// DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
+func DescriptionHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldDescription, v))
+}
+
+// DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
+func DescriptionHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionIsNil applies the IsNil predicate on the "description" field.
+func DescriptionIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldDescription))
+}
+
+// DescriptionNotNil applies the NotNil predicate on the "description" field.
+func DescriptionNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldDescription))
+}
+
+// DescriptionEqualFold applies the EqualFold predicate on the "description" field.
+func DescriptionEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldDescription, v))
+}
+
+// DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
+func DescriptionContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// UsedInHeaderEQ applies the EQ predicate on the "used_in_header" field.
+func UsedInHeaderEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderNEQ applies the NEQ predicate on the "used_in_header" field.
+func UsedInHeaderNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderIn applies the In predicate on the "used_in_header" field.
+func UsedInHeaderIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldUsedInHeader, vs...))
+}
+
+// UsedInHeaderNotIn applies the NotIn predicate on the "used_in_header" field.
+func UsedInHeaderNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldUsedInHeader, vs...))
+}
+
+// UsedInHeaderGT applies the GT predicate on the "used_in_header" field.
+func UsedInHeaderGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderGTE applies the GTE predicate on the "used_in_header" field.
+func UsedInHeaderGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderLT applies the LT predicate on the "used_in_header" field.
+func UsedInHeaderLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderLTE applies the LTE predicate on the "used_in_header" field.
+func UsedInHeaderLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderContains applies the Contains predicate on the "used_in_header" field.
+func UsedInHeaderContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderHasPrefix applies the HasPrefix predicate on the "used_in_header" field.
+func UsedInHeaderHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderHasSuffix applies the HasSuffix predicate on the "used_in_header" field.
+func UsedInHeaderHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderIsNil applies the IsNil predicate on the "used_in_header" field.
+func UsedInHeaderIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldUsedInHeader))
+}
+
+// UsedInHeaderNotNil applies the NotNil predicate on the "used_in_header" field.
+func UsedInHeaderNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldUsedInHeader))
+}
+
+// UsedInHeaderEqualFold applies the EqualFold predicate on the "used_in_header" field.
+func UsedInHeaderEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldUsedInHeader, v))
+}
+
+// UsedInHeaderContainsFold applies the ContainsFold predicate on the "used_in_header" field.
+func UsedInHeaderContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldUsedInHeader, v))
+}
+
+// UsedInDescriptionEQ applies the EQ predicate on the "used_in_description" field.
+func UsedInDescriptionEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionNEQ applies the NEQ predicate on the "used_in_description" field.
+func UsedInDescriptionNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionIn applies the In predicate on the "used_in_description" field.
+func UsedInDescriptionIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldUsedInDescription, vs...))
+}
+
+// UsedInDescriptionNotIn applies the NotIn predicate on the "used_in_description" field.
+func UsedInDescriptionNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldUsedInDescription, vs...))
+}
+
+// UsedInDescriptionGT applies the GT predicate on the "used_in_description" field.
+func UsedInDescriptionGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionGTE applies the GTE predicate on the "used_in_description" field.
+func UsedInDescriptionGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionLT applies the LT predicate on the "used_in_description" field.
+func UsedInDescriptionLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionLTE applies the LTE predicate on the "used_in_description" field.
+func UsedInDescriptionLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionContains applies the Contains predicate on the "used_in_description" field.
+func UsedInDescriptionContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionHasPrefix applies the HasPrefix predicate on the "used_in_description" field.
+func UsedInDescriptionHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionHasSuffix applies the HasSuffix predicate on the "used_in_description" field.
+func UsedInDescriptionHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionIsNil applies the IsNil predicate on the "used_in_description" field.
+func UsedInDescriptionIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldUsedInDescription))
+}
+
+// UsedInDescriptionNotNil applies the NotNil predicate on the "used_in_description" field.
+func UsedInDescriptionNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldUsedInDescription))
+}
+
+// UsedInDescriptionEqualFold applies the EqualFold predicate on the "used_in_description" field.
+func UsedInDescriptionEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldUsedInDescription, v))
+}
+
+// UsedInDescriptionContainsFold applies the ContainsFold predicate on the "used_in_description" field.
+func UsedInDescriptionContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldUsedInDescription, v))
+}
+
+// OutcomesHeaderEQ applies the EQ predicate on the "outcomes_header" field.
+func OutcomesHeaderEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderNEQ applies the NEQ predicate on the "outcomes_header" field.
+func OutcomesHeaderNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderIn applies the In predicate on the "outcomes_header" field.
+func OutcomesHeaderIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldOutcomesHeader, vs...))
+}
+
+// OutcomesHeaderNotIn applies the NotIn predicate on the "outcomes_header" field.
+func OutcomesHeaderNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldOutcomesHeader, vs...))
+}
+
+// OutcomesHeaderGT applies the GT predicate on the "outcomes_header" field.
+func OutcomesHeaderGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderGTE applies the GTE predicate on the "outcomes_header" field.
+func OutcomesHeaderGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderLT applies the LT predicate on the "outcomes_header" field.
+func OutcomesHeaderLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderLTE applies the LTE predicate on the "outcomes_header" field.
+func OutcomesHeaderLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderContains applies the Contains predicate on the "outcomes_header" field.
+func OutcomesHeaderContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderHasPrefix applies the HasPrefix predicate on the "outcomes_header" field.
+func OutcomesHeaderHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderHasSuffix applies the HasSuffix predicate on the "outcomes_header" field.
+func OutcomesHeaderHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderIsNil applies the IsNil predicate on the "outcomes_header" field.
+func OutcomesHeaderIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldOutcomesHeader))
+}
+
+// OutcomesHeaderNotNil applies the NotNil predicate on the "outcomes_header" field.
+func OutcomesHeaderNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldOutcomesHeader))
+}
+
+// OutcomesHeaderEqualFold applies the EqualFold predicate on the "outcomes_header" field.
+func OutcomesHeaderEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldOutcomesHeader, v))
+}
+
+// OutcomesHeaderContainsFold applies the ContainsFold predicate on the "outcomes_header" field.
+func OutcomesHeaderContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldOutcomesHeader, v))
+}
+
+// OutcomesDescriptionEQ applies the EQ predicate on the "outcomes_description" field.
+func OutcomesDescriptionEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionNEQ applies the NEQ predicate on the "outcomes_description" field.
+func OutcomesDescriptionNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionIn applies the In predicate on the "outcomes_description" field.
+func OutcomesDescriptionIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldOutcomesDescription, vs...))
+}
+
+// OutcomesDescriptionNotIn applies the NotIn predicate on the "outcomes_description" field.
+func OutcomesDescriptionNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldOutcomesDescription, vs...))
+}
+
+// OutcomesDescriptionGT applies the GT predicate on the "outcomes_description" field.
+func OutcomesDescriptionGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionGTE applies the GTE predicate on the "outcomes_description" field.
+func OutcomesDescriptionGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionLT applies the LT predicate on the "outcomes_description" field.
+func OutcomesDescriptionLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionLTE applies the LTE predicate on the "outcomes_description" field.
+func OutcomesDescriptionLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionContains applies the Contains predicate on the "outcomes_description" field.
+func OutcomesDescriptionContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionHasPrefix applies the HasPrefix predicate on the "outcomes_description" field.
+func OutcomesDescriptionHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionHasSuffix applies the HasSuffix predicate on the "outcomes_description" field.
+func OutcomesDescriptionHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionIsNil applies the IsNil predicate on the "outcomes_description" field.
+func OutcomesDescriptionIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldOutcomesDescription))
+}
+
+// OutcomesDescriptionNotNil applies the NotNil predicate on the "outcomes_description" field.
+func OutcomesDescriptionNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldOutcomesDescription))
+}
+
+// OutcomesDescriptionEqualFold applies the EqualFold predicate on the "outcomes_description" field.
+func OutcomesDescriptionEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldOutcomesDescription, v))
+}
+
+// OutcomesDescriptionContainsFold applies the ContainsFold predicate on the "outcomes_description" field.
+func OutcomesDescriptionContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldOutcomesDescription, v))
+}
+
+// FooterEQ applies the EQ predicate on the "footer" field.
+func FooterEQ(v bool) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldFooter, v))
+}
+
+// FooterNEQ applies the NEQ predicate on the "footer" field.
+func FooterNEQ(v bool) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldFooter, v))
+}
+
+// FooterIsNil applies the IsNil predicate on the "footer" field.
+func FooterIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldFooter))
+}
+
+// FooterNotNil applies the NotNil predicate on the "footer" field.
+func FooterNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldFooter))
+}
+
+// FooterNameEQ applies the EQ predicate on the "footer_name" field.
+func FooterNameEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldFooterName, v))
+}
+
+// FooterNameNEQ applies the NEQ predicate on the "footer_name" field.
+func FooterNameNEQ(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldFooterName, v))
+}
+
+// FooterNameIn applies the In predicate on the "footer_name" field.
+func FooterNameIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldFooterName, vs...))
+}
+
+// FooterNameNotIn applies the NotIn predicate on the "footer_name" field.
+func FooterNameNotIn(vs ...string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldFooterName, vs...))
+}
+
+// FooterNameGT applies the GT predicate on the "footer_name" field.
+func FooterNameGT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldFooterName, v))
+}
+
+// FooterNameGTE applies the GTE predicate on the "footer_name" field.
+func FooterNameGTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldFooterName, v))
+}
+
+// FooterNameLT applies the LT predicate on the "footer_name" field.
+func FooterNameLT(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldFooterName, v))
+}
+
+// FooterNameLTE applies the LTE predicate on the "footer_name" field.
+func FooterNameLTE(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldFooterName, v))
+}
+
+// FooterNameContains applies the Contains predicate on the "footer_name" field.
+func FooterNameContains(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContains(FieldFooterName, v))
+}
+
+// FooterNameHasPrefix applies the HasPrefix predicate on the "footer_name" field.
+func FooterNameHasPrefix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasPrefix(FieldFooterName, v))
+}
+
+// FooterNameHasSuffix applies the HasSuffix predicate on the "footer_name" field.
+func FooterNameHasSuffix(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldHasSuffix(FieldFooterName, v))
+}
+
+// FooterNameIsNil applies the IsNil predicate on the "footer_name" field.
+func FooterNameIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldFooterName))
+}
+
+// FooterNameNotNil applies the NotNil predicate on the "footer_name" field.
+func FooterNameNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldFooterName))
+}
+
+// FooterNameEqualFold applies the EqualFold predicate on the "footer_name" field.
+func FooterNameEqualFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEqualFold(FieldFooterName, v))
+}
+
+// FooterNameContainsFold applies the ContainsFold predicate on the "footer_name" field.
+func FooterNameContainsFold(v string) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldContainsFold(FieldFooterName, v))
+}
+
+// LandingPageToRedirectIDEQ applies the EQ predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDEQ(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldLandingPageToRedirectID, v))
+}
+
+// LandingPageToRedirectIDNEQ applies the NEQ predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDNEQ(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldLandingPageToRedirectID, v))
+}
+
+// LandingPageToRedirectIDIn applies the In predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDIn(vs ...int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldLandingPageToRedirectID, vs...))
+}
+
+// LandingPageToRedirectIDNotIn applies the NotIn predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDNotIn(vs ...int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldLandingPageToRedirectID, vs...))
+}
+
+// LandingPageToRedirectIDGT applies the GT predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDGT(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldLandingPageToRedirectID, v))
+}
+
+// LandingPageToRedirectIDGTE applies the GTE predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDGTE(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldLandingPageToRedirectID, v))
+}
+
+// LandingPageToRedirectIDLT applies the LT predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDLT(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldLandingPageToRedirectID, v))
+}
+
+// LandingPageToRedirectIDLTE applies the LTE predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDLTE(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldLandingPageToRedirectID, v))
+}
+
+// LandingPageToRedirectIDIsNil applies the IsNil predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldLandingPageToRedirectID))
+}
+
+// LandingPageToRedirectIDNotNil applies the NotNil predicate on the "landing_page_to_redirect_id" field.
+func LandingPageToRedirectIDNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldLandingPageToRedirectID))
+}
+
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // HasCourse applies the HasEdge predicate on the "course" edge.

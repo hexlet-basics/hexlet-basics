@@ -298,14 +298,18 @@ model CourseLandingPageInput {
 interface AdminCourseLandingPages {
   @get @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage>;
 
-  @get @route("/{id}") @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage | NotFoundError;
+  /** Get a single landing page. A missing id surfaces as 404 via the central
+      ent-error handler, not a typed union member. */
+  @get @route("/{id}") @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage;
 
   @post @operationId("adminCreateCourseLandingPage") create(@body body: CourseLandingPageInput): {
     @statusCode statusCode: 201;
     @body landingPage: CourseLandingPage;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | ValidationError;
+  /** Update a landing page. A missing id surfaces as 404 via the central
+      ent-error handler. */
+  @put @route("/{id}") @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage;
 
   @delete @route("/{id}") @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent;
 }

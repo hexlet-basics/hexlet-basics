@@ -110,6 +110,21 @@ var (
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
 		{Name: "listed", Type: field.TypeBool, Nullable: true},
+		{Name: "main", Type: field.TypeBool, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "order", Type: field.TypeString, Nullable: true},
+		{Name: "meta_title", Type: field.TypeString, Nullable: true},
+		{Name: "meta_description", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "used_in_header", Type: field.TypeString, Nullable: true},
+		{Name: "used_in_description", Type: field.TypeString, Nullable: true},
+		{Name: "outcomes_header", Type: field.TypeString, Nullable: true},
+		{Name: "outcomes_description", Type: field.TypeString, Nullable: true},
+		{Name: "footer", Type: field.TypeBool, Nullable: true},
+		{Name: "footer_name", Type: field.TypeString, Nullable: true},
+		{Name: "landing_page_to_redirect_id", Type: field.TypeInt, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "language_id", Type: field.TypeInt},
 	}
 	// LanguageLandingPagesTable holds the schema information for the "language_landing_pages" table.
@@ -120,7 +135,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "language_landing_pages_languages_landing_pages",
-				Columns:    []*schema.Column{LanguageLandingPagesColumns[6]},
+				Columns:    []*schema.Column{LanguageLandingPagesColumns[21]},
 				RefColumns: []*schema.Column{LanguagesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
