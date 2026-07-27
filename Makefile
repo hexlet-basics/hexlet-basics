@@ -13,8 +13,10 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## setup: install all deps (go, frontend + api-spec share the root package.json)
+## setup: install all deps (mise-pinned tools + go modules + frontend/api-spec via root package.json)
 setup:
+	mise install
+	cp -n .env.example .env || true
 	go mod download
 	pnpm install
 

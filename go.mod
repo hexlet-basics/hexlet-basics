@@ -10,6 +10,7 @@ require (
 	github.com/go-faster/jx v1.2.0
 	github.com/gosimple/slug v1.15.0
 	github.com/jackc/pgx/v5 v5.10.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lmittmann/tint v1.2.0
 	github.com/ogen-go/ogen v1.23.0
 	github.com/oklog/ulid/v2 v2.1.2
