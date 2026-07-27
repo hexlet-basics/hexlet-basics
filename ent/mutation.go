@@ -7,10 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/review"
@@ -31,14 +33,16 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeBanner         = "Banner"
-	TypeCourse         = "Course"
-	TypeCourseCategory = "CourseCategory"
-	TypeCourseVersion  = "CourseVersion"
-	TypeLandingPage    = "LandingPage"
-	TypeLead           = "Lead"
-	TypeReview         = "Review"
-	TypeUser           = "User"
+	TypeBanner             = "Banner"
+	TypeCategoryQnaItem    = "CategoryQnaItem"
+	TypeCourse             = "Course"
+	TypeCourseCategory     = "CourseCategory"
+	TypeCourseVersion      = "CourseVersion"
+	TypeLandingPage        = "LandingPage"
+	TypeLandingPageQnaItem = "LandingPageQnaItem"
+	TypeLead               = "Lead"
+	TypeReview             = "Review"
+	TypeUser               = "User"
 )
 
 // BannerMutation represents an operation that mutates the Banner nodes in the graph.
@@ -857,6 +861,625 @@ func (m *BannerMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *BannerMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Banner edge %s", name)
+}
+
+// CategoryQnaItemMutation represents an operation that mutates the CategoryQnaItem nodes in the graph.
+type CategoryQnaItemMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int
+	language_category_id    *int
+	addlanguage_category_id *int
+	question                *string
+	answer                  *string
+	created_at              *time.Time
+	updated_at              *time.Time
+	clearedFields           map[string]struct{}
+	done                    bool
+	oldValue                func(context.Context) (*CategoryQnaItem, error)
+	predicates              []predicate.CategoryQnaItem
+}
+
+var _ ent.Mutation = (*CategoryQnaItemMutation)(nil)
+
+// categoryqnaitemOption allows management of the mutation configuration using functional options.
+type categoryqnaitemOption func(*CategoryQnaItemMutation)
+
+// newCategoryQnaItemMutation creates new mutation for the CategoryQnaItem entity.
+func newCategoryQnaItemMutation(c config, op Op, opts ...categoryqnaitemOption) *CategoryQnaItemMutation {
+	m := &CategoryQnaItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCategoryQnaItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCategoryQnaItemID sets the ID field of the mutation.
+func withCategoryQnaItemID(id int) categoryqnaitemOption {
+	return func(m *CategoryQnaItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *CategoryQnaItem
+		)
+		m.oldValue = func(ctx context.Context) (*CategoryQnaItem, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().CategoryQnaItem.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCategoryQnaItem sets the old CategoryQnaItem of the mutation.
+func withCategoryQnaItem(node *CategoryQnaItem) categoryqnaitemOption {
+	return func(m *CategoryQnaItemMutation) {
+		m.oldValue = func(context.Context) (*CategoryQnaItem, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CategoryQnaItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CategoryQnaItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CategoryQnaItemMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CategoryQnaItemMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().CategoryQnaItem.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (m *CategoryQnaItemMutation) SetLanguageCategoryID(i int) {
+	m.language_category_id = &i
+	m.addlanguage_category_id = nil
+}
+
+// LanguageCategoryID returns the value of the "language_category_id" field in the mutation.
+func (m *CategoryQnaItemMutation) LanguageCategoryID() (r int, exists bool) {
+	v := m.language_category_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageCategoryID returns the old "language_category_id" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldLanguageCategoryID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageCategoryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageCategoryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageCategoryID: %w", err)
+	}
+	return oldValue.LanguageCategoryID, nil
+}
+
+// AddLanguageCategoryID adds i to the "language_category_id" field.
+func (m *CategoryQnaItemMutation) AddLanguageCategoryID(i int) {
+	if m.addlanguage_category_id != nil {
+		*m.addlanguage_category_id += i
+	} else {
+		m.addlanguage_category_id = &i
+	}
+}
+
+// AddedLanguageCategoryID returns the value that was added to the "language_category_id" field in this mutation.
+func (m *CategoryQnaItemMutation) AddedLanguageCategoryID() (r int, exists bool) {
+	v := m.addlanguage_category_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageCategoryID resets all changes to the "language_category_id" field.
+func (m *CategoryQnaItemMutation) ResetLanguageCategoryID() {
+	m.language_category_id = nil
+	m.addlanguage_category_id = nil
+}
+
+// SetQuestion sets the "question" field.
+func (m *CategoryQnaItemMutation) SetQuestion(s string) {
+	m.question = &s
+}
+
+// Question returns the value of the "question" field in the mutation.
+func (m *CategoryQnaItemMutation) Question() (r string, exists bool) {
+	v := m.question
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldQuestion returns the old "question" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldQuestion(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldQuestion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldQuestion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldQuestion: %w", err)
+	}
+	return oldValue.Question, nil
+}
+
+// ClearQuestion clears the value of the "question" field.
+func (m *CategoryQnaItemMutation) ClearQuestion() {
+	m.question = nil
+	m.clearedFields[categoryqnaitem.FieldQuestion] = struct{}{}
+}
+
+// QuestionCleared returns if the "question" field was cleared in this mutation.
+func (m *CategoryQnaItemMutation) QuestionCleared() bool {
+	_, ok := m.clearedFields[categoryqnaitem.FieldQuestion]
+	return ok
+}
+
+// ResetQuestion resets all changes to the "question" field.
+func (m *CategoryQnaItemMutation) ResetQuestion() {
+	m.question = nil
+	delete(m.clearedFields, categoryqnaitem.FieldQuestion)
+}
+
+// SetAnswer sets the "answer" field.
+func (m *CategoryQnaItemMutation) SetAnswer(s string) {
+	m.answer = &s
+}
+
+// Answer returns the value of the "answer" field in the mutation.
+func (m *CategoryQnaItemMutation) Answer() (r string, exists bool) {
+	v := m.answer
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAnswer returns the old "answer" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldAnswer(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAnswer is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAnswer requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAnswer: %w", err)
+	}
+	return oldValue.Answer, nil
+}
+
+// ClearAnswer clears the value of the "answer" field.
+func (m *CategoryQnaItemMutation) ClearAnswer() {
+	m.answer = nil
+	m.clearedFields[categoryqnaitem.FieldAnswer] = struct{}{}
+}
+
+// AnswerCleared returns if the "answer" field was cleared in this mutation.
+func (m *CategoryQnaItemMutation) AnswerCleared() bool {
+	_, ok := m.clearedFields[categoryqnaitem.FieldAnswer]
+	return ok
+}
+
+// ResetAnswer resets all changes to the "answer" field.
+func (m *CategoryQnaItemMutation) ResetAnswer() {
+	m.answer = nil
+	delete(m.clearedFields, categoryqnaitem.FieldAnswer)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CategoryQnaItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CategoryQnaItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CategoryQnaItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CategoryQnaItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CategoryQnaItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CategoryQnaItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the CategoryQnaItemMutation builder.
+func (m *CategoryQnaItemMutation) Where(ps ...predicate.CategoryQnaItem) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CategoryQnaItemMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CategoryQnaItemMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.CategoryQnaItem, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CategoryQnaItemMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CategoryQnaItemMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (CategoryQnaItem).
+func (m *CategoryQnaItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CategoryQnaItemMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.language_category_id != nil {
+		fields = append(fields, categoryqnaitem.FieldLanguageCategoryID)
+	}
+	if m.question != nil {
+		fields = append(fields, categoryqnaitem.FieldQuestion)
+	}
+	if m.answer != nil {
+		fields = append(fields, categoryqnaitem.FieldAnswer)
+	}
+	if m.created_at != nil {
+		fields = append(fields, categoryqnaitem.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, categoryqnaitem.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CategoryQnaItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case categoryqnaitem.FieldLanguageCategoryID:
+		return m.LanguageCategoryID()
+	case categoryqnaitem.FieldQuestion:
+		return m.Question()
+	case categoryqnaitem.FieldAnswer:
+		return m.Answer()
+	case categoryqnaitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case categoryqnaitem.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CategoryQnaItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case categoryqnaitem.FieldLanguageCategoryID:
+		return m.OldLanguageCategoryID(ctx)
+	case categoryqnaitem.FieldQuestion:
+		return m.OldQuestion(ctx)
+	case categoryqnaitem.FieldAnswer:
+		return m.OldAnswer(ctx)
+	case categoryqnaitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case categoryqnaitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown CategoryQnaItem field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CategoryQnaItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case categoryqnaitem.FieldLanguageCategoryID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageCategoryID(v)
+		return nil
+	case categoryqnaitem.FieldQuestion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetQuestion(v)
+		return nil
+	case categoryqnaitem.FieldAnswer:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAnswer(v)
+		return nil
+	case categoryqnaitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case categoryqnaitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CategoryQnaItem field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CategoryQnaItemMutation) AddedFields() []string {
+	var fields []string
+	if m.addlanguage_category_id != nil {
+		fields = append(fields, categoryqnaitem.FieldLanguageCategoryID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CategoryQnaItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case categoryqnaitem.FieldLanguageCategoryID:
+		return m.AddedLanguageCategoryID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CategoryQnaItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case categoryqnaitem.FieldLanguageCategoryID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageCategoryID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CategoryQnaItem numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CategoryQnaItemMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(categoryqnaitem.FieldQuestion) {
+		fields = append(fields, categoryqnaitem.FieldQuestion)
+	}
+	if m.FieldCleared(categoryqnaitem.FieldAnswer) {
+		fields = append(fields, categoryqnaitem.FieldAnswer)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CategoryQnaItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CategoryQnaItemMutation) ClearField(name string) error {
+	switch name {
+	case categoryqnaitem.FieldQuestion:
+		m.ClearQuestion()
+		return nil
+	case categoryqnaitem.FieldAnswer:
+		m.ClearAnswer()
+		return nil
+	}
+	return fmt.Errorf("unknown CategoryQnaItem nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CategoryQnaItemMutation) ResetField(name string) error {
+	switch name {
+	case categoryqnaitem.FieldLanguageCategoryID:
+		m.ResetLanguageCategoryID()
+		return nil
+	case categoryqnaitem.FieldQuestion:
+		m.ResetQuestion()
+		return nil
+	case categoryqnaitem.FieldAnswer:
+		m.ResetAnswer()
+		return nil
+	case categoryqnaitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case categoryqnaitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown CategoryQnaItem field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CategoryQnaItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CategoryQnaItemMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CategoryQnaItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CategoryQnaItemMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CategoryQnaItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CategoryQnaItemMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CategoryQnaItemMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown CategoryQnaItem unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CategoryQnaItemMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown CategoryQnaItem edge %s", name)
 }
 
 // CourseMutation represents an operation that mutates the Course nodes in the graph.
@@ -4141,6 +4764,625 @@ func (m *LandingPageMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPage edge %s", name)
+}
+
+// LandingPageQnaItemMutation represents an operation that mutates the LandingPageQnaItem nodes in the graph.
+type LandingPageQnaItemMutation struct {
+	config
+	op                          Op
+	typ                         string
+	id                          *int
+	language_landing_page_id    *int
+	addlanguage_landing_page_id *int
+	question                    *string
+	answer                      *string
+	created_at                  *time.Time
+	updated_at                  *time.Time
+	clearedFields               map[string]struct{}
+	done                        bool
+	oldValue                    func(context.Context) (*LandingPageQnaItem, error)
+	predicates                  []predicate.LandingPageQnaItem
+}
+
+var _ ent.Mutation = (*LandingPageQnaItemMutation)(nil)
+
+// landingpageqnaitemOption allows management of the mutation configuration using functional options.
+type landingpageqnaitemOption func(*LandingPageQnaItemMutation)
+
+// newLandingPageQnaItemMutation creates new mutation for the LandingPageQnaItem entity.
+func newLandingPageQnaItemMutation(c config, op Op, opts ...landingpageqnaitemOption) *LandingPageQnaItemMutation {
+	m := &LandingPageQnaItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLandingPageQnaItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLandingPageQnaItemID sets the ID field of the mutation.
+func withLandingPageQnaItemID(id int) landingpageqnaitemOption {
+	return func(m *LandingPageQnaItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LandingPageQnaItem
+		)
+		m.oldValue = func(ctx context.Context) (*LandingPageQnaItem, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LandingPageQnaItem.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLandingPageQnaItem sets the old LandingPageQnaItem of the mutation.
+func withLandingPageQnaItem(node *LandingPageQnaItem) landingpageqnaitemOption {
+	return func(m *LandingPageQnaItemMutation) {
+		m.oldValue = func(context.Context) (*LandingPageQnaItem, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LandingPageQnaItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LandingPageQnaItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LandingPageQnaItemMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LandingPageQnaItemMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LandingPageQnaItem.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetLanguageLandingPageID sets the "language_landing_page_id" field.
+func (m *LandingPageQnaItemMutation) SetLanguageLandingPageID(i int) {
+	m.language_landing_page_id = &i
+	m.addlanguage_landing_page_id = nil
+}
+
+// LanguageLandingPageID returns the value of the "language_landing_page_id" field in the mutation.
+func (m *LandingPageQnaItemMutation) LanguageLandingPageID() (r int, exists bool) {
+	v := m.language_landing_page_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageLandingPageID returns the old "language_landing_page_id" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldLanguageLandingPageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageLandingPageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageLandingPageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageLandingPageID: %w", err)
+	}
+	return oldValue.LanguageLandingPageID, nil
+}
+
+// AddLanguageLandingPageID adds i to the "language_landing_page_id" field.
+func (m *LandingPageQnaItemMutation) AddLanguageLandingPageID(i int) {
+	if m.addlanguage_landing_page_id != nil {
+		*m.addlanguage_landing_page_id += i
+	} else {
+		m.addlanguage_landing_page_id = &i
+	}
+}
+
+// AddedLanguageLandingPageID returns the value that was added to the "language_landing_page_id" field in this mutation.
+func (m *LandingPageQnaItemMutation) AddedLanguageLandingPageID() (r int, exists bool) {
+	v := m.addlanguage_landing_page_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageLandingPageID resets all changes to the "language_landing_page_id" field.
+func (m *LandingPageQnaItemMutation) ResetLanguageLandingPageID() {
+	m.language_landing_page_id = nil
+	m.addlanguage_landing_page_id = nil
+}
+
+// SetQuestion sets the "question" field.
+func (m *LandingPageQnaItemMutation) SetQuestion(s string) {
+	m.question = &s
+}
+
+// Question returns the value of the "question" field in the mutation.
+func (m *LandingPageQnaItemMutation) Question() (r string, exists bool) {
+	v := m.question
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldQuestion returns the old "question" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldQuestion(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldQuestion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldQuestion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldQuestion: %w", err)
+	}
+	return oldValue.Question, nil
+}
+
+// ClearQuestion clears the value of the "question" field.
+func (m *LandingPageQnaItemMutation) ClearQuestion() {
+	m.question = nil
+	m.clearedFields[landingpageqnaitem.FieldQuestion] = struct{}{}
+}
+
+// QuestionCleared returns if the "question" field was cleared in this mutation.
+func (m *LandingPageQnaItemMutation) QuestionCleared() bool {
+	_, ok := m.clearedFields[landingpageqnaitem.FieldQuestion]
+	return ok
+}
+
+// ResetQuestion resets all changes to the "question" field.
+func (m *LandingPageQnaItemMutation) ResetQuestion() {
+	m.question = nil
+	delete(m.clearedFields, landingpageqnaitem.FieldQuestion)
+}
+
+// SetAnswer sets the "answer" field.
+func (m *LandingPageQnaItemMutation) SetAnswer(s string) {
+	m.answer = &s
+}
+
+// Answer returns the value of the "answer" field in the mutation.
+func (m *LandingPageQnaItemMutation) Answer() (r string, exists bool) {
+	v := m.answer
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAnswer returns the old "answer" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldAnswer(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAnswer is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAnswer requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAnswer: %w", err)
+	}
+	return oldValue.Answer, nil
+}
+
+// ClearAnswer clears the value of the "answer" field.
+func (m *LandingPageQnaItemMutation) ClearAnswer() {
+	m.answer = nil
+	m.clearedFields[landingpageqnaitem.FieldAnswer] = struct{}{}
+}
+
+// AnswerCleared returns if the "answer" field was cleared in this mutation.
+func (m *LandingPageQnaItemMutation) AnswerCleared() bool {
+	_, ok := m.clearedFields[landingpageqnaitem.FieldAnswer]
+	return ok
+}
+
+// ResetAnswer resets all changes to the "answer" field.
+func (m *LandingPageQnaItemMutation) ResetAnswer() {
+	m.answer = nil
+	delete(m.clearedFields, landingpageqnaitem.FieldAnswer)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LandingPageQnaItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LandingPageQnaItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LandingPageQnaItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LandingPageQnaItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LandingPageQnaItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LandingPageQnaItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the LandingPageQnaItemMutation builder.
+func (m *LandingPageQnaItemMutation) Where(ps ...predicate.LandingPageQnaItem) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LandingPageQnaItemMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LandingPageQnaItemMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LandingPageQnaItem, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LandingPageQnaItemMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LandingPageQnaItemMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LandingPageQnaItem).
+func (m *LandingPageQnaItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LandingPageQnaItemMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.language_landing_page_id != nil {
+		fields = append(fields, landingpageqnaitem.FieldLanguageLandingPageID)
+	}
+	if m.question != nil {
+		fields = append(fields, landingpageqnaitem.FieldQuestion)
+	}
+	if m.answer != nil {
+		fields = append(fields, landingpageqnaitem.FieldAnswer)
+	}
+	if m.created_at != nil {
+		fields = append(fields, landingpageqnaitem.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, landingpageqnaitem.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LandingPageQnaItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case landingpageqnaitem.FieldLanguageLandingPageID:
+		return m.LanguageLandingPageID()
+	case landingpageqnaitem.FieldQuestion:
+		return m.Question()
+	case landingpageqnaitem.FieldAnswer:
+		return m.Answer()
+	case landingpageqnaitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case landingpageqnaitem.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LandingPageQnaItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case landingpageqnaitem.FieldLanguageLandingPageID:
+		return m.OldLanguageLandingPageID(ctx)
+	case landingpageqnaitem.FieldQuestion:
+		return m.OldQuestion(ctx)
+	case landingpageqnaitem.FieldAnswer:
+		return m.OldAnswer(ctx)
+	case landingpageqnaitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case landingpageqnaitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown LandingPageQnaItem field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LandingPageQnaItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case landingpageqnaitem.FieldLanguageLandingPageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageLandingPageID(v)
+		return nil
+	case landingpageqnaitem.FieldQuestion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetQuestion(v)
+		return nil
+	case landingpageqnaitem.FieldAnswer:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAnswer(v)
+		return nil
+	case landingpageqnaitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case landingpageqnaitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LandingPageQnaItem field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LandingPageQnaItemMutation) AddedFields() []string {
+	var fields []string
+	if m.addlanguage_landing_page_id != nil {
+		fields = append(fields, landingpageqnaitem.FieldLanguageLandingPageID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LandingPageQnaItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case landingpageqnaitem.FieldLanguageLandingPageID:
+		return m.AddedLanguageLandingPageID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LandingPageQnaItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case landingpageqnaitem.FieldLanguageLandingPageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageLandingPageID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LandingPageQnaItem numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LandingPageQnaItemMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(landingpageqnaitem.FieldQuestion) {
+		fields = append(fields, landingpageqnaitem.FieldQuestion)
+	}
+	if m.FieldCleared(landingpageqnaitem.FieldAnswer) {
+		fields = append(fields, landingpageqnaitem.FieldAnswer)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LandingPageQnaItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LandingPageQnaItemMutation) ClearField(name string) error {
+	switch name {
+	case landingpageqnaitem.FieldQuestion:
+		m.ClearQuestion()
+		return nil
+	case landingpageqnaitem.FieldAnswer:
+		m.ClearAnswer()
+		return nil
+	}
+	return fmt.Errorf("unknown LandingPageQnaItem nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LandingPageQnaItemMutation) ResetField(name string) error {
+	switch name {
+	case landingpageqnaitem.FieldLanguageLandingPageID:
+		m.ResetLanguageLandingPageID()
+		return nil
+	case landingpageqnaitem.FieldQuestion:
+		m.ResetQuestion()
+		return nil
+	case landingpageqnaitem.FieldAnswer:
+		m.ResetAnswer()
+		return nil
+	case landingpageqnaitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case landingpageqnaitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown LandingPageQnaItem field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LandingPageQnaItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LandingPageQnaItemMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LandingPageQnaItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LandingPageQnaItemMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LandingPageQnaItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LandingPageQnaItemMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LandingPageQnaItemMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LandingPageQnaItem unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LandingPageQnaItemMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LandingPageQnaItem edge %s", name)
 }
 
 // LeadMutation represents an operation that mutates the Lead nodes in the graph.

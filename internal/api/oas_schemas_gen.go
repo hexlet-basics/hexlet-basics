@@ -5031,11 +5031,6 @@ func (s *QnaItem) SetAnswer(val string) {
 	s.Answer = val
 }
 
-func (*QnaItem) adminCreateCategoryQnaItemRes()    {}
-func (*QnaItem) adminCreateLandingPageQnaItemRes() {}
-func (*QnaItem) adminUpdateCategoryQnaItemRes()    {}
-func (*QnaItem) adminUpdateLandingPageQnaItemRes() {}
-
 // Ref: #/components/schemas/QnaItemInput
 type QnaItemInput struct {
 	Question string `json:"question"`
@@ -6665,18 +6660,14 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 }
 
 func (*ValidationError) adminCreateBlogPostRes()            {}
-func (*ValidationError) adminCreateCategoryQnaItemRes()     {}
 func (*ValidationError) adminCreateCourseLandingPageRes()   {}
 func (*ValidationError) adminCreateCourseRes()              {}
-func (*ValidationError) adminCreateLandingPageQnaItemRes()  {}
 func (*ValidationError) adminCreateRoleRes()                {}
 func (*ValidationError) adminCreateStaffMemberRes()         {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
-func (*ValidationError) adminUpdateCategoryQnaItemRes()     {}
 func (*ValidationError) adminUpdateCourseLandingPageRes()   {}
 func (*ValidationError) adminUpdateCourseRes()              {}
-func (*ValidationError) adminUpdateLandingPageQnaItemRes()  {}
 func (*ValidationError) adminUpdateManagementUserRes()      {}
 func (*ValidationError) adminUpdateRolePermissionsRes()     {}
 func (*ValidationError) adminUpdateRoleRes()                {}

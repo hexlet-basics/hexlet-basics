@@ -65,6 +65,25 @@ func (c *ConverterImpl) ToCatalogItems(source []*ent.LandingPage) []api.CourseCa
 	}
 	return apiCourseCatalogItemList
 }
+func (c *ConverterImpl) ToCategoryQnaItem(source *ent.CategoryQnaItem) api.QnaItem {
+	var apiQnaItem api.QnaItem
+	if source != nil {
+		apiQnaItem.ID = Int32FromInt((*source).ID)
+		apiQnaItem.Question = StringFromPtr((*source).Question)
+		apiQnaItem.Answer = StringFromPtr((*source).Answer)
+	}
+	return apiQnaItem
+}
+func (c *ConverterImpl) ToCategoryQnaItems(source []*ent.CategoryQnaItem) []api.QnaItem {
+	var apiQnaItemList []api.QnaItem
+	if source != nil {
+		apiQnaItemList = make([]api.QnaItem, len(source))
+		for i := 0; i < len(source); i++ {
+			apiQnaItemList[i] = c.ToCategoryQnaItem(source[i])
+		}
+	}
+	return apiQnaItemList
+}
 func (c *ConverterImpl) ToCourse(source *ent.Course) api.Course {
 	var apiCourse api.Course
 	if source != nil {
@@ -110,6 +129,25 @@ func (c *ConverterImpl) ToCourseCategory(source *ent.CourseCategory) api.CourseC
 		apiCourseCategory.CreatedAt = TimeIdentity((*source).CreatedAt)
 	}
 	return apiCourseCategory
+}
+func (c *ConverterImpl) ToLandingPageQnaItem(source *ent.LandingPageQnaItem) api.QnaItem {
+	var apiQnaItem api.QnaItem
+	if source != nil {
+		apiQnaItem.ID = Int32FromInt((*source).ID)
+		apiQnaItem.Question = StringFromPtr((*source).Question)
+		apiQnaItem.Answer = StringFromPtr((*source).Answer)
+	}
+	return apiQnaItem
+}
+func (c *ConverterImpl) ToLandingPageQnaItems(source []*ent.LandingPageQnaItem) []api.QnaItem {
+	var apiQnaItemList []api.QnaItem
+	if source != nil {
+		apiQnaItemList = make([]api.QnaItem, len(source))
+		for i := 0; i < len(source); i++ {
+			apiQnaItemList[i] = c.ToLandingPageQnaItem(source[i])
+		}
+	}
+	return apiQnaItemList
 }
 func (c *ConverterImpl) ToLead(source *ent.Lead) api.Lead {
 	var apiLead api.Lead

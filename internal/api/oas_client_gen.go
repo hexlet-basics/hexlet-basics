@@ -42,7 +42,7 @@ type Invoker interface {
 	// AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 	//
 	// POST /admin/language_categories/{categoryId}/qna_items
-	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
+	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminCreateCourse invokes adminCreateCourse operation.
 	//
 	// POST /admin/languages
@@ -67,7 +67,7 @@ type Invoker interface {
 	// AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 	//
 	// POST /admin/language_landing_pages/{landingPageId}/qna_items
-	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
+	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminCreateReview invokes adminCreateReview operation.
 	//
 	// POST /admin/reviews
@@ -297,8 +297,11 @@ type Invoker interface {
 	AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error)
 	// AdminUpdateCategoryQnaItem invokes adminUpdateCategoryQnaItem operation.
 	//
+	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+	// ent-error handler.
+	//
 	// PUT /admin/language_categories/{categoryId}/qna_items/{id}
-	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
+	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminUpdateCourse invokes adminUpdateCourse operation.
 	//
 	// PUT /admin/languages/{id}
@@ -316,8 +319,11 @@ type Invoker interface {
 	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
 	// AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 	//
+	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+	// ent-error handler.
+	//
 	// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
+	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 	//
 	// PUT /admin/management/users/{id}
@@ -794,12 +800,12 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 // AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 //
 // POST /admin/language_categories/{categoryId}/qna_items
-func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error) {
+func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminCreateCategoryQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (res AdminCreateCategoryQnaItemRes, err error) {
+func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1239,12 +1245,12 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 // AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 //
 // POST /admin/language_landing_pages/{landingPageId}/qna_items
-func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error) {
+func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminCreateLandingPageQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (res AdminCreateLandingPageQnaItemRes, err error) {
+func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -6783,13 +6789,16 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 
 // AdminUpdateCategoryQnaItem invokes adminUpdateCategoryQnaItem operation.
 //
+// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+// ent-error handler.
+//
 // PUT /admin/language_categories/{categoryId}/qna_items/{id}
-func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error) {
+func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminUpdateCategoryQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (res AdminUpdateCategoryQnaItemRes, err error) {
+func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7201,13 +7210,16 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 
 // AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 //
+// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+// ent-error handler.
+//
 // PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error) {
+func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error) {
 	res, err := c.sendAdminUpdateLandingPageQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (res AdminUpdateLandingPageQnaItemRes, err error) {
+func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (res *QnaItem, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

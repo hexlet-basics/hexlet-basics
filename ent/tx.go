@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
+	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
+	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
@@ -22,6 +24,8 @@ type Tx struct {
 	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
+	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
+	LandingPageQnaItem *LandingPageQnaItemClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
@@ -160,10 +164,12 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Banner = NewBannerClient(tx.config)
+	tx.CategoryQnaItem = NewCategoryQnaItemClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
+	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
 	tx.User = NewUserClient(tx.config)

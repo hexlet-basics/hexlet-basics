@@ -33,7 +33,7 @@ func (UnimplementedHandler) AdminCreateBlogPost(ctx context.Context, req *BlogPo
 // AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
 //
 // POST /admin/language_categories/{categoryId}/qna_items
-func (UnimplementedHandler) AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (r AdminCreateCategoryQnaItemRes, _ error) {
+func (UnimplementedHandler) AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (r *QnaItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -73,7 +73,7 @@ func (UnimplementedHandler) AdminCreateCourseVersion(ctx context.Context, params
 // AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
 //
 // POST /admin/language_landing_pages/{landingPageId}/qna_items
-func (UnimplementedHandler) AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (r AdminCreateLandingPageQnaItemRes, _ error) {
+func (UnimplementedHandler) AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (r *QnaItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -450,8 +450,11 @@ func (UnimplementedHandler) AdminUpdateBlogPost(ctx context.Context, req *BlogPo
 
 // AdminUpdateCategoryQnaItem implements adminUpdateCategoryQnaItem operation.
 //
+// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+// ent-error handler.
+//
 // PUT /admin/language_categories/{categoryId}/qna_items/{id}
-func (UnimplementedHandler) AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (r AdminUpdateCategoryQnaItemRes, _ error) {
+func (UnimplementedHandler) AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (r *QnaItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -481,8 +484,11 @@ func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, re
 
 // AdminUpdateLandingPageQnaItem implements adminUpdateLandingPageQnaItem operation.
 //
+// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+// ent-error handler.
+//
 // PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-func (UnimplementedHandler) AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (r AdminUpdateLandingPageQnaItemRes, _ error) {
+func (UnimplementedHandler) AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (r *QnaItem, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

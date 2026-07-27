@@ -102,6 +102,16 @@ type Converter interface {
 	ToReview(source *ent.Review) api.Review
 
 	ToReviews(source []*ent.Review) []api.Review
+
+	// QnA items (category + landing page) share the flat {id, question, answer}
+	// projection; the nullable ent columns resolve to required strings.
+	ToCategoryQnaItem(source *ent.CategoryQnaItem) api.QnaItem
+
+	ToCategoryQnaItems(source []*ent.CategoryQnaItem) []api.QnaItem
+
+	ToLandingPageQnaItem(source *ent.LandingPageQnaItem) api.QnaItem
+
+	ToLandingPageQnaItems(source []*ent.LandingPageQnaItem) []api.QnaItem
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar

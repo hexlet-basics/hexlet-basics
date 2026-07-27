@@ -1,0 +1,22 @@
+# Fixtures for `language_category_qna_items`, HAND-CURATED. language_category_id
+# points at categories from language_categories.yml (272447109=layouting-ru).
+# testfixtures disables referential integrity during load. Two items under one
+# category plus one under another, to prove the nested list scopes by parent.
+- id: 7001
+  language_category_id: 272447109
+  question: Что такое вёрстка?
+  answer: Это создание HTML/CSS страниц.
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 7002
+  language_category_id: 272447109
+  question: Нужен ли опыт?
+  answer: Нет, курс для начинающих.
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
+- id: 7003
+  language_category_id: 929265035
+  question: Is experience required?
+  answer: No, it is for beginners.
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'

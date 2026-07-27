@@ -420,7 +420,7 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 		}
 	}()
 
-	var response AdminCreateCategoryQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -441,7 +441,7 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminCreateCategoryQnaItemParams
-			Response = AdminCreateCategoryQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1145,7 +1145,7 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 		}
 	}()
 
-	var response AdminCreateLandingPageQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1166,7 +1166,7 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminCreateLandingPageQnaItemParams
-			Response = AdminCreateLandingPageQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8237,6 +8237,9 @@ func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bo
 
 // handleAdminUpdateCategoryQnaItemRequest handles adminUpdateCategoryQnaItem operation.
 //
+// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+// ent-error handler.
+//
 // PUT /admin/language_categories/{categoryId}/qna_items/{id}
 func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -8337,7 +8340,7 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 		}
 	}()
 
-	var response AdminUpdateCategoryQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8362,7 +8365,7 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminUpdateCategoryQnaItemParams
-			Response = AdminUpdateCategoryQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8868,6 +8871,9 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 
 // handleAdminUpdateLandingPageQnaItemRequest handles adminUpdateLandingPageQnaItem operation.
 //
+// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+// ent-error handler.
+//
 // PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
 func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -8968,7 +8974,7 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 		}
 	}()
 
-	var response AdminUpdateLandingPageQnaItemRes
+	var response *QnaItem
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8993,7 +8999,7 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminUpdateLandingPageQnaItemParams
-			Response = AdminUpdateLandingPageQnaItemRes
+			Response = *QnaItem
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

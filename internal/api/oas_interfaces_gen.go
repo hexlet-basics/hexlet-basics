@@ -5,10 +5,6 @@ type AdminCreateBlogPostRes interface {
 	adminCreateBlogPostRes()
 }
 
-type AdminCreateCategoryQnaItemRes interface {
-	adminCreateCategoryQnaItemRes()
-}
-
 type AdminCreateCourseLandingPageRes interface {
 	adminCreateCourseLandingPageRes()
 }
@@ -19,10 +15,6 @@ type AdminCreateCourseRes interface {
 
 type AdminCreateCourseVersionRes interface {
 	adminCreateCourseVersionRes()
-}
-
-type AdminCreateLandingPageQnaItemRes interface {
-	adminCreateLandingPageQnaItemRes()
 }
 
 type AdminCreateRoleRes interface {
@@ -77,20 +69,12 @@ type AdminUpdateBlogPostRes interface {
 	adminUpdateBlogPostRes()
 }
 
-type AdminUpdateCategoryQnaItemRes interface {
-	adminUpdateCategoryQnaItemRes()
-}
-
 type AdminUpdateCourseLandingPageRes interface {
 	adminUpdateCourseLandingPageRes()
 }
 
 type AdminUpdateCourseRes interface {
 	adminUpdateCourseRes()
-}
-
-type AdminUpdateLandingPageQnaItemRes interface {
-	adminUpdateLandingPageQnaItemRes()
 }
 
 type AdminUpdateManagementUserRes interface {

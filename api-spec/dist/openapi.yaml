@@ -681,15 +681,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -701,6 +692,9 @@ paths:
   /admin/language_categories/{categoryId}/qna_items/{id}:
     put:
       operationId: adminUpdateCategoryQnaItem
+      description: |-
+        Update a QnA item. A missing id (or one under a different parent) surfaces
+              as 404 via the central ent-error handler.
       parameters:
         - name: categoryId
           in: path
@@ -721,15 +715,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -975,15 +960,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:
@@ -995,6 +971,9 @@ paths:
   /admin/language_landing_pages/{landingPageId}/qna_items/{id}:
     put:
       operationId: adminUpdateLandingPageQnaItem
+      description: |-
+        Update a QnA item. A missing id (or one under a different parent) surfaces
+              as 404 via the central ent-error handler.
       parameters:
         - name: landingPageId
           in: path
@@ -1015,15 +994,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:

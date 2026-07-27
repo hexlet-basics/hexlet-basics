@@ -22,7 +22,7 @@ type Handler interface {
 	// AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
 	//
 	// POST /admin/language_categories/{categoryId}/qna_items
-	AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
+	AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminCreateCourse implements adminCreateCourse operation.
 	//
 	// POST /admin/languages
@@ -47,7 +47,7 @@ type Handler interface {
 	// AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
 	//
 	// POST /admin/language_landing_pages/{landingPageId}/qna_items
-	AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
+	AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminCreateReview implements adminCreateReview operation.
 	//
 	// POST /admin/reviews
@@ -277,8 +277,11 @@ type Handler interface {
 	AdminUpdateBlogPost(ctx context.Context, req *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error)
 	// AdminUpdateCategoryQnaItem implements adminUpdateCategoryQnaItem operation.
 	//
+	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+	// ent-error handler.
+	//
 	// PUT /admin/language_categories/{categoryId}/qna_items/{id}
-	AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
+	AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error)
 	// AdminUpdateCourse implements adminUpdateCourse operation.
 	//
 	// PUT /admin/languages/{id}
@@ -296,8 +299,11 @@ type Handler interface {
 	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
 	// AdminUpdateLandingPageQnaItem implements adminUpdateLandingPageQnaItem operation.
 	//
+	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
+	// ent-error handler.
+	//
 	// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-	AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
+	AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error)
 	// AdminUpdateManagementUser implements adminUpdateManagementUser operation.
 	//
 	// PUT /admin/management/users/{id}

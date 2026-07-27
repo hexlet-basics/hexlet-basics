@@ -28,6 +28,21 @@ var (
 		Columns:    BannersColumns,
 		PrimaryKey: []*schema.Column{BannersColumns[0]},
 	}
+	// LanguageCategoryQnaItemsColumns holds the columns for the "language_category_qna_items" table.
+	LanguageCategoryQnaItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "language_category_id", Type: field.TypeInt},
+		{Name: "question", Type: field.TypeString, Nullable: true},
+		{Name: "answer", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// LanguageCategoryQnaItemsTable holds the schema information for the "language_category_qna_items" table.
+	LanguageCategoryQnaItemsTable = &schema.Table{
+		Name:       "language_category_qna_items",
+		Columns:    LanguageCategoryQnaItemsColumns,
+		PrimaryKey: []*schema.Column{LanguageCategoryQnaItemsColumns[0]},
+	}
 	// LanguagesColumns holds the columns for the "languages" table.
 	LanguagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -111,6 +126,21 @@ var (
 			},
 		},
 	}
+	// LanguageLandingPageQnaItemsColumns holds the columns for the "language_landing_page_qna_items" table.
+	LanguageLandingPageQnaItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "language_landing_page_id", Type: field.TypeInt},
+		{Name: "question", Type: field.TypeString, Nullable: true},
+		{Name: "answer", Type: field.TypeString, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+	}
+	// LanguageLandingPageQnaItemsTable holds the schema information for the "language_landing_page_qna_items" table.
+	LanguageLandingPageQnaItemsTable = &schema.Table{
+		Name:       "language_landing_page_qna_items",
+		Columns:    LanguageLandingPageQnaItemsColumns,
+		PrimaryKey: []*schema.Column{LanguageLandingPageQnaItemsColumns[0]},
+	}
 	// LeadsColumns holds the columns for the "leads" table.
 	LeadsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -183,10 +213,12 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		BannersTable,
+		LanguageCategoryQnaItemsTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
 		LanguageVersionsTable,
 		LanguageLandingPagesTable,
+		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
 		ReviewsTable,
 		UsersTable,
@@ -194,6 +226,9 @@ var (
 )
 
 func init() {
+	LanguageCategoryQnaItemsTable.Annotation = &entsql.Annotation{
+		Table: "language_category_qna_items",
+	}
 	LanguagesTable.ForeignKeys[0].RefTable = LanguageVersionsTable
 	LanguagesTable.Annotation = &entsql.Annotation{
 		Table: "languages",
@@ -207,6 +242,9 @@ func init() {
 	LanguageLandingPagesTable.ForeignKeys[0].RefTable = LanguagesTable
 	LanguageLandingPagesTable.Annotation = &entsql.Annotation{
 		Table: "language_landing_pages",
+	}
+	LanguageLandingPageQnaItemsTable.Annotation = &entsql.Annotation{
+		Table: "language_landing_page_qna_items",
 	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable

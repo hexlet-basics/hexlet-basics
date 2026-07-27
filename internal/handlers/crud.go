@@ -48,6 +48,20 @@ func listPage[E any, A any, P any, Q pageQuery[E, Q]](
 	return mkPage(conv(rows), int32(total), page.Page, page.PerPage), nil
 }
 
+// listAll runs a non-paginated list (a bare array response, e.g. the nested QnA
+// items) : fetch all rows from the caller's scoped+ordered query, then convert.
+func listAll[E any, A any](
+	ctx context.Context,
+	all func(context.Context) ([]E, error),
+	conv func([]E) []A,
+) ([]A, error) {
+	rows, err := all(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return conv(rows), nil
+}
+
 // getOne fetches a single row by id and converts it, returning a pointer to the
 // API value. The fetch error (including ent's not-found) is returned as-is for
 // the central ErrorHandler to map to 404. This is the shared body every

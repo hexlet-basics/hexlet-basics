@@ -325,9 +325,11 @@ interface AdminCourseLandingPageQnaItems {
   @post @operationId("adminCreateLandingPageQnaItem") create(@path landingPageId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | ValidationError;
+  /** Update a QnA item. A missing id (or one under a different parent) surfaces
+      as 404 via the central ent-error handler. */
+  @put @route("/{id}") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem;
 
   @delete @route("/{id}") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent;
 }
@@ -340,9 +342,11 @@ interface AdminCourseCategoryQnaItems {
   @post @operationId("adminCreateCategoryQnaItem") create(@path categoryId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | ValidationError;
+  /** Update a QnA item. A missing id (or one under a different parent) surfaces
+      as 404 via the central ent-error handler. */
+  @put @route("/{id}") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem;
 
   @delete @route("/{id}") @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent;
 }

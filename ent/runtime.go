@@ -4,9 +4,11 @@ package ent
 
 import (
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
 	"hexletbasics/ent/user"
@@ -37,6 +39,18 @@ func init() {
 	banner.DefaultUpdatedAt = bannerDescUpdatedAt.Default.(func() time.Time)
 	// banner.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	banner.UpdateDefaultUpdatedAt = bannerDescUpdatedAt.UpdateDefault.(func() time.Time)
+	categoryqnaitemFields := schema.CategoryQnaItem{}.Fields()
+	_ = categoryqnaitemFields
+	// categoryqnaitemDescCreatedAt is the schema descriptor for created_at field.
+	categoryqnaitemDescCreatedAt := categoryqnaitemFields[3].Descriptor()
+	// categoryqnaitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	categoryqnaitem.DefaultCreatedAt = categoryqnaitemDescCreatedAt.Default.(func() time.Time)
+	// categoryqnaitemDescUpdatedAt is the schema descriptor for updated_at field.
+	categoryqnaitemDescUpdatedAt := categoryqnaitemFields[4].Descriptor()
+	// categoryqnaitem.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	categoryqnaitem.DefaultUpdatedAt = categoryqnaitemDescUpdatedAt.Default.(func() time.Time)
+	// categoryqnaitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	categoryqnaitem.UpdateDefaultUpdatedAt = categoryqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
 	courseFields := schema.Course{}.Fields()
 	_ = courseFields
 	// courseDescCreatedAt is the schema descriptor for created_at field.
@@ -61,6 +75,18 @@ func init() {
 	courseversionDescCreatedAt := courseversionFields[2].Descriptor()
 	// courseversion.DefaultCreatedAt holds the default value on creation for the created_at field.
 	courseversion.DefaultCreatedAt = courseversionDescCreatedAt.Default.(func() time.Time)
+	landingpageqnaitemFields := schema.LandingPageQnaItem{}.Fields()
+	_ = landingpageqnaitemFields
+	// landingpageqnaitemDescCreatedAt is the schema descriptor for created_at field.
+	landingpageqnaitemDescCreatedAt := landingpageqnaitemFields[3].Descriptor()
+	// landingpageqnaitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	landingpageqnaitem.DefaultCreatedAt = landingpageqnaitemDescCreatedAt.Default.(func() time.Time)
+	// landingpageqnaitemDescUpdatedAt is the schema descriptor for updated_at field.
+	landingpageqnaitemDescUpdatedAt := landingpageqnaitemFields[4].Descriptor()
+	// landingpageqnaitem.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	landingpageqnaitem.DefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.Default.(func() time.Time)
+	// landingpageqnaitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	landingpageqnaitem.UpdateDefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
 	reviewFields := schema.Review{}.Fields()
 	_ = reviewFields
 	// reviewDescCreatedAt is the schema descriptor for created_at field.

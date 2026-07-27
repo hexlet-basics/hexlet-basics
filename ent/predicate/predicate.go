@@ -9,6 +9,9 @@ import (
 // Banner is the predicate function for banner builders.
 type Banner func(*sql.Selector)
 
+// CategoryQnaItem is the predicate function for categoryqnaitem builders.
+type CategoryQnaItem func(*sql.Selector)
+
 // Course is the predicate function for course builders.
 type Course func(*sql.Selector)
 
@@ -20,6 +23,9 @@ type CourseVersion func(*sql.Selector)
 
 // LandingPage is the predicate function for landingpage builders.
 type LandingPage func(*sql.Selector)
+
+// LandingPageQnaItem is the predicate function for landingpageqnaitem builders.
+type LandingPageQnaItem func(*sql.Selector)
 
 // Lead is the predicate function for lead builders.
 type Lead func(*sql.Selector)

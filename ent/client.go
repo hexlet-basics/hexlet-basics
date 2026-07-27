@@ -12,10 +12,12 @@ import (
 	"hexletbasics/ent/migrate"
 
 	"hexletbasics/ent/banner"
+	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/user"
@@ -33,6 +35,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
+	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
+	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
@@ -41,6 +45,8 @@ type Client struct {
 	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
+	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
+	LandingPageQnaItem *LandingPageQnaItemClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
@@ -59,10 +65,12 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Banner = NewBannerClient(c.config)
+	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
 	c.CourseVersion = NewCourseVersionClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
+	c.LandingPageQnaItem = NewLandingPageQnaItemClient(c.config)
 	c.Lead = NewLeadClient(c.config)
 	c.Review = NewReviewClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -156,16 +164,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:            ctx,
-		config:         cfg,
-		Banner:         NewBannerClient(cfg),
-		Course:         NewCourseClient(cfg),
-		CourseCategory: NewCourseCategoryClient(cfg),
-		CourseVersion:  NewCourseVersionClient(cfg),
-		LandingPage:    NewLandingPageClient(cfg),
-		Lead:           NewLeadClient(cfg),
-		Review:         NewReviewClient(cfg),
-		User:           NewUserClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		Banner:             NewBannerClient(cfg),
+		CategoryQnaItem:    NewCategoryQnaItemClient(cfg),
+		Course:             NewCourseClient(cfg),
+		CourseCategory:     NewCourseCategoryClient(cfg),
+		CourseVersion:      NewCourseVersionClient(cfg),
+		LandingPage:        NewLandingPageClient(cfg),
+		LandingPageQnaItem: NewLandingPageQnaItemClient(cfg),
+		Lead:               NewLeadClient(cfg),
+		Review:             NewReviewClient(cfg),
+		User:               NewUserClient(cfg),
 	}, nil
 }
 
@@ -183,16 +193,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:            ctx,
-		config:         cfg,
-		Banner:         NewBannerClient(cfg),
-		Course:         NewCourseClient(cfg),
-		CourseCategory: NewCourseCategoryClient(cfg),
-		CourseVersion:  NewCourseVersionClient(cfg),
-		LandingPage:    NewLandingPageClient(cfg),
-		Lead:           NewLeadClient(cfg),
-		Review:         NewReviewClient(cfg),
-		User:           NewUserClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		Banner:             NewBannerClient(cfg),
+		CategoryQnaItem:    NewCategoryQnaItemClient(cfg),
+		Course:             NewCourseClient(cfg),
+		CourseCategory:     NewCourseCategoryClient(cfg),
+		CourseVersion:      NewCourseVersionClient(cfg),
+		LandingPage:        NewLandingPageClient(cfg),
+		LandingPageQnaItem: NewLandingPageQnaItemClient(cfg),
+		Lead:               NewLeadClient(cfg),
+		Review:             NewReviewClient(cfg),
+		User:               NewUserClient(cfg),
 	}, nil
 }
 
@@ -222,8 +234,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Banner, c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage, c.Lead,
-		c.Review, c.User,
+		c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory, c.CourseVersion,
+		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -233,8 +245,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Banner, c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage, c.Lead,
-		c.Review, c.User,
+		c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory, c.CourseVersion,
+		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -245,6 +257,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *BannerMutation:
 		return c.Banner.mutate(ctx, m)
+	case *CategoryQnaItemMutation:
+		return c.CategoryQnaItem.mutate(ctx, m)
 	case *CourseMutation:
 		return c.Course.mutate(ctx, m)
 	case *CourseCategoryMutation:
@@ -253,6 +267,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.CourseVersion.mutate(ctx, m)
 	case *LandingPageMutation:
 		return c.LandingPage.mutate(ctx, m)
+	case *LandingPageQnaItemMutation:
+		return c.LandingPageQnaItem.mutate(ctx, m)
 	case *LeadMutation:
 		return c.Lead.mutate(ctx, m)
 	case *ReviewMutation:
@@ -394,6 +410,139 @@ func (c *BannerClient) mutate(ctx context.Context, m *BannerMutation) (Value, er
 		return (&BannerDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Banner mutation op: %q", m.Op())
+	}
+}
+
+// CategoryQnaItemClient is a client for the CategoryQnaItem schema.
+type CategoryQnaItemClient struct {
+	config
+}
+
+// NewCategoryQnaItemClient returns a client for the CategoryQnaItem from the given config.
+func NewCategoryQnaItemClient(c config) *CategoryQnaItemClient {
+	return &CategoryQnaItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `categoryqnaitem.Hooks(f(g(h())))`.
+func (c *CategoryQnaItemClient) Use(hooks ...Hook) {
+	c.hooks.CategoryQnaItem = append(c.hooks.CategoryQnaItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `categoryqnaitem.Intercept(f(g(h())))`.
+func (c *CategoryQnaItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CategoryQnaItem = append(c.inters.CategoryQnaItem, interceptors...)
+}
+
+// Create returns a builder for creating a CategoryQnaItem entity.
+func (c *CategoryQnaItemClient) Create() *CategoryQnaItemCreate {
+	mutation := newCategoryQnaItemMutation(c.config, OpCreate)
+	return &CategoryQnaItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CategoryQnaItem entities.
+func (c *CategoryQnaItemClient) CreateBulk(builders ...*CategoryQnaItemCreate) *CategoryQnaItemCreateBulk {
+	return &CategoryQnaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CategoryQnaItemClient) MapCreateBulk(slice any, setFunc func(*CategoryQnaItemCreate, int)) *CategoryQnaItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CategoryQnaItemCreateBulk{err: fmt.Errorf("calling to CategoryQnaItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CategoryQnaItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CategoryQnaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CategoryQnaItem.
+func (c *CategoryQnaItemClient) Update() *CategoryQnaItemUpdate {
+	mutation := newCategoryQnaItemMutation(c.config, OpUpdate)
+	return &CategoryQnaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CategoryQnaItemClient) UpdateOne(_m *CategoryQnaItem) *CategoryQnaItemUpdateOne {
+	mutation := newCategoryQnaItemMutation(c.config, OpUpdateOne, withCategoryQnaItem(_m))
+	return &CategoryQnaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CategoryQnaItemClient) UpdateOneID(id int) *CategoryQnaItemUpdateOne {
+	mutation := newCategoryQnaItemMutation(c.config, OpUpdateOne, withCategoryQnaItemID(id))
+	return &CategoryQnaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CategoryQnaItem.
+func (c *CategoryQnaItemClient) Delete() *CategoryQnaItemDelete {
+	mutation := newCategoryQnaItemMutation(c.config, OpDelete)
+	return &CategoryQnaItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CategoryQnaItemClient) DeleteOne(_m *CategoryQnaItem) *CategoryQnaItemDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CategoryQnaItemClient) DeleteOneID(id int) *CategoryQnaItemDeleteOne {
+	builder := c.Delete().Where(categoryqnaitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CategoryQnaItemDeleteOne{builder}
+}
+
+// Query returns a query builder for CategoryQnaItem.
+func (c *CategoryQnaItemClient) Query() *CategoryQnaItemQuery {
+	return &CategoryQnaItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCategoryQnaItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CategoryQnaItem entity by its id.
+func (c *CategoryQnaItemClient) Get(ctx context.Context, id int) (*CategoryQnaItem, error) {
+	return c.Query().Where(categoryqnaitem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CategoryQnaItemClient) GetX(ctx context.Context, id int) *CategoryQnaItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CategoryQnaItemClient) Hooks() []Hook {
+	return c.hooks.CategoryQnaItem
+}
+
+// Interceptors returns the client interceptors.
+func (c *CategoryQnaItemClient) Interceptors() []Interceptor {
+	return c.inters.CategoryQnaItem
+}
+
+func (c *CategoryQnaItemClient) mutate(ctx context.Context, m *CategoryQnaItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CategoryQnaItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CategoryQnaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CategoryQnaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CategoryQnaItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CategoryQnaItem mutation op: %q", m.Op())
 	}
 }
 
@@ -977,6 +1126,139 @@ func (c *LandingPageClient) mutate(ctx context.Context, m *LandingPageMutation) 
 	}
 }
 
+// LandingPageQnaItemClient is a client for the LandingPageQnaItem schema.
+type LandingPageQnaItemClient struct {
+	config
+}
+
+// NewLandingPageQnaItemClient returns a client for the LandingPageQnaItem from the given config.
+func NewLandingPageQnaItemClient(c config) *LandingPageQnaItemClient {
+	return &LandingPageQnaItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `landingpageqnaitem.Hooks(f(g(h())))`.
+func (c *LandingPageQnaItemClient) Use(hooks ...Hook) {
+	c.hooks.LandingPageQnaItem = append(c.hooks.LandingPageQnaItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `landingpageqnaitem.Intercept(f(g(h())))`.
+func (c *LandingPageQnaItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LandingPageQnaItem = append(c.inters.LandingPageQnaItem, interceptors...)
+}
+
+// Create returns a builder for creating a LandingPageQnaItem entity.
+func (c *LandingPageQnaItemClient) Create() *LandingPageQnaItemCreate {
+	mutation := newLandingPageQnaItemMutation(c.config, OpCreate)
+	return &LandingPageQnaItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LandingPageQnaItem entities.
+func (c *LandingPageQnaItemClient) CreateBulk(builders ...*LandingPageQnaItemCreate) *LandingPageQnaItemCreateBulk {
+	return &LandingPageQnaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LandingPageQnaItemClient) MapCreateBulk(slice any, setFunc func(*LandingPageQnaItemCreate, int)) *LandingPageQnaItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LandingPageQnaItemCreateBulk{err: fmt.Errorf("calling to LandingPageQnaItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LandingPageQnaItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LandingPageQnaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LandingPageQnaItem.
+func (c *LandingPageQnaItemClient) Update() *LandingPageQnaItemUpdate {
+	mutation := newLandingPageQnaItemMutation(c.config, OpUpdate)
+	return &LandingPageQnaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LandingPageQnaItemClient) UpdateOne(_m *LandingPageQnaItem) *LandingPageQnaItemUpdateOne {
+	mutation := newLandingPageQnaItemMutation(c.config, OpUpdateOne, withLandingPageQnaItem(_m))
+	return &LandingPageQnaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LandingPageQnaItemClient) UpdateOneID(id int) *LandingPageQnaItemUpdateOne {
+	mutation := newLandingPageQnaItemMutation(c.config, OpUpdateOne, withLandingPageQnaItemID(id))
+	return &LandingPageQnaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LandingPageQnaItem.
+func (c *LandingPageQnaItemClient) Delete() *LandingPageQnaItemDelete {
+	mutation := newLandingPageQnaItemMutation(c.config, OpDelete)
+	return &LandingPageQnaItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LandingPageQnaItemClient) DeleteOne(_m *LandingPageQnaItem) *LandingPageQnaItemDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LandingPageQnaItemClient) DeleteOneID(id int) *LandingPageQnaItemDeleteOne {
+	builder := c.Delete().Where(landingpageqnaitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LandingPageQnaItemDeleteOne{builder}
+}
+
+// Query returns a query builder for LandingPageQnaItem.
+func (c *LandingPageQnaItemClient) Query() *LandingPageQnaItemQuery {
+	return &LandingPageQnaItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLandingPageQnaItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LandingPageQnaItem entity by its id.
+func (c *LandingPageQnaItemClient) Get(ctx context.Context, id int) (*LandingPageQnaItem, error) {
+	return c.Query().Where(landingpageqnaitem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LandingPageQnaItemClient) GetX(ctx context.Context, id int) *LandingPageQnaItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LandingPageQnaItemClient) Hooks() []Hook {
+	return c.hooks.LandingPageQnaItem
+}
+
+// Interceptors returns the client interceptors.
+func (c *LandingPageQnaItemClient) Interceptors() []Interceptor {
+	return c.inters.LandingPageQnaItem
+}
+
+func (c *LandingPageQnaItemClient) mutate(ctx context.Context, m *LandingPageQnaItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LandingPageQnaItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LandingPageQnaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LandingPageQnaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LandingPageQnaItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LandingPageQnaItem mutation op: %q", m.Op())
+	}
+}
+
 // LeadClient is a client for the Lead schema.
 type LeadClient struct {
 	config
@@ -1411,11 +1693,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Banner, Course, CourseCategory, CourseVersion, LandingPage, Lead, Review,
-		User []ent.Hook
+		Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion, LandingPage,
+		LandingPageQnaItem, Lead, Review, User []ent.Hook
 	}
 	inters struct {
-		Banner, Course, CourseCategory, CourseVersion, LandingPage, Lead, Review,
-		User []ent.Interceptor
+		Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion, LandingPage,
+		LandingPageQnaItem, Lead, Review, User []ent.Interceptor
 	}
 )

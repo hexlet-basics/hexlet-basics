@@ -1763,17 +1763,6 @@ export type AdminCreateCategoryQnaItemData = {
   url: '/admin/language_categories/{categoryId}/qna_items';
 };
 
-export type AdminCreateCategoryQnaItemErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateCategoryQnaItemError = AdminCreateCategoryQnaItemErrors[keyof AdminCreateCategoryQnaItemErrors];
-
 export type AdminCreateCategoryQnaItemResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -1811,17 +1800,6 @@ export type AdminUpdateCategoryQnaItemData = {
   query?: never;
   url: '/admin/language_categories/{categoryId}/qna_items/{id}';
 };
-
-export type AdminUpdateCategoryQnaItemErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateCategoryQnaItemError = AdminUpdateCategoryQnaItemErrors[keyof AdminUpdateCategoryQnaItemErrors];
 
 export type AdminUpdateCategoryQnaItemResponses = {
   /**
@@ -2041,17 +2019,6 @@ export type AdminCreateLandingPageQnaItemData = {
   url: '/admin/language_landing_pages/{landingPageId}/qna_items';
 };
 
-export type AdminCreateLandingPageQnaItemErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateLandingPageQnaItemError = AdminCreateLandingPageQnaItemErrors[keyof AdminCreateLandingPageQnaItemErrors];
-
 export type AdminCreateLandingPageQnaItemResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -2089,17 +2056,6 @@ export type AdminUpdateLandingPageQnaItemData = {
   query?: never;
   url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
 };
-
-export type AdminUpdateLandingPageQnaItemErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateLandingPageQnaItemError = AdminUpdateLandingPageQnaItemErrors[keyof AdminUpdateLandingPageQnaItemErrors];
 
 export type AdminUpdateLandingPageQnaItemResponses = {
   /**
