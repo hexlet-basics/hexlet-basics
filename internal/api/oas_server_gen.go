@@ -26,7 +26,7 @@ type Handler interface {
 	// AdminCreateCourse implements adminCreateCourse operation.
 	//
 	// POST /admin/languages
-	AdminCreateCourse(ctx context.Context, req *CourseInput) (AdminCreateCourseRes, error)
+	AdminCreateCourse(ctx context.Context, req *CourseInput) (*Course, error)
 	// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
@@ -127,8 +127,10 @@ type Handler interface {
 	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
 	// AdminGetCourse implements adminGetCourse operation.
 	//
+	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// GET /admin/languages/{id}
-	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
+	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error)
 	// AdminGetCourseCategory implements adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
@@ -296,7 +298,7 @@ type Handler interface {
 	// AdminUpdateCourse implements adminUpdateCourse operation.
 	//
 	// PUT /admin/languages/{id}
-	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
+	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (*Course, error)
 	// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error

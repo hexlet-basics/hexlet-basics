@@ -566,7 +566,7 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminCreateCourseRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -582,7 +582,7 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *CourseInput
 			Params   = struct{}
-			Response = AdminCreateCourseRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3478,6 +3478,8 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 
 // handleAdminGetCourseRequest handles adminGetCourse operation.
 //
+// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
+//
 // GET /admin/languages/{id}
 func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
@@ -3563,7 +3565,7 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response AdminGetCourseRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3584,7 +3586,7 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseParams
-			Response = AdminGetCourseRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8511,7 +8513,7 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response AdminUpdateCourseRes
+	var response *Course
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8532,7 +8534,7 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *CourseInput
 			Params   = AdminUpdateCourseParams
-			Response = AdminUpdateCourseRes
+			Response = *Course
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

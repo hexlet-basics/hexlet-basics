@@ -46,7 +46,7 @@ type Invoker interface {
 	// AdminCreateCourse invokes adminCreateCourse operation.
 	//
 	// POST /admin/languages
-	AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error)
+	AdminCreateCourse(ctx context.Context, request *CourseInput) (*Course, error)
 	// AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
@@ -147,8 +147,10 @@ type Invoker interface {
 	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
 	// AdminGetCourse invokes adminGetCourse operation.
 	//
+	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
+	//
 	// GET /admin/languages/{id}
-	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
+	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error)
 	// AdminGetCourseCategory invokes adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
@@ -316,7 +318,7 @@ type Invoker interface {
 	// AdminUpdateCourse invokes adminUpdateCourse operation.
 	//
 	// PUT /admin/languages/{id}
-	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
+	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (*Course, error)
 	// AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
@@ -913,12 +915,12 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 // AdminCreateCourse invokes adminCreateCourse operation.
 //
 // POST /admin/languages
-func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error) {
+func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (*Course, error) {
 	res, err := c.sendAdminCreateCourse(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput) (res AdminCreateCourseRes, err error) {
+func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2884,13 +2886,15 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 
 // AdminGetCourse invokes adminGetCourse operation.
 //
+// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
+//
 // GET /admin/languages/{id}
-func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error) {
+func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error) {
 	res, err := c.sendAdminGetCourse(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCourseParams) (res AdminGetCourseRes, err error) {
+func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCourseParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6935,12 +6939,12 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 // AdminUpdateCourse invokes adminUpdateCourse operation.
 //
 // PUT /admin/languages/{id}
-func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error) {
+func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (*Course, error) {
 	res, err := c.sendAdminUpdateCourse(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (res AdminUpdateCourseRes, err error) {
+func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (res *Course, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

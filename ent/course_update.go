@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -245,6 +246,12 @@ func (_u *CourseUpdate) ClearOrder() *CourseUpdate {
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseUpdate) SetUpdatedAt(v time.Time) *CourseUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
 func (_u *CourseUpdate) AddLandingPageIDs(ids ...int) *CourseUpdate {
 	_u.mutation.AddLandingPageIDs(ids...)
@@ -299,6 +306,7 @@ func (_u *CourseUpdate) ClearCurrentVersion() *CourseUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *CourseUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -321,6 +329,14 @@ func (_u *CourseUpdate) Exec(ctx context.Context) error {
 func (_u *CourseUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *CourseUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := course.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -392,6 +408,9 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.OrderCleared() {
 		_spec.ClearField(course.FieldOrder, field.TypeInt)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.LandingPagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -703,6 +722,12 @@ func (_u *CourseUpdateOne) ClearOrder() *CourseUpdateOne {
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseUpdateOne) SetUpdatedAt(v time.Time) *CourseUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
 func (_u *CourseUpdateOne) AddLandingPageIDs(ids ...int) *CourseUpdateOne {
 	_u.mutation.AddLandingPageIDs(ids...)
@@ -770,6 +795,7 @@ func (_u *CourseUpdateOne) Select(field string, fields ...string) *CourseUpdateO
 
 // Save executes the query and returns the updated Course entity.
 func (_u *CourseUpdateOne) Save(ctx context.Context) (*Course, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -792,6 +818,14 @@ func (_u *CourseUpdateOne) Exec(ctx context.Context) error {
 func (_u *CourseUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *CourseUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := course.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -880,6 +914,9 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 	}
 	if _u.mutation.OrderCleared() {
 		_spec.ClearField(course.FieldOrder, field.TypeInt)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.LandingPagesCleared() {
 		edge := &sqlgraph.EdgeSpec{

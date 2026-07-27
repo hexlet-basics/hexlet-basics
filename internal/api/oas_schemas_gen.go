@@ -1100,10 +1100,6 @@ func (s *Course) SetCoverThumbVariant(val NilString) {
 	s.CoverThumbVariant = val
 }
 
-func (*Course) adminCreateCourseRes() {}
-func (*Course) adminGetCourseRes()    {}
-func (*Course) adminUpdateCourseRes() {}
-
 // A catalog entry as shown on the courses index (legacy: `LanguageLandingPageForLists`). Embeds the
 // full course plus derived fields.
 // Ref: #/components/schemas/CourseCatalogItem
@@ -4555,7 +4551,6 @@ func (s *NotFoundError) SetMessage(val string) {
 
 func (*NotFoundError) adminCreateCourseVersionRes() {}
 func (*NotFoundError) adminGetBlogPostRes()         {}
-func (*NotFoundError) adminGetCourseRes()           {}
 func (*NotFoundError) adminReviewCourseLessonRes()  {}
 func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
@@ -6638,10 +6633,8 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 }
 
 func (*ValidationError) adminCreateBlogPostRes()            {}
-func (*ValidationError) adminCreateCourseRes()              {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
-func (*ValidationError) adminUpdateCourseRes()              {}
 func (*ValidationError) checkLessonRes()                    {}
 func (*ValidationError) confirmPhoneAuthRes()               {}
 func (*ValidationError) createBookRequestRes()              {}

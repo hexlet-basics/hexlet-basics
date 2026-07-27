@@ -67,35 +67,17 @@ func encodeAdminCreateCategoryQnaItemResponse(response *QnaItem, w http.Response
 	return nil
 }
 
-func encodeAdminCreateCourseResponse(response AdminCreateCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(201)
+func encodeAdminCreateCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(201)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminCreateCourseCategoryResponse(response *CourseCategory, w http.ResponseWriter, span trace.Span) error {
@@ -324,35 +306,17 @@ func encodeAdminGetBlogPostResponse(response AdminGetBlogPostRes, w http.Respons
 	}
 }
 
-func encodeAdminGetCourseResponse(response AdminGetCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminGetCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *NotFoundError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(404)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminGetCourseCategoryResponse(response *CourseCategory, w http.ResponseWriter, span trace.Span) error {
@@ -841,35 +805,17 @@ func encodeAdminUpdateCategoryQnaItemResponse(response *QnaItem, w http.Response
 	return nil
 }
 
-func encodeAdminUpdateCourseResponse(response AdminUpdateCourseRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *Course:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
+func encodeAdminUpdateCourseResponse(response *Course, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
 
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *ValidationError:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(422)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
 	}
+
+	return nil
 }
 
 func encodeAdminUpdateCourseCategoryResponse(response *CourseCategory, w http.ResponseWriter, span trace.Span) error {

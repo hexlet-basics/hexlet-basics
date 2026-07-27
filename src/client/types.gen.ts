@@ -2177,17 +2177,6 @@ export type AdminCreateCourseData = {
   url: '/admin/languages';
 };
 
-export type AdminCreateCourseErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateCourseError = AdminCreateCourseErrors[keyof AdminCreateCourseErrors];
-
 export type AdminCreateCourseResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -2206,15 +2195,6 @@ export type AdminGetCourseData = {
   url: '/admin/languages/{id}';
 };
 
-export type AdminGetCourseErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetCourseError = AdminGetCourseErrors[keyof AdminGetCourseErrors];
-
 export type AdminGetCourseResponses = {
   /**
    * The request has succeeded.
@@ -2232,17 +2212,6 @@ export type AdminUpdateCourseData = {
   query?: never;
   url: '/admin/languages/{id}';
 };
-
-export type AdminUpdateCourseErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateCourseError = AdminUpdateCourseErrors[keyof AdminUpdateCourseErrors];
 
 export type AdminUpdateCourseResponses = {
   /**

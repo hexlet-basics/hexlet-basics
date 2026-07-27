@@ -40,7 +40,7 @@ func (UnimplementedHandler) AdminCreateCategoryQnaItem(ctx context.Context, req 
 // AdminCreateCourse implements adminCreateCourse operation.
 //
 // POST /admin/languages
-func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseInput) (r AdminCreateCourseRes, _ error) {
+func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseInput) (r *Course, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -204,8 +204,10 @@ func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGe
 
 // AdminGetCourse implements adminGetCourse operation.
 //
+// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
+//
 // GET /admin/languages/{id}
-func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (r AdminGetCourseRes, _ error) {
+func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (r *Course, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -472,7 +474,7 @@ func (UnimplementedHandler) AdminUpdateCategoryQnaItem(ctx context.Context, req 
 // AdminUpdateCourse implements adminUpdateCourse operation.
 //
 // PUT /admin/languages/{id}
-func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (r AdminUpdateCourseRes, _ error) {
+func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (r *Course, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

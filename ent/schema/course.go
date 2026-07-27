@@ -30,12 +30,18 @@ func (Course) Fields() []ent.Field {
 		field.String("learn_as").Optional().Nillable(),
 		field.String("progress").Optional().Nillable(),
 		field.String("hexlet_program_landing_page").Optional().Nillable(),
-		field.Int("members_count"),
-		field.Int("lessons_count"),
+		// Counters maintained by the app; the baseline columns are NOT NULL
+		// DEFAULT 0, so a newly-created course starts at 0 without the admin
+		// create path having to supply them.
+		field.Int("members_count").Default(0),
+		field.Int("lessons_count").Default(0),
 		field.Int("category_id").Optional().Nillable(),
 		field.Int("current_version_id").Optional().Nillable(),
 		field.Int("order").Optional().Nillable(),
 		field.Time("created_at").Default(time.Now).Immutable(),
+		// Rails-owned timestamp; supplied by ent now that admin create/update
+		// writes the table (NOT NULL, no DB default).
+		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 

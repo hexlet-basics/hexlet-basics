@@ -5,20 +5,12 @@ type AdminCreateBlogPostRes interface {
 	adminCreateBlogPostRes()
 }
 
-type AdminCreateCourseRes interface {
-	adminCreateCourseRes()
-}
-
 type AdminCreateCourseVersionRes interface {
 	adminCreateCourseVersionRes()
 }
 
 type AdminGetBlogPostRes interface {
 	adminGetBlogPostRes()
-}
-
-type AdminGetCourseRes interface {
-	adminGetCourseRes()
 }
 
 type AdminReviewCourseLessonRes interface {
@@ -35,10 +27,6 @@ type AdminSetBlogPostRelatedCoursesRes interface {
 
 type AdminUpdateBlogPostRes interface {
 	adminUpdateBlogPostRes()
-}
-
-type AdminUpdateCourseRes interface {
-	adminUpdateCourseRes()
 }
 
 type CheckLessonRes interface {

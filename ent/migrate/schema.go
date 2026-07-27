@@ -51,11 +51,12 @@ var (
 		{Name: "learn_as", Type: field.TypeString, Nullable: true},
 		{Name: "progress", Type: field.TypeString, Nullable: true},
 		{Name: "hexlet_program_landing_page", Type: field.TypeString, Nullable: true},
-		{Name: "members_count", Type: field.TypeInt},
-		{Name: "lessons_count", Type: field.TypeInt},
+		{Name: "members_count", Type: field.TypeInt, Default: 0},
+		{Name: "lessons_count", Type: field.TypeInt, Default: 0},
 		{Name: "category_id", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "current_version_id", Type: field.TypeInt, Nullable: true},
 	}
 	// LanguagesTable holds the schema information for the "languages" table.
@@ -66,7 +67,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "languages_language_versions_current_version",
-				Columns:    []*schema.Column{LanguagesColumns[11]},
+				Columns:    []*schema.Column{LanguagesColumns[12]},
 				RefColumns: []*schema.Column{LanguageVersionsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

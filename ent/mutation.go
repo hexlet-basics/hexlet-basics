@@ -1509,6 +1509,7 @@ type CourseMutation struct {
 	_order                      *int
 	add_order                   *int
 	created_at                  *time.Time
+	updated_at                  *time.Time
 	clearedFields               map[string]struct{}
 	landing_pages               map[int]struct{}
 	removedlanding_pages        map[int]struct{}
@@ -2200,6 +2201,42 @@ func (m *CourseMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Course entity.
+// If the Course object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by ids.
 func (m *CourseMutation) AddLandingPageIDs(ids ...int) {
 	if m.landing_pages == nil {
@@ -2315,7 +2352,7 @@ func (m *CourseMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CourseMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.slug != nil {
 		fields = append(fields, course.FieldSlug)
 	}
@@ -2349,6 +2386,9 @@ func (m *CourseMutation) Fields() []string {
 	if m.created_at != nil {
 		fields = append(fields, course.FieldCreatedAt)
 	}
+	if m.updated_at != nil {
+		fields = append(fields, course.FieldUpdatedAt)
+	}
 	return fields
 }
 
@@ -2379,6 +2419,8 @@ func (m *CourseMutation) Field(name string) (ent.Value, bool) {
 		return m.Order()
 	case course.FieldCreatedAt:
 		return m.CreatedAt()
+	case course.FieldUpdatedAt:
+		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -2410,6 +2452,8 @@ func (m *CourseMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldOrder(ctx)
 	case course.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
+	case course.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Course field %s", name)
 }
@@ -2495,6 +2539,13 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
+		return nil
+	case course.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Course field %s", name)
@@ -2679,6 +2730,9 @@ func (m *CourseMutation) ResetField(name string) error {
 		return nil
 	case course.FieldCreatedAt:
 		m.ResetCreatedAt()
+		return nil
+	case course.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Course field %s", name)

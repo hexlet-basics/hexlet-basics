@@ -57,10 +57,24 @@ func init() {
 	categoryqnaitem.UpdateDefaultUpdatedAt = categoryqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
 	courseFields := schema.Course{}.Fields()
 	_ = courseFields
+	// courseDescMembersCount is the schema descriptor for members_count field.
+	courseDescMembersCount := courseFields[5].Descriptor()
+	// course.DefaultMembersCount holds the default value on creation for the members_count field.
+	course.DefaultMembersCount = courseDescMembersCount.Default.(int)
+	// courseDescLessonsCount is the schema descriptor for lessons_count field.
+	courseDescLessonsCount := courseFields[6].Descriptor()
+	// course.DefaultLessonsCount holds the default value on creation for the lessons_count field.
+	course.DefaultLessonsCount = courseDescLessonsCount.Default.(int)
 	// courseDescCreatedAt is the schema descriptor for created_at field.
 	courseDescCreatedAt := courseFields[10].Descriptor()
 	// course.DefaultCreatedAt holds the default value on creation for the created_at field.
 	course.DefaultCreatedAt = courseDescCreatedAt.Default.(func() time.Time)
+	// courseDescUpdatedAt is the schema descriptor for updated_at field.
+	courseDescUpdatedAt := courseFields[11].Descriptor()
+	// course.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	course.DefaultUpdatedAt = courseDescUpdatedAt.Default.(func() time.Time)
+	// course.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	course.UpdateDefaultUpdatedAt = courseDescUpdatedAt.UpdateDefault.(func() time.Time)
 	coursecategoryFields := schema.CourseCategory{}.Fields()
 	_ = coursecategoryFields
 	// coursecategoryDescCreatedAt is the schema descriptor for created_at field.

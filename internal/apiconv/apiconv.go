@@ -63,6 +63,8 @@ type Converter interface {
 	// goverter:map . CoverThumbVariant | coverVariantNull
 	ToCourse(source *ent.Course) api.Course
 
+	ToCourses(source []*ent.Course) []api.Course
+
 	ToCourseCategory(source *ent.CourseCategory) api.CourseCategory
 
 	ToCourseCategories(source []*ent.CourseCategory) []api.CourseCategory

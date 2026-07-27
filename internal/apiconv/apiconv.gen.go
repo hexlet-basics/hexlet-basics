@@ -177,6 +177,16 @@ func (c *ConverterImpl) ToCourseLandingPages(source []*ent.LandingPage) []api.Co
 	}
 	return apiCourseLandingPageList
 }
+func (c *ConverterImpl) ToCourses(source []*ent.Course) []api.Course {
+	var apiCourseList []api.Course
+	if source != nil {
+		apiCourseList = make([]api.Course, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseList[i] = c.ToCourse(source[i])
+		}
+	}
+	return apiCourseList
+}
 func (c *ConverterImpl) ToLandingPageQnaItem(source *ent.LandingPageQnaItem) api.QnaItem {
 	var apiQnaItem api.QnaItem
 	if source != nil {

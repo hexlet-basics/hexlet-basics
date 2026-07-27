@@ -244,14 +244,16 @@ model CourseInput {
 interface AdminCourses {
   @get @operationId("adminListCourses") list(...ListQuery): Page<Course>;
 
-  @get @route("/{id}") @operationId("adminGetCourse") get(@path id: int32): Course | NotFoundError;
+  /** Get a single course. A missing id surfaces as 404 via the central
+      ent-error handler. */
+  @get @route("/{id}") @operationId("adminGetCourse") get(@path id: int32): Course;
 
   @post @operationId("adminCreateCourse") create(@body body: CourseInput): {
     @statusCode statusCode: 201;
     @body course: Course;
-  } | ValidationError;
+  };
 
-  @put @route("/{id}") @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | ValidationError;
+  @put @route("/{id}") @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course;
 
   /** Enqueue AI re-review of every current lesson version. */
   @post @route("/{id}/review") @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError;
