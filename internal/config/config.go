@@ -12,6 +12,10 @@ import (
 type Config struct {
 	Addr        string `env:"ADDR" envDefault:":3001"`
 	DatabaseURL string `env:"DATABASE_URL" envDefault:"postgres://postgres:postgres@127.0.0.1:54330/code_basics_development"`
+	// BlobBucketURL selects the gocloud.dev/blob backend (ADR-0005): local disk
+	// (fileblob) in dev, s3blob in prod, chosen by URL scheme. The dev default
+	// writes under ./storage (created on first open) so uploads survive restarts.
+	BlobBucketURL string `env:"BLOB_BUCKET_URL" envDefault:"file://./storage?create_dir=true"`
 }
 
 // Load reads configuration from environment variables, applying defaults.

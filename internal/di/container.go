@@ -12,6 +12,7 @@ import (
 	"github.com/riverqueue/river"
 	"github.com/rs/cors"
 	"github.com/samber/do/v2"
+	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
@@ -57,6 +58,14 @@ func New() *do.RootScope {
 		return handlers.NewServer(do.MustInvoke[*ent.Client](i)), nil
 	})
 
+	// Blob bucket for uploaded assets (ADR-0005). Closed explicitly in main.go on
+	// shutdown, like the ent client and pgx pool (blob.Bucket has Close, not a do
+	// Shutdowner).
+	do.Provide(injector, func(i do.Injector) (*blob.Bucket, error) {
+		cfg := do.MustInvoke[*config.Config](i)
+		return store.NewBucket(context.Background(), cfg.BlobBucketURL)
+	})
+
 	// pgx pool + river client back the background-job queue (ADR-0004). The pool
 	// is separate from ent's database/sql handle because riverpgxv5 needs a
 	// native *pgxpool.Pool.
@@ -84,10 +93,19 @@ func New() *do.RootScope {
 		cfg := do.MustInvoke[*config.Config](i)
 		apiServer := do.MustInvoke[*api.Server](i)
 
+		// Compose the generated server with the multipart/blob routes ogen can't
+		// generate (ADR-0005), then wrap the whole router in CORS so both surfaces
+		// are covered (and a future auth middleware should wrap here too).
+		att := handlers.NewAttachmentHandler(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*blob.Bucket](i),
+		)
+		router := handlers.NewRouter(apiServer, att)
+
 		// Dev CORS so the Vite frontend (any localhost port) can call the API.
 		handler := cors.New(cors.Options{
 			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
-		}).Handler(apiServer)
+		}).Handler(router)
 
 		return &http.Server{
 			Addr:              cfg.Addr,

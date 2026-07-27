@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
@@ -23,6 +24,12 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	attachmentFields := schema.Attachment{}.Fields()
+	_ = attachmentFields
+	// attachmentDescCreatedAt is the schema descriptor for created_at field.
+	attachmentDescCreatedAt := attachmentFields[4].Descriptor()
+	// attachment.DefaultCreatedAt holds the default value on creation for the created_at field.
+	attachment.DefaultCreatedAt = attachmentDescCreatedAt.Default.(func() time.Time)
 	bannerFields := schema.Banner{}.Fields()
 	_ = bannerFields
 	// bannerDescBackground is the schema descriptor for background field.

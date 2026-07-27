@@ -11,6 +11,7 @@ import (
 
 	"hexletbasics/ent/migrate"
 
+	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
@@ -36,6 +37,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Attachment is the client for interacting with the Attachment builders.
+	Attachment *AttachmentClient
 	// Banner is the client for interacting with the Banner builders.
 	Banner *BannerClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
@@ -73,6 +76,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Attachment = NewAttachmentClient(c.config)
 	c.Banner = NewBannerClient(c.config)
 	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
@@ -178,6 +182,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:                 ctx,
 		config:              cfg,
+		Attachment:          NewAttachmentClient(cfg),
 		Banner:              NewBannerClient(cfg),
 		CategoryQnaItem:     NewCategoryQnaItemClient(cfg),
 		Course:              NewCourseClient(cfg),
@@ -210,6 +215,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:                 ctx,
 		config:              cfg,
+		Attachment:          NewAttachmentClient(cfg),
 		Banner:              NewBannerClient(cfg),
 		CategoryQnaItem:     NewCategoryQnaItemClient(cfg),
 		Course:              NewCourseClient(cfg),
@@ -229,7 +235,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Banner.
+//		Attachment.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -252,9 +258,9 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory, c.CourseVersion,
-		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User,
+		c.Attachment, c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory,
+		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review,
+		c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -264,9 +270,9 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory, c.CourseVersion,
-		c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User,
+		c.Attachment, c.Banner, c.CategoryQnaItem, c.Course, c.CourseCategory,
+		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.Review,
+		c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -275,6 +281,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *AttachmentMutation:
+		return c.Attachment.mutate(ctx, m)
 	case *BannerMutation:
 		return c.Banner.mutate(ctx, m)
 	case *CategoryQnaItemMutation:
@@ -303,6 +311,139 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// AttachmentClient is a client for the Attachment schema.
+type AttachmentClient struct {
+	config
+}
+
+// NewAttachmentClient returns a client for the Attachment from the given config.
+func NewAttachmentClient(c config) *AttachmentClient {
+	return &AttachmentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `attachment.Hooks(f(g(h())))`.
+func (c *AttachmentClient) Use(hooks ...Hook) {
+	c.hooks.Attachment = append(c.hooks.Attachment, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `attachment.Intercept(f(g(h())))`.
+func (c *AttachmentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Attachment = append(c.inters.Attachment, interceptors...)
+}
+
+// Create returns a builder for creating a Attachment entity.
+func (c *AttachmentClient) Create() *AttachmentCreate {
+	mutation := newAttachmentMutation(c.config, OpCreate)
+	return &AttachmentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Attachment entities.
+func (c *AttachmentClient) CreateBulk(builders ...*AttachmentCreate) *AttachmentCreateBulk {
+	return &AttachmentCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AttachmentClient) MapCreateBulk(slice any, setFunc func(*AttachmentCreate, int)) *AttachmentCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AttachmentCreateBulk{err: fmt.Errorf("calling to AttachmentClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AttachmentCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AttachmentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Attachment.
+func (c *AttachmentClient) Update() *AttachmentUpdate {
+	mutation := newAttachmentMutation(c.config, OpUpdate)
+	return &AttachmentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AttachmentClient) UpdateOne(_m *Attachment) *AttachmentUpdateOne {
+	mutation := newAttachmentMutation(c.config, OpUpdateOne, withAttachment(_m))
+	return &AttachmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AttachmentClient) UpdateOneID(id int) *AttachmentUpdateOne {
+	mutation := newAttachmentMutation(c.config, OpUpdateOne, withAttachmentID(id))
+	return &AttachmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Attachment.
+func (c *AttachmentClient) Delete() *AttachmentDelete {
+	mutation := newAttachmentMutation(c.config, OpDelete)
+	return &AttachmentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AttachmentClient) DeleteOne(_m *Attachment) *AttachmentDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AttachmentClient) DeleteOneID(id int) *AttachmentDeleteOne {
+	builder := c.Delete().Where(attachment.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AttachmentDeleteOne{builder}
+}
+
+// Query returns a query builder for Attachment.
+func (c *AttachmentClient) Query() *AttachmentQuery {
+	return &AttachmentQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAttachment},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Attachment entity by its id.
+func (c *AttachmentClient) Get(ctx context.Context, id int) (*Attachment, error) {
+	return c.Query().Where(attachment.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AttachmentClient) GetX(ctx context.Context, id int) *Attachment {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AttachmentClient) Hooks() []Hook {
+	return c.hooks.Attachment
+}
+
+// Interceptors returns the client interceptors.
+func (c *AttachmentClient) Interceptors() []Interceptor {
+	return c.inters.Attachment
+}
+
+func (c *AttachmentClient) mutate(ctx context.Context, m *AttachmentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AttachmentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AttachmentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AttachmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AttachmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Attachment mutation op: %q", m.Op())
 	}
 }
 
@@ -2182,13 +2323,13 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion, LandingPage,
-		LandingPageQnaItem, Lead, Review, StaffMember, StaffRole, StaffRolePermission,
-		User []ent.Hook
+		Attachment, Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion,
+		LandingPage, LandingPageQnaItem, Lead, Review, StaffMember, StaffRole,
+		StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
-		Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion, LandingPage,
-		LandingPageQnaItem, Lead, Review, StaffMember, StaffRole, StaffRolePermission,
-		User []ent.Interceptor
+		Attachment, Banner, CategoryQnaItem, Course, CourseCategory, CourseVersion,
+		LandingPage, LandingPageQnaItem, Lead, Review, StaffMember, StaffRole,
+		StaffRolePermission, User []ent.Interceptor
 	}
 )

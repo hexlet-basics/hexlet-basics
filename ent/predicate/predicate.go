@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Attachment is the predicate function for attachment builders.
+type Attachment func(*sql.Selector)
+
 // Banner is the predicate function for banner builders.
 type Banner func(*sql.Selector)
 

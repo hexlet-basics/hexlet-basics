@@ -19,6 +19,9 @@ dist/
 /tmp/
 *.exe
 
+# Local fileblob asset storage (dev default BLOB_BUCKET_URL, ADR-0005)
+/storage/
+
 # Env
 .env
 .env.local

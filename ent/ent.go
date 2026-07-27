@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
@@ -85,6 +86,7 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			attachment.Table:          attachment.ValidColumn,
 			banner.Table:              banner.ValidColumn,
 			categoryqnaitem.Table:     categoryqnaitem.ValidColumn,
 			course.Table:              course.ValidColumn,

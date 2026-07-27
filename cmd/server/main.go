@@ -14,6 +14,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
+	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/di"
@@ -35,6 +36,9 @@ func main() {
 	// are not do Shutdowners).
 	riverClient := do.MustInvoke[*river.Client[pgx.Tx]](injector)
 	pool := do.MustInvoke[*pgxpool.Pool](injector)
+	// The blob bucket exposes Close, not a do Shutdowner, so drain it explicitly
+	// once the HTTP server (its only user) has stopped serving.
+	bucket := do.MustInvoke[*blob.Bucket](injector)
 
 	// Start processing background jobs. Start returns once the client is running;
 	// workers run until Stop drains them during shutdown.
@@ -72,6 +76,9 @@ func main() {
 		logger.Error("stopping job queue", "err", err)
 	}
 	pool.Close()
+	if err := bucket.Close(); err != nil {
+		logger.Error("closing blob bucket", "err", err)
+	}
 	if err := db.Close(); err != nil {
 		logger.Error("closing database", "err", err)
 	}
