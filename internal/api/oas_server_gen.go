@@ -26,10 +26,11 @@ type Handler interface {
 	AdminCreateCourse(ctx context.Context, req *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
 	//
-	// Create a course category.
+	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
+	// 409 by the central ent-error handler.
 	//
 	// POST /admin/language_categories
-	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
+	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (*CourseCategory, error)
 	// AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 	//
 	// POST /admin/language_landing_pages
@@ -116,10 +117,11 @@ type Handler interface {
 	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory implements adminGetCourseCategory operation.
 	//
-	// Get a single course category.
+	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
+	// typed union member.
 	//
 	// GET /admin/language_categories/{id}
-	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
 	// AdminGetCourseLandingPage implements adminGetCourseLandingPage operation.
 	//
 	// GET /admin/language_landing_pages/{id}
@@ -262,10 +264,11 @@ type Handler interface {
 	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
 	//
-	// Update a course category.
+	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
+	// handler.
 	//
 	// PUT /admin/language_categories/{id}
-	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
+	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
 	// AdminUpdateCourseLandingPage implements adminUpdateCourseLandingPage operation.
 	//
 	// PUT /admin/language_landing_pages/{id}

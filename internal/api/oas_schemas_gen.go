@@ -1297,10 +1297,6 @@ func (s *CourseCategory) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*CourseCategory) adminCreateCourseCategoryRes() {}
-func (*CourseCategory) adminGetCourseCategoryRes()    {}
-func (*CourseCategory) adminUpdateCourseCategoryRes() {}
-
 // Writable fields for creating or updating a course category.
 // Ref: #/components/schemas/CourseCategoryInput
 type CourseCategoryInput struct {
@@ -4568,7 +4564,6 @@ func (s *NotFoundError) SetMessage(val string) {
 func (*NotFoundError) adminCreateCourseVersionRes()  {}
 func (*NotFoundError) adminGetBannerRes()            {}
 func (*NotFoundError) adminGetBlogPostRes()          {}
-func (*NotFoundError) adminGetCourseCategoryRes()    {}
 func (*NotFoundError) adminGetCourseLandingPageRes() {}
 func (*NotFoundError) adminGetCourseRes()            {}
 func (*NotFoundError) adminGetManagementUserRes()    {}
@@ -6686,7 +6681,6 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 func (*ValidationError) adminCreateBannerRes()              {}
 func (*ValidationError) adminCreateBlogPostRes()            {}
 func (*ValidationError) adminCreateCategoryQnaItemRes()     {}
-func (*ValidationError) adminCreateCourseCategoryRes()      {}
 func (*ValidationError) adminCreateCourseLandingPageRes()   {}
 func (*ValidationError) adminCreateCourseRes()              {}
 func (*ValidationError) adminCreateLandingPageQnaItemRes()  {}
@@ -6698,7 +6692,6 @@ func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBannerRes()              {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUpdateCategoryQnaItemRes()     {}
-func (*ValidationError) adminUpdateCourseCategoryRes()      {}
 func (*ValidationError) adminUpdateCourseLandingPageRes()   {}
 func (*ValidationError) adminUpdateCourseRes()              {}
 func (*ValidationError) adminUpdateLandingPageQnaItemRes()  {}

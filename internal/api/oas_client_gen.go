@@ -46,10 +46,11 @@ type Invoker interface {
 	AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 	//
-	// Create a course category.
+	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
+	// 409 by the central ent-error handler.
 	//
 	// POST /admin/language_categories
-	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
+	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (*CourseCategory, error)
 	// AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 	//
 	// POST /admin/language_landing_pages
@@ -136,10 +137,11 @@ type Invoker interface {
 	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory invokes adminGetCourseCategory operation.
 	//
-	// Get a single course category.
+	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
+	// typed union member.
 	//
 	// GET /admin/language_categories/{id}
-	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
 	// AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 	//
 	// GET /admin/language_landing_pages/{id}
@@ -282,10 +284,11 @@ type Invoker interface {
 	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 	//
-	// Update a course category.
+	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
+	// handler.
 	//
 	// PUT /admin/language_categories/{id}
-	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
+	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
 	// AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 	//
 	// PUT /admin/language_landing_pages/{id}
@@ -942,15 +945,16 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 
 // AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 //
-// Create a course category.
+// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
+// 409 by the central ent-error handler.
 //
 // POST /admin/language_categories
-func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error) {
+func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (*CourseCategory, error) {
 	res, err := c.sendAdminCreateCourseCategory(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (res AdminCreateCourseCategoryRes, err error) {
+func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (res *CourseCategory, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -2917,15 +2921,16 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 
 // AdminGetCourseCategory invokes adminGetCourseCategory operation.
 //
-// Get a single course category.
+// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
+// typed union member.
 //
 // GET /admin/language_categories/{id}
-func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error) {
+func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error) {
 	res, err := c.sendAdminGetCourseCategory(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (res AdminGetCourseCategoryRes, err error) {
+func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (res *CourseCategory, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6948,15 +6953,16 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 
 // AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 //
-// Update a course category.
+// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
+// handler.
 //
 // PUT /admin/language_categories/{id}
-func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error) {
+func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error) {
 	res, err := c.sendAdminUpdateCourseCategory(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (res AdminUpdateCourseCategoryRes, err error) {
+func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (res *CourseCategory, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),

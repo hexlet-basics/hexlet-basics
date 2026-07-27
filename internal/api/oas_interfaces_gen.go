@@ -13,10 +13,6 @@ type AdminCreateCategoryQnaItemRes interface {
 	adminCreateCategoryQnaItemRes()
 }
 
-type AdminCreateCourseCategoryRes interface {
-	adminCreateCourseCategoryRes()
-}
-
 type AdminCreateCourseLandingPageRes interface {
 	adminCreateCourseLandingPageRes()
 }
@@ -55,10 +51,6 @@ type AdminGetBannerRes interface {
 
 type AdminGetBlogPostRes interface {
 	adminGetBlogPostRes()
-}
-
-type AdminGetCourseCategoryRes interface {
-	adminGetCourseCategoryRes()
 }
 
 type AdminGetCourseLandingPageRes interface {
@@ -115,10 +107,6 @@ type AdminUpdateBlogPostRes interface {
 
 type AdminUpdateCategoryQnaItemRes interface {
 	adminUpdateCategoryQnaItemRes()
-}
-
-type AdminUpdateCourseCategoryRes interface {
-	adminUpdateCourseCategoryRes()
 }
 
 type AdminUpdateCourseLandingPageRes interface {

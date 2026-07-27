@@ -1,13 +1,21 @@
 // Package testsupport provides Rails-style integration-test plumbing: each test
 // runs against a real Postgres transaction that is rolled back on cleanup
-// (go-txdb), over a baseline prepared once by `make test-prepare` — the schema
-// snapshot (db/structure.sql) plus the fixtures/ YAML loaded by the testfixtures
-// CLI. Handlers hit a real database; every test's writes are discarded on
-// rollback, so the shared baseline is never mutated and nothing is left behind.
+// (go-txdb), over a baseline prepared once by `make test-prepare` — the atlas
+// migrations plus the fixtures/ YAML loaded by the testfixtures CLI. Handlers
+// hit a real database; every test's writes are discarded on rollback, so the
+// shared baseline is never mutated and nothing is left behind.
+//
+// Handlers are exercised end-to-end through the generated ogen client against an
+// in-process server (NewHarness) — no TCP listener is opened. This is the Go
+// equivalent of a Rails controller test: dispatch through the real HTTP request
+// pipeline (routing, codec, the central ErrorHandler) and assert the response
+// status code, then assert database state through the same transaction.
 package testsupport
 
 import (
 	"database/sql"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"sync"
 	"testing"
@@ -18,6 +26,8 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/api"
+	"hexletbasics/internal/handlers"
 )
 
 const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
@@ -50,4 +60,66 @@ func NewClient(t *testing.T) *ent.Client {
 
 	drv := entsql.OpenDB(dialect.Postgres, db)
 	return ent.NewClient(ent.Driver(drv))
+}
+
+// Harness bundles the generated API client, wired to an in-process server, with
+// the ent client behind it — both over the same rolled-back txdb transaction, so
+// the client's writes are visible to DB assertions and discarded together.
+//
+// One-transaction caveat: the whole test shares a single txdb transaction with no
+// per-request savepoint, so a write that violates a DB constraint aborts it
+// (Postgres 25P02). After an intentional conflict you therefore cannot query the
+// DB, nor issue a further "then a valid write" call — assert the conflict's status
+// code and stop. In production each request runs in its own autocommit, so this is
+// a test-harness artifact, not a behavioural one.
+type Harness struct {
+	// Client issues typed calls (URLs and bodies are generated, never hand-written).
+	Client *api.Client
+	// DB queries the same transaction the handlers wrote through, for assertions.
+	DB   *ent.Client
+	doer *inProcessDoer
+}
+
+// LastStatus is the HTTP status of the most recent client call. Error responses
+// (404/409) are undeclared statuses the generated client surfaces as an error;
+// assert the code here instead of destructuring a typed error member.
+func (h *Harness) LastStatus() int { return h.doer.status }
+
+// NewHarness builds the in-process test stack: an ent client over a fresh txdb
+// transaction, the handlers.Server, the ogen api.Server with the production
+// ErrorHandler, and a generated client whose transport dispatches straight into
+// that server's ServeHTTP — so tests run the full request pipeline without a
+// socket, and exercise the exact ent-error -> status mapping the server uses.
+func NewHarness(t *testing.T) *Harness {
+	t.Helper()
+
+	db := NewClient(t)
+
+	srv, err := api.NewServer(handlers.NewServer(db), api.WithErrorHandler(handlers.APIErrorHandler))
+	if err != nil {
+		t.Fatalf("new api server: %v", err)
+	}
+
+	doer := &inProcessDoer{server: srv}
+	client, err := api.NewClient("http://test", api.WithClient(doer))
+	if err != nil {
+		t.Fatalf("new api client: %v", err)
+	}
+
+	return &Harness{Client: client, DB: db, doer: doer}
+}
+
+// inProcessDoer satisfies ogen's http client interface by serving each request
+// straight through the server's ServeHTTP against an in-memory recorder — no TCP
+// listener, no port. It records the last status for LastStatus().
+type inProcessDoer struct {
+	server *api.Server
+	status int
+}
+
+func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
+	rec := httptest.NewRecorder()
+	d.server.ServeHTTP(rec, r)
+	d.status = rec.Code
+	return rec.Result(), nil
 }

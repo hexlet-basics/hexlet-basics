@@ -1789,17 +1789,6 @@ export type AdminCreateCourseCategoryData = {
   url: '/admin/language_categories';
 };
 
-export type AdminCreateCourseCategoryErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminCreateCourseCategoryError = AdminCreateCourseCategoryErrors[keyof AdminCreateCourseCategoryErrors];
-
 export type AdminCreateCourseCategoryResponses = {
   /**
    * The request has succeeded and a new resource has been created as a result.
@@ -1932,15 +1921,6 @@ export type AdminGetCourseCategoryData = {
   url: '/admin/language_categories/{id}';
 };
 
-export type AdminGetCourseCategoryErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-};
-
-export type AdminGetCourseCategoryError = AdminGetCourseCategoryErrors[keyof AdminGetCourseCategoryErrors];
-
 export type AdminGetCourseCategoryResponses = {
   /**
    * The request has succeeded.
@@ -1958,17 +1938,6 @@ export type AdminUpdateCourseCategoryData = {
   query?: never;
   url: '/admin/language_categories/{id}';
 };
-
-export type AdminUpdateCourseCategoryErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-};
-
-export type AdminUpdateCourseCategoryError = AdminUpdateCourseCategoryErrors[keyof AdminUpdateCourseCategoryErrors];
 
 export type AdminUpdateCourseCategoryResponses = {
   /**

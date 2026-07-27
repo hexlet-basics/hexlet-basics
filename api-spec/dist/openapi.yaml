@@ -654,7 +654,9 @@ paths:
         - 'Admin: Course Categories'
     post:
       operationId: adminCreateCourseCategory
-      description: Create a course category.
+      description: |-
+        Create a course category. A uniqueness violation (name/header/slug) is a
+              DB constraint, surfaced as 409 by the central ent-error handler.
       parameters: []
       responses:
         '201':
@@ -663,15 +665,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -797,7 +790,9 @@ paths:
   /admin/language_categories/{id}:
     get:
       operationId: adminGetCourseCategory
-      description: Get a single course category.
+      description: |-
+        Get a single course category. A missing id surfaces as 404 via the
+              central ent-error handler, not a typed union member.
       parameters:
         - name: id
           in: path
@@ -812,17 +807,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
       tags:
         - 'Admin: Course Categories'
     put:
       operationId: adminUpdateCourseCategory
-      description: Update a course category.
+      description: |-
+        Update a course category. 404 (missing) and 409 (uniqueness) both flow
+              through the central ent-error handler.
       parameters:
         - name: id
           in: path
@@ -837,15 +828,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
       tags:
         - 'Admin: Course Categories'
       requestBody:

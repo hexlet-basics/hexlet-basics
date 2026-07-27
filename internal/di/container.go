@@ -53,7 +53,12 @@ func New() *do.RootScope {
 	})
 
 	do.Provide(injector, func(i do.Injector) (*api.Server, error) {
-		return api.NewServer(do.MustInvoke[*handlers.Server](i))
+		// WithErrorHandler installs the central ent-error -> HTTP-status mapping
+		// (404/409), so handlers return raw ent errors instead of typed DTOs.
+		return api.NewServer(
+			do.MustInvoke[*handlers.Server](i),
+			api.WithErrorHandler(handlers.APIErrorHandler),
+		)
 	})
 
 	// *http.Server natively satisfies do's ShutdownerWithContextAndError (its

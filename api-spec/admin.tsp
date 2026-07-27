@@ -76,25 +76,28 @@ interface AdminCourseCategories {
   @operationId("adminListCourseCategories")
   list(...ListQuery): Page<CourseCategory>;
 
-  /** Get a single course category. */
+  /** Get a single course category. A missing id surfaces as 404 via the
+      central ent-error handler, not a typed union member. */
   @get
   @route("/{id}")
   @operationId("adminGetCourseCategory")
-  get(@path id: int32): CourseCategory | NotFoundError;
+  get(@path id: int32): CourseCategory;
 
-  /** Create a course category. */
+  /** Create a course category. A uniqueness violation (name/header/slug) is a
+      DB constraint, surfaced as 409 by the central ent-error handler. */
   @post
   @operationId("adminCreateCourseCategory")
   create(@body body: CourseCategoryInput): {
     @statusCode statusCode: 201;
     @body category: CourseCategory;
-  } | ValidationError;
+  };
 
-  /** Update a course category. */
+  /** Update a course category. 404 (missing) and 409 (uniqueness) both flow
+      through the central ent-error handler. */
   @put
   @route("/{id}")
   @operationId("adminUpdateCourseCategory")
-  update(@path id: int32, @body body: CourseCategoryInput): CourseCategory | ValidationError;
+  update(@path id: int32, @body body: CourseCategoryInput): CourseCategory;
 
   /** Delete a course category. */
   @delete

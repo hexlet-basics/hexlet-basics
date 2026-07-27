@@ -614,7 +614,8 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 
 // handleAdminCreateCourseCategoryRequest handles adminCreateCourseCategory operation.
 //
-// Create a course category.
+// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
+// 409 by the central ent-error handler.
 //
 // POST /admin/language_categories
 func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -706,7 +707,7 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 		}
 	}()
 
-	var response AdminCreateCourseCategoryRes
+	var response *CourseCategory
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -722,7 +723,7 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 		type (
 			Request  = *CourseCategoryInput
 			Params   = struct{}
-			Response = AdminCreateCourseCategoryRes
+			Response = *CourseCategory
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3604,7 +3605,8 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 
 // handleAdminGetCourseCategoryRequest handles adminGetCourseCategory operation.
 //
-// Get a single course category.
+// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
+// typed union member.
 //
 // GET /admin/language_categories/{id}
 func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -3691,7 +3693,7 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response AdminGetCourseCategoryRes
+	var response *CourseCategory
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3712,7 +3714,7 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseCategoryParams
-			Response = AdminGetCourseCategoryRes
+			Response = *CourseCategory
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8530,7 +8532,8 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 
 // handleAdminUpdateCourseCategoryRequest handles adminUpdateCourseCategory operation.
 //
-// Update a course category.
+// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
+// handler.
 //
 // PUT /admin/language_categories/{id}
 func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -8632,7 +8635,7 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 		}
 	}()
 
-	var response AdminUpdateCourseCategoryRes
+	var response *CourseCategory
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8653,7 +8656,7 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 		type (
 			Request  = *CourseCategoryInput
 			Params   = AdminUpdateCourseCategoryParams
-			Response = AdminUpdateCourseCategoryRes
+			Response = *CourseCategory
 		)
 		response, err = middleware.HookMiddleware[
 			Request,

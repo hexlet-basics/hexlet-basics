@@ -43,10 +43,11 @@ func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseIn
 
 // AdminCreateCourseCategory implements adminCreateCourseCategory operation.
 //
-// Create a course category.
+// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
+// 409 by the central ent-error handler.
 //
 // POST /admin/language_categories
-func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (r AdminCreateCourseCategoryRes, _ error) {
+func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (r *CourseCategory, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -196,10 +197,11 @@ func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetC
 
 // AdminGetCourseCategory implements adminGetCourseCategory operation.
 //
-// Get a single course category.
+// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
+// typed union member.
 //
 // GET /admin/language_categories/{id}
-func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (r AdminGetCourseCategoryRes, _ error) {
+func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (r *CourseCategory, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -441,10 +443,11 @@ func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseIn
 
 // AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
 //
-// Update a course category.
+// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
+// handler.
 //
 // PUT /admin/language_categories/{id}
-func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (r AdminUpdateCourseCategoryRes, _ error) {
+func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (r *CourseCategory, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
