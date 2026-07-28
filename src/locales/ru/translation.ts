@@ -205,6 +205,7 @@ export default {
     },
     admin: {
       resources: {
+        banners: "Баннеры",
         courseCategories: "Категории курсов",
       },
       crud: {

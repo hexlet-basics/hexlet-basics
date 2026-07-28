@@ -381,6 +381,7 @@ export default interface Resources {
         };
       };
       resources: {
+        banners: "Баннеры";
         courseCategories: "Категории курсов";
       };
       reviews: {

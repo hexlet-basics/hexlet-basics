@@ -27,6 +27,11 @@ const NAV = [
     match: "/admin/language_categories",
     key: "courseCategories",
   },
+  {
+    to: "/{-$locale}/admin/banners",
+    match: "/admin/banners",
+    key: "banners",
+  },
 ] as const;
 
 function AdminLayout() {

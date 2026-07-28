@@ -203,6 +203,7 @@ export default {
     },
     admin: {
       resources: {
+        banners: "Banners",
         courseCategories: "Categorías de cursos",
       },
       crud: {

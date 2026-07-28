@@ -9,7 +9,9 @@ import { useAppForm } from "@/lib/form";
 export interface CrudFieldSpec<T> {
   name: keyof T & string;
   label: string;
-  type?: "text" | "textarea";
+  type?: "text" | "textarea" | "select" | "datetime";
+  // Options for `type: "select"`. Ignored otherwise.
+  options?: { value: string; label: string }[];
   required?: boolean;
   autoFocus?: boolean;
 }
@@ -72,21 +74,42 @@ export function CrudForm<T extends Record<string, unknown>>({
 
         {fields.map((spec) => (
           <form.AppField key={spec.name} name={spec.name}>
-            {(field) =>
-              spec.type === "textarea" ? (
-                <field.TextareaField
-                  label={spec.label}
-                  required={spec.required}
-                  autoFocus={spec.autoFocus}
-                />
-              ) : (
-                <field.TextField
-                  label={spec.label}
-                  required={spec.required}
-                  autoFocus={spec.autoFocus}
-                />
-              )
-            }
+            {(field) => {
+              switch (spec.type) {
+                case "textarea":
+                  return (
+                    <field.TextareaField
+                      label={spec.label}
+                      required={spec.required}
+                      autoFocus={spec.autoFocus}
+                    />
+                  );
+                case "select":
+                  return (
+                    <field.SelectField
+                      label={spec.label}
+                      data={spec.options ?? []}
+                      required={spec.required}
+                      autoFocus={spec.autoFocus}
+                    />
+                  );
+                case "datetime":
+                  return (
+                    <field.DateTimeField
+                      label={spec.label}
+                      required={spec.required}
+                    />
+                  );
+                default:
+                  return (
+                    <field.TextField
+                      label={spec.label}
+                      required={spec.required}
+                      autoFocus={spec.autoFocus}
+                    />
+                  );
+              }
+            }}
           </form.AppField>
         ))}
 
