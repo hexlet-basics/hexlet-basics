@@ -134,6 +134,10 @@ DB_PORT ?= 54330
 DB_NAME ?= code_basics_test
 DB_URL  ?= postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
+# Dev DB coordinates (the DATABASE_URL the API server uses by default).
+DEV_DB_NAME ?= code_basics_development
+DEV_DB_URL  ?= postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/$(DEV_DB_NAME)?sslmode=disable
+
 ## migrate-new: scaffold a new empty migration to hand-author, e.g.
 ## `make migrate-new NAME=add_widgets`. Edit it, then `atlas migrate hash`.
 migrate-new:
@@ -145,6 +149,12 @@ migrate-new:
 ## structure.sql load.
 test-migrate:
 	atlas migrate apply --env local --url "$(DB_URL)&search_path=public"
+
+## dev-migrate: apply the atlas migrations to both the dev and test DBs. Run this
+## after adding a migration — `make dev` intentionally does NOT migrate on its
+## own, so schema changes have to be applied here explicitly.
+dev-migrate: test-migrate
+	atlas migrate apply --env local --url "$(DEV_DB_URL)&search_path=public"
 
 ## test-load-fixtures: load the committed fixtures/ snapshot into the test DB via
 ## the testfixtures CLI (provided by mise). sslmode=disable because the CLI's
@@ -195,7 +205,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help prepare install setup services-start services-stop migrate-new test-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
+.PHONY: help prepare install setup services-start services-stop migrate-new test-migrate dev-migrate test-load-fixtures test-prepare dev dev-api dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-web clean \
 	deps-update update-skills
