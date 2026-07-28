@@ -333,12 +333,19 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 	if v == nil {
 		return api.NilCourseVersion{Null: true}
 	}
-	return api.NewNilCourseVersion(api.CourseVersion{
+	return api.NewNilCourseVersion(CourseVersionFromEnt(v))
+}
+
+// CourseVersionFromEnt maps an ent course version to the API body. Used both by
+// the current-version bridge above and by the createVersion handler (which
+// returns a bare CourseVersion for the 201).
+func CourseVersionFromEnt(v *ent.CourseVersion) api.CourseVersion {
+	return api.CourseVersion{
 		ID:        int32(v.ID),
 		Result:    NilStringFromPtr(v.Result),
 		State:     NilStringFromPtr(v.State),
 		CreatedAt: v.CreatedAt,
-	})
+	}
 }
 
 // repositoryURL derives the exercises repo URL from the course slug, mirroring

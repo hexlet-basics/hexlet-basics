@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -67,6 +68,194 @@ func (_u *CourseVersionUpdate) ClearState() *CourseVersionUpdate {
 	return _u
 }
 
+// SetName sets the "name" field.
+func (_u *CourseVersionUpdate) SetName(v string) *CourseVersionUpdate {
+	_u.mutation.SetName(v)
+	return _u
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableName(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetName(*v)
+	}
+	return _u
+}
+
+// ClearName clears the value of the "name" field.
+func (_u *CourseVersionUpdate) ClearName() *CourseVersionUpdate {
+	_u.mutation.ClearName()
+	return _u
+}
+
+// SetProgress sets the "progress" field.
+func (_u *CourseVersionUpdate) SetProgress(v string) *CourseVersionUpdate {
+	_u.mutation.SetProgress(v)
+	return _u
+}
+
+// SetNillableProgress sets the "progress" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableProgress(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetProgress(*v)
+	}
+	return _u
+}
+
+// ClearProgress clears the value of the "progress" field.
+func (_u *CourseVersionUpdate) ClearProgress() *CourseVersionUpdate {
+	_u.mutation.ClearProgress()
+	return _u
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (_u *CourseVersionUpdate) SetLearnAs(v string) *CourseVersionUpdate {
+	_u.mutation.SetLearnAs(v)
+	return _u
+}
+
+// SetNillableLearnAs sets the "learn_as" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableLearnAs(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetLearnAs(*v)
+	}
+	return _u
+}
+
+// ClearLearnAs clears the value of the "learn_as" field.
+func (_u *CourseVersionUpdate) ClearLearnAs() *CourseVersionUpdate {
+	_u.mutation.ClearLearnAs()
+	return _u
+}
+
+// SetExtension sets the "extension" field.
+func (_u *CourseVersionUpdate) SetExtension(v string) *CourseVersionUpdate {
+	_u.mutation.SetExtension(v)
+	return _u
+}
+
+// SetNillableExtension sets the "extension" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableExtension(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetExtension(*v)
+	}
+	return _u
+}
+
+// ClearExtension clears the value of the "extension" field.
+func (_u *CourseVersionUpdate) ClearExtension() *CourseVersionUpdate {
+	_u.mutation.ClearExtension()
+	return _u
+}
+
+// SetDockerImage sets the "docker_image" field.
+func (_u *CourseVersionUpdate) SetDockerImage(v string) *CourseVersionUpdate {
+	_u.mutation.SetDockerImage(v)
+	return _u
+}
+
+// SetNillableDockerImage sets the "docker_image" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableDockerImage(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetDockerImage(*v)
+	}
+	return _u
+}
+
+// ClearDockerImage clears the value of the "docker_image" field.
+func (_u *CourseVersionUpdate) ClearDockerImage() *CourseVersionUpdate {
+	_u.mutation.ClearDockerImage()
+	return _u
+}
+
+// SetExerciseFilename sets the "exercise_filename" field.
+func (_u *CourseVersionUpdate) SetExerciseFilename(v string) *CourseVersionUpdate {
+	_u.mutation.SetExerciseFilename(v)
+	return _u
+}
+
+// SetNillableExerciseFilename sets the "exercise_filename" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableExerciseFilename(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetExerciseFilename(*v)
+	}
+	return _u
+}
+
+// ClearExerciseFilename clears the value of the "exercise_filename" field.
+func (_u *CourseVersionUpdate) ClearExerciseFilename() *CourseVersionUpdate {
+	_u.mutation.ClearExerciseFilename()
+	return _u
+}
+
+// SetExerciseTestFilename sets the "exercise_test_filename" field.
+func (_u *CourseVersionUpdate) SetExerciseTestFilename(v string) *CourseVersionUpdate {
+	_u.mutation.SetExerciseTestFilename(v)
+	return _u
+}
+
+// SetNillableExerciseTestFilename sets the "exercise_test_filename" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableExerciseTestFilename(v *string) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetExerciseTestFilename(*v)
+	}
+	return _u
+}
+
+// ClearExerciseTestFilename clears the value of the "exercise_test_filename" field.
+func (_u *CourseVersionUpdate) ClearExerciseTestFilename() *CourseVersionUpdate {
+	_u.mutation.ClearExerciseTestFilename()
+	return _u
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (_u *CourseVersionUpdate) SetLessonsCount(v int) *CourseVersionUpdate {
+	_u.mutation.ResetLessonsCount()
+	_u.mutation.SetLessonsCount(v)
+	return _u
+}
+
+// SetNillableLessonsCount sets the "lessons_count" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableLessonsCount(v *int) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetLessonsCount(*v)
+	}
+	return _u
+}
+
+// AddLessonsCount adds value to the "lessons_count" field.
+func (_u *CourseVersionUpdate) AddLessonsCount(v int) *CourseVersionUpdate {
+	_u.mutation.AddLessonsCount(v)
+	return _u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (_u *CourseVersionUpdate) SetLanguageID(v int) *CourseVersionUpdate {
+	_u.mutation.ResetLanguageID()
+	_u.mutation.SetLanguageID(v)
+	return _u
+}
+
+// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableLanguageID(v *int) *CourseVersionUpdate {
+	if v != nil {
+		_u.SetLanguageID(*v)
+	}
+	return _u
+}
+
+// AddLanguageID adds value to the "language_id" field.
+func (_u *CourseVersionUpdate) AddLanguageID(v int) *CourseVersionUpdate {
+	_u.mutation.AddLanguageID(v)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseVersionUpdate) SetUpdatedAt(v time.Time) *CourseVersionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_u *CourseVersionUpdate) Mutation() *CourseVersionMutation {
 	return _u.mutation
@@ -74,6 +263,7 @@ func (_u *CourseVersionUpdate) Mutation() *CourseVersionMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *CourseVersionUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -99,6 +289,14 @@ func (_u *CourseVersionUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *CourseVersionUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := courseversion.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(courseversion.Table, courseversion.Columns, sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -119,6 +317,63 @@ func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(courseversion.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.Name(); ok {
+		_spec.SetField(courseversion.FieldName, field.TypeString, value)
+	}
+	if _u.mutation.NameCleared() {
+		_spec.ClearField(courseversion.FieldName, field.TypeString)
+	}
+	if value, ok := _u.mutation.Progress(); ok {
+		_spec.SetField(courseversion.FieldProgress, field.TypeString, value)
+	}
+	if _u.mutation.ProgressCleared() {
+		_spec.ClearField(courseversion.FieldProgress, field.TypeString)
+	}
+	if value, ok := _u.mutation.LearnAs(); ok {
+		_spec.SetField(courseversion.FieldLearnAs, field.TypeString, value)
+	}
+	if _u.mutation.LearnAsCleared() {
+		_spec.ClearField(courseversion.FieldLearnAs, field.TypeString)
+	}
+	if value, ok := _u.mutation.Extension(); ok {
+		_spec.SetField(courseversion.FieldExtension, field.TypeString, value)
+	}
+	if _u.mutation.ExtensionCleared() {
+		_spec.ClearField(courseversion.FieldExtension, field.TypeString)
+	}
+	if value, ok := _u.mutation.DockerImage(); ok {
+		_spec.SetField(courseversion.FieldDockerImage, field.TypeString, value)
+	}
+	if _u.mutation.DockerImageCleared() {
+		_spec.ClearField(courseversion.FieldDockerImage, field.TypeString)
+	}
+	if value, ok := _u.mutation.ExerciseFilename(); ok {
+		_spec.SetField(courseversion.FieldExerciseFilename, field.TypeString, value)
+	}
+	if _u.mutation.ExerciseFilenameCleared() {
+		_spec.ClearField(courseversion.FieldExerciseFilename, field.TypeString)
+	}
+	if value, ok := _u.mutation.ExerciseTestFilename(); ok {
+		_spec.SetField(courseversion.FieldExerciseTestFilename, field.TypeString, value)
+	}
+	if _u.mutation.ExerciseTestFilenameCleared() {
+		_spec.ClearField(courseversion.FieldExerciseTestFilename, field.TypeString)
+	}
+	if value, ok := _u.mutation.LessonsCount(); ok {
+		_spec.SetField(courseversion.FieldLessonsCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLessonsCount(); ok {
+		_spec.AddField(courseversion.FieldLessonsCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.LanguageID(); ok {
+		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLanguageID(); ok {
+		_spec.AddField(courseversion.FieldLanguageID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -180,6 +435,194 @@ func (_u *CourseVersionUpdateOne) ClearState() *CourseVersionUpdateOne {
 	return _u
 }
 
+// SetName sets the "name" field.
+func (_u *CourseVersionUpdateOne) SetName(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableName(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
+	}
+	return _u
+}
+
+// ClearName clears the value of the "name" field.
+func (_u *CourseVersionUpdateOne) ClearName() *CourseVersionUpdateOne {
+	_u.mutation.ClearName()
+	return _u
+}
+
+// SetProgress sets the "progress" field.
+func (_u *CourseVersionUpdateOne) SetProgress(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetProgress(v)
+	return _u
+}
+
+// SetNillableProgress sets the "progress" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableProgress(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetProgress(*v)
+	}
+	return _u
+}
+
+// ClearProgress clears the value of the "progress" field.
+func (_u *CourseVersionUpdateOne) ClearProgress() *CourseVersionUpdateOne {
+	_u.mutation.ClearProgress()
+	return _u
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (_u *CourseVersionUpdateOne) SetLearnAs(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetLearnAs(v)
+	return _u
+}
+
+// SetNillableLearnAs sets the "learn_as" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableLearnAs(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetLearnAs(*v)
+	}
+	return _u
+}
+
+// ClearLearnAs clears the value of the "learn_as" field.
+func (_u *CourseVersionUpdateOne) ClearLearnAs() *CourseVersionUpdateOne {
+	_u.mutation.ClearLearnAs()
+	return _u
+}
+
+// SetExtension sets the "extension" field.
+func (_u *CourseVersionUpdateOne) SetExtension(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetExtension(v)
+	return _u
+}
+
+// SetNillableExtension sets the "extension" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableExtension(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetExtension(*v)
+	}
+	return _u
+}
+
+// ClearExtension clears the value of the "extension" field.
+func (_u *CourseVersionUpdateOne) ClearExtension() *CourseVersionUpdateOne {
+	_u.mutation.ClearExtension()
+	return _u
+}
+
+// SetDockerImage sets the "docker_image" field.
+func (_u *CourseVersionUpdateOne) SetDockerImage(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetDockerImage(v)
+	return _u
+}
+
+// SetNillableDockerImage sets the "docker_image" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableDockerImage(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetDockerImage(*v)
+	}
+	return _u
+}
+
+// ClearDockerImage clears the value of the "docker_image" field.
+func (_u *CourseVersionUpdateOne) ClearDockerImage() *CourseVersionUpdateOne {
+	_u.mutation.ClearDockerImage()
+	return _u
+}
+
+// SetExerciseFilename sets the "exercise_filename" field.
+func (_u *CourseVersionUpdateOne) SetExerciseFilename(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetExerciseFilename(v)
+	return _u
+}
+
+// SetNillableExerciseFilename sets the "exercise_filename" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableExerciseFilename(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetExerciseFilename(*v)
+	}
+	return _u
+}
+
+// ClearExerciseFilename clears the value of the "exercise_filename" field.
+func (_u *CourseVersionUpdateOne) ClearExerciseFilename() *CourseVersionUpdateOne {
+	_u.mutation.ClearExerciseFilename()
+	return _u
+}
+
+// SetExerciseTestFilename sets the "exercise_test_filename" field.
+func (_u *CourseVersionUpdateOne) SetExerciseTestFilename(v string) *CourseVersionUpdateOne {
+	_u.mutation.SetExerciseTestFilename(v)
+	return _u
+}
+
+// SetNillableExerciseTestFilename sets the "exercise_test_filename" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableExerciseTestFilename(v *string) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetExerciseTestFilename(*v)
+	}
+	return _u
+}
+
+// ClearExerciseTestFilename clears the value of the "exercise_test_filename" field.
+func (_u *CourseVersionUpdateOne) ClearExerciseTestFilename() *CourseVersionUpdateOne {
+	_u.mutation.ClearExerciseTestFilename()
+	return _u
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (_u *CourseVersionUpdateOne) SetLessonsCount(v int) *CourseVersionUpdateOne {
+	_u.mutation.ResetLessonsCount()
+	_u.mutation.SetLessonsCount(v)
+	return _u
+}
+
+// SetNillableLessonsCount sets the "lessons_count" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableLessonsCount(v *int) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetLessonsCount(*v)
+	}
+	return _u
+}
+
+// AddLessonsCount adds value to the "lessons_count" field.
+func (_u *CourseVersionUpdateOne) AddLessonsCount(v int) *CourseVersionUpdateOne {
+	_u.mutation.AddLessonsCount(v)
+	return _u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (_u *CourseVersionUpdateOne) SetLanguageID(v int) *CourseVersionUpdateOne {
+	_u.mutation.ResetLanguageID()
+	_u.mutation.SetLanguageID(v)
+	return _u
+}
+
+// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableLanguageID(v *int) *CourseVersionUpdateOne {
+	if v != nil {
+		_u.SetLanguageID(*v)
+	}
+	return _u
+}
+
+// AddLanguageID adds value to the "language_id" field.
+func (_u *CourseVersionUpdateOne) AddLanguageID(v int) *CourseVersionUpdateOne {
+	_u.mutation.AddLanguageID(v)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseVersionUpdateOne) SetUpdatedAt(v time.Time) *CourseVersionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_u *CourseVersionUpdateOne) Mutation() *CourseVersionMutation {
 	return _u.mutation
@@ -200,6 +643,7 @@ func (_u *CourseVersionUpdateOne) Select(field string, fields ...string) *Course
 
 // Save executes the query and returns the updated CourseVersion entity.
 func (_u *CourseVersionUpdateOne) Save(ctx context.Context) (*CourseVersion, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -222,6 +666,14 @@ func (_u *CourseVersionUpdateOne) Exec(ctx context.Context) error {
 func (_u *CourseVersionUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *CourseVersionUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := courseversion.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -262,6 +714,63 @@ func (_u *CourseVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseVer
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(courseversion.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.Name(); ok {
+		_spec.SetField(courseversion.FieldName, field.TypeString, value)
+	}
+	if _u.mutation.NameCleared() {
+		_spec.ClearField(courseversion.FieldName, field.TypeString)
+	}
+	if value, ok := _u.mutation.Progress(); ok {
+		_spec.SetField(courseversion.FieldProgress, field.TypeString, value)
+	}
+	if _u.mutation.ProgressCleared() {
+		_spec.ClearField(courseversion.FieldProgress, field.TypeString)
+	}
+	if value, ok := _u.mutation.LearnAs(); ok {
+		_spec.SetField(courseversion.FieldLearnAs, field.TypeString, value)
+	}
+	if _u.mutation.LearnAsCleared() {
+		_spec.ClearField(courseversion.FieldLearnAs, field.TypeString)
+	}
+	if value, ok := _u.mutation.Extension(); ok {
+		_spec.SetField(courseversion.FieldExtension, field.TypeString, value)
+	}
+	if _u.mutation.ExtensionCleared() {
+		_spec.ClearField(courseversion.FieldExtension, field.TypeString)
+	}
+	if value, ok := _u.mutation.DockerImage(); ok {
+		_spec.SetField(courseversion.FieldDockerImage, field.TypeString, value)
+	}
+	if _u.mutation.DockerImageCleared() {
+		_spec.ClearField(courseversion.FieldDockerImage, field.TypeString)
+	}
+	if value, ok := _u.mutation.ExerciseFilename(); ok {
+		_spec.SetField(courseversion.FieldExerciseFilename, field.TypeString, value)
+	}
+	if _u.mutation.ExerciseFilenameCleared() {
+		_spec.ClearField(courseversion.FieldExerciseFilename, field.TypeString)
+	}
+	if value, ok := _u.mutation.ExerciseTestFilename(); ok {
+		_spec.SetField(courseversion.FieldExerciseTestFilename, field.TypeString, value)
+	}
+	if _u.mutation.ExerciseTestFilenameCleared() {
+		_spec.ClearField(courseversion.FieldExerciseTestFilename, field.TypeString)
+	}
+	if value, ok := _u.mutation.LessonsCount(); ok {
+		_spec.SetField(courseversion.FieldLessonsCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLessonsCount(); ok {
+		_spec.AddField(courseversion.FieldLessonsCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.LanguageID(); ok {
+		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLanguageID(); ok {
+		_spec.AddField(courseversion.FieldLanguageID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &CourseVersion{config: _u.config}
 	_spec.Assign = _node.assignValues

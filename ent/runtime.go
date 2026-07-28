@@ -12,6 +12,12 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
+	"hexletbasics/ent/languagelesson"
+	"hexletbasics/ent/languagelessonversion"
+	"hexletbasics/ent/languagelessonversioninfo"
+	"hexletbasics/ent/languagemodule"
+	"hexletbasics/ent/languagemoduleversion"
+	"hexletbasics/ent/languagemoduleversioninfo"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
 	"hexletbasics/ent/staffmember"
@@ -103,10 +109,20 @@ func init() {
 	coursecategory.UpdateDefaultUpdatedAt = coursecategoryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	courseversionFields := schema.CourseVersion{}.Fields()
 	_ = courseversionFields
+	// courseversionDescLessonsCount is the schema descriptor for lessons_count field.
+	courseversionDescLessonsCount := courseversionFields[9].Descriptor()
+	// courseversion.DefaultLessonsCount holds the default value on creation for the lessons_count field.
+	courseversion.DefaultLessonsCount = courseversionDescLessonsCount.Default.(int)
 	// courseversionDescCreatedAt is the schema descriptor for created_at field.
-	courseversionDescCreatedAt := courseversionFields[2].Descriptor()
+	courseversionDescCreatedAt := courseversionFields[11].Descriptor()
 	// courseversion.DefaultCreatedAt holds the default value on creation for the created_at field.
 	courseversion.DefaultCreatedAt = courseversionDescCreatedAt.Default.(func() time.Time)
+	// courseversionDescUpdatedAt is the schema descriptor for updated_at field.
+	courseversionDescUpdatedAt := courseversionFields[12].Descriptor()
+	// courseversion.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	courseversion.DefaultUpdatedAt = courseversionDescUpdatedAt.Default.(func() time.Time)
+	// courseversion.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	courseversion.UpdateDefaultUpdatedAt = courseversionDescUpdatedAt.UpdateDefault.(func() time.Time)
 	landingpageFields := schema.LandingPage{}.Fields()
 	_ = landingpageFields
 	// landingpageDescCreatedAt is the schema descriptor for created_at field.
@@ -131,6 +147,78 @@ func init() {
 	landingpageqnaitem.DefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.Default.(func() time.Time)
 	// landingpageqnaitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	landingpageqnaitem.UpdateDefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagelessonFields := schema.LanguageLesson{}.Fields()
+	_ = languagelessonFields
+	// languagelessonDescCreatedAt is the schema descriptor for created_at field.
+	languagelessonDescCreatedAt := languagelessonFields[5].Descriptor()
+	// languagelesson.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagelesson.DefaultCreatedAt = languagelessonDescCreatedAt.Default.(func() time.Time)
+	// languagelessonDescUpdatedAt is the schema descriptor for updated_at field.
+	languagelessonDescUpdatedAt := languagelessonFields[6].Descriptor()
+	// languagelesson.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagelesson.DefaultUpdatedAt = languagelessonDescUpdatedAt.Default.(func() time.Time)
+	// languagelesson.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagelesson.UpdateDefaultUpdatedAt = languagelessonDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagelessonversionFields := schema.LanguageLessonVersion{}.Fields()
+	_ = languagelessonversionFields
+	// languagelessonversionDescCreatedAt is the schema descriptor for created_at field.
+	languagelessonversionDescCreatedAt := languagelessonversionFields[10].Descriptor()
+	// languagelessonversion.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagelessonversion.DefaultCreatedAt = languagelessonversionDescCreatedAt.Default.(func() time.Time)
+	// languagelessonversionDescUpdatedAt is the schema descriptor for updated_at field.
+	languagelessonversionDescUpdatedAt := languagelessonversionFields[11].Descriptor()
+	// languagelessonversion.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagelessonversion.DefaultUpdatedAt = languagelessonversionDescUpdatedAt.Default.(func() time.Time)
+	// languagelessonversion.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagelessonversion.UpdateDefaultUpdatedAt = languagelessonversionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagelessonversioninfoFields := schema.LanguageLessonVersionInfo{}.Fields()
+	_ = languagelessonversioninfoFields
+	// languagelessonversioninfoDescCreatedAt is the schema descriptor for created_at field.
+	languagelessonversioninfoDescCreatedAt := languagelessonversioninfoFields[11].Descriptor()
+	// languagelessonversioninfo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagelessonversioninfo.DefaultCreatedAt = languagelessonversioninfoDescCreatedAt.Default.(func() time.Time)
+	// languagelessonversioninfoDescUpdatedAt is the schema descriptor for updated_at field.
+	languagelessonversioninfoDescUpdatedAt := languagelessonversioninfoFields[12].Descriptor()
+	// languagelessonversioninfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagelessonversioninfo.DefaultUpdatedAt = languagelessonversioninfoDescUpdatedAt.Default.(func() time.Time)
+	// languagelessonversioninfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagelessonversioninfo.UpdateDefaultUpdatedAt = languagelessonversioninfoDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagemoduleFields := schema.LanguageModule{}.Fields()
+	_ = languagemoduleFields
+	// languagemoduleDescCreatedAt is the schema descriptor for created_at field.
+	languagemoduleDescCreatedAt := languagemoduleFields[4].Descriptor()
+	// languagemodule.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagemodule.DefaultCreatedAt = languagemoduleDescCreatedAt.Default.(func() time.Time)
+	// languagemoduleDescUpdatedAt is the schema descriptor for updated_at field.
+	languagemoduleDescUpdatedAt := languagemoduleFields[5].Descriptor()
+	// languagemodule.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagemodule.DefaultUpdatedAt = languagemoduleDescUpdatedAt.Default.(func() time.Time)
+	// languagemodule.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagemodule.UpdateDefaultUpdatedAt = languagemoduleDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagemoduleversionFields := schema.LanguageModuleVersion{}.Fields()
+	_ = languagemoduleversionFields
+	// languagemoduleversionDescCreatedAt is the schema descriptor for created_at field.
+	languagemoduleversionDescCreatedAt := languagemoduleversionFields[4].Descriptor()
+	// languagemoduleversion.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagemoduleversion.DefaultCreatedAt = languagemoduleversionDescCreatedAt.Default.(func() time.Time)
+	// languagemoduleversionDescUpdatedAt is the schema descriptor for updated_at field.
+	languagemoduleversionDescUpdatedAt := languagemoduleversionFields[5].Descriptor()
+	// languagemoduleversion.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagemoduleversion.DefaultUpdatedAt = languagemoduleversionDescUpdatedAt.Default.(func() time.Time)
+	// languagemoduleversion.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagemoduleversion.UpdateDefaultUpdatedAt = languagemoduleversionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagemoduleversioninfoFields := schema.LanguageModuleVersionInfo{}.Fields()
+	_ = languagemoduleversioninfoFields
+	// languagemoduleversioninfoDescCreatedAt is the schema descriptor for created_at field.
+	languagemoduleversioninfoDescCreatedAt := languagemoduleversioninfoFields[6].Descriptor()
+	// languagemoduleversioninfo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagemoduleversioninfo.DefaultCreatedAt = languagemoduleversioninfoDescCreatedAt.Default.(func() time.Time)
+	// languagemoduleversioninfoDescUpdatedAt is the schema descriptor for updated_at field.
+	languagemoduleversioninfoDescUpdatedAt := languagemoduleversioninfoFields[7].Descriptor()
+	// languagemoduleversioninfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagemoduleversioninfo.DefaultUpdatedAt = languagemoduleversioninfoDescUpdatedAt.Default.(func() time.Time)
+	// languagemoduleversioninfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagemoduleversioninfo.UpdateDefaultUpdatedAt = languagemoduleversioninfoDescUpdatedAt.UpdateDefault.(func() time.Time)
 	reviewFields := schema.Review{}.Fields()
 	_ = reviewFields
 	// reviewDescCreatedAt is the schema descriptor for created_at field.
@@ -198,11 +286,11 @@ func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for created_at field.
-	userDescCreatedAt := userFields[5].Descriptor()
+	userDescCreatedAt := userFields[6].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
 	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
 	// userDescUpdatedAt is the schema descriptor for updated_at field.
-	userDescUpdatedAt := userFields[6].Descriptor()
+	userDescUpdatedAt := userFields[7].Descriptor()
 	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.

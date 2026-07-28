@@ -17,8 +17,28 @@ const (
 	FieldResult = "result"
 	// FieldState holds the string denoting the state field in the database.
 	FieldState = "state"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
+	// FieldProgress holds the string denoting the progress field in the database.
+	FieldProgress = "progress"
+	// FieldLearnAs holds the string denoting the learn_as field in the database.
+	FieldLearnAs = "learn_as"
+	// FieldExtension holds the string denoting the extension field in the database.
+	FieldExtension = "extension"
+	// FieldDockerImage holds the string denoting the docker_image field in the database.
+	FieldDockerImage = "docker_image"
+	// FieldExerciseFilename holds the string denoting the exercise_filename field in the database.
+	FieldExerciseFilename = "exercise_filename"
+	// FieldExerciseTestFilename holds the string denoting the exercise_test_filename field in the database.
+	FieldExerciseTestFilename = "exercise_test_filename"
+	// FieldLessonsCount holds the string denoting the lessons_count field in the database.
+	FieldLessonsCount = "lessons_count"
+	// FieldLanguageID holds the string denoting the language_id field in the database.
+	FieldLanguageID = "language_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the courseversion in the database.
 	Table = "language_versions"
 )
@@ -28,7 +48,17 @@ var Columns = []string{
 	FieldID,
 	FieldResult,
 	FieldState,
+	FieldName,
+	FieldProgress,
+	FieldLearnAs,
+	FieldExtension,
+	FieldDockerImage,
+	FieldExerciseFilename,
+	FieldExerciseTestFilename,
+	FieldLessonsCount,
+	FieldLanguageID,
 	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -42,8 +72,14 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultLessonsCount holds the default value on creation for the "lessons_count" field.
+	DefaultLessonsCount int
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 )
 
 // OrderOption defines the ordering options for the CourseVersion queries.
@@ -64,7 +100,57 @@ func ByState(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldState, opts...).ToFunc()
 }
 
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByProgress orders the results by the progress field.
+func ByProgress(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProgress, opts...).ToFunc()
+}
+
+// ByLearnAs orders the results by the learn_as field.
+func ByLearnAs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLearnAs, opts...).ToFunc()
+}
+
+// ByExtension orders the results by the extension field.
+func ByExtension(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExtension, opts...).ToFunc()
+}
+
+// ByDockerImage orders the results by the docker_image field.
+func ByDockerImage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDockerImage, opts...).ToFunc()
+}
+
+// ByExerciseFilename orders the results by the exercise_filename field.
+func ByExerciseFilename(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExerciseFilename, opts...).ToFunc()
+}
+
+// ByExerciseTestFilename orders the results by the exercise_test_filename field.
+func ByExerciseTestFilename(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExerciseTestFilename, opts...).ToFunc()
+}
+
+// ByLessonsCount orders the results by the lessons_count field.
+func ByLessonsCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLessonsCount, opts...).ToFunc()
+}
+
+// ByLanguageID orders the results by the language_id field.
+func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+}
+
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

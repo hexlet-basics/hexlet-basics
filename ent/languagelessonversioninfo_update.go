@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -150,6 +151,113 @@ func (_u *LanguageLessonVersionInfoUpdate) AddLanguageVersionID(v int) *Language
 	return _u
 }
 
+// SetTheory sets the "theory" field.
+func (_u *LanguageLessonVersionInfoUpdate) SetTheory(v string) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.SetTheory(v)
+	return _u
+}
+
+// SetNillableTheory sets the "theory" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdate) SetNillableTheory(v *string) *LanguageLessonVersionInfoUpdate {
+	if v != nil {
+		_u.SetTheory(*v)
+	}
+	return _u
+}
+
+// ClearTheory clears the value of the "theory" field.
+func (_u *LanguageLessonVersionInfoUpdate) ClearTheory() *LanguageLessonVersionInfoUpdate {
+	_u.mutation.ClearTheory()
+	return _u
+}
+
+// SetInstructions sets the "instructions" field.
+func (_u *LanguageLessonVersionInfoUpdate) SetInstructions(v string) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.SetInstructions(v)
+	return _u
+}
+
+// SetNillableInstructions sets the "instructions" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdate) SetNillableInstructions(v *string) *LanguageLessonVersionInfoUpdate {
+	if v != nil {
+		_u.SetInstructions(*v)
+	}
+	return _u
+}
+
+// ClearInstructions clears the value of the "instructions" field.
+func (_u *LanguageLessonVersionInfoUpdate) ClearInstructions() *LanguageLessonVersionInfoUpdate {
+	_u.mutation.ClearInstructions()
+	return _u
+}
+
+// SetTips sets the "tips" field.
+func (_u *LanguageLessonVersionInfoUpdate) SetTips(v string) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.SetTips(v)
+	return _u
+}
+
+// SetNillableTips sets the "tips" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdate) SetNillableTips(v *string) *LanguageLessonVersionInfoUpdate {
+	if v != nil {
+		_u.SetTips(*v)
+	}
+	return _u
+}
+
+// ClearTips clears the value of the "tips" field.
+func (_u *LanguageLessonVersionInfoUpdate) ClearTips() *LanguageLessonVersionInfoUpdate {
+	_u.mutation.ClearTips()
+	return _u
+}
+
+// SetDefinitions sets the "definitions" field.
+func (_u *LanguageLessonVersionInfoUpdate) SetDefinitions(v string) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.SetDefinitions(v)
+	return _u
+}
+
+// SetNillableDefinitions sets the "definitions" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdate) SetNillableDefinitions(v *string) *LanguageLessonVersionInfoUpdate {
+	if v != nil {
+		_u.SetDefinitions(*v)
+	}
+	return _u
+}
+
+// ClearDefinitions clears the value of the "definitions" field.
+func (_u *LanguageLessonVersionInfoUpdate) ClearDefinitions() *LanguageLessonVersionInfoUpdate {
+	_u.mutation.ClearDefinitions()
+	return _u
+}
+
+// SetVersionID sets the "version_id" field.
+func (_u *LanguageLessonVersionInfoUpdate) SetVersionID(v int) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.ResetVersionID()
+	_u.mutation.SetVersionID(v)
+	return _u
+}
+
+// SetNillableVersionID sets the "version_id" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdate) SetNillableVersionID(v *int) *LanguageLessonVersionInfoUpdate {
+	if v != nil {
+		_u.SetVersionID(*v)
+	}
+	return _u
+}
+
+// AddVersionID adds value to the "version_id" field.
+func (_u *LanguageLessonVersionInfoUpdate) AddVersionID(v int) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.AddVersionID(v)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonVersionInfoUpdate) SetUpdatedAt(v time.Time) *LanguageLessonVersionInfoUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // Mutation returns the LanguageLessonVersionInfoMutation object of the builder.
 func (_u *LanguageLessonVersionInfoUpdate) Mutation() *LanguageLessonVersionInfoMutation {
 	return _u.mutation
@@ -157,6 +265,7 @@ func (_u *LanguageLessonVersionInfoUpdate) Mutation() *LanguageLessonVersionInfo
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *LanguageLessonVersionInfoUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -179,6 +288,14 @@ func (_u *LanguageLessonVersionInfoUpdate) Exec(ctx context.Context) error {
 func (_u *LanguageLessonVersionInfoUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LanguageLessonVersionInfoUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := languagelessonversioninfo.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -226,6 +343,39 @@ func (_u *LanguageLessonVersionInfoUpdate) sqlSave(ctx context.Context) (_node i
 	}
 	if value, ok := _u.mutation.AddedLanguageVersionID(); ok {
 		_spec.AddField(languagelessonversioninfo.FieldLanguageVersionID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.Theory(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldTheory, field.TypeString, value)
+	}
+	if _u.mutation.TheoryCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldTheory, field.TypeString)
+	}
+	if value, ok := _u.mutation.Instructions(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldInstructions, field.TypeString, value)
+	}
+	if _u.mutation.InstructionsCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldInstructions, field.TypeString)
+	}
+	if value, ok := _u.mutation.Tips(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldTips, field.TypeString, value)
+	}
+	if _u.mutation.TipsCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldTips, field.TypeString)
+	}
+	if value, ok := _u.mutation.Definitions(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldDefinitions, field.TypeString, value)
+	}
+	if _u.mutation.DefinitionsCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldDefinitions, field.TypeString)
+	}
+	if value, ok := _u.mutation.VersionID(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldVersionID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedVersionID(); ok {
+		_spec.AddField(languagelessonversioninfo.FieldVersionID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -370,6 +520,113 @@ func (_u *LanguageLessonVersionInfoUpdateOne) AddLanguageVersionID(v int) *Langu
 	return _u
 }
 
+// SetTheory sets the "theory" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetTheory(v string) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.SetTheory(v)
+	return _u
+}
+
+// SetNillableTheory sets the "theory" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetNillableTheory(v *string) *LanguageLessonVersionInfoUpdateOne {
+	if v != nil {
+		_u.SetTheory(*v)
+	}
+	return _u
+}
+
+// ClearTheory clears the value of the "theory" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) ClearTheory() *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.ClearTheory()
+	return _u
+}
+
+// SetInstructions sets the "instructions" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetInstructions(v string) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.SetInstructions(v)
+	return _u
+}
+
+// SetNillableInstructions sets the "instructions" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetNillableInstructions(v *string) *LanguageLessonVersionInfoUpdateOne {
+	if v != nil {
+		_u.SetInstructions(*v)
+	}
+	return _u
+}
+
+// ClearInstructions clears the value of the "instructions" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) ClearInstructions() *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.ClearInstructions()
+	return _u
+}
+
+// SetTips sets the "tips" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetTips(v string) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.SetTips(v)
+	return _u
+}
+
+// SetNillableTips sets the "tips" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetNillableTips(v *string) *LanguageLessonVersionInfoUpdateOne {
+	if v != nil {
+		_u.SetTips(*v)
+	}
+	return _u
+}
+
+// ClearTips clears the value of the "tips" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) ClearTips() *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.ClearTips()
+	return _u
+}
+
+// SetDefinitions sets the "definitions" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetDefinitions(v string) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.SetDefinitions(v)
+	return _u
+}
+
+// SetNillableDefinitions sets the "definitions" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetNillableDefinitions(v *string) *LanguageLessonVersionInfoUpdateOne {
+	if v != nil {
+		_u.SetDefinitions(*v)
+	}
+	return _u
+}
+
+// ClearDefinitions clears the value of the "definitions" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) ClearDefinitions() *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.ClearDefinitions()
+	return _u
+}
+
+// SetVersionID sets the "version_id" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetVersionID(v int) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.ResetVersionID()
+	_u.mutation.SetVersionID(v)
+	return _u
+}
+
+// SetNillableVersionID sets the "version_id" field if the given value is not nil.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetNillableVersionID(v *int) *LanguageLessonVersionInfoUpdateOne {
+	if v != nil {
+		_u.SetVersionID(*v)
+	}
+	return _u
+}
+
+// AddVersionID adds value to the "version_id" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) AddVersionID(v int) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.AddVersionID(v)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonVersionInfoUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionInfoUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // Mutation returns the LanguageLessonVersionInfoMutation object of the builder.
 func (_u *LanguageLessonVersionInfoUpdateOne) Mutation() *LanguageLessonVersionInfoMutation {
 	return _u.mutation
@@ -390,6 +647,7 @@ func (_u *LanguageLessonVersionInfoUpdateOne) Select(field string, fields ...str
 
 // Save executes the query and returns the updated LanguageLessonVersionInfo entity.
 func (_u *LanguageLessonVersionInfoUpdateOne) Save(ctx context.Context) (*LanguageLessonVersionInfo, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -412,6 +670,14 @@ func (_u *LanguageLessonVersionInfoUpdateOne) Exec(ctx context.Context) error {
 func (_u *LanguageLessonVersionInfoUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LanguageLessonVersionInfoUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := languagelessonversioninfo.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -476,6 +742,39 @@ func (_u *LanguageLessonVersionInfoUpdateOne) sqlSave(ctx context.Context) (_nod
 	}
 	if value, ok := _u.mutation.AddedLanguageVersionID(); ok {
 		_spec.AddField(languagelessonversioninfo.FieldLanguageVersionID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.Theory(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldTheory, field.TypeString, value)
+	}
+	if _u.mutation.TheoryCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldTheory, field.TypeString)
+	}
+	if value, ok := _u.mutation.Instructions(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldInstructions, field.TypeString, value)
+	}
+	if _u.mutation.InstructionsCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldInstructions, field.TypeString)
+	}
+	if value, ok := _u.mutation.Tips(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldTips, field.TypeString, value)
+	}
+	if _u.mutation.TipsCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldTips, field.TypeString)
+	}
+	if value, ok := _u.mutation.Definitions(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldDefinitions, field.TypeString, value)
+	}
+	if _u.mutation.DefinitionsCleared() {
+		_spec.ClearField(languagelessonversioninfo.FieldDefinitions, field.TypeString)
+	}
+	if value, ok := _u.mutation.VersionID(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldVersionID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedVersionID(); ok {
+		_spec.AddField(languagelessonversioninfo.FieldVersionID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonversioninfo.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &LanguageLessonVersionInfo{config: _u.config}
 	_spec.Assign = _node.assignValues

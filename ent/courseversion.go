@@ -21,8 +21,28 @@ type CourseVersion struct {
 	Result *string `json:"result,omitempty"`
 	// State holds the value of the "state" field.
 	State *string `json:"state,omitempty"`
+	// Name holds the value of the "name" field.
+	Name *string `json:"name,omitempty"`
+	// Progress holds the value of the "progress" field.
+	Progress *string `json:"progress,omitempty"`
+	// LearnAs holds the value of the "learn_as" field.
+	LearnAs *string `json:"learn_as,omitempty"`
+	// Extension holds the value of the "extension" field.
+	Extension *string `json:"extension,omitempty"`
+	// DockerImage holds the value of the "docker_image" field.
+	DockerImage *string `json:"docker_image,omitempty"`
+	// ExerciseFilename holds the value of the "exercise_filename" field.
+	ExerciseFilename *string `json:"exercise_filename,omitempty"`
+	// ExerciseTestFilename holds the value of the "exercise_test_filename" field.
+	ExerciseTestFilename *string `json:"exercise_test_filename,omitempty"`
+	// LessonsCount holds the value of the "lessons_count" field.
+	LessonsCount int `json:"lessons_count,omitempty"`
+	// LanguageID holds the value of the "language_id" field.
+	LanguageID int `json:"language_id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt    time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -31,11 +51,11 @@ func (*CourseVersion) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case courseversion.FieldID:
+		case courseversion.FieldID, courseversion.FieldLessonsCount, courseversion.FieldLanguageID:
 			values[i] = new(sql.NullInt64)
-		case courseversion.FieldResult, courseversion.FieldState:
+		case courseversion.FieldResult, courseversion.FieldState, courseversion.FieldName, courseversion.FieldProgress, courseversion.FieldLearnAs, courseversion.FieldExtension, courseversion.FieldDockerImage, courseversion.FieldExerciseFilename, courseversion.FieldExerciseTestFilename:
 			values[i] = new(sql.NullString)
-		case courseversion.FieldCreatedAt:
+		case courseversion.FieldCreatedAt, courseversion.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -72,11 +92,78 @@ func (_m *CourseVersion) assignValues(columns []string, values []any) error {
 				_m.State = new(string)
 				*_m.State = value.String
 			}
+		case courseversion.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				_m.Name = new(string)
+				*_m.Name = value.String
+			}
+		case courseversion.FieldProgress:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field progress", values[i])
+			} else if value.Valid {
+				_m.Progress = new(string)
+				*_m.Progress = value.String
+			}
+		case courseversion.FieldLearnAs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field learn_as", values[i])
+			} else if value.Valid {
+				_m.LearnAs = new(string)
+				*_m.LearnAs = value.String
+			}
+		case courseversion.FieldExtension:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field extension", values[i])
+			} else if value.Valid {
+				_m.Extension = new(string)
+				*_m.Extension = value.String
+			}
+		case courseversion.FieldDockerImage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field docker_image", values[i])
+			} else if value.Valid {
+				_m.DockerImage = new(string)
+				*_m.DockerImage = value.String
+			}
+		case courseversion.FieldExerciseFilename:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field exercise_filename", values[i])
+			} else if value.Valid {
+				_m.ExerciseFilename = new(string)
+				*_m.ExerciseFilename = value.String
+			}
+		case courseversion.FieldExerciseTestFilename:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field exercise_test_filename", values[i])
+			} else if value.Valid {
+				_m.ExerciseTestFilename = new(string)
+				*_m.ExerciseTestFilename = value.String
+			}
+		case courseversion.FieldLessonsCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field lessons_count", values[i])
+			} else if value.Valid {
+				_m.LessonsCount = int(value.Int64)
+			}
+		case courseversion.FieldLanguageID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+			} else if value.Valid {
+				_m.LanguageID = int(value.Int64)
+			}
 		case courseversion.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
+			}
+		case courseversion.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -124,8 +211,52 @@ func (_m *CourseVersion) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
+	if v := _m.Name; v != nil {
+		builder.WriteString("name=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Progress; v != nil {
+		builder.WriteString("progress=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.LearnAs; v != nil {
+		builder.WriteString("learn_as=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Extension; v != nil {
+		builder.WriteString("extension=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.DockerImage; v != nil {
+		builder.WriteString("docker_image=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.ExerciseFilename; v != nil {
+		builder.WriteString("exercise_filename=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.ExerciseTestFilename; v != nil {
+		builder.WriteString("exercise_test_filename=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("lessons_count=")
+	builder.WriteString(fmt.Sprintf("%v", _m.LessonsCount))
+	builder.WriteString(", ")
+	builder.WriteString("language_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

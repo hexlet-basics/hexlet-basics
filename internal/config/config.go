@@ -24,6 +24,22 @@ type Config struct {
 	// URLs it serves itself (the `/storage/{key}` blob read path). Separate from
 	// AppHost because the API may sit on a different host than the site.
 	PublicURL string `env:"PUBLIC_URL" envDefault:"http://localhost:3001"`
+	// CourseRepoBaseURL is the GitHub org base under which each course's exercises
+	// repo lives: the loader clones `<base>/exercises-<slug>.git`. The default
+	// matches the legacy hard-coded convention (apiconv.repositoryURL).
+	CourseRepoBaseURL string `env:"COURSE_REPO_BASE_URL" envDefault:"https://github.com/hexlet-basics"`
+	// GitHubToken authenticates clones (private repos / higher rate limits). The
+	// exercises repos are public, so it is optional; when set it is used as the
+	// HTTP basic-auth password (x-access-token).
+	GitHubToken string `env:"GITHUB_TOKEN"`
+	// GitHubWebhookSecret is the shared secret GitHub signs webhook deliveries
+	// with (HMAC-SHA256). The webhook route rejects any delivery whose signature
+	// doesn't verify; an empty secret disables the webhook (fail closed).
+	GitHubWebhookSecret string `env:"GITHUB_WEBHOOK_SECRET"`
+	// JWTSecret signs the session JWT stored in the auth cookie (ADR-0003). The
+	// dev default keeps local sign-in zero-config; prod MUST override it, since
+	// anyone who knows the secret can forge sessions.
+	JWTSecret string `env:"JWT_SECRET" envDefault:"dev-insecure-jwt-secret-change-me"`
 }
 
 // Load reads configuration from environment variables, applying defaults.

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -28,7 +29,21 @@ type LanguageLessonVersionInfo struct {
 	LanguageLessonID int `json:"language_lesson_id,omitempty"`
 	// LanguageVersionID holds the value of the "language_version_id" field.
 	LanguageVersionID int `json:"language_version_id,omitempty"`
-	selectValues      sql.SelectValues
+	// Theory holds the value of the "theory" field.
+	Theory *string `json:"theory,omitempty"`
+	// Instructions holds the value of the "instructions" field.
+	Instructions *string `json:"instructions,omitempty"`
+	// Tips holds the value of the "tips" field.
+	Tips *string `json:"tips,omitempty"`
+	// Definitions holds the value of the "definitions" field.
+	Definitions *string `json:"definitions,omitempty"`
+	// VersionID holds the value of the "version_id" field.
+	VersionID int `json:"version_id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -36,10 +51,12 @@ func (*LanguageLessonVersionInfo) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case languagelessonversioninfo.FieldID, languagelessonversioninfo.FieldLanguageID, languagelessonversioninfo.FieldLanguageLessonID, languagelessonversioninfo.FieldLanguageVersionID:
+		case languagelessonversioninfo.FieldID, languagelessonversioninfo.FieldLanguageID, languagelessonversioninfo.FieldLanguageLessonID, languagelessonversioninfo.FieldLanguageVersionID, languagelessonversioninfo.FieldVersionID:
 			values[i] = new(sql.NullInt64)
-		case languagelessonversioninfo.FieldName, languagelessonversioninfo.FieldDescription, languagelessonversioninfo.FieldLocale:
+		case languagelessonversioninfo.FieldName, languagelessonversioninfo.FieldDescription, languagelessonversioninfo.FieldLocale, languagelessonversioninfo.FieldTheory, languagelessonversioninfo.FieldInstructions, languagelessonversioninfo.FieldTips, languagelessonversioninfo.FieldDefinitions:
 			values[i] = new(sql.NullString)
+		case languagelessonversioninfo.FieldCreatedAt, languagelessonversioninfo.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -100,6 +117,52 @@ func (_m *LanguageLessonVersionInfo) assignValues(columns []string, values []any
 			} else if value.Valid {
 				_m.LanguageVersionID = int(value.Int64)
 			}
+		case languagelessonversioninfo.FieldTheory:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field theory", values[i])
+			} else if value.Valid {
+				_m.Theory = new(string)
+				*_m.Theory = value.String
+			}
+		case languagelessonversioninfo.FieldInstructions:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field instructions", values[i])
+			} else if value.Valid {
+				_m.Instructions = new(string)
+				*_m.Instructions = value.String
+			}
+		case languagelessonversioninfo.FieldTips:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field tips", values[i])
+			} else if value.Valid {
+				_m.Tips = new(string)
+				*_m.Tips = value.String
+			}
+		case languagelessonversioninfo.FieldDefinitions:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field definitions", values[i])
+			} else if value.Valid {
+				_m.Definitions = new(string)
+				*_m.Definitions = value.String
+			}
+		case languagelessonversioninfo.FieldVersionID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version_id", values[i])
+			} else if value.Valid {
+				_m.VersionID = int(value.Int64)
+			}
+		case languagelessonversioninfo.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case languagelessonversioninfo.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -159,6 +222,35 @@ func (_m *LanguageLessonVersionInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("language_version_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LanguageVersionID))
+	builder.WriteString(", ")
+	if v := _m.Theory; v != nil {
+		builder.WriteString("theory=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Instructions; v != nil {
+		builder.WriteString("instructions=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Tips; v != nil {
+		builder.WriteString("tips=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Definitions; v != nil {
+		builder.WriteString("definitions=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("version_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.VersionID))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -17,6 +17,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+
+	"hexletbasics/internal/courseloader"
 )
 
 // defaultMaxWorkers bounds concurrency on the default queue. Tune per-queue when
@@ -36,23 +38,28 @@ type pingWorker struct {
 
 func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { return nil }
 
-// Workers builds the worker registry. Real job workers register here as they are
-// implemented.
-func Workers() *river.Workers {
+// Workers builds the worker registry. The exercise loader is registered when a
+// loader is supplied; a nil loader (insert-only clients that never Start) skips
+// it, since only the worker process needs the loader's db/blob dependencies.
+func Workers(loader *courseloader.Loader) *river.Workers {
 	w := river.NewWorkers()
 	river.AddWorker(w, &pingWorker{})
+	if loader != nil {
+		river.AddWorker(w, &exerciseLoaderWorker{loader: loader})
+	}
 	return w
 }
 
 // NewClient builds the river client over a pgx pool (riverpgxv5). It is
 // insert-and-work capable: the caller Start()s it to run workers and Stop()s it
 // on shutdown. Insert-only callers (e.g. HTTP handlers enqueuing work) can use
-// the same client without starting it.
-func NewClient(pool *pgxpool.Pool) (*river.Client[pgx.Tx], error) {
+// the same client without starting it. The loader backs the exercise-build
+// worker; pass nil for an insert-only client.
+func NewClient(pool *pgxpool.Pool, loader *courseloader.Loader) (*river.Client[pgx.Tx], error) {
 	return river.NewClient(riverpgxv5.New(pool), &river.Config{
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
-		Workers: Workers(),
+		Workers: Workers(loader),
 	})
 }

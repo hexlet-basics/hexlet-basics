@@ -4,6 +4,7 @@ package languagelesson
 
 import (
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 )
@@ -61,6 +62,31 @@ func Slug(v string) predicate.LanguageLesson {
 // NaturalOrder applies equality check predicate on the "natural_order" field. It's identical to NaturalOrderEQ.
 func NaturalOrder(v int) predicate.LanguageLesson {
 	return predicate.LanguageLesson(sql.FieldEQ(FieldNaturalOrder, v))
+}
+
+// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
+func LanguageID(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldLanguageID, v))
+}
+
+// ModuleID applies equality check predicate on the "module_id" field. It's identical to ModuleIDEQ.
+func ModuleID(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldModuleID, v))
+}
+
+// State applies equality check predicate on the "state" field. It's identical to StateEQ.
+func State(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldState, v))
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
 // SlugEQ applies the EQ predicate on the "slug" field.
@@ -186,6 +212,261 @@ func NaturalOrderIsNil() predicate.LanguageLesson {
 // NaturalOrderNotNil applies the NotNil predicate on the "natural_order" field.
 func NaturalOrderNotNil() predicate.LanguageLesson {
 	return predicate.LanguageLesson(sql.FieldNotNull(FieldNaturalOrder))
+}
+
+// LanguageIDEQ applies the EQ predicate on the "language_id" field.
+func LanguageIDEQ(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldLanguageID, v))
+}
+
+// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
+func LanguageIDNEQ(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNEQ(FieldLanguageID, v))
+}
+
+// LanguageIDIn applies the In predicate on the "language_id" field.
+func LanguageIDIn(vs ...int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIn(FieldLanguageID, vs...))
+}
+
+// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
+func LanguageIDNotIn(vs ...int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotIn(FieldLanguageID, vs...))
+}
+
+// LanguageIDGT applies the GT predicate on the "language_id" field.
+func LanguageIDGT(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGT(FieldLanguageID, v))
+}
+
+// LanguageIDGTE applies the GTE predicate on the "language_id" field.
+func LanguageIDGTE(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGTE(FieldLanguageID, v))
+}
+
+// LanguageIDLT applies the LT predicate on the "language_id" field.
+func LanguageIDLT(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLT(FieldLanguageID, v))
+}
+
+// LanguageIDLTE applies the LTE predicate on the "language_id" field.
+func LanguageIDLTE(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLTE(FieldLanguageID, v))
+}
+
+// LanguageIDIsNil applies the IsNil predicate on the "language_id" field.
+func LanguageIDIsNil() predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIsNull(FieldLanguageID))
+}
+
+// LanguageIDNotNil applies the NotNil predicate on the "language_id" field.
+func LanguageIDNotNil() predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotNull(FieldLanguageID))
+}
+
+// ModuleIDEQ applies the EQ predicate on the "module_id" field.
+func ModuleIDEQ(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldModuleID, v))
+}
+
+// ModuleIDNEQ applies the NEQ predicate on the "module_id" field.
+func ModuleIDNEQ(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNEQ(FieldModuleID, v))
+}
+
+// ModuleIDIn applies the In predicate on the "module_id" field.
+func ModuleIDIn(vs ...int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIn(FieldModuleID, vs...))
+}
+
+// ModuleIDNotIn applies the NotIn predicate on the "module_id" field.
+func ModuleIDNotIn(vs ...int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotIn(FieldModuleID, vs...))
+}
+
+// ModuleIDGT applies the GT predicate on the "module_id" field.
+func ModuleIDGT(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGT(FieldModuleID, v))
+}
+
+// ModuleIDGTE applies the GTE predicate on the "module_id" field.
+func ModuleIDGTE(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGTE(FieldModuleID, v))
+}
+
+// ModuleIDLT applies the LT predicate on the "module_id" field.
+func ModuleIDLT(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLT(FieldModuleID, v))
+}
+
+// ModuleIDLTE applies the LTE predicate on the "module_id" field.
+func ModuleIDLTE(v int) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLTE(FieldModuleID, v))
+}
+
+// ModuleIDIsNil applies the IsNil predicate on the "module_id" field.
+func ModuleIDIsNil() predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIsNull(FieldModuleID))
+}
+
+// ModuleIDNotNil applies the NotNil predicate on the "module_id" field.
+func ModuleIDNotNil() predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotNull(FieldModuleID))
+}
+
+// StateEQ applies the EQ predicate on the "state" field.
+func StateEQ(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldState, v))
+}
+
+// StateNEQ applies the NEQ predicate on the "state" field.
+func StateNEQ(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNEQ(FieldState, v))
+}
+
+// StateIn applies the In predicate on the "state" field.
+func StateIn(vs ...string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIn(FieldState, vs...))
+}
+
+// StateNotIn applies the NotIn predicate on the "state" field.
+func StateNotIn(vs ...string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotIn(FieldState, vs...))
+}
+
+// StateGT applies the GT predicate on the "state" field.
+func StateGT(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGT(FieldState, v))
+}
+
+// StateGTE applies the GTE predicate on the "state" field.
+func StateGTE(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGTE(FieldState, v))
+}
+
+// StateLT applies the LT predicate on the "state" field.
+func StateLT(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLT(FieldState, v))
+}
+
+// StateLTE applies the LTE predicate on the "state" field.
+func StateLTE(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLTE(FieldState, v))
+}
+
+// StateContains applies the Contains predicate on the "state" field.
+func StateContains(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldContains(FieldState, v))
+}
+
+// StateHasPrefix applies the HasPrefix predicate on the "state" field.
+func StateHasPrefix(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldHasPrefix(FieldState, v))
+}
+
+// StateHasSuffix applies the HasSuffix predicate on the "state" field.
+func StateHasSuffix(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldHasSuffix(FieldState, v))
+}
+
+// StateIsNil applies the IsNil predicate on the "state" field.
+func StateIsNil() predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIsNull(FieldState))
+}
+
+// StateNotNil applies the NotNil predicate on the "state" field.
+func StateNotNil() predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotNull(FieldState))
+}
+
+// StateEqualFold applies the EqualFold predicate on the "state" field.
+func StateEqualFold(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEqualFold(FieldState, v))
+}
+
+// StateContainsFold applies the ContainsFold predicate on the "state" field.
+func StateContainsFold(v string) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldContainsFold(FieldState, v))
+}
+
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.LanguageLesson {
+	return predicate.LanguageLesson(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // And groups predicates with the AND operator between them.

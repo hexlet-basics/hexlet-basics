@@ -34,6 +34,20 @@ func (_c *UserCreate) SetNillableEmail(v *string) *UserCreate {
 	return _c
 }
 
+// SetPasswordDigest sets the "password_digest" field.
+func (_c *UserCreate) SetPasswordDigest(v string) *UserCreate {
+	_c.mutation.SetPasswordDigest(v)
+	return _c
+}
+
+// SetNillablePasswordDigest sets the "password_digest" field if the given value is not nil.
+func (_c *UserCreate) SetNillablePasswordDigest(v *string) *UserCreate {
+	if v != nil {
+		_c.SetPasswordDigest(*v)
+	}
+	return _c
+}
+
 // SetFirstName sets the "first_name" field.
 func (_c *UserCreate) SetFirstName(v string) *UserCreate {
 	_c.mutation.SetFirstName(v)
@@ -200,6 +214,10 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 		_node.Email = &value
+	}
+	if value, ok := _c.mutation.PasswordDigest(); ok {
+		_spec.SetField(user.FieldPasswordDigest, field.TypeString, value)
+		_node.PasswordDigest = &value
 	}
 	if value, ok := _c.mutation.FirstName(); ok {
 		_spec.SetField(user.FieldFirstName, field.TypeString, value)

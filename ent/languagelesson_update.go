@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -74,6 +75,86 @@ func (_u *LanguageLessonUpdate) ClearNaturalOrder() *LanguageLessonUpdate {
 	return _u
 }
 
+// SetLanguageID sets the "language_id" field.
+func (_u *LanguageLessonUpdate) SetLanguageID(v int) *LanguageLessonUpdate {
+	_u.mutation.ResetLanguageID()
+	_u.mutation.SetLanguageID(v)
+	return _u
+}
+
+// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
+func (_u *LanguageLessonUpdate) SetNillableLanguageID(v *int) *LanguageLessonUpdate {
+	if v != nil {
+		_u.SetLanguageID(*v)
+	}
+	return _u
+}
+
+// AddLanguageID adds value to the "language_id" field.
+func (_u *LanguageLessonUpdate) AddLanguageID(v int) *LanguageLessonUpdate {
+	_u.mutation.AddLanguageID(v)
+	return _u
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (_u *LanguageLessonUpdate) ClearLanguageID() *LanguageLessonUpdate {
+	_u.mutation.ClearLanguageID()
+	return _u
+}
+
+// SetModuleID sets the "module_id" field.
+func (_u *LanguageLessonUpdate) SetModuleID(v int) *LanguageLessonUpdate {
+	_u.mutation.ResetModuleID()
+	_u.mutation.SetModuleID(v)
+	return _u
+}
+
+// SetNillableModuleID sets the "module_id" field if the given value is not nil.
+func (_u *LanguageLessonUpdate) SetNillableModuleID(v *int) *LanguageLessonUpdate {
+	if v != nil {
+		_u.SetModuleID(*v)
+	}
+	return _u
+}
+
+// AddModuleID adds value to the "module_id" field.
+func (_u *LanguageLessonUpdate) AddModuleID(v int) *LanguageLessonUpdate {
+	_u.mutation.AddModuleID(v)
+	return _u
+}
+
+// ClearModuleID clears the value of the "module_id" field.
+func (_u *LanguageLessonUpdate) ClearModuleID() *LanguageLessonUpdate {
+	_u.mutation.ClearModuleID()
+	return _u
+}
+
+// SetState sets the "state" field.
+func (_u *LanguageLessonUpdate) SetState(v string) *LanguageLessonUpdate {
+	_u.mutation.SetState(v)
+	return _u
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_u *LanguageLessonUpdate) SetNillableState(v *string) *LanguageLessonUpdate {
+	if v != nil {
+		_u.SetState(*v)
+	}
+	return _u
+}
+
+// ClearState clears the value of the "state" field.
+func (_u *LanguageLessonUpdate) ClearState() *LanguageLessonUpdate {
+	_u.mutation.ClearState()
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonUpdate) SetUpdatedAt(v time.Time) *LanguageLessonUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // Mutation returns the LanguageLessonMutation object of the builder.
 func (_u *LanguageLessonUpdate) Mutation() *LanguageLessonMutation {
 	return _u.mutation
@@ -81,6 +162,7 @@ func (_u *LanguageLessonUpdate) Mutation() *LanguageLessonMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *LanguageLessonUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -103,6 +185,14 @@ func (_u *LanguageLessonUpdate) Exec(ctx context.Context) error {
 func (_u *LanguageLessonUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LanguageLessonUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := languagelesson.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -129,6 +219,33 @@ func (_u *LanguageLessonUpdate) sqlSave(ctx context.Context) (_node int, err err
 	}
 	if _u.mutation.NaturalOrderCleared() {
 		_spec.ClearField(languagelesson.FieldNaturalOrder, field.TypeInt)
+	}
+	if value, ok := _u.mutation.LanguageID(); ok {
+		_spec.SetField(languagelesson.FieldLanguageID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLanguageID(); ok {
+		_spec.AddField(languagelesson.FieldLanguageID, field.TypeInt, value)
+	}
+	if _u.mutation.LanguageIDCleared() {
+		_spec.ClearField(languagelesson.FieldLanguageID, field.TypeInt)
+	}
+	if value, ok := _u.mutation.ModuleID(); ok {
+		_spec.SetField(languagelesson.FieldModuleID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedModuleID(); ok {
+		_spec.AddField(languagelesson.FieldModuleID, field.TypeInt, value)
+	}
+	if _u.mutation.ModuleIDCleared() {
+		_spec.ClearField(languagelesson.FieldModuleID, field.TypeInt)
+	}
+	if value, ok := _u.mutation.State(); ok {
+		_spec.SetField(languagelesson.FieldState, field.TypeString, value)
+	}
+	if _u.mutation.StateCleared() {
+		_spec.ClearField(languagelesson.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -197,6 +314,86 @@ func (_u *LanguageLessonUpdateOne) ClearNaturalOrder() *LanguageLessonUpdateOne 
 	return _u
 }
 
+// SetLanguageID sets the "language_id" field.
+func (_u *LanguageLessonUpdateOne) SetLanguageID(v int) *LanguageLessonUpdateOne {
+	_u.mutation.ResetLanguageID()
+	_u.mutation.SetLanguageID(v)
+	return _u
+}
+
+// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
+func (_u *LanguageLessonUpdateOne) SetNillableLanguageID(v *int) *LanguageLessonUpdateOne {
+	if v != nil {
+		_u.SetLanguageID(*v)
+	}
+	return _u
+}
+
+// AddLanguageID adds value to the "language_id" field.
+func (_u *LanguageLessonUpdateOne) AddLanguageID(v int) *LanguageLessonUpdateOne {
+	_u.mutation.AddLanguageID(v)
+	return _u
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (_u *LanguageLessonUpdateOne) ClearLanguageID() *LanguageLessonUpdateOne {
+	_u.mutation.ClearLanguageID()
+	return _u
+}
+
+// SetModuleID sets the "module_id" field.
+func (_u *LanguageLessonUpdateOne) SetModuleID(v int) *LanguageLessonUpdateOne {
+	_u.mutation.ResetModuleID()
+	_u.mutation.SetModuleID(v)
+	return _u
+}
+
+// SetNillableModuleID sets the "module_id" field if the given value is not nil.
+func (_u *LanguageLessonUpdateOne) SetNillableModuleID(v *int) *LanguageLessonUpdateOne {
+	if v != nil {
+		_u.SetModuleID(*v)
+	}
+	return _u
+}
+
+// AddModuleID adds value to the "module_id" field.
+func (_u *LanguageLessonUpdateOne) AddModuleID(v int) *LanguageLessonUpdateOne {
+	_u.mutation.AddModuleID(v)
+	return _u
+}
+
+// ClearModuleID clears the value of the "module_id" field.
+func (_u *LanguageLessonUpdateOne) ClearModuleID() *LanguageLessonUpdateOne {
+	_u.mutation.ClearModuleID()
+	return _u
+}
+
+// SetState sets the "state" field.
+func (_u *LanguageLessonUpdateOne) SetState(v string) *LanguageLessonUpdateOne {
+	_u.mutation.SetState(v)
+	return _u
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_u *LanguageLessonUpdateOne) SetNillableState(v *string) *LanguageLessonUpdateOne {
+	if v != nil {
+		_u.SetState(*v)
+	}
+	return _u
+}
+
+// ClearState clears the value of the "state" field.
+func (_u *LanguageLessonUpdateOne) ClearState() *LanguageLessonUpdateOne {
+	_u.mutation.ClearState()
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // Mutation returns the LanguageLessonMutation object of the builder.
 func (_u *LanguageLessonUpdateOne) Mutation() *LanguageLessonMutation {
 	return _u.mutation
@@ -217,6 +414,7 @@ func (_u *LanguageLessonUpdateOne) Select(field string, fields ...string) *Langu
 
 // Save executes the query and returns the updated LanguageLesson entity.
 func (_u *LanguageLessonUpdateOne) Save(ctx context.Context) (*LanguageLesson, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -239,6 +437,14 @@ func (_u *LanguageLessonUpdateOne) Exec(ctx context.Context) error {
 func (_u *LanguageLessonUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LanguageLessonUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := languagelesson.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -282,6 +488,33 @@ func (_u *LanguageLessonUpdateOne) sqlSave(ctx context.Context) (_node *Language
 	}
 	if _u.mutation.NaturalOrderCleared() {
 		_spec.ClearField(languagelesson.FieldNaturalOrder, field.TypeInt)
+	}
+	if value, ok := _u.mutation.LanguageID(); ok {
+		_spec.SetField(languagelesson.FieldLanguageID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLanguageID(); ok {
+		_spec.AddField(languagelesson.FieldLanguageID, field.TypeInt, value)
+	}
+	if _u.mutation.LanguageIDCleared() {
+		_spec.ClearField(languagelesson.FieldLanguageID, field.TypeInt)
+	}
+	if value, ok := _u.mutation.ModuleID(); ok {
+		_spec.SetField(languagelesson.FieldModuleID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedModuleID(); ok {
+		_spec.AddField(languagelesson.FieldModuleID, field.TypeInt, value)
+	}
+	if _u.mutation.ModuleIDCleared() {
+		_spec.ClearField(languagelesson.FieldModuleID, field.TypeInt)
+	}
+	if value, ok := _u.mutation.State(); ok {
+		_spec.SetField(languagelesson.FieldState, field.TypeString, value)
+	}
+	if _u.mutation.StateCleared() {
+		_spec.ClearField(languagelesson.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &LanguageLesson{config: _u.config}
 	_spec.Assign = _node.assignValues

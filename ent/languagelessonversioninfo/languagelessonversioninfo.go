@@ -3,6 +3,8 @@
 package languagelessonversioninfo
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -23,6 +25,20 @@ const (
 	FieldLanguageLessonID = "language_lesson_id"
 	// FieldLanguageVersionID holds the string denoting the language_version_id field in the database.
 	FieldLanguageVersionID = "language_version_id"
+	// FieldTheory holds the string denoting the theory field in the database.
+	FieldTheory = "theory"
+	// FieldInstructions holds the string denoting the instructions field in the database.
+	FieldInstructions = "instructions"
+	// FieldTips holds the string denoting the tips field in the database.
+	FieldTips = "tips"
+	// FieldDefinitions holds the string denoting the definitions field in the database.
+	FieldDefinitions = "definitions"
+	// FieldVersionID holds the string denoting the version_id field in the database.
+	FieldVersionID = "version_id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the languagelessonversioninfo in the database.
 	Table = "language_lesson_version_infos"
 )
@@ -36,6 +52,13 @@ var Columns = []string{
 	FieldLanguageID,
 	FieldLanguageLessonID,
 	FieldLanguageVersionID,
+	FieldTheory,
+	FieldInstructions,
+	FieldTips,
+	FieldDefinitions,
+	FieldVersionID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -47,6 +70,15 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
+)
 
 // OrderOption defines the ordering options for the LanguageLessonVersionInfo queries.
 type OrderOption func(*sql.Selector)
@@ -84,4 +116,39 @@ func ByLanguageLessonID(opts ...sql.OrderTermOption) OrderOption {
 // ByLanguageVersionID orders the results by the language_version_id field.
 func ByLanguageVersionID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLanguageVersionID, opts...).ToFunc()
+}
+
+// ByTheory orders the results by the theory field.
+func ByTheory(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTheory, opts...).ToFunc()
+}
+
+// ByInstructions orders the results by the instructions field.
+func ByInstructions(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInstructions, opts...).ToFunc()
+}
+
+// ByTips orders the results by the tips field.
+func ByTips(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTips, opts...).ToFunc()
+}
+
+// ByDefinitions orders the results by the definitions field.
+func ByDefinitions(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDefinitions, opts...).ToFunc()
+}
+
+// ByVersionID orders the results by the version_id field.
+func ByVersionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldVersionID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

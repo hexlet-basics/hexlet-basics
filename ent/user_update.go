@@ -48,6 +48,26 @@ func (_u *UserUpdate) ClearEmail() *UserUpdate {
 	return _u
 }
 
+// SetPasswordDigest sets the "password_digest" field.
+func (_u *UserUpdate) SetPasswordDigest(v string) *UserUpdate {
+	_u.mutation.SetPasswordDigest(v)
+	return _u
+}
+
+// SetNillablePasswordDigest sets the "password_digest" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePasswordDigest(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPasswordDigest(*v)
+	}
+	return _u
+}
+
+// ClearPasswordDigest clears the value of the "password_digest" field.
+func (_u *UserUpdate) ClearPasswordDigest() *UserUpdate {
+	_u.mutation.ClearPasswordDigest()
+	return _u
+}
+
 // SetFirstName sets the "first_name" field.
 func (_u *UserUpdate) SetFirstName(v string) *UserUpdate {
 	_u.mutation.SetFirstName(v)
@@ -197,6 +217,12 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.EmailCleared() {
 		_spec.ClearField(user.FieldEmail, field.TypeString)
 	}
+	if value, ok := _u.mutation.PasswordDigest(); ok {
+		_spec.SetField(user.FieldPasswordDigest, field.TypeString, value)
+	}
+	if _u.mutation.PasswordDigestCleared() {
+		_spec.ClearField(user.FieldPasswordDigest, field.TypeString)
+	}
 	if value, ok := _u.mutation.FirstName(); ok {
 		_spec.SetField(user.FieldFirstName, field.TypeString, value)
 	}
@@ -264,6 +290,26 @@ func (_u *UserUpdateOne) SetNillableEmail(v *string) *UserUpdateOne {
 // ClearEmail clears the value of the "email" field.
 func (_u *UserUpdateOne) ClearEmail() *UserUpdateOne {
 	_u.mutation.ClearEmail()
+	return _u
+}
+
+// SetPasswordDigest sets the "password_digest" field.
+func (_u *UserUpdateOne) SetPasswordDigest(v string) *UserUpdateOne {
+	_u.mutation.SetPasswordDigest(v)
+	return _u
+}
+
+// SetNillablePasswordDigest sets the "password_digest" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePasswordDigest(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPasswordDigest(*v)
+	}
+	return _u
+}
+
+// ClearPasswordDigest clears the value of the "password_digest" field.
+func (_u *UserUpdateOne) ClearPasswordDigest() *UserUpdateOne {
+	_u.mutation.ClearPasswordDigest()
 	return _u
 }
 
@@ -445,6 +491,12 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.EmailCleared() {
 		_spec.ClearField(user.FieldEmail, field.TypeString)
+	}
+	if value, ok := _u.mutation.PasswordDigest(); ok {
+		_spec.SetField(user.FieldPasswordDigest, field.TypeString, value)
+	}
+	if _u.mutation.PasswordDigestCleared() {
+		_spec.ClearField(user.FieldPasswordDigest, field.TypeString)
 	}
 	if value, ok := _u.mutation.FirstName(); ok {
 		_spec.SetField(user.FieldFirstName, field.TypeString, value)

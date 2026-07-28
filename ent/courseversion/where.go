@@ -64,9 +64,59 @@ func State(v string) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldEQ(FieldState, v))
 }
 
+// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
+func Name(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldName, v))
+}
+
+// Progress applies equality check predicate on the "progress" field. It's identical to ProgressEQ.
+func Progress(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldProgress, v))
+}
+
+// LearnAs applies equality check predicate on the "learn_as" field. It's identical to LearnAsEQ.
+func LearnAs(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldLearnAs, v))
+}
+
+// Extension applies equality check predicate on the "extension" field. It's identical to ExtensionEQ.
+func Extension(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldExtension, v))
+}
+
+// DockerImage applies equality check predicate on the "docker_image" field. It's identical to DockerImageEQ.
+func DockerImage(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldDockerImage, v))
+}
+
+// ExerciseFilename applies equality check predicate on the "exercise_filename" field. It's identical to ExerciseFilenameEQ.
+func ExerciseFilename(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldExerciseFilename, v))
+}
+
+// ExerciseTestFilename applies equality check predicate on the "exercise_test_filename" field. It's identical to ExerciseTestFilenameEQ.
+func ExerciseTestFilename(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldExerciseTestFilename, v))
+}
+
+// LessonsCount applies equality check predicate on the "lessons_count" field. It's identical to LessonsCountEQ.
+func LessonsCount(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldLessonsCount, v))
+}
+
+// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
+func LanguageID(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldLanguageID, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
 // ResultEQ applies the EQ predicate on the "result" field.
@@ -219,6 +269,611 @@ func StateContainsFold(v string) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldContainsFold(FieldState, v))
 }
 
+// NameEQ applies the EQ predicate on the "name" field.
+func NameEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldName, v))
+}
+
+// NameNEQ applies the NEQ predicate on the "name" field.
+func NameNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldName, v))
+}
+
+// NameIn applies the In predicate on the "name" field.
+func NameIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldName, vs...))
+}
+
+// NameNotIn applies the NotIn predicate on the "name" field.
+func NameNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldName, vs...))
+}
+
+// NameGT applies the GT predicate on the "name" field.
+func NameGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldName, v))
+}
+
+// NameGTE applies the GTE predicate on the "name" field.
+func NameGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldName, v))
+}
+
+// NameLT applies the LT predicate on the "name" field.
+func NameLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldName, v))
+}
+
+// NameLTE applies the LTE predicate on the "name" field.
+func NameLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldName, v))
+}
+
+// NameContains applies the Contains predicate on the "name" field.
+func NameContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldName, v))
+}
+
+// NameHasPrefix applies the HasPrefix predicate on the "name" field.
+func NameHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldName, v))
+}
+
+// NameHasSuffix applies the HasSuffix predicate on the "name" field.
+func NameHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldName, v))
+}
+
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldName))
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldName))
+}
+
+// NameEqualFold applies the EqualFold predicate on the "name" field.
+func NameEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldName, v))
+}
+
+// NameContainsFold applies the ContainsFold predicate on the "name" field.
+func NameContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldName, v))
+}
+
+// ProgressEQ applies the EQ predicate on the "progress" field.
+func ProgressEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldProgress, v))
+}
+
+// ProgressNEQ applies the NEQ predicate on the "progress" field.
+func ProgressNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldProgress, v))
+}
+
+// ProgressIn applies the In predicate on the "progress" field.
+func ProgressIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldProgress, vs...))
+}
+
+// ProgressNotIn applies the NotIn predicate on the "progress" field.
+func ProgressNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldProgress, vs...))
+}
+
+// ProgressGT applies the GT predicate on the "progress" field.
+func ProgressGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldProgress, v))
+}
+
+// ProgressGTE applies the GTE predicate on the "progress" field.
+func ProgressGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldProgress, v))
+}
+
+// ProgressLT applies the LT predicate on the "progress" field.
+func ProgressLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldProgress, v))
+}
+
+// ProgressLTE applies the LTE predicate on the "progress" field.
+func ProgressLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldProgress, v))
+}
+
+// ProgressContains applies the Contains predicate on the "progress" field.
+func ProgressContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldProgress, v))
+}
+
+// ProgressHasPrefix applies the HasPrefix predicate on the "progress" field.
+func ProgressHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldProgress, v))
+}
+
+// ProgressHasSuffix applies the HasSuffix predicate on the "progress" field.
+func ProgressHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldProgress, v))
+}
+
+// ProgressIsNil applies the IsNil predicate on the "progress" field.
+func ProgressIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldProgress))
+}
+
+// ProgressNotNil applies the NotNil predicate on the "progress" field.
+func ProgressNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldProgress))
+}
+
+// ProgressEqualFold applies the EqualFold predicate on the "progress" field.
+func ProgressEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldProgress, v))
+}
+
+// ProgressContainsFold applies the ContainsFold predicate on the "progress" field.
+func ProgressContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldProgress, v))
+}
+
+// LearnAsEQ applies the EQ predicate on the "learn_as" field.
+func LearnAsEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldLearnAs, v))
+}
+
+// LearnAsNEQ applies the NEQ predicate on the "learn_as" field.
+func LearnAsNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldLearnAs, v))
+}
+
+// LearnAsIn applies the In predicate on the "learn_as" field.
+func LearnAsIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldLearnAs, vs...))
+}
+
+// LearnAsNotIn applies the NotIn predicate on the "learn_as" field.
+func LearnAsNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldLearnAs, vs...))
+}
+
+// LearnAsGT applies the GT predicate on the "learn_as" field.
+func LearnAsGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldLearnAs, v))
+}
+
+// LearnAsGTE applies the GTE predicate on the "learn_as" field.
+func LearnAsGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldLearnAs, v))
+}
+
+// LearnAsLT applies the LT predicate on the "learn_as" field.
+func LearnAsLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldLearnAs, v))
+}
+
+// LearnAsLTE applies the LTE predicate on the "learn_as" field.
+func LearnAsLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldLearnAs, v))
+}
+
+// LearnAsContains applies the Contains predicate on the "learn_as" field.
+func LearnAsContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldLearnAs, v))
+}
+
+// LearnAsHasPrefix applies the HasPrefix predicate on the "learn_as" field.
+func LearnAsHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldLearnAs, v))
+}
+
+// LearnAsHasSuffix applies the HasSuffix predicate on the "learn_as" field.
+func LearnAsHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldLearnAs, v))
+}
+
+// LearnAsIsNil applies the IsNil predicate on the "learn_as" field.
+func LearnAsIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldLearnAs))
+}
+
+// LearnAsNotNil applies the NotNil predicate on the "learn_as" field.
+func LearnAsNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldLearnAs))
+}
+
+// LearnAsEqualFold applies the EqualFold predicate on the "learn_as" field.
+func LearnAsEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldLearnAs, v))
+}
+
+// LearnAsContainsFold applies the ContainsFold predicate on the "learn_as" field.
+func LearnAsContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldLearnAs, v))
+}
+
+// ExtensionEQ applies the EQ predicate on the "extension" field.
+func ExtensionEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldExtension, v))
+}
+
+// ExtensionNEQ applies the NEQ predicate on the "extension" field.
+func ExtensionNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldExtension, v))
+}
+
+// ExtensionIn applies the In predicate on the "extension" field.
+func ExtensionIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldExtension, vs...))
+}
+
+// ExtensionNotIn applies the NotIn predicate on the "extension" field.
+func ExtensionNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldExtension, vs...))
+}
+
+// ExtensionGT applies the GT predicate on the "extension" field.
+func ExtensionGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldExtension, v))
+}
+
+// ExtensionGTE applies the GTE predicate on the "extension" field.
+func ExtensionGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldExtension, v))
+}
+
+// ExtensionLT applies the LT predicate on the "extension" field.
+func ExtensionLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldExtension, v))
+}
+
+// ExtensionLTE applies the LTE predicate on the "extension" field.
+func ExtensionLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldExtension, v))
+}
+
+// ExtensionContains applies the Contains predicate on the "extension" field.
+func ExtensionContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldExtension, v))
+}
+
+// ExtensionHasPrefix applies the HasPrefix predicate on the "extension" field.
+func ExtensionHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldExtension, v))
+}
+
+// ExtensionHasSuffix applies the HasSuffix predicate on the "extension" field.
+func ExtensionHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldExtension, v))
+}
+
+// ExtensionIsNil applies the IsNil predicate on the "extension" field.
+func ExtensionIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldExtension))
+}
+
+// ExtensionNotNil applies the NotNil predicate on the "extension" field.
+func ExtensionNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldExtension))
+}
+
+// ExtensionEqualFold applies the EqualFold predicate on the "extension" field.
+func ExtensionEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldExtension, v))
+}
+
+// ExtensionContainsFold applies the ContainsFold predicate on the "extension" field.
+func ExtensionContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldExtension, v))
+}
+
+// DockerImageEQ applies the EQ predicate on the "docker_image" field.
+func DockerImageEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldDockerImage, v))
+}
+
+// DockerImageNEQ applies the NEQ predicate on the "docker_image" field.
+func DockerImageNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldDockerImage, v))
+}
+
+// DockerImageIn applies the In predicate on the "docker_image" field.
+func DockerImageIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldDockerImage, vs...))
+}
+
+// DockerImageNotIn applies the NotIn predicate on the "docker_image" field.
+func DockerImageNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldDockerImage, vs...))
+}
+
+// DockerImageGT applies the GT predicate on the "docker_image" field.
+func DockerImageGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldDockerImage, v))
+}
+
+// DockerImageGTE applies the GTE predicate on the "docker_image" field.
+func DockerImageGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldDockerImage, v))
+}
+
+// DockerImageLT applies the LT predicate on the "docker_image" field.
+func DockerImageLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldDockerImage, v))
+}
+
+// DockerImageLTE applies the LTE predicate on the "docker_image" field.
+func DockerImageLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldDockerImage, v))
+}
+
+// DockerImageContains applies the Contains predicate on the "docker_image" field.
+func DockerImageContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldDockerImage, v))
+}
+
+// DockerImageHasPrefix applies the HasPrefix predicate on the "docker_image" field.
+func DockerImageHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldDockerImage, v))
+}
+
+// DockerImageHasSuffix applies the HasSuffix predicate on the "docker_image" field.
+func DockerImageHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldDockerImage, v))
+}
+
+// DockerImageIsNil applies the IsNil predicate on the "docker_image" field.
+func DockerImageIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldDockerImage))
+}
+
+// DockerImageNotNil applies the NotNil predicate on the "docker_image" field.
+func DockerImageNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldDockerImage))
+}
+
+// DockerImageEqualFold applies the EqualFold predicate on the "docker_image" field.
+func DockerImageEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldDockerImage, v))
+}
+
+// DockerImageContainsFold applies the ContainsFold predicate on the "docker_image" field.
+func DockerImageContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldDockerImage, v))
+}
+
+// ExerciseFilenameEQ applies the EQ predicate on the "exercise_filename" field.
+func ExerciseFilenameEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameNEQ applies the NEQ predicate on the "exercise_filename" field.
+func ExerciseFilenameNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameIn applies the In predicate on the "exercise_filename" field.
+func ExerciseFilenameIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldExerciseFilename, vs...))
+}
+
+// ExerciseFilenameNotIn applies the NotIn predicate on the "exercise_filename" field.
+func ExerciseFilenameNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldExerciseFilename, vs...))
+}
+
+// ExerciseFilenameGT applies the GT predicate on the "exercise_filename" field.
+func ExerciseFilenameGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameGTE applies the GTE predicate on the "exercise_filename" field.
+func ExerciseFilenameGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameLT applies the LT predicate on the "exercise_filename" field.
+func ExerciseFilenameLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameLTE applies the LTE predicate on the "exercise_filename" field.
+func ExerciseFilenameLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameContains applies the Contains predicate on the "exercise_filename" field.
+func ExerciseFilenameContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameHasPrefix applies the HasPrefix predicate on the "exercise_filename" field.
+func ExerciseFilenameHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameHasSuffix applies the HasSuffix predicate on the "exercise_filename" field.
+func ExerciseFilenameHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameIsNil applies the IsNil predicate on the "exercise_filename" field.
+func ExerciseFilenameIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldExerciseFilename))
+}
+
+// ExerciseFilenameNotNil applies the NotNil predicate on the "exercise_filename" field.
+func ExerciseFilenameNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldExerciseFilename))
+}
+
+// ExerciseFilenameEqualFold applies the EqualFold predicate on the "exercise_filename" field.
+func ExerciseFilenameEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldExerciseFilename, v))
+}
+
+// ExerciseFilenameContainsFold applies the ContainsFold predicate on the "exercise_filename" field.
+func ExerciseFilenameContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldExerciseFilename, v))
+}
+
+// ExerciseTestFilenameEQ applies the EQ predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameNEQ applies the NEQ predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameNEQ(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameIn applies the In predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldExerciseTestFilename, vs...))
+}
+
+// ExerciseTestFilenameNotIn applies the NotIn predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameNotIn(vs ...string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldExerciseTestFilename, vs...))
+}
+
+// ExerciseTestFilenameGT applies the GT predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameGT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameGTE applies the GTE predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameGTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameLT applies the LT predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameLT(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameLTE applies the LTE predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameLTE(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameContains applies the Contains predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameContains(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContains(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameHasPrefix applies the HasPrefix predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameHasPrefix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasPrefix(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameHasSuffix applies the HasSuffix predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameHasSuffix(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldHasSuffix(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameIsNil applies the IsNil predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameIsNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIsNull(FieldExerciseTestFilename))
+}
+
+// ExerciseTestFilenameNotNil applies the NotNil predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameNotNil() predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotNull(FieldExerciseTestFilename))
+}
+
+// ExerciseTestFilenameEqualFold applies the EqualFold predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameEqualFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEqualFold(FieldExerciseTestFilename, v))
+}
+
+// ExerciseTestFilenameContainsFold applies the ContainsFold predicate on the "exercise_test_filename" field.
+func ExerciseTestFilenameContainsFold(v string) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldContainsFold(FieldExerciseTestFilename, v))
+}
+
+// LessonsCountEQ applies the EQ predicate on the "lessons_count" field.
+func LessonsCountEQ(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldLessonsCount, v))
+}
+
+// LessonsCountNEQ applies the NEQ predicate on the "lessons_count" field.
+func LessonsCountNEQ(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldLessonsCount, v))
+}
+
+// LessonsCountIn applies the In predicate on the "lessons_count" field.
+func LessonsCountIn(vs ...int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldLessonsCount, vs...))
+}
+
+// LessonsCountNotIn applies the NotIn predicate on the "lessons_count" field.
+func LessonsCountNotIn(vs ...int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldLessonsCount, vs...))
+}
+
+// LessonsCountGT applies the GT predicate on the "lessons_count" field.
+func LessonsCountGT(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldLessonsCount, v))
+}
+
+// LessonsCountGTE applies the GTE predicate on the "lessons_count" field.
+func LessonsCountGTE(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldLessonsCount, v))
+}
+
+// LessonsCountLT applies the LT predicate on the "lessons_count" field.
+func LessonsCountLT(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldLessonsCount, v))
+}
+
+// LessonsCountLTE applies the LTE predicate on the "lessons_count" field.
+func LessonsCountLTE(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldLessonsCount, v))
+}
+
+// LanguageIDEQ applies the EQ predicate on the "language_id" field.
+func LanguageIDEQ(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldLanguageID, v))
+}
+
+// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
+func LanguageIDNEQ(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldLanguageID, v))
+}
+
+// LanguageIDIn applies the In predicate on the "language_id" field.
+func LanguageIDIn(vs ...int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldLanguageID, vs...))
+}
+
+// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
+func LanguageIDNotIn(vs ...int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldLanguageID, vs...))
+}
+
+// LanguageIDGT applies the GT predicate on the "language_id" field.
+func LanguageIDGT(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldLanguageID, v))
+}
+
+// LanguageIDGTE applies the GTE predicate on the "language_id" field.
+func LanguageIDGTE(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldLanguageID, v))
+}
+
+// LanguageIDLT applies the LT predicate on the "language_id" field.
+func LanguageIDLT(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldLanguageID, v))
+}
+
+// LanguageIDLTE applies the LTE predicate on the "language_id" field.
+func LanguageIDLTE(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldLanguageID, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldEQ(FieldCreatedAt, v))
@@ -257,6 +912,46 @@ func CreatedAtLT(v time.Time) predicate.CourseVersion {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // And groups predicates with the AND operator between them.

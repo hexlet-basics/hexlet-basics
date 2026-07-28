@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -28,5 +30,16 @@ func (LanguageLessonVersionInfo) Fields() []ent.Field {
 		field.Int("language_id"),
 		field.Int("language_lesson_id"),
 		field.Int("language_version_id"),
+		// Written by the loader from the lesson's <locale>/ dir: README.md →
+		// theory, EXERCISE.md → instructions, data.yml tips/definitions serialized
+		// as YAML arrays (Rails `serialize type: Array` compatibility). version_id
+		// FKs the LanguageLessonVersion this info belongs to (NOT NULL).
+		field.String("theory").Optional().Nillable(),
+		field.String("instructions").Optional().Nillable(),
+		field.String("tips").Optional().Nillable(),
+		field.String("definitions").Optional().Nillable(),
+		field.Int("version_id"),
+		field.Time("created_at").Default(time.Now).Immutable(),
+		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }

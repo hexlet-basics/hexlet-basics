@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/languagelesson"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -20,6 +21,16 @@ type LanguageLesson struct {
 	Slug *string `json:"slug,omitempty"`
 	// NaturalOrder holds the value of the "natural_order" field.
 	NaturalOrder *int `json:"natural_order,omitempty"`
+	// LanguageID holds the value of the "language_id" field.
+	LanguageID *int `json:"language_id,omitempty"`
+	// ModuleID holds the value of the "module_id" field.
+	ModuleID *int `json:"module_id,omitempty"`
+	// State holds the value of the "state" field.
+	State *string `json:"state,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -28,10 +39,12 @@ func (*LanguageLesson) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case languagelesson.FieldID, languagelesson.FieldNaturalOrder:
+		case languagelesson.FieldID, languagelesson.FieldNaturalOrder, languagelesson.FieldLanguageID, languagelesson.FieldModuleID:
 			values[i] = new(sql.NullInt64)
-		case languagelesson.FieldSlug:
+		case languagelesson.FieldSlug, languagelesson.FieldState:
 			values[i] = new(sql.NullString)
+		case languagelesson.FieldCreatedAt, languagelesson.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -66,6 +79,39 @@ func (_m *LanguageLesson) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.NaturalOrder = new(int)
 				*_m.NaturalOrder = int(value.Int64)
+			}
+		case languagelesson.FieldLanguageID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+			} else if value.Valid {
+				_m.LanguageID = new(int)
+				*_m.LanguageID = int(value.Int64)
+			}
+		case languagelesson.FieldModuleID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field module_id", values[i])
+			} else if value.Valid {
+				_m.ModuleID = new(int)
+				*_m.ModuleID = int(value.Int64)
+			}
+		case languagelesson.FieldState:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field state", values[i])
+			} else if value.Valid {
+				_m.State = new(string)
+				*_m.State = value.String
+			}
+		case languagelesson.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case languagelesson.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -112,6 +158,27 @@ func (_m *LanguageLesson) String() string {
 		builder.WriteString("natural_order=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	if v := _m.LanguageID; v != nil {
+		builder.WriteString("language_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.ModuleID; v != nil {
+		builder.WriteString("module_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.State; v != nil {
+		builder.WriteString("state=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

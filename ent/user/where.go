@@ -59,6 +59,11 @@ func Email(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldEmail, v))
 }
 
+// PasswordDigest applies equality check predicate on the "password_digest" field. It's identical to PasswordDigestEQ.
+func PasswordDigest(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPasswordDigest, v))
+}
+
 // FirstName applies equality check predicate on the "first_name" field. It's identical to FirstNameEQ.
 func FirstName(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldFirstName, v))
@@ -162,6 +167,81 @@ func EmailEqualFold(v string) predicate.User {
 // EmailContainsFold applies the ContainsFold predicate on the "email" field.
 func EmailContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldEmail, v))
+}
+
+// PasswordDigestEQ applies the EQ predicate on the "password_digest" field.
+func PasswordDigestEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPasswordDigest, v))
+}
+
+// PasswordDigestNEQ applies the NEQ predicate on the "password_digest" field.
+func PasswordDigestNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPasswordDigest, v))
+}
+
+// PasswordDigestIn applies the In predicate on the "password_digest" field.
+func PasswordDigestIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPasswordDigest, vs...))
+}
+
+// PasswordDigestNotIn applies the NotIn predicate on the "password_digest" field.
+func PasswordDigestNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPasswordDigest, vs...))
+}
+
+// PasswordDigestGT applies the GT predicate on the "password_digest" field.
+func PasswordDigestGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPasswordDigest, v))
+}
+
+// PasswordDigestGTE applies the GTE predicate on the "password_digest" field.
+func PasswordDigestGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPasswordDigest, v))
+}
+
+// PasswordDigestLT applies the LT predicate on the "password_digest" field.
+func PasswordDigestLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPasswordDigest, v))
+}
+
+// PasswordDigestLTE applies the LTE predicate on the "password_digest" field.
+func PasswordDigestLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPasswordDigest, v))
+}
+
+// PasswordDigestContains applies the Contains predicate on the "password_digest" field.
+func PasswordDigestContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPasswordDigest, v))
+}
+
+// PasswordDigestHasPrefix applies the HasPrefix predicate on the "password_digest" field.
+func PasswordDigestHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPasswordDigest, v))
+}
+
+// PasswordDigestHasSuffix applies the HasSuffix predicate on the "password_digest" field.
+func PasswordDigestHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPasswordDigest, v))
+}
+
+// PasswordDigestIsNil applies the IsNil predicate on the "password_digest" field.
+func PasswordDigestIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPasswordDigest))
+}
+
+// PasswordDigestNotNil applies the NotNil predicate on the "password_digest" field.
+func PasswordDigestNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPasswordDigest))
+}
+
+// PasswordDigestEqualFold applies the EqualFold predicate on the "password_digest" field.
+func PasswordDigestEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPasswordDigest, v))
+}
+
+// PasswordDigestContainsFold applies the ContainsFold predicate on the "password_digest" field.
+func PasswordDigestContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPasswordDigest, v))
 }
 
 // FirstNameEQ applies the EQ predicate on the "first_name" field.

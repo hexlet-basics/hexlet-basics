@@ -13,6 +13,7 @@
 package testsupport
 
 import (
+	"context"
 	"database/sql"
 	"net/http"
 	"net/http/httptest"
@@ -24,6 +25,8 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	txdb "github.com/DATA-DOG/go-txdb"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/rivertype"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
@@ -84,8 +87,11 @@ type Harness struct {
 	// Client issues typed calls (URLs and bodies are generated, never hand-written).
 	Client *api.Client
 	// DB queries the same transaction the handlers wrote through, for assertions.
-	DB   *ent.Client
-	doer *inProcessDoer
+	DB *ent.Client
+	// Enqueuer records background jobs the handlers scheduled, so a test can
+	// assert an operation both wrote to the DB and enqueued its follow-up work.
+	Enqueuer *RecordingEnqueuer
+	doer     *inProcessDoer
 }
 
 // LastStatus is the HTTP status of the most recent client call. Error responses
@@ -103,7 +109,8 @@ func NewHarness(t *testing.T) *Harness {
 
 	db := NewClient(t)
 
-	srv, err := api.NewServer(handlers.NewServer(db, testConfig), api.WithErrorHandler(handlers.APIErrorHandler))
+	enqueuer := &RecordingEnqueuer{}
+	srv, err := api.NewServer(handlers.NewServer(db, testConfig, enqueuer), api.WithErrorHandler(handlers.APIErrorHandler))
 	if err != nil {
 		t.Fatalf("new api server: %v", err)
 	}
@@ -114,7 +121,21 @@ func NewHarness(t *testing.T) *Harness {
 		t.Fatalf("new api client: %v", err)
 	}
 
-	return &Harness{Client: client, DB: db, doer: doer}
+	return &Harness{Client: client, DB: db, doer: doer, Enqueuer: enqueuer}
+}
+
+// RecordingEnqueuer is a test double for handlers.JobEnqueuer: it records the
+// jobs a handler enqueues (instead of hitting river's pgx pool) so a test can
+// assert both the DB write and that the background job was scheduled.
+type RecordingEnqueuer struct {
+	Inserted []river.JobArgs
+}
+
+// Insert records the args and returns a nil result — handlers only check the
+// error, never the result body.
+func (e *RecordingEnqueuer) Insert(_ context.Context, args river.JobArgs, _ *river.InsertOpts) (*rivertype.JobInsertResult, error) {
+	e.Inserted = append(e.Inserted, args)
+	return nil, nil
 }
 
 // inProcessDoer satisfies ogen's http client interface by serving each request

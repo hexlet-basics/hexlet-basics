@@ -22,7 +22,11 @@ import (
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonmember"
 	"hexletbasics/ent/languagelessonreview"
+	"hexletbasics/ent/languagelessonversion"
 	"hexletbasics/ent/languagelessonversioninfo"
+	"hexletbasics/ent/languagemodule"
+	"hexletbasics/ent/languagemoduleversion"
+	"hexletbasics/ent/languagemoduleversioninfo"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/review"
@@ -63,7 +67,11 @@ const (
 	TypeLanguageLesson            = "LanguageLesson"
 	TypeLanguageLessonMember      = "LanguageLessonMember"
 	TypeLanguageLessonReview      = "LanguageLessonReview"
+	TypeLanguageLessonVersion     = "LanguageLessonVersion"
 	TypeLanguageLessonVersionInfo = "LanguageLessonVersionInfo"
+	TypeLanguageModule            = "LanguageModule"
+	TypeLanguageModuleVersion     = "LanguageModuleVersion"
+	TypeLanguageModuleVersionInfo = "LanguageModuleVersionInfo"
 	TypeLead                      = "Lead"
 	TypeReview                    = "Review"
 	TypeStaffMember               = "StaffMember"
@@ -7130,16 +7138,28 @@ func (m *CourseCategoryMutation) ResetEdge(name string) error {
 // CourseVersionMutation represents an operation that mutates the CourseVersion nodes in the graph.
 type CourseVersionMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	result        *string
-	state         *string
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*CourseVersion, error)
-	predicates    []predicate.CourseVersion
+	op                     Op
+	typ                    string
+	id                     *int
+	result                 *string
+	state                  *string
+	name                   *string
+	progress               *string
+	learn_as               *string
+	extension              *string
+	docker_image           *string
+	exercise_filename      *string
+	exercise_test_filename *string
+	lessons_count          *int
+	addlessons_count       *int
+	language_id            *int
+	addlanguage_id         *int
+	created_at             *time.Time
+	updated_at             *time.Time
+	clearedFields          map[string]struct{}
+	done                   bool
+	oldValue               func(context.Context) (*CourseVersion, error)
+	predicates             []predicate.CourseVersion
 }
 
 var _ ent.Mutation = (*CourseVersionMutation)(nil)
@@ -7338,6 +7358,461 @@ func (m *CourseVersionMutation) ResetState() {
 	delete(m.clearedFields, courseversion.FieldState)
 }
 
+// SetName sets the "name" field.
+func (m *CourseVersionMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *CourseVersionMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *CourseVersionMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[courseversion.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *CourseVersionMutation) NameCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *CourseVersionMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, courseversion.FieldName)
+}
+
+// SetProgress sets the "progress" field.
+func (m *CourseVersionMutation) SetProgress(s string) {
+	m.progress = &s
+}
+
+// Progress returns the value of the "progress" field in the mutation.
+func (m *CourseVersionMutation) Progress() (r string, exists bool) {
+	v := m.progress
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProgress returns the old "progress" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldProgress(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProgress is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProgress requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProgress: %w", err)
+	}
+	return oldValue.Progress, nil
+}
+
+// ClearProgress clears the value of the "progress" field.
+func (m *CourseVersionMutation) ClearProgress() {
+	m.progress = nil
+	m.clearedFields[courseversion.FieldProgress] = struct{}{}
+}
+
+// ProgressCleared returns if the "progress" field was cleared in this mutation.
+func (m *CourseVersionMutation) ProgressCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldProgress]
+	return ok
+}
+
+// ResetProgress resets all changes to the "progress" field.
+func (m *CourseVersionMutation) ResetProgress() {
+	m.progress = nil
+	delete(m.clearedFields, courseversion.FieldProgress)
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (m *CourseVersionMutation) SetLearnAs(s string) {
+	m.learn_as = &s
+}
+
+// LearnAs returns the value of the "learn_as" field in the mutation.
+func (m *CourseVersionMutation) LearnAs() (r string, exists bool) {
+	v := m.learn_as
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLearnAs returns the old "learn_as" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldLearnAs(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLearnAs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLearnAs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLearnAs: %w", err)
+	}
+	return oldValue.LearnAs, nil
+}
+
+// ClearLearnAs clears the value of the "learn_as" field.
+func (m *CourseVersionMutation) ClearLearnAs() {
+	m.learn_as = nil
+	m.clearedFields[courseversion.FieldLearnAs] = struct{}{}
+}
+
+// LearnAsCleared returns if the "learn_as" field was cleared in this mutation.
+func (m *CourseVersionMutation) LearnAsCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldLearnAs]
+	return ok
+}
+
+// ResetLearnAs resets all changes to the "learn_as" field.
+func (m *CourseVersionMutation) ResetLearnAs() {
+	m.learn_as = nil
+	delete(m.clearedFields, courseversion.FieldLearnAs)
+}
+
+// SetExtension sets the "extension" field.
+func (m *CourseVersionMutation) SetExtension(s string) {
+	m.extension = &s
+}
+
+// Extension returns the value of the "extension" field in the mutation.
+func (m *CourseVersionMutation) Extension() (r string, exists bool) {
+	v := m.extension
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExtension returns the old "extension" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldExtension(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExtension is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExtension requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExtension: %w", err)
+	}
+	return oldValue.Extension, nil
+}
+
+// ClearExtension clears the value of the "extension" field.
+func (m *CourseVersionMutation) ClearExtension() {
+	m.extension = nil
+	m.clearedFields[courseversion.FieldExtension] = struct{}{}
+}
+
+// ExtensionCleared returns if the "extension" field was cleared in this mutation.
+func (m *CourseVersionMutation) ExtensionCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldExtension]
+	return ok
+}
+
+// ResetExtension resets all changes to the "extension" field.
+func (m *CourseVersionMutation) ResetExtension() {
+	m.extension = nil
+	delete(m.clearedFields, courseversion.FieldExtension)
+}
+
+// SetDockerImage sets the "docker_image" field.
+func (m *CourseVersionMutation) SetDockerImage(s string) {
+	m.docker_image = &s
+}
+
+// DockerImage returns the value of the "docker_image" field in the mutation.
+func (m *CourseVersionMutation) DockerImage() (r string, exists bool) {
+	v := m.docker_image
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDockerImage returns the old "docker_image" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldDockerImage(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDockerImage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDockerImage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDockerImage: %w", err)
+	}
+	return oldValue.DockerImage, nil
+}
+
+// ClearDockerImage clears the value of the "docker_image" field.
+func (m *CourseVersionMutation) ClearDockerImage() {
+	m.docker_image = nil
+	m.clearedFields[courseversion.FieldDockerImage] = struct{}{}
+}
+
+// DockerImageCleared returns if the "docker_image" field was cleared in this mutation.
+func (m *CourseVersionMutation) DockerImageCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldDockerImage]
+	return ok
+}
+
+// ResetDockerImage resets all changes to the "docker_image" field.
+func (m *CourseVersionMutation) ResetDockerImage() {
+	m.docker_image = nil
+	delete(m.clearedFields, courseversion.FieldDockerImage)
+}
+
+// SetExerciseFilename sets the "exercise_filename" field.
+func (m *CourseVersionMutation) SetExerciseFilename(s string) {
+	m.exercise_filename = &s
+}
+
+// ExerciseFilename returns the value of the "exercise_filename" field in the mutation.
+func (m *CourseVersionMutation) ExerciseFilename() (r string, exists bool) {
+	v := m.exercise_filename
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExerciseFilename returns the old "exercise_filename" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldExerciseFilename(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExerciseFilename is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExerciseFilename requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExerciseFilename: %w", err)
+	}
+	return oldValue.ExerciseFilename, nil
+}
+
+// ClearExerciseFilename clears the value of the "exercise_filename" field.
+func (m *CourseVersionMutation) ClearExerciseFilename() {
+	m.exercise_filename = nil
+	m.clearedFields[courseversion.FieldExerciseFilename] = struct{}{}
+}
+
+// ExerciseFilenameCleared returns if the "exercise_filename" field was cleared in this mutation.
+func (m *CourseVersionMutation) ExerciseFilenameCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldExerciseFilename]
+	return ok
+}
+
+// ResetExerciseFilename resets all changes to the "exercise_filename" field.
+func (m *CourseVersionMutation) ResetExerciseFilename() {
+	m.exercise_filename = nil
+	delete(m.clearedFields, courseversion.FieldExerciseFilename)
+}
+
+// SetExerciseTestFilename sets the "exercise_test_filename" field.
+func (m *CourseVersionMutation) SetExerciseTestFilename(s string) {
+	m.exercise_test_filename = &s
+}
+
+// ExerciseTestFilename returns the value of the "exercise_test_filename" field in the mutation.
+func (m *CourseVersionMutation) ExerciseTestFilename() (r string, exists bool) {
+	v := m.exercise_test_filename
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExerciseTestFilename returns the old "exercise_test_filename" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldExerciseTestFilename(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExerciseTestFilename is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExerciseTestFilename requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExerciseTestFilename: %w", err)
+	}
+	return oldValue.ExerciseTestFilename, nil
+}
+
+// ClearExerciseTestFilename clears the value of the "exercise_test_filename" field.
+func (m *CourseVersionMutation) ClearExerciseTestFilename() {
+	m.exercise_test_filename = nil
+	m.clearedFields[courseversion.FieldExerciseTestFilename] = struct{}{}
+}
+
+// ExerciseTestFilenameCleared returns if the "exercise_test_filename" field was cleared in this mutation.
+func (m *CourseVersionMutation) ExerciseTestFilenameCleared() bool {
+	_, ok := m.clearedFields[courseversion.FieldExerciseTestFilename]
+	return ok
+}
+
+// ResetExerciseTestFilename resets all changes to the "exercise_test_filename" field.
+func (m *CourseVersionMutation) ResetExerciseTestFilename() {
+	m.exercise_test_filename = nil
+	delete(m.clearedFields, courseversion.FieldExerciseTestFilename)
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (m *CourseVersionMutation) SetLessonsCount(i int) {
+	m.lessons_count = &i
+	m.addlessons_count = nil
+}
+
+// LessonsCount returns the value of the "lessons_count" field in the mutation.
+func (m *CourseVersionMutation) LessonsCount() (r int, exists bool) {
+	v := m.lessons_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLessonsCount returns the old "lessons_count" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldLessonsCount(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLessonsCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLessonsCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLessonsCount: %w", err)
+	}
+	return oldValue.LessonsCount, nil
+}
+
+// AddLessonsCount adds i to the "lessons_count" field.
+func (m *CourseVersionMutation) AddLessonsCount(i int) {
+	if m.addlessons_count != nil {
+		*m.addlessons_count += i
+	} else {
+		m.addlessons_count = &i
+	}
+}
+
+// AddedLessonsCount returns the value that was added to the "lessons_count" field in this mutation.
+func (m *CourseVersionMutation) AddedLessonsCount() (r int, exists bool) {
+	v := m.addlessons_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLessonsCount resets all changes to the "lessons_count" field.
+func (m *CourseVersionMutation) ResetLessonsCount() {
+	m.lessons_count = nil
+	m.addlessons_count = nil
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *CourseVersionMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *CourseVersionMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *CourseVersionMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *CourseVersionMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *CourseVersionMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (m *CourseVersionMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -7374,6 +7849,42 @@ func (m *CourseVersionMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseVersionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseVersionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseVersionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // Where appends a list predicates to the CourseVersionMutation builder.
 func (m *CourseVersionMutation) Where(ps ...predicate.CourseVersion) {
 	m.predicates = append(m.predicates, ps...)
@@ -7408,15 +7919,45 @@ func (m *CourseVersionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CourseVersionMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 13)
 	if m.result != nil {
 		fields = append(fields, courseversion.FieldResult)
 	}
 	if m.state != nil {
 		fields = append(fields, courseversion.FieldState)
 	}
+	if m.name != nil {
+		fields = append(fields, courseversion.FieldName)
+	}
+	if m.progress != nil {
+		fields = append(fields, courseversion.FieldProgress)
+	}
+	if m.learn_as != nil {
+		fields = append(fields, courseversion.FieldLearnAs)
+	}
+	if m.extension != nil {
+		fields = append(fields, courseversion.FieldExtension)
+	}
+	if m.docker_image != nil {
+		fields = append(fields, courseversion.FieldDockerImage)
+	}
+	if m.exercise_filename != nil {
+		fields = append(fields, courseversion.FieldExerciseFilename)
+	}
+	if m.exercise_test_filename != nil {
+		fields = append(fields, courseversion.FieldExerciseTestFilename)
+	}
+	if m.lessons_count != nil {
+		fields = append(fields, courseversion.FieldLessonsCount)
+	}
+	if m.language_id != nil {
+		fields = append(fields, courseversion.FieldLanguageID)
+	}
 	if m.created_at != nil {
 		fields = append(fields, courseversion.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, courseversion.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -7430,8 +7971,28 @@ func (m *CourseVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.Result()
 	case courseversion.FieldState:
 		return m.State()
+	case courseversion.FieldName:
+		return m.Name()
+	case courseversion.FieldProgress:
+		return m.Progress()
+	case courseversion.FieldLearnAs:
+		return m.LearnAs()
+	case courseversion.FieldExtension:
+		return m.Extension()
+	case courseversion.FieldDockerImage:
+		return m.DockerImage()
+	case courseversion.FieldExerciseFilename:
+		return m.ExerciseFilename()
+	case courseversion.FieldExerciseTestFilename:
+		return m.ExerciseTestFilename()
+	case courseversion.FieldLessonsCount:
+		return m.LessonsCount()
+	case courseversion.FieldLanguageID:
+		return m.LanguageID()
 	case courseversion.FieldCreatedAt:
 		return m.CreatedAt()
+	case courseversion.FieldUpdatedAt:
+		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -7445,8 +8006,28 @@ func (m *CourseVersionMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldResult(ctx)
 	case courseversion.FieldState:
 		return m.OldState(ctx)
+	case courseversion.FieldName:
+		return m.OldName(ctx)
+	case courseversion.FieldProgress:
+		return m.OldProgress(ctx)
+	case courseversion.FieldLearnAs:
+		return m.OldLearnAs(ctx)
+	case courseversion.FieldExtension:
+		return m.OldExtension(ctx)
+	case courseversion.FieldDockerImage:
+		return m.OldDockerImage(ctx)
+	case courseversion.FieldExerciseFilename:
+		return m.OldExerciseFilename(ctx)
+	case courseversion.FieldExerciseTestFilename:
+		return m.OldExerciseTestFilename(ctx)
+	case courseversion.FieldLessonsCount:
+		return m.OldLessonsCount(ctx)
+	case courseversion.FieldLanguageID:
+		return m.OldLanguageID(ctx)
 	case courseversion.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
+	case courseversion.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown CourseVersion field %s", name)
 }
@@ -7470,12 +8051,82 @@ func (m *CourseVersionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetState(v)
 		return nil
+	case courseversion.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case courseversion.FieldProgress:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProgress(v)
+		return nil
+	case courseversion.FieldLearnAs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLearnAs(v)
+		return nil
+	case courseversion.FieldExtension:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExtension(v)
+		return nil
+	case courseversion.FieldDockerImage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDockerImage(v)
+		return nil
+	case courseversion.FieldExerciseFilename:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExerciseFilename(v)
+		return nil
+	case courseversion.FieldExerciseTestFilename:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExerciseTestFilename(v)
+		return nil
+	case courseversion.FieldLessonsCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLessonsCount(v)
+		return nil
+	case courseversion.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
 	case courseversion.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
+		return nil
+	case courseversion.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion field %s", name)
@@ -7484,13 +8135,26 @@ func (m *CourseVersionMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *CourseVersionMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addlessons_count != nil {
+		fields = append(fields, courseversion.FieldLessonsCount)
+	}
+	if m.addlanguage_id != nil {
+		fields = append(fields, courseversion.FieldLanguageID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *CourseVersionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case courseversion.FieldLessonsCount:
+		return m.AddedLessonsCount()
+	case courseversion.FieldLanguageID:
+		return m.AddedLanguageID()
+	}
 	return nil, false
 }
 
@@ -7499,6 +8163,20 @@ func (m *CourseVersionMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *CourseVersionMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case courseversion.FieldLessonsCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLessonsCount(v)
+		return nil
+	case courseversion.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion numeric field %s", name)
 }
@@ -7512,6 +8190,27 @@ func (m *CourseVersionMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(courseversion.FieldState) {
 		fields = append(fields, courseversion.FieldState)
+	}
+	if m.FieldCleared(courseversion.FieldName) {
+		fields = append(fields, courseversion.FieldName)
+	}
+	if m.FieldCleared(courseversion.FieldProgress) {
+		fields = append(fields, courseversion.FieldProgress)
+	}
+	if m.FieldCleared(courseversion.FieldLearnAs) {
+		fields = append(fields, courseversion.FieldLearnAs)
+	}
+	if m.FieldCleared(courseversion.FieldExtension) {
+		fields = append(fields, courseversion.FieldExtension)
+	}
+	if m.FieldCleared(courseversion.FieldDockerImage) {
+		fields = append(fields, courseversion.FieldDockerImage)
+	}
+	if m.FieldCleared(courseversion.FieldExerciseFilename) {
+		fields = append(fields, courseversion.FieldExerciseFilename)
+	}
+	if m.FieldCleared(courseversion.FieldExerciseTestFilename) {
+		fields = append(fields, courseversion.FieldExerciseTestFilename)
 	}
 	return fields
 }
@@ -7533,6 +8232,27 @@ func (m *CourseVersionMutation) ClearField(name string) error {
 	case courseversion.FieldState:
 		m.ClearState()
 		return nil
+	case courseversion.FieldName:
+		m.ClearName()
+		return nil
+	case courseversion.FieldProgress:
+		m.ClearProgress()
+		return nil
+	case courseversion.FieldLearnAs:
+		m.ClearLearnAs()
+		return nil
+	case courseversion.FieldExtension:
+		m.ClearExtension()
+		return nil
+	case courseversion.FieldDockerImage:
+		m.ClearDockerImage()
+		return nil
+	case courseversion.FieldExerciseFilename:
+		m.ClearExerciseFilename()
+		return nil
+	case courseversion.FieldExerciseTestFilename:
+		m.ClearExerciseTestFilename()
+		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion nullable field %s", name)
 }
@@ -7547,8 +8267,38 @@ func (m *CourseVersionMutation) ResetField(name string) error {
 	case courseversion.FieldState:
 		m.ResetState()
 		return nil
+	case courseversion.FieldName:
+		m.ResetName()
+		return nil
+	case courseversion.FieldProgress:
+		m.ResetProgress()
+		return nil
+	case courseversion.FieldLearnAs:
+		m.ResetLearnAs()
+		return nil
+	case courseversion.FieldExtension:
+		m.ResetExtension()
+		return nil
+	case courseversion.FieldDockerImage:
+		m.ResetDockerImage()
+		return nil
+	case courseversion.FieldExerciseFilename:
+		m.ResetExerciseFilename()
+		return nil
+	case courseversion.FieldExerciseTestFilename:
+		m.ResetExerciseTestFilename()
+		return nil
+	case courseversion.FieldLessonsCount:
+		m.ResetLessonsCount()
+		return nil
+	case courseversion.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
 	case courseversion.FieldCreatedAt:
 		m.ResetCreatedAt()
+		return nil
+	case courseversion.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion field %s", name)
@@ -10085,6 +10835,13 @@ type LanguageLessonMutation struct {
 	slug             *string
 	natural_order    *int
 	addnatural_order *int
+	language_id      *int
+	addlanguage_id   *int
+	module_id        *int
+	addmodule_id     *int
+	state            *string
+	created_at       *time.Time
+	updated_at       *time.Time
 	clearedFields    map[string]struct{}
 	done             bool
 	oldValue         func(context.Context) (*LanguageLesson, error)
@@ -10308,6 +11065,267 @@ func (m *LanguageLessonMutation) ResetNaturalOrder() {
 	delete(m.clearedFields, languagelesson.FieldNaturalOrder)
 }
 
+// SetLanguageID sets the "language_id" field.
+func (m *LanguageLessonMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *LanguageLessonMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldLanguageID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *LanguageLessonMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *LanguageLessonMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (m *LanguageLessonMutation) ClearLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+	m.clearedFields[languagelesson.FieldLanguageID] = struct{}{}
+}
+
+// LanguageIDCleared returns if the "language_id" field was cleared in this mutation.
+func (m *LanguageLessonMutation) LanguageIDCleared() bool {
+	_, ok := m.clearedFields[languagelesson.FieldLanguageID]
+	return ok
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *LanguageLessonMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+	delete(m.clearedFields, languagelesson.FieldLanguageID)
+}
+
+// SetModuleID sets the "module_id" field.
+func (m *LanguageLessonMutation) SetModuleID(i int) {
+	m.module_id = &i
+	m.addmodule_id = nil
+}
+
+// ModuleID returns the value of the "module_id" field in the mutation.
+func (m *LanguageLessonMutation) ModuleID() (r int, exists bool) {
+	v := m.module_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModuleID returns the old "module_id" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldModuleID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModuleID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModuleID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModuleID: %w", err)
+	}
+	return oldValue.ModuleID, nil
+}
+
+// AddModuleID adds i to the "module_id" field.
+func (m *LanguageLessonMutation) AddModuleID(i int) {
+	if m.addmodule_id != nil {
+		*m.addmodule_id += i
+	} else {
+		m.addmodule_id = &i
+	}
+}
+
+// AddedModuleID returns the value that was added to the "module_id" field in this mutation.
+func (m *LanguageLessonMutation) AddedModuleID() (r int, exists bool) {
+	v := m.addmodule_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearModuleID clears the value of the "module_id" field.
+func (m *LanguageLessonMutation) ClearModuleID() {
+	m.module_id = nil
+	m.addmodule_id = nil
+	m.clearedFields[languagelesson.FieldModuleID] = struct{}{}
+}
+
+// ModuleIDCleared returns if the "module_id" field was cleared in this mutation.
+func (m *LanguageLessonMutation) ModuleIDCleared() bool {
+	_, ok := m.clearedFields[languagelesson.FieldModuleID]
+	return ok
+}
+
+// ResetModuleID resets all changes to the "module_id" field.
+func (m *LanguageLessonMutation) ResetModuleID() {
+	m.module_id = nil
+	m.addmodule_id = nil
+	delete(m.clearedFields, languagelesson.FieldModuleID)
+}
+
+// SetState sets the "state" field.
+func (m *LanguageLessonMutation) SetState(s string) {
+	m.state = &s
+}
+
+// State returns the value of the "state" field in the mutation.
+func (m *LanguageLessonMutation) State() (r string, exists bool) {
+	v := m.state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldState returns the old "state" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldState(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
+	}
+	return oldValue.State, nil
+}
+
+// ClearState clears the value of the "state" field.
+func (m *LanguageLessonMutation) ClearState() {
+	m.state = nil
+	m.clearedFields[languagelesson.FieldState] = struct{}{}
+}
+
+// StateCleared returns if the "state" field was cleared in this mutation.
+func (m *LanguageLessonMutation) StateCleared() bool {
+	_, ok := m.clearedFields[languagelesson.FieldState]
+	return ok
+}
+
+// ResetState resets all changes to the "state" field.
+func (m *LanguageLessonMutation) ResetState() {
+	m.state = nil
+	delete(m.clearedFields, languagelesson.FieldState)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageLessonMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageLessonMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageLessonMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageLessonMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageLessonMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageLessonMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // Where appends a list predicates to the LanguageLessonMutation builder.
 func (m *LanguageLessonMutation) Where(ps ...predicate.LanguageLesson) {
 	m.predicates = append(m.predicates, ps...)
@@ -10342,12 +11360,27 @@ func (m *LanguageLessonMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LanguageLessonMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 7)
 	if m.slug != nil {
 		fields = append(fields, languagelesson.FieldSlug)
 	}
 	if m.natural_order != nil {
 		fields = append(fields, languagelesson.FieldNaturalOrder)
+	}
+	if m.language_id != nil {
+		fields = append(fields, languagelesson.FieldLanguageID)
+	}
+	if m.module_id != nil {
+		fields = append(fields, languagelesson.FieldModuleID)
+	}
+	if m.state != nil {
+		fields = append(fields, languagelesson.FieldState)
+	}
+	if m.created_at != nil {
+		fields = append(fields, languagelesson.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagelesson.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -10361,6 +11394,16 @@ func (m *LanguageLessonMutation) Field(name string) (ent.Value, bool) {
 		return m.Slug()
 	case languagelesson.FieldNaturalOrder:
 		return m.NaturalOrder()
+	case languagelesson.FieldLanguageID:
+		return m.LanguageID()
+	case languagelesson.FieldModuleID:
+		return m.ModuleID()
+	case languagelesson.FieldState:
+		return m.State()
+	case languagelesson.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagelesson.FieldUpdatedAt:
+		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -10374,6 +11417,16 @@ func (m *LanguageLessonMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldSlug(ctx)
 	case languagelesson.FieldNaturalOrder:
 		return m.OldNaturalOrder(ctx)
+	case languagelesson.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case languagelesson.FieldModuleID:
+		return m.OldModuleID(ctx)
+	case languagelesson.FieldState:
+		return m.OldState(ctx)
+	case languagelesson.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagelesson.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageLesson field %s", name)
 }
@@ -10397,6 +11450,41 @@ func (m *LanguageLessonMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetNaturalOrder(v)
 		return nil
+	case languagelesson.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case languagelesson.FieldModuleID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModuleID(v)
+		return nil
+	case languagelesson.FieldState:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetState(v)
+		return nil
+	case languagelesson.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagelesson.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown LanguageLesson field %s", name)
 }
@@ -10408,6 +11496,12 @@ func (m *LanguageLessonMutation) AddedFields() []string {
 	if m.addnatural_order != nil {
 		fields = append(fields, languagelesson.FieldNaturalOrder)
 	}
+	if m.addlanguage_id != nil {
+		fields = append(fields, languagelesson.FieldLanguageID)
+	}
+	if m.addmodule_id != nil {
+		fields = append(fields, languagelesson.FieldModuleID)
+	}
 	return fields
 }
 
@@ -10418,6 +11512,10 @@ func (m *LanguageLessonMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case languagelesson.FieldNaturalOrder:
 		return m.AddedNaturalOrder()
+	case languagelesson.FieldLanguageID:
+		return m.AddedLanguageID()
+	case languagelesson.FieldModuleID:
+		return m.AddedModuleID()
 	}
 	return nil, false
 }
@@ -10434,6 +11532,20 @@ func (m *LanguageLessonMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddNaturalOrder(v)
 		return nil
+	case languagelesson.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
+	case languagelesson.FieldModuleID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddModuleID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown LanguageLesson numeric field %s", name)
 }
@@ -10447,6 +11559,15 @@ func (m *LanguageLessonMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(languagelesson.FieldNaturalOrder) {
 		fields = append(fields, languagelesson.FieldNaturalOrder)
+	}
+	if m.FieldCleared(languagelesson.FieldLanguageID) {
+		fields = append(fields, languagelesson.FieldLanguageID)
+	}
+	if m.FieldCleared(languagelesson.FieldModuleID) {
+		fields = append(fields, languagelesson.FieldModuleID)
+	}
+	if m.FieldCleared(languagelesson.FieldState) {
+		fields = append(fields, languagelesson.FieldState)
 	}
 	return fields
 }
@@ -10468,6 +11589,15 @@ func (m *LanguageLessonMutation) ClearField(name string) error {
 	case languagelesson.FieldNaturalOrder:
 		m.ClearNaturalOrder()
 		return nil
+	case languagelesson.FieldLanguageID:
+		m.ClearLanguageID()
+		return nil
+	case languagelesson.FieldModuleID:
+		m.ClearModuleID()
+		return nil
+	case languagelesson.FieldState:
+		m.ClearState()
+		return nil
 	}
 	return fmt.Errorf("unknown LanguageLesson nullable field %s", name)
 }
@@ -10481,6 +11611,21 @@ func (m *LanguageLessonMutation) ResetField(name string) error {
 		return nil
 	case languagelesson.FieldNaturalOrder:
 		m.ResetNaturalOrder()
+		return nil
+	case languagelesson.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case languagelesson.FieldModuleID:
+		m.ResetModuleID()
+		return nil
+	case languagelesson.FieldState:
+		m.ResetState()
+		return nil
+	case languagelesson.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagelesson.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLesson field %s", name)
@@ -12092,6 +13237,1246 @@ func (m *LanguageLessonReviewMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown LanguageLessonReview edge %s", name)
 }
 
+// LanguageLessonVersionMutation represents an operation that mutates the LanguageLessonVersion nodes in the graph.
+type LanguageLessonVersionMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *int
+	natural_order          *int
+	addnatural_order       *int
+	_order                 *int
+	add_order              *int
+	original_code          *string
+	prepared_code          *string
+	test_code              *string
+	path_to_code           *string
+	language_id            *int
+	addlanguage_id         *int
+	language_version_id    *int
+	addlanguage_version_id *int
+	lesson_id              *int
+	addlesson_id           *int
+	module_version_id      *int
+	addmodule_version_id   *int
+	created_at             *time.Time
+	updated_at             *time.Time
+	clearedFields          map[string]struct{}
+	done                   bool
+	oldValue               func(context.Context) (*LanguageLessonVersion, error)
+	predicates             []predicate.LanguageLessonVersion
+}
+
+var _ ent.Mutation = (*LanguageLessonVersionMutation)(nil)
+
+// languagelessonversionOption allows management of the mutation configuration using functional options.
+type languagelessonversionOption func(*LanguageLessonVersionMutation)
+
+// newLanguageLessonVersionMutation creates new mutation for the LanguageLessonVersion entity.
+func newLanguageLessonVersionMutation(c config, op Op, opts ...languagelessonversionOption) *LanguageLessonVersionMutation {
+	m := &LanguageLessonVersionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLanguageLessonVersion,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLanguageLessonVersionID sets the ID field of the mutation.
+func withLanguageLessonVersionID(id int) languagelessonversionOption {
+	return func(m *LanguageLessonVersionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LanguageLessonVersion
+		)
+		m.oldValue = func(ctx context.Context) (*LanguageLessonVersion, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LanguageLessonVersion.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLanguageLessonVersion sets the old LanguageLessonVersion of the mutation.
+func withLanguageLessonVersion(node *LanguageLessonVersion) languagelessonversionOption {
+	return func(m *LanguageLessonVersionMutation) {
+		m.oldValue = func(context.Context) (*LanguageLessonVersion, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LanguageLessonVersionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LanguageLessonVersionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LanguageLessonVersionMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LanguageLessonVersionMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LanguageLessonVersion.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetNaturalOrder sets the "natural_order" field.
+func (m *LanguageLessonVersionMutation) SetNaturalOrder(i int) {
+	m.natural_order = &i
+	m.addnatural_order = nil
+}
+
+// NaturalOrder returns the value of the "natural_order" field in the mutation.
+func (m *LanguageLessonVersionMutation) NaturalOrder() (r int, exists bool) {
+	v := m.natural_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNaturalOrder returns the old "natural_order" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldNaturalOrder(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNaturalOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNaturalOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNaturalOrder: %w", err)
+	}
+	return oldValue.NaturalOrder, nil
+}
+
+// AddNaturalOrder adds i to the "natural_order" field.
+func (m *LanguageLessonVersionMutation) AddNaturalOrder(i int) {
+	if m.addnatural_order != nil {
+		*m.addnatural_order += i
+	} else {
+		m.addnatural_order = &i
+	}
+}
+
+// AddedNaturalOrder returns the value that was added to the "natural_order" field in this mutation.
+func (m *LanguageLessonVersionMutation) AddedNaturalOrder() (r int, exists bool) {
+	v := m.addnatural_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (m *LanguageLessonVersionMutation) ClearNaturalOrder() {
+	m.natural_order = nil
+	m.addnatural_order = nil
+	m.clearedFields[languagelessonversion.FieldNaturalOrder] = struct{}{}
+}
+
+// NaturalOrderCleared returns if the "natural_order" field was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) NaturalOrderCleared() bool {
+	_, ok := m.clearedFields[languagelessonversion.FieldNaturalOrder]
+	return ok
+}
+
+// ResetNaturalOrder resets all changes to the "natural_order" field.
+func (m *LanguageLessonVersionMutation) ResetNaturalOrder() {
+	m.natural_order = nil
+	m.addnatural_order = nil
+	delete(m.clearedFields, languagelessonversion.FieldNaturalOrder)
+}
+
+// SetOrder sets the "order" field.
+func (m *LanguageLessonVersionMutation) SetOrder(i int) {
+	m._order = &i
+	m.add_order = nil
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *LanguageLessonVersionMutation) Order() (r int, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldOrder(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// AddOrder adds i to the "order" field.
+func (m *LanguageLessonVersionMutation) AddOrder(i int) {
+	if m.add_order != nil {
+		*m.add_order += i
+	} else {
+		m.add_order = &i
+	}
+}
+
+// AddedOrder returns the value that was added to the "order" field in this mutation.
+func (m *LanguageLessonVersionMutation) AddedOrder() (r int, exists bool) {
+	v := m.add_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrder clears the value of the "order" field.
+func (m *LanguageLessonVersionMutation) ClearOrder() {
+	m._order = nil
+	m.add_order = nil
+	m.clearedFields[languagelessonversion.FieldOrder] = struct{}{}
+}
+
+// OrderCleared returns if the "order" field was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) OrderCleared() bool {
+	_, ok := m.clearedFields[languagelessonversion.FieldOrder]
+	return ok
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *LanguageLessonVersionMutation) ResetOrder() {
+	m._order = nil
+	m.add_order = nil
+	delete(m.clearedFields, languagelessonversion.FieldOrder)
+}
+
+// SetOriginalCode sets the "original_code" field.
+func (m *LanguageLessonVersionMutation) SetOriginalCode(s string) {
+	m.original_code = &s
+}
+
+// OriginalCode returns the value of the "original_code" field in the mutation.
+func (m *LanguageLessonVersionMutation) OriginalCode() (r string, exists bool) {
+	v := m.original_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOriginalCode returns the old "original_code" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldOriginalCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOriginalCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOriginalCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOriginalCode: %w", err)
+	}
+	return oldValue.OriginalCode, nil
+}
+
+// ClearOriginalCode clears the value of the "original_code" field.
+func (m *LanguageLessonVersionMutation) ClearOriginalCode() {
+	m.original_code = nil
+	m.clearedFields[languagelessonversion.FieldOriginalCode] = struct{}{}
+}
+
+// OriginalCodeCleared returns if the "original_code" field was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) OriginalCodeCleared() bool {
+	_, ok := m.clearedFields[languagelessonversion.FieldOriginalCode]
+	return ok
+}
+
+// ResetOriginalCode resets all changes to the "original_code" field.
+func (m *LanguageLessonVersionMutation) ResetOriginalCode() {
+	m.original_code = nil
+	delete(m.clearedFields, languagelessonversion.FieldOriginalCode)
+}
+
+// SetPreparedCode sets the "prepared_code" field.
+func (m *LanguageLessonVersionMutation) SetPreparedCode(s string) {
+	m.prepared_code = &s
+}
+
+// PreparedCode returns the value of the "prepared_code" field in the mutation.
+func (m *LanguageLessonVersionMutation) PreparedCode() (r string, exists bool) {
+	v := m.prepared_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPreparedCode returns the old "prepared_code" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldPreparedCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPreparedCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPreparedCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPreparedCode: %w", err)
+	}
+	return oldValue.PreparedCode, nil
+}
+
+// ClearPreparedCode clears the value of the "prepared_code" field.
+func (m *LanguageLessonVersionMutation) ClearPreparedCode() {
+	m.prepared_code = nil
+	m.clearedFields[languagelessonversion.FieldPreparedCode] = struct{}{}
+}
+
+// PreparedCodeCleared returns if the "prepared_code" field was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) PreparedCodeCleared() bool {
+	_, ok := m.clearedFields[languagelessonversion.FieldPreparedCode]
+	return ok
+}
+
+// ResetPreparedCode resets all changes to the "prepared_code" field.
+func (m *LanguageLessonVersionMutation) ResetPreparedCode() {
+	m.prepared_code = nil
+	delete(m.clearedFields, languagelessonversion.FieldPreparedCode)
+}
+
+// SetTestCode sets the "test_code" field.
+func (m *LanguageLessonVersionMutation) SetTestCode(s string) {
+	m.test_code = &s
+}
+
+// TestCode returns the value of the "test_code" field in the mutation.
+func (m *LanguageLessonVersionMutation) TestCode() (r string, exists bool) {
+	v := m.test_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTestCode returns the old "test_code" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldTestCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTestCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTestCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTestCode: %w", err)
+	}
+	return oldValue.TestCode, nil
+}
+
+// ClearTestCode clears the value of the "test_code" field.
+func (m *LanguageLessonVersionMutation) ClearTestCode() {
+	m.test_code = nil
+	m.clearedFields[languagelessonversion.FieldTestCode] = struct{}{}
+}
+
+// TestCodeCleared returns if the "test_code" field was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) TestCodeCleared() bool {
+	_, ok := m.clearedFields[languagelessonversion.FieldTestCode]
+	return ok
+}
+
+// ResetTestCode resets all changes to the "test_code" field.
+func (m *LanguageLessonVersionMutation) ResetTestCode() {
+	m.test_code = nil
+	delete(m.clearedFields, languagelessonversion.FieldTestCode)
+}
+
+// SetPathToCode sets the "path_to_code" field.
+func (m *LanguageLessonVersionMutation) SetPathToCode(s string) {
+	m.path_to_code = &s
+}
+
+// PathToCode returns the value of the "path_to_code" field in the mutation.
+func (m *LanguageLessonVersionMutation) PathToCode() (r string, exists bool) {
+	v := m.path_to_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPathToCode returns the old "path_to_code" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldPathToCode(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPathToCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPathToCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPathToCode: %w", err)
+	}
+	return oldValue.PathToCode, nil
+}
+
+// ClearPathToCode clears the value of the "path_to_code" field.
+func (m *LanguageLessonVersionMutation) ClearPathToCode() {
+	m.path_to_code = nil
+	m.clearedFields[languagelessonversion.FieldPathToCode] = struct{}{}
+}
+
+// PathToCodeCleared returns if the "path_to_code" field was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) PathToCodeCleared() bool {
+	_, ok := m.clearedFields[languagelessonversion.FieldPathToCode]
+	return ok
+}
+
+// ResetPathToCode resets all changes to the "path_to_code" field.
+func (m *LanguageLessonVersionMutation) ResetPathToCode() {
+	m.path_to_code = nil
+	delete(m.clearedFields, languagelessonversion.FieldPathToCode)
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *LanguageLessonVersionMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *LanguageLessonVersionMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *LanguageLessonVersionMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *LanguageLessonVersionMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *LanguageLessonVersionMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (m *LanguageLessonVersionMutation) SetLanguageVersionID(i int) {
+	m.language_version_id = &i
+	m.addlanguage_version_id = nil
+}
+
+// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
+func (m *LanguageLessonVersionMutation) LanguageVersionID() (r int, exists bool) {
+	v := m.language_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageVersionID returns the old "language_version_id" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+	}
+	return oldValue.LanguageVersionID, nil
+}
+
+// AddLanguageVersionID adds i to the "language_version_id" field.
+func (m *LanguageLessonVersionMutation) AddLanguageVersionID(i int) {
+	if m.addlanguage_version_id != nil {
+		*m.addlanguage_version_id += i
+	} else {
+		m.addlanguage_version_id = &i
+	}
+}
+
+// AddedLanguageVersionID returns the value that was added to the "language_version_id" field in this mutation.
+func (m *LanguageLessonVersionMutation) AddedLanguageVersionID() (r int, exists bool) {
+	v := m.addlanguage_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageVersionID resets all changes to the "language_version_id" field.
+func (m *LanguageLessonVersionMutation) ResetLanguageVersionID() {
+	m.language_version_id = nil
+	m.addlanguage_version_id = nil
+}
+
+// SetLessonID sets the "lesson_id" field.
+func (m *LanguageLessonVersionMutation) SetLessonID(i int) {
+	m.lesson_id = &i
+	m.addlesson_id = nil
+}
+
+// LessonID returns the value of the "lesson_id" field in the mutation.
+func (m *LanguageLessonVersionMutation) LessonID() (r int, exists bool) {
+	v := m.lesson_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLessonID returns the old "lesson_id" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldLessonID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLessonID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLessonID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLessonID: %w", err)
+	}
+	return oldValue.LessonID, nil
+}
+
+// AddLessonID adds i to the "lesson_id" field.
+func (m *LanguageLessonVersionMutation) AddLessonID(i int) {
+	if m.addlesson_id != nil {
+		*m.addlesson_id += i
+	} else {
+		m.addlesson_id = &i
+	}
+}
+
+// AddedLessonID returns the value that was added to the "lesson_id" field in this mutation.
+func (m *LanguageLessonVersionMutation) AddedLessonID() (r int, exists bool) {
+	v := m.addlesson_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLessonID resets all changes to the "lesson_id" field.
+func (m *LanguageLessonVersionMutation) ResetLessonID() {
+	m.lesson_id = nil
+	m.addlesson_id = nil
+}
+
+// SetModuleVersionID sets the "module_version_id" field.
+func (m *LanguageLessonVersionMutation) SetModuleVersionID(i int) {
+	m.module_version_id = &i
+	m.addmodule_version_id = nil
+}
+
+// ModuleVersionID returns the value of the "module_version_id" field in the mutation.
+func (m *LanguageLessonVersionMutation) ModuleVersionID() (r int, exists bool) {
+	v := m.module_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModuleVersionID returns the old "module_version_id" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldModuleVersionID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModuleVersionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModuleVersionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModuleVersionID: %w", err)
+	}
+	return oldValue.ModuleVersionID, nil
+}
+
+// AddModuleVersionID adds i to the "module_version_id" field.
+func (m *LanguageLessonVersionMutation) AddModuleVersionID(i int) {
+	if m.addmodule_version_id != nil {
+		*m.addmodule_version_id += i
+	} else {
+		m.addmodule_version_id = &i
+	}
+}
+
+// AddedModuleVersionID returns the value that was added to the "module_version_id" field in this mutation.
+func (m *LanguageLessonVersionMutation) AddedModuleVersionID() (r int, exists bool) {
+	v := m.addmodule_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetModuleVersionID resets all changes to the "module_version_id" field.
+func (m *LanguageLessonVersionMutation) ResetModuleVersionID() {
+	m.module_version_id = nil
+	m.addmodule_version_id = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageLessonVersionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageLessonVersionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageLessonVersionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageLessonVersionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageLessonVersionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageLessonVersionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the LanguageLessonVersionMutation builder.
+func (m *LanguageLessonVersionMutation) Where(ps ...predicate.LanguageLessonVersion) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LanguageLessonVersionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LanguageLessonVersionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LanguageLessonVersion, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LanguageLessonVersionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LanguageLessonVersionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LanguageLessonVersion).
+func (m *LanguageLessonVersionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LanguageLessonVersionMutation) Fields() []string {
+	fields := make([]string, 0, 12)
+	if m.natural_order != nil {
+		fields = append(fields, languagelessonversion.FieldNaturalOrder)
+	}
+	if m._order != nil {
+		fields = append(fields, languagelessonversion.FieldOrder)
+	}
+	if m.original_code != nil {
+		fields = append(fields, languagelessonversion.FieldOriginalCode)
+	}
+	if m.prepared_code != nil {
+		fields = append(fields, languagelessonversion.FieldPreparedCode)
+	}
+	if m.test_code != nil {
+		fields = append(fields, languagelessonversion.FieldTestCode)
+	}
+	if m.path_to_code != nil {
+		fields = append(fields, languagelessonversion.FieldPathToCode)
+	}
+	if m.language_id != nil {
+		fields = append(fields, languagelessonversion.FieldLanguageID)
+	}
+	if m.language_version_id != nil {
+		fields = append(fields, languagelessonversion.FieldLanguageVersionID)
+	}
+	if m.lesson_id != nil {
+		fields = append(fields, languagelessonversion.FieldLessonID)
+	}
+	if m.module_version_id != nil {
+		fields = append(fields, languagelessonversion.FieldModuleVersionID)
+	}
+	if m.created_at != nil {
+		fields = append(fields, languagelessonversion.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagelessonversion.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LanguageLessonVersionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		return m.NaturalOrder()
+	case languagelessonversion.FieldOrder:
+		return m.Order()
+	case languagelessonversion.FieldOriginalCode:
+		return m.OriginalCode()
+	case languagelessonversion.FieldPreparedCode:
+		return m.PreparedCode()
+	case languagelessonversion.FieldTestCode:
+		return m.TestCode()
+	case languagelessonversion.FieldPathToCode:
+		return m.PathToCode()
+	case languagelessonversion.FieldLanguageID:
+		return m.LanguageID()
+	case languagelessonversion.FieldLanguageVersionID:
+		return m.LanguageVersionID()
+	case languagelessonversion.FieldLessonID:
+		return m.LessonID()
+	case languagelessonversion.FieldModuleVersionID:
+		return m.ModuleVersionID()
+	case languagelessonversion.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagelessonversion.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LanguageLessonVersionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		return m.OldNaturalOrder(ctx)
+	case languagelessonversion.FieldOrder:
+		return m.OldOrder(ctx)
+	case languagelessonversion.FieldOriginalCode:
+		return m.OldOriginalCode(ctx)
+	case languagelessonversion.FieldPreparedCode:
+		return m.OldPreparedCode(ctx)
+	case languagelessonversion.FieldTestCode:
+		return m.OldTestCode(ctx)
+	case languagelessonversion.FieldPathToCode:
+		return m.OldPathToCode(ctx)
+	case languagelessonversion.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case languagelessonversion.FieldLanguageVersionID:
+		return m.OldLanguageVersionID(ctx)
+	case languagelessonversion.FieldLessonID:
+		return m.OldLessonID(ctx)
+	case languagelessonversion.FieldModuleVersionID:
+		return m.OldModuleVersionID(ctx)
+	case languagelessonversion.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagelessonversion.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown LanguageLessonVersion field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageLessonVersionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNaturalOrder(v)
+		return nil
+	case languagelessonversion.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
+	case languagelessonversion.FieldOriginalCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOriginalCode(v)
+		return nil
+	case languagelessonversion.FieldPreparedCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPreparedCode(v)
+		return nil
+	case languagelessonversion.FieldTestCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTestCode(v)
+		return nil
+	case languagelessonversion.FieldPathToCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPathToCode(v)
+		return nil
+	case languagelessonversion.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case languagelessonversion.FieldLanguageVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageVersionID(v)
+		return nil
+	case languagelessonversion.FieldLessonID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLessonID(v)
+		return nil
+	case languagelessonversion.FieldModuleVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModuleVersionID(v)
+		return nil
+	case languagelessonversion.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagelessonversion.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageLessonVersion field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LanguageLessonVersionMutation) AddedFields() []string {
+	var fields []string
+	if m.addnatural_order != nil {
+		fields = append(fields, languagelessonversion.FieldNaturalOrder)
+	}
+	if m.add_order != nil {
+		fields = append(fields, languagelessonversion.FieldOrder)
+	}
+	if m.addlanguage_id != nil {
+		fields = append(fields, languagelessonversion.FieldLanguageID)
+	}
+	if m.addlanguage_version_id != nil {
+		fields = append(fields, languagelessonversion.FieldLanguageVersionID)
+	}
+	if m.addlesson_id != nil {
+		fields = append(fields, languagelessonversion.FieldLessonID)
+	}
+	if m.addmodule_version_id != nil {
+		fields = append(fields, languagelessonversion.FieldModuleVersionID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LanguageLessonVersionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		return m.AddedNaturalOrder()
+	case languagelessonversion.FieldOrder:
+		return m.AddedOrder()
+	case languagelessonversion.FieldLanguageID:
+		return m.AddedLanguageID()
+	case languagelessonversion.FieldLanguageVersionID:
+		return m.AddedLanguageVersionID()
+	case languagelessonversion.FieldLessonID:
+		return m.AddedLessonID()
+	case languagelessonversion.FieldModuleVersionID:
+		return m.AddedModuleVersionID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageLessonVersionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddNaturalOrder(v)
+		return nil
+	case languagelessonversion.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrder(v)
+		return nil
+	case languagelessonversion.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
+	case languagelessonversion.FieldLanguageVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageVersionID(v)
+		return nil
+	case languagelessonversion.FieldLessonID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLessonID(v)
+		return nil
+	case languagelessonversion.FieldModuleVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddModuleVersionID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageLessonVersion numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LanguageLessonVersionMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(languagelessonversion.FieldNaturalOrder) {
+		fields = append(fields, languagelessonversion.FieldNaturalOrder)
+	}
+	if m.FieldCleared(languagelessonversion.FieldOrder) {
+		fields = append(fields, languagelessonversion.FieldOrder)
+	}
+	if m.FieldCleared(languagelessonversion.FieldOriginalCode) {
+		fields = append(fields, languagelessonversion.FieldOriginalCode)
+	}
+	if m.FieldCleared(languagelessonversion.FieldPreparedCode) {
+		fields = append(fields, languagelessonversion.FieldPreparedCode)
+	}
+	if m.FieldCleared(languagelessonversion.FieldTestCode) {
+		fields = append(fields, languagelessonversion.FieldTestCode)
+	}
+	if m.FieldCleared(languagelessonversion.FieldPathToCode) {
+		fields = append(fields, languagelessonversion.FieldPathToCode)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LanguageLessonVersionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LanguageLessonVersionMutation) ClearField(name string) error {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		m.ClearNaturalOrder()
+		return nil
+	case languagelessonversion.FieldOrder:
+		m.ClearOrder()
+		return nil
+	case languagelessonversion.FieldOriginalCode:
+		m.ClearOriginalCode()
+		return nil
+	case languagelessonversion.FieldPreparedCode:
+		m.ClearPreparedCode()
+		return nil
+	case languagelessonversion.FieldTestCode:
+		m.ClearTestCode()
+		return nil
+	case languagelessonversion.FieldPathToCode:
+		m.ClearPathToCode()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageLessonVersion nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LanguageLessonVersionMutation) ResetField(name string) error {
+	switch name {
+	case languagelessonversion.FieldNaturalOrder:
+		m.ResetNaturalOrder()
+		return nil
+	case languagelessonversion.FieldOrder:
+		m.ResetOrder()
+		return nil
+	case languagelessonversion.FieldOriginalCode:
+		m.ResetOriginalCode()
+		return nil
+	case languagelessonversion.FieldPreparedCode:
+		m.ResetPreparedCode()
+		return nil
+	case languagelessonversion.FieldTestCode:
+		m.ResetTestCode()
+		return nil
+	case languagelessonversion.FieldPathToCode:
+		m.ResetPathToCode()
+		return nil
+	case languagelessonversion.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case languagelessonversion.FieldLanguageVersionID:
+		m.ResetLanguageVersionID()
+		return nil
+	case languagelessonversion.FieldLessonID:
+		m.ResetLessonID()
+		return nil
+	case languagelessonversion.FieldModuleVersionID:
+		m.ResetModuleVersionID()
+		return nil
+	case languagelessonversion.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagelessonversion.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageLessonVersion field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LanguageLessonVersionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LanguageLessonVersionMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LanguageLessonVersionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LanguageLessonVersionMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LanguageLessonVersionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LanguageLessonVersionMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LanguageLessonVersionMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LanguageLessonVersion unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LanguageLessonVersionMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LanguageLessonVersion edge %s", name)
+}
+
 // LanguageLessonVersionInfoMutation represents an operation that mutates the LanguageLessonVersionInfo nodes in the graph.
 type LanguageLessonVersionInfoMutation struct {
 	config
@@ -12107,6 +14492,14 @@ type LanguageLessonVersionInfoMutation struct {
 	addlanguage_lesson_id  *int
 	language_version_id    *int
 	addlanguage_version_id *int
+	theory                 *string
+	instructions           *string
+	tips                   *string
+	definitions            *string
+	version_id             *int
+	addversion_id          *int
+	created_at             *time.Time
+	updated_at             *time.Time
 	clearedFields          map[string]struct{}
 	done                   bool
 	oldValue               func(context.Context) (*LanguageLessonVersionInfo, error)
@@ -12526,6 +14919,330 @@ func (m *LanguageLessonVersionInfoMutation) ResetLanguageVersionID() {
 	m.addlanguage_version_id = nil
 }
 
+// SetTheory sets the "theory" field.
+func (m *LanguageLessonVersionInfoMutation) SetTheory(s string) {
+	m.theory = &s
+}
+
+// Theory returns the value of the "theory" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) Theory() (r string, exists bool) {
+	v := m.theory
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTheory returns the old "theory" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldTheory(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTheory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTheory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTheory: %w", err)
+	}
+	return oldValue.Theory, nil
+}
+
+// ClearTheory clears the value of the "theory" field.
+func (m *LanguageLessonVersionInfoMutation) ClearTheory() {
+	m.theory = nil
+	m.clearedFields[languagelessonversioninfo.FieldTheory] = struct{}{}
+}
+
+// TheoryCleared returns if the "theory" field was cleared in this mutation.
+func (m *LanguageLessonVersionInfoMutation) TheoryCleared() bool {
+	_, ok := m.clearedFields[languagelessonversioninfo.FieldTheory]
+	return ok
+}
+
+// ResetTheory resets all changes to the "theory" field.
+func (m *LanguageLessonVersionInfoMutation) ResetTheory() {
+	m.theory = nil
+	delete(m.clearedFields, languagelessonversioninfo.FieldTheory)
+}
+
+// SetInstructions sets the "instructions" field.
+func (m *LanguageLessonVersionInfoMutation) SetInstructions(s string) {
+	m.instructions = &s
+}
+
+// Instructions returns the value of the "instructions" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) Instructions() (r string, exists bool) {
+	v := m.instructions
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInstructions returns the old "instructions" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldInstructions(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInstructions is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInstructions requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInstructions: %w", err)
+	}
+	return oldValue.Instructions, nil
+}
+
+// ClearInstructions clears the value of the "instructions" field.
+func (m *LanguageLessonVersionInfoMutation) ClearInstructions() {
+	m.instructions = nil
+	m.clearedFields[languagelessonversioninfo.FieldInstructions] = struct{}{}
+}
+
+// InstructionsCleared returns if the "instructions" field was cleared in this mutation.
+func (m *LanguageLessonVersionInfoMutation) InstructionsCleared() bool {
+	_, ok := m.clearedFields[languagelessonversioninfo.FieldInstructions]
+	return ok
+}
+
+// ResetInstructions resets all changes to the "instructions" field.
+func (m *LanguageLessonVersionInfoMutation) ResetInstructions() {
+	m.instructions = nil
+	delete(m.clearedFields, languagelessonversioninfo.FieldInstructions)
+}
+
+// SetTips sets the "tips" field.
+func (m *LanguageLessonVersionInfoMutation) SetTips(s string) {
+	m.tips = &s
+}
+
+// Tips returns the value of the "tips" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) Tips() (r string, exists bool) {
+	v := m.tips
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTips returns the old "tips" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldTips(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTips is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTips requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTips: %w", err)
+	}
+	return oldValue.Tips, nil
+}
+
+// ClearTips clears the value of the "tips" field.
+func (m *LanguageLessonVersionInfoMutation) ClearTips() {
+	m.tips = nil
+	m.clearedFields[languagelessonversioninfo.FieldTips] = struct{}{}
+}
+
+// TipsCleared returns if the "tips" field was cleared in this mutation.
+func (m *LanguageLessonVersionInfoMutation) TipsCleared() bool {
+	_, ok := m.clearedFields[languagelessonversioninfo.FieldTips]
+	return ok
+}
+
+// ResetTips resets all changes to the "tips" field.
+func (m *LanguageLessonVersionInfoMutation) ResetTips() {
+	m.tips = nil
+	delete(m.clearedFields, languagelessonversioninfo.FieldTips)
+}
+
+// SetDefinitions sets the "definitions" field.
+func (m *LanguageLessonVersionInfoMutation) SetDefinitions(s string) {
+	m.definitions = &s
+}
+
+// Definitions returns the value of the "definitions" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) Definitions() (r string, exists bool) {
+	v := m.definitions
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDefinitions returns the old "definitions" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldDefinitions(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDefinitions is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDefinitions requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDefinitions: %w", err)
+	}
+	return oldValue.Definitions, nil
+}
+
+// ClearDefinitions clears the value of the "definitions" field.
+func (m *LanguageLessonVersionInfoMutation) ClearDefinitions() {
+	m.definitions = nil
+	m.clearedFields[languagelessonversioninfo.FieldDefinitions] = struct{}{}
+}
+
+// DefinitionsCleared returns if the "definitions" field was cleared in this mutation.
+func (m *LanguageLessonVersionInfoMutation) DefinitionsCleared() bool {
+	_, ok := m.clearedFields[languagelessonversioninfo.FieldDefinitions]
+	return ok
+}
+
+// ResetDefinitions resets all changes to the "definitions" field.
+func (m *LanguageLessonVersionInfoMutation) ResetDefinitions() {
+	m.definitions = nil
+	delete(m.clearedFields, languagelessonversioninfo.FieldDefinitions)
+}
+
+// SetVersionID sets the "version_id" field.
+func (m *LanguageLessonVersionInfoMutation) SetVersionID(i int) {
+	m.version_id = &i
+	m.addversion_id = nil
+}
+
+// VersionID returns the value of the "version_id" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) VersionID() (r int, exists bool) {
+	v := m.version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersionID returns the old "version_id" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldVersionID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersionID: %w", err)
+	}
+	return oldValue.VersionID, nil
+}
+
+// AddVersionID adds i to the "version_id" field.
+func (m *LanguageLessonVersionInfoMutation) AddVersionID(i int) {
+	if m.addversion_id != nil {
+		*m.addversion_id += i
+	} else {
+		m.addversion_id = &i
+	}
+}
+
+// AddedVersionID returns the value that was added to the "version_id" field in this mutation.
+func (m *LanguageLessonVersionInfoMutation) AddedVersionID() (r int, exists bool) {
+	v := m.addversion_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetVersionID resets all changes to the "version_id" field.
+func (m *LanguageLessonVersionInfoMutation) ResetVersionID() {
+	m.version_id = nil
+	m.addversion_id = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageLessonVersionInfoMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageLessonVersionInfoMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageLessonVersionInfoMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageLessonVersionInfoMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // Where appends a list predicates to the LanguageLessonVersionInfoMutation builder.
 func (m *LanguageLessonVersionInfoMutation) Where(ps ...predicate.LanguageLessonVersionInfo) {
 	m.predicates = append(m.predicates, ps...)
@@ -12560,7 +15277,7 @@ func (m *LanguageLessonVersionInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LanguageLessonVersionInfoMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 13)
 	if m.name != nil {
 		fields = append(fields, languagelessonversioninfo.FieldName)
 	}
@@ -12578,6 +15295,27 @@ func (m *LanguageLessonVersionInfoMutation) Fields() []string {
 	}
 	if m.language_version_id != nil {
 		fields = append(fields, languagelessonversioninfo.FieldLanguageVersionID)
+	}
+	if m.theory != nil {
+		fields = append(fields, languagelessonversioninfo.FieldTheory)
+	}
+	if m.instructions != nil {
+		fields = append(fields, languagelessonversioninfo.FieldInstructions)
+	}
+	if m.tips != nil {
+		fields = append(fields, languagelessonversioninfo.FieldTips)
+	}
+	if m.definitions != nil {
+		fields = append(fields, languagelessonversioninfo.FieldDefinitions)
+	}
+	if m.version_id != nil {
+		fields = append(fields, languagelessonversioninfo.FieldVersionID)
+	}
+	if m.created_at != nil {
+		fields = append(fields, languagelessonversioninfo.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagelessonversioninfo.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -12599,6 +15337,20 @@ func (m *LanguageLessonVersionInfoMutation) Field(name string) (ent.Value, bool)
 		return m.LanguageLessonID()
 	case languagelessonversioninfo.FieldLanguageVersionID:
 		return m.LanguageVersionID()
+	case languagelessonversioninfo.FieldTheory:
+		return m.Theory()
+	case languagelessonversioninfo.FieldInstructions:
+		return m.Instructions()
+	case languagelessonversioninfo.FieldTips:
+		return m.Tips()
+	case languagelessonversioninfo.FieldDefinitions:
+		return m.Definitions()
+	case languagelessonversioninfo.FieldVersionID:
+		return m.VersionID()
+	case languagelessonversioninfo.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagelessonversioninfo.FieldUpdatedAt:
+		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -12620,6 +15372,20 @@ func (m *LanguageLessonVersionInfoMutation) OldField(ctx context.Context, name s
 		return m.OldLanguageLessonID(ctx)
 	case languagelessonversioninfo.FieldLanguageVersionID:
 		return m.OldLanguageVersionID(ctx)
+	case languagelessonversioninfo.FieldTheory:
+		return m.OldTheory(ctx)
+	case languagelessonversioninfo.FieldInstructions:
+		return m.OldInstructions(ctx)
+	case languagelessonversioninfo.FieldTips:
+		return m.OldTips(ctx)
+	case languagelessonversioninfo.FieldDefinitions:
+		return m.OldDefinitions(ctx)
+	case languagelessonversioninfo.FieldVersionID:
+		return m.OldVersionID(ctx)
+	case languagelessonversioninfo.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagelessonversioninfo.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageLessonVersionInfo field %s", name)
 }
@@ -12671,6 +15437,55 @@ func (m *LanguageLessonVersionInfoMutation) SetField(name string, value ent.Valu
 		}
 		m.SetLanguageVersionID(v)
 		return nil
+	case languagelessonversioninfo.FieldTheory:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTheory(v)
+		return nil
+	case languagelessonversioninfo.FieldInstructions:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInstructions(v)
+		return nil
+	case languagelessonversioninfo.FieldTips:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTips(v)
+		return nil
+	case languagelessonversioninfo.FieldDefinitions:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDefinitions(v)
+		return nil
+	case languagelessonversioninfo.FieldVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersionID(v)
+		return nil
+	case languagelessonversioninfo.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagelessonversioninfo.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersionInfo field %s", name)
 }
@@ -12688,6 +15503,9 @@ func (m *LanguageLessonVersionInfoMutation) AddedFields() []string {
 	if m.addlanguage_version_id != nil {
 		fields = append(fields, languagelessonversioninfo.FieldLanguageVersionID)
 	}
+	if m.addversion_id != nil {
+		fields = append(fields, languagelessonversioninfo.FieldVersionID)
+	}
 	return fields
 }
 
@@ -12702,6 +15520,8 @@ func (m *LanguageLessonVersionInfoMutation) AddedField(name string) (ent.Value, 
 		return m.AddedLanguageLessonID()
 	case languagelessonversioninfo.FieldLanguageVersionID:
 		return m.AddedLanguageVersionID()
+	case languagelessonversioninfo.FieldVersionID:
+		return m.AddedVersionID()
 	}
 	return nil, false
 }
@@ -12732,6 +15552,13 @@ func (m *LanguageLessonVersionInfoMutation) AddField(name string, value ent.Valu
 		}
 		m.AddLanguageVersionID(v)
 		return nil
+	case languagelessonversioninfo.FieldVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddVersionID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersionInfo numeric field %s", name)
 }
@@ -12748,6 +15575,18 @@ func (m *LanguageLessonVersionInfoMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(languagelessonversioninfo.FieldLocale) {
 		fields = append(fields, languagelessonversioninfo.FieldLocale)
+	}
+	if m.FieldCleared(languagelessonversioninfo.FieldTheory) {
+		fields = append(fields, languagelessonversioninfo.FieldTheory)
+	}
+	if m.FieldCleared(languagelessonversioninfo.FieldInstructions) {
+		fields = append(fields, languagelessonversioninfo.FieldInstructions)
+	}
+	if m.FieldCleared(languagelessonversioninfo.FieldTips) {
+		fields = append(fields, languagelessonversioninfo.FieldTips)
+	}
+	if m.FieldCleared(languagelessonversioninfo.FieldDefinitions) {
+		fields = append(fields, languagelessonversioninfo.FieldDefinitions)
 	}
 	return fields
 }
@@ -12771,6 +15610,18 @@ func (m *LanguageLessonVersionInfoMutation) ClearField(name string) error {
 		return nil
 	case languagelessonversioninfo.FieldLocale:
 		m.ClearLocale()
+		return nil
+	case languagelessonversioninfo.FieldTheory:
+		m.ClearTheory()
+		return nil
+	case languagelessonversioninfo.FieldInstructions:
+		m.ClearInstructions()
+		return nil
+	case languagelessonversioninfo.FieldTips:
+		m.ClearTips()
+		return nil
+	case languagelessonversioninfo.FieldDefinitions:
+		m.ClearDefinitions()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersionInfo nullable field %s", name)
@@ -12797,6 +15648,27 @@ func (m *LanguageLessonVersionInfoMutation) ResetField(name string) error {
 		return nil
 	case languagelessonversioninfo.FieldLanguageVersionID:
 		m.ResetLanguageVersionID()
+		return nil
+	case languagelessonversioninfo.FieldTheory:
+		m.ResetTheory()
+		return nil
+	case languagelessonversioninfo.FieldInstructions:
+		m.ResetInstructions()
+		return nil
+	case languagelessonversioninfo.FieldTips:
+		m.ResetTips()
+		return nil
+	case languagelessonversioninfo.FieldDefinitions:
+		m.ResetDefinitions()
+		return nil
+	case languagelessonversioninfo.FieldVersionID:
+		m.ResetVersionID()
+		return nil
+	case languagelessonversioninfo.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagelessonversioninfo.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersionInfo field %s", name)
@@ -12848,6 +15720,2372 @@ func (m *LanguageLessonVersionInfoMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *LanguageLessonVersionInfoMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown LanguageLessonVersionInfo edge %s", name)
+}
+
+// LanguageModuleMutation represents an operation that mutates the LanguageModule nodes in the graph.
+type LanguageModuleMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int
+	slug           *string
+	language_id    *int
+	addlanguage_id *int
+	_order         *int
+	add_order      *int
+	state          *string
+	created_at     *time.Time
+	updated_at     *time.Time
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*LanguageModule, error)
+	predicates     []predicate.LanguageModule
+}
+
+var _ ent.Mutation = (*LanguageModuleMutation)(nil)
+
+// languagemoduleOption allows management of the mutation configuration using functional options.
+type languagemoduleOption func(*LanguageModuleMutation)
+
+// newLanguageModuleMutation creates new mutation for the LanguageModule entity.
+func newLanguageModuleMutation(c config, op Op, opts ...languagemoduleOption) *LanguageModuleMutation {
+	m := &LanguageModuleMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLanguageModule,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLanguageModuleID sets the ID field of the mutation.
+func withLanguageModuleID(id int) languagemoduleOption {
+	return func(m *LanguageModuleMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LanguageModule
+		)
+		m.oldValue = func(ctx context.Context) (*LanguageModule, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LanguageModule.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLanguageModule sets the old LanguageModule of the mutation.
+func withLanguageModule(node *LanguageModule) languagemoduleOption {
+	return func(m *LanguageModuleMutation) {
+		m.oldValue = func(context.Context) (*LanguageModule, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LanguageModuleMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LanguageModuleMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LanguageModuleMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LanguageModuleMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LanguageModule.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSlug sets the "slug" field.
+func (m *LanguageModuleMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *LanguageModuleMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldSlug(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (m *LanguageModuleMutation) ClearSlug() {
+	m.slug = nil
+	m.clearedFields[languagemodule.FieldSlug] = struct{}{}
+}
+
+// SlugCleared returns if the "slug" field was cleared in this mutation.
+func (m *LanguageModuleMutation) SlugCleared() bool {
+	_, ok := m.clearedFields[languagemodule.FieldSlug]
+	return ok
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *LanguageModuleMutation) ResetSlug() {
+	m.slug = nil
+	delete(m.clearedFields, languagemodule.FieldSlug)
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *LanguageModuleMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *LanguageModuleMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldLanguageID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *LanguageModuleMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *LanguageModuleMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (m *LanguageModuleMutation) ClearLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+	m.clearedFields[languagemodule.FieldLanguageID] = struct{}{}
+}
+
+// LanguageIDCleared returns if the "language_id" field was cleared in this mutation.
+func (m *LanguageModuleMutation) LanguageIDCleared() bool {
+	_, ok := m.clearedFields[languagemodule.FieldLanguageID]
+	return ok
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *LanguageModuleMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+	delete(m.clearedFields, languagemodule.FieldLanguageID)
+}
+
+// SetOrder sets the "order" field.
+func (m *LanguageModuleMutation) SetOrder(i int) {
+	m._order = &i
+	m.add_order = nil
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *LanguageModuleMutation) Order() (r int, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldOrder(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// AddOrder adds i to the "order" field.
+func (m *LanguageModuleMutation) AddOrder(i int) {
+	if m.add_order != nil {
+		*m.add_order += i
+	} else {
+		m.add_order = &i
+	}
+}
+
+// AddedOrder returns the value that was added to the "order" field in this mutation.
+func (m *LanguageModuleMutation) AddedOrder() (r int, exists bool) {
+	v := m.add_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrder clears the value of the "order" field.
+func (m *LanguageModuleMutation) ClearOrder() {
+	m._order = nil
+	m.add_order = nil
+	m.clearedFields[languagemodule.FieldOrder] = struct{}{}
+}
+
+// OrderCleared returns if the "order" field was cleared in this mutation.
+func (m *LanguageModuleMutation) OrderCleared() bool {
+	_, ok := m.clearedFields[languagemodule.FieldOrder]
+	return ok
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *LanguageModuleMutation) ResetOrder() {
+	m._order = nil
+	m.add_order = nil
+	delete(m.clearedFields, languagemodule.FieldOrder)
+}
+
+// SetState sets the "state" field.
+func (m *LanguageModuleMutation) SetState(s string) {
+	m.state = &s
+}
+
+// State returns the value of the "state" field in the mutation.
+func (m *LanguageModuleMutation) State() (r string, exists bool) {
+	v := m.state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldState returns the old "state" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldState(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldState: %w", err)
+	}
+	return oldValue.State, nil
+}
+
+// ClearState clears the value of the "state" field.
+func (m *LanguageModuleMutation) ClearState() {
+	m.state = nil
+	m.clearedFields[languagemodule.FieldState] = struct{}{}
+}
+
+// StateCleared returns if the "state" field was cleared in this mutation.
+func (m *LanguageModuleMutation) StateCleared() bool {
+	_, ok := m.clearedFields[languagemodule.FieldState]
+	return ok
+}
+
+// ResetState resets all changes to the "state" field.
+func (m *LanguageModuleMutation) ResetState() {
+	m.state = nil
+	delete(m.clearedFields, languagemodule.FieldState)
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageModuleMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageModuleMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageModuleMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageModuleMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageModuleMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageModuleMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the LanguageModuleMutation builder.
+func (m *LanguageModuleMutation) Where(ps ...predicate.LanguageModule) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LanguageModuleMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LanguageModuleMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LanguageModule, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LanguageModuleMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LanguageModuleMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LanguageModule).
+func (m *LanguageModuleMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LanguageModuleMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.slug != nil {
+		fields = append(fields, languagemodule.FieldSlug)
+	}
+	if m.language_id != nil {
+		fields = append(fields, languagemodule.FieldLanguageID)
+	}
+	if m._order != nil {
+		fields = append(fields, languagemodule.FieldOrder)
+	}
+	if m.state != nil {
+		fields = append(fields, languagemodule.FieldState)
+	}
+	if m.created_at != nil {
+		fields = append(fields, languagemodule.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagemodule.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LanguageModuleMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case languagemodule.FieldSlug:
+		return m.Slug()
+	case languagemodule.FieldLanguageID:
+		return m.LanguageID()
+	case languagemodule.FieldOrder:
+		return m.Order()
+	case languagemodule.FieldState:
+		return m.State()
+	case languagemodule.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagemodule.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LanguageModuleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case languagemodule.FieldSlug:
+		return m.OldSlug(ctx)
+	case languagemodule.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case languagemodule.FieldOrder:
+		return m.OldOrder(ctx)
+	case languagemodule.FieldState:
+		return m.OldState(ctx)
+	case languagemodule.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagemodule.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown LanguageModule field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageModuleMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case languagemodule.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
+		return nil
+	case languagemodule.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case languagemodule.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
+	case languagemodule.FieldState:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetState(v)
+		return nil
+	case languagemodule.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagemodule.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModule field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LanguageModuleMutation) AddedFields() []string {
+	var fields []string
+	if m.addlanguage_id != nil {
+		fields = append(fields, languagemodule.FieldLanguageID)
+	}
+	if m.add_order != nil {
+		fields = append(fields, languagemodule.FieldOrder)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LanguageModuleMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case languagemodule.FieldLanguageID:
+		return m.AddedLanguageID()
+	case languagemodule.FieldOrder:
+		return m.AddedOrder()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageModuleMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case languagemodule.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
+	case languagemodule.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrder(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModule numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LanguageModuleMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(languagemodule.FieldSlug) {
+		fields = append(fields, languagemodule.FieldSlug)
+	}
+	if m.FieldCleared(languagemodule.FieldLanguageID) {
+		fields = append(fields, languagemodule.FieldLanguageID)
+	}
+	if m.FieldCleared(languagemodule.FieldOrder) {
+		fields = append(fields, languagemodule.FieldOrder)
+	}
+	if m.FieldCleared(languagemodule.FieldState) {
+		fields = append(fields, languagemodule.FieldState)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LanguageModuleMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LanguageModuleMutation) ClearField(name string) error {
+	switch name {
+	case languagemodule.FieldSlug:
+		m.ClearSlug()
+		return nil
+	case languagemodule.FieldLanguageID:
+		m.ClearLanguageID()
+		return nil
+	case languagemodule.FieldOrder:
+		m.ClearOrder()
+		return nil
+	case languagemodule.FieldState:
+		m.ClearState()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModule nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LanguageModuleMutation) ResetField(name string) error {
+	switch name {
+	case languagemodule.FieldSlug:
+		m.ResetSlug()
+		return nil
+	case languagemodule.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case languagemodule.FieldOrder:
+		m.ResetOrder()
+		return nil
+	case languagemodule.FieldState:
+		m.ResetState()
+		return nil
+	case languagemodule.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagemodule.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModule field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LanguageModuleMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LanguageModuleMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LanguageModuleMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LanguageModuleMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LanguageModuleMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LanguageModuleMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LanguageModuleMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LanguageModule unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LanguageModuleMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LanguageModule edge %s", name)
+}
+
+// LanguageModuleVersionMutation represents an operation that mutates the LanguageModuleVersion nodes in the graph.
+type LanguageModuleVersionMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *int
+	_order                 *int
+	add_order              *int
+	language_id            *int
+	addlanguage_id         *int
+	language_version_id    *int
+	addlanguage_version_id *int
+	module_id              *int
+	addmodule_id           *int
+	created_at             *time.Time
+	updated_at             *time.Time
+	clearedFields          map[string]struct{}
+	done                   bool
+	oldValue               func(context.Context) (*LanguageModuleVersion, error)
+	predicates             []predicate.LanguageModuleVersion
+}
+
+var _ ent.Mutation = (*LanguageModuleVersionMutation)(nil)
+
+// languagemoduleversionOption allows management of the mutation configuration using functional options.
+type languagemoduleversionOption func(*LanguageModuleVersionMutation)
+
+// newLanguageModuleVersionMutation creates new mutation for the LanguageModuleVersion entity.
+func newLanguageModuleVersionMutation(c config, op Op, opts ...languagemoduleversionOption) *LanguageModuleVersionMutation {
+	m := &LanguageModuleVersionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLanguageModuleVersion,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLanguageModuleVersionID sets the ID field of the mutation.
+func withLanguageModuleVersionID(id int) languagemoduleversionOption {
+	return func(m *LanguageModuleVersionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LanguageModuleVersion
+		)
+		m.oldValue = func(ctx context.Context) (*LanguageModuleVersion, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LanguageModuleVersion.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLanguageModuleVersion sets the old LanguageModuleVersion of the mutation.
+func withLanguageModuleVersion(node *LanguageModuleVersion) languagemoduleversionOption {
+	return func(m *LanguageModuleVersionMutation) {
+		m.oldValue = func(context.Context) (*LanguageModuleVersion, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LanguageModuleVersionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LanguageModuleVersionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LanguageModuleVersionMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LanguageModuleVersionMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LanguageModuleVersion.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetOrder sets the "order" field.
+func (m *LanguageModuleVersionMutation) SetOrder(i int) {
+	m._order = &i
+	m.add_order = nil
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *LanguageModuleVersionMutation) Order() (r int, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldOrder(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// AddOrder adds i to the "order" field.
+func (m *LanguageModuleVersionMutation) AddOrder(i int) {
+	if m.add_order != nil {
+		*m.add_order += i
+	} else {
+		m.add_order = &i
+	}
+}
+
+// AddedOrder returns the value that was added to the "order" field in this mutation.
+func (m *LanguageModuleVersionMutation) AddedOrder() (r int, exists bool) {
+	v := m.add_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrder clears the value of the "order" field.
+func (m *LanguageModuleVersionMutation) ClearOrder() {
+	m._order = nil
+	m.add_order = nil
+	m.clearedFields[languagemoduleversion.FieldOrder] = struct{}{}
+}
+
+// OrderCleared returns if the "order" field was cleared in this mutation.
+func (m *LanguageModuleVersionMutation) OrderCleared() bool {
+	_, ok := m.clearedFields[languagemoduleversion.FieldOrder]
+	return ok
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *LanguageModuleVersionMutation) ResetOrder() {
+	m._order = nil
+	m.add_order = nil
+	delete(m.clearedFields, languagemoduleversion.FieldOrder)
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *LanguageModuleVersionMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *LanguageModuleVersionMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *LanguageModuleVersionMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *LanguageModuleVersionMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *LanguageModuleVersionMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (m *LanguageModuleVersionMutation) SetLanguageVersionID(i int) {
+	m.language_version_id = &i
+	m.addlanguage_version_id = nil
+}
+
+// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
+func (m *LanguageModuleVersionMutation) LanguageVersionID() (r int, exists bool) {
+	v := m.language_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageVersionID returns the old "language_version_id" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+	}
+	return oldValue.LanguageVersionID, nil
+}
+
+// AddLanguageVersionID adds i to the "language_version_id" field.
+func (m *LanguageModuleVersionMutation) AddLanguageVersionID(i int) {
+	if m.addlanguage_version_id != nil {
+		*m.addlanguage_version_id += i
+	} else {
+		m.addlanguage_version_id = &i
+	}
+}
+
+// AddedLanguageVersionID returns the value that was added to the "language_version_id" field in this mutation.
+func (m *LanguageModuleVersionMutation) AddedLanguageVersionID() (r int, exists bool) {
+	v := m.addlanguage_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageVersionID resets all changes to the "language_version_id" field.
+func (m *LanguageModuleVersionMutation) ResetLanguageVersionID() {
+	m.language_version_id = nil
+	m.addlanguage_version_id = nil
+}
+
+// SetModuleID sets the "module_id" field.
+func (m *LanguageModuleVersionMutation) SetModuleID(i int) {
+	m.module_id = &i
+	m.addmodule_id = nil
+}
+
+// ModuleID returns the value of the "module_id" field in the mutation.
+func (m *LanguageModuleVersionMutation) ModuleID() (r int, exists bool) {
+	v := m.module_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModuleID returns the old "module_id" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldModuleID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModuleID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModuleID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModuleID: %w", err)
+	}
+	return oldValue.ModuleID, nil
+}
+
+// AddModuleID adds i to the "module_id" field.
+func (m *LanguageModuleVersionMutation) AddModuleID(i int) {
+	if m.addmodule_id != nil {
+		*m.addmodule_id += i
+	} else {
+		m.addmodule_id = &i
+	}
+}
+
+// AddedModuleID returns the value that was added to the "module_id" field in this mutation.
+func (m *LanguageModuleVersionMutation) AddedModuleID() (r int, exists bool) {
+	v := m.addmodule_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetModuleID resets all changes to the "module_id" field.
+func (m *LanguageModuleVersionMutation) ResetModuleID() {
+	m.module_id = nil
+	m.addmodule_id = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageModuleVersionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageModuleVersionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageModuleVersionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageModuleVersionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageModuleVersionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageModuleVersionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the LanguageModuleVersionMutation builder.
+func (m *LanguageModuleVersionMutation) Where(ps ...predicate.LanguageModuleVersion) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LanguageModuleVersionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LanguageModuleVersionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LanguageModuleVersion, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LanguageModuleVersionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LanguageModuleVersionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LanguageModuleVersion).
+func (m *LanguageModuleVersionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LanguageModuleVersionMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m._order != nil {
+		fields = append(fields, languagemoduleversion.FieldOrder)
+	}
+	if m.language_id != nil {
+		fields = append(fields, languagemoduleversion.FieldLanguageID)
+	}
+	if m.language_version_id != nil {
+		fields = append(fields, languagemoduleversion.FieldLanguageVersionID)
+	}
+	if m.module_id != nil {
+		fields = append(fields, languagemoduleversion.FieldModuleID)
+	}
+	if m.created_at != nil {
+		fields = append(fields, languagemoduleversion.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagemoduleversion.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LanguageModuleVersionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		return m.Order()
+	case languagemoduleversion.FieldLanguageID:
+		return m.LanguageID()
+	case languagemoduleversion.FieldLanguageVersionID:
+		return m.LanguageVersionID()
+	case languagemoduleversion.FieldModuleID:
+		return m.ModuleID()
+	case languagemoduleversion.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagemoduleversion.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LanguageModuleVersionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		return m.OldOrder(ctx)
+	case languagemoduleversion.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case languagemoduleversion.FieldLanguageVersionID:
+		return m.OldLanguageVersionID(ctx)
+	case languagemoduleversion.FieldModuleID:
+		return m.OldModuleID(ctx)
+	case languagemoduleversion.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagemoduleversion.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown LanguageModuleVersion field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageModuleVersionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
+	case languagemoduleversion.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case languagemoduleversion.FieldLanguageVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageVersionID(v)
+		return nil
+	case languagemoduleversion.FieldModuleID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModuleID(v)
+		return nil
+	case languagemoduleversion.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagemoduleversion.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersion field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LanguageModuleVersionMutation) AddedFields() []string {
+	var fields []string
+	if m.add_order != nil {
+		fields = append(fields, languagemoduleversion.FieldOrder)
+	}
+	if m.addlanguage_id != nil {
+		fields = append(fields, languagemoduleversion.FieldLanguageID)
+	}
+	if m.addlanguage_version_id != nil {
+		fields = append(fields, languagemoduleversion.FieldLanguageVersionID)
+	}
+	if m.addmodule_id != nil {
+		fields = append(fields, languagemoduleversion.FieldModuleID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LanguageModuleVersionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		return m.AddedOrder()
+	case languagemoduleversion.FieldLanguageID:
+		return m.AddedLanguageID()
+	case languagemoduleversion.FieldLanguageVersionID:
+		return m.AddedLanguageVersionID()
+	case languagemoduleversion.FieldModuleID:
+		return m.AddedModuleID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageModuleVersionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrder(v)
+		return nil
+	case languagemoduleversion.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
+	case languagemoduleversion.FieldLanguageVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageVersionID(v)
+		return nil
+	case languagemoduleversion.FieldModuleID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddModuleID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersion numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LanguageModuleVersionMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(languagemoduleversion.FieldOrder) {
+		fields = append(fields, languagemoduleversion.FieldOrder)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LanguageModuleVersionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LanguageModuleVersionMutation) ClearField(name string) error {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		m.ClearOrder()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersion nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LanguageModuleVersionMutation) ResetField(name string) error {
+	switch name {
+	case languagemoduleversion.FieldOrder:
+		m.ResetOrder()
+		return nil
+	case languagemoduleversion.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case languagemoduleversion.FieldLanguageVersionID:
+		m.ResetLanguageVersionID()
+		return nil
+	case languagemoduleversion.FieldModuleID:
+		m.ResetModuleID()
+		return nil
+	case languagemoduleversion.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagemoduleversion.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersion field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LanguageModuleVersionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LanguageModuleVersionMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LanguageModuleVersionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LanguageModuleVersionMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LanguageModuleVersionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LanguageModuleVersionMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LanguageModuleVersionMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LanguageModuleVersion unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LanguageModuleVersionMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LanguageModuleVersion edge %s", name)
+}
+
+// LanguageModuleVersionInfoMutation represents an operation that mutates the LanguageModuleVersionInfo nodes in the graph.
+type LanguageModuleVersionInfoMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *int
+	name                   *string
+	description            *string
+	locale                 *string
+	language_id            *int
+	addlanguage_id         *int
+	language_version_id    *int
+	addlanguage_version_id *int
+	version_id             *int
+	addversion_id          *int
+	created_at             *time.Time
+	updated_at             *time.Time
+	clearedFields          map[string]struct{}
+	done                   bool
+	oldValue               func(context.Context) (*LanguageModuleVersionInfo, error)
+	predicates             []predicate.LanguageModuleVersionInfo
+}
+
+var _ ent.Mutation = (*LanguageModuleVersionInfoMutation)(nil)
+
+// languagemoduleversioninfoOption allows management of the mutation configuration using functional options.
+type languagemoduleversioninfoOption func(*LanguageModuleVersionInfoMutation)
+
+// newLanguageModuleVersionInfoMutation creates new mutation for the LanguageModuleVersionInfo entity.
+func newLanguageModuleVersionInfoMutation(c config, op Op, opts ...languagemoduleversioninfoOption) *LanguageModuleVersionInfoMutation {
+	m := &LanguageModuleVersionInfoMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLanguageModuleVersionInfo,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLanguageModuleVersionInfoID sets the ID field of the mutation.
+func withLanguageModuleVersionInfoID(id int) languagemoduleversioninfoOption {
+	return func(m *LanguageModuleVersionInfoMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LanguageModuleVersionInfo
+		)
+		m.oldValue = func(ctx context.Context) (*LanguageModuleVersionInfo, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LanguageModuleVersionInfo.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLanguageModuleVersionInfo sets the old LanguageModuleVersionInfo of the mutation.
+func withLanguageModuleVersionInfo(node *LanguageModuleVersionInfo) languagemoduleversioninfoOption {
+	return func(m *LanguageModuleVersionInfoMutation) {
+		m.oldValue = func(context.Context) (*LanguageModuleVersionInfo, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LanguageModuleVersionInfoMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LanguageModuleVersionInfoMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LanguageModuleVersionInfoMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LanguageModuleVersionInfoMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LanguageModuleVersionInfo.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *LanguageModuleVersionInfoMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *LanguageModuleVersionInfoMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[languagemoduleversioninfo.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *LanguageModuleVersionInfoMutation) NameCleared() bool {
+	_, ok := m.clearedFields[languagemoduleversioninfo.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *LanguageModuleVersionInfoMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, languagemoduleversioninfo.FieldName)
+}
+
+// SetDescription sets the "description" field.
+func (m *LanguageModuleVersionInfoMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldDescription(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *LanguageModuleVersionInfoMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[languagemoduleversioninfo.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *LanguageModuleVersionInfoMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[languagemoduleversioninfo.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *LanguageModuleVersionInfoMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, languagemoduleversioninfo.FieldDescription)
+}
+
+// SetLocale sets the "locale" field.
+func (m *LanguageModuleVersionInfoMutation) SetLocale(s string) {
+	m.locale = &s
+}
+
+// Locale returns the value of the "locale" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) Locale() (r string, exists bool) {
+	v := m.locale
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLocale returns the old "locale" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldLocale(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLocale is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLocale requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLocale: %w", err)
+	}
+	return oldValue.Locale, nil
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (m *LanguageModuleVersionInfoMutation) ClearLocale() {
+	m.locale = nil
+	m.clearedFields[languagemoduleversioninfo.FieldLocale] = struct{}{}
+}
+
+// LocaleCleared returns if the "locale" field was cleared in this mutation.
+func (m *LanguageModuleVersionInfoMutation) LocaleCleared() bool {
+	_, ok := m.clearedFields[languagemoduleversioninfo.FieldLocale]
+	return ok
+}
+
+// ResetLocale resets all changes to the "locale" field.
+func (m *LanguageModuleVersionInfoMutation) ResetLocale() {
+	m.locale = nil
+	delete(m.clearedFields, languagemoduleversioninfo.FieldLocale)
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *LanguageModuleVersionInfoMutation) SetLanguageID(i int) {
+	m.language_id = &i
+	m.addlanguage_id = nil
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) LanguageID() (r int, exists bool) {
+	v := m.language_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// AddLanguageID adds i to the "language_id" field.
+func (m *LanguageModuleVersionInfoMutation) AddLanguageID(i int) {
+	if m.addlanguage_id != nil {
+		*m.addlanguage_id += i
+	} else {
+		m.addlanguage_id = &i
+	}
+}
+
+// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
+func (m *LanguageModuleVersionInfoMutation) AddedLanguageID() (r int, exists bool) {
+	v := m.addlanguage_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *LanguageModuleVersionInfoMutation) ResetLanguageID() {
+	m.language_id = nil
+	m.addlanguage_id = nil
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (m *LanguageModuleVersionInfoMutation) SetLanguageVersionID(i int) {
+	m.language_version_id = &i
+	m.addlanguage_version_id = nil
+}
+
+// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) LanguageVersionID() (r int, exists bool) {
+	v := m.language_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageVersionID returns the old "language_version_id" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+	}
+	return oldValue.LanguageVersionID, nil
+}
+
+// AddLanguageVersionID adds i to the "language_version_id" field.
+func (m *LanguageModuleVersionInfoMutation) AddLanguageVersionID(i int) {
+	if m.addlanguage_version_id != nil {
+		*m.addlanguage_version_id += i
+	} else {
+		m.addlanguage_version_id = &i
+	}
+}
+
+// AddedLanguageVersionID returns the value that was added to the "language_version_id" field in this mutation.
+func (m *LanguageModuleVersionInfoMutation) AddedLanguageVersionID() (r int, exists bool) {
+	v := m.addlanguage_version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLanguageVersionID resets all changes to the "language_version_id" field.
+func (m *LanguageModuleVersionInfoMutation) ResetLanguageVersionID() {
+	m.language_version_id = nil
+	m.addlanguage_version_id = nil
+}
+
+// SetVersionID sets the "version_id" field.
+func (m *LanguageModuleVersionInfoMutation) SetVersionID(i int) {
+	m.version_id = &i
+	m.addversion_id = nil
+}
+
+// VersionID returns the value of the "version_id" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) VersionID() (r int, exists bool) {
+	v := m.version_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersionID returns the old "version_id" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldVersionID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersionID: %w", err)
+	}
+	return oldValue.VersionID, nil
+}
+
+// AddVersionID adds i to the "version_id" field.
+func (m *LanguageModuleVersionInfoMutation) AddVersionID(i int) {
+	if m.addversion_id != nil {
+		*m.addversion_id += i
+	} else {
+		m.addversion_id = &i
+	}
+}
+
+// AddedVersionID returns the value that was added to the "version_id" field in this mutation.
+func (m *LanguageModuleVersionInfoMutation) AddedVersionID() (r int, exists bool) {
+	v := m.addversion_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetVersionID resets all changes to the "version_id" field.
+func (m *LanguageModuleVersionInfoMutation) ResetVersionID() {
+	m.version_id = nil
+	m.addversion_id = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageModuleVersionInfoMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageModuleVersionInfoMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageModuleVersionInfoMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageModuleVersionInfoMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// Where appends a list predicates to the LanguageModuleVersionInfoMutation builder.
+func (m *LanguageModuleVersionInfoMutation) Where(ps ...predicate.LanguageModuleVersionInfo) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LanguageModuleVersionInfoMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LanguageModuleVersionInfoMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LanguageModuleVersionInfo, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LanguageModuleVersionInfoMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LanguageModuleVersionInfoMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LanguageModuleVersionInfo).
+func (m *LanguageModuleVersionInfoMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LanguageModuleVersionInfoMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.name != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldDescription)
+	}
+	if m.locale != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldLocale)
+	}
+	if m.language_id != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldLanguageID)
+	}
+	if m.language_version_id != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldLanguageVersionID)
+	}
+	if m.version_id != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldVersionID)
+	}
+	if m.created_at != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldUpdatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LanguageModuleVersionInfoMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case languagemoduleversioninfo.FieldName:
+		return m.Name()
+	case languagemoduleversioninfo.FieldDescription:
+		return m.Description()
+	case languagemoduleversioninfo.FieldLocale:
+		return m.Locale()
+	case languagemoduleversioninfo.FieldLanguageID:
+		return m.LanguageID()
+	case languagemoduleversioninfo.FieldLanguageVersionID:
+		return m.LanguageVersionID()
+	case languagemoduleversioninfo.FieldVersionID:
+		return m.VersionID()
+	case languagemoduleversioninfo.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		return m.UpdatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LanguageModuleVersionInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case languagemoduleversioninfo.FieldName:
+		return m.OldName(ctx)
+	case languagemoduleversioninfo.FieldDescription:
+		return m.OldDescription(ctx)
+	case languagemoduleversioninfo.FieldLocale:
+		return m.OldLocale(ctx)
+	case languagemoduleversioninfo.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case languagemoduleversioninfo.FieldLanguageVersionID:
+		return m.OldLanguageVersionID(ctx)
+	case languagemoduleversioninfo.FieldVersionID:
+		return m.OldVersionID(ctx)
+	case languagemoduleversioninfo.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown LanguageModuleVersionInfo field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageModuleVersionInfoMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case languagemoduleversioninfo.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case languagemoduleversioninfo.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case languagemoduleversioninfo.FieldLocale:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLocale(v)
+		return nil
+	case languagemoduleversioninfo.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case languagemoduleversioninfo.FieldLanguageVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageVersionID(v)
+		return nil
+	case languagemoduleversioninfo.FieldVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersionID(v)
+		return nil
+	case languagemoduleversioninfo.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersionInfo field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LanguageModuleVersionInfoMutation) AddedFields() []string {
+	var fields []string
+	if m.addlanguage_id != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldLanguageID)
+	}
+	if m.addlanguage_version_id != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldLanguageVersionID)
+	}
+	if m.addversion_id != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldVersionID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LanguageModuleVersionInfoMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case languagemoduleversioninfo.FieldLanguageID:
+		return m.AddedLanguageID()
+	case languagemoduleversioninfo.FieldLanguageVersionID:
+		return m.AddedLanguageVersionID()
+	case languagemoduleversioninfo.FieldVersionID:
+		return m.AddedVersionID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LanguageModuleVersionInfoMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case languagemoduleversioninfo.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageID(v)
+		return nil
+	case languagemoduleversioninfo.FieldLanguageVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageVersionID(v)
+		return nil
+	case languagemoduleversioninfo.FieldVersionID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddVersionID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersionInfo numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LanguageModuleVersionInfoMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(languagemoduleversioninfo.FieldName) {
+		fields = append(fields, languagemoduleversioninfo.FieldName)
+	}
+	if m.FieldCleared(languagemoduleversioninfo.FieldDescription) {
+		fields = append(fields, languagemoduleversioninfo.FieldDescription)
+	}
+	if m.FieldCleared(languagemoduleversioninfo.FieldLocale) {
+		fields = append(fields, languagemoduleversioninfo.FieldLocale)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LanguageModuleVersionInfoMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LanguageModuleVersionInfoMutation) ClearField(name string) error {
+	switch name {
+	case languagemoduleversioninfo.FieldName:
+		m.ClearName()
+		return nil
+	case languagemoduleversioninfo.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case languagemoduleversioninfo.FieldLocale:
+		m.ClearLocale()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersionInfo nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LanguageModuleVersionInfoMutation) ResetField(name string) error {
+	switch name {
+	case languagemoduleversioninfo.FieldName:
+		m.ResetName()
+		return nil
+	case languagemoduleversioninfo.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case languagemoduleversioninfo.FieldLocale:
+		m.ResetLocale()
+		return nil
+	case languagemoduleversioninfo.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case languagemoduleversioninfo.FieldLanguageVersionID:
+		m.ResetLanguageVersionID()
+		return nil
+	case languagemoduleversioninfo.FieldVersionID:
+		m.ResetVersionID()
+		return nil
+	case languagemoduleversioninfo.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown LanguageModuleVersionInfo field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LanguageModuleVersionInfoMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LanguageModuleVersionInfoMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LanguageModuleVersionInfoMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LanguageModuleVersionInfoMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LanguageModuleVersionInfoMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LanguageModuleVersionInfoMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LanguageModuleVersionInfoMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LanguageModuleVersionInfo unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LanguageModuleVersionInfoMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LanguageModuleVersionInfo edge %s", name)
 }
 
 // LeadMutation represents an operation that mutates the Lead nodes in the graph.
@@ -16768,6 +22006,7 @@ type UserMutation struct {
 	typ                         string
 	id                          *int
 	email                       *string
+	password_digest             *string
 	first_name                  *string
 	last_name                   *string
 	admin                       *bool
@@ -16926,6 +22165,55 @@ func (m *UserMutation) EmailCleared() bool {
 func (m *UserMutation) ResetEmail() {
 	m.email = nil
 	delete(m.clearedFields, user.FieldEmail)
+}
+
+// SetPasswordDigest sets the "password_digest" field.
+func (m *UserMutation) SetPasswordDigest(s string) {
+	m.password_digest = &s
+}
+
+// PasswordDigest returns the value of the "password_digest" field in the mutation.
+func (m *UserMutation) PasswordDigest() (r string, exists bool) {
+	v := m.password_digest
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPasswordDigest returns the old "password_digest" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPasswordDigest(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPasswordDigest is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPasswordDigest requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPasswordDigest: %w", err)
+	}
+	return oldValue.PasswordDigest, nil
+}
+
+// ClearPasswordDigest clears the value of the "password_digest" field.
+func (m *UserMutation) ClearPasswordDigest() {
+	m.password_digest = nil
+	m.clearedFields[user.FieldPasswordDigest] = struct{}{}
+}
+
+// PasswordDigestCleared returns if the "password_digest" field was cleared in this mutation.
+func (m *UserMutation) PasswordDigestCleared() bool {
+	_, ok := m.clearedFields[user.FieldPasswordDigest]
+	return ok
+}
+
+// ResetPasswordDigest resets all changes to the "password_digest" field.
+func (m *UserMutation) ResetPasswordDigest() {
+	m.password_digest = nil
+	delete(m.clearedFields, user.FieldPasswordDigest)
 }
 
 // SetFirstName sets the "first_name" field.
@@ -17251,9 +22539,12 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.email != nil {
 		fields = append(fields, user.FieldEmail)
+	}
+	if m.password_digest != nil {
+		fields = append(fields, user.FieldPasswordDigest)
 	}
 	if m.first_name != nil {
 		fields = append(fields, user.FieldFirstName)
@@ -17283,6 +22574,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case user.FieldEmail:
 		return m.Email()
+	case user.FieldPasswordDigest:
+		return m.PasswordDigest()
 	case user.FieldFirstName:
 		return m.FirstName()
 	case user.FieldLastName:
@@ -17306,6 +22599,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 	switch name {
 	case user.FieldEmail:
 		return m.OldEmail(ctx)
+	case user.FieldPasswordDigest:
+		return m.OldPasswordDigest(ctx)
 	case user.FieldFirstName:
 		return m.OldFirstName(ctx)
 	case user.FieldLastName:
@@ -17333,6 +22628,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEmail(v)
+		return nil
+	case user.FieldPasswordDigest:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPasswordDigest(v)
 		return nil
 	case user.FieldFirstName:
 		v, ok := value.(string)
@@ -17424,6 +22726,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldEmail) {
 		fields = append(fields, user.FieldEmail)
 	}
+	if m.FieldCleared(user.FieldPasswordDigest) {
+		fields = append(fields, user.FieldPasswordDigest)
+	}
 	if m.FieldCleared(user.FieldFirstName) {
 		fields = append(fields, user.FieldFirstName)
 	}
@@ -17453,6 +22758,9 @@ func (m *UserMutation) ClearField(name string) error {
 	case user.FieldEmail:
 		m.ClearEmail()
 		return nil
+	case user.FieldPasswordDigest:
+		m.ClearPasswordDigest()
+		return nil
 	case user.FieldFirstName:
 		m.ClearFirstName()
 		return nil
@@ -17475,6 +22783,9 @@ func (m *UserMutation) ResetField(name string) error {
 	switch name {
 	case user.FieldEmail:
 		m.ResetEmail()
+		return nil
+	case user.FieldPasswordDigest:
+		m.ResetPasswordDigest()
 		return nil
 	case user.FieldFirstName:
 		m.ResetFirstName()

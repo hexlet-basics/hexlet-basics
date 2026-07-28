@@ -25,6 +25,11 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("email").Optional().Nillable(),
+		// bcrypt hash from the legacy `has_secure_password` column. Mapped so the
+		// auth handlers can verify (login) and write (registration) it; atlas owns
+		// the schema, so mapping this existing baseline column needs no migration.
+		// Sensitive() keeps it out of ent's Stringer/log output.
+		field.String("password_digest").Optional().Nillable().Sensitive(),
 		field.String("first_name").Optional().Nillable(),
 		field.String("last_name").Optional().Nillable(),
 		field.Bool("admin").Optional().Nillable(),

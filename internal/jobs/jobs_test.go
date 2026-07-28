@@ -37,7 +37,9 @@ func TestQueueBackbone(t *testing.T) {
 		pool.Close()
 	})
 
-	client, err := jobs.NewClient(pool)
+	// nil loader: this smoke test only exercises the ping worker, so the
+	// exercise-build worker (and its db/blob deps) is intentionally not registered.
+	client, err := jobs.NewClient(pool, nil)
 	require.NoError(t, err)
 
 	// Subscribe before Start so the completion event can't be missed.

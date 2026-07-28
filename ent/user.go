@@ -19,6 +19,8 @@ type User struct {
 	ID int `json:"id,omitempty"`
 	// Email holds the value of the "email" field.
 	Email *string `json:"email,omitempty"`
+	// PasswordDigest holds the value of the "password_digest" field.
+	PasswordDigest *string `json:"-"`
 	// FirstName holds the value of the "first_name" field.
 	FirstName *string `json:"first_name,omitempty"`
 	// LastName holds the value of the "last_name" field.
@@ -43,7 +45,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case user.FieldID, user.FieldAssistantMessagesCount:
 			values[i] = new(sql.NullInt64)
-		case user.FieldEmail, user.FieldFirstName, user.FieldLastName:
+		case user.FieldEmail, user.FieldPasswordDigest, user.FieldFirstName, user.FieldLastName:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -74,6 +76,13 @@ func (_m *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Email = new(string)
 				*_m.Email = value.String
+			}
+		case user.FieldPasswordDigest:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field password_digest", values[i])
+			} else if value.Valid {
+				_m.PasswordDigest = new(string)
+				*_m.PasswordDigest = value.String
 			}
 		case user.FieldFirstName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -155,6 +164,8 @@ func (_m *User) String() string {
 		builder.WriteString("email=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	builder.WriteString("password_digest=<sensitive>")
 	builder.WriteString(", ")
 	if v := _m.FirstName; v != nil {
 		builder.WriteString("first_name=")

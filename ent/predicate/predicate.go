@@ -54,8 +54,20 @@ type LanguageLessonMember func(*sql.Selector)
 // LanguageLessonReview is the predicate function for languagelessonreview builders.
 type LanguageLessonReview func(*sql.Selector)
 
+// LanguageLessonVersion is the predicate function for languagelessonversion builders.
+type LanguageLessonVersion func(*sql.Selector)
+
 // LanguageLessonVersionInfo is the predicate function for languagelessonversioninfo builders.
 type LanguageLessonVersionInfo func(*sql.Selector)
+
+// LanguageModule is the predicate function for languagemodule builders.
+type LanguageModule func(*sql.Selector)
+
+// LanguageModuleVersion is the predicate function for languagemoduleversion builders.
+type LanguageModuleVersion func(*sql.Selector)
+
+// LanguageModuleVersionInfo is the predicate function for languagemoduleversioninfo builders.
+type LanguageModuleVersionInfo func(*sql.Selector)
 
 // Lead is the predicate function for lead builders.
 type Lead func(*sql.Selector)

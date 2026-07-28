@@ -44,8 +44,16 @@ type Tx struct {
 	LanguageLessonMember *LanguageLessonMemberClient
 	// LanguageLessonReview is the client for interacting with the LanguageLessonReview builders.
 	LanguageLessonReview *LanguageLessonReviewClient
+	// LanguageLessonVersion is the client for interacting with the LanguageLessonVersion builders.
+	LanguageLessonVersion *LanguageLessonVersionClient
 	// LanguageLessonVersionInfo is the client for interacting with the LanguageLessonVersionInfo builders.
 	LanguageLessonVersionInfo *LanguageLessonVersionInfoClient
+	// LanguageModule is the client for interacting with the LanguageModule builders.
+	LanguageModule *LanguageModuleClient
+	// LanguageModuleVersion is the client for interacting with the LanguageModuleVersion builders.
+	LanguageModuleVersion *LanguageModuleVersionClient
+	// LanguageModuleVersionInfo is the client for interacting with the LanguageModuleVersionInfo builders.
+	LanguageModuleVersionInfo *LanguageModuleVersionInfoClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
@@ -205,7 +213,11 @@ func (tx *Tx) init() {
 	tx.LanguageLesson = NewLanguageLessonClient(tx.config)
 	tx.LanguageLessonMember = NewLanguageLessonMemberClient(tx.config)
 	tx.LanguageLessonReview = NewLanguageLessonReviewClient(tx.config)
+	tx.LanguageLessonVersion = NewLanguageLessonVersionClient(tx.config)
 	tx.LanguageLessonVersionInfo = NewLanguageLessonVersionInfoClient(tx.config)
+	tx.LanguageModule = NewLanguageModuleClient(tx.config)
+	tx.LanguageModuleVersion = NewLanguageModuleVersionClient(tx.config)
+	tx.LanguageModuleVersionInfo = NewLanguageModuleVersionInfoClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)

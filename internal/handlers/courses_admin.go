@@ -6,6 +6,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/jobs"
 )
 
 // Admin course endpoints (legacy `/admin/languages`). The API embeds the
@@ -65,6 +67,41 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 	}
 	return s.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: int32(row.ID)})
 }
+
+// AdminCreateCourseVersion starts a build of a new course version: it creates the
+// version row in `created` state and enqueues the exercise-loader job, which
+// fetches the course repo, parses it, and (on success) promotes the new version
+// live. Maps 1:1 to the legacy VersionsController#create → ExerciseLoaderJob. The
+// 201 body is the freshly-created (not yet built) version, so the admin UI can
+// poll its state.
+func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminCreateCourseVersionParams) (api.AdminCreateCourseVersionRes, error) {
+	c, err := s.db.Course.Get(ctx, int(params.ID))
+	if ent.IsNotFound(err) {
+		return &api.NotFoundError{Message: "course not found"}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	version, err := s.db.CourseVersion.Create().
+		SetLanguageID(c.ID).
+		SetState(courseVersionStateCreated).
+		Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := s.enqueuer.Insert(ctx, jobs.ExerciseLoaderArgs{VersionID: version.ID}, nil); err != nil {
+		return nil, err
+	}
+
+	body := apiconv.CourseVersionFromEnt(version)
+	return &body, nil
+}
+
+// courseVersionStateCreated is the initial version state the loader requires
+// before it will build (mirrors the legacy AASM initial state).
+const courseVersionStateCreated = "created"
 
 // nilLearnAsPtr / nilProgressPtr resolve ogen's nullable enum wrappers to a
 // *string for ent's SetNillable* on the plain string columns.

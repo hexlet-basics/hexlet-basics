@@ -48,6 +48,124 @@ func (_c *CourseVersionCreate) SetNillableState(v *string) *CourseVersionCreate 
 	return _c
 }
 
+// SetName sets the "name" field.
+func (_c *CourseVersionCreate) SetName(v string) *CourseVersionCreate {
+	_c.mutation.SetName(v)
+	return _c
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableName(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetName(*v)
+	}
+	return _c
+}
+
+// SetProgress sets the "progress" field.
+func (_c *CourseVersionCreate) SetProgress(v string) *CourseVersionCreate {
+	_c.mutation.SetProgress(v)
+	return _c
+}
+
+// SetNillableProgress sets the "progress" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableProgress(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetProgress(*v)
+	}
+	return _c
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (_c *CourseVersionCreate) SetLearnAs(v string) *CourseVersionCreate {
+	_c.mutation.SetLearnAs(v)
+	return _c
+}
+
+// SetNillableLearnAs sets the "learn_as" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableLearnAs(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetLearnAs(*v)
+	}
+	return _c
+}
+
+// SetExtension sets the "extension" field.
+func (_c *CourseVersionCreate) SetExtension(v string) *CourseVersionCreate {
+	_c.mutation.SetExtension(v)
+	return _c
+}
+
+// SetNillableExtension sets the "extension" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableExtension(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetExtension(*v)
+	}
+	return _c
+}
+
+// SetDockerImage sets the "docker_image" field.
+func (_c *CourseVersionCreate) SetDockerImage(v string) *CourseVersionCreate {
+	_c.mutation.SetDockerImage(v)
+	return _c
+}
+
+// SetNillableDockerImage sets the "docker_image" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableDockerImage(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetDockerImage(*v)
+	}
+	return _c
+}
+
+// SetExerciseFilename sets the "exercise_filename" field.
+func (_c *CourseVersionCreate) SetExerciseFilename(v string) *CourseVersionCreate {
+	_c.mutation.SetExerciseFilename(v)
+	return _c
+}
+
+// SetNillableExerciseFilename sets the "exercise_filename" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableExerciseFilename(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetExerciseFilename(*v)
+	}
+	return _c
+}
+
+// SetExerciseTestFilename sets the "exercise_test_filename" field.
+func (_c *CourseVersionCreate) SetExerciseTestFilename(v string) *CourseVersionCreate {
+	_c.mutation.SetExerciseTestFilename(v)
+	return _c
+}
+
+// SetNillableExerciseTestFilename sets the "exercise_test_filename" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableExerciseTestFilename(v *string) *CourseVersionCreate {
+	if v != nil {
+		_c.SetExerciseTestFilename(*v)
+	}
+	return _c
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (_c *CourseVersionCreate) SetLessonsCount(v int) *CourseVersionCreate {
+	_c.mutation.SetLessonsCount(v)
+	return _c
+}
+
+// SetNillableLessonsCount sets the "lessons_count" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableLessonsCount(v *int) *CourseVersionCreate {
+	if v != nil {
+		_c.SetLessonsCount(*v)
+	}
+	return _c
+}
+
+// SetLanguageID sets the "language_id" field.
+func (_c *CourseVersionCreate) SetLanguageID(v int) *CourseVersionCreate {
+	_c.mutation.SetLanguageID(v)
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *CourseVersionCreate) SetCreatedAt(v time.Time) *CourseVersionCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -58,6 +176,20 @@ func (_c *CourseVersionCreate) SetCreatedAt(v time.Time) *CourseVersionCreate {
 func (_c *CourseVersionCreate) SetNillableCreatedAt(v *time.Time) *CourseVersionCreate {
 	if v != nil {
 		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *CourseVersionCreate) SetUpdatedAt(v time.Time) *CourseVersionCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableUpdatedAt(v *time.Time) *CourseVersionCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
 	}
 	return _c
 }
@@ -97,16 +229,33 @@ func (_c *CourseVersionCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *CourseVersionCreate) defaults() {
+	if _, ok := _c.mutation.LessonsCount(); !ok {
+		v := courseversion.DefaultLessonsCount
+		_c.mutation.SetLessonsCount(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := courseversion.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := courseversion.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CourseVersionCreate) check() error {
+	if _, ok := _c.mutation.LessonsCount(); !ok {
+		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "CourseVersion.lessons_count"`)}
+	}
+	if _, ok := _c.mutation.LanguageID(); !ok {
+		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "CourseVersion.language_id"`)}
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "CourseVersion.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CourseVersion.updated_at"`)}
 	}
 	return nil
 }
@@ -142,9 +291,49 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 		_spec.SetField(courseversion.FieldState, field.TypeString, value)
 		_node.State = &value
 	}
+	if value, ok := _c.mutation.Name(); ok {
+		_spec.SetField(courseversion.FieldName, field.TypeString, value)
+		_node.Name = &value
+	}
+	if value, ok := _c.mutation.Progress(); ok {
+		_spec.SetField(courseversion.FieldProgress, field.TypeString, value)
+		_node.Progress = &value
+	}
+	if value, ok := _c.mutation.LearnAs(); ok {
+		_spec.SetField(courseversion.FieldLearnAs, field.TypeString, value)
+		_node.LearnAs = &value
+	}
+	if value, ok := _c.mutation.Extension(); ok {
+		_spec.SetField(courseversion.FieldExtension, field.TypeString, value)
+		_node.Extension = &value
+	}
+	if value, ok := _c.mutation.DockerImage(); ok {
+		_spec.SetField(courseversion.FieldDockerImage, field.TypeString, value)
+		_node.DockerImage = &value
+	}
+	if value, ok := _c.mutation.ExerciseFilename(); ok {
+		_spec.SetField(courseversion.FieldExerciseFilename, field.TypeString, value)
+		_node.ExerciseFilename = &value
+	}
+	if value, ok := _c.mutation.ExerciseTestFilename(); ok {
+		_spec.SetField(courseversion.FieldExerciseTestFilename, field.TypeString, value)
+		_node.ExerciseTestFilename = &value
+	}
+	if value, ok := _c.mutation.LessonsCount(); ok {
+		_spec.SetField(courseversion.FieldLessonsCount, field.TypeInt, value)
+		_node.LessonsCount = value
+	}
+	if value, ok := _c.mutation.LanguageID(); ok {
+		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
+		_node.LanguageID = value
+	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(courseversion.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	return _node, _spec
 }

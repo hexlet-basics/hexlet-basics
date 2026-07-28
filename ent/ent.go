@@ -22,7 +22,11 @@ import (
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonmember"
 	"hexletbasics/ent/languagelessonreview"
+	"hexletbasics/ent/languagelessonversion"
 	"hexletbasics/ent/languagelessonversioninfo"
+	"hexletbasics/ent/languagemodule"
+	"hexletbasics/ent/languagemoduleversion"
+	"hexletbasics/ent/languagemoduleversioninfo"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/staffmember"
@@ -111,7 +115,11 @@ func checkColumn(t, c string) error {
 			languagelesson.Table:            languagelesson.ValidColumn,
 			languagelessonmember.Table:      languagelessonmember.ValidColumn,
 			languagelessonreview.Table:      languagelessonreview.ValidColumn,
+			languagelessonversion.Table:     languagelessonversion.ValidColumn,
 			languagelessonversioninfo.Table: languagelessonversioninfo.ValidColumn,
+			languagemodule.Table:            languagemodule.ValidColumn,
+			languagemoduleversion.Table:     languagemoduleversion.ValidColumn,
+			languagemoduleversioninfo.Table: languagemoduleversioninfo.ValidColumn,
 			lead.Table:                      lead.ValidColumn,
 			review.Table:                    review.ValidColumn,
 			staffmember.Table:               staffmember.ValidColumn,

@@ -4,6 +4,7 @@ package languagelessonversioninfo
 
 import (
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 )
@@ -81,6 +82,41 @@ func LanguageLessonID(v int) predicate.LanguageLessonVersionInfo {
 // LanguageVersionID applies equality check predicate on the "language_version_id" field. It's identical to LanguageVersionIDEQ.
 func LanguageVersionID(v int) predicate.LanguageLessonVersionInfo {
 	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldLanguageVersionID, v))
+}
+
+// Theory applies equality check predicate on the "theory" field. It's identical to TheoryEQ.
+func Theory(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldTheory, v))
+}
+
+// Instructions applies equality check predicate on the "instructions" field. It's identical to InstructionsEQ.
+func Instructions(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldInstructions, v))
+}
+
+// Tips applies equality check predicate on the "tips" field. It's identical to TipsEQ.
+func Tips(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldTips, v))
+}
+
+// Definitions applies equality check predicate on the "definitions" field. It's identical to DefinitionsEQ.
+func Definitions(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldDefinitions, v))
+}
+
+// VersionID applies equality check predicate on the "version_id" field. It's identical to VersionIDEQ.
+func VersionID(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldVersionID, v))
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -426,6 +462,426 @@ func LanguageVersionIDLT(v int) predicate.LanguageLessonVersionInfo {
 // LanguageVersionIDLTE applies the LTE predicate on the "language_version_id" field.
 func LanguageVersionIDLTE(v int) predicate.LanguageLessonVersionInfo {
 	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldLanguageVersionID, v))
+}
+
+// TheoryEQ applies the EQ predicate on the "theory" field.
+func TheoryEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldTheory, v))
+}
+
+// TheoryNEQ applies the NEQ predicate on the "theory" field.
+func TheoryNEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldTheory, v))
+}
+
+// TheoryIn applies the In predicate on the "theory" field.
+func TheoryIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldTheory, vs...))
+}
+
+// TheoryNotIn applies the NotIn predicate on the "theory" field.
+func TheoryNotIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldTheory, vs...))
+}
+
+// TheoryGT applies the GT predicate on the "theory" field.
+func TheoryGT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldTheory, v))
+}
+
+// TheoryGTE applies the GTE predicate on the "theory" field.
+func TheoryGTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldTheory, v))
+}
+
+// TheoryLT applies the LT predicate on the "theory" field.
+func TheoryLT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldTheory, v))
+}
+
+// TheoryLTE applies the LTE predicate on the "theory" field.
+func TheoryLTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldTheory, v))
+}
+
+// TheoryContains applies the Contains predicate on the "theory" field.
+func TheoryContains(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContains(FieldTheory, v))
+}
+
+// TheoryHasPrefix applies the HasPrefix predicate on the "theory" field.
+func TheoryHasPrefix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasPrefix(FieldTheory, v))
+}
+
+// TheoryHasSuffix applies the HasSuffix predicate on the "theory" field.
+func TheoryHasSuffix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasSuffix(FieldTheory, v))
+}
+
+// TheoryIsNil applies the IsNil predicate on the "theory" field.
+func TheoryIsNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIsNull(FieldTheory))
+}
+
+// TheoryNotNil applies the NotNil predicate on the "theory" field.
+func TheoryNotNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotNull(FieldTheory))
+}
+
+// TheoryEqualFold applies the EqualFold predicate on the "theory" field.
+func TheoryEqualFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEqualFold(FieldTheory, v))
+}
+
+// TheoryContainsFold applies the ContainsFold predicate on the "theory" field.
+func TheoryContainsFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContainsFold(FieldTheory, v))
+}
+
+// InstructionsEQ applies the EQ predicate on the "instructions" field.
+func InstructionsEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldInstructions, v))
+}
+
+// InstructionsNEQ applies the NEQ predicate on the "instructions" field.
+func InstructionsNEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldInstructions, v))
+}
+
+// InstructionsIn applies the In predicate on the "instructions" field.
+func InstructionsIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldInstructions, vs...))
+}
+
+// InstructionsNotIn applies the NotIn predicate on the "instructions" field.
+func InstructionsNotIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldInstructions, vs...))
+}
+
+// InstructionsGT applies the GT predicate on the "instructions" field.
+func InstructionsGT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldInstructions, v))
+}
+
+// InstructionsGTE applies the GTE predicate on the "instructions" field.
+func InstructionsGTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldInstructions, v))
+}
+
+// InstructionsLT applies the LT predicate on the "instructions" field.
+func InstructionsLT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldInstructions, v))
+}
+
+// InstructionsLTE applies the LTE predicate on the "instructions" field.
+func InstructionsLTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldInstructions, v))
+}
+
+// InstructionsContains applies the Contains predicate on the "instructions" field.
+func InstructionsContains(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContains(FieldInstructions, v))
+}
+
+// InstructionsHasPrefix applies the HasPrefix predicate on the "instructions" field.
+func InstructionsHasPrefix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasPrefix(FieldInstructions, v))
+}
+
+// InstructionsHasSuffix applies the HasSuffix predicate on the "instructions" field.
+func InstructionsHasSuffix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasSuffix(FieldInstructions, v))
+}
+
+// InstructionsIsNil applies the IsNil predicate on the "instructions" field.
+func InstructionsIsNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIsNull(FieldInstructions))
+}
+
+// InstructionsNotNil applies the NotNil predicate on the "instructions" field.
+func InstructionsNotNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotNull(FieldInstructions))
+}
+
+// InstructionsEqualFold applies the EqualFold predicate on the "instructions" field.
+func InstructionsEqualFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEqualFold(FieldInstructions, v))
+}
+
+// InstructionsContainsFold applies the ContainsFold predicate on the "instructions" field.
+func InstructionsContainsFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContainsFold(FieldInstructions, v))
+}
+
+// TipsEQ applies the EQ predicate on the "tips" field.
+func TipsEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldTips, v))
+}
+
+// TipsNEQ applies the NEQ predicate on the "tips" field.
+func TipsNEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldTips, v))
+}
+
+// TipsIn applies the In predicate on the "tips" field.
+func TipsIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldTips, vs...))
+}
+
+// TipsNotIn applies the NotIn predicate on the "tips" field.
+func TipsNotIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldTips, vs...))
+}
+
+// TipsGT applies the GT predicate on the "tips" field.
+func TipsGT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldTips, v))
+}
+
+// TipsGTE applies the GTE predicate on the "tips" field.
+func TipsGTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldTips, v))
+}
+
+// TipsLT applies the LT predicate on the "tips" field.
+func TipsLT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldTips, v))
+}
+
+// TipsLTE applies the LTE predicate on the "tips" field.
+func TipsLTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldTips, v))
+}
+
+// TipsContains applies the Contains predicate on the "tips" field.
+func TipsContains(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContains(FieldTips, v))
+}
+
+// TipsHasPrefix applies the HasPrefix predicate on the "tips" field.
+func TipsHasPrefix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasPrefix(FieldTips, v))
+}
+
+// TipsHasSuffix applies the HasSuffix predicate on the "tips" field.
+func TipsHasSuffix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasSuffix(FieldTips, v))
+}
+
+// TipsIsNil applies the IsNil predicate on the "tips" field.
+func TipsIsNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIsNull(FieldTips))
+}
+
+// TipsNotNil applies the NotNil predicate on the "tips" field.
+func TipsNotNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotNull(FieldTips))
+}
+
+// TipsEqualFold applies the EqualFold predicate on the "tips" field.
+func TipsEqualFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEqualFold(FieldTips, v))
+}
+
+// TipsContainsFold applies the ContainsFold predicate on the "tips" field.
+func TipsContainsFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContainsFold(FieldTips, v))
+}
+
+// DefinitionsEQ applies the EQ predicate on the "definitions" field.
+func DefinitionsEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldDefinitions, v))
+}
+
+// DefinitionsNEQ applies the NEQ predicate on the "definitions" field.
+func DefinitionsNEQ(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldDefinitions, v))
+}
+
+// DefinitionsIn applies the In predicate on the "definitions" field.
+func DefinitionsIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldDefinitions, vs...))
+}
+
+// DefinitionsNotIn applies the NotIn predicate on the "definitions" field.
+func DefinitionsNotIn(vs ...string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldDefinitions, vs...))
+}
+
+// DefinitionsGT applies the GT predicate on the "definitions" field.
+func DefinitionsGT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldDefinitions, v))
+}
+
+// DefinitionsGTE applies the GTE predicate on the "definitions" field.
+func DefinitionsGTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldDefinitions, v))
+}
+
+// DefinitionsLT applies the LT predicate on the "definitions" field.
+func DefinitionsLT(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldDefinitions, v))
+}
+
+// DefinitionsLTE applies the LTE predicate on the "definitions" field.
+func DefinitionsLTE(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldDefinitions, v))
+}
+
+// DefinitionsContains applies the Contains predicate on the "definitions" field.
+func DefinitionsContains(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContains(FieldDefinitions, v))
+}
+
+// DefinitionsHasPrefix applies the HasPrefix predicate on the "definitions" field.
+func DefinitionsHasPrefix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasPrefix(FieldDefinitions, v))
+}
+
+// DefinitionsHasSuffix applies the HasSuffix predicate on the "definitions" field.
+func DefinitionsHasSuffix(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldHasSuffix(FieldDefinitions, v))
+}
+
+// DefinitionsIsNil applies the IsNil predicate on the "definitions" field.
+func DefinitionsIsNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIsNull(FieldDefinitions))
+}
+
+// DefinitionsNotNil applies the NotNil predicate on the "definitions" field.
+func DefinitionsNotNil() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotNull(FieldDefinitions))
+}
+
+// DefinitionsEqualFold applies the EqualFold predicate on the "definitions" field.
+func DefinitionsEqualFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEqualFold(FieldDefinitions, v))
+}
+
+// DefinitionsContainsFold applies the ContainsFold predicate on the "definitions" field.
+func DefinitionsContainsFold(v string) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldContainsFold(FieldDefinitions, v))
+}
+
+// VersionIDEQ applies the EQ predicate on the "version_id" field.
+func VersionIDEQ(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldVersionID, v))
+}
+
+// VersionIDNEQ applies the NEQ predicate on the "version_id" field.
+func VersionIDNEQ(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldVersionID, v))
+}
+
+// VersionIDIn applies the In predicate on the "version_id" field.
+func VersionIDIn(vs ...int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldVersionID, vs...))
+}
+
+// VersionIDNotIn applies the NotIn predicate on the "version_id" field.
+func VersionIDNotIn(vs ...int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldVersionID, vs...))
+}
+
+// VersionIDGT applies the GT predicate on the "version_id" field.
+func VersionIDGT(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldVersionID, v))
+}
+
+// VersionIDGTE applies the GTE predicate on the "version_id" field.
+func VersionIDGTE(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldVersionID, v))
+}
+
+// VersionIDLT applies the LT predicate on the "version_id" field.
+func VersionIDLT(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldVersionID, v))
+}
+
+// VersionIDLTE applies the LTE predicate on the "version_id" field.
+func VersionIDLTE(v int) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldVersionID, v))
+}
+
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // And groups predicates with the AND operator between them.

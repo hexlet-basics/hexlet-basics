@@ -17,6 +17,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/logging"
@@ -55,7 +56,11 @@ func New() *do.RootScope {
 	})
 
 	do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
-		return handlers.NewServer(do.MustInvoke[*ent.Client](i), do.MustInvoke[*config.Config](i)), nil
+		return handlers.NewServer(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*config.Config](i),
+			do.MustInvoke[*river.Client[pgx.Tx]](i),
+		), nil
 	})
 
 	// Blob bucket for uploaded assets (ADR-0005). Closed explicitly in main.go on
@@ -73,8 +78,27 @@ func New() *do.RootScope {
 		return store.NewPool(context.Background(), do.MustInvoke[*config.Config](i).DatabaseURL)
 	})
 
+	// The exercise loader (course-version builds) needs the ent client for writes,
+	// the blob bucket for lesson theory images, and a git fetcher for the repo.
+	do.Provide(injector, func(i do.Injector) (courseloader.Fetcher, error) {
+		cfg := do.MustInvoke[*config.Config](i)
+		return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken), nil
+	})
+
+	do.Provide(injector, func(i do.Injector) (*courseloader.Loader, error) {
+		return courseloader.NewLoader(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*blob.Bucket](i),
+			do.MustInvoke[courseloader.Fetcher](i),
+			do.MustInvoke[*config.Config](i),
+		), nil
+	})
+
 	do.Provide(injector, func(i do.Injector) (*river.Client[pgx.Tx], error) {
-		return jobs.NewClient(do.MustInvoke[*pgxpool.Pool](i))
+		return jobs.NewClient(
+			do.MustInvoke[*pgxpool.Pool](i),
+			do.MustInvoke[*courseloader.Loader](i),
+		)
 	})
 
 	do.Provide(injector, func(i do.Injector) (*api.Server, error) {
@@ -100,11 +124,20 @@ func New() *do.RootScope {
 			do.MustInvoke[*ent.Client](i),
 			do.MustInvoke[*blob.Bucket](i),
 		)
-		router := handlers.NewRouter(apiServer, att)
+		gh := handlers.NewGitHubWebhookHandler(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*river.Client[pgx.Tx]](i),
+			cfg.GitHubWebhookSecret,
+		)
+		auth := handlers.NewAuthHandler(do.MustInvoke[*ent.Client](i), cfg)
+		router := handlers.NewRouter(apiServer, att, gh, auth)
 
 		// Dev CORS so the Vite frontend (any localhost port) can call the API.
+		// AllowCredentials is required for the auth cookie to round-trip
+		// cross-origin (the SPA fetches with `credentials: include`).
 		handler := cors.New(cors.Options{
-			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
+			AllowedOrigins:   []string{"http://localhost:*", "http://127.0.0.1:*"},
+			AllowCredentials: true,
 		}).Handler(router)
 
 		return &http.Server{

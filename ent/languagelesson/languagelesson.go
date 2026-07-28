@@ -3,6 +3,8 @@
 package languagelesson
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -15,6 +17,16 @@ const (
 	FieldSlug = "slug"
 	// FieldNaturalOrder holds the string denoting the natural_order field in the database.
 	FieldNaturalOrder = "natural_order"
+	// FieldLanguageID holds the string denoting the language_id field in the database.
+	FieldLanguageID = "language_id"
+	// FieldModuleID holds the string denoting the module_id field in the database.
+	FieldModuleID = "module_id"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the languagelesson in the database.
 	Table = "language_lessons"
 )
@@ -24,6 +36,11 @@ var Columns = []string{
 	FieldID,
 	FieldSlug,
 	FieldNaturalOrder,
+	FieldLanguageID,
+	FieldModuleID,
+	FieldState,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -35,6 +52,15 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
+)
 
 // OrderOption defines the ordering options for the LanguageLesson queries.
 type OrderOption func(*sql.Selector)
@@ -52,4 +78,29 @@ func BySlug(opts ...sql.OrderTermOption) OrderOption {
 // ByNaturalOrder orders the results by the natural_order field.
 func ByNaturalOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNaturalOrder, opts...).ToFunc()
+}
+
+// ByLanguageID orders the results by the language_id field.
+func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+}
+
+// ByModuleID orders the results by the module_id field.
+func ByModuleID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldModuleID, opts...).ToFunc()
+}
+
+// ByState orders the results by the state field.
+func ByState(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldState, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
