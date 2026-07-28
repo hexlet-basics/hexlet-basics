@@ -31,6 +31,9 @@ const (
 	readTimeout       = 30 * time.Second
 	writeTimeout      = 30 * time.Second
 	idleTimeout       = 120 * time.Second
+
+	routerServiceName      = "router"
+	httpHandlerServiceName = "http-handler"
 )
 
 // New builds the DI container and registers the application's services.
@@ -114,39 +117,59 @@ func New() *do.RootScope {
 		)
 	})
 
+	do.Provide(injector, func(i do.Injector) (*handlers.AttachmentHandler, error) {
+		return handlers.NewAttachmentHandler(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*blob.Bucket](i),
+		), nil
+	})
+
+	do.Provide(injector, func(i do.Injector) (*handlers.GitHubWebhookHandler, error) {
+		return handlers.NewGitHubWebhookHandler(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*versionbuilds.Starter](i),
+			do.MustInvoke[*config.Config](i).GitHubWebhookSecret,
+		), nil
+	})
+
+	do.Provide(injector, func(i do.Injector) (*handlers.AuthHandler, error) {
+		return handlers.NewAuthHandler(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*config.Config](i),
+		), nil
+	})
+
+	// Both the raw router and the middleware-wrapped application handler have
+	// the same http.Handler interface. Named bindings keep those two seams
+	// explicit without adding wrapper types whose only purpose would be DI.
+	do.ProvideNamed(injector, routerServiceName, func(i do.Injector) (http.Handler, error) {
+		return handlers.NewRouter(
+			do.MustInvoke[*api.Server](i),
+			do.MustInvoke[*handlers.AttachmentHandler](i),
+			do.MustInvoke[*handlers.GitHubWebhookHandler](i),
+			do.MustInvoke[*handlers.AuthHandler](i),
+		), nil
+	})
+
+	do.ProvideNamed(injector, httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
+		// Dev CORS lets the Vite frontend (on any localhost port) call both the
+		// generated API and the hand-mounted routes. AllowCredentials is needed
+		// for the auth cookie to make the cross-origin round trip.
+		return cors.New(cors.Options{
+			AllowedOrigins:   []string{"http://localhost:*", "http://127.0.0.1:*"},
+			AllowCredentials: true,
+		}).Handler(do.MustInvokeNamed[http.Handler](i, routerServiceName)), nil
+	})
+
 	// *http.Server natively satisfies do's ShutdownerWithContextAndError (its
 	// Shutdown(ctx) drains in-flight requests), so injector.Shutdown gracefully
 	// stops it — no bespoke teardown wiring needed.
 	do.Provide(injector, func(i do.Injector) (*http.Server, error) {
 		cfg := do.MustInvoke[*config.Config](i)
-		apiServer := do.MustInvoke[*api.Server](i)
-
-		// Compose the generated server with the multipart/blob routes ogen can't
-		// generate (ADR-0005), then wrap the whole router in CORS so both surfaces
-		// are covered (and a future auth middleware should wrap here too).
-		att := handlers.NewAttachmentHandler(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*blob.Bucket](i),
-		)
-		gh := handlers.NewGitHubWebhookHandler(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*versionbuilds.Starter](i),
-			cfg.GitHubWebhookSecret,
-		)
-		auth := handlers.NewAuthHandler(do.MustInvoke[*ent.Client](i), cfg)
-		router := handlers.NewRouter(apiServer, att, gh, auth)
-
-		// Dev CORS so the Vite frontend (any localhost port) can call the API.
-		// AllowCredentials is required for the auth cookie to round-trip
-		// cross-origin (the SPA fetches with `credentials: include`).
-		handler := cors.New(cors.Options{
-			AllowedOrigins:   []string{"http://localhost:*", "http://127.0.0.1:*"},
-			AllowCredentials: true,
-		}).Handler(router)
 
 		return &http.Server{
 			Addr:              cfg.Addr,
-			Handler:           handler,
+			Handler:           do.MustInvokeNamed[http.Handler](i, httpHandlerServiceName),
 			ReadHeaderTimeout: readHeaderTimeout,
 			ReadTimeout:       readTimeout,
 			WriteTimeout:      writeTimeout,
