@@ -7,7 +7,11 @@ tmp_dir = "tmp"
   cmd = "go build -o ./tmp/server ./cmd/server"
   bin = "./tmp/server"
   include_ext = ["go"]
-  exclude_dir = ["tmp", "bin", "dist", "node_modules", "legacy"]
+  # Whitelist the Go source trees instead of blacklisting a few dirs: air
+  # otherwise walks and watches the whole repo (api-spec, migrations, fixtures,
+  # public, src, .git, ...) and logs each one, even though only .go changes ever
+  # rebuild. include_dir keeps the watch (and its startup output) to Go code.
+  include_dir = ["cmd", "internal", "ent"]
   exclude_regex = ["_test\\.go"]
   stop_on_error = true
   delay = 300
