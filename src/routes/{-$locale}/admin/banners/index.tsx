@@ -1,7 +1,5 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   createColumnHelper,
@@ -18,6 +16,8 @@ import {
 import type { Banner } from "@/client/types.gen";
 import { CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
+import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // Banners admin list — second resource through the CRUD engine; it exercises the
 // select and datetime field types the engine gained for this resource.
@@ -29,7 +29,7 @@ const columnHelper = createColumnHelper<Banner>();
 
 function BannersList() {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
+  const confirmDelete = useDeleteConfirmation();
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -43,33 +43,12 @@ function BannersList() {
     }),
   );
 
-  const deleteMutation = useMutation({
-    ...adminDeleteBannerMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminListBannersQueryKey() });
-      notifications.show({
-        color: "green",
-        message: t(($) => $.admin.crud.deleted),
-      });
-    },
-    onError: () =>
-      notifications.show({
-        color: "red",
-        message: t(($) => $.admin.crud.deleteError),
-      }),
+  const deleteMutation = useResourceMutation({
+    mutation: adminDeleteBannerMutation(),
+    invalidate: [adminListBannersQueryKey()],
+    successMessage: t(($) => $.admin.crud.deleted),
+    errorMessage: t(($) => $.admin.crud.deleteError),
   });
-
-  const confirmDelete = (banner: Banner) =>
-    modals.openConfirmModal({
-      title: t(($) => $.admin.crud.confirmDeleteTitle),
-      children: banner.body,
-      labels: {
-        confirm: t(($) => $.admin.crud.delete),
-        cancel: t(($) => $.admin.crud.cancel),
-      },
-      confirmProps: { color: "red" },
-      onConfirm: () => deleteMutation.mutate({ path: { id: banner.id } }),
-    });
 
   const columns = [
     columnHelper.accessor("state", {
@@ -106,7 +85,13 @@ function BannersList() {
               color="red"
               variant="light"
               aria-label={t(($) => $.admin.crud.delete)}
-              onClick={() => confirmDelete(row.original)}
+              onClick={() =>
+                confirmDelete({
+                  description: row.original.body,
+                  onConfirm: () =>
+                    deleteMutation.mutate({ path: { id: row.original.id } }),
+                })
+              }
             >
               ✕
             </ActionIcon>

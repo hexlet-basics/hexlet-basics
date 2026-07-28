@@ -1,8 +1,6 @@
 import { Center, Loader, Stack, Title } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminGetCourseCategoryOptions,
@@ -17,6 +15,7 @@ import {
   courseCategoryToInput,
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
+import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute(
   "/{-$locale}/admin/language_categories/$id",
@@ -27,11 +26,9 @@ export const Route = createFileRoute(
 function EditCourseCategory() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const fields = useCourseCategoryFields();
   const { id } = Route.useParams();
   const categoryId = Number(id);
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery(
     adminGetCourseCategoryOptions({ path: { id: categoryId } }),
@@ -40,22 +37,15 @@ function EditCourseCategory() {
   const backToList = () =>
     navigate({ to: "/{-$locale}/admin/language_categories" });
 
-  const mutation = useMutation({
-    ...adminUpdateCourseCategoryMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminListCourseCategoriesQueryKey(),
-      });
-      queryClient.invalidateQueries({
-        queryKey: adminGetCourseCategoryQueryKey({ path: { id: categoryId } }),
-      });
-      notifications.show({
-        color: "green",
-        message: t(($) => $.admin.crud.updated),
-      });
-      backToList();
-    },
-    onError: () => setServerError(t(($) => $.admin.crud.saveError)),
+  const mutation = useResourceMutation({
+    mutation: adminUpdateCourseCategoryMutation(),
+    invalidate: [
+      adminListCourseCategoriesQueryKey(),
+      adminGetCourseCategoryQueryKey({ path: { id: categoryId } }),
+    ],
+    successMessage: t(($) => $.admin.crud.updated),
+    errorMessage: t(($) => $.admin.crud.saveError),
+    onDone: backToList,
   });
 
   return (
@@ -73,17 +63,15 @@ function EditCourseCategory() {
           fields={fields}
           schema={zCourseCategoryInput}
           defaultValues={courseCategoryToForm(data)}
-          onSubmit={async (values) => {
-            setServerError(null);
-            await mutation.mutateAsync({
+          onSubmit={(values) =>
+            mutation.mutate({
               path: { id: categoryId },
               body: courseCategoryToInput(values),
-            });
-          }}
+            })
+          }
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
           isPending={mutation.isPending}
-          serverError={serverError}
         />
       )}
     </Stack>

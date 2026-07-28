@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Group, Stack } from "@mantine/core";
+import { Button, Card, Group, Stack } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import type { ZodType } from "zod";
 import { useAppForm } from "@/lib/form";
@@ -22,20 +22,22 @@ export interface CrudFormProps<T extends Record<string, unknown>> {
   // TanStack Form consumes natively, mapping issues back to fields by path.
   schema: ZodType;
   defaultValues: T;
-  onSubmit: (values: T) => Promise<void>;
+  // Submits the validated values. Fire-and-forget: the resource mutation
+  // (useResourceMutation) toasts success/failure, so the form neither awaits nor
+  // tracks a server error itself.
+  onSubmit: (values: T) => void;
   submitLabel: string;
   // Invoked when the user cancels. The route owns navigation so the engine stays
   // resource-agnostic and the destination keeps TanStack Router's typed links.
   onCancel: () => void;
   isPending?: boolean;
-  serverError?: string | null;
 }
 
 // Generic admin form, the write half of the CRUD engine (Wave 1). Owns the
-// Mantine card shell, the server-error alert, and submit/cancel; per resource you
-// pass the generated Zod validator, typed default values, and a field list. The
-// same component backs both create and edit — the route decides which mutation
-// `onSubmit` runs and seeds `defaultValues` accordingly.
+// Mantine card shell and submit/cancel; per resource you pass the generated Zod
+// validator, typed default values, and a field list. The same component backs
+// both create and edit — the route decides which mutation `onSubmit` runs and
+// seeds `defaultValues` accordingly.
 export function CrudForm<T extends Record<string, unknown>>({
   fields,
   schema,
@@ -44,7 +46,6 @@ export function CrudForm<T extends Record<string, unknown>>({
   submitLabel,
   onCancel,
   isPending,
-  serverError,
 }: CrudFormProps<T>) {
   const { t } = useTranslation();
 
@@ -56,8 +57,8 @@ export function CrudForm<T extends Record<string, unknown>>({
     // exact value type; ZodType is invariant on its input, so we assert the bridge
     // here rather than leak the variance into every call site.
     validators: { onSubmit: schema as never },
-    onSubmit: async ({ value }) => {
-      await onSubmit(value);
+    onSubmit: ({ value }) => {
+      onSubmit(value);
     },
   });
 
@@ -70,8 +71,6 @@ export function CrudForm<T extends Record<string, unknown>>({
           form.handleSubmit();
         }}
       >
-        {serverError && <Alert color="red">{serverError}</Alert>}
-
         {fields.map((spec) => (
           <form.AppField key={spec.name} name={spec.name}>
             {(field) => {

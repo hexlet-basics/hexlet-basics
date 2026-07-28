@@ -1,85 +1,40 @@
-import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
-import { z } from "zod";
 import type { Banner, BannerInput } from "@/client/types.gen";
-import {
-  zBannerBackground,
-  zBannerLocale,
-  zBannerState,
-} from "@/client/zod.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
 
-// Mantine's DateTimePicker emits/consumes this local format; the API speaks
-// RFC3339. Conversion lives here so the engine's date field stays format-agnostic.
-const PICKER_FORMAT = "YYYY-MM-DD HH:mm:ss";
+// Banner form values ARE the generated request body (BannerInput): the datetime
+// fields carry RFC3339 strings (the engine's DateTimeField hides the Mantine
+// picker format), so the form validates against the generated `zBannerInput`
+// directly — no hand-written schema, no per-resource date conversion.
 
-// The banner form model. Enums reuse the generated validators (so values are
-// checked and typed as the contract literals); dates are the picker's string form
-// and `url` is an empty string when blank — both normalized on submit. This is a
-// distinct shape from `BannerInput`, so the form validates itself rather than the
-// request body (which categories could share but banners can't).
-const bannerFormSchema = z.object({
-  state: zBannerState,
-  background: zBannerBackground,
-  locale: zBannerLocale,
-  body: z.string().min(1),
-  url: z.string(),
-  startsAt: z.string(),
-  finishesAt: z.string(),
-});
-
-export type BannerFormValues = z.infer<typeof bannerFormSchema>;
-
-export { bannerFormSchema };
-
-export const emptyBanner: BannerFormValues = {
+export const emptyBanner: BannerInput = {
   state: "draft",
   background: "cta_gradient",
   locale: "en",
   body: "",
   url: "",
-  startsAt: "",
-  finishesAt: "",
+  startsAt: null,
+  finishesAt: null,
 };
 
-const toPicker = (iso: string | null): string =>
-  iso ? dayjs(iso).format(PICKER_FORMAT) : "";
-
-const toIso = (value: string): string | null =>
-  value ? dayjs(value).toISOString() : null;
-
-// Seed the form from an existing row (edit). RFC3339 timestamps become the
-// picker's local string; null columns become empty strings so inputs stay
-// controlled.
-export function bannerToForm(banner: Banner): BannerFormValues {
+// Seed the form from an existing row: pick only the writable fields (drops
+// id/createdAt so they never leak into the request body) and keep `url` a string
+// so the text input stays controlled.
+export function bannerToForm(banner: Banner): BannerInput {
   return {
     state: banner.state,
     background: banner.background,
     locale: banner.locale,
     body: banner.body,
     url: banner.url ?? "",
-    startsAt: toPicker(banner.startsAt),
-    finishesAt: toPicker(banner.finishesAt),
-  };
-}
-
-// Map form values to the request body: picker strings back to RFC3339, blank
-// optionals to null.
-export function bannerToInput(values: BannerFormValues): BannerInput {
-  return {
-    state: values.state,
-    background: values.background,
-    locale: values.locale,
-    body: values.body,
-    url: values.url || null,
-    startsAt: toIso(values.startsAt),
-    finishesAt: toIso(values.finishesAt),
+    startsAt: banner.startsAt,
+    finishesAt: banner.finishesAt,
   };
 }
 
 // Field descriptors driving CrudForm. Enum option labels reuse the legacy
 // `*/values` i18n maps, so admin copy matches the Rails back office.
-export function useBannerFields(): CrudFieldSpec<BannerFormValues>[] {
+export function useBannerFields(): CrudFieldSpec<BannerInput>[] {
   const { t } = useTranslation();
   return [
     {

@@ -1,7 +1,5 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   createColumnHelper,
@@ -18,6 +16,8 @@ import {
 import type { CourseCategory } from "@/client/types.gen";
 import { CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
+import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
+import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 // Course categories admin list — the first resource wired through the CRUD engine
 // (Wave 1). Adding another resource is this file plus new.tsx / $id.tsx, each a
@@ -30,7 +30,7 @@ const columnHelper = createColumnHelper<CourseCategory>();
 
 function CourseCategoriesList() {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
+  const confirmDelete = useDeleteConfirmation();
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -46,35 +46,12 @@ function CourseCategoriesList() {
     }),
   );
 
-  const deleteMutation = useMutation({
-    ...adminDeleteCourseCategoryMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminListCourseCategoriesQueryKey(),
-      });
-      notifications.show({
-        color: "green",
-        message: t(($) => $.admin.crud.deleted),
-      });
-    },
-    onError: () =>
-      notifications.show({
-        color: "red",
-        message: t(($) => $.admin.crud.deleteError),
-      }),
+  const deleteMutation = useResourceMutation({
+    mutation: adminDeleteCourseCategoryMutation(),
+    invalidate: [adminListCourseCategoriesQueryKey()],
+    successMessage: t(($) => $.admin.crud.deleted),
+    errorMessage: t(($) => $.admin.crud.deleteError),
   });
-
-  const confirmDelete = (category: CourseCategory) =>
-    modals.openConfirmModal({
-      title: t(($) => $.admin.crud.confirmDeleteTitle),
-      children: category.name ?? String(category.id),
-      labels: {
-        confirm: t(($) => $.admin.crud.delete),
-        cancel: t(($) => $.admin.crud.cancel),
-      },
-      confirmProps: { color: "red" },
-      onConfirm: () => deleteMutation.mutate({ path: { id: category.id } }),
-    });
 
   const columns = [
     columnHelper.accessor("name", {
@@ -107,7 +84,13 @@ function CourseCategoriesList() {
               color="red"
               variant="light"
               aria-label={t(($) => $.admin.crud.delete)}
-              onClick={() => confirmDelete(row.original)}
+              onClick={() =>
+                confirmDelete({
+                  description: row.original.name ?? String(row.original.id),
+                  onConfirm: () =>
+                    deleteMutation.mutate({ path: { id: row.original.id } }),
+                })
+              }
             >
               ✕
             </ActionIcon>

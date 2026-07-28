@@ -1,8 +1,5 @@
 import { Stack, Title } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminCreateCourseCategoryMutation,
@@ -15,6 +12,7 @@ import {
   emptyCourseCategory,
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
+import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute(
   "/{-$locale}/admin/language_categories/new",
@@ -25,26 +23,17 @@ export const Route = createFileRoute(
 function NewCourseCategory() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const fields = useCourseCategoryFields();
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const backToList = () =>
     navigate({ to: "/{-$locale}/admin/language_categories" });
 
-  const mutation = useMutation({
-    ...adminCreateCourseCategoryMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: adminListCourseCategoriesQueryKey(),
-      });
-      notifications.show({
-        color: "green",
-        message: t(($) => $.admin.crud.created),
-      });
-      backToList();
-    },
-    onError: () => setServerError(t(($) => $.admin.crud.saveError)),
+  const mutation = useResourceMutation({
+    mutation: adminCreateCourseCategoryMutation(),
+    invalidate: [adminListCourseCategoriesQueryKey()],
+    successMessage: t(($) => $.admin.crud.created),
+    errorMessage: t(($) => $.admin.crud.saveError),
+    onDone: backToList,
   });
 
   return (
@@ -54,14 +43,12 @@ function NewCourseCategory() {
         fields={fields}
         schema={zCourseCategoryInput}
         defaultValues={emptyCourseCategory}
-        onSubmit={async (values) => {
-          setServerError(null);
-          await mutation.mutateAsync({ body: courseCategoryToInput(values) });
-        }}
+        onSubmit={(values) =>
+          mutation.mutate({ body: courseCategoryToInput(values) })
+        }
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}
-        serverError={serverError}
       />
     </Stack>
   );

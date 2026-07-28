@@ -1,8 +1,6 @@
 import { Center, Loader, Stack, Title } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   adminGetBannerOptions,
@@ -10,13 +8,13 @@ import {
   adminListBannersQueryKey,
   adminUpdateBannerMutation,
 } from "@/client/@tanstack/react-query.gen";
+import { zBannerInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import {
-  bannerFormSchema,
   bannerToForm,
-  bannerToInput,
   useBannerFields,
 } from "@/components/admin/resources/banner";
+import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/banners/$id")({
   component: EditBanner,
@@ -25,11 +23,9 @@ export const Route = createFileRoute("/{-$locale}/admin/banners/$id")({
 function EditBanner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const fields = useBannerFields();
   const { id } = Route.useParams();
   const bannerId = Number(id);
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery(
     adminGetBannerOptions({ path: { id: bannerId } }),
@@ -37,20 +33,15 @@ function EditBanner() {
 
   const backToList = () => navigate({ to: "/{-$locale}/admin/banners" });
 
-  const mutation = useMutation({
-    ...adminUpdateBannerMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminListBannersQueryKey() });
-      queryClient.invalidateQueries({
-        queryKey: adminGetBannerQueryKey({ path: { id: bannerId } }),
-      });
-      notifications.show({
-        color: "green",
-        message: t(($) => $.admin.crud.updated),
-      });
-      backToList();
-    },
-    onError: () => setServerError(t(($) => $.admin.crud.saveError)),
+  const mutation = useResourceMutation({
+    mutation: adminUpdateBannerMutation(),
+    invalidate: [
+      adminListBannersQueryKey(),
+      adminGetBannerQueryKey({ path: { id: bannerId } }),
+    ],
+    successMessage: t(($) => $.admin.crud.updated),
+    errorMessage: t(($) => $.admin.crud.saveError),
+    onDone: backToList,
   });
 
   return (
@@ -64,19 +55,14 @@ function EditBanner() {
         <CrudForm
           key={data.id}
           fields={fields}
-          schema={bannerFormSchema}
+          schema={zBannerInput}
           defaultValues={bannerToForm(data)}
-          onSubmit={async (values) => {
-            setServerError(null);
-            await mutation.mutateAsync({
-              path: { id: bannerId },
-              body: bannerToInput(values),
-            });
-          }}
+          onSubmit={(values) =>
+            mutation.mutate({ path: { id: bannerId }, body: values })
+          }
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
           isPending={mutation.isPending}
-          serverError={serverError}
         />
       )}
     </Stack>
