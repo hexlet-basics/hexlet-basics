@@ -39,3 +39,7 @@ stats.html
 #   api-spec/dist/openapi.yaml        (TypeSpec -> OpenAPI)
 #   internal/api/api.gen.go           (server + models, from the OpenAPI)
 #   src/client/**                     (hey-api TS client + TanStack Query hooks)
+
+# Vitest browser-mode failure artifacts
+.vitest-attachments/
+**/__screenshots__/

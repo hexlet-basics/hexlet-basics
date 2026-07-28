@@ -38,6 +38,29 @@ jobs:
       # gofmt + go vet + golangci-lint (Go) and biome + tsc (frontend).
       - run: make lint
 
+  test-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+
+      # Vitest Browser Mode drives a real Chromium via Playwright; install it
+      # (with OS deps) before running the frontend suite.
+      - run: pnpm exec playwright install --with-deps chromium
+
+      - run: make test-web
+
   test:
     runs-on: ubuntu-latest
 

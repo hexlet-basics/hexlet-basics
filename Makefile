@@ -170,6 +170,11 @@ test-prepare: test-migrate test-load-fixtures
 test:
 	go test ./...
 
+## test-web: run the frontend test suite (Vitest Browser Mode via Playwright).
+## Needs a browser — run `pnpm exec playwright install chromium` once locally.
+test-web:
+	pnpm test
+
 # ---------------------------------------------------------------------------
 # Build
 # ---------------------------------------------------------------------------

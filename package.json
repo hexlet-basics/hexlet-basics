@@ -11,6 +11,8 @@
     "dev:all": "concurrently -k -n api,web -c blue,green \"air\" \"vite dev\"",
     "build": "tsc -b && vite build",
     "check": "tsc -b",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
@@ -53,10 +55,20 @@
     "@typespec/openapi3": "1.14.0",
     "@typespec/rest": "0.84.0",
     "@vitejs/plugin-react": "^6.0.4",
+    "@vitest/browser-playwright": "^4.1.10",
     "concurrently": "^10.0.4",
     "i18next-cli": "^1.67.3",
     "lefthook": "^2.1.10",
+    "msw": "^2.15.0",
+    "playwright": "^1.62.0",
     "typescript": "~7.0.2",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10",
+    "vitest-browser-react": "^2.2.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
