@@ -12,7 +12,6 @@ import { zCourseCategoryInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import {
   courseCategoryToForm,
-  courseCategoryToInput,
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -64,10 +63,7 @@ function EditCourseCategory() {
           schema={zCourseCategoryInput}
           defaultValues={courseCategoryToForm(data)}
           onSubmit={(values) =>
-            mutation.mutate({
-              path: { id: categoryId },
-              body: courseCategoryToInput(values),
-            })
+            mutation.mutate({ path: { id: categoryId }, body: values })
           }
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}

@@ -18,9 +18,11 @@ export interface CrudFieldSpec<T> {
 
 export interface CrudFormProps<T extends Record<string, unknown>> {
   fields: CrudFieldSpec<T>[];
-  // The generated `zXxxInput` schema. zod v4 implements Standard Schema, which
-  // TanStack Form consumes natively, mapping issues back to fields by path.
-  schema: ZodType;
+  // The generated `zXxxInput` schema, typed to the form values on BOTH the output
+  // and input side (`ZodType<T, T>`). zod v4 implements Standard Schema keyed to
+  // its input type, and TanStack Form's validator wants `StandardSchemaV1<T>`;
+  // fixing input=output=T lets `zXxxInput` satisfy it directly, with no cast.
+  schema: ZodType<T, T>;
   defaultValues: T;
   // Submits the validated values. Fire-and-forget: the resource mutation
   // (useResourceMutation) toasts success/failure, so the form neither awaits nor
@@ -51,12 +53,7 @@ export function CrudForm<T extends Record<string, unknown>>({
 
   const form = useAppForm({
     defaultValues,
-    // The generated `zXxxInput` schema validates the request body, whose shape
-    // matches the form values by construction (the resource module builds one
-    // from the other). TanStack Form wants a `StandardSchemaV1<T>` keyed to the
-    // exact value type; ZodType is invariant on its input, so we assert the bridge
-    // here rather than leak the variance into every call site.
-    validators: { onSubmit: schema as never },
+    validators: { onSubmit: schema },
     onSubmit: ({ value }) => {
       onSubmit(value);
     },

@@ -1,10 +1,10 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
+import type {
+  ColumnDef,
+  PaginationState,
+  SortingState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,8 +24,6 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 export const Route = createFileRoute("/{-$locale}/admin/banners/")({
   component: BannersList,
 });
-
-const columnHelper = createColumnHelper<Banner>();
 
 function BannersList() {
   const { t } = useTranslation();
@@ -50,24 +48,28 @@ function BannersList() {
     errorMessage: t(($) => $.admin.crud.deleteError),
   });
 
-  const columns = [
-    columnHelper.accessor("state", {
+  const columns: ColumnDef<Banner>[] = [
+    {
+      accessorKey: "state",
       header: t(($) => $.models.attributes.banner.state),
       enableSorting: false,
-    }),
-    columnHelper.accessor("locale", {
+    },
+    {
+      accessorKey: "locale",
       header: t(($) => $.models.attributes.banner.locale),
       enableSorting: false,
-    }),
-    columnHelper.accessor("background", {
+    },
+    {
+      accessorKey: "background",
       header: t(($) => $.models.attributes.banner.background),
       enableSorting: false,
-    }),
-    columnHelper.accessor("body", {
+    },
+    {
+      accessorKey: "body",
       header: t(($) => $.models.attributes.banner.body),
       enableSorting: false,
-    }),
-    columnHelper.display({
+    },
+    {
       id: "actions",
       header: "",
       cell: ({ row }) => (
@@ -98,7 +100,7 @@ function BannersList() {
           </Tooltip>
         </Group>
       ),
-    }),
+    },
   ];
 
   return (

@@ -8,7 +8,6 @@ import {
 import { zCourseCategoryInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import {
-  courseCategoryToInput,
   emptyCourseCategory,
   useCourseCategoryFields,
 } from "@/components/admin/resources/courseCategory";
@@ -43,9 +42,7 @@ function NewCourseCategory() {
         fields={fields}
         schema={zCourseCategoryInput}
         defaultValues={emptyCourseCategory}
-        onSubmit={(values) =>
-          mutation.mutate({ body: courseCategoryToInput(values) })
-        }
+        onSubmit={(values) => mutation.mutate({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}
         isPending={mutation.isPending}

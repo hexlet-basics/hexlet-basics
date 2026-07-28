@@ -1,10 +1,10 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  createColumnHelper,
-  type PaginationState,
-  type SortingState,
+import type {
+  ColumnDef,
+  PaginationState,
+  SortingState,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,8 +25,6 @@ import { useResourceMutation } from "@/hooks/useResourceMutation";
 export const Route = createFileRoute("/{-$locale}/admin/language_categories/")({
   component: CourseCategoriesList,
 });
-
-const columnHelper = createColumnHelper<CourseCategory>();
 
 function CourseCategoriesList() {
   const { t } = useTranslation();
@@ -53,20 +51,23 @@ function CourseCategoriesList() {
     errorMessage: t(($) => $.admin.crud.deleteError),
   });
 
-  const columns = [
-    columnHelper.accessor("name", {
+  const columns: ColumnDef<CourseCategory>[] = [
+    {
+      accessorKey: "name",
       header: t(($) => $.models.attributes.language_category.name),
       enableSorting: false,
-    }),
-    columnHelper.accessor("slug", {
+    },
+    {
+      accessorKey: "slug",
       header: t(($) => $.models.attributes.language_category.slug),
       enableSorting: false,
-    }),
-    columnHelper.accessor("locale", {
+    },
+    {
+      accessorKey: "locale",
       header: t(($) => $.models.attributes.language_category.locale),
       enableSorting: false,
-    }),
-    columnHelper.display({
+    },
+    {
       id: "actions",
       header: "",
       cell: ({ row }) => (
@@ -97,7 +98,7 @@ function CourseCategoriesList() {
           </Tooltip>
         </Group>
       ),
-    }),
+    },
   ];
 
   return (

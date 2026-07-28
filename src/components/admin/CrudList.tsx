@@ -25,8 +25,10 @@ import { useTranslation } from "react-i18next";
 // resource you supply only `columns` (including an optional actions column) —
 // everything below is shared.
 export interface CrudListProps<T> {
-  // biome-ignore lint/suspicious/noExplicitAny: TanStack's ColumnDef value type is invariant; `any` here is the standard escape so heterogeneous columns (string, number, actions) fit one array.
-  columns: ColumnDef<T, any>[];
+  // `ColumnDef<T>` defaults the cell-value type to `unknown`, which is what plain
+  // literal columns (accessorKey + a custom cell / display columns) produce — no
+  // `any` needed since our cells read `row.original`, never a typed `getValue()`.
+  columns: ColumnDef<T>[];
   data: T[];
   // Total rows across all pages (from the `XxxPage` envelope), used to derive the
   // page count for the pager — the table itself only ever holds one page.

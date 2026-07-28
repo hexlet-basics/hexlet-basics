@@ -51,7 +51,9 @@ function TextField(props: TextInputProps) {
   return (
     <TextInput
       {...props}
-      value={field.state.value}
+      // Nullable string columns arrive as null; render "" so the input stays
+      // controlled (the value type is the generated Input, which allows null).
+      value={field.state.value ?? ""}
       onChange={(event) => field.handleChange(event.currentTarget.value)}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
@@ -66,7 +68,7 @@ function TextareaField(props: TextareaProps) {
       autosize
       minRows={3}
       {...props}
-      value={field.state.value}
+      value={field.state.value ?? ""}
       onChange={(event) => field.handleChange(event.currentTarget.value)}
       onBlur={field.handleBlur}
       error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
