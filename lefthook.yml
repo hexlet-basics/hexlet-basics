@@ -6,6 +6,9 @@ commit-msg:
       run: npx --no -- commitlint --edit {1}
 
 pre-push:
+  parallel: true
   commands:
-    lint:
-      run: make lint
+    lint-go:
+      run: make lint-go
+    lint-web:
+      run: make lint-web
