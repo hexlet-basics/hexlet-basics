@@ -45,7 +45,7 @@
     "@biomejs/biome": "^2.5.5",
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
-    "@hey-api/openapi-ts": "0.0.0-next-20260724070045",
+    "@hey-api/openapi-ts": "0.97.3",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
