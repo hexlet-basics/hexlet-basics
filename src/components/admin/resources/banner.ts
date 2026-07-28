@@ -1,13 +1,11 @@
+import { useTranslation } from "react-i18next";
 import type { Banner, BannerInput } from "@/client/types.gen";
-import { zBannerInput } from "@/client/zod.gen";
 import type { CrudFieldSpec } from "@/components/admin/CrudForm";
-import { useSchemaFields } from "@/components/admin/schemaFields";
 
 // Banner form values ARE the generated request body (BannerInput): the datetime
 // fields carry RFC3339 strings (the engine's DateTimeField hides the Mantine
 // picker format), so the form validates against the generated `zBannerInput`
-// directly and its field list is derived from that same schema — nothing here
-// restates the shape.
+// directly — no hand-written schema, no per-resource date conversion.
 
 export const emptyBanner: BannerInput = {
   state: "draft",
@@ -34,9 +32,89 @@ export function bannerToForm(banner: Banner): BannerInput {
   };
 }
 
+// Field descriptors driving CrudForm. Enum option labels reuse the legacy
+// `*/values` i18n maps, so admin copy matches the Rails back office.
 export function useBannerFields(): CrudFieldSpec<BannerInput>[] {
-  return useSchemaFields<BannerInput>(zBannerInput, {
-    namespace: "banner",
-    textarea: ["body"],
-  });
+  const { t } = useTranslation();
+  return [
+    {
+      name: "state",
+      label: t(($) => $.models.attributes.banner.state),
+      type: "select",
+      required: true,
+      options: [
+        {
+          value: "draft",
+          label: t(($) => $.models.attributes.banner["state/values"].draft),
+        },
+        {
+          value: "published",
+          label: t(($) => $.models.attributes.banner["state/values"].published),
+        },
+        {
+          value: "archived",
+          label: t(($) => $.models.attributes.banner["state/values"].archived),
+        },
+      ],
+    },
+    {
+      name: "background",
+      label: t(($) => $.models.attributes.banner.background),
+      type: "select",
+      required: true,
+      options: [
+        {
+          value: "cta_gradient",
+          label: t(
+            ($) => $.models.attributes.banner["background/values"].cta_gradient,
+          ),
+        },
+        {
+          value: "dark",
+          label: t(($) => $.models.attributes.banner["background/values"].dark),
+        },
+        {
+          value: "blue",
+          label: t(($) => $.models.attributes.banner["background/values"].blue),
+        },
+      ],
+    },
+    {
+      name: "locale",
+      label: t(($) => $.models.attributes.banner.locale),
+      type: "select",
+      required: true,
+      options: [
+        {
+          value: "en",
+          label: t(($) => $.models.attributes.banner["locale/values"].en),
+        },
+        {
+          value: "ru",
+          label: t(($) => $.models.attributes.banner["locale/values"].ru),
+        },
+      ],
+    },
+    {
+      name: "body",
+      label: t(($) => $.models.attributes.banner.body),
+      type: "textarea",
+      required: true,
+      autoFocus: true,
+    },
+    {
+      name: "url",
+      label: t(($) => $.models.attributes.banner.url),
+    },
+    {
+      name: "startsAt",
+      label: t(($) => $.models.attributes.banner.starts_at),
+      type: "datetime",
+    },
+    {
+      name: "finishesAt",
+      label: t(($) => $.models.attributes.banner.finishes_at),
+      type: "datetime",
+    },
+  ];
 }
