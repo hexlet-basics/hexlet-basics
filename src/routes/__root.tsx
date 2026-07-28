@@ -1,9 +1,12 @@
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import {
   ColorSchemeScript,
   MantineProvider,
   mantineHtmlProps,
 } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { Notifications } from "@mantine/notifications";
 import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
@@ -14,7 +17,7 @@ import {
 import type { i18n as I18n } from "i18next";
 import type { ReactNode } from "react";
 import { I18nextProvider } from "react-i18next";
-import { type AuthUser, getCurrentUser } from "@/lib/auth";
+import { type AuthUser, resolveCurrentUser } from "@/lib/auth";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -24,9 +27,11 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   // Resolve the current user from the httpOnly JWT cookie server-side, so
-  // authenticated pages render on the server (ADR-0008). STUB: null until the
-  // auth backend lands.
-  beforeLoad: () => ({ user: getCurrentUser() }),
+  // authenticated pages (and the admin guard) render on the server (ADR-0008).
+  // Cached in the shared QueryClient, so this is one fetch per request.
+  beforeLoad: async ({ context }) => ({
+    user: await resolveCurrentUser(context.queryClient),
+  }),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -65,7 +70,10 @@ function RootDocument({
         <HeadContent />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <Notifications />
+          <ModalsProvider>{children}</ModalsProvider>
+        </MantineProvider>
         <Scripts />
       </body>
     </html>

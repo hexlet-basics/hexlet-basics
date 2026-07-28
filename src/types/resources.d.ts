@@ -97,6 +97,7 @@ export default interface Resources {
         language_category: {
           description: "Описание";
           header: "Заголовок";
+          locale: "Локаль";
           name: "Название";
           slug: "Slug";
         };
@@ -227,6 +228,21 @@ export default interface Resources {
         "new": {
           header: "Новый пост";
         };
+      };
+      crud: {
+        cancel: "Отмена";
+        confirmDeleteTitle: "Удалить запись?";
+        create: "Создать";
+        created: "Запись создана";
+        delete: "Удалить";
+        deleteError: "Не удалось удалить запись";
+        deleted: "Запись удалена";
+        edit: "Изменить";
+        empty: "Записей нет";
+        "new": "Создать";
+        save: "Сохранить";
+        saveError: "Не удалось сохранить запись";
+        updated: "Запись обновлена";
       };
       home: {
         index: {
@@ -363,6 +379,9 @@ export default interface Resources {
         index: {
           header: "Разговоры с AI";
         };
+      };
+      resources: {
+        courseCategories: "Категории курсов";
       };
       reviews: {
         edit: {
@@ -1308,6 +1327,7 @@ export default interface Resources {
         language_category: {
           description: "Описание";
           header: "Заголовок";
+          locale: "Локаль";
           name: "Название";
           slug: "Slug";
         };

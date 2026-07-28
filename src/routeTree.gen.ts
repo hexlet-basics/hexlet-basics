@@ -11,10 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
+import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
 import { Route as Char123LocaleChar125LanguagesSlugRouteImport } from './routes/{-$locale}/languages/$slug'
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
+import { Route as Char123LocaleChar125AdminLanguage_categoriesIndexRouteImport } from './routes/{-$locale}/admin/language_categories/index'
+import { Route as Char123LocaleChar125AdminLanguage_categoriesIdRouteImport } from './routes/{-$locale}/admin/language_categories/$id'
+import { Route as Char123LocaleChar125AdminLanguage_categoriesNewRouteImport } from './routes/{-$locale}/admin/language_categories/new'
 
 const Char123LocaleChar125Route = Char123LocaleChar125RouteImport.update({
   id: '/{-$locale}',
@@ -25,6 +29,12 @@ const Char123LocaleChar125IndexRoute =
   Char123LocaleChar125IndexRouteImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AdminRoute =
+  Char123LocaleChar125AdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125LanguagesIndexRoute =
@@ -51,55 +61,97 @@ const Char123LocaleChar125UsersNewRoute =
     path: '/users/new',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125AdminLanguage_categoriesIndexRoute =
+  Char123LocaleChar125AdminLanguage_categoriesIndexRouteImport.update({
+    id: '/language_categories/',
+    path: '/language_categories/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminLanguage_categoriesIdRoute =
+  Char123LocaleChar125AdminLanguage_categoriesIdRouteImport.update({
+    id: '/language_categories/$id',
+    path: '/language_categories/$id',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminLanguage_categoriesNewRoute =
+  Char123LocaleChar125AdminLanguage_categoriesNewRouteImport.update({
+    id: '/language_categories/new',
+    path: '/language_categories/new',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
+  '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
+  '/{-$locale}/admin/language_categories/$id': typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
+  '/{-$locale}/admin/language_categories/new': typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
+  '/{-$locale}/admin/language_categories/': typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
 }
 export interface FileRoutesByTo {
+  '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/languages': typeof Char123LocaleChar125LanguagesIndexRoute
+  '/{-$locale}/admin/language_categories/$id': typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
+  '/{-$locale}/admin/language_categories/new': typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
+  '/{-$locale}/admin/language_categories': typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
+  '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
+  '/{-$locale}/admin/language_categories/$id': typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
+  '/{-$locale}/admin/language_categories/new': typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
+  '/{-$locale}/admin/language_categories/': typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/{-$locale}'
+    | '/{-$locale}/admin'
     | '/{-$locale}/'
     | '/{-$locale}/languages/$slug'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/languages/'
+    | '/{-$locale}/admin/language_categories/$id'
+    | '/{-$locale}/admin/language_categories/new'
+    | '/{-$locale}/admin/language_categories/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/{-$locale}/admin'
     | '/{-$locale}'
     | '/{-$locale}/languages/$slug'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/languages'
+    | '/{-$locale}/admin/language_categories/$id'
+    | '/{-$locale}/admin/language_categories/new'
+    | '/{-$locale}/admin/language_categories'
   id:
     | '__root__'
     | '/{-$locale}'
+    | '/{-$locale}/admin'
     | '/{-$locale}/'
     | '/{-$locale}/languages/$slug'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/languages/'
+    | '/{-$locale}/admin/language_categories/$id'
+    | '/{-$locale}/admin/language_categories/new'
+    | '/{-$locale}/admin/language_categories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -120,6 +172,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/{-$locale}/'
       preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/admin': {
+      id: '/{-$locale}/admin'
+      path: '/admin'
+      fullPath: '/{-$locale}/admin'
+      preLoaderRoute: typeof Char123LocaleChar125AdminRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/languages/': {
@@ -150,10 +209,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125UsersNewRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/admin/language_categories/': {
+      id: '/{-$locale}/admin/language_categories/'
+      path: '/language_categories'
+      fullPath: '/{-$locale}/admin/language_categories/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/language_categories/$id': {
+      id: '/{-$locale}/admin/language_categories/$id'
+      path: '/language_categories/$id'
+      fullPath: '/{-$locale}/admin/language_categories/$id'
+      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/language_categories/new': {
+      id: '/{-$locale}/admin/language_categories/new'
+      path: '/language_categories/new'
+      fullPath: '/{-$locale}/admin/language_categories/new'
+      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_categoriesNewRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
   }
 }
 
+interface Char123LocaleChar125AdminRouteChildren {
+  Char123LocaleChar125AdminLanguage_categoriesIdRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
+  Char123LocaleChar125AdminLanguage_categoriesNewRoute: typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
+  Char123LocaleChar125AdminLanguage_categoriesIndexRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
+}
+
+const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChildren =
+  {
+    Char123LocaleChar125AdminLanguage_categoriesIdRoute:
+      Char123LocaleChar125AdminLanguage_categoriesIdRoute,
+    Char123LocaleChar125AdminLanguage_categoriesNewRoute:
+      Char123LocaleChar125AdminLanguage_categoriesNewRoute,
+    Char123LocaleChar125AdminLanguage_categoriesIndexRoute:
+      Char123LocaleChar125AdminLanguage_categoriesIndexRoute,
+  }
+
+const Char123LocaleChar125AdminRouteWithChildren =
+  Char123LocaleChar125AdminRoute._addFileChildren(
+    Char123LocaleChar125AdminRouteChildren,
+  )
+
 interface Char123LocaleChar125RouteChildren {
+  Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
   Char123LocaleChar125LanguagesSlugRoute: typeof Char123LocaleChar125LanguagesSlugRoute
   Char123LocaleChar125SessionNewRoute: typeof Char123LocaleChar125SessionNewRoute
@@ -162,6 +264,7 @@ interface Char123LocaleChar125RouteChildren {
 }
 
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
+  Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
   Char123LocaleChar125LanguagesSlugRoute:
     Char123LocaleChar125LanguagesSlugRoute,

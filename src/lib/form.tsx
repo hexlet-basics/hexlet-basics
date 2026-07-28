@@ -1,4 +1,9 @@
-import { TextInput, type TextInputProps } from "@mantine/core";
+import {
+  Textarea,
+  type TextareaProps,
+  TextInput,
+  type TextInputProps,
+} from "@mantine/core";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 
 // Mantine input wrappers over headless TanStack Form (ADR-0008). `useAppForm`
@@ -35,8 +40,23 @@ function TextField(props: TextInputProps) {
   );
 }
 
+function TextareaField(props: TextareaProps) {
+  const field = useFieldContext<string>();
+  return (
+    <Textarea
+      autosize
+      minRows={3}
+      {...props}
+      value={field.state.value}
+      onChange={(event) => field.handleChange(event.currentTarget.value)}
+      onBlur={field.handleBlur}
+      error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
+    />
+  );
+}
+
 export const { useAppForm } = createFormHook({
-  fieldComponents: { TextField },
+  fieldComponents: { TextField, TextareaField },
   formComponents: {},
   fieldContext,
   formContext,

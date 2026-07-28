@@ -96,6 +96,7 @@ export default {
         language_category: {
           description: "Description",
           header: "Header",
+          locale: "Locale",
           name: "Name",
           slug: "Slug",
         },
@@ -201,6 +202,24 @@ export default {
       },
     },
     admin: {
+      resources: {
+        courseCategories: "Course Categories",
+      },
+      crud: {
+        cancel: "Cancel",
+        confirmDeleteTitle: "Delete record?",
+        create: "Create",
+        created: "Record created",
+        delete: "Delete",
+        deleteError: "Failed to delete the record",
+        deleted: "Record deleted",
+        edit: "Edit",
+        empty: "No records",
+        "new": "New",
+        save: "Save",
+        saveError: "Failed to save the record",
+        updated: "Record updated",
+      },
       banners: {
         edit: {
           header: "Edit Banner",
@@ -1415,6 +1434,7 @@ export default {
         language_category: {
           description: "Description",
           header: "Header",
+          locale: "Locale",
           name: "Name",
           slug: "Slug",
         },

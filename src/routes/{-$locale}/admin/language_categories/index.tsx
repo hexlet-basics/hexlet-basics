@@ -1,0 +1,141 @@
+import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  createColumnHelper,
+  type PaginationState,
+  type SortingState,
+} from "@tanstack/react-table";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  adminDeleteCourseCategoryMutation,
+  adminListCourseCategoriesOptions,
+  adminListCourseCategoriesQueryKey,
+} from "@/client/@tanstack/react-query.gen";
+import type { CourseCategory } from "@/client/types.gen";
+import { CrudList } from "@/components/admin/CrudList";
+import { ButtonLink } from "@/components/RouterLink";
+
+// Course categories admin list — the first resource wired through the CRUD engine
+// (Wave 1). Adding another resource is this file plus new.tsx / $id.tsx, each a
+// thin binding of the generated hooks to the shared CrudList/CrudForm.
+export const Route = createFileRoute("/{-$locale}/admin/language_categories/")({
+  component: CourseCategoriesList,
+});
+
+const columnHelper = createColumnHelper<CourseCategory>();
+
+function CourseCategoriesList() {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 25,
+  });
+  // Sorting state is held for the engine, but this resource's columns keep it off
+  // until the generic `listPage` honors sortField/sortOrder server-side.
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const { data, isLoading } = useQuery(
+    adminListCourseCategoriesOptions({
+      query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
+    }),
+  );
+
+  const deleteMutation = useMutation({
+    ...adminDeleteCourseCategoryMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: adminListCourseCategoriesQueryKey(),
+      });
+      notifications.show({
+        color: "green",
+        message: t(($) => $.admin.crud.deleted),
+      });
+    },
+    onError: () =>
+      notifications.show({
+        color: "red",
+        message: t(($) => $.admin.crud.deleteError),
+      }),
+  });
+
+  const confirmDelete = (category: CourseCategory) =>
+    modals.openConfirmModal({
+      title: t(($) => $.admin.crud.confirmDeleteTitle),
+      children: category.name ?? String(category.id),
+      labels: {
+        confirm: t(($) => $.admin.crud.delete),
+        cancel: t(($) => $.admin.crud.cancel),
+      },
+      confirmProps: { color: "red" },
+      onConfirm: () => deleteMutation.mutate({ path: { id: category.id } }),
+    });
+
+  const columns = [
+    columnHelper.accessor("name", {
+      header: t(($) => $.models.attributes.language_category.name),
+      enableSorting: false,
+    }),
+    columnHelper.accessor("slug", {
+      header: t(($) => $.models.attributes.language_category.slug),
+      enableSorting: false,
+    }),
+    columnHelper.accessor("locale", {
+      header: t(($) => $.models.attributes.language_category.locale),
+      enableSorting: false,
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "",
+      cell: ({ row }) => (
+        <Group gap="xs" justify="flex-end" wrap="nowrap">
+          <ButtonLink
+            to="/{-$locale}/admin/language_categories/$id"
+            params={{ id: String(row.original.id) }}
+            size="xs"
+            variant="light"
+          >
+            {t(($) => $.admin.crud.edit)}
+          </ButtonLink>
+          <Tooltip label={t(($) => $.admin.crud.delete)}>
+            <ActionIcon
+              color="red"
+              variant="light"
+              aria-label={t(($) => $.admin.crud.delete)}
+              onClick={() => confirmDelete(row.original)}
+            >
+              ✕
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      ),
+    }),
+  ];
+
+  return (
+    <Stack>
+      <Group justify="space-between">
+        <Title order={2}>{t(($) => $.admin.resources.courseCategories)}</Title>
+        <ButtonLink to="/{-$locale}/admin/language_categories/new">
+          {t(($) => $.admin.crud.new)}
+        </ButtonLink>
+      </Group>
+
+      <CrudList
+        columns={columns}
+        data={data?.items ?? []}
+        total={data?.total ?? 0}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        isLoading={isLoading}
+      />
+    </Stack>
+  );
+}

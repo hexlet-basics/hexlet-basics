@@ -97,6 +97,7 @@ export default {
         language_category: {
           description: "Описание",
           header: "Заголовок",
+          locale: "Локаль",
           name: "Название",
           slug: "Slug",
         },
@@ -203,6 +204,24 @@ export default {
       },
     },
     admin: {
+      resources: {
+        courseCategories: "Категории курсов",
+      },
+      crud: {
+        cancel: "Отмена",
+        confirmDeleteTitle: "Удалить запись?",
+        create: "Создать",
+        created: "Запись создана",
+        delete: "Удалить",
+        deleteError: "Не удалось удалить запись",
+        deleted: "Запись удалена",
+        edit: "Изменить",
+        empty: "Записей нет",
+        "new": "Создать",
+        save: "Сохранить",
+        saveError: "Не удалось сохранить запись",
+        updated: "Запись обновлена",
+      },
       banners: {
         edit: {
           header: "Редактирование баннера",
@@ -1414,6 +1433,7 @@ export default {
         language_category: {
           description: "Описание",
           header: "Заголовок",
+          locale: "Локаль",
           name: "Название",
           slug: "Slug",
         },
