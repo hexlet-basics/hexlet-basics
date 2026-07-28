@@ -259,6 +259,67 @@ var (
 		Columns:    LanguageLandingPageQnaItemsColumns,
 		PrimaryKey: []*schema.Column{LanguageLandingPageQnaItemsColumns[0]},
 	}
+	// LanguageLessonsColumns holds the columns for the "language_lessons" table.
+	LanguageLessonsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "slug", Type: field.TypeString, Nullable: true},
+		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
+	}
+	// LanguageLessonsTable holds the schema information for the "language_lessons" table.
+	LanguageLessonsTable = &schema.Table{
+		Name:       "language_lessons",
+		Columns:    LanguageLessonsColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonsColumns[0]},
+	}
+	// LanguageLessonMembersColumns holds the columns for the "language_lesson_members" table.
+	LanguageLessonMembersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "lesson_id", Type: field.TypeInt},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "messages_count", Type: field.TypeInt, Nullable: true},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// LanguageLessonMembersTable holds the schema information for the "language_lesson_members" table.
+	LanguageLessonMembersTable = &schema.Table{
+		Name:       "language_lesson_members",
+		Columns:    LanguageLessonMembersColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonMembersColumns[0]},
+	}
+	// LanguageLessonReviewsColumns holds the columns for the "language_lesson_reviews" table.
+	LanguageLessonReviewsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "locale", Type: field.TypeString},
+		{Name: "summary", Type: field.TypeString},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_lesson_id", Type: field.TypeInt},
+		{Name: "language_lesson_version_id", Type: field.TypeInt},
+		{Name: "language_lesson_version_info_id", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// LanguageLessonReviewsTable holds the schema information for the "language_lesson_reviews" table.
+	LanguageLessonReviewsTable = &schema.Table{
+		Name:       "language_lesson_reviews",
+		Columns:    LanguageLessonReviewsColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonReviewsColumns[0]},
+	}
+	// LanguageLessonVersionInfosColumns holds the columns for the "language_lesson_version_infos" table.
+	LanguageLessonVersionInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_lesson_id", Type: field.TypeInt},
+		{Name: "language_version_id", Type: field.TypeInt},
+	}
+	// LanguageLessonVersionInfosTable holds the schema information for the "language_lesson_version_infos" table.
+	LanguageLessonVersionInfosTable = &schema.Table{
+		Name:       "language_lesson_version_infos",
+		Columns:    LanguageLessonVersionInfosColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonVersionInfosColumns[0]},
+	}
 	// LeadsColumns holds the columns for the "leads" table.
 	LeadsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -412,6 +473,10 @@ var (
 		LanguageVersionsTable,
 		LanguageLandingPagesTable,
 		LanguageLandingPageQnaItemsTable,
+		LanguageLessonsTable,
+		LanguageLessonMembersTable,
+		LanguageLessonReviewsTable,
+		LanguageLessonVersionInfosTable,
 		LeadsTable,
 		ReviewsTable,
 		StaffMembersTable,

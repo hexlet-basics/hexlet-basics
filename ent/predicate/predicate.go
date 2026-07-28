@@ -45,6 +45,18 @@ type LandingPage func(*sql.Selector)
 // LandingPageQnaItem is the predicate function for landingpageqnaitem builders.
 type LandingPageQnaItem func(*sql.Selector)
 
+// LanguageLesson is the predicate function for languagelesson builders.
+type LanguageLesson func(*sql.Selector)
+
+// LanguageLessonMember is the predicate function for languagelessonmember builders.
+type LanguageLessonMember func(*sql.Selector)
+
+// LanguageLessonReview is the predicate function for languagelessonreview builders.
+type LanguageLessonReview func(*sql.Selector)
+
+// LanguageLessonVersionInfo is the predicate function for languagelessonversioninfo builders.
+type LanguageLessonVersionInfo func(*sql.Selector)
+
 // Lead is the predicate function for lead builders.
 type Lead func(*sql.Selector)
 

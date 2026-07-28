@@ -1,0 +1,23 @@
+# Fixtures for `language_lessons`, HAND-CURATED for the Go admin read tests (the
+# legacy Rails fixture set has no lessons). testfixtures disables referential
+# integrity while loading, so language_id/module_id parents need not exist.
+# These hang off the JavaScript course (languages id 82481401, current version
+# 965227298 — see languages.yml / language_versions.yml).
+- id: 1001
+  slug: hello-world
+  natural_order: 1
+  language_id: 82481401
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1002
+  slug: variables
+  natural_order: 2
+  language_id: 82481401
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 1003
+  slug: strings
+  natural_order: 3
+  language_id: 82481401
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

@@ -38,6 +38,14 @@ type Tx struct {
 	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
 	LandingPageQnaItem *LandingPageQnaItemClient
+	// LanguageLesson is the client for interacting with the LanguageLesson builders.
+	LanguageLesson *LanguageLessonClient
+	// LanguageLessonMember is the client for interacting with the LanguageLessonMember builders.
+	LanguageLessonMember *LanguageLessonMemberClient
+	// LanguageLessonReview is the client for interacting with the LanguageLessonReview builders.
+	LanguageLessonReview *LanguageLessonReviewClient
+	// LanguageLessonVersionInfo is the client for interacting with the LanguageLessonVersionInfo builders.
+	LanguageLessonVersionInfo *LanguageLessonVersionInfoClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
@@ -194,6 +202,10 @@ func (tx *Tx) init() {
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
+	tx.LanguageLesson = NewLanguageLessonClient(tx.config)
+	tx.LanguageLessonMember = NewLanguageLessonMemberClient(tx.config)
+	tx.LanguageLessonReview = NewLanguageLessonReviewClient(tx.config)
+	tx.LanguageLessonVersionInfo = NewLanguageLessonVersionInfoClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)

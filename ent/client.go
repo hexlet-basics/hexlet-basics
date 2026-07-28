@@ -24,6 +24,10 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
+	"hexletbasics/ent/languagelesson"
+	"hexletbasics/ent/languagelessonmember"
+	"hexletbasics/ent/languagelessonreview"
+	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/staffmember"
@@ -68,6 +72,14 @@ type Client struct {
 	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
 	LandingPageQnaItem *LandingPageQnaItemClient
+	// LanguageLesson is the client for interacting with the LanguageLesson builders.
+	LanguageLesson *LanguageLessonClient
+	// LanguageLessonMember is the client for interacting with the LanguageLessonMember builders.
+	LanguageLessonMember *LanguageLessonMemberClient
+	// LanguageLessonReview is the client for interacting with the LanguageLessonReview builders.
+	LanguageLessonReview *LanguageLessonReviewClient
+	// LanguageLessonVersionInfo is the client for interacting with the LanguageLessonVersionInfo builders.
+	LanguageLessonVersionInfo *LanguageLessonVersionInfoClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
 	// Review is the client for interacting with the Review builders.
@@ -104,6 +116,10 @@ func (c *Client) init() {
 	c.CourseVersion = NewCourseVersionClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
 	c.LandingPageQnaItem = NewLandingPageQnaItemClient(c.config)
+	c.LanguageLesson = NewLanguageLessonClient(c.config)
+	c.LanguageLessonMember = NewLanguageLessonMemberClient(c.config)
+	c.LanguageLessonReview = NewLanguageLessonReviewClient(c.config)
+	c.LanguageLessonVersionInfo = NewLanguageLessonVersionInfoClient(c.config)
 	c.Lead = NewLeadClient(c.config)
 	c.Review = NewReviewClient(c.config)
 	c.StaffMember = NewStaffMemberClient(c.config)
@@ -200,27 +216,31 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                     ctx,
-		config:                  cfg,
-		ActionTextRichText:      NewActionTextRichTextClient(cfg),
-		ActiveStorageAttachment: NewActiveStorageAttachmentClient(cfg),
-		ActiveStorageBlob:       NewActiveStorageBlobClient(cfg),
-		Attachment:              NewAttachmentClient(cfg),
-		Banner:                  NewBannerClient(cfg),
-		BlogPost:                NewBlogPostClient(cfg),
-		BlogPostLike:            NewBlogPostLikeClient(cfg),
-		CategoryQnaItem:         NewCategoryQnaItemClient(cfg),
-		Course:                  NewCourseClient(cfg),
-		CourseCategory:          NewCourseCategoryClient(cfg),
-		CourseVersion:           NewCourseVersionClient(cfg),
-		LandingPage:             NewLandingPageClient(cfg),
-		LandingPageQnaItem:      NewLandingPageQnaItemClient(cfg),
-		Lead:                    NewLeadClient(cfg),
-		Review:                  NewReviewClient(cfg),
-		StaffMember:             NewStaffMemberClient(cfg),
-		StaffRole:               NewStaffRoleClient(cfg),
-		StaffRolePermission:     NewStaffRolePermissionClient(cfg),
-		User:                    NewUserClient(cfg),
+		ctx:                       ctx,
+		config:                    cfg,
+		ActionTextRichText:        NewActionTextRichTextClient(cfg),
+		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
+		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
+		Attachment:                NewAttachmentClient(cfg),
+		Banner:                    NewBannerClient(cfg),
+		BlogPost:                  NewBlogPostClient(cfg),
+		BlogPostLike:              NewBlogPostLikeClient(cfg),
+		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
+		Course:                    NewCourseClient(cfg),
+		CourseCategory:            NewCourseCategoryClient(cfg),
+		CourseVersion:             NewCourseVersionClient(cfg),
+		LandingPage:               NewLandingPageClient(cfg),
+		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
+		LanguageLesson:            NewLanguageLessonClient(cfg),
+		LanguageLessonMember:      NewLanguageLessonMemberClient(cfg),
+		LanguageLessonReview:      NewLanguageLessonReviewClient(cfg),
+		LanguageLessonVersionInfo: NewLanguageLessonVersionInfoClient(cfg),
+		Lead:                      NewLeadClient(cfg),
+		Review:                    NewReviewClient(cfg),
+		StaffMember:               NewStaffMemberClient(cfg),
+		StaffRole:                 NewStaffRoleClient(cfg),
+		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		User:                      NewUserClient(cfg),
 	}, nil
 }
 
@@ -238,27 +258,31 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                     ctx,
-		config:                  cfg,
-		ActionTextRichText:      NewActionTextRichTextClient(cfg),
-		ActiveStorageAttachment: NewActiveStorageAttachmentClient(cfg),
-		ActiveStorageBlob:       NewActiveStorageBlobClient(cfg),
-		Attachment:              NewAttachmentClient(cfg),
-		Banner:                  NewBannerClient(cfg),
-		BlogPost:                NewBlogPostClient(cfg),
-		BlogPostLike:            NewBlogPostLikeClient(cfg),
-		CategoryQnaItem:         NewCategoryQnaItemClient(cfg),
-		Course:                  NewCourseClient(cfg),
-		CourseCategory:          NewCourseCategoryClient(cfg),
-		CourseVersion:           NewCourseVersionClient(cfg),
-		LandingPage:             NewLandingPageClient(cfg),
-		LandingPageQnaItem:      NewLandingPageQnaItemClient(cfg),
-		Lead:                    NewLeadClient(cfg),
-		Review:                  NewReviewClient(cfg),
-		StaffMember:             NewStaffMemberClient(cfg),
-		StaffRole:               NewStaffRoleClient(cfg),
-		StaffRolePermission:     NewStaffRolePermissionClient(cfg),
-		User:                    NewUserClient(cfg),
+		ctx:                       ctx,
+		config:                    cfg,
+		ActionTextRichText:        NewActionTextRichTextClient(cfg),
+		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
+		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
+		Attachment:                NewAttachmentClient(cfg),
+		Banner:                    NewBannerClient(cfg),
+		BlogPost:                  NewBlogPostClient(cfg),
+		BlogPostLike:              NewBlogPostLikeClient(cfg),
+		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
+		Course:                    NewCourseClient(cfg),
+		CourseCategory:            NewCourseCategoryClient(cfg),
+		CourseVersion:             NewCourseVersionClient(cfg),
+		LandingPage:               NewLandingPageClient(cfg),
+		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
+		LanguageLesson:            NewLanguageLessonClient(cfg),
+		LanguageLessonMember:      NewLanguageLessonMemberClient(cfg),
+		LanguageLessonReview:      NewLanguageLessonReviewClient(cfg),
+		LanguageLessonVersionInfo: NewLanguageLessonVersionInfoClient(cfg),
+		Lead:                      NewLeadClient(cfg),
+		Review:                    NewReviewClient(cfg),
+		StaffMember:               NewStaffMemberClient(cfg),
+		StaffRole:                 NewStaffRoleClient(cfg),
+		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		User:                      NewUserClient(cfg),
 	}, nil
 }
 
@@ -291,8 +315,9 @@ func (c *Client) Use(hooks ...Hook) {
 		c.ActionTextRichText, c.ActiveStorageAttachment, c.ActiveStorageBlob,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
 		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
-		c.LandingPageQnaItem, c.Lead, c.Review, c.StaffMember, c.StaffRole,
-		c.StaffRolePermission, c.User,
+		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
+		c.LanguageLessonReview, c.LanguageLessonVersionInfo, c.Lead, c.Review,
+		c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -305,8 +330,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.ActionTextRichText, c.ActiveStorageAttachment, c.ActiveStorageBlob,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
 		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
-		c.LandingPageQnaItem, c.Lead, c.Review, c.StaffMember, c.StaffRole,
-		c.StaffRolePermission, c.User,
+		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
+		c.LanguageLessonReview, c.LanguageLessonVersionInfo, c.Lead, c.Review,
+		c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -341,6 +367,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.LandingPage.mutate(ctx, m)
 	case *LandingPageQnaItemMutation:
 		return c.LandingPageQnaItem.mutate(ctx, m)
+	case *LanguageLessonMutation:
+		return c.LanguageLesson.mutate(ctx, m)
+	case *LanguageLessonMemberMutation:
+		return c.LanguageLessonMember.mutate(ctx, m)
+	case *LanguageLessonReviewMutation:
+		return c.LanguageLessonReview.mutate(ctx, m)
+	case *LanguageLessonVersionInfoMutation:
+		return c.LanguageLessonVersionInfo.mutate(ctx, m)
 	case *LeadMutation:
 		return c.Lead.mutate(ctx, m)
 	case *ReviewMutation:
@@ -2167,6 +2201,538 @@ func (c *LandingPageQnaItemClient) mutate(ctx context.Context, m *LandingPageQna
 	}
 }
 
+// LanguageLessonClient is a client for the LanguageLesson schema.
+type LanguageLessonClient struct {
+	config
+}
+
+// NewLanguageLessonClient returns a client for the LanguageLesson from the given config.
+func NewLanguageLessonClient(c config) *LanguageLessonClient {
+	return &LanguageLessonClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `languagelesson.Hooks(f(g(h())))`.
+func (c *LanguageLessonClient) Use(hooks ...Hook) {
+	c.hooks.LanguageLesson = append(c.hooks.LanguageLesson, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `languagelesson.Intercept(f(g(h())))`.
+func (c *LanguageLessonClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LanguageLesson = append(c.inters.LanguageLesson, interceptors...)
+}
+
+// Create returns a builder for creating a LanguageLesson entity.
+func (c *LanguageLessonClient) Create() *LanguageLessonCreate {
+	mutation := newLanguageLessonMutation(c.config, OpCreate)
+	return &LanguageLessonCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LanguageLesson entities.
+func (c *LanguageLessonClient) CreateBulk(builders ...*LanguageLessonCreate) *LanguageLessonCreateBulk {
+	return &LanguageLessonCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LanguageLessonClient) MapCreateBulk(slice any, setFunc func(*LanguageLessonCreate, int)) *LanguageLessonCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LanguageLessonCreateBulk{err: fmt.Errorf("calling to LanguageLessonClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LanguageLessonCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LanguageLessonCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LanguageLesson.
+func (c *LanguageLessonClient) Update() *LanguageLessonUpdate {
+	mutation := newLanguageLessonMutation(c.config, OpUpdate)
+	return &LanguageLessonUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LanguageLessonClient) UpdateOne(_m *LanguageLesson) *LanguageLessonUpdateOne {
+	mutation := newLanguageLessonMutation(c.config, OpUpdateOne, withLanguageLesson(_m))
+	return &LanguageLessonUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LanguageLessonClient) UpdateOneID(id int) *LanguageLessonUpdateOne {
+	mutation := newLanguageLessonMutation(c.config, OpUpdateOne, withLanguageLessonID(id))
+	return &LanguageLessonUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LanguageLesson.
+func (c *LanguageLessonClient) Delete() *LanguageLessonDelete {
+	mutation := newLanguageLessonMutation(c.config, OpDelete)
+	return &LanguageLessonDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LanguageLessonClient) DeleteOne(_m *LanguageLesson) *LanguageLessonDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LanguageLessonClient) DeleteOneID(id int) *LanguageLessonDeleteOne {
+	builder := c.Delete().Where(languagelesson.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LanguageLessonDeleteOne{builder}
+}
+
+// Query returns a query builder for LanguageLesson.
+func (c *LanguageLessonClient) Query() *LanguageLessonQuery {
+	return &LanguageLessonQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLanguageLesson},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LanguageLesson entity by its id.
+func (c *LanguageLessonClient) Get(ctx context.Context, id int) (*LanguageLesson, error) {
+	return c.Query().Where(languagelesson.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LanguageLessonClient) GetX(ctx context.Context, id int) *LanguageLesson {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LanguageLessonClient) Hooks() []Hook {
+	return c.hooks.LanguageLesson
+}
+
+// Interceptors returns the client interceptors.
+func (c *LanguageLessonClient) Interceptors() []Interceptor {
+	return c.inters.LanguageLesson
+}
+
+func (c *LanguageLessonClient) mutate(ctx context.Context, m *LanguageLessonMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LanguageLessonCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LanguageLessonUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LanguageLessonUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LanguageLessonDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LanguageLesson mutation op: %q", m.Op())
+	}
+}
+
+// LanguageLessonMemberClient is a client for the LanguageLessonMember schema.
+type LanguageLessonMemberClient struct {
+	config
+}
+
+// NewLanguageLessonMemberClient returns a client for the LanguageLessonMember from the given config.
+func NewLanguageLessonMemberClient(c config) *LanguageLessonMemberClient {
+	return &LanguageLessonMemberClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `languagelessonmember.Hooks(f(g(h())))`.
+func (c *LanguageLessonMemberClient) Use(hooks ...Hook) {
+	c.hooks.LanguageLessonMember = append(c.hooks.LanguageLessonMember, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `languagelessonmember.Intercept(f(g(h())))`.
+func (c *LanguageLessonMemberClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LanguageLessonMember = append(c.inters.LanguageLessonMember, interceptors...)
+}
+
+// Create returns a builder for creating a LanguageLessonMember entity.
+func (c *LanguageLessonMemberClient) Create() *LanguageLessonMemberCreate {
+	mutation := newLanguageLessonMemberMutation(c.config, OpCreate)
+	return &LanguageLessonMemberCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LanguageLessonMember entities.
+func (c *LanguageLessonMemberClient) CreateBulk(builders ...*LanguageLessonMemberCreate) *LanguageLessonMemberCreateBulk {
+	return &LanguageLessonMemberCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LanguageLessonMemberClient) MapCreateBulk(slice any, setFunc func(*LanguageLessonMemberCreate, int)) *LanguageLessonMemberCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LanguageLessonMemberCreateBulk{err: fmt.Errorf("calling to LanguageLessonMemberClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LanguageLessonMemberCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LanguageLessonMemberCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LanguageLessonMember.
+func (c *LanguageLessonMemberClient) Update() *LanguageLessonMemberUpdate {
+	mutation := newLanguageLessonMemberMutation(c.config, OpUpdate)
+	return &LanguageLessonMemberUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LanguageLessonMemberClient) UpdateOne(_m *LanguageLessonMember) *LanguageLessonMemberUpdateOne {
+	mutation := newLanguageLessonMemberMutation(c.config, OpUpdateOne, withLanguageLessonMember(_m))
+	return &LanguageLessonMemberUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LanguageLessonMemberClient) UpdateOneID(id int) *LanguageLessonMemberUpdateOne {
+	mutation := newLanguageLessonMemberMutation(c.config, OpUpdateOne, withLanguageLessonMemberID(id))
+	return &LanguageLessonMemberUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LanguageLessonMember.
+func (c *LanguageLessonMemberClient) Delete() *LanguageLessonMemberDelete {
+	mutation := newLanguageLessonMemberMutation(c.config, OpDelete)
+	return &LanguageLessonMemberDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LanguageLessonMemberClient) DeleteOne(_m *LanguageLessonMember) *LanguageLessonMemberDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LanguageLessonMemberClient) DeleteOneID(id int) *LanguageLessonMemberDeleteOne {
+	builder := c.Delete().Where(languagelessonmember.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LanguageLessonMemberDeleteOne{builder}
+}
+
+// Query returns a query builder for LanguageLessonMember.
+func (c *LanguageLessonMemberClient) Query() *LanguageLessonMemberQuery {
+	return &LanguageLessonMemberQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLanguageLessonMember},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LanguageLessonMember entity by its id.
+func (c *LanguageLessonMemberClient) Get(ctx context.Context, id int) (*LanguageLessonMember, error) {
+	return c.Query().Where(languagelessonmember.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LanguageLessonMemberClient) GetX(ctx context.Context, id int) *LanguageLessonMember {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LanguageLessonMemberClient) Hooks() []Hook {
+	return c.hooks.LanguageLessonMember
+}
+
+// Interceptors returns the client interceptors.
+func (c *LanguageLessonMemberClient) Interceptors() []Interceptor {
+	return c.inters.LanguageLessonMember
+}
+
+func (c *LanguageLessonMemberClient) mutate(ctx context.Context, m *LanguageLessonMemberMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LanguageLessonMemberCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LanguageLessonMemberUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LanguageLessonMemberUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LanguageLessonMemberDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LanguageLessonMember mutation op: %q", m.Op())
+	}
+}
+
+// LanguageLessonReviewClient is a client for the LanguageLessonReview schema.
+type LanguageLessonReviewClient struct {
+	config
+}
+
+// NewLanguageLessonReviewClient returns a client for the LanguageLessonReview from the given config.
+func NewLanguageLessonReviewClient(c config) *LanguageLessonReviewClient {
+	return &LanguageLessonReviewClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `languagelessonreview.Hooks(f(g(h())))`.
+func (c *LanguageLessonReviewClient) Use(hooks ...Hook) {
+	c.hooks.LanguageLessonReview = append(c.hooks.LanguageLessonReview, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `languagelessonreview.Intercept(f(g(h())))`.
+func (c *LanguageLessonReviewClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LanguageLessonReview = append(c.inters.LanguageLessonReview, interceptors...)
+}
+
+// Create returns a builder for creating a LanguageLessonReview entity.
+func (c *LanguageLessonReviewClient) Create() *LanguageLessonReviewCreate {
+	mutation := newLanguageLessonReviewMutation(c.config, OpCreate)
+	return &LanguageLessonReviewCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LanguageLessonReview entities.
+func (c *LanguageLessonReviewClient) CreateBulk(builders ...*LanguageLessonReviewCreate) *LanguageLessonReviewCreateBulk {
+	return &LanguageLessonReviewCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LanguageLessonReviewClient) MapCreateBulk(slice any, setFunc func(*LanguageLessonReviewCreate, int)) *LanguageLessonReviewCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LanguageLessonReviewCreateBulk{err: fmt.Errorf("calling to LanguageLessonReviewClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LanguageLessonReviewCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LanguageLessonReviewCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LanguageLessonReview.
+func (c *LanguageLessonReviewClient) Update() *LanguageLessonReviewUpdate {
+	mutation := newLanguageLessonReviewMutation(c.config, OpUpdate)
+	return &LanguageLessonReviewUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LanguageLessonReviewClient) UpdateOne(_m *LanguageLessonReview) *LanguageLessonReviewUpdateOne {
+	mutation := newLanguageLessonReviewMutation(c.config, OpUpdateOne, withLanguageLessonReview(_m))
+	return &LanguageLessonReviewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LanguageLessonReviewClient) UpdateOneID(id int) *LanguageLessonReviewUpdateOne {
+	mutation := newLanguageLessonReviewMutation(c.config, OpUpdateOne, withLanguageLessonReviewID(id))
+	return &LanguageLessonReviewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LanguageLessonReview.
+func (c *LanguageLessonReviewClient) Delete() *LanguageLessonReviewDelete {
+	mutation := newLanguageLessonReviewMutation(c.config, OpDelete)
+	return &LanguageLessonReviewDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LanguageLessonReviewClient) DeleteOne(_m *LanguageLessonReview) *LanguageLessonReviewDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LanguageLessonReviewClient) DeleteOneID(id int) *LanguageLessonReviewDeleteOne {
+	builder := c.Delete().Where(languagelessonreview.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LanguageLessonReviewDeleteOne{builder}
+}
+
+// Query returns a query builder for LanguageLessonReview.
+func (c *LanguageLessonReviewClient) Query() *LanguageLessonReviewQuery {
+	return &LanguageLessonReviewQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLanguageLessonReview},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LanguageLessonReview entity by its id.
+func (c *LanguageLessonReviewClient) Get(ctx context.Context, id int) (*LanguageLessonReview, error) {
+	return c.Query().Where(languagelessonreview.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LanguageLessonReviewClient) GetX(ctx context.Context, id int) *LanguageLessonReview {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LanguageLessonReviewClient) Hooks() []Hook {
+	return c.hooks.LanguageLessonReview
+}
+
+// Interceptors returns the client interceptors.
+func (c *LanguageLessonReviewClient) Interceptors() []Interceptor {
+	return c.inters.LanguageLessonReview
+}
+
+func (c *LanguageLessonReviewClient) mutate(ctx context.Context, m *LanguageLessonReviewMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LanguageLessonReviewCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LanguageLessonReviewUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LanguageLessonReviewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LanguageLessonReviewDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LanguageLessonReview mutation op: %q", m.Op())
+	}
+}
+
+// LanguageLessonVersionInfoClient is a client for the LanguageLessonVersionInfo schema.
+type LanguageLessonVersionInfoClient struct {
+	config
+}
+
+// NewLanguageLessonVersionInfoClient returns a client for the LanguageLessonVersionInfo from the given config.
+func NewLanguageLessonVersionInfoClient(c config) *LanguageLessonVersionInfoClient {
+	return &LanguageLessonVersionInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `languagelessonversioninfo.Hooks(f(g(h())))`.
+func (c *LanguageLessonVersionInfoClient) Use(hooks ...Hook) {
+	c.hooks.LanguageLessonVersionInfo = append(c.hooks.LanguageLessonVersionInfo, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `languagelessonversioninfo.Intercept(f(g(h())))`.
+func (c *LanguageLessonVersionInfoClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LanguageLessonVersionInfo = append(c.inters.LanguageLessonVersionInfo, interceptors...)
+}
+
+// Create returns a builder for creating a LanguageLessonVersionInfo entity.
+func (c *LanguageLessonVersionInfoClient) Create() *LanguageLessonVersionInfoCreate {
+	mutation := newLanguageLessonVersionInfoMutation(c.config, OpCreate)
+	return &LanguageLessonVersionInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LanguageLessonVersionInfo entities.
+func (c *LanguageLessonVersionInfoClient) CreateBulk(builders ...*LanguageLessonVersionInfoCreate) *LanguageLessonVersionInfoCreateBulk {
+	return &LanguageLessonVersionInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LanguageLessonVersionInfoClient) MapCreateBulk(slice any, setFunc func(*LanguageLessonVersionInfoCreate, int)) *LanguageLessonVersionInfoCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LanguageLessonVersionInfoCreateBulk{err: fmt.Errorf("calling to LanguageLessonVersionInfoClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LanguageLessonVersionInfoCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LanguageLessonVersionInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LanguageLessonVersionInfo.
+func (c *LanguageLessonVersionInfoClient) Update() *LanguageLessonVersionInfoUpdate {
+	mutation := newLanguageLessonVersionInfoMutation(c.config, OpUpdate)
+	return &LanguageLessonVersionInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LanguageLessonVersionInfoClient) UpdateOne(_m *LanguageLessonVersionInfo) *LanguageLessonVersionInfoUpdateOne {
+	mutation := newLanguageLessonVersionInfoMutation(c.config, OpUpdateOne, withLanguageLessonVersionInfo(_m))
+	return &LanguageLessonVersionInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LanguageLessonVersionInfoClient) UpdateOneID(id int) *LanguageLessonVersionInfoUpdateOne {
+	mutation := newLanguageLessonVersionInfoMutation(c.config, OpUpdateOne, withLanguageLessonVersionInfoID(id))
+	return &LanguageLessonVersionInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LanguageLessonVersionInfo.
+func (c *LanguageLessonVersionInfoClient) Delete() *LanguageLessonVersionInfoDelete {
+	mutation := newLanguageLessonVersionInfoMutation(c.config, OpDelete)
+	return &LanguageLessonVersionInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LanguageLessonVersionInfoClient) DeleteOne(_m *LanguageLessonVersionInfo) *LanguageLessonVersionInfoDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LanguageLessonVersionInfoClient) DeleteOneID(id int) *LanguageLessonVersionInfoDeleteOne {
+	builder := c.Delete().Where(languagelessonversioninfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LanguageLessonVersionInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for LanguageLessonVersionInfo.
+func (c *LanguageLessonVersionInfoClient) Query() *LanguageLessonVersionInfoQuery {
+	return &LanguageLessonVersionInfoQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLanguageLessonVersionInfo},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LanguageLessonVersionInfo entity by its id.
+func (c *LanguageLessonVersionInfoClient) Get(ctx context.Context, id int) (*LanguageLessonVersionInfo, error) {
+	return c.Query().Where(languagelessonversioninfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LanguageLessonVersionInfoClient) GetX(ctx context.Context, id int) *LanguageLessonVersionInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LanguageLessonVersionInfoClient) Hooks() []Hook {
+	return c.hooks.LanguageLessonVersionInfo
+}
+
+// Interceptors returns the client interceptors.
+func (c *LanguageLessonVersionInfoClient) Interceptors() []Interceptor {
+	return c.inters.LanguageLessonVersionInfo
+}
+
+func (c *LanguageLessonVersionInfoClient) mutate(ctx context.Context, m *LanguageLessonVersionInfoMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LanguageLessonVersionInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LanguageLessonVersionInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LanguageLessonVersionInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LanguageLessonVersionInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LanguageLessonVersionInfo mutation op: %q", m.Op())
+	}
+}
+
 // LeadClient is a client for the Lead schema.
 type LeadClient struct {
 	config
@@ -3066,13 +3632,15 @@ type (
 	hooks struct {
 		ActionTextRichText, ActiveStorageAttachment, ActiveStorageBlob, Attachment,
 		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
-		CourseVersion, LandingPage, LandingPageQnaItem, Lead, Review, StaffMember,
-		StaffRole, StaffRolePermission, User []ent.Hook
+		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
+		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersionInfo, Lead,
+		Review, StaffMember, StaffRole, StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
 		ActionTextRichText, ActiveStorageAttachment, ActiveStorageBlob, Attachment,
 		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
-		CourseVersion, LandingPage, LandingPageQnaItem, Lead, Review, StaffMember,
-		StaffRole, StaffRolePermission, User []ent.Interceptor
+		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
+		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersionInfo, Lead,
+		Review, StaffMember, StaffRole, StaffRolePermission, User []ent.Interceptor
 	}
 )

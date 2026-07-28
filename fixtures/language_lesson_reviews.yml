@@ -1,0 +1,42 @@
+# Fixtures for `language_lesson_reviews`, HAND-CURATED for the Go admin read
+# tests. The admin list is `where(locale: en).with_summary` (non-empty summary),
+# so two of these four rows are negative cases that must NOT appear.
+# testfixtures disables FKs during load.
+- id: 4001
+  locale: en
+  summary: Students struggled with the print syntax.
+  language_id: 82481401
+  language_lesson_id: 1001
+  language_lesson_version_id: 965227298
+  language_lesson_version_info_id: 2002
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+# Excluded: empty summary (with_summary) — a lesson with no student questions.
+- id: 4002
+  locale: en
+  summary: ''
+  language_id: 82481401
+  language_lesson_id: 1002
+  language_lesson_version_id: 965227298
+  language_lesson_version_info_id: 2003
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+# Excluded: wrong locale (ru) — not shown in the en review list.
+- id: 4003
+  locale: ru
+  summary: Студенты путались в синтаксисе.
+  language_id: 82481401
+  language_lesson_id: 1001
+  language_lesson_version_id: 965227298
+  language_lesson_version_info_id: 2002
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 4004
+  locale: en
+  summary: Good grasp of concatenation overall.
+  language_id: 82481401
+  language_lesson_id: 1003
+  language_lesson_version_id: 965227298
+  language_lesson_version_info_id: 2001
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

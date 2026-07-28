@@ -1,0 +1,63 @@
+# Fixtures for `language_lesson_version_infos`, HAND-CURATED for the Go admin
+# read tests. This table drives the admin lesson list (the "current" version's
+# info per locale). testfixtures disables FKs during load.
+#
+# Info ids are deliberately assigned so their DESC order does NOT match the
+# lesson-id DESC order: the admin lesson list must sort by the Info id (legacy
+# ransack default), but returns the LESSON id as each item's `id`. See
+# language_lessons.yml for the lesson slugs.
+#
+# Visible in the lesson list (locale=en AND version=965227298, JS current):
+- id: 2001
+  name: Strings
+  description: Working with strings
+  locale: en
+  language_id: 82481401
+  language_lesson_id: 1003
+  language_version_id: 965227298
+  version_id: 965227298
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 2002
+  name: Hello, World!
+  description: Your first program
+  locale: en
+  language_id: 82481401
+  language_lesson_id: 1001
+  language_version_id: 965227298
+  version_id: 965227298
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 2003
+  name: Variables
+  description: Storing values
+  locale: en
+  language_id: 82481401
+  language_lesson_id: 1002
+  language_version_id: 965227298
+  version_id: 965227298
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+# Excluded: not the current version (545350298 is a JS version, but not the
+# course's current_version_id) — must NOT appear in the lesson list.
+- id: 2004
+  name: Old Hello
+  description: From a previous version
+  locale: en
+  language_id: 82481401
+  language_lesson_id: 1001
+  language_version_id: 545350298
+  version_id: 545350298
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+# Excluded: wrong locale (ru) — must NOT appear in the en lesson list.
+- id: 2005
+  name: Привет, мир!
+  description: Первая программа
+  locale: ru
+  language_id: 82481401
+  language_lesson_id: 1001
+  language_version_id: 965227298
+  version_id: 965227298
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

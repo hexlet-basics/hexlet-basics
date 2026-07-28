@@ -164,6 +164,54 @@ func (f LandingPageQnaItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LandingPageQnaItemMutation", m)
 }
 
+// The LanguageLessonFunc type is an adapter to allow the use of ordinary
+// function as LanguageLesson mutator.
+type LanguageLessonFunc func(context.Context, *ent.LanguageLessonMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LanguageLessonFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.LanguageLessonMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LanguageLessonMutation", m)
+}
+
+// The LanguageLessonMemberFunc type is an adapter to allow the use of ordinary
+// function as LanguageLessonMember mutator.
+type LanguageLessonMemberFunc func(context.Context, *ent.LanguageLessonMemberMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LanguageLessonMemberFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.LanguageLessonMemberMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LanguageLessonMemberMutation", m)
+}
+
+// The LanguageLessonReviewFunc type is an adapter to allow the use of ordinary
+// function as LanguageLessonReview mutator.
+type LanguageLessonReviewFunc func(context.Context, *ent.LanguageLessonReviewMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LanguageLessonReviewFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.LanguageLessonReviewMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LanguageLessonReviewMutation", m)
+}
+
+// The LanguageLessonVersionInfoFunc type is an adapter to allow the use of ordinary
+// function as LanguageLessonVersionInfo mutator.
+type LanguageLessonVersionInfoFunc func(context.Context, *ent.LanguageLessonVersionInfoMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LanguageLessonVersionInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.LanguageLessonVersionInfoMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LanguageLessonVersionInfoMutation", m)
+}
+
 // The LeadFunc type is an adapter to allow the use of ordinary
 // function as Lead mutator.
 type LeadFunc func(context.Context, *ent.LeadMutation) (ent.Value, error)
