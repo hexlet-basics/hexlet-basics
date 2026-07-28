@@ -12,11 +12,10 @@ package jobs
 
 import (
 	"context"
+	"database/sql"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
-	"github.com/riverqueue/river/riverdriver/riverpgxv5"
+	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
 
 	"hexletbasics/internal/courseloader"
 )
@@ -50,13 +49,13 @@ func Workers(loader *courseloader.Loader) *river.Workers {
 	return w
 }
 
-// NewClient builds the river client over a pgx pool (riverpgxv5). It is
-// insert-and-work capable: the caller Start()s it to run workers and Stop()s it
-// on shutdown. Insert-only callers (e.g. HTTP handlers enqueuing work) can use
-// the same client without starting it. The loader backs the exercise-build
-// worker; pass nil for an insert-only client.
-func NewClient(pool *pgxpool.Pool, loader *courseloader.Loader) (*river.Client[pgx.Tx], error) {
-	return river.NewClient(riverpgxv5.New(pool), &river.Config{
+// NewClient builds the River client over the same database/sql pool ent uses.
+// It is insert-and-work capable: the caller Start()s it to run workers and
+// Stop()s it on shutdown. Sharing the pool also lets InsertTx participate in an
+// ent business transaction. The loader backs the exercise-build worker; pass
+// nil for an insert-only client.
+func NewClient(db *sql.DB, loader *courseloader.Loader) (*river.Client[*sql.Tx], error) {
+	return river.NewClient(riverdatabasesql.New(db), &river.Config{
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},

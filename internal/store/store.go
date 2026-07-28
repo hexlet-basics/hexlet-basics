@@ -7,7 +7,6 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"gocloud.dev/blob"
 	// Blank imports register the gocloud blob backends selected by URL scheme
@@ -18,25 +17,33 @@ import (
 	"hexletbasics/ent"
 )
 
-// NewPool opens a pgx connection pool for river, which needs a native
-// *pgxpool.Pool (riverpgxv5) rather than the database/sql handle ent uses. Both
-// point at the same database; the pool is a small, separate connection set for
-// the job queue.
-func NewPool(ctx context.Context, dsn string) (*pgxpool.Pool, error) {
-	return pgxpool.New(ctx, dsn)
+// NewDB opens the application's single database/sql pool over pgx. Both ent and
+// River use it so a business write and its background job can share one sql.Tx.
+func NewDB(dsn string) (*sql.DB, error) {
+	return sql.Open("pgx", dsn)
 }
 
-// NewClient opens an ent client over pgx (database/sql). It never runs
-// migrations: the schema is owned by the legacy Rails database.
-func NewClient(dsn string) (*ent.Client, error) {
-	db, err := sql.Open("pgx", dsn)
-	if err != nil {
-		return nil, err
-	}
-
-	drv := entsql.OpenDB(dialect.Postgres, db)
-	return ent.NewClient(ent.Driver(drv)), nil
+// NewClient builds an ent client over the shared database/sql pool. It never
+// runs migrations: atlas owns the schema. Closing the client closes the pool.
+func NewClient(db *sql.DB) *ent.Client {
+	return ent.NewClient(ent.Driver(entsql.OpenDB(dialect.Postgres, db)))
 }
+
+// NewTxClient binds ent to an existing sql.Tx owned by the caller. The standard
+// ent SQL driver already implements all query and scan behavior; NopTx only
+// prevents ent from trying to own the caller's commit/rollback lifecycle.
+func NewTxClient(tx *sql.Tx) *ent.Client {
+	driver := entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: tx})
+	return ent.NewClient(ent.Driver(txBoundDriver{Driver: driver}))
+}
+
+type txBoundDriver struct{ dialect.Driver }
+
+func (d txBoundDriver) Tx(context.Context) (dialect.Tx, error) {
+	return dialect.NopTx(d), nil
+}
+
+func (txBoundDriver) Close() error { return nil }
 
 // NewBucket opens the gocloud blob bucket that stores uploaded assets (ADR-0005).
 // The URL scheme selects the backend (registered via the blank imports above):

@@ -7,7 +7,6 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/jobs"
 )
 
 // Admin course endpoints (legacy `/admin/languages`). The API embeds the
@@ -83,25 +82,14 @@ func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminC
 		return nil, err
 	}
 
-	version, err := s.db.CourseVersion.Create().
-		SetLanguageID(c.ID).
-		SetState(courseVersionStateCreated).
-		Save(ctx)
+	version, err := s.starter.Start(ctx, c.ID)
 	if err != nil {
-		return nil, err
-	}
-
-	if _, err := s.enqueuer.Insert(ctx, jobs.ExerciseLoaderArgs{VersionID: version.ID}, nil); err != nil {
 		return nil, err
 	}
 
 	body := apiconv.CourseVersionFromEnt(version)
 	return &body, nil
 }
-
-// courseVersionStateCreated is the initial version state the loader requires
-// before it will build (mirrors the legacy AASM initial state).
-const courseVersionStateCreated = "created"
 
 // nilLearnAsPtr / nilProgressPtr resolve ogen's nullable enum wrappers to a
 // *string for ent's SetNillable* on the plain string columns.

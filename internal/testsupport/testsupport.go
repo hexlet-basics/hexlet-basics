@@ -26,12 +26,12 @@ import (
 	txdb "github.com/DATA-DOG/go-txdb"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/riverqueue/river"
-	"github.com/riverqueue/river/rivertype"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/jobs"
 )
 
 // testConfig gives handlers fixed public hosts so URL-building assertions are
@@ -109,7 +109,7 @@ func NewHarness(t *testing.T) *Harness {
 
 	db := NewClient(t)
 
-	enqueuer := &RecordingEnqueuer{}
+	enqueuer := &RecordingEnqueuer{DB: db}
 	srv, err := api.NewServer(handlers.NewServer(db, testConfig, enqueuer), api.WithErrorHandler(handlers.APIErrorHandler))
 	if err != nil {
 		t.Fatalf("new api server: %v", err)
@@ -124,18 +124,26 @@ func NewHarness(t *testing.T) *Harness {
 	return &Harness{Client: client, DB: db, doer: doer, Enqueuer: enqueuer}
 }
 
-// RecordingEnqueuer is a test double for handlers.JobEnqueuer: it records the
-// jobs a handler enqueues (instead of hitting river's pgx pool) so a test can
-// assert both the DB write and that the background job was scheduled.
+// RecordingEnqueuer is a test adapter for handlers.VersionBuildStarter. It
+// creates the version through the harness's rollback-only ent client and records
+// the job args without touching River.
 type RecordingEnqueuer struct {
+	DB       *ent.Client
 	Inserted []river.JobArgs
 }
 
-// Insert records the args and returns a nil result — handlers only check the
-// error, never the result body.
-func (e *RecordingEnqueuer) Insert(_ context.Context, args river.JobArgs, _ *river.InsertOpts) (*rivertype.JobInsertResult, error) {
+// Start mirrors the production operation's visible result.
+func (e *RecordingEnqueuer) Start(ctx context.Context, courseID int) (*ent.CourseVersion, error) {
+	version, err := e.DB.CourseVersion.Create().
+		SetLanguageID(courseID).
+		SetState("created").
+		Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	args := jobs.ExerciseLoaderArgs{VersionID: version.ID}
 	e.Inserted = append(e.Inserted, args)
-	return nil, nil
+	return version, nil
 }
 
 // inProcessDoer satisfies ogen's http client interface by serving each request

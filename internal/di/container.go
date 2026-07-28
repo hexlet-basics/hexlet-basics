@@ -3,12 +3,11 @@ package di
 
 import (
 	"context"
+	"database/sql"
 	"log/slog"
 	"net/http"
 	"time"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 	"github.com/rs/cors"
 	"github.com/samber/do/v2"
@@ -22,6 +21,7 @@ import (
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/logging"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/versionbuilds"
 )
 
 // HTTP server timeouts. ReadHeaderTimeout caps slow-header (Slowloris) clients;
@@ -51,15 +51,19 @@ func New() *do.RootScope {
 		return logging.New(slog.LevelInfo), nil
 	})
 
+	do.Provide(injector, func(i do.Injector) (*sql.DB, error) {
+		return store.NewDB(do.MustInvoke[*config.Config](i).DatabaseURL)
+	})
+
 	do.Provide(injector, func(i do.Injector) (*ent.Client, error) {
-		return store.NewClient(do.MustInvoke[*config.Config](i).DatabaseURL)
+		return store.NewClient(do.MustInvoke[*sql.DB](i)), nil
 	})
 
 	do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
 		return handlers.NewServer(
 			do.MustInvoke[*ent.Client](i),
 			do.MustInvoke[*config.Config](i),
-			do.MustInvoke[*river.Client[pgx.Tx]](i),
+			do.MustInvoke[*versionbuilds.Starter](i),
 		), nil
 	})
 
@@ -69,13 +73,6 @@ func New() *do.RootScope {
 	do.Provide(injector, func(i do.Injector) (*blob.Bucket, error) {
 		cfg := do.MustInvoke[*config.Config](i)
 		return store.NewBucket(context.Background(), cfg.BlobBucketURL)
-	})
-
-	// pgx pool + river client back the background-job queue (ADR-0004). The pool
-	// is separate from ent's database/sql handle because riverpgxv5 needs a
-	// native *pgxpool.Pool.
-	do.Provide(injector, func(i do.Injector) (*pgxpool.Pool, error) {
-		return store.NewPool(context.Background(), do.MustInvoke[*config.Config](i).DatabaseURL)
 	})
 
 	// The exercise loader (course-version builds) needs the ent client for writes,
@@ -94,11 +91,18 @@ func New() *do.RootScope {
 		), nil
 	})
 
-	do.Provide(injector, func(i do.Injector) (*river.Client[pgx.Tx], error) {
+	do.Provide(injector, func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		return jobs.NewClient(
-			do.MustInvoke[*pgxpool.Pool](i),
+			do.MustInvoke[*sql.DB](i),
 			do.MustInvoke[*courseloader.Loader](i),
 		)
+	})
+
+	do.Provide(injector, func(i do.Injector) (*versionbuilds.Starter, error) {
+		return versionbuilds.NewStarter(
+			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*river.Client[*sql.Tx]](i),
+		), nil
 	})
 
 	do.Provide(injector, func(i do.Injector) (*api.Server, error) {
@@ -126,7 +130,7 @@ func New() *do.RootScope {
 		)
 		gh := handlers.NewGitHubWebhookHandler(
 			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*river.Client[pgx.Tx]](i),
+			do.MustInvoke[*versionbuilds.Starter](i),
 			cfg.GitHubWebhookSecret,
 		)
 		auth := handlers.NewAuthHandler(do.MustInvoke[*ent.Client](i), cfg)

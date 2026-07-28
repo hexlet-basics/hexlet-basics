@@ -3,15 +3,12 @@ package handlers
 import (
 	"context"
 
-	"github.com/riverqueue/river"
-	"github.com/riverqueue/river/rivertype"
+	"hexletbasics/ent"
 )
 
-// JobEnqueuer is the slice of the river client the handlers need: inserting a
-// background job. Depending on this interface (rather than *river.Client
-// directly) keeps handler tests off the pgx pool river requires — the test
-// harness supplies a recording fake, while production wires the real client,
-// which satisfies this signature exactly.
-type JobEnqueuer interface {
-	Insert(ctx context.Context, args river.JobArgs, opts *river.InsertOpts) (*rivertype.JobInsertResult, error)
+// VersionBuildStarter is the atomic operation handlers need: create a course
+// version and enqueue its loader job. Production performs both writes in one
+// SQL transaction; tests use a recording adapter over their rollback-only DB.
+type VersionBuildStarter interface {
+	Start(ctx context.Context, courseID int) (*ent.CourseVersion, error)
 }

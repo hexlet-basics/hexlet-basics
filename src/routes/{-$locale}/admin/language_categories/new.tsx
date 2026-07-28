@@ -19,7 +19,7 @@ export const Route = createFileRoute(
   component: NewCourseCategory,
 });
 
-function NewCourseCategory() {
+export function NewCourseCategory() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();

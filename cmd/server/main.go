@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -10,8 +11,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
 	"gocloud.dev/blob"
@@ -32,10 +31,8 @@ func main() {
 	// Held before shutdown: ent.Client exposes Close, not a do Shutdowner, so it
 	// is closed explicitly once the injector has drained the HTTP server.
 	db := do.MustInvoke[*ent.Client](injector)
-	// The river job queue and its pgx pool are likewise closed explicitly (they
-	// are not do Shutdowners).
-	riverClient := do.MustInvoke[*river.Client[pgx.Tx]](injector)
-	pool := do.MustInvoke[*pgxpool.Pool](injector)
+	// The river job queue is likewise stopped explicitly.
+	riverClient := do.MustInvoke[*river.Client[*sql.Tx]](injector)
 	// The blob bucket exposes Close, not a do Shutdowner, so drain it explicitly
 	// once the HTTP server (its only user) has stopped serving.
 	bucket := do.MustInvoke[*blob.Bucket](injector)
@@ -70,12 +67,10 @@ func main() {
 	if report := injector.ShutdownWithContext(shutdownCtx); !report.Succeed {
 		logger.Error("shutdown reported errors", "err", report.Error())
 	}
-	// Drain in-flight jobs before dropping the pool and DB (workers stop first,
-	// then their connection pool, then ent's handle).
+	// Drain in-flight jobs before closing ent, which owns their shared SQL pool.
 	if err := riverClient.Stop(shutdownCtx); err != nil {
 		logger.Error("stopping job queue", "err", err)
 	}
-	pool.Close()
 	if err := bucket.Close(); err != nil {
 		logger.Error("closing blob bucket", "err", err)
 	}

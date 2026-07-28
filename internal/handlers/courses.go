@@ -24,17 +24,15 @@ import (
 // there is no *http.Request at the ogen handler boundary to derive them from.
 type Server struct {
 	api.UnimplementedHandler
-	db       *ent.Client
-	conv     apiconv.Converter
-	cfg      *config.Config
-	enqueuer JobEnqueuer
+	db      *ent.Client
+	conv    apiconv.Converter
+	cfg     *config.Config
+	starter VersionBuildStarter
 }
 
-// NewServer wires the handler to its dependencies. enqueuer inserts background
-// jobs (exercise-version builds); it may be nil for read-only wirings, in which
-// case a job-enqueuing operation returns an error rather than panicking.
-func NewServer(db *ent.Client, cfg *config.Config, enqueuer JobEnqueuer) *Server {
-	return &Server{db: db, conv: &apiconv.ConverterImpl{}, cfg: cfg, enqueuer: enqueuer}
+// NewServer wires the handler to its dependencies.
+func NewServer(db *ent.Client, cfg *config.Config, starter VersionBuildStarter) *Server {
+	return &Server{db: db, conv: &apiconv.ConverterImpl{}, cfg: cfg, starter: starter}
 }
 
 // ListCourses returns the published course catalog.

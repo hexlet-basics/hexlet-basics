@@ -19,7 +19,7 @@ require (
 	github.com/ogen-go/ogen v1.23.0
 	github.com/oklog/ulid/v2 v2.1.2
 	github.com/riverqueue/river v0.41.0
-	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.41.0
+	github.com/riverqueue/river/riverdriver/riverdatabasesql v0.41.0
 	github.com/riverqueue/river/rivertype v0.41.0
 	github.com/rs/cors v1.11.1
 	github.com/samber/do/v2 v2.1.0

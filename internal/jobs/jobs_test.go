@@ -2,11 +2,12 @@ package jobs_test
 
 import (
 	"context"
+	"database/sql"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"github.com/stretchr/testify/require"
@@ -30,16 +31,16 @@ func testDSN() string {
 func TestQueueBackbone(t *testing.T) {
 	ctx := context.Background()
 
-	pool, err := pgxpool.New(ctx, testDSN())
+	db, err := sql.Open("pgx", testDSN())
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		_, _ = pool.Exec(context.Background(), "DELETE FROM river_job WHERE kind = 'ping'")
-		pool.Close()
+		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind = 'ping'")
+		_ = db.Close()
 	})
 
 	// nil loader: this smoke test only exercises the ping worker, so the
 	// exercise-build worker (and its db/blob deps) is intentionally not registered.
-	client, err := jobs.NewClient(pool, nil)
+	client, err := jobs.NewClient(db, nil)
 	require.NoError(t, err)
 
 	// Subscribe before Start so the completion event can't be missed.

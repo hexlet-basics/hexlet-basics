@@ -12,7 +12,6 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
-	"hexletbasics/internal/jobs"
 )
 
 // maxWebhookBytes bounds a webhook body. GitHub deliveries are well under this;
@@ -33,8 +32,8 @@ const coursePrefix = "exercises-"
 // Building off CI-success (not a raw push) mirrors the legacy invariant that only
 // content which passed the repo's pipeline is ever served.
 type GitHubWebhookHandler struct {
-	db       *ent.Client
-	enqueuer JobEnqueuer
+	db      *ent.Client
+	starter VersionBuildStarter
 	// secret is the shared HMAC secret GitHub signs deliveries with. An empty
 	// secret disables the endpoint (fail closed) — an unauthenticated build
 	// trigger must never be reachable.
@@ -42,8 +41,8 @@ type GitHubWebhookHandler struct {
 }
 
 // NewGitHubWebhookHandler wires the webhook to its dependencies.
-func NewGitHubWebhookHandler(db *ent.Client, enqueuer JobEnqueuer, secret string) *GitHubWebhookHandler {
-	return &GitHubWebhookHandler{db: db, enqueuer: enqueuer, secret: secret}
+func NewGitHubWebhookHandler(db *ent.Client, starter VersionBuildStarter, secret string) *GitHubWebhookHandler {
+	return &GitHubWebhookHandler{db: db, starter: starter, secret: secret}
 }
 
 // workflowRunPayload is the slice of the `workflow_run` event this handler acts
@@ -165,15 +164,7 @@ func (h *GitHubWebhookHandler) triggerBuild(ctx context.Context, slug string) (b
 		return false, err
 	}
 
-	version, err := h.db.CourseVersion.Create().
-		SetLanguageID(c.ID).
-		SetState(courseVersionStateCreated).
-		Save(ctx)
-	if err != nil {
-		return false, err
-	}
-
-	if _, err := h.enqueuer.Insert(ctx, jobs.ExerciseLoaderArgs{VersionID: version.ID}, nil); err != nil {
+	if _, err := h.starter.Start(ctx, c.ID); err != nil {
 		return false, err
 	}
 	return true, nil
