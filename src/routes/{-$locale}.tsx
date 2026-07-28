@@ -1,4 +1,5 @@
 import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
+import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
 
 // Optional locale prefix layout: `/` → en (unprefixed), `/ru`, `/es` → prefixed
@@ -17,5 +18,9 @@ export const Route = createFileRoute("/{-$locale}")({
 
     return { locale };
   },
-  component: () => <Outlet />,
+  component: () => (
+    <ApplicationLayout>
+      <Outlet />
+    </ApplicationLayout>
+  ),
 });

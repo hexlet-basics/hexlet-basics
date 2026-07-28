@@ -13,6 +13,8 @@ import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
 import { Route as Char123LocaleChar125LanguagesSlugRouteImport } from './routes/{-$locale}/languages/$slug'
+import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
+import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
 
 const Char123LocaleChar125Route = Char123LocaleChar125RouteImport.update({
   id: '/{-$locale}',
@@ -37,16 +39,32 @@ const Char123LocaleChar125LanguagesSlugRoute =
     path: '/languages/$slug',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125SessionNewRoute =
+  Char123LocaleChar125SessionNewRouteImport.update({
+    id: '/session/new',
+    path: '/session/new',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125UsersNewRoute =
+  Char123LocaleChar125UsersNewRouteImport.update({
+    id: '/users/new',
+    path: '/users/new',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
+  '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
+  '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
+  '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
+  '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/languages': typeof Char123LocaleChar125LanguagesIndexRoute
 }
 export interface FileRoutesById {
@@ -54,6 +72,8 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
+  '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
+  '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
 }
 export interface FileRouteTypes {
@@ -62,14 +82,23 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/'
     | '/{-$locale}/languages/$slug'
+    | '/{-$locale}/session/new'
+    | '/{-$locale}/users/new'
     | '/{-$locale}/languages/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/{-$locale}' | '/{-$locale}/languages/$slug' | '/{-$locale}/languages'
+  to:
+    | '/{-$locale}'
+    | '/{-$locale}/languages/$slug'
+    | '/{-$locale}/session/new'
+    | '/{-$locale}/users/new'
+    | '/{-$locale}/languages'
   id:
     | '__root__'
     | '/{-$locale}'
     | '/{-$locale}/'
     | '/{-$locale}/languages/$slug'
+    | '/{-$locale}/session/new'
+    | '/{-$locale}/users/new'
     | '/{-$locale}/languages/'
   fileRoutesById: FileRoutesById
 }
@@ -107,12 +136,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/session/new': {
+      id: '/{-$locale}/session/new'
+      path: '/session/new'
+      fullPath: '/{-$locale}/session/new'
+      preLoaderRoute: typeof Char123LocaleChar125SessionNewRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/users/new': {
+      id: '/{-$locale}/users/new'
+      path: '/users/new'
+      fullPath: '/{-$locale}/users/new'
+      preLoaderRoute: typeof Char123LocaleChar125UsersNewRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
   }
 }
 
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
   Char123LocaleChar125LanguagesSlugRoute: typeof Char123LocaleChar125LanguagesSlugRoute
+  Char123LocaleChar125SessionNewRoute: typeof Char123LocaleChar125SessionNewRoute
+  Char123LocaleChar125UsersNewRoute: typeof Char123LocaleChar125UsersNewRoute
   Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
 }
 
@@ -120,6 +165,8 @@ const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
   Char123LocaleChar125LanguagesSlugRoute:
     Char123LocaleChar125LanguagesSlugRoute,
+  Char123LocaleChar125SessionNewRoute: Char123LocaleChar125SessionNewRoute,
+  Char123LocaleChar125UsersNewRoute: Char123LocaleChar125UsersNewRoute,
   Char123LocaleChar125LanguagesIndexRoute:
     Char123LocaleChar125LanguagesIndexRoute,
 }
