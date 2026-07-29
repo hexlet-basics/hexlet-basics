@@ -28,3 +28,35 @@ func TestParseSpecRejectsUnknownFields(t *testing.T) {
 	require.Error(t, err)
 	assert.ErrorContains(t, err, "field exercise_test_filenam not found")
 }
+
+func TestParseModuleInfosRejectsUnknownFields(t *testing.T) {
+	dir := t.TempDir()
+	description := `name: Introduction
+description: Start here
+descriptio: typo
+`
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "description.en.yml"), []byte(description), 0o644))
+
+	_, err := parseModuleInfos(dir)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "field descriptio not found")
+}
+
+func TestParseLessonInfosRejectsUnknownFields(t *testing.T) {
+	dir := t.TempDir()
+	localeDir := filepath.Join(dir, "en")
+	require.NoError(t, os.Mkdir(localeDir, 0o755))
+	data := `name: Hello
+description: First lesson
+tips: []
+definitions: []
+definition: typo
+`
+	require.NoError(t, os.WriteFile(filepath.Join(localeDir, "data.yml"), []byte(data), 0o644))
+
+	_, err := parseLessonInfos(dir)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "field definition not found")
+}

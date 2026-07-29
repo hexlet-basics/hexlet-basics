@@ -131,9 +131,7 @@ func parseSpec(dir string) (*Spec, error) {
 	var doc struct {
 		Language Spec `yaml:"language"`
 	}
-	decoder := yaml.NewDecoder(bytes.NewReader(raw))
-	decoder.KnownFields(true)
-	if err := decoder.Decode(&doc); err != nil {
+	if err := decodeYAML(raw, &doc); err != nil {
 		return nil, oops.Wrapf(err, "parse %s", path)
 	}
 	s := doc.Language
@@ -212,7 +210,7 @@ func parseModuleInfos(moduleDir string) ([]ModuleInfo, error) {
 			Name        string `yaml:"name"`
 			Description string `yaml:"description"`
 		}
-		if err := yaml.Unmarshal(raw, &data); err != nil {
+		if err := decodeYAML(raw, &data); err != nil {
 			return nil, oops.Wrapf(err, "parse %s", file)
 		}
 		infos = append(infos, ModuleInfo{Locale: locale, Name: data.Name, Description: data.Description})
@@ -294,7 +292,7 @@ func parseLessonInfos(lessonDir string) ([]LessonInfo, error) {
 			Tips        []string     `yaml:"tips"`
 			Definitions []Definition `yaml:"definitions"`
 		}
-		if err := yaml.Unmarshal(raw, &data); err != nil {
+		if err := decodeYAML(raw, &data); err != nil {
 			return nil, oops.Wrapf(err, "parse %s", dataPath)
 		}
 
@@ -402,4 +400,12 @@ func readFile(path string) (string, error) {
 		return "", err
 	}
 	return string(raw), nil
+}
+
+// decodeYAML rejects misspelled and unsupported keys in every course metadata
+// file instead of silently dropping them and building incomplete course data.
+func decodeYAML(raw []byte, target any) error {
+	decoder := yaml.NewDecoder(bytes.NewReader(raw))
+	decoder.KnownFields(true)
+	return decoder.Decode(target)
 }
