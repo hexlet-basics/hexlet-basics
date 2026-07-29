@@ -1,7 +1,8 @@
-package di_test
+package di
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -13,8 +14,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/internal/di"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/localization"
 )
 
 const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
@@ -26,14 +27,20 @@ func testDSN() string {
 	return defaultTestDSN
 }
 
+func configureTestEnvironment(t *testing.T) {
+	t.Helper()
+	t.Setenv("DATABASE_URL", testDSN())
+	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
+	t.Setenv("JWT_SECRET", "test-secret")
+}
+
 // TestServerContainerResolvesHTTPWithoutAsyncRuntime proves that the synchronous
 // graph has everything needed to serve and enqueue while exposing neither
 // Watermill consumers nor a startable River worker runtime.
 func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
-	t.Setenv("DATABASE_URL", testDSN())
-	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
+	configureTestEnvironment(t)
 
-	injector := di.NewServer()
+	injector := newContainer(false)
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
@@ -45,10 +52,9 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 }
 
 func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
-	t.Setenv("DATABASE_URL", testDSN())
-	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
+	configureTestEnvironment(t)
 
-	injector := di.NewWorker()
+	injector := newContainer(true)
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	riverClient, err := do.Invoke[*river.Client[*sql.Tx]](injector)
@@ -64,10 +70,9 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 }
 
 func TestDevCORSAllowsCredentialedXSRFRequests(t *testing.T) {
-	t.Setenv("DATABASE_URL", testDSN())
-	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
+	configureTestEnvironment(t)
 
-	injector := di.NewServer()
+	injector := newContainer(false)
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
@@ -86,4 +91,35 @@ func TestDevCORSAllowsCredentialedXSRFRequests(t *testing.T) {
 	assert.Equal(t, "true", rec.Header().Get("Access-Control-Allow-Credentials"))
 	assert.Contains(t, strings.ToLower(rec.Header().Get("Access-Control-Allow-Headers")), "x-xsrf-token")
 	assert.Contains(t, rec.Header().Get("Access-Control-Allow-Methods"), http.MethodDelete)
+}
+
+func TestServerProviderReturnsDependencyError(t *testing.T) {
+	configureTestEnvironment(t)
+
+	wantErr := errors.New("load localization")
+	injector := newContainer(false)
+	do.Override(injector, func(do.Injector) (*localization.Translator, error) {
+		return nil, wantErr
+	})
+
+	_, err := do.Invoke[*http.Server](injector)
+	require.ErrorIs(t, err, wantErr)
+}
+
+func TestBuildServerReturnsStartupError(t *testing.T) {
+	configureTestEnvironment(t)
+	t.Setenv("BLOB_BUCKET_URL", "unsupported://bucket")
+
+	_, err := BuildServer()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported")
+}
+
+func TestBuildWorkerReturnsStartupError(t *testing.T) {
+	configureTestEnvironment(t)
+	t.Setenv("BLOB_BUCKET_URL", "unsupported://bucket")
+
+	_, err := BuildWorker()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "unsupported")
 }

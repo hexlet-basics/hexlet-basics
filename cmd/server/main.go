@@ -4,14 +4,12 @@ import (
 	"context"
 	"errors"
 	"log/slog"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/samber/do/v2"
 	"go.opentelemetry.io/contrib/otelconf"
 	"gocloud.dev/blob"
 
@@ -24,31 +22,35 @@ import (
 const shutdownTimeout = 15 * time.Second
 
 func main() {
-	injector := di.NewServer()
-
-	logger := do.MustInvoke[*slog.Logger](injector)
-	sentryClient := do.MustInvoke[*sentry.Client](injector)
-	srv := do.MustInvoke[*http.Server](injector)
-	db := do.MustInvoke[*ent.Client](injector)
-	bucket := do.MustInvoke[*blob.Bucket](injector)
-	otelSDK := do.MustInvoke[*otelconf.SDK](injector)
+	dependencies, err := di.BuildServer()
+	if err != nil {
+		slog.Error("building server dependencies", "err", err)
+		os.Exit(1)
+	}
 
 	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
 	app := application{
-		http:     srv,
-		httpAddr: srv.Addr,
-		logger:   logger,
+		http:     dependencies.HTTPServer,
+		httpAddr: dependencies.HTTPServer.Addr,
+		logger:   dependencies.Logger,
 	}
 	runtimeErr := app.run(signalCtx, stop)
 
 	cleanupCtx, cancelCleanup := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancelCleanup()
-	closeResources(cleanupCtx, logger, bucket, db, otelSDK, sentryClient)
+	closeResources(
+		cleanupCtx,
+		dependencies.Logger,
+		dependencies.Bucket,
+		dependencies.Database,
+		dependencies.OpenTelemetrySDK,
+		dependencies.SentryClient,
+	)
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		logger.Error("runtime failed", "err", runtimeErr)
+		dependencies.Logger.Error("runtime failed", "err", runtimeErr)
 		os.Exit(1)
 	}
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"log/slog"
 	"os"
@@ -11,14 +10,11 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/riverqueue/river"
-	"github.com/samber/do/v2"
 	"go.opentelemetry.io/contrib/otelconf"
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/di"
-	"hexletbasics/internal/events"
 )
 
 // shutdownTimeout bounds process cleanup after River and Watermill have been
@@ -26,32 +22,35 @@ import (
 const shutdownTimeout = 15 * time.Second
 
 func main() {
-	injector := di.NewWorker()
-
-	logger := do.MustInvoke[*slog.Logger](injector)
-	sentryClient := do.MustInvoke[*sentry.Client](injector)
-	db := do.MustInvoke[*ent.Client](injector)
-	riverClient := do.MustInvoke[*river.Client[*sql.Tx]](injector)
-	eventRuntime := do.MustInvoke[*events.Runtime](injector)
-	bucket := do.MustInvoke[*blob.Bucket](injector)
-	otelSDK := do.MustInvoke[*otelconf.SDK](injector)
+	dependencies, err := di.BuildWorker()
+	if err != nil {
+		slog.Error("building worker dependencies", "err", err)
+		os.Exit(1)
+	}
 
 	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
 	app := application{
-		jobs:   riverClient,
-		events: eventRuntime,
-		logger: logger,
+		jobs:   dependencies.RiverClient,
+		events: dependencies.EventRuntime,
+		logger: dependencies.Logger,
 	}
 	runtimeErr := app.run(signalCtx, stop)
 
 	cleanupCtx, cancelCleanup := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancelCleanup()
-	closeResources(cleanupCtx, logger, bucket, db, otelSDK, sentryClient)
+	closeResources(
+		cleanupCtx,
+		dependencies.Logger,
+		dependencies.Bucket,
+		dependencies.Database,
+		dependencies.OpenTelemetrySDK,
+		dependencies.SentryClient,
+	)
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		logger.Error("worker runtime failed", "err", runtimeErr)
+		dependencies.Logger.Error("worker runtime failed", "err", runtimeErr)
 		os.Exit(1)
 	}
 }
