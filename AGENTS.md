@@ -63,9 +63,10 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - **DI** is `samber/do` v2, wired in `internal/di/container.go`. Providers
   resolve their own deps from the injector, so the plain constructors
   (`store.NewClient`, `handlers.NewServer`, `api.NewServer`) stay
-  injector-agnostic and are usable directly in tests. `cmd/server/main.go`
-  invokes the `*http.Server` and drives graceful shutdown. Add a new service by
-  adding a `do.Provide` block, not by threading it through constructors.
+  injector-agnostic and are usable directly in tests. `cmd/server` uses a local
+  `errgroup` coordinator for River, Watermill, HTTP, signals, and ordered
+  shutdown; `do` only constructs dependencies. Add a new service by adding a
+  `do.Provide` block, not by threading it through constructors.
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
   client with `make gen-ent` (`go generate ./ent`) after editing a schema.
 - Other `internal/` packages: `config/` (env config via `caarlos0/env`),

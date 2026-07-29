@@ -50,8 +50,8 @@ const (
 // constructors (store.NewClient, handlers.NewServer, api.NewServer) stay
 // injector-agnostic and remain usable directly in tests.
 //
-// It returns the concrete *do.RootScope (not the do.Injector interface) so the
-// caller can drive the injector's lifecycle helpers (graceful shutdown).
+// The container owns construction only. cmd/server supervises long-lived
+// components and closes process resources explicitly.
 func New() *do.RootScope {
 	injector := do.New()
 
@@ -252,9 +252,8 @@ func New() *do.RootScope {
 		}).Handler(localized), nil
 	})
 
-	// *http.Server natively satisfies do's ShutdownerWithContextAndError (its
-	// Shutdown(ctx) drains in-flight requests), so injector.Shutdown gracefully
-	// stops it — no bespoke teardown wiring needed.
+	// The process lifecycle coordinator starts and gracefully stops this server.
+	// Keeping the provider on the vendor type avoids coupling DI to supervision.
 	do.Provide(injector, func(i do.Injector) (*http.Server, error) {
 		cfg := do.MustInvoke[*config.Config](i)
 

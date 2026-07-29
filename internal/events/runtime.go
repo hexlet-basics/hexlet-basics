@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log/slog"
-	"sync"
 	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
@@ -17,12 +16,10 @@ import (
 
 const observerConsumerGroup = "observe_domain_events_v1"
 
-// Runtime owns the Watermill Router lifecycle and reports asynchronous router
-// failures to main so they trigger the same graceful shutdown as a signal.
+// Runtime exposes the Watermill Router as a blocking process actor. The process
+// coordinator owns startup ordering and graceful shutdown.
 type Runtime struct {
-	router    *message.Router
-	errors    chan error
-	startOnce sync.Once
+	router *message.Router
 }
 
 // NewRuntime builds the durable SQL subscriber and the initial PII-safe
@@ -84,7 +81,7 @@ func NewRuntime(
 		}
 	}
 
-	return &Runtime{router: router, errors: make(chan error, 1)}, nil
+	return &Runtime{router: router}, nil
 }
 
 func observeMessage(logger *slog.Logger, msg *message.Message) {
@@ -111,26 +108,18 @@ func newSubscriber(
 	)
 }
 
-// Start runs the router in the background and waits until all subscribers are
-// ready, so HTTP traffic cannot publish before the consumer runtime is alive.
-func (r *Runtime) Start(ctx context.Context) error {
-	var startErr error
-	r.startOnce.Do(func() {
-		go func() {
-			r.errors <- r.router.Run(ctx)
-			close(r.errors)
-		}()
-		select {
-		case <-r.router.Running():
-		case err := <-r.errors:
-			startErr = fmt.Errorf("start Watermill router: %w", err)
-		}
-	})
-	return startErr
+// Run blocks while the Watermill router is alive, allowing the process
+// supervisor to observe router termination directly.
+func (r *Runtime) Run(ctx context.Context) error {
+	if err := r.router.Run(ctx); err != nil {
+		return fmt.Errorf("run Watermill router: %w", err)
+	}
+	return nil
 }
 
-// Errors reports a terminal router failure after a successful start.
-func (r *Runtime) Errors() <-chan error { return r.errors }
+// Running is closed once every subscriber is ready. HTTP startup waits on this
+// channel so requests cannot publish before the event runtime is alive.
+func (r *Runtime) Running() <-chan struct{} { return r.router.Running() }
 
 // Close drains subscribers and in-flight handlers.
 func (r *Runtime) Close() error { return r.router.Close() }

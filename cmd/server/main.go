@@ -14,6 +14,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
+	"go.opentelemetry.io/contrib/otelconf"
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
@@ -31,72 +32,52 @@ func main() {
 	logger := do.MustInvoke[*slog.Logger](injector)
 	sentryClient := do.MustInvoke[*sentry.Client](injector)
 	srv := do.MustInvoke[*http.Server](injector)
-	// Held before shutdown: ent.Client exposes Close, not a do Shutdowner, so it
-	// is closed explicitly once the injector has drained the HTTP server.
 	db := do.MustInvoke[*ent.Client](injector)
-	// The river job queue is likewise stopped explicitly.
 	riverClient := do.MustInvoke[*river.Client[*sql.Tx]](injector)
 	eventRuntime := do.MustInvoke[*events.Runtime](injector)
-	// The blob bucket exposes Close, not a do Shutdowner, so drain it explicitly
-	// once the HTTP server (its only user) has stopped serving.
 	bucket := do.MustInvoke[*blob.Bucket](injector)
+	otelSDK := do.MustInvoke[*otelconf.SDK](injector)
 
-	// Start processing background jobs. Start returns once the client is running;
-	// workers run until Stop drains them during shutdown.
-	if err := riverClient.Start(context.Background()); err != nil {
-		logger.Error("starting job queue", "err", err)
-		os.Exit(1)
-	}
-	if err := eventRuntime.Start(context.Background()); err != nil {
-		logger.Error("starting domain event router", "err", err)
-		os.Exit(1)
-	}
-
-	serverErrors := make(chan error, 1)
-	go func() {
-		logger.Info("backend listening", "addr", srv.Addr)
-		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			serverErrors <- err
-		}
-	}()
-
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
+	signalCtx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
-	select {
-	case <-ctx.Done():
-	case err := <-eventRuntime.Errors():
-		if err != nil {
-			logger.Error("domain event router failed", "err", err)
-		}
-	case err := <-serverErrors:
-		logger.Error("http server failed", "err", err)
-	}
-	stop() // restore default signal handling so a second signal force-quits
 
-	logger.Info("shutting down")
+	app := application{
+		http:     srv,
+		httpAddr: srv.Addr,
+		jobs:     riverClient,
+		events:   eventRuntime,
+		logger:   logger,
+	}
+	runtimeErr := app.run(signalCtx, stop)
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-	defer cancel()
+	cleanupCtx, cancelCleanup := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancelCleanup()
+	closeResources(cleanupCtx, logger, bucket, db, otelSDK, sentryClient)
 
-	// do stops services in reverse dependency order, calling http.Server.Shutdown
-	// (graceful drain) with this context.
-	if report := injector.ShutdownWithContext(shutdownCtx); !report.Succeed {
-		logger.Error("shutdown reported errors", "err", report.Error())
+	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
+		logger.Error("runtime failed", "err", runtimeErr)
+		os.Exit(1)
 	}
-	if err := eventRuntime.Close(); err != nil {
-		logger.Error("stopping domain event router", "err", err)
-	}
-	// Drain in-flight jobs before closing ent, which owns their shared SQL pool.
-	if err := riverClient.Stop(shutdownCtx); err != nil {
-		logger.Error("stopping job queue", "err", err)
-	}
+}
+
+func closeResources(
+	ctx context.Context,
+	logger *slog.Logger,
+	bucket *blob.Bucket,
+	db *ent.Client,
+	otelSDK *otelconf.SDK,
+	sentryClient *sentry.Client,
+) {
 	if err := bucket.Close(); err != nil {
 		logger.Error("closing blob bucket", "err", err)
 	}
 	if err := db.Close(); err != nil {
 		logger.Error("closing database", "err", err)
 	}
-	if !sentryClient.FlushWithContext(shutdownCtx) {
+	if err := otelSDK.Shutdown(ctx); err != nil {
+		logger.Error("shutting down OpenTelemetry", "err", err)
+	}
+	if !sentryClient.FlushWithContext(ctx) {
 		logger.Error("flushing Sentry events timed out")
 	}
 }
