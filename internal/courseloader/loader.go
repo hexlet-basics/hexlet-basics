@@ -1,16 +1,20 @@
 package courseloader
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/samber/oops"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/ast"
+	"github.com/yuin/goldmark/text"
 	"gocloud.dev/blob"
 	"gopkg.in/yaml.v3"
 
@@ -358,36 +362,83 @@ func (l *Loader) uploadImages(ctx context.Context, parsed *Course) error {
 	return nil
 }
 
-// imageRe matches a Markdown image `![alt](path)`, the same pattern the legacy
-// MarkdownImageProcessor used.
-var imageRe = regexp.MustCompile(`!\[([^\]]*)\]\(([^)]+)\)`)
-
 // processImages uploads each locally-referenced theory image to the blob bucket
 // and rewrites its Markdown URL to the served /storage path. Remote (http) images
 // are left untouched. A missing referenced file fails the build (the repo is
 // broken), matching legacy strictness.
 func (l *Loader) processImages(ctx context.Context, theory, localeDir string) (string, error) {
-	var firstErr error
-	result := imageRe.ReplaceAllStringFunc(theory, func(match string) string {
-		if firstErr != nil {
-			return match
+	source := []byte(theory)
+	document := goldmark.DefaultParser().Parse(text.NewReader(source))
+	var replacements []markdownImageReplacement
+
+	err := ast.Walk(document, func(node ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering {
+			return ast.WalkContinue, nil
 		}
-		sub := imageRe.FindStringSubmatch(match)
-		alt, ref := sub[1], sub[2]
+		image, ok := node.(*ast.Image)
+		if !ok || image.Reference != nil || len(image.Destination) == 0 {
+			return ast.WalkContinue, nil
+		}
+
+		ref := string(image.Destination)
 		if strings.HasPrefix(ref, "http") {
-			return match
+			return ast.WalkSkipChildren, nil
 		}
+
 		url, err := l.uploadImage(ctx, localeDir, ref)
 		if err != nil {
-			firstErr = err
-			return match
+			return ast.WalkStop, err
 		}
-		return fmt.Sprintf("![%s](%s)", alt, url)
+
+		start, ok := sourceSliceOffset(source, image.Destination)
+		if !ok {
+			return ast.WalkStop, oops.Errorf("locate Markdown image destination %q", ref)
+		}
+		replacements = append(replacements, markdownImageReplacement{
+			start: start,
+			end:   start + len(image.Destination),
+			url:   url,
+		})
+		return ast.WalkSkipChildren, nil
 	})
-	if firstErr != nil {
-		return "", firstErr
+	if err != nil {
+		return "", err
 	}
-	return result, nil
+
+	sort.Slice(replacements, func(i, j int) bool {
+		return replacements[i].start < replacements[j].start
+	})
+
+	var result bytes.Buffer
+	cursor := 0
+	for _, replacement := range replacements {
+		result.Write(source[cursor:replacement.start])
+		result.WriteString(replacement.url)
+		cursor = replacement.end
+	}
+	result.Write(source[cursor:])
+	return result.String(), nil
+}
+
+type markdownImageReplacement struct {
+	start int
+	end   int
+	url   string
+}
+
+// sourceSliceOffset finds a parser-owned subslice in the original Markdown.
+// Goldmark keeps inline destinations backed by the source buffer, which lets us
+// replace only the URL while preserving every other byte of the author's text.
+func sourceSliceOffset(source, part []byte) (int, bool) {
+	if len(part) == 0 || len(part) > len(source) {
+		return 0, false
+	}
+	for i := 0; i+len(part) <= len(source); i++ {
+		if &source[i] == &part[0] {
+			return i, true
+		}
+	}
+	return 0, false
 }
 
 // uploadImage reads a theory image referenced relative to the locale dir, stores

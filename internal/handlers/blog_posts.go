@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"context"
-	"regexp"
 	"strings"
+
+	"golang.org/x/net/html"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/actiontextrichtext"
@@ -35,11 +36,6 @@ const (
 	richBodyName       = "rich_body"
 	coverName          = "cover"
 )
-
-// htmlTag strips HTML tags to approximate ActionText's to_plain_text for the
-// reading-time word count. Exact fidelity is not needed — reading time is a
-// coarse minutes estimate.
-var htmlTag = regexp.MustCompile(`<[^>]*>`)
 
 // AdminListBlogPosts returns a page of blog posts, newest first.
 func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (*api.BlogPostPage, error) {
@@ -249,7 +245,16 @@ func (s *Server) blogPostURL(slug, locale *string) string {
 // no-op. That means it is floor division, not round-up: a <260-word post reads as
 // 0. We reproduce that with integer division (not math.Ceil) on purpose.
 func readingTime(richBodyHTML string) int32 {
-	plain := htmlTag.ReplaceAllString(richBodyHTML, " ")
-	words := len(strings.Fields(plain))
-	return int32(words / wordsPerMinute)
+	tokenizer := html.NewTokenizer(strings.NewReader(richBodyHTML))
+	var plain strings.Builder
+	for {
+		switch tokenizer.Next() {
+		case html.TextToken:
+			plain.Write(tokenizer.Text())
+			plain.WriteByte(' ')
+		case html.ErrorToken:
+			words := len(strings.Fields(plain.String()))
+			return int32(words / wordsPerMinute)
+		}
+	}
 }
