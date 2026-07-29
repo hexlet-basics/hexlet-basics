@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 )
 
@@ -129,7 +130,7 @@ func writeJSON(w http.ResponseWriter, status int, body any) {
 // by field) so a failed upload is indistinguishable on the wire from the ogen
 // writes' 422s the frontend already handles.
 func writeValidationError(w http.ResponseWriter, field, message string) {
-	writeJSON(w, http.StatusUnprocessableEntity, map[string]any{
-		"errors": map[string][]string{field: {message}},
+	writeJSON(w, http.StatusUnprocessableEntity, api.ValidationError{
+		Errors: api.ValidationErrorErrors{field: {message}},
 	})
 }
