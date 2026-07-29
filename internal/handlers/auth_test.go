@@ -162,6 +162,37 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	assert.Equal(t, wrongPassword, passwordlessUser)
 }
 
+func TestCurrentUserSurvivesEmailChange(t *testing.T) {
+	db := testsupport.NewClient(t)
+	router := newAuthRouterWithDB(t, db)
+	const oldEmail = "jwt-old-email@example.com"
+	const newEmail = "jwt-new-email@example.com"
+
+	resp := do(t, router, http.MethodPost, "/users",
+		`{"firstName":"Ada","email":"`+oldEmail+`","password":"s3cret-pass"}`, nil)
+	require.Equal(t, http.StatusCreated, resp.StatusCode)
+	cookie := jwtCookie(resp)
+	require.NotNil(t, cookie)
+
+	var created struct {
+		ID int32 `json:"id"`
+	}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&created))
+	_, err := db.User.UpdateOneID(int(created.ID)).SetEmail(newEmail).Save(t.Context())
+	require.NoError(t, err)
+
+	resp = do(t, router, http.MethodGet, "/me", "", cookie)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	var me struct {
+		User *struct {
+			Email string `json:"email"`
+		} `json:"user"`
+	}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&me))
+	require.NotNil(t, me.User)
+	assert.Equal(t, newEmail, me.User.Email)
+}
+
 func TestAuthLogoutClearsCookie(t *testing.T) {
 	router := newAuthRouter(t)
 

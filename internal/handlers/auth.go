@@ -134,7 +134,12 @@ func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentU
 		return anonymousCurrentUser(), nil
 	}
 
-	u, err := h.db.User.Query().Where(user.Email(claims.User.Name)).Only(ctx)
+	userID, err := strconv.Atoi(claims.User.ID)
+	if err != nil {
+		return anonymousCurrentUser(), nil
+	}
+
+	u, err := h.db.User.Get(ctx, userID)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return anonymousCurrentUser(), nil
