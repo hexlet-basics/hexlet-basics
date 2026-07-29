@@ -22,7 +22,7 @@ kept on **bcrypt passwords** and **URL routes** only (ADR-0002).
 | i18n | `nicksnyder/go-i18n/v2` | Backend-emitted strings only. Content localization = ent data; UI i18n = React i18next. |
 | Config / DI / utils | `caarlos0/env`, `samber/do`, `samber/lo`, `samber/oops`, `oklog/ulid`, `gosimple/slug` | `caarlos0/env` over `spf13/viper`: config is env-only (12-factor), no files/remote/flags — struct-tag parsing fits, viper's weight didn't. |
 | Logs / errors | `slog` + `lmittmann/tint`, **`getsentry/sentry-go`** | ADR-0007. sentry-go ADDED (OTel ≠ error tracking). |
-| Tracing | `go.opentelemetry.io/otel` + OTLP/HTTP exporter | ogen emits OTel natively; exporter is endpoint-gated. |
+| Tracing | `go.opentelemetry.io/otel` + contrib `otelconf` | ogen emits OTel natively; `OTEL_CONFIG_FILE` configures the SDK and its exporters. |
 | Tests | `stretchr/testify`, stdlib `sql.Tx`, `testfixtures` | Fixtures baseline + per-test rollback, like legacy. |
 
 ## Added beyond the reference list
@@ -40,7 +40,7 @@ does DKIM) · `robbiet480/go.sns` (Postbox monitoring ≠ AWS SNS).
 ## Deferred (add when there is a concrete need)
 
 - `preslavrachev/gomjml`, `k3a/html2text` — nicer emails, post-parity.
-- Full OTel exporters (`otlptrace*`, `otlpmetric*`), `prometheus/client_golang`,
+- OTel metrics/HTTP log pipelines, `prometheus/client_golang`,
   `exporters/prometheus`, `contrib/instrumentation/runtime` — until a
   metrics/trace receiver exists.
 

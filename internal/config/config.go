@@ -41,11 +41,6 @@ type Config struct {
 	SentryDSN         string `env:"SENTRY_DSN"`
 	SentryEnvironment string `env:"SENTRY_ENVIRONMENT" envDefault:"development"`
 	ReleaseVersion    string `env:"HEXLET_BASICS_RELEASE_VERSION"`
-	// The OTLP HTTP exporter reads the standard OTEL_EXPORTER_OTLP_* variables
-	// directly. These two fields only decide whether tracing is enabled, keeping
-	// the SDK's standard headers/TLS/timeout configuration intact.
-	OTLPEndpoint       string `env:"OTEL_EXPORTER_OTLP_ENDPOINT"`
-	OTLPTracesEndpoint string `env:"OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"`
 	// JWTSecret signs the session JWT stored in the auth cookie (ADR-0003). The
 	// dev default keeps local sign-in zero-config; prod MUST override it, since
 	// anyone who knows the secret can forge sessions.

@@ -12,7 +12,7 @@ import (
 	"github.com/riverqueue/river"
 	"github.com/rs/cors"
 	"github.com/samber/do/v2"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/contrib/otelconf"
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
@@ -63,11 +63,10 @@ func New() *do.RootScope {
 		return telemetry.NewSentryClient(do.MustInvoke[*config.Config](i))
 	})
 
-	do.Provide(injector, func(i do.Injector) (*sdktrace.TracerProvider, error) {
-		return telemetry.NewTracerProvider(
+	do.Provide(injector, func(i do.Injector) (*otelconf.SDK, error) {
+		return telemetry.NewOpenTelemetrySDK(
 			context.Background(),
 			do.MustInvoke[*slog.Logger](i),
-			do.MustInvoke[*config.Config](i),
 		)
 	})
 
@@ -156,7 +155,7 @@ func New() *do.RootScope {
 		return api.NewServer(
 			do.MustInvoke[*handlers.Server](i),
 			api.WithErrorHandler(do.MustInvoke[*handlers.APIErrorHandler](i).Write),
-			api.WithTracerProvider(do.MustInvoke[*sdktrace.TracerProvider](i)),
+			api.WithTracerProvider(do.MustInvoke[*otelconf.SDK](i).TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(do.MustInvoke[*localization.Translator](i))),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(do.MustInvoke[*localization.Translator](i))),
 		)

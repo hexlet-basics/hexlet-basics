@@ -1,0 +1,29 @@
+# OpenTelemetry is disabled unless OTEL_CONFIG_FILE points at this file.
+# Deployment may mount a replacement file instead; otelconf owns parsing and
+# validation in either case.
+file_format: "1.0"
+
+resource:
+  attributes:
+    - name: service.name
+      value: hexlet-basics-api
+    - name: service.version
+      value: "${HEXLET_BASICS_RELEASE_VERSION:-development}"
+
+propagator:
+  composite:
+    - tracecontext:
+    - baggage:
+
+tracer_provider:
+  processors:
+    - batch:
+        exporter:
+          otlp_http:
+            endpoint: "${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:-http://localhost:4318/v1/traces}"
+            headers_list: "${OTEL_EXPORTER_OTLP_TRACES_HEADERS:-}"
+  sampler:
+    parent_based:
+      root:
+        trace_id_ratio_based:
+          ratio: 0.01
