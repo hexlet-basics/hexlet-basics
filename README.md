@@ -66,8 +66,8 @@ make dev-spec  # watch TypeSpec and re-emit OpenAPI on change
 ## Lint & Test
 
 ```bash
-make lint          # gofmt + go vet + golangci-lint, and biome + tsc
-make lint-fix      # auto-fix Go formatting and frontend lint
+make lint          # gofmt + go vet + golangci-lint, and tsc
+make lint-fix      # auto-fix Go formatting and lint findings
 
 make test-prepare  # apply atlas migrations + load fixtures/ into the test DB
 make test          # go test ./...

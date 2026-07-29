@@ -3000,7 +3000,19 @@ type DeletePasskeyNoContent struct{}
 func (*DeletePasskeyNoContent) deletePasskeyRes() {}
 
 // DeleteSessionNoContent is response for DeleteSession operation.
-type DeleteSessionNoContent struct{}
+type DeleteSessionNoContent struct {
+	SetCookie string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *DeleteSessionNoContent) GetSetCookie() string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *DeleteSessionNoContent) SetSetCookie(val string) {
+	s.SetCookie = val
+}
 
 // Ref: #/components/schemas/EmailInput
 type EmailInput struct {
@@ -6372,8 +6384,6 @@ func (s *User) SetType(val UserType) {
 func (*User) confirmPhoneAuthRes()     {}
 func (*User) consumeMagicLinkRes()     {}
 func (*User) createPasskeySessionRes() {}
-func (*User) createSessionRes()        {}
-func (*User) createUserRes()           {}
 func (*User) getProfileRes()           {}
 func (*User) updateProfileRes()        {}
 
@@ -6529,6 +6539,35 @@ func (s *UserCrudPage) SetPage(val int32) {
 func (s *UserCrudPage) SetPerPage(val int32) {
 	s.PerPage = val
 }
+
+// UserHeaders wraps User with response headers.
+type UserHeaders struct {
+	SetCookie string
+	Response  User
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *UserHeaders) GetSetCookie() string {
+	return s.SetCookie
+}
+
+// GetResponse returns the value of Response.
+func (s *UserHeaders) GetResponse() User {
+	return s.Response
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *UserHeaders) SetSetCookie(val string) {
+	s.SetCookie = val
+}
+
+// SetResponse sets the value of Response.
+func (s *UserHeaders) SetResponse(val User) {
+	s.Response = val
+}
+
+func (*UserHeaders) createSessionRes() {}
+func (*UserHeaders) createUserRes()    {}
 
 // Ref: #/components/schemas/UserInput
 type UserInput struct {

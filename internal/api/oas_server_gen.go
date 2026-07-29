@@ -453,7 +453,7 @@ type Handler interface {
 	// Log out; clears the JWT cookie.
 	//
 	// DELETE /session
-	DeleteSession(ctx context.Context) error
+	DeleteSession(ctx context.Context) (*DeleteSessionNoContent, error)
 	// GetBlogPost implements getBlogPost operation.
 	//
 	// A single blog post by slug.
@@ -477,7 +477,7 @@ type Handler interface {
 	// Resolve the current user from the session cookie (for SSR).
 	//
 	// GET /me
-	GetCurrentUser(ctx context.Context) (*CurrentUser, error)
+	GetCurrentUser(ctx context.Context, params GetCurrentUserParams) (*CurrentUser, error)
 	// GetMyDashboard implements getMyDashboard operation.
 	//
 	// The signed-in user's course dashboard.

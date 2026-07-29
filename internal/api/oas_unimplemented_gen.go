@@ -707,8 +707,8 @@ func (UnimplementedHandler) DeletePasskey(ctx context.Context, params DeletePass
 // Log out; clears the JWT cookie.
 //
 // DELETE /session
-func (UnimplementedHandler) DeleteSession(ctx context.Context) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) DeleteSession(ctx context.Context) (r *DeleteSessionNoContent, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // GetBlogPost implements getBlogPost operation.
@@ -743,7 +743,7 @@ func (UnimplementedHandler) GetCourseLesson(ctx context.Context, params GetCours
 // Resolve the current user from the session cookie (for SSR).
 //
 // GET /me
-func (UnimplementedHandler) GetCurrentUser(ctx context.Context) (r *CurrentUser, _ error) {
+func (UnimplementedHandler) GetCurrentUser(ctx context.Context, params GetCurrentUserParams) (r *CurrentUser, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

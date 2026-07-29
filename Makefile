@@ -113,16 +113,14 @@ lint-go:
 	go vet ./...
 	golangci-lint run
 
-## lint-web: biome + tsc project build
+## lint-web: TypeScript project build
 lint-web:
-	pnpm lint
 	pnpm check
 
-## lint-fix: auto-fix Go formatting and frontend lint
+## lint-fix: auto-fix Go formatting and lint findings
 lint-fix:
 	gofmt -w cmd internal ent/schema
 	-golangci-lint run --fix
-	pnpm lint:fix
 
 # ---------------------------------------------------------------------------
 # Test

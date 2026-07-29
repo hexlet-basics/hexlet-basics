@@ -2069,7 +2069,12 @@ paths:
     get:
       operationId: getCurrentUser
       description: Resolve the current user from the session cookie (for SSR).
-      parameters: []
+      parameters:
+        - name: Cookie
+          in: header
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: The request has succeeded.
@@ -2322,7 +2327,14 @@ paths:
       parameters: []
       responses:
         '200':
-          description: The request has succeeded.
+          description: |-
+            A successful sign-in. Cookie headers are part of the HTTP contract so the
+            implementation stays behind the generated ogen seam.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -2350,7 +2362,12 @@ paths:
       parameters: []
       responses:
         '204':
-          description: Empty 204 response for deletes and other content-less successes.
+          description: A successful sign-out with the expired auth cookies.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string
       tags:
         - Auth
   /users:
@@ -2360,7 +2377,12 @@ paths:
       parameters: []
       responses:
         '201':
-          description: The request has succeeded and a new resource has been created as a result.
+          description: A newly-created user and the auth cookies issued for that user.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string
           content:
             application/json:
               schema:

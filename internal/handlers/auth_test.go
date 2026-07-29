@@ -9,28 +9,26 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gocloud.dev/blob/memblob"
 
+	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/testsupport"
 )
 
-// newAuthRouter builds the real router over a txdb-backed ent client, exercising
-// the auth routes end-to-end (register/login/logout/me). The api side is a stub;
-// these tests only drive the hand-mounted auth handlers.
+// newAuthRouter builds the generated ogen server over a txdb-backed ent client,
+// proving the auth routes are implemented through the contract seam.
 func newAuthRouter(t *testing.T) http.Handler {
 	t.Helper()
 	db := testsupport.NewClient(t)
-	bucket := memblob.OpenBucket(nil)
-	t.Cleanup(func() { _ = bucket.Close() })
-	att := handlers.NewAttachmentHandler(db, bucket)
-	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "")
-	auth := handlers.NewAuthHandler(db, &config.Config{JWTSecret: "test-secret"})
-	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-	})
-	return handlers.NewRouter(apiStub, att, gh, auth)
+	handler := handlers.NewServer(
+		db,
+		&config.Config{JWTSecret: "test-secret"},
+		&testsupport.RecordingEnqueuer{DB: db},
+	)
+	server, err := api.NewServer(handler, api.WithErrorHandler(handlers.APIErrorHandler))
+	require.NoError(t, err)
+	return server
 }
 
 // jwtCookie returns the JWT auth cookie from a response, or nil if absent.
@@ -63,6 +61,11 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	// Register sets the cookie and echoes the created user.
 	resp := do(t, router, http.MethodPost, "/users",
 		`{"firstName":"Ada","email":"`+email+`","password":"`+password+`"}`, nil)
+	if resp.StatusCode != http.StatusCreated {
+		var failure any
+		_ = json.NewDecoder(resp.Body).Decode(&failure)
+		t.Fatalf("register returned %d: %#v", resp.StatusCode, failure)
+	}
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	cookie := jwtCookie(resp)
 	require.NotNil(t, cookie, "register must set the JWT cookie")

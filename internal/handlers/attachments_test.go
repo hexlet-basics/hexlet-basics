@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
 
-	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/testsupport"
 )
@@ -40,11 +39,10 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Cleanup(func() { _ = bucket.Close() })
 	att := handlers.NewAttachmentHandler(db, bucket)
 	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "")
-	auth := handlers.NewAuthHandler(db, &config.Config{JWTSecret: "test-secret"})
 	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	})
-	return handlers.NewRouter(apiStub, att, gh, auth)
+	return handlers.NewRouter(apiStub, att, gh)
 }
 
 // uploadRequest builds a multipart POST with one file part whose Content-Type is

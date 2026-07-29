@@ -132,13 +132,6 @@ func New() *do.RootScope {
 		), nil
 	})
 
-	do.Provide(injector, func(i do.Injector) (*handlers.AuthHandler, error) {
-		return handlers.NewAuthHandler(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*config.Config](i),
-		), nil
-	})
-
 	// Both the raw router and the middleware-wrapped application handler have
 	// the same http.Handler interface. Named bindings keep those two seams
 	// explicit without adding wrapper types whose only purpose would be DI.
@@ -147,7 +140,6 @@ func New() *do.RootScope {
 			do.MustInvoke[*api.Server](i),
 			do.MustInvoke[*handlers.AttachmentHandler](i),
 			do.MustInvoke[*handlers.GitHubWebhookHandler](i),
-			do.MustInvoke[*handlers.AuthHandler](i),
 		), nil
 	})
 

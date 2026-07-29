@@ -7,6 +7,8 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
+	"github.com/ogen-go/ogen/conv"
+	"github.com/ogen-go/ogen/uri"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -1249,12 +1251,29 @@ func encodeCreatePhoneAuthResponse(response CreatePhoneAuthRes, w http.ResponseW
 
 func encodeCreateSessionResponse(response CreateSessionRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *User:
+	case *UserHeaders:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+		// Encoding response headers.
+		{
+			h := uri.NewHeaderEncoder(w.Header())
+			// Encode "Set-Cookie" header.
+			{
+				cfg := uri.HeaderParameterEncodingConfig{
+					Name:    "Set-Cookie",
+					Explode: false,
+				}
+				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+					return e.EncodeValue(conv.StringToString(response.SetCookie))
+				}); err != nil {
+					return errors.Wrap(err, "encode Set-Cookie header")
+				}
+			}
+		}
 		w.WriteHeader(200)
 
 		e := new(jx.Encoder)
-		response.Encode(e)
+		response.Response.Encode(e)
 		if _, err := e.WriteTo(w); err != nil {
 			return errors.Wrap(err, "write")
 		}
@@ -1280,12 +1299,29 @@ func encodeCreateSessionResponse(response CreateSessionRes, w http.ResponseWrite
 
 func encodeCreateUserResponse(response CreateUserRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *User:
+	case *UserHeaders:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+		// Encoding response headers.
+		{
+			h := uri.NewHeaderEncoder(w.Header())
+			// Encode "Set-Cookie" header.
+			{
+				cfg := uri.HeaderParameterEncodingConfig{
+					Name:    "Set-Cookie",
+					Explode: false,
+				}
+				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+					return e.EncodeValue(conv.StringToString(response.SetCookie))
+				}); err != nil {
+					return errors.Wrap(err, "encode Set-Cookie header")
+				}
+			}
+		}
 		w.WriteHeader(201)
 
 		e := new(jx.Encoder)
-		response.Encode(e)
+		response.Response.Encode(e)
 		if _, err := e.WriteTo(w); err != nil {
 			return errors.Wrap(err, "write")
 		}
@@ -1358,6 +1394,23 @@ func encodeDeletePasskeyResponse(response DeletePasskeyRes, w http.ResponseWrite
 }
 
 func encodeDeleteSessionResponse(response *DeleteSessionNoContent, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+	// Encoding response headers.
+	{
+		h := uri.NewHeaderEncoder(w.Header())
+		// Encode "Set-Cookie" header.
+		{
+			cfg := uri.HeaderParameterEncodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+				return e.EncodeValue(conv.StringToString(response.SetCookie))
+			}); err != nil {
+				return errors.Wrap(err, "encode Set-Cookie header")
+			}
+		}
+	}
 	w.WriteHeader(204)
 
 	return nil

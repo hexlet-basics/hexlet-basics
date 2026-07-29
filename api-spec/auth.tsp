@@ -81,6 +81,28 @@ model CurrentUser {
   user: User | null;
 }
 
+/**
+ * A successful sign-in. Cookie headers are part of the HTTP contract so the
+ * implementation stays behind the generated ogen seam.
+ */
+model SessionResponse {
+  @header("Set-Cookie") setCookie: string;
+  @body user: User;
+}
+
+/** A successful sign-out with the expired auth cookies. */
+model SessionDeleted {
+  @statusCode statusCode: 204;
+  @header("Set-Cookie") setCookie: string;
+}
+
+/** A newly-created user and the auth cookies issued for that user. */
+model UserCreated {
+  @statusCode statusCode: 201;
+  @header("Set-Cookie") setCookie: string;
+  @body user: User;
+}
+
 /** The signed-in user's dashboard (legacy: `MyController#show`). */
 model MyDashboard {
   startedCourseMembers: CourseMember[];
@@ -98,12 +120,12 @@ interface Session {
   /** Log in with email + password; sets the JWT cookie. */
   @post
   @operationId("createSession")
-  create(@body body: SessionInput): User | ValidationError;
+  create(@body body: SessionInput): SessionResponse | ValidationError;
 
   /** Log out; clears the JWT cookie. */
   @delete
   @operationId("deleteSession")
-  delete(): NoContent;
+  delete(): SessionDeleted;
 }
 
 @route("/me")
@@ -112,7 +134,7 @@ interface Me {
   /** Resolve the current user from the session cookie (for SSR). */
   @get
   @operationId("getCurrentUser")
-  get(): CurrentUser;
+  get(@header("Cookie") cookie?: string): CurrentUser;
 }
 
 @route("/my")
@@ -132,10 +154,7 @@ interface Registration {
   /** Sign up; sets the JWT cookie on success. */
   @post
   @operationId("createUser")
-  create(@body body: SignUpInput): {
-    @statusCode statusCode: 201;
-    @body user: User;
-  } | ValidationError;
+  create(@body body: SignUpInput): UserCreated | ValidationError;
 }
 
 @route("/magic_links")

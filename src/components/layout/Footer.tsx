@@ -58,7 +58,6 @@ export default function Footer() {
             </Stack>
 
             {landingGroups.map((group, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: two stable groups
               <Stack key={index} gap="sm">
                 <Text fw="bold" fz="sm">
                   {t(($) => $.layouts.shared.footer.courses, {

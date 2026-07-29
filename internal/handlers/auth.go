@@ -1,193 +1,220 @@
 package handlers
 
 import (
-	"encoding/json"
+	"bytes"
+	"context"
+	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"time"
 
+	pkgzauth "github.com/go-pkgz/auth/v2"
+	"github.com/go-pkgz/auth/v2/provider"
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/config"
 )
 
-// AuthHandler implements the email+password auth endpoints (ADR-0003). These
-// live outside the generated ogen layer because they must set/clear the JWT
-// cookie on the raw http.ResponseWriter, which ogen's typed handlers can't reach
-// (the same reason attachments/webhooks are hand-mounted — see router.go). The
-// contract paths (`POST /session`, `DELETE /session`, `POST /users`, `GET /me`)
-// are mounted ahead of the ogen catch-all, so the generated TS client hits these
-// implementations instead of the UnimplementedHandler 501s.
-//
-// The JWT is minted and read with go-pkgz/auth's token.Service so we reuse its
-// cookie handling; the cookie name defaults to `JWT`, matching the frontend
-// (lib/auth.ts) and go-pkgz's own default.
-type AuthHandler struct {
-	db   *ent.Client
-	conv apiconv.Converter
-	jwt  *token.Service
-}
-
 const (
-	// Access-token lifetime and cookie lifetime. Short-ish token TTL is the
-	// accepted trade for JWT's lack of server-side revocation (ADR-0003).
 	authTokenTTL  = 24 * time.Hour
 	authCookieTTL = 31 * 24 * time.Hour
 	authIssuer    = "hexlet-basics"
+	authCookie    = "JWT"
 )
 
-// NewAuthHandler builds the JWT service from the configured secret.
+// AuthHandler adapts go-pkgz/auth's HTTP-oriented JWT/direct-provider model to
+// the generated ogen interface. The adapter captures the provider's cookie and
+// returns it as the Set-Cookie response header modeled in TypeSpec; the public
+// HTTP seam therefore remains the generated contract.
+type AuthHandler struct {
+	db         *ent.Client
+	conv       apiconv.Converter
+	jwt        *token.Service
+	directAuth http.Handler
+}
+
+// NewAuthHandler builds the auth implementation used by the ogen handlers.
 func NewAuthHandler(db *ent.Client, cfg *config.Config) *AuthHandler {
-	jwtService := token.NewService(token.Opts{
+	tokenOpts := token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
 			return cfg.JWTSecret, nil
 		}),
 		Issuer:         authIssuer,
 		TokenDuration:  authTokenTTL,
 		CookieDuration: authCookieTTL,
-		// The SPA sends the cookie via `credentials: include` and does not carry
-		// an XSRF header, so XSRF double-submit is disabled here. SameSite=Lax
-		// blocks the cross-site POSTs that XSRF protects against for now.
-		DisableXSRF: true,
-		SameSite:    http.SameSiteLaxMode,
+		DisableXSRF:    true,
+		SameSite:       http.SameSiteLaxMode,
+	}
+
+	authService := pkgzauth.NewService(pkgzauth.Opts{
+		SecretReader:   tokenOpts.SecretReader,
+		Issuer:         tokenOpts.Issuer,
+		TokenDuration:  tokenOpts.TokenDuration,
+		CookieDuration: tokenOpts.CookieDuration,
+		DisableXSRF:    tokenOpts.DisableXSRF,
+		SameSiteCookie: tokenOpts.SameSite,
 	})
-	return &AuthHandler{db: db, conv: &apiconv.ConverterImpl{}, jwt: jwtService}
+	authService.AddDirectProvider("direct", provider.CredCheckerFunc(func(email, password string) (bool, error) {
+		u, err := db.User.Query().Where(user.Email(email)).Only(context.Background())
+		if ent.IsNotFound(err) || err == nil && u.PasswordDigest == nil {
+			return false, nil
+		}
+		if err != nil {
+			return false, err
+		}
+		return bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password)) == nil, nil
+	}))
+	directAuth, _ := authService.Handlers()
+
+	return &AuthHandler{
+		db:         db,
+		conv:       &apiconv.ConverterImpl{},
+		jwt:        token.NewService(tokenOpts),
+		directAuth: directAuth,
+	}
 }
 
-// Login verifies email+password (legacy bcrypt digest) and sets the JWT cookie.
-// Contract: createSession — `POST /session` → User | ValidationError.
-func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var in struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		writeValidationError(w, "base", "Invalid request body")
-		return
-	}
-
-	u, err := h.db.User.Query().Where(user.Email(in.Email)).Only(r.Context())
-	// A missing user and a wrong password return the same generic error so the
-	// response can't be used to enumerate registered emails.
-	if err != nil || u.PasswordDigest == nil ||
-		bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(in.Password)) != nil {
-		writeValidationError(w, "password", "Wrong email or password")
-		return
+// CreateSession delegates credential verification and JWT issuance to the
+// go-pkgz/auth direct provider, then maps its response to the contract model.
+func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) (api.CreateSessionRes, error) {
+	body := fmt.Sprintf(`{"user":%q,"passwd":%q,"aud":%q}`, req.Email, req.Password, authIssuer)
+	authReq := httptest.NewRequest(http.MethodPost, "/auth/direct/login", bytes.NewBufferString(body)).
+		WithContext(ctx)
+	authReq.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	h.directAuth.ServeHTTP(rec, authReq)
+	if rec.Code != http.StatusOK {
+		return validationError("password", "Wrong email or password"), nil
 	}
 
-	if err := h.setSession(w, u); err != nil {
-		writeValidationError(w, "base", "Could not start a session")
-		return
-	}
-	apiUser := h.conv.ToUser(u)
-	writeJSON(w, http.StatusOK, &apiUser)
-}
-
-// Register creates an account (bcrypt-hashing the password) and signs the user
-// in. Contract: createUser — `POST /users` → 201 User | ValidationError. Email
-// uniqueness is enforced by the baseline DB index; a duplicate surfaces as a
-// 422 keyed on `email`, matching the admin CRUD's constraint handling.
-func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var in struct {
-		FirstName *string `json:"firstName"`
-		Email     string  `json:"email"`
-		Password  string  `json:"password"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		writeValidationError(w, "base", "Invalid request body")
-		return
-	}
-
-	hash, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
+	u, err := h.db.User.Query().Where(user.Email(req.Email)).Only(ctx)
 	if err != nil {
-		writeValidationError(w, "password", "Could not process the password")
-		return
+		return nil, err
+	}
+	cookie, err := responseCookie(rec, authCookie)
+	if err != nil {
+		return nil, err
+	}
+	return &api.UserHeaders{SetCookie: cookie, Response: h.conv.ToUser(u)}, nil
+}
+
+// CreateUser creates an account and issues the same go-pkgz/auth JWT cookie
+// used by the direct provider.
+func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api.CreateUserRes, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return validationError("password", "Could not process the password"), nil
+	}
+	var firstName *string
+	if value, ok := req.FirstName.Get(); ok {
+		firstName = &value
 	}
 
 	u, err := h.db.User.Create().
-		SetEmail(in.Email).
+		SetEmail(req.Email).
 		SetPasswordDigest(string(hash)).
-		SetNillableFirstName(in.FirstName).
-		Save(r.Context())
+		SetNillableFirstName(firstName).
+		Save(ctx)
 	if err != nil {
-		// Most likely the unique-email constraint; surface it on the email field.
-		writeValidationError(w, "email", "This email is already taken")
-		return
+		return validationError("email", "This email is already taken"), nil
 	}
 
-	if err := h.setSession(w, u); err != nil {
-		writeValidationError(w, "base", "Could not start a session")
-		return
+	cookie, err := h.issueCookie(u)
+	if err != nil {
+		return nil, err
 	}
-	apiUser := h.conv.ToUser(u)
-	writeJSON(w, http.StatusCreated, &apiUser)
+	return &api.UserHeaders{SetCookie: cookie, Response: h.conv.ToUser(u)}, nil
 }
 
-// Logout clears the JWT cookie. Contract: deleteSession — `DELETE /session` →
-// 204.
-func (h *AuthHandler) Logout(w http.ResponseWriter, _ *http.Request) {
-	h.jwt.Reset(w)
-	w.WriteHeader(http.StatusNoContent)
+// DeleteSession returns the expired JWT cookie through ogen's typed response.
+func (h *AuthHandler) DeleteSession(context.Context) (*api.DeleteSessionNoContent, error) {
+	rec := httptest.NewRecorder()
+	h.jwt.Reset(rec)
+	cookie, err := responseCookie(rec, authCookie)
+	if err != nil {
+		return nil, err
+	}
+	return &api.DeleteSessionNoContent{SetCookie: cookie}, nil
 }
 
-// Me resolves the current user from the JWT cookie for SSR. Contract:
-// getCurrentUser — `GET /me` → CurrentUser ({ user: User | null }). An absent or
-// invalid cookie is not an error: it simply yields `{ user: null }`.
-func (h *AuthHandler) Me(w http.ResponseWriter, r *http.Request) {
-	claims, _, err := h.jwt.Get(r)
+// GetCurrentUser resolves the optional Cookie request header modeled by the
+// contract. Missing, invalid, or stale sessions are anonymous.
+func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentUserParams) (*api.CurrentUser, error) {
+	authReq := httptest.NewRequest(http.MethodGet, "/me", nil).WithContext(ctx)
+	if cookie, ok := params.Cookie.Get(); ok {
+		authReq.Header.Set("Cookie", cookie)
+	}
+	claims, _, err := h.jwt.Get(authReq)
 	if err != nil || claims.User == nil {
-		writeJSON(w, http.StatusOK, map[string]any{"user": nil})
-		return
+		return anonymousCurrentUser(), nil
 	}
-	id, err := strconv.Atoi(claims.User.ID)
-	if err != nil {
-		writeJSON(w, http.StatusOK, map[string]any{"user": nil})
-		return
-	}
-	u, err := h.db.User.Get(r.Context(), id)
-	if err != nil {
-		writeJSON(w, http.StatusOK, map[string]any{"user": nil})
-		return
-	}
-	apiUser := h.conv.ToUser(u)
-	writeJSON(w, http.StatusOK, map[string]any{"user": &apiUser})
-}
 
-// setSession mints a JWT carrying the user id and writes it as the auth cookie.
-func (h *AuthHandler) setSession(w http.ResponseWriter, u *ent.User) error {
-	id := strconv.Itoa(u.ID)
-	claims := token.Claims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			ID:        id,
-			Issuer:    authIssuer,
-			Audience:  jwt.ClaimStrings{authIssuer},
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(authTokenTTL)),
-		},
-		User: &token.User{ID: id, Name: userDisplayName(u)},
-	}
-	_, err := h.jwt.Set(w, claims)
-	return err
-}
-
-// userDisplayName mirrors the api User `name` fallback (first+last, else email).
-func userDisplayName(u *ent.User) string {
-	name := ""
-	if u.FirstName != nil {
-		name = *u.FirstName
-	}
-	if u.LastName != nil {
-		if name != "" {
-			name += " "
+	u, err := h.db.User.Query().Where(user.Email(claims.User.Name)).Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return anonymousCurrentUser(), nil
 		}
-		name += *u.LastName
+		return nil, err
 	}
-	if name == "" && u.Email != nil {
-		name = *u.Email
+	return &api.CurrentUser{User: api.NewNilUser(h.conv.ToUser(u))}, nil
+}
+
+func (h *AuthHandler) issueCookie(u *ent.User) (string, error) {
+	rec := httptest.NewRecorder()
+	_, err := h.jwt.Set(rec, token.Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ID:       strconv.Itoa(u.ID),
+			Issuer:   authIssuer,
+			Audience: jwt.ClaimStrings{authIssuer},
+		},
+		User: &token.User{ID: strconv.Itoa(u.ID), Name: *u.Email},
+	})
+	if err != nil {
+		return "", err
 	}
-	return name
+	return responseCookie(rec, authCookie)
+}
+
+func responseCookie(rec *httptest.ResponseRecorder, name string) (string, error) {
+	for _, cookie := range rec.Result().Cookies() {
+		if cookie.Name == name {
+			return cookie.String(), nil
+		}
+	}
+	return "", fmt.Errorf("%s cookie missing from auth response", name)
+}
+
+func validationError(field, message string) *api.ValidationError {
+	return &api.ValidationError{Errors: api.ValidationErrorErrors{field: {message}}}
+}
+
+func anonymousCurrentUser() *api.CurrentUser {
+	var user api.NilUser
+	user.SetToNull()
+	return &api.CurrentUser{User: user}
+}
+
+// The generated api.Handler seam is implemented by Server; auth remains a
+// cohesive module behind four deliberately small forwarding methods.
+func (s *Server) CreateSession(ctx context.Context, req *api.SessionInput) (api.CreateSessionRes, error) {
+	return s.auth.CreateSession(ctx, req)
+}
+
+func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.CreateUserRes, error) {
+	return s.auth.CreateUser(ctx, req)
+}
+
+func (s *Server) DeleteSession(ctx context.Context) (*api.DeleteSessionNoContent, error) {
+	return s.auth.DeleteSession(ctx)
+}
+
+func (s *Server) GetCurrentUser(ctx context.Context, params api.GetCurrentUserParams) (*api.CurrentUser, error) {
+	return s.auth.GetCurrentUser(ctx, params)
 }

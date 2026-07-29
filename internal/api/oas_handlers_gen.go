@@ -12393,12 +12393,12 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.DeleteSession(ctx)
+				response, err = s.h.DeleteSession(ctx)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.DeleteSession(ctx)
+		response, err = s.h.DeleteSession(ctx)
 	}
 	if err != nil {
 		defer recordError("Internal", err)
@@ -12918,8 +12918,22 @@ func (s *Server) handleGetCurrentUserRequest(args [0]string, argsEscaped bool, w
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetCurrentUserOperation,
+			ID:   "getCurrentUser",
+		}
 	)
+	params, err := decodeGetCurrentUserParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		defer recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
 
 	var rawBody []byte
 
@@ -12932,13 +12946,18 @@ func (s *Server) handleGetCurrentUserRequest(args [0]string, argsEscaped bool, w
 			OperationID:      "getCurrentUser",
 			Body:             nil,
 			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
+			Params: middleware.Parameters{
+				{
+					Name: "Cookie",
+					In:   "header",
+				}: params.Cookie,
+			},
+			Raw: r,
 		}
 
 		type (
 			Request  = struct{}
-			Params   = struct{}
+			Params   = GetCurrentUserParams
 			Response = *CurrentUser
 		)
 		response, err = middleware.HookMiddleware[
@@ -12948,14 +12967,14 @@ func (s *Server) handleGetCurrentUserRequest(args [0]string, argsEscaped bool, w
 		](
 			m,
 			mreq,
-			nil,
+			unpackGetCurrentUserParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.GetCurrentUser(ctx)
+				response, err = s.h.GetCurrentUser(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.GetCurrentUser(ctx)
+		response, err = s.h.GetCurrentUser(ctx, params)
 	}
 	if err != nil {
 		defer recordError("Internal", err)

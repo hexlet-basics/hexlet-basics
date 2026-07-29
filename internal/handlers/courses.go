@@ -28,11 +28,18 @@ type Server struct {
 	conv    apiconv.Converter
 	cfg     *config.Config
 	starter VersionBuildStarter
+	auth    *AuthHandler
 }
 
 // NewServer wires the handler to its dependencies.
 func NewServer(db *ent.Client, cfg *config.Config, starter VersionBuildStarter) *Server {
-	return &Server{db: db, conv: &apiconv.ConverterImpl{}, cfg: cfg, starter: starter}
+	return &Server{
+		db:      db,
+		conv:    &apiconv.ConverterImpl{},
+		cfg:     cfg,
+		starter: starter,
+		auth:    NewAuthHandler(db, cfg),
+	}
 }
 
 // ListCourses returns the published course catalog.

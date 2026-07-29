@@ -35,7 +35,7 @@ jobs:
 
       - run: pnpm install
 
-      # gofmt + go vet + golangci-lint (Go) and biome + tsc (frontend).
+      # gofmt + go vet + golangci-lint (Go) and tsc (frontend).
       - run: make lint
 
   test-web:

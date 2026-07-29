@@ -473,7 +473,7 @@ type Invoker interface {
 	// Log out; clears the JWT cookie.
 	//
 	// DELETE /session
-	DeleteSession(ctx context.Context) error
+	DeleteSession(ctx context.Context) (*DeleteSessionNoContent, error)
 	// GetBlogPost invokes getBlogPost operation.
 	//
 	// A single blog post by slug.
@@ -497,7 +497,7 @@ type Invoker interface {
 	// Resolve the current user from the session cookie (for SSR).
 	//
 	// GET /me
-	GetCurrentUser(ctx context.Context) (*CurrentUser, error)
+	GetCurrentUser(ctx context.Context, params GetCurrentUserParams) (*CurrentUser, error)
 	// GetMyDashboard invokes getMyDashboard operation.
 	//
 	// The signed-in user's course dashboard.
@@ -9376,9 +9376,9 @@ func (c *Client) sendDeletePasskey(ctx context.Context, params DeletePasskeyPara
 // Log out; clears the JWT cookie.
 //
 // DELETE /session
-func (c *Client) DeleteSession(ctx context.Context) error {
-	_, err := c.sendDeleteSession(ctx)
-	return err
+func (c *Client) DeleteSession(ctx context.Context) (*DeleteSessionNoContent, error) {
+	res, err := c.sendDeleteSession(ctx)
+	return res, err
 }
 
 func (c *Client) sendDeleteSession(ctx context.Context) (res *DeleteSessionNoContent, err error) {
@@ -9769,12 +9769,12 @@ func (c *Client) sendGetCourseLesson(ctx context.Context, params GetCourseLesson
 // Resolve the current user from the session cookie (for SSR).
 //
 // GET /me
-func (c *Client) GetCurrentUser(ctx context.Context) (*CurrentUser, error) {
-	res, err := c.sendGetCurrentUser(ctx)
+func (c *Client) GetCurrentUser(ctx context.Context, params GetCurrentUserParams) (*CurrentUser, error) {
+	res, err := c.sendGetCurrentUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendGetCurrentUser(ctx context.Context) (res *CurrentUser, err error) {
+func (c *Client) sendGetCurrentUser(ctx context.Context, params GetCurrentUserParams) (res *CurrentUser, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCurrentUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -9819,6 +9819,23 @@ func (c *Client) sendGetCurrentUser(ctx context.Context) (res *CurrentUser, err 
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "EncodeHeaderParams"
+	h := uri.NewHeaderEncoder(r.Header)
+	{
+		cfg := uri.HeaderParameterEncodingConfig{
+			Name:    "Cookie",
+			Explode: false,
+		}
+		if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Cookie.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode header")
+		}
 	}
 
 	stage = "SendRequest"

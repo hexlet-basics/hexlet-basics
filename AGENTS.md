@@ -105,9 +105,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 ## Lint & Typecheck
 
 - `make lint` — Go (`gofmt` check, `go vet`, `golangci-lint`) + frontend
-  (`biome check`, `tsc -b`). The pre-push hook runs this; pushes need it clean.
-- `make lint-fix` — `gofmt -w`, `golangci-lint --fix`, `pnpm lint:fix`.
-- Single frontend file: `pnpm exec biome check [--write] src/path/to/file.tsx`.
+  (`tsc -b`). The pre-push hook runs this; pushes need it clean.
+- `make lint-fix` — `gofmt -w`, `golangci-lint --fix`.
 - Go vet/build only: `go vet ./...`, `go build ./...`.
 
 ## Test
@@ -140,8 +139,6 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   `fetch`. If an endpoint is missing, add it in TypeSpec and regenerate.
 - State: `zustand`; validation: `zod`; i18n: `i18next` + `react-i18next`
   (`src/locales/`, config via `i18next-cli`). Animation: `motion`.
-- Frontend formatting is Biome (single quotes, spaces) — run Biome, don't
-  hand-format.
 
 ## Generated / Do-Not-Edit Files (root)
 
@@ -193,7 +190,7 @@ Change the source, run the generator, commit the output. Never hand-edit or
   handler and, if needed, the frontend client usage → run the narrowest Go test.
 - After Go changes: `go build ./...`, then `go test ./...` (or a single package);
   `make test-prepare` first if the test needs the DB.
-- After frontend changes: `pnpm exec biome check` and `tsc -b` (`pnpm check`).
+- After frontend changes: run `tsc -b` (`pnpm check`).
 - Before finishing substantial work: `make lint` and the most relevant tests.
 - Prefer minimal diffs; don't start broad refactors or "normalize" unrelated
   files. When unsure whether a file is generated, find its generator before

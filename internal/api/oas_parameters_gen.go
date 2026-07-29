@@ -7096,6 +7096,68 @@ func decodeGetCourseLessonParams(args [2]string, argsEscaped bool, r *http.Reque
 	return params, nil
 }
 
+// GetCurrentUserParams is parameters of getCurrentUser operation.
+type GetCurrentUserParams struct {
+	Cookie OptString `json:",omitempty,omitzero"`
+}
+
+func unpackGetCurrentUserParams(packed middleware.Parameters) (params GetCurrentUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "Cookie",
+			In:   "header",
+		}
+		if v, ok := packed[key]; ok {
+			params.Cookie = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeGetCurrentUserParams(args [0]string, argsEscaped bool, r *http.Request) (params GetCurrentUserParams, _ error) {
+	h := uri.NewHeaderDecoder(r.Header)
+	// Decode header: Cookie.
+	if err := func() error {
+		cfg := uri.HeaderParameterDecodingConfig{
+			Name:    "Cookie",
+			Explode: false,
+		}
+		if err := h.HasParam(cfg); err == nil {
+			if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotCookieVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotCookieVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Cookie.SetTo(paramsDotCookieVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "Cookie",
+			In:   "header",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetNextBlogPostParams is parameters of getNextBlogPost operation.
 type GetNextBlogPostParams struct {
 	ID int32

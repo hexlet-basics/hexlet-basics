@@ -3158,6 +3158,9 @@ export type GetSitemapResponse = GetSitemapResponses[keyof GetSitemapResponses];
 
 export type GetCurrentUserData = {
   body?: never;
+  headers?: {
+    Cookie?: string;
+  };
   path?: never;
   query?: never;
   url: '/me';
@@ -3440,7 +3443,7 @@ export type DeleteSessionData = {
 
 export type DeleteSessionResponses = {
   /**
-   * Empty 204 response for deletes and other content-less successes.
+   * A successful sign-out with the expired auth cookies.
    */
   204: void;
 };
@@ -3467,7 +3470,8 @@ export type CreateSessionError = CreateSessionErrors[keyof CreateSessionErrors];
 
 export type CreateSessionResponses = {
   /**
-   * The request has succeeded.
+   * A successful sign-in. Cookie headers are part of the HTTP contract so the
+   * implementation stays behind the generated ogen seam.
    */
   200: User;
 };
@@ -3494,7 +3498,7 @@ export type CreateUserError = CreateUserErrors[keyof CreateUserErrors];
 
 export type CreateUserResponses = {
   /**
-   * The request has succeeded and a new resource has been created as a result.
+   * A newly-created user and the auth cookies issued for that user.
    */
   201: User;
 };

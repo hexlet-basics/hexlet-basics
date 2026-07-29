@@ -1850,6 +1850,10 @@ export const zConsumeMagicLinkResponse = zUser;
  */
 export const zGetSitemapResponse = zSitemap;
 
+export const zGetCurrentUserHeaders = z.object({
+  Cookie: z.string().optional()
+});
+
 /**
  * The request has succeeded.
  */
@@ -1935,20 +1939,21 @@ export const zListPublicReviewsQuery = z.object({
 export const zListPublicReviewsResponse = zReviewPage;
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * A successful sign-out with the expired auth cookies.
  */
 export const zDeleteSessionResponse = z.void();
 
 export const zCreateSessionBody = zSessionInput;
 
 /**
- * The request has succeeded.
+ * A successful sign-in. Cookie headers are part of the HTTP contract so the
+ * implementation stays behind the generated ogen seam.
  */
 export const zCreateSessionResponse = zUser;
 
 export const zCreateUserBody = zSignUpInput;
 
 /**
- * The request has succeeded and a new resource has been created as a result.
+ * A newly-created user and the auth cookies issued for that user.
  */
 export const zCreateUserResponse = zUser;
