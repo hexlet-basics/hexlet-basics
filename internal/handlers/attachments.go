@@ -15,11 +15,13 @@ import (
 const multipartOverheadBytes = 1 << 20
 
 // AttachmentHandler serves the multipart upload + blob read path that lives
-// OUTSIDE the ogen-generated router. ogen cannot generate multipart/form-data
-// (see internal/apigen/ogen.yml), so `POST /admin/attachments` and the
-// `GET /storage/{key}` read-back are plain net/http adapters mounted alongside
-// the generated api.Server by NewRouter. Asset lifecycle invariants live in
-// assetstore.Store rather than in this transport adapter.
+// OUTSIDE the ogen-generated router. ogen supports multipart uploads, but 1.23
+// cannot generate the OpenAPI requestBody Encoding Object that TypeSpec emits
+// for HttpPart<File> (see internal/apigen/ogen.yml). Consequently,
+// `POST /admin/attachments` temporarily remains a plain net/http adapter;
+// `GET /storage/{key}` is the read-back path mounted alongside the generated
+// api.Server by NewRouter. Asset lifecycle invariants live in assetstore.Store
+// rather than in this transport adapter.
 type AttachmentHandler struct {
 	assets *assetstore.Store
 	i18n   *localization.Translator

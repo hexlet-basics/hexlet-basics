@@ -53,8 +53,8 @@ func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 }
 
 // newAttachmentRouter builds the real router over an in-memory blob bucket and a
-// transaction-bound ent client. The api side is a stub — these tests exercise only the
-// multipart/blob routes, which live outside the generated server.
+// transaction-bound ent client. The api side is a stub — these tests exercise the
+// temporary upload adapter and blob read route outside the generated server.
 func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Helper()
 	db := testsupport.NewClient(t)

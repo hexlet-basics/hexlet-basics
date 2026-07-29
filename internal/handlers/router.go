@@ -2,9 +2,10 @@ package handlers
 
 import "net/http"
 
-// NewRouter composes the full HTTP surface: the multipart/blob routes that ogen
-// cannot generate (ADR-0005, internal/apigen/ogen.yml) plus the generated
-// api.Server for everything else.
+// NewRouter composes the full HTTP surface: the temporary multipart upload
+// adapter required by ogen's missing requestBody.encoding support, the blob
+// read route (ADR-0005, internal/apigen/ogen.yml), and the generated api.Server
+// for everything else.
 //
 // The generated server is mounted at the catch-all `/`; the explicit method+path
 // patterns for the attachment routes are strictly more specific, so Go's

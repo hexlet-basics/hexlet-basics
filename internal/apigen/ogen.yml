@@ -1,10 +1,15 @@
 # ogen generator config (used by go:generate in gen.go).
 #
-# ogen 1.23 cannot yet generate multipart/form-data ("form content encoding"),
-# which the shared file-upload endpoint (POST /admin/attachments) uses. Skip
-# only that unsupported operation so the rest of the Go server still generates.
-# The endpoint stays in the OpenAPI contract for the hey-api frontend client;
-# its Go handler is a future wave (asset storage, ADR-0005).
+# ogen 1.23 generates multipart/form-data uploads, but rejects the OpenAPI
+# requestBody Encoding Object ("form content encoding"). TypeSpec 1.14 emits
+# `encoding.file.contentType: "*/*"` for the upload's `HttpPart<File>`, which
+# triggers that unsupported feature. Track upstream support in:
+# https://github.com/ogen-go/ogen/issues/1159
+#
+# Ignore only operations that use the unsupported Encoding Object so the rest
+# of the Go server still generates. POST /admin/attachments remains in the
+# OpenAPI contract and generated TypeScript client; its temporary net/http
+# adapter must stay until ogen can generate the unchanged contract.
 generator:
   ignore_not_implemented:
     - "form content encoding"

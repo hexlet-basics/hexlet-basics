@@ -46,8 +46,10 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   interface. Until you implement it, the embedded `api.UnimplementedHandler`
   keeps it compiling as "not implemented" — so the build never breaks on a
   contract addition; you fill in the handler after.
-- ogen **cannot generate multipart** endpoints (see `ogen.yml` skips) — handle
-  those outside the generated layer.
+- ogen 1.23 generates multipart uploads, but not OpenAPI `requestBody.encoding`.
+  TypeSpec currently emits `encoding.file.contentType: "*/*"` for
+  `HttpPart<File>`, so that upload operation is skipped in `ogen.yml` and
+  temporarily handled outside the generated layer.
 
 ## Architecture: Handlers, DI, and Data
 
