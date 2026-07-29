@@ -35,10 +35,23 @@ recovers panics, retries a handler three times with short exponential backoff,
 then Nacks the message for durable SQL redelivery. A stuck consumer group does
 not block independent groups.
 
-The first contract is `user_signed_up` schema version 1. Its payload captures
-the legacy-compatible user and locale snapshot plus occurrence time. The
-initial production consumer validates and logs the event id, name, user id, and
-time without logging the event's PII fields.
+Schema version 1 defines all legacy event names and data shapes:
+`user_signed_up`, `user_signed_in`, `book_requested`, `course_started`,
+`course_finished`, `lesson_started`, `lesson_finished`, `solution_checked`,
+`email_confirmed`, and `lead_created`. Occurrence time is added to each Go
+contract because Rails Event Store previously supplied that fact in its event
+record rather than in `data`.
+
+The runtime observes every event and logs only its event id, stable name, and
+schema version, never its payload. The legacy `AmocrmHandler` is represented by
+the `lead_created_to_amocrm_v1` Watermill consumer. It enqueues an
+arguments-unique River job; the job performs the amoCRM call so Watermill
+remains routing-only and River owns external-call retries. The amoCRM
+`source_uid` also includes the lead id to make redelivery idempotent.
+
+Only events whose corresponding write use case exists in the Go application
+are emitted today. New write paths must publish the matching contract in the
+same database transaction instead of calling integrations from HTTP handlers.
 
 Version 1 retains domain-event rows indefinitely for replay and diagnosis.
 Retention or PII erasure must be designed explicitly before adding a cleanup

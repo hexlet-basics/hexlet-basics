@@ -3,7 +3,6 @@ package events
 import (
 	"bytes"
 	"context"
-	"database/sql"
 	"fmt"
 	"io"
 	"log/slog"
@@ -45,6 +44,29 @@ func TestObserverLogsIdentityWithoutPII(t *testing.T) {
 	assert.Contains(t, logged, `"event_name":"user_signed_up"`)
 	assert.NotContains(t, logged, email)
 	assert.NotContains(t, logged, firstName)
+}
+
+func TestLegacyEventNames(t *testing.T) {
+	tests := []struct {
+		event Event
+		name  string
+	}{
+		{UserSignedUp{}, "user_signed_up"},
+		{UserSignedIn{}, "user_signed_in"},
+		{BookRequested{}, "book_requested"},
+		{CourseStarted{}, "course_started"},
+		{CourseFinished{}, "course_finished"},
+		{LessonStarted{}, "lesson_started"},
+		{LessonFinished{}, "lesson_finished"},
+		{SolutionChecked{}, "solution_checked"},
+		{EmailConfirmed{}, "email_confirmed"},
+		{LeadCreated{}, "lead_created"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.name, nameOf(tt.event))
+		})
+	}
 }
 
 func TestSQLRouterFansOutToIndependentConsumerGroups(t *testing.T) {
@@ -147,5 +169,3 @@ func TestSQLRouterFansOutToIndependentConsumerGroups(t *testing.T) {
 	`, groupA, groupB).Scan(&groups))
 	assert.Zero(t, groups, fmt.Sprintf("test consumer offsets must be cleaned: %s, %s", groupA, groupB))
 }
-
-var _ *sql.DB

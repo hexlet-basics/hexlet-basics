@@ -15,14 +15,16 @@ import (
 
 type recordingInserter struct {
 	args river.JobArgs
+	opts *river.InsertOpts
 }
 
 func (r *recordingInserter) Insert(
 	_ context.Context,
 	args river.JobArgs,
-	_ *river.InsertOpts,
+	opts *river.InsertOpts,
 ) (*rivertype.JobInsertResult, error) {
 	r.args = args
+	r.opts = opts
 	return &rivertype.JobInsertResult{}, nil
 }
 
@@ -36,4 +38,6 @@ func TestLeadCreatedEnqueuesAmoCRMJob(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, *event, job.Event)
 	assert.Equal(t, leadCreatedHandlerName, handler.HandlerName())
+	require.NotNil(t, inserter.opts)
+	assert.True(t, inserter.opts.UniqueOpts.ByArgs)
 }
