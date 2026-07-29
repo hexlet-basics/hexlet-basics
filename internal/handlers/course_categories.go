@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/inputconv"
 )
 
 // AdminListCourseCategories returns a page of course categories, newest first.
@@ -40,7 +41,7 @@ func (s *Server) AdminCreateCourseCategory(ctx context.Context, req *api.CourseC
 		SetName(req.Name).
 		SetHeader(req.Header).
 		SetSlug(req.Slug).
-		SetNillableDescription(descriptionPtr(req)).
+		SetNillableDescription(inputconv.Ptr(req.Description)).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -77,11 +78,4 @@ func (s *Server) AdminUpdateCourseCategory(ctx context.Context, req *api.CourseC
 // returns ent's not-found error (mapped to 404 centrally).
 func (s *Server) AdminDeleteCourseCategory(ctx context.Context, params api.AdminDeleteCourseCategoryParams) error {
 	return s.db.CourseCategory.DeleteOneID(int(params.ID)).Exec(ctx)
-}
-
-func descriptionPtr(req *api.CourseCategoryInput) *string {
-	if req.Description.Null {
-		return nil
-	}
-	return &req.Description.Value
 }

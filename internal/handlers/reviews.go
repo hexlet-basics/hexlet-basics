@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/review"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/inputconv"
 )
 
 // withReviewEdges loads the course (with its current version, which ToCourse
@@ -44,11 +45,11 @@ func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewPa
 // response carries the full embedded course and user.
 func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (*api.Review, error) {
 	create := s.db.Review.Create().
-		SetNillableBody(nilStringPtr(req.Body)).
-		SetNillableFirstName(nilStringPtr(req.FirstName)).
-		SetNillableLastName(nilStringPtr(req.LastName)).
-		SetNillablePinned(nilBoolPtr(req.Pinned)).
-		SetNillableState(nilReviewStatePtr(req.State))
+		SetNillableBody(inputconv.Ptr(req.Body)).
+		SetNillableFirstName(inputconv.Ptr(req.FirstName)).
+		SetNillableLastName(inputconv.Ptr(req.LastName)).
+		SetNillablePinned(inputconv.Ptr(req.Pinned)).
+		SetNillableState(inputconv.StringPtr(req.State))
 	if !req.CourseId.Null {
 		create.SetLanguageID(int(req.CourseId.Value))
 	}
@@ -113,14 +114,4 @@ func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, pa
 // error (mapped to 404 centrally).
 func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteReviewParams) error {
 	return s.db.Review.DeleteOneID(int(params.ID)).Exec(ctx)
-}
-
-// nilReviewStatePtr resolves ogen's NilReviewState to a *string for ent's
-// SetNillableState, where nil leaves the nullable column unset (null) on create.
-func nilReviewStatePtr(v api.NilReviewState) *string {
-	if v.Null {
-		return nil
-	}
-	s := string(v.Value)
-	return &s
 }

@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/inputconv"
 )
 
 // searchUsersLimit mirrors the legacy typeahead cap (`.limit(20)`).
@@ -59,9 +60,9 @@ func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (*api.UserCrud, error) {
 	row, err := s.db.User.Create().
 		SetEmail(req.Email).
-		SetNillableFirstName(nilStringPtr(req.FirstName)).
-		SetNillableLastName(nilStringPtr(req.LastName)).
-		SetNillableAdmin(nilBoolPtr(req.Admin)).
+		SetNillableFirstName(inputconv.Ptr(req.FirstName)).
+		SetNillableLastName(inputconv.Ptr(req.LastName)).
+		SetNillableAdmin(inputconv.Ptr(req.Admin)).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -107,13 +108,4 @@ func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params
 // error (mapped to 404 centrally).
 func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) error {
 	return s.db.User.DeleteOneID(int(params.ID)).Exec(ctx)
-}
-
-// nilBoolPtr resolves ogen's NilBool to a *bool for ent's SetNillable*, where
-// nil leaves the nullable column unset (null) on create.
-func nilBoolPtr(v api.NilBool) *bool {
-	if v.Null {
-		return nil
-	}
-	return &v.Value
 }

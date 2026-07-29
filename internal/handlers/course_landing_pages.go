@@ -6,6 +6,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/inputconv"
 )
 
 // withLandingCourse loads the associated course, which supplies the landing
@@ -43,23 +44,23 @@ func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.Admin
 func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput) (*api.CourseLandingPage, error) {
 	row, err := s.db.LandingPage.Create().
 		SetLanguageID(int(req.CourseId)).
-		SetNillableSlug(nilStringPtr(req.Slug)).
-		SetNillableName(nilStringPtr(req.Name)).
-		SetNillableMain(nilBoolPtr(req.Main)).
-		SetNillableListed(nilBoolPtr(req.Listed)).
-		SetNillableFooter(nilBoolPtr(req.Footer)).
-		SetNillableFooterName(nilStringPtr(req.FooterName)).
-		SetNillableState(nilLandingPageStatePtr(req.State)).
-		SetNillableOrder(nilStringPtr(req.Order)).
-		SetNillableLandingPageToRedirectID(nilIntPtr(req.LandingPageToRedirectId)).
-		SetNillableMetaTitle(nilStringPtr(req.MetaTitle)).
-		SetNillableMetaDescription(nilStringPtr(req.MetaDescription)).
-		SetNillableHeader(nilStringPtr(req.Header)).
-		SetNillableDescription(nilStringPtr(req.Description)).
-		SetNillableUsedInHeader(nilStringPtr(req.UsedInHeader)).
-		SetNillableUsedInDescription(nilStringPtr(req.UsedInDescription)).
-		SetNillableOutcomesHeader(nilStringPtr(req.OutcomesHeader)).
-		SetNillableOutcomesDescription(nilStringPtr(req.OutcomesDescription)).
+		SetNillableSlug(inputconv.Ptr(req.Slug)).
+		SetNillableName(inputconv.Ptr(req.Name)).
+		SetNillableMain(inputconv.Ptr(req.Main)).
+		SetNillableListed(inputconv.Ptr(req.Listed)).
+		SetNillableFooter(inputconv.Ptr(req.Footer)).
+		SetNillableFooterName(inputconv.Ptr(req.FooterName)).
+		SetNillableState(inputconv.StringPtr(req.State)).
+		SetNillableOrder(inputconv.Ptr(req.Order)).
+		SetNillableLandingPageToRedirectID(inputconv.IntPtr(req.LandingPageToRedirectId)).
+		SetNillableMetaTitle(inputconv.Ptr(req.MetaTitle)).
+		SetNillableMetaDescription(inputconv.Ptr(req.MetaDescription)).
+		SetNillableHeader(inputconv.Ptr(req.Header)).
+		SetNillableDescription(inputconv.Ptr(req.Description)).
+		SetNillableUsedInHeader(inputconv.Ptr(req.UsedInHeader)).
+		SetNillableUsedInDescription(inputconv.Ptr(req.UsedInDescription)).
+		SetNillableOutcomesHeader(inputconv.Ptr(req.OutcomesHeader)).
+		SetNillableOutcomesDescription(inputconv.Ptr(req.OutcomesDescription)).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -98,24 +99,4 @@ func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.Cour
 
 func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.AdminDeleteCourseLandingPageParams) error {
 	return s.db.LandingPage.DeleteOneID(int(params.ID)).Exec(ctx)
-}
-
-// nilIntPtr resolves ogen's NilInt32 to a *int for ent's SetNillable* on int
-// columns, where nil leaves the nullable column unset (null) on create.
-func nilIntPtr(v api.NilInt32) *int {
-	if v.Null {
-		return nil
-	}
-	n := int(v.Value)
-	return &n
-}
-
-// nilLandingPageStatePtr resolves ogen's NilLandingPageState to a *string for
-// ent's SetNillableState.
-func nilLandingPageStatePtr(v api.NilLandingPageState) *string {
-	if v.Null {
-		return nil
-	}
-	s := string(v.Value)
-	return &s
 }

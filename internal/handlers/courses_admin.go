@@ -7,6 +7,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/inputconv"
 )
 
 // Admin course endpoints (legacy `/admin/languages`). The API embeds the
@@ -42,10 +43,10 @@ func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCoursePa
 
 func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (*api.Course, error) {
 	row, err := s.db.Course.Create().
-		SetNillableSlug(nilStringPtr(req.Slug)).
-		SetNillableLearnAs(nilLearnAsPtr(req.LearnAs)).
-		SetNillableProgress(nilProgressPtr(req.Progress)).
-		SetNillableHexletProgramLandingPage(nilStringPtr(req.HexletProgramLandingPage)).
+		SetNillableSlug(inputconv.Ptr(req.Slug)).
+		SetNillableLearnAs(inputconv.StringPtr(req.LearnAs)).
+		SetNillableProgress(inputconv.StringPtr(req.Progress)).
+		SetNillableHexletProgramLandingPage(inputconv.Ptr(req.HexletProgramLandingPage)).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -89,22 +90,4 @@ func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminC
 
 	body := apiconv.CourseVersionFromEnt(version)
 	return &body, nil
-}
-
-// nilLearnAsPtr / nilProgressPtr resolve ogen's nullable enum wrappers to a
-// *string for ent's SetNillable* on the plain string columns.
-func nilLearnAsPtr(v api.NilCourseLearnAs) *string {
-	if v.Null {
-		return nil
-	}
-	s := string(v.Value)
-	return &s
-}
-
-func nilProgressPtr(v api.NilCourseProgress) *string {
-	if v.Null {
-		return nil
-	}
-	s := string(v.Value)
-	return &s
 }

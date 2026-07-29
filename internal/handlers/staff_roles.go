@@ -7,6 +7,7 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/inputconv"
 )
 
 // roleDetail fetches a role with its permission matrix and converts it to the
@@ -47,7 +48,7 @@ func (s *Server) AdminGetRole(ctx context.Context, params api.AdminGetRoleParams
 func (s *Server) AdminCreateRole(ctx context.Context, req *api.RoleInput) (*api.StaffRoleDetail, error) {
 	row, err := s.db.StaffRole.Create().
 		SetName(req.Name).
-		SetNillableDescription(nilStringPtr(req.Description)).
+		SetNillableDescription(inputconv.Ptr(req.Description)).
 		Save(ctx)
 	if err != nil {
 		return nil, err
