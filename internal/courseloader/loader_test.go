@@ -212,6 +212,36 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 	assert.Equal(t, "failed", derefStr(version.State))
 }
 
+func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
+	db, txStore := testsupport.NewClientWithTransactor(t)
+	ctx := context.Background()
+	repo := t.TempDir()
+	require.NoError(t, os.CopyFS(repo, os.DirFS(fixtureRepo(t))))
+
+	imagePath := filepath.Join(
+		repo,
+		"modules", "10-basics", "10-hello-world", "en", "assets", "dart.png",
+	)
+	image, err := os.ReadFile(imagePath)
+	require.NoError(t, err)
+
+	externalImagePath := filepath.Join(t.TempDir(), "external.png")
+	require.NoError(t, os.WriteFile(externalImagePath, image, 0o644))
+	require.NoError(t, os.Remove(imagePath))
+	require.NoError(t, os.Symlink(externalImagePath, imagePath))
+
+	course := db.Course.Create().SetSlug("loader-image-escape-lang").SetName("Image Escape").SaveX(ctx)
+	version := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
+	loader := newLoaderWith(t, db, txStore, fakeFetcher{dir: repo})
+
+	err = loader.Run(ctx, version.ID)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "open image")
+	version = db.CourseVersion.GetX(ctx, version.ID)
+	assert.Equal(t, "failed", derefStr(version.State))
+}
+
 func derefStr(s *string) string {
 	if s == nil {
 		return ""

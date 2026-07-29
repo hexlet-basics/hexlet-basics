@@ -422,23 +422,17 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 }
 
 // uploadImage opens a theory image referenced relative to the locale dir and
-// delegates its complete storage lifecycle to the shared asset store. The path
-// is confined to localeDir to stop a crafted `../` reference from reading
-// outside the repo checkout.
+// delegates its complete storage lifecycle to the shared asset store. OpenInRoot
+// confines symlink resolution as well as lexical traversal to localeDir.
 func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string, error) {
-	full := filepath.Join(localeDir, filepath.Clean("/"+ref))
-	if !strings.HasPrefix(full, filepath.Clean(localeDir)+string(os.PathSeparator)) {
-		return "", oops.Errorf("image ref %q escapes locale dir", ref)
-	}
-
-	file, err := os.Open(full)
+	file, err := os.OpenInRoot(localeDir, ref)
 	if err != nil {
 		return "", oops.Wrapf(err, "open image %q", ref)
 	}
 	defer func() { _ = file.Close() }()
 
 	attachment, err := l.assets.Put(ctx, assetstore.Upload{
-		Filename: filepath.Base(full),
+		Filename: filepath.Base(ref),
 		Body:     file,
 	})
 	if err != nil {
