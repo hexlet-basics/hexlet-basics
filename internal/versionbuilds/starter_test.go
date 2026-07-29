@@ -62,6 +62,10 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 		_, _ = sqlDB.ExecContext(context.Background(), "DELETE FROM language_versions WHERE id = $1", version.ID)
 	})
 
+	duplicate, err := riverClient.Insert(ctx, jobs.ExerciseLoaderArgs{VersionID: version.ID}, nil)
+	require.NoError(t, err)
+	assert.True(t, duplicate.UniqueSkippedAsDuplicate)
+
 	saved, err := db.CourseVersion.Get(ctx, version.ID)
 	require.NoError(t, err)
 	require.NotNil(t, saved.State)

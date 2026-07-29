@@ -16,6 +16,7 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagemodule"
 	"hexletbasics/internal/assetstore"
@@ -63,17 +64,11 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 		return oops.Wrapf(err, "load course version %d", versionID)
 	}
 
-	// Guard: only a freshly-created version may build. A version found in any
-	// other state means a previous run already claimed it (and likely died), so
-	// record why and stop rather than double-building.
-	if version.State == nil || *version.State != stateCreated {
-		state := "<nil>"
-		if version.State != nil {
-			state = *version.State
-		}
-		_, _ = l.db.CourseVersion.UpdateOne(version).
-			SetResult(fmt.Sprintf("Skipped: version in state %q, expected %q (previous run died?)", state, stateCreated)).
-			Save(ctx)
+	claimed, err := l.claim(ctx, versionID)
+	if err != nil {
+		return err
+	}
+	if !claimed {
 		return nil
 	}
 
@@ -85,13 +80,6 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 		return l.fail(ctx, version, oops.Errorf("course %d has no slug", course.ID))
 	}
 	slug := *course.Slug
-
-	// build! — claim the version so a concurrent trigger or the stuck-build reaper
-	// can see it is in flight. Committed on its own before the long fetch/parse.
-	version, err = l.db.CourseVersion.UpdateOne(version).SetState(stateBuilding).Save(ctx)
-	if err != nil {
-		return oops.Wrapf(err, "mark version %d building", versionID)
-	}
 
 	dir, cleanup, err := l.fetcher.Fetch(ctx, slug)
 	if err != nil {
@@ -119,6 +107,23 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 		return l.fail(ctx, version, err)
 	}
 	return nil
+}
+
+// claim atomically transitions a freshly-created version to building. Checking
+// the affected-row count is the concurrency guard: only one worker can satisfy
+// the state predicate, regardless of how many duplicate jobs reach Run.
+func (l *Loader) claim(ctx context.Context, versionID int) (bool, error) {
+	updated, err := l.db.CourseVersion.Update().
+		Where(
+			courseversion.ID(versionID),
+			courseversion.State(stateCreated),
+		).
+		SetState(stateBuilding).
+		Save(ctx)
+	if err != nil {
+		return false, oops.Wrapf(err, "claim course version %d", versionID)
+	}
+	return updated == 1, nil
 }
 
 // fail records the build error on the version and transitions it to `failed`,

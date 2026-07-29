@@ -20,12 +20,18 @@ type ExerciseLoaderArgs struct {
 // Kind is river's stable job discriminator; do not rename once jobs are enqueued.
 func (ExerciseLoaderArgs) Kind() string { return "exercise_loader" }
 
-// InsertOpts caps the job at a single attempt: a build failure is recorded on the
-// version row (state `failed`) by the loader itself, and re-running a broken build
-// 25 times (river's default) would just re-fail. Transient issues are re-triggered
-// manually (or by the next webhook), matching legacy's no-retry behavior.
+// InsertOpts caps the job at a single attempt and deduplicates jobs for the same
+// version. The loader's SQL claim remains the correctness boundary, while River
+// uniqueness avoids spending worker capacity on normal duplicate triggers.
+// Build failures are recorded on the version row and re-triggered manually (or
+// by the next webhook), matching legacy's no-retry behavior.
 func (ExerciseLoaderArgs) InsertOpts() river.InsertOpts {
-	return river.InsertOpts{MaxAttempts: 1}
+	return river.InsertOpts{
+		MaxAttempts: 1,
+		UniqueOpts: river.UniqueOpts{
+			ByArgs: true,
+		},
+	}
 }
 
 type exerciseLoaderWorker struct {

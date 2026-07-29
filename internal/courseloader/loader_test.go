@@ -29,6 +29,12 @@ func (f fakeFetcher) Fetch(_ context.Context, _ string) (string, func(), error) 
 	return f.dir, func() {}, nil
 }
 
+type panicFetcher struct{}
+
+func (panicFetcher) Fetch(context.Context, string) (string, func(), error) {
+	panic("fetch must not run for an already-claimed version")
+}
+
 func newLoaderWith(t *testing.T, db *ent.Client, fetcher courseloader.Fetcher) *courseloader.Loader {
 	t.Helper()
 	bucket := memblob.OpenBucket(nil)
@@ -97,15 +103,19 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 	ctx := context.Background()
 
 	course := db.Course.Create().SetSlug("loader-skip-lang").SetName("Skip").SaveX(ctx)
-	// A version already 'built' must not be rebuilt.
-	version := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("built").SaveX(ctx)
+	// A version already 'built' must not be rebuilt or have its result overwritten.
+	version := db.CourseVersion.Create().
+		SetLanguageID(course.ID).
+		SetState("built").
+		SetResult("Success").
+		SaveX(ctx)
 
-	loader := newLoader(t, db)
+	loader := newLoaderWith(t, db, panicFetcher{})
 	require.NoError(t, loader.Run(ctx, version.ID))
 
 	version = db.CourseVersion.GetX(ctx, version.ID)
 	assert.Equal(t, "built", derefStr(version.State)) // unchanged
-	assert.Contains(t, derefStr(version.Result), "Skipped")
+	assert.Equal(t, "Success", derefStr(version.Result))
 	// No module rows were written for this course.
 	n := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).CountX(ctx)
 	assert.Equal(t, 0, n)
