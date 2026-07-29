@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/languagelessonversion"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -18,6 +19,7 @@ type LanguageLessonVersionCreate struct {
 	config
 	mutation *LanguageLessonVersionMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetNaturalOrder sets the "natural_order" field.
@@ -247,6 +249,7 @@ func (_c *LanguageLessonVersionCreate) createSpec() (*LanguageLessonVersion, *sq
 		_node = &LanguageLessonVersion{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(languagelessonversion.Table, sqlgraph.NewFieldSpec(languagelessonversion.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.NaturalOrder(); ok {
 		_spec.SetField(languagelessonversion.FieldNaturalOrder, field.TypeInt, value)
 		_node.NaturalOrder = &value
@@ -298,11 +301,581 @@ func (_c *LanguageLessonVersionCreate) createSpec() (*LanguageLessonVersion, *sq
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLessonVersion.Create().
+//		SetNaturalOrder(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonVersionUpsert) {
+//			SetNaturalOrder(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonVersionUpsertOne {
+	_c.conflict = opts
+	return &LanguageLessonVersionUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersion.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionCreate) OnConflictColumns(columns ...string) *LanguageLessonVersionUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonVersionUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LanguageLessonVersionUpsertOne is the builder for "upsert"-ing
+	//  one LanguageLessonVersion node.
+	LanguageLessonVersionUpsertOne struct {
+		create *LanguageLessonVersionCreate
+	}
+
+	// LanguageLessonVersionUpsert is the "OnConflict" setter.
+	LanguageLessonVersionUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetNaturalOrder sets the "natural_order" field.
+func (u *LanguageLessonVersionUpsert) SetNaturalOrder(v int) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldNaturalOrder, v)
+	return u
+}
+
+// UpdateNaturalOrder sets the "natural_order" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateNaturalOrder() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldNaturalOrder)
+	return u
+}
+
+// AddNaturalOrder adds v to the "natural_order" field.
+func (u *LanguageLessonVersionUpsert) AddNaturalOrder(v int) *LanguageLessonVersionUpsert {
+	u.Add(languagelessonversion.FieldNaturalOrder, v)
+	return u
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (u *LanguageLessonVersionUpsert) ClearNaturalOrder() *LanguageLessonVersionUpsert {
+	u.SetNull(languagelessonversion.FieldNaturalOrder)
+	return u
+}
+
+// SetOrder sets the "order" field.
+func (u *LanguageLessonVersionUpsert) SetOrder(v int) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldOrder, v)
+	return u
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateOrder() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldOrder)
+	return u
+}
+
+// AddOrder adds v to the "order" field.
+func (u *LanguageLessonVersionUpsert) AddOrder(v int) *LanguageLessonVersionUpsert {
+	u.Add(languagelessonversion.FieldOrder, v)
+	return u
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *LanguageLessonVersionUpsert) ClearOrder() *LanguageLessonVersionUpsert {
+	u.SetNull(languagelessonversion.FieldOrder)
+	return u
+}
+
+// SetOriginalCode sets the "original_code" field.
+func (u *LanguageLessonVersionUpsert) SetOriginalCode(v string) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldOriginalCode, v)
+	return u
+}
+
+// UpdateOriginalCode sets the "original_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateOriginalCode() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldOriginalCode)
+	return u
+}
+
+// ClearOriginalCode clears the value of the "original_code" field.
+func (u *LanguageLessonVersionUpsert) ClearOriginalCode() *LanguageLessonVersionUpsert {
+	u.SetNull(languagelessonversion.FieldOriginalCode)
+	return u
+}
+
+// SetPreparedCode sets the "prepared_code" field.
+func (u *LanguageLessonVersionUpsert) SetPreparedCode(v string) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldPreparedCode, v)
+	return u
+}
+
+// UpdatePreparedCode sets the "prepared_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdatePreparedCode() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldPreparedCode)
+	return u
+}
+
+// ClearPreparedCode clears the value of the "prepared_code" field.
+func (u *LanguageLessonVersionUpsert) ClearPreparedCode() *LanguageLessonVersionUpsert {
+	u.SetNull(languagelessonversion.FieldPreparedCode)
+	return u
+}
+
+// SetTestCode sets the "test_code" field.
+func (u *LanguageLessonVersionUpsert) SetTestCode(v string) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldTestCode, v)
+	return u
+}
+
+// UpdateTestCode sets the "test_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateTestCode() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldTestCode)
+	return u
+}
+
+// ClearTestCode clears the value of the "test_code" field.
+func (u *LanguageLessonVersionUpsert) ClearTestCode() *LanguageLessonVersionUpsert {
+	u.SetNull(languagelessonversion.FieldTestCode)
+	return u
+}
+
+// SetPathToCode sets the "path_to_code" field.
+func (u *LanguageLessonVersionUpsert) SetPathToCode(v string) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldPathToCode, v)
+	return u
+}
+
+// UpdatePathToCode sets the "path_to_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdatePathToCode() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldPathToCode)
+	return u
+}
+
+// ClearPathToCode clears the value of the "path_to_code" field.
+func (u *LanguageLessonVersionUpsert) ClearPathToCode() *LanguageLessonVersionUpsert {
+	u.SetNull(languagelessonversion.FieldPathToCode)
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonVersionUpsert) SetLanguageID(v int) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateLanguageID() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldLanguageID)
+	return u
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonVersionUpsert) AddLanguageID(v int) *LanguageLessonVersionUpsert {
+	u.Add(languagelessonversion.FieldLanguageID, v)
+	return u
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageLessonVersionUpsert) SetLanguageVersionID(v int) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldLanguageVersionID, v)
+	return u
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateLanguageVersionID() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldLanguageVersionID)
+	return u
+}
+
+// AddLanguageVersionID adds v to the "language_version_id" field.
+func (u *LanguageLessonVersionUpsert) AddLanguageVersionID(v int) *LanguageLessonVersionUpsert {
+	u.Add(languagelessonversion.FieldLanguageVersionID, v)
+	return u
+}
+
+// SetLessonID sets the "lesson_id" field.
+func (u *LanguageLessonVersionUpsert) SetLessonID(v int) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldLessonID, v)
+	return u
+}
+
+// UpdateLessonID sets the "lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateLessonID() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldLessonID)
+	return u
+}
+
+// AddLessonID adds v to the "lesson_id" field.
+func (u *LanguageLessonVersionUpsert) AddLessonID(v int) *LanguageLessonVersionUpsert {
+	u.Add(languagelessonversion.FieldLessonID, v)
+	return u
+}
+
+// SetModuleVersionID sets the "module_version_id" field.
+func (u *LanguageLessonVersionUpsert) SetModuleVersionID(v int) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldModuleVersionID, v)
+	return u
+}
+
+// UpdateModuleVersionID sets the "module_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateModuleVersionID() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldModuleVersionID)
+	return u
+}
+
+// AddModuleVersionID adds v to the "module_version_id" field.
+func (u *LanguageLessonVersionUpsert) AddModuleVersionID(v int) *LanguageLessonVersionUpsert {
+	u.Add(languagelessonversion.FieldModuleVersionID, v)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionUpsert) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateUpdatedAt() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersion.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonVersionUpsertOne) UpdateNewValues() *LanguageLessonVersionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(languagelessonversion.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersion.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LanguageLessonVersionUpsertOne) Ignore() *LanguageLessonVersionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonVersionUpsertOne) DoNothing() *LanguageLessonVersionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonVersionCreate.OnConflict
+// documentation for more info.
+func (u *LanguageLessonVersionUpsertOne) Update(set func(*LanguageLessonVersionUpsert)) *LanguageLessonVersionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonVersionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetNaturalOrder sets the "natural_order" field.
+func (u *LanguageLessonVersionUpsertOne) SetNaturalOrder(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetNaturalOrder(v)
+	})
+}
+
+// AddNaturalOrder adds v to the "natural_order" field.
+func (u *LanguageLessonVersionUpsertOne) AddNaturalOrder(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddNaturalOrder(v)
+	})
+}
+
+// UpdateNaturalOrder sets the "natural_order" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateNaturalOrder() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateNaturalOrder()
+	})
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (u *LanguageLessonVersionUpsertOne) ClearNaturalOrder() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearNaturalOrder()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *LanguageLessonVersionUpsertOne) SetOrder(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// AddOrder adds v to the "order" field.
+func (u *LanguageLessonVersionUpsertOne) AddOrder(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateOrder() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *LanguageLessonVersionUpsertOne) ClearOrder() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearOrder()
+	})
+}
+
+// SetOriginalCode sets the "original_code" field.
+func (u *LanguageLessonVersionUpsertOne) SetOriginalCode(v string) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetOriginalCode(v)
+	})
+}
+
+// UpdateOriginalCode sets the "original_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateOriginalCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateOriginalCode()
+	})
+}
+
+// ClearOriginalCode clears the value of the "original_code" field.
+func (u *LanguageLessonVersionUpsertOne) ClearOriginalCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearOriginalCode()
+	})
+}
+
+// SetPreparedCode sets the "prepared_code" field.
+func (u *LanguageLessonVersionUpsertOne) SetPreparedCode(v string) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetPreparedCode(v)
+	})
+}
+
+// UpdatePreparedCode sets the "prepared_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdatePreparedCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdatePreparedCode()
+	})
+}
+
+// ClearPreparedCode clears the value of the "prepared_code" field.
+func (u *LanguageLessonVersionUpsertOne) ClearPreparedCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearPreparedCode()
+	})
+}
+
+// SetTestCode sets the "test_code" field.
+func (u *LanguageLessonVersionUpsertOne) SetTestCode(v string) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetTestCode(v)
+	})
+}
+
+// UpdateTestCode sets the "test_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateTestCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateTestCode()
+	})
+}
+
+// ClearTestCode clears the value of the "test_code" field.
+func (u *LanguageLessonVersionUpsertOne) ClearTestCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearTestCode()
+	})
+}
+
+// SetPathToCode sets the "path_to_code" field.
+func (u *LanguageLessonVersionUpsertOne) SetPathToCode(v string) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetPathToCode(v)
+	})
+}
+
+// UpdatePathToCode sets the "path_to_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdatePathToCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdatePathToCode()
+	})
+}
+
+// ClearPathToCode clears the value of the "path_to_code" field.
+func (u *LanguageLessonVersionUpsertOne) ClearPathToCode() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearPathToCode()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonVersionUpsertOne) SetLanguageID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonVersionUpsertOne) AddLanguageID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateLanguageID() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageLessonVersionUpsertOne) SetLanguageVersionID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetLanguageVersionID(v)
+	})
+}
+
+// AddLanguageVersionID adds v to the "language_version_id" field.
+func (u *LanguageLessonVersionUpsertOne) AddLanguageVersionID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddLanguageVersionID(v)
+	})
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateLanguageVersionID() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateLanguageVersionID()
+	})
+}
+
+// SetLessonID sets the "lesson_id" field.
+func (u *LanguageLessonVersionUpsertOne) SetLessonID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetLessonID(v)
+	})
+}
+
+// AddLessonID adds v to the "lesson_id" field.
+func (u *LanguageLessonVersionUpsertOne) AddLessonID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddLessonID(v)
+	})
+}
+
+// UpdateLessonID sets the "lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateLessonID() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateLessonID()
+	})
+}
+
+// SetModuleVersionID sets the "module_version_id" field.
+func (u *LanguageLessonVersionUpsertOne) SetModuleVersionID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetModuleVersionID(v)
+	})
+}
+
+// AddModuleVersionID adds v to the "module_version_id" field.
+func (u *LanguageLessonVersionUpsertOne) AddModuleVersionID(v int) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddModuleVersionID(v)
+	})
+}
+
+// UpdateModuleVersionID sets the "module_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateModuleVersionID() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateModuleVersionID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateUpdatedAt() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonVersionUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonVersionCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonVersionUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LanguageLessonVersionUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LanguageLessonVersionUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LanguageLessonVersionCreateBulk is the builder for creating many LanguageLessonVersion entities in bulk.
 type LanguageLessonVersionCreateBulk struct {
 	config
 	err      error
 	builders []*LanguageLessonVersionCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LanguageLessonVersion entities in the database.
@@ -332,6 +905,7 @@ func (_c *LanguageLessonVersionCreateBulk) Save(ctx context.Context) ([]*Languag
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -382,6 +956,355 @@ func (_c *LanguageLessonVersionCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LanguageLessonVersionCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLessonVersion.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonVersionUpsert) {
+//			SetNaturalOrder(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonVersionUpsertBulk {
+	_c.conflict = opts
+	return &LanguageLessonVersionUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersion.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionCreateBulk) OnConflictColumns(columns ...string) *LanguageLessonVersionUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonVersionUpsertBulk{
+		create: _c,
+	}
+}
+
+// LanguageLessonVersionUpsertBulk is the builder for "upsert"-ing
+// a bulk of LanguageLessonVersion nodes.
+type LanguageLessonVersionUpsertBulk struct {
+	create *LanguageLessonVersionCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersion.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonVersionUpsertBulk) UpdateNewValues() *LanguageLessonVersionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(languagelessonversion.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersion.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LanguageLessonVersionUpsertBulk) Ignore() *LanguageLessonVersionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonVersionUpsertBulk) DoNothing() *LanguageLessonVersionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonVersionCreateBulk.OnConflict
+// documentation for more info.
+func (u *LanguageLessonVersionUpsertBulk) Update(set func(*LanguageLessonVersionUpsert)) *LanguageLessonVersionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonVersionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetNaturalOrder sets the "natural_order" field.
+func (u *LanguageLessonVersionUpsertBulk) SetNaturalOrder(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetNaturalOrder(v)
+	})
+}
+
+// AddNaturalOrder adds v to the "natural_order" field.
+func (u *LanguageLessonVersionUpsertBulk) AddNaturalOrder(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddNaturalOrder(v)
+	})
+}
+
+// UpdateNaturalOrder sets the "natural_order" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateNaturalOrder() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateNaturalOrder()
+	})
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (u *LanguageLessonVersionUpsertBulk) ClearNaturalOrder() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearNaturalOrder()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *LanguageLessonVersionUpsertBulk) SetOrder(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// AddOrder adds v to the "order" field.
+func (u *LanguageLessonVersionUpsertBulk) AddOrder(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateOrder() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *LanguageLessonVersionUpsertBulk) ClearOrder() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearOrder()
+	})
+}
+
+// SetOriginalCode sets the "original_code" field.
+func (u *LanguageLessonVersionUpsertBulk) SetOriginalCode(v string) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetOriginalCode(v)
+	})
+}
+
+// UpdateOriginalCode sets the "original_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateOriginalCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateOriginalCode()
+	})
+}
+
+// ClearOriginalCode clears the value of the "original_code" field.
+func (u *LanguageLessonVersionUpsertBulk) ClearOriginalCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearOriginalCode()
+	})
+}
+
+// SetPreparedCode sets the "prepared_code" field.
+func (u *LanguageLessonVersionUpsertBulk) SetPreparedCode(v string) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetPreparedCode(v)
+	})
+}
+
+// UpdatePreparedCode sets the "prepared_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdatePreparedCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdatePreparedCode()
+	})
+}
+
+// ClearPreparedCode clears the value of the "prepared_code" field.
+func (u *LanguageLessonVersionUpsertBulk) ClearPreparedCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearPreparedCode()
+	})
+}
+
+// SetTestCode sets the "test_code" field.
+func (u *LanguageLessonVersionUpsertBulk) SetTestCode(v string) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetTestCode(v)
+	})
+}
+
+// UpdateTestCode sets the "test_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateTestCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateTestCode()
+	})
+}
+
+// ClearTestCode clears the value of the "test_code" field.
+func (u *LanguageLessonVersionUpsertBulk) ClearTestCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearTestCode()
+	})
+}
+
+// SetPathToCode sets the "path_to_code" field.
+func (u *LanguageLessonVersionUpsertBulk) SetPathToCode(v string) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetPathToCode(v)
+	})
+}
+
+// UpdatePathToCode sets the "path_to_code" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdatePathToCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdatePathToCode()
+	})
+}
+
+// ClearPathToCode clears the value of the "path_to_code" field.
+func (u *LanguageLessonVersionUpsertBulk) ClearPathToCode() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.ClearPathToCode()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonVersionUpsertBulk) SetLanguageID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonVersionUpsertBulk) AddLanguageID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateLanguageID() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageLessonVersionUpsertBulk) SetLanguageVersionID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetLanguageVersionID(v)
+	})
+}
+
+// AddLanguageVersionID adds v to the "language_version_id" field.
+func (u *LanguageLessonVersionUpsertBulk) AddLanguageVersionID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddLanguageVersionID(v)
+	})
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateLanguageVersionID() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateLanguageVersionID()
+	})
+}
+
+// SetLessonID sets the "lesson_id" field.
+func (u *LanguageLessonVersionUpsertBulk) SetLessonID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetLessonID(v)
+	})
+}
+
+// AddLessonID adds v to the "lesson_id" field.
+func (u *LanguageLessonVersionUpsertBulk) AddLessonID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddLessonID(v)
+	})
+}
+
+// UpdateLessonID sets the "lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateLessonID() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateLessonID()
+	})
+}
+
+// SetModuleVersionID sets the "module_version_id" field.
+func (u *LanguageLessonVersionUpsertBulk) SetModuleVersionID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetModuleVersionID(v)
+	})
+}
+
+// AddModuleVersionID adds v to the "module_version_id" field.
+func (u *LanguageLessonVersionUpsertBulk) AddModuleVersionID(v int) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.AddModuleVersionID(v)
+	})
+}
+
+// UpdateModuleVersionID sets the "module_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateModuleVersionID() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateModuleVersionID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateUpdatedAt() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonVersionUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LanguageLessonVersionCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonVersionCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonVersionUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

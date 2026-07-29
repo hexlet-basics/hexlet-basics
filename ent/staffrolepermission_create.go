@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/staffrolepermission"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -19,6 +20,7 @@ type StaffRolePermissionCreate struct {
 	config
 	mutation *StaffRolePermissionMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetRoleID sets the "role_id" field.
@@ -238,6 +240,7 @@ func (_c *StaffRolePermissionCreate) createSpec() (*StaffRolePermission, *sqlgra
 		_node = &StaffRolePermission{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(staffrolepermission.Table, sqlgraph.NewFieldSpec(staffrolepermission.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Resource(); ok {
 		_spec.SetField(staffrolepermission.FieldResource, field.TypeString, value)
 		_node.Resource = value
@@ -286,11 +289,321 @@ func (_c *StaffRolePermissionCreate) createSpec() (*StaffRolePermission, *sqlgra
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.StaffRolePermission.Create().
+//		SetRoleID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.StaffRolePermissionUpsert) {
+//			SetRoleID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *StaffRolePermissionCreate) OnConflict(opts ...sql.ConflictOption) *StaffRolePermissionUpsertOne {
+	_c.conflict = opts
+	return &StaffRolePermissionUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.StaffRolePermission.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *StaffRolePermissionCreate) OnConflictColumns(columns ...string) *StaffRolePermissionUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &StaffRolePermissionUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// StaffRolePermissionUpsertOne is the builder for "upsert"-ing
+	//  one StaffRolePermission node.
+	StaffRolePermissionUpsertOne struct {
+		create *StaffRolePermissionCreate
+	}
+
+	// StaffRolePermissionUpsert is the "OnConflict" setter.
+	StaffRolePermissionUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetRoleID sets the "role_id" field.
+func (u *StaffRolePermissionUpsert) SetRoleID(v int) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldRoleID, v)
+	return u
+}
+
+// UpdateRoleID sets the "role_id" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateRoleID() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldRoleID)
+	return u
+}
+
+// SetResource sets the "resource" field.
+func (u *StaffRolePermissionUpsert) SetResource(v string) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldResource, v)
+	return u
+}
+
+// UpdateResource sets the "resource" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateResource() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldResource)
+	return u
+}
+
+// SetCanIndex sets the "can_index" field.
+func (u *StaffRolePermissionUpsert) SetCanIndex(v bool) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldCanIndex, v)
+	return u
+}
+
+// UpdateCanIndex sets the "can_index" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateCanIndex() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldCanIndex)
+	return u
+}
+
+// SetCanCreate sets the "can_create" field.
+func (u *StaffRolePermissionUpsert) SetCanCreate(v bool) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldCanCreate, v)
+	return u
+}
+
+// UpdateCanCreate sets the "can_create" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateCanCreate() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldCanCreate)
+	return u
+}
+
+// SetCanUpdate sets the "can_update" field.
+func (u *StaffRolePermissionUpsert) SetCanUpdate(v bool) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldCanUpdate, v)
+	return u
+}
+
+// UpdateCanUpdate sets the "can_update" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateCanUpdate() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldCanUpdate)
+	return u
+}
+
+// SetCanDestroy sets the "can_destroy" field.
+func (u *StaffRolePermissionUpsert) SetCanDestroy(v bool) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldCanDestroy, v)
+	return u
+}
+
+// UpdateCanDestroy sets the "can_destroy" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateCanDestroy() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldCanDestroy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRolePermissionUpsert) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateUpdatedAt() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.StaffRolePermission.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *StaffRolePermissionUpsertOne) UpdateNewValues() *StaffRolePermissionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(staffrolepermission.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.StaffRolePermission.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *StaffRolePermissionUpsertOne) Ignore() *StaffRolePermissionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *StaffRolePermissionUpsertOne) DoNothing() *StaffRolePermissionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the StaffRolePermissionCreate.OnConflict
+// documentation for more info.
+func (u *StaffRolePermissionUpsertOne) Update(set func(*StaffRolePermissionUpsert)) *StaffRolePermissionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&StaffRolePermissionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetRoleID sets the "role_id" field.
+func (u *StaffRolePermissionUpsertOne) SetRoleID(v int) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetRoleID(v)
+	})
+}
+
+// UpdateRoleID sets the "role_id" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateRoleID() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateRoleID()
+	})
+}
+
+// SetResource sets the "resource" field.
+func (u *StaffRolePermissionUpsertOne) SetResource(v string) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetResource(v)
+	})
+}
+
+// UpdateResource sets the "resource" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateResource() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateResource()
+	})
+}
+
+// SetCanIndex sets the "can_index" field.
+func (u *StaffRolePermissionUpsertOne) SetCanIndex(v bool) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanIndex(v)
+	})
+}
+
+// UpdateCanIndex sets the "can_index" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateCanIndex() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanIndex()
+	})
+}
+
+// SetCanCreate sets the "can_create" field.
+func (u *StaffRolePermissionUpsertOne) SetCanCreate(v bool) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanCreate(v)
+	})
+}
+
+// UpdateCanCreate sets the "can_create" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateCanCreate() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanCreate()
+	})
+}
+
+// SetCanUpdate sets the "can_update" field.
+func (u *StaffRolePermissionUpsertOne) SetCanUpdate(v bool) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanUpdate(v)
+	})
+}
+
+// UpdateCanUpdate sets the "can_update" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateCanUpdate() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanUpdate()
+	})
+}
+
+// SetCanDestroy sets the "can_destroy" field.
+func (u *StaffRolePermissionUpsertOne) SetCanDestroy(v bool) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanDestroy(v)
+	})
+}
+
+// UpdateCanDestroy sets the "can_destroy" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateCanDestroy() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanDestroy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRolePermissionUpsertOne) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateUpdatedAt() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *StaffRolePermissionUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for StaffRolePermissionCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *StaffRolePermissionUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *StaffRolePermissionUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *StaffRolePermissionUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // StaffRolePermissionCreateBulk is the builder for creating many StaffRolePermission entities in bulk.
 type StaffRolePermissionCreateBulk struct {
 	config
 	err      error
 	builders []*StaffRolePermissionCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the StaffRolePermission entities in the database.
@@ -320,6 +633,7 @@ func (_c *StaffRolePermissionCreateBulk) Save(ctx context.Context) ([]*StaffRole
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -370,6 +684,215 @@ func (_c *StaffRolePermissionCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *StaffRolePermissionCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.StaffRolePermission.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.StaffRolePermissionUpsert) {
+//			SetRoleID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *StaffRolePermissionCreateBulk) OnConflict(opts ...sql.ConflictOption) *StaffRolePermissionUpsertBulk {
+	_c.conflict = opts
+	return &StaffRolePermissionUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.StaffRolePermission.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *StaffRolePermissionCreateBulk) OnConflictColumns(columns ...string) *StaffRolePermissionUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &StaffRolePermissionUpsertBulk{
+		create: _c,
+	}
+}
+
+// StaffRolePermissionUpsertBulk is the builder for "upsert"-ing
+// a bulk of StaffRolePermission nodes.
+type StaffRolePermissionUpsertBulk struct {
+	create *StaffRolePermissionCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.StaffRolePermission.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *StaffRolePermissionUpsertBulk) UpdateNewValues() *StaffRolePermissionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(staffrolepermission.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.StaffRolePermission.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *StaffRolePermissionUpsertBulk) Ignore() *StaffRolePermissionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *StaffRolePermissionUpsertBulk) DoNothing() *StaffRolePermissionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the StaffRolePermissionCreateBulk.OnConflict
+// documentation for more info.
+func (u *StaffRolePermissionUpsertBulk) Update(set func(*StaffRolePermissionUpsert)) *StaffRolePermissionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&StaffRolePermissionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetRoleID sets the "role_id" field.
+func (u *StaffRolePermissionUpsertBulk) SetRoleID(v int) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetRoleID(v)
+	})
+}
+
+// UpdateRoleID sets the "role_id" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateRoleID() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateRoleID()
+	})
+}
+
+// SetResource sets the "resource" field.
+func (u *StaffRolePermissionUpsertBulk) SetResource(v string) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetResource(v)
+	})
+}
+
+// UpdateResource sets the "resource" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateResource() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateResource()
+	})
+}
+
+// SetCanIndex sets the "can_index" field.
+func (u *StaffRolePermissionUpsertBulk) SetCanIndex(v bool) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanIndex(v)
+	})
+}
+
+// UpdateCanIndex sets the "can_index" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateCanIndex() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanIndex()
+	})
+}
+
+// SetCanCreate sets the "can_create" field.
+func (u *StaffRolePermissionUpsertBulk) SetCanCreate(v bool) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanCreate(v)
+	})
+}
+
+// UpdateCanCreate sets the "can_create" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateCanCreate() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanCreate()
+	})
+}
+
+// SetCanUpdate sets the "can_update" field.
+func (u *StaffRolePermissionUpsertBulk) SetCanUpdate(v bool) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanUpdate(v)
+	})
+}
+
+// UpdateCanUpdate sets the "can_update" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateCanUpdate() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanUpdate()
+	})
+}
+
+// SetCanDestroy sets the "can_destroy" field.
+func (u *StaffRolePermissionUpsertBulk) SetCanDestroy(v bool) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetCanDestroy(v)
+	})
+}
+
+// UpdateCanDestroy sets the "can_destroy" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateCanDestroy() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateCanDestroy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRolePermissionUpsertBulk) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateUpdatedAt() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *StaffRolePermissionUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the StaffRolePermissionCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for StaffRolePermissionCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *StaffRolePermissionUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

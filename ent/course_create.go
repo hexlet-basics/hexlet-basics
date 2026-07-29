@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -20,6 +21,7 @@ type CourseCreate struct {
 	config
 	mutation *CourseMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSlug sets the "slug" field.
@@ -303,6 +305,7 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		_node = &Course{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(course.Table, sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(course.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -383,11 +386,581 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Course.Create().
+//		SetSlug(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CourseUpsert) {
+//			SetSlug(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *CourseCreate) OnConflict(opts ...sql.ConflictOption) *CourseUpsertOne {
+	_c.conflict = opts
+	return &CourseUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Course.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *CourseCreate) OnConflictColumns(columns ...string) *CourseUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &CourseUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// CourseUpsertOne is the builder for "upsert"-ing
+	//  one Course node.
+	CourseUpsertOne struct {
+		create *CourseCreate
+	}
+
+	// CourseUpsert is the "OnConflict" setter.
+	CourseUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSlug sets the "slug" field.
+func (u *CourseUpsert) SetSlug(v string) *CourseUpsert {
+	u.Set(course.FieldSlug, v)
+	return u
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateSlug() *CourseUpsert {
+	u.SetExcluded(course.FieldSlug)
+	return u
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *CourseUpsert) ClearSlug() *CourseUpsert {
+	u.SetNull(course.FieldSlug)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *CourseUpsert) SetName(v string) *CourseUpsert {
+	u.Set(course.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateName() *CourseUpsert {
+	u.SetExcluded(course.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *CourseUpsert) ClearName() *CourseUpsert {
+	u.SetNull(course.FieldName)
+	return u
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (u *CourseUpsert) SetLearnAs(v string) *CourseUpsert {
+	u.Set(course.FieldLearnAs, v)
+	return u
+}
+
+// UpdateLearnAs sets the "learn_as" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateLearnAs() *CourseUpsert {
+	u.SetExcluded(course.FieldLearnAs)
+	return u
+}
+
+// ClearLearnAs clears the value of the "learn_as" field.
+func (u *CourseUpsert) ClearLearnAs() *CourseUpsert {
+	u.SetNull(course.FieldLearnAs)
+	return u
+}
+
+// SetProgress sets the "progress" field.
+func (u *CourseUpsert) SetProgress(v string) *CourseUpsert {
+	u.Set(course.FieldProgress, v)
+	return u
+}
+
+// UpdateProgress sets the "progress" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateProgress() *CourseUpsert {
+	u.SetExcluded(course.FieldProgress)
+	return u
+}
+
+// ClearProgress clears the value of the "progress" field.
+func (u *CourseUpsert) ClearProgress() *CourseUpsert {
+	u.SetNull(course.FieldProgress)
+	return u
+}
+
+// SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
+func (u *CourseUpsert) SetHexletProgramLandingPage(v string) *CourseUpsert {
+	u.Set(course.FieldHexletProgramLandingPage, v)
+	return u
+}
+
+// UpdateHexletProgramLandingPage sets the "hexlet_program_landing_page" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateHexletProgramLandingPage() *CourseUpsert {
+	u.SetExcluded(course.FieldHexletProgramLandingPage)
+	return u
+}
+
+// ClearHexletProgramLandingPage clears the value of the "hexlet_program_landing_page" field.
+func (u *CourseUpsert) ClearHexletProgramLandingPage() *CourseUpsert {
+	u.SetNull(course.FieldHexletProgramLandingPage)
+	return u
+}
+
+// SetMembersCount sets the "members_count" field.
+func (u *CourseUpsert) SetMembersCount(v int) *CourseUpsert {
+	u.Set(course.FieldMembersCount, v)
+	return u
+}
+
+// UpdateMembersCount sets the "members_count" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateMembersCount() *CourseUpsert {
+	u.SetExcluded(course.FieldMembersCount)
+	return u
+}
+
+// AddMembersCount adds v to the "members_count" field.
+func (u *CourseUpsert) AddMembersCount(v int) *CourseUpsert {
+	u.Add(course.FieldMembersCount, v)
+	return u
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (u *CourseUpsert) SetLessonsCount(v int) *CourseUpsert {
+	u.Set(course.FieldLessonsCount, v)
+	return u
+}
+
+// UpdateLessonsCount sets the "lessons_count" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateLessonsCount() *CourseUpsert {
+	u.SetExcluded(course.FieldLessonsCount)
+	return u
+}
+
+// AddLessonsCount adds v to the "lessons_count" field.
+func (u *CourseUpsert) AddLessonsCount(v int) *CourseUpsert {
+	u.Add(course.FieldLessonsCount, v)
+	return u
+}
+
+// SetCategoryID sets the "category_id" field.
+func (u *CourseUpsert) SetCategoryID(v int) *CourseUpsert {
+	u.Set(course.FieldCategoryID, v)
+	return u
+}
+
+// UpdateCategoryID sets the "category_id" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateCategoryID() *CourseUpsert {
+	u.SetExcluded(course.FieldCategoryID)
+	return u
+}
+
+// AddCategoryID adds v to the "category_id" field.
+func (u *CourseUpsert) AddCategoryID(v int) *CourseUpsert {
+	u.Add(course.FieldCategoryID, v)
+	return u
+}
+
+// ClearCategoryID clears the value of the "category_id" field.
+func (u *CourseUpsert) ClearCategoryID() *CourseUpsert {
+	u.SetNull(course.FieldCategoryID)
+	return u
+}
+
+// SetCurrentVersionID sets the "current_version_id" field.
+func (u *CourseUpsert) SetCurrentVersionID(v int) *CourseUpsert {
+	u.Set(course.FieldCurrentVersionID, v)
+	return u
+}
+
+// UpdateCurrentVersionID sets the "current_version_id" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateCurrentVersionID() *CourseUpsert {
+	u.SetExcluded(course.FieldCurrentVersionID)
+	return u
+}
+
+// ClearCurrentVersionID clears the value of the "current_version_id" field.
+func (u *CourseUpsert) ClearCurrentVersionID() *CourseUpsert {
+	u.SetNull(course.FieldCurrentVersionID)
+	return u
+}
+
+// SetOrder sets the "order" field.
+func (u *CourseUpsert) SetOrder(v int) *CourseUpsert {
+	u.Set(course.FieldOrder, v)
+	return u
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateOrder() *CourseUpsert {
+	u.SetExcluded(course.FieldOrder)
+	return u
+}
+
+// AddOrder adds v to the "order" field.
+func (u *CourseUpsert) AddOrder(v int) *CourseUpsert {
+	u.Add(course.FieldOrder, v)
+	return u
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *CourseUpsert) ClearOrder() *CourseUpsert {
+	u.SetNull(course.FieldOrder)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseUpsert) SetUpdatedAt(v time.Time) *CourseUpsert {
+	u.Set(course.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateUpdatedAt() *CourseUpsert {
+	u.SetExcluded(course.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.Course.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *CourseUpsertOne) UpdateNewValues() *CourseUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(course.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Course.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *CourseUpsertOne) Ignore() *CourseUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CourseUpsertOne) DoNothing() *CourseUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CourseCreate.OnConflict
+// documentation for more info.
+func (u *CourseUpsertOne) Update(set func(*CourseUpsert)) *CourseUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CourseUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *CourseUpsertOne) SetSlug(v string) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateSlug() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *CourseUpsertOne) ClearSlug() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *CourseUpsertOne) SetName(v string) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateName() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *CourseUpsertOne) ClearName() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (u *CourseUpsertOne) SetLearnAs(v string) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetLearnAs(v)
+	})
+}
+
+// UpdateLearnAs sets the "learn_as" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateLearnAs() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateLearnAs()
+	})
+}
+
+// ClearLearnAs clears the value of the "learn_as" field.
+func (u *CourseUpsertOne) ClearLearnAs() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearLearnAs()
+	})
+}
+
+// SetProgress sets the "progress" field.
+func (u *CourseUpsertOne) SetProgress(v string) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetProgress(v)
+	})
+}
+
+// UpdateProgress sets the "progress" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateProgress() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateProgress()
+	})
+}
+
+// ClearProgress clears the value of the "progress" field.
+func (u *CourseUpsertOne) ClearProgress() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearProgress()
+	})
+}
+
+// SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
+func (u *CourseUpsertOne) SetHexletProgramLandingPage(v string) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetHexletProgramLandingPage(v)
+	})
+}
+
+// UpdateHexletProgramLandingPage sets the "hexlet_program_landing_page" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateHexletProgramLandingPage() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateHexletProgramLandingPage()
+	})
+}
+
+// ClearHexletProgramLandingPage clears the value of the "hexlet_program_landing_page" field.
+func (u *CourseUpsertOne) ClearHexletProgramLandingPage() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearHexletProgramLandingPage()
+	})
+}
+
+// SetMembersCount sets the "members_count" field.
+func (u *CourseUpsertOne) SetMembersCount(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetMembersCount(v)
+	})
+}
+
+// AddMembersCount adds v to the "members_count" field.
+func (u *CourseUpsertOne) AddMembersCount(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddMembersCount(v)
+	})
+}
+
+// UpdateMembersCount sets the "members_count" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateMembersCount() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateMembersCount()
+	})
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (u *CourseUpsertOne) SetLessonsCount(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetLessonsCount(v)
+	})
+}
+
+// AddLessonsCount adds v to the "lessons_count" field.
+func (u *CourseUpsertOne) AddLessonsCount(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddLessonsCount(v)
+	})
+}
+
+// UpdateLessonsCount sets the "lessons_count" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateLessonsCount() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateLessonsCount()
+	})
+}
+
+// SetCategoryID sets the "category_id" field.
+func (u *CourseUpsertOne) SetCategoryID(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetCategoryID(v)
+	})
+}
+
+// AddCategoryID adds v to the "category_id" field.
+func (u *CourseUpsertOne) AddCategoryID(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddCategoryID(v)
+	})
+}
+
+// UpdateCategoryID sets the "category_id" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateCategoryID() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateCategoryID()
+	})
+}
+
+// ClearCategoryID clears the value of the "category_id" field.
+func (u *CourseUpsertOne) ClearCategoryID() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearCategoryID()
+	})
+}
+
+// SetCurrentVersionID sets the "current_version_id" field.
+func (u *CourseUpsertOne) SetCurrentVersionID(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetCurrentVersionID(v)
+	})
+}
+
+// UpdateCurrentVersionID sets the "current_version_id" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateCurrentVersionID() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateCurrentVersionID()
+	})
+}
+
+// ClearCurrentVersionID clears the value of the "current_version_id" field.
+func (u *CourseUpsertOne) ClearCurrentVersionID() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearCurrentVersionID()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *CourseUpsertOne) SetOrder(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// AddOrder adds v to the "order" field.
+func (u *CourseUpsertOne) AddOrder(v int) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateOrder() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *CourseUpsertOne) ClearOrder() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearOrder()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseUpsertOne) SetUpdatedAt(v time.Time) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateUpdatedAt() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *CourseUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CourseCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CourseUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *CourseUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *CourseUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // CourseCreateBulk is the builder for creating many Course entities in bulk.
 type CourseCreateBulk struct {
 	config
 	err      error
 	builders []*CourseCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Course entities in the database.
@@ -417,6 +990,7 @@ func (_c *CourseCreateBulk) Save(ctx context.Context) ([]*Course, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -467,6 +1041,355 @@ func (_c *CourseCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *CourseCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Course.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CourseUpsert) {
+//			SetSlug(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *CourseCreateBulk) OnConflict(opts ...sql.ConflictOption) *CourseUpsertBulk {
+	_c.conflict = opts
+	return &CourseUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Course.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *CourseCreateBulk) OnConflictColumns(columns ...string) *CourseUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &CourseUpsertBulk{
+		create: _c,
+	}
+}
+
+// CourseUpsertBulk is the builder for "upsert"-ing
+// a bulk of Course nodes.
+type CourseUpsertBulk struct {
+	create *CourseCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Course.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *CourseUpsertBulk) UpdateNewValues() *CourseUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(course.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Course.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *CourseUpsertBulk) Ignore() *CourseUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CourseUpsertBulk) DoNothing() *CourseUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CourseCreateBulk.OnConflict
+// documentation for more info.
+func (u *CourseUpsertBulk) Update(set func(*CourseUpsert)) *CourseUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CourseUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *CourseUpsertBulk) SetSlug(v string) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateSlug() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *CourseUpsertBulk) ClearSlug() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *CourseUpsertBulk) SetName(v string) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateName() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *CourseUpsertBulk) ClearName() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetLearnAs sets the "learn_as" field.
+func (u *CourseUpsertBulk) SetLearnAs(v string) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetLearnAs(v)
+	})
+}
+
+// UpdateLearnAs sets the "learn_as" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateLearnAs() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateLearnAs()
+	})
+}
+
+// ClearLearnAs clears the value of the "learn_as" field.
+func (u *CourseUpsertBulk) ClearLearnAs() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearLearnAs()
+	})
+}
+
+// SetProgress sets the "progress" field.
+func (u *CourseUpsertBulk) SetProgress(v string) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetProgress(v)
+	})
+}
+
+// UpdateProgress sets the "progress" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateProgress() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateProgress()
+	})
+}
+
+// ClearProgress clears the value of the "progress" field.
+func (u *CourseUpsertBulk) ClearProgress() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearProgress()
+	})
+}
+
+// SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
+func (u *CourseUpsertBulk) SetHexletProgramLandingPage(v string) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetHexletProgramLandingPage(v)
+	})
+}
+
+// UpdateHexletProgramLandingPage sets the "hexlet_program_landing_page" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateHexletProgramLandingPage() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateHexletProgramLandingPage()
+	})
+}
+
+// ClearHexletProgramLandingPage clears the value of the "hexlet_program_landing_page" field.
+func (u *CourseUpsertBulk) ClearHexletProgramLandingPage() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearHexletProgramLandingPage()
+	})
+}
+
+// SetMembersCount sets the "members_count" field.
+func (u *CourseUpsertBulk) SetMembersCount(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetMembersCount(v)
+	})
+}
+
+// AddMembersCount adds v to the "members_count" field.
+func (u *CourseUpsertBulk) AddMembersCount(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddMembersCount(v)
+	})
+}
+
+// UpdateMembersCount sets the "members_count" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateMembersCount() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateMembersCount()
+	})
+}
+
+// SetLessonsCount sets the "lessons_count" field.
+func (u *CourseUpsertBulk) SetLessonsCount(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetLessonsCount(v)
+	})
+}
+
+// AddLessonsCount adds v to the "lessons_count" field.
+func (u *CourseUpsertBulk) AddLessonsCount(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddLessonsCount(v)
+	})
+}
+
+// UpdateLessonsCount sets the "lessons_count" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateLessonsCount() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateLessonsCount()
+	})
+}
+
+// SetCategoryID sets the "category_id" field.
+func (u *CourseUpsertBulk) SetCategoryID(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetCategoryID(v)
+	})
+}
+
+// AddCategoryID adds v to the "category_id" field.
+func (u *CourseUpsertBulk) AddCategoryID(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddCategoryID(v)
+	})
+}
+
+// UpdateCategoryID sets the "category_id" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateCategoryID() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateCategoryID()
+	})
+}
+
+// ClearCategoryID clears the value of the "category_id" field.
+func (u *CourseUpsertBulk) ClearCategoryID() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearCategoryID()
+	})
+}
+
+// SetCurrentVersionID sets the "current_version_id" field.
+func (u *CourseUpsertBulk) SetCurrentVersionID(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetCurrentVersionID(v)
+	})
+}
+
+// UpdateCurrentVersionID sets the "current_version_id" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateCurrentVersionID() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateCurrentVersionID()
+	})
+}
+
+// ClearCurrentVersionID clears the value of the "current_version_id" field.
+func (u *CourseUpsertBulk) ClearCurrentVersionID() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearCurrentVersionID()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *CourseUpsertBulk) SetOrder(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// AddOrder adds v to the "order" field.
+func (u *CourseUpsertBulk) AddOrder(v int) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.AddOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateOrder() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *CourseUpsertBulk) ClearOrder() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.ClearOrder()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseUpsertBulk) SetUpdatedAt(v time.Time) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateUpdatedAt() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *CourseUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the CourseCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CourseCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CourseUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

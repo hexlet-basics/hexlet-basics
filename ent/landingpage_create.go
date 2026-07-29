@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -19,6 +20,7 @@ type LandingPageCreate struct {
 	config
 	mutation *LandingPageMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -403,6 +405,7 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 		_node = &LandingPage{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(landingpage.Table, sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(landingpage.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -503,11 +506,906 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LandingPage.Create().
+//		SetLanguageID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LandingPageUpsert) {
+//			SetLanguageID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LandingPageCreate) OnConflict(opts ...sql.ConflictOption) *LandingPageUpsertOne {
+	_c.conflict = opts
+	return &LandingPageUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LandingPage.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LandingPageCreate) OnConflictColumns(columns ...string) *LandingPageUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LandingPageUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LandingPageUpsertOne is the builder for "upsert"-ing
+	//  one LandingPage node.
+	LandingPageUpsertOne struct {
+		create *LandingPageCreate
+	}
+
+	// LandingPageUpsert is the "OnConflict" setter.
+	LandingPageUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetLanguageID sets the "language_id" field.
+func (u *LandingPageUpsert) SetLanguageID(v int) *LandingPageUpsert {
+	u.Set(landingpage.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateLanguageID() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldLanguageID)
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *LandingPageUpsert) SetSlug(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldSlug, v)
+	return u
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateSlug() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldSlug)
+	return u
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *LandingPageUpsert) ClearSlug() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldSlug)
+	return u
+}
+
+// SetHeader sets the "header" field.
+func (u *LandingPageUpsert) SetHeader(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldHeader, v)
+	return u
+}
+
+// UpdateHeader sets the "header" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateHeader() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldHeader)
+	return u
+}
+
+// ClearHeader clears the value of the "header" field.
+func (u *LandingPageUpsert) ClearHeader() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldHeader)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *LandingPageUpsert) SetName(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateName() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LandingPageUpsert) ClearName() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldName)
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *LandingPageUpsert) SetLocale(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateLocale() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldLocale)
+	return u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LandingPageUpsert) ClearLocale() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldLocale)
+	return u
+}
+
+// SetListed sets the "listed" field.
+func (u *LandingPageUpsert) SetListed(v bool) *LandingPageUpsert {
+	u.Set(landingpage.FieldListed, v)
+	return u
+}
+
+// UpdateListed sets the "listed" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateListed() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldListed)
+	return u
+}
+
+// ClearListed clears the value of the "listed" field.
+func (u *LandingPageUpsert) ClearListed() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldListed)
+	return u
+}
+
+// SetMain sets the "main" field.
+func (u *LandingPageUpsert) SetMain(v bool) *LandingPageUpsert {
+	u.Set(landingpage.FieldMain, v)
+	return u
+}
+
+// UpdateMain sets the "main" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateMain() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldMain)
+	return u
+}
+
+// ClearMain clears the value of the "main" field.
+func (u *LandingPageUpsert) ClearMain() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldMain)
+	return u
+}
+
+// SetState sets the "state" field.
+func (u *LandingPageUpsert) SetState(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldState, v)
+	return u
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateState() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldState)
+	return u
+}
+
+// ClearState clears the value of the "state" field.
+func (u *LandingPageUpsert) ClearState() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldState)
+	return u
+}
+
+// SetOrder sets the "order" field.
+func (u *LandingPageUpsert) SetOrder(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldOrder, v)
+	return u
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateOrder() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldOrder)
+	return u
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *LandingPageUpsert) ClearOrder() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldOrder)
+	return u
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (u *LandingPageUpsert) SetMetaTitle(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldMetaTitle, v)
+	return u
+}
+
+// UpdateMetaTitle sets the "meta_title" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateMetaTitle() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldMetaTitle)
+	return u
+}
+
+// ClearMetaTitle clears the value of the "meta_title" field.
+func (u *LandingPageUpsert) ClearMetaTitle() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldMetaTitle)
+	return u
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (u *LandingPageUpsert) SetMetaDescription(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldMetaDescription, v)
+	return u
+}
+
+// UpdateMetaDescription sets the "meta_description" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateMetaDescription() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldMetaDescription)
+	return u
+}
+
+// ClearMetaDescription clears the value of the "meta_description" field.
+func (u *LandingPageUpsert) ClearMetaDescription() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldMetaDescription)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *LandingPageUpsert) SetDescription(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateDescription() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldDescription)
+	return u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LandingPageUpsert) ClearDescription() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldDescription)
+	return u
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (u *LandingPageUpsert) SetUsedInHeader(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldUsedInHeader, v)
+	return u
+}
+
+// UpdateUsedInHeader sets the "used_in_header" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateUsedInHeader() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldUsedInHeader)
+	return u
+}
+
+// ClearUsedInHeader clears the value of the "used_in_header" field.
+func (u *LandingPageUpsert) ClearUsedInHeader() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldUsedInHeader)
+	return u
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (u *LandingPageUpsert) SetUsedInDescription(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldUsedInDescription, v)
+	return u
+}
+
+// UpdateUsedInDescription sets the "used_in_description" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateUsedInDescription() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldUsedInDescription)
+	return u
+}
+
+// ClearUsedInDescription clears the value of the "used_in_description" field.
+func (u *LandingPageUpsert) ClearUsedInDescription() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldUsedInDescription)
+	return u
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (u *LandingPageUpsert) SetOutcomesHeader(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldOutcomesHeader, v)
+	return u
+}
+
+// UpdateOutcomesHeader sets the "outcomes_header" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateOutcomesHeader() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldOutcomesHeader)
+	return u
+}
+
+// ClearOutcomesHeader clears the value of the "outcomes_header" field.
+func (u *LandingPageUpsert) ClearOutcomesHeader() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldOutcomesHeader)
+	return u
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (u *LandingPageUpsert) SetOutcomesDescription(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldOutcomesDescription, v)
+	return u
+}
+
+// UpdateOutcomesDescription sets the "outcomes_description" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateOutcomesDescription() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldOutcomesDescription)
+	return u
+}
+
+// ClearOutcomesDescription clears the value of the "outcomes_description" field.
+func (u *LandingPageUpsert) ClearOutcomesDescription() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldOutcomesDescription)
+	return u
+}
+
+// SetFooter sets the "footer" field.
+func (u *LandingPageUpsert) SetFooter(v bool) *LandingPageUpsert {
+	u.Set(landingpage.FieldFooter, v)
+	return u
+}
+
+// UpdateFooter sets the "footer" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateFooter() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldFooter)
+	return u
+}
+
+// ClearFooter clears the value of the "footer" field.
+func (u *LandingPageUpsert) ClearFooter() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldFooter)
+	return u
+}
+
+// SetFooterName sets the "footer_name" field.
+func (u *LandingPageUpsert) SetFooterName(v string) *LandingPageUpsert {
+	u.Set(landingpage.FieldFooterName, v)
+	return u
+}
+
+// UpdateFooterName sets the "footer_name" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateFooterName() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldFooterName)
+	return u
+}
+
+// ClearFooterName clears the value of the "footer_name" field.
+func (u *LandingPageUpsert) ClearFooterName() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldFooterName)
+	return u
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsert) SetLandingPageToRedirectID(v int) *LandingPageUpsert {
+	u.Set(landingpage.FieldLandingPageToRedirectID, v)
+	return u
+}
+
+// UpdateLandingPageToRedirectID sets the "landing_page_to_redirect_id" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateLandingPageToRedirectID() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldLandingPageToRedirectID)
+	return u
+}
+
+// AddLandingPageToRedirectID adds v to the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsert) AddLandingPageToRedirectID(v int) *LandingPageUpsert {
+	u.Add(landingpage.FieldLandingPageToRedirectID, v)
+	return u
+}
+
+// ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsert) ClearLandingPageToRedirectID() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldLandingPageToRedirectID)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageUpsert) SetUpdatedAt(v time.Time) *LandingPageUpsert {
+	u.Set(landingpage.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateUpdatedAt() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LandingPage.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LandingPageUpsertOne) UpdateNewValues() *LandingPageUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(landingpage.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LandingPage.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LandingPageUpsertOne) Ignore() *LandingPageUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LandingPageUpsertOne) DoNothing() *LandingPageUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LandingPageCreate.OnConflict
+// documentation for more info.
+func (u *LandingPageUpsertOne) Update(set func(*LandingPageUpsert)) *LandingPageUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LandingPageUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LandingPageUpsertOne) SetLanguageID(v int) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateLanguageID() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetSlug sets the "slug" field.
+func (u *LandingPageUpsertOne) SetSlug(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateSlug() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *LandingPageUpsertOne) ClearSlug() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetHeader sets the "header" field.
+func (u *LandingPageUpsertOne) SetHeader(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetHeader(v)
+	})
+}
+
+// UpdateHeader sets the "header" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateHeader() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateHeader()
+	})
+}
+
+// ClearHeader clears the value of the "header" field.
+func (u *LandingPageUpsertOne) ClearHeader() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearHeader()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *LandingPageUpsertOne) SetName(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateName() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LandingPageUpsertOne) ClearName() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *LandingPageUpsertOne) SetLocale(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateLocale() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LandingPageUpsertOne) ClearLocale() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetListed sets the "listed" field.
+func (u *LandingPageUpsertOne) SetListed(v bool) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetListed(v)
+	})
+}
+
+// UpdateListed sets the "listed" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateListed() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateListed()
+	})
+}
+
+// ClearListed clears the value of the "listed" field.
+func (u *LandingPageUpsertOne) ClearListed() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearListed()
+	})
+}
+
+// SetMain sets the "main" field.
+func (u *LandingPageUpsertOne) SetMain(v bool) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetMain(v)
+	})
+}
+
+// UpdateMain sets the "main" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateMain() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateMain()
+	})
+}
+
+// ClearMain clears the value of the "main" field.
+func (u *LandingPageUpsertOne) ClearMain() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearMain()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *LandingPageUpsertOne) SetState(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateState() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *LandingPageUpsertOne) ClearState() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *LandingPageUpsertOne) SetOrder(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateOrder() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *LandingPageUpsertOne) ClearOrder() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearOrder()
+	})
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (u *LandingPageUpsertOne) SetMetaTitle(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetMetaTitle(v)
+	})
+}
+
+// UpdateMetaTitle sets the "meta_title" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateMetaTitle() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateMetaTitle()
+	})
+}
+
+// ClearMetaTitle clears the value of the "meta_title" field.
+func (u *LandingPageUpsertOne) ClearMetaTitle() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearMetaTitle()
+	})
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (u *LandingPageUpsertOne) SetMetaDescription(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetMetaDescription(v)
+	})
+}
+
+// UpdateMetaDescription sets the "meta_description" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateMetaDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateMetaDescription()
+	})
+}
+
+// ClearMetaDescription clears the value of the "meta_description" field.
+func (u *LandingPageUpsertOne) ClearMetaDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearMetaDescription()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *LandingPageUpsertOne) SetDescription(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LandingPageUpsertOne) ClearDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (u *LandingPageUpsertOne) SetUsedInHeader(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUsedInHeader(v)
+	})
+}
+
+// UpdateUsedInHeader sets the "used_in_header" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateUsedInHeader() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUsedInHeader()
+	})
+}
+
+// ClearUsedInHeader clears the value of the "used_in_header" field.
+func (u *LandingPageUpsertOne) ClearUsedInHeader() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearUsedInHeader()
+	})
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (u *LandingPageUpsertOne) SetUsedInDescription(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUsedInDescription(v)
+	})
+}
+
+// UpdateUsedInDescription sets the "used_in_description" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateUsedInDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUsedInDescription()
+	})
+}
+
+// ClearUsedInDescription clears the value of the "used_in_description" field.
+func (u *LandingPageUpsertOne) ClearUsedInDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearUsedInDescription()
+	})
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (u *LandingPageUpsertOne) SetOutcomesHeader(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetOutcomesHeader(v)
+	})
+}
+
+// UpdateOutcomesHeader sets the "outcomes_header" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateOutcomesHeader() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateOutcomesHeader()
+	})
+}
+
+// ClearOutcomesHeader clears the value of the "outcomes_header" field.
+func (u *LandingPageUpsertOne) ClearOutcomesHeader() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearOutcomesHeader()
+	})
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (u *LandingPageUpsertOne) SetOutcomesDescription(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetOutcomesDescription(v)
+	})
+}
+
+// UpdateOutcomesDescription sets the "outcomes_description" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateOutcomesDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateOutcomesDescription()
+	})
+}
+
+// ClearOutcomesDescription clears the value of the "outcomes_description" field.
+func (u *LandingPageUpsertOne) ClearOutcomesDescription() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearOutcomesDescription()
+	})
+}
+
+// SetFooter sets the "footer" field.
+func (u *LandingPageUpsertOne) SetFooter(v bool) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetFooter(v)
+	})
+}
+
+// UpdateFooter sets the "footer" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateFooter() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateFooter()
+	})
+}
+
+// ClearFooter clears the value of the "footer" field.
+func (u *LandingPageUpsertOne) ClearFooter() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearFooter()
+	})
+}
+
+// SetFooterName sets the "footer_name" field.
+func (u *LandingPageUpsertOne) SetFooterName(v string) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetFooterName(v)
+	})
+}
+
+// UpdateFooterName sets the "footer_name" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateFooterName() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateFooterName()
+	})
+}
+
+// ClearFooterName clears the value of the "footer_name" field.
+func (u *LandingPageUpsertOne) ClearFooterName() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearFooterName()
+	})
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsertOne) SetLandingPageToRedirectID(v int) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLandingPageToRedirectID(v)
+	})
+}
+
+// AddLandingPageToRedirectID adds v to the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsertOne) AddLandingPageToRedirectID(v int) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.AddLandingPageToRedirectID(v)
+	})
+}
+
+// UpdateLandingPageToRedirectID sets the "landing_page_to_redirect_id" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateLandingPageToRedirectID() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLandingPageToRedirectID()
+	})
+}
+
+// ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsertOne) ClearLandingPageToRedirectID() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearLandingPageToRedirectID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageUpsertOne) SetUpdatedAt(v time.Time) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateUpdatedAt() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LandingPageUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LandingPageCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LandingPageUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LandingPageUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LandingPageUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LandingPageCreateBulk is the builder for creating many LandingPage entities in bulk.
 type LandingPageCreateBulk struct {
 	config
 	err      error
 	builders []*LandingPageCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LandingPage entities in the database.
@@ -537,6 +1435,7 @@ func (_c *LandingPageCreateBulk) Save(ctx context.Context) ([]*LandingPage, erro
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -587,6 +1486,530 @@ func (_c *LandingPageCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LandingPageCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LandingPage.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LandingPageUpsert) {
+//			SetLanguageID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LandingPageCreateBulk) OnConflict(opts ...sql.ConflictOption) *LandingPageUpsertBulk {
+	_c.conflict = opts
+	return &LandingPageUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LandingPage.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LandingPageCreateBulk) OnConflictColumns(columns ...string) *LandingPageUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LandingPageUpsertBulk{
+		create: _c,
+	}
+}
+
+// LandingPageUpsertBulk is the builder for "upsert"-ing
+// a bulk of LandingPage nodes.
+type LandingPageUpsertBulk struct {
+	create *LandingPageCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LandingPage.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LandingPageUpsertBulk) UpdateNewValues() *LandingPageUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(landingpage.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LandingPage.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LandingPageUpsertBulk) Ignore() *LandingPageUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LandingPageUpsertBulk) DoNothing() *LandingPageUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LandingPageCreateBulk.OnConflict
+// documentation for more info.
+func (u *LandingPageUpsertBulk) Update(set func(*LandingPageUpsert)) *LandingPageUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LandingPageUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LandingPageUpsertBulk) SetLanguageID(v int) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateLanguageID() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetSlug sets the "slug" field.
+func (u *LandingPageUpsertBulk) SetSlug(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateSlug() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *LandingPageUpsertBulk) ClearSlug() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetHeader sets the "header" field.
+func (u *LandingPageUpsertBulk) SetHeader(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetHeader(v)
+	})
+}
+
+// UpdateHeader sets the "header" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateHeader() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateHeader()
+	})
+}
+
+// ClearHeader clears the value of the "header" field.
+func (u *LandingPageUpsertBulk) ClearHeader() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearHeader()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *LandingPageUpsertBulk) SetName(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateName() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LandingPageUpsertBulk) ClearName() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *LandingPageUpsertBulk) SetLocale(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateLocale() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LandingPageUpsertBulk) ClearLocale() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetListed sets the "listed" field.
+func (u *LandingPageUpsertBulk) SetListed(v bool) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetListed(v)
+	})
+}
+
+// UpdateListed sets the "listed" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateListed() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateListed()
+	})
+}
+
+// ClearListed clears the value of the "listed" field.
+func (u *LandingPageUpsertBulk) ClearListed() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearListed()
+	})
+}
+
+// SetMain sets the "main" field.
+func (u *LandingPageUpsertBulk) SetMain(v bool) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetMain(v)
+	})
+}
+
+// UpdateMain sets the "main" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateMain() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateMain()
+	})
+}
+
+// ClearMain clears the value of the "main" field.
+func (u *LandingPageUpsertBulk) ClearMain() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearMain()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *LandingPageUpsertBulk) SetState(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateState() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *LandingPageUpsertBulk) ClearState() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetOrder sets the "order" field.
+func (u *LandingPageUpsertBulk) SetOrder(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetOrder(v)
+	})
+}
+
+// UpdateOrder sets the "order" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateOrder() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateOrder()
+	})
+}
+
+// ClearOrder clears the value of the "order" field.
+func (u *LandingPageUpsertBulk) ClearOrder() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearOrder()
+	})
+}
+
+// SetMetaTitle sets the "meta_title" field.
+func (u *LandingPageUpsertBulk) SetMetaTitle(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetMetaTitle(v)
+	})
+}
+
+// UpdateMetaTitle sets the "meta_title" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateMetaTitle() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateMetaTitle()
+	})
+}
+
+// ClearMetaTitle clears the value of the "meta_title" field.
+func (u *LandingPageUpsertBulk) ClearMetaTitle() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearMetaTitle()
+	})
+}
+
+// SetMetaDescription sets the "meta_description" field.
+func (u *LandingPageUpsertBulk) SetMetaDescription(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetMetaDescription(v)
+	})
+}
+
+// UpdateMetaDescription sets the "meta_description" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateMetaDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateMetaDescription()
+	})
+}
+
+// ClearMetaDescription clears the value of the "meta_description" field.
+func (u *LandingPageUpsertBulk) ClearMetaDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearMetaDescription()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *LandingPageUpsertBulk) SetDescription(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LandingPageUpsertBulk) ClearDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetUsedInHeader sets the "used_in_header" field.
+func (u *LandingPageUpsertBulk) SetUsedInHeader(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUsedInHeader(v)
+	})
+}
+
+// UpdateUsedInHeader sets the "used_in_header" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateUsedInHeader() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUsedInHeader()
+	})
+}
+
+// ClearUsedInHeader clears the value of the "used_in_header" field.
+func (u *LandingPageUpsertBulk) ClearUsedInHeader() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearUsedInHeader()
+	})
+}
+
+// SetUsedInDescription sets the "used_in_description" field.
+func (u *LandingPageUpsertBulk) SetUsedInDescription(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUsedInDescription(v)
+	})
+}
+
+// UpdateUsedInDescription sets the "used_in_description" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateUsedInDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUsedInDescription()
+	})
+}
+
+// ClearUsedInDescription clears the value of the "used_in_description" field.
+func (u *LandingPageUpsertBulk) ClearUsedInDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearUsedInDescription()
+	})
+}
+
+// SetOutcomesHeader sets the "outcomes_header" field.
+func (u *LandingPageUpsertBulk) SetOutcomesHeader(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetOutcomesHeader(v)
+	})
+}
+
+// UpdateOutcomesHeader sets the "outcomes_header" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateOutcomesHeader() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateOutcomesHeader()
+	})
+}
+
+// ClearOutcomesHeader clears the value of the "outcomes_header" field.
+func (u *LandingPageUpsertBulk) ClearOutcomesHeader() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearOutcomesHeader()
+	})
+}
+
+// SetOutcomesDescription sets the "outcomes_description" field.
+func (u *LandingPageUpsertBulk) SetOutcomesDescription(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetOutcomesDescription(v)
+	})
+}
+
+// UpdateOutcomesDescription sets the "outcomes_description" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateOutcomesDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateOutcomesDescription()
+	})
+}
+
+// ClearOutcomesDescription clears the value of the "outcomes_description" field.
+func (u *LandingPageUpsertBulk) ClearOutcomesDescription() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearOutcomesDescription()
+	})
+}
+
+// SetFooter sets the "footer" field.
+func (u *LandingPageUpsertBulk) SetFooter(v bool) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetFooter(v)
+	})
+}
+
+// UpdateFooter sets the "footer" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateFooter() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateFooter()
+	})
+}
+
+// ClearFooter clears the value of the "footer" field.
+func (u *LandingPageUpsertBulk) ClearFooter() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearFooter()
+	})
+}
+
+// SetFooterName sets the "footer_name" field.
+func (u *LandingPageUpsertBulk) SetFooterName(v string) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetFooterName(v)
+	})
+}
+
+// UpdateFooterName sets the "footer_name" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateFooterName() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateFooterName()
+	})
+}
+
+// ClearFooterName clears the value of the "footer_name" field.
+func (u *LandingPageUpsertBulk) ClearFooterName() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearFooterName()
+	})
+}
+
+// SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsertBulk) SetLandingPageToRedirectID(v int) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLandingPageToRedirectID(v)
+	})
+}
+
+// AddLandingPageToRedirectID adds v to the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsertBulk) AddLandingPageToRedirectID(v int) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.AddLandingPageToRedirectID(v)
+	})
+}
+
+// UpdateLandingPageToRedirectID sets the "landing_page_to_redirect_id" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateLandingPageToRedirectID() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLandingPageToRedirectID()
+	})
+}
+
+// ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
+func (u *LandingPageUpsertBulk) ClearLandingPageToRedirectID() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearLandingPageToRedirectID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageUpsertBulk) SetUpdatedAt(v time.Time) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateUpdatedAt() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LandingPageUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LandingPageCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LandingPageCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LandingPageUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

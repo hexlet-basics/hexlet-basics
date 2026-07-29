@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/languagelessonversioninfo"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -20,6 +21,7 @@ type LanguageLessonVersionInfoCreate struct {
 	config
 	mutation *LanguageLessonVersionInfoMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -291,6 +293,7 @@ func (_c *LanguageLessonVersionInfoCreate) createSpec() (*LanguageLessonVersionI
 		_node = &LanguageLessonVersionInfo{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(languagelessonversioninfo.Table, sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(languagelessonversioninfo.FieldName, field.TypeString, value)
 		_node.Name = &value
@@ -372,11 +375,568 @@ func (_c *LanguageLessonVersionInfoCreate) createSpec() (*LanguageLessonVersionI
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonVersionInfoUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionInfoCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonVersionInfoUpsertOne {
+	_c.conflict = opts
+	return &LanguageLessonVersionInfoUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionInfoCreate) OnConflictColumns(columns ...string) *LanguageLessonVersionInfoUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonVersionInfoUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LanguageLessonVersionInfoUpsertOne is the builder for "upsert"-ing
+	//  one LanguageLessonVersionInfo node.
+	LanguageLessonVersionInfoUpsertOne struct {
+		create *LanguageLessonVersionInfoCreate
+	}
+
+	// LanguageLessonVersionInfoUpsert is the "OnConflict" setter.
+	LanguageLessonVersionInfoUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *LanguageLessonVersionInfoUpsert) SetName(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateName() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearName() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldName)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *LanguageLessonVersionInfoUpsert) SetDescription(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateDescription() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldDescription)
+	return u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearDescription() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldDescription)
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageLessonVersionInfoUpsert) SetLocale(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateLocale() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldLocale)
+	return u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearLocale() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldLocale)
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonVersionInfoUpsert) SetLanguageID(v int) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateLanguageID() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldLanguageID)
+	return u
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonVersionInfoUpsert) AddLanguageID(v int) *LanguageLessonVersionInfoUpsert {
+	u.Add(languagelessonversioninfo.FieldLanguageID, v)
+	return u
+}
+
+// SetLanguageLessonID sets the "language_lesson_id" field.
+func (u *LanguageLessonVersionInfoUpsert) SetLanguageLessonID(v int) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldLanguageLessonID, v)
+	return u
+}
+
+// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateLanguageLessonID() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldLanguageLessonID)
+	return u
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageLessonVersionInfoUpsert) SetLanguageVersionID(v int) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldLanguageVersionID, v)
+	return u
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateLanguageVersionID() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldLanguageVersionID)
+	return u
+}
+
+// SetTheory sets the "theory" field.
+func (u *LanguageLessonVersionInfoUpsert) SetTheory(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldTheory, v)
+	return u
+}
+
+// UpdateTheory sets the "theory" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateTheory() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldTheory)
+	return u
+}
+
+// ClearTheory clears the value of the "theory" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearTheory() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldTheory)
+	return u
+}
+
+// SetInstructions sets the "instructions" field.
+func (u *LanguageLessonVersionInfoUpsert) SetInstructions(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldInstructions, v)
+	return u
+}
+
+// UpdateInstructions sets the "instructions" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateInstructions() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldInstructions)
+	return u
+}
+
+// ClearInstructions clears the value of the "instructions" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearInstructions() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldInstructions)
+	return u
+}
+
+// SetTips sets the "tips" field.
+func (u *LanguageLessonVersionInfoUpsert) SetTips(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldTips, v)
+	return u
+}
+
+// UpdateTips sets the "tips" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateTips() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldTips)
+	return u
+}
+
+// ClearTips clears the value of the "tips" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearTips() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldTips)
+	return u
+}
+
+// SetDefinitions sets the "definitions" field.
+func (u *LanguageLessonVersionInfoUpsert) SetDefinitions(v string) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldDefinitions, v)
+	return u
+}
+
+// UpdateDefinitions sets the "definitions" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateDefinitions() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldDefinitions)
+	return u
+}
+
+// ClearDefinitions clears the value of the "definitions" field.
+func (u *LanguageLessonVersionInfoUpsert) ClearDefinitions() *LanguageLessonVersionInfoUpsert {
+	u.SetNull(languagelessonversioninfo.FieldDefinitions)
+	return u
+}
+
+// SetVersionID sets the "version_id" field.
+func (u *LanguageLessonVersionInfoUpsert) SetVersionID(v int) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldVersionID, v)
+	return u
+}
+
+// UpdateVersionID sets the "version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateVersionID() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldVersionID)
+	return u
+}
+
+// AddVersionID adds v to the "version_id" field.
+func (u *LanguageLessonVersionInfoUpsert) AddVersionID(v int) *LanguageLessonVersionInfoUpsert {
+	u.Add(languagelessonversioninfo.FieldVersionID, v)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionInfoUpsert) SetUpdatedAt(v time.Time) *LanguageLessonVersionInfoUpsert {
+	u.Set(languagelessonversioninfo.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsert) UpdateUpdatedAt() *LanguageLessonVersionInfoUpsert {
+	u.SetExcluded(languagelessonversioninfo.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateNewValues() *LanguageLessonVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(languagelessonversioninfo.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LanguageLessonVersionInfoUpsertOne) Ignore() *LanguageLessonVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonVersionInfoUpsertOne) DoNothing() *LanguageLessonVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonVersionInfoCreate.OnConflict
+// documentation for more info.
+func (u *LanguageLessonVersionInfoUpsertOne) Update(set func(*LanguageLessonVersionInfoUpsert)) *LanguageLessonVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonVersionInfoUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetName(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateName() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearName() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetDescription(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateDescription() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearDescription() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetLocale(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateLocale() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearLocale() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetLanguageID(v int) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonVersionInfoUpsertOne) AddLanguageID(v int) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateLanguageID() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageLessonID sets the "language_lesson_id" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetLanguageLessonID(v int) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLanguageLessonID(v)
+	})
+}
+
+// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateLanguageLessonID() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLanguageLessonID()
+	})
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetLanguageVersionID(v int) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLanguageVersionID(v)
+	})
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateLanguageVersionID() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLanguageVersionID()
+	})
+}
+
+// SetTheory sets the "theory" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetTheory(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetTheory(v)
+	})
+}
+
+// UpdateTheory sets the "theory" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateTheory() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateTheory()
+	})
+}
+
+// ClearTheory clears the value of the "theory" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearTheory() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearTheory()
+	})
+}
+
+// SetInstructions sets the "instructions" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetInstructions(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetInstructions(v)
+	})
+}
+
+// UpdateInstructions sets the "instructions" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateInstructions() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateInstructions()
+	})
+}
+
+// ClearInstructions clears the value of the "instructions" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearInstructions() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearInstructions()
+	})
+}
+
+// SetTips sets the "tips" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetTips(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetTips(v)
+	})
+}
+
+// UpdateTips sets the "tips" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateTips() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateTips()
+	})
+}
+
+// ClearTips clears the value of the "tips" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearTips() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearTips()
+	})
+}
+
+// SetDefinitions sets the "definitions" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetDefinitions(v string) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetDefinitions(v)
+	})
+}
+
+// UpdateDefinitions sets the "definitions" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateDefinitions() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateDefinitions()
+	})
+}
+
+// ClearDefinitions clears the value of the "definitions" field.
+func (u *LanguageLessonVersionInfoUpsertOne) ClearDefinitions() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearDefinitions()
+	})
+}
+
+// SetVersionID sets the "version_id" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetVersionID(v int) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetVersionID(v)
+	})
+}
+
+// AddVersionID adds v to the "version_id" field.
+func (u *LanguageLessonVersionInfoUpsertOne) AddVersionID(v int) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.AddVersionID(v)
+	})
+}
+
+// UpdateVersionID sets the "version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateVersionID() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateVersionID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionInfoUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertOne) UpdateUpdatedAt() *LanguageLessonVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonVersionInfoUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonVersionInfoCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonVersionInfoUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LanguageLessonVersionInfoUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LanguageLessonVersionInfoUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LanguageLessonVersionInfoCreateBulk is the builder for creating many LanguageLessonVersionInfo entities in bulk.
 type LanguageLessonVersionInfoCreateBulk struct {
 	config
 	err      error
 	builders []*LanguageLessonVersionInfoCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LanguageLessonVersionInfo entities in the database.
@@ -406,6 +966,7 @@ func (_c *LanguageLessonVersionInfoCreateBulk) Save(ctx context.Context) ([]*Lan
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -456,6 +1017,348 @@ func (_c *LanguageLessonVersionInfoCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LanguageLessonVersionInfoCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLessonVersionInfo.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonVersionInfoUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonVersionInfoUpsertBulk {
+	_c.conflict = opts
+	return &LanguageLessonVersionInfoUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonVersionInfoCreateBulk) OnConflictColumns(columns ...string) *LanguageLessonVersionInfoUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonVersionInfoUpsertBulk{
+		create: _c,
+	}
+}
+
+// LanguageLessonVersionInfoUpsertBulk is the builder for "upsert"-ing
+// a bulk of LanguageLessonVersionInfo nodes.
+type LanguageLessonVersionInfoUpsertBulk struct {
+	create *LanguageLessonVersionInfoCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateNewValues() *LanguageLessonVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(languagelessonversioninfo.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonVersionInfo.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LanguageLessonVersionInfoUpsertBulk) Ignore() *LanguageLessonVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonVersionInfoUpsertBulk) DoNothing() *LanguageLessonVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonVersionInfoCreateBulk.OnConflict
+// documentation for more info.
+func (u *LanguageLessonVersionInfoUpsertBulk) Update(set func(*LanguageLessonVersionInfoUpsert)) *LanguageLessonVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonVersionInfoUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetName(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateName() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearName() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetDescription(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateDescription() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearDescription() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetLocale(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateLocale() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearLocale() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetLanguageID(v int) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) AddLanguageID(v int) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateLanguageID() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageLessonID sets the "language_lesson_id" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetLanguageLessonID(v int) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLanguageLessonID(v)
+	})
+}
+
+// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateLanguageLessonID() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLanguageLessonID()
+	})
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetLanguageVersionID(v int) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetLanguageVersionID(v)
+	})
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateLanguageVersionID() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateLanguageVersionID()
+	})
+}
+
+// SetTheory sets the "theory" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetTheory(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetTheory(v)
+	})
+}
+
+// UpdateTheory sets the "theory" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateTheory() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateTheory()
+	})
+}
+
+// ClearTheory clears the value of the "theory" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearTheory() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearTheory()
+	})
+}
+
+// SetInstructions sets the "instructions" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetInstructions(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetInstructions(v)
+	})
+}
+
+// UpdateInstructions sets the "instructions" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateInstructions() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateInstructions()
+	})
+}
+
+// ClearInstructions clears the value of the "instructions" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearInstructions() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearInstructions()
+	})
+}
+
+// SetTips sets the "tips" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetTips(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetTips(v)
+	})
+}
+
+// UpdateTips sets the "tips" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateTips() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateTips()
+	})
+}
+
+// ClearTips clears the value of the "tips" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearTips() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearTips()
+	})
+}
+
+// SetDefinitions sets the "definitions" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetDefinitions(v string) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetDefinitions(v)
+	})
+}
+
+// UpdateDefinitions sets the "definitions" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateDefinitions() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateDefinitions()
+	})
+}
+
+// ClearDefinitions clears the value of the "definitions" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) ClearDefinitions() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.ClearDefinitions()
+	})
+}
+
+// SetVersionID sets the "version_id" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetVersionID(v int) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetVersionID(v)
+	})
+}
+
+// AddVersionID adds v to the "version_id" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) AddVersionID(v int) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.AddVersionID(v)
+	})
+}
+
+// UpdateVersionID sets the "version_id" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateVersionID() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateVersionID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionInfoUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionInfoUpsertBulk) UpdateUpdatedAt() *LanguageLessonVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionInfoUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonVersionInfoUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LanguageLessonVersionInfoCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonVersionInfoCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonVersionInfoUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

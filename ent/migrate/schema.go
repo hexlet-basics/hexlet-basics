@@ -285,6 +285,13 @@ var (
 		Name:       "language_lessons",
 		Columns:    LanguageLessonsColumns,
 		PrimaryKey: []*schema.Column{LanguageLessonsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "languagelesson_language_id_slug",
+				Unique:  true,
+				Columns: []*schema.Column{LanguageLessonsColumns[3], LanguageLessonsColumns[1]},
+			},
+		},
 	}
 	// LanguageLessonMembersColumns holds the columns for the "language_lesson_members" table.
 	LanguageLessonMembersColumns = []*schema.Column{
@@ -421,6 +428,13 @@ var (
 		Name:       "language_modules",
 		Columns:    LanguageModulesColumns,
 		PrimaryKey: []*schema.Column{LanguageModulesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "languagemodule_language_id_slug",
+				Unique:  true,
+				Columns: []*schema.Column{LanguageModulesColumns[2], LanguageModulesColumns[1]},
+			},
+		},
 	}
 	// LanguageModuleVersionsColumns holds the columns for the "language_module_versions" table.
 	LanguageModuleVersionsColumns = []*schema.Column{

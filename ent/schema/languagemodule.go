@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // LanguageModule maps the legacy `language_modules` table: a stable module (a
@@ -26,5 +27,11 @@ func (LanguageModule) Fields() []ent.Field {
 		field.String("state").Optional().Nillable(),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
+	}
+}
+
+func (LanguageModule) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("language_id", "slug").Unique(),
 	}
 }

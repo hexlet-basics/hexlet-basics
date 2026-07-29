@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/actiontextrichtext"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -17,6 +18,7 @@ type ActionTextRichTextCreate struct {
 	config
 	mutation *ActionTextRichTextMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -120,6 +122,7 @@ func (_c *ActionTextRichTextCreate) createSpec() (*ActionTextRichText, *sqlgraph
 		_node = &ActionTextRichText{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(actiontextrichtext.Table, sqlgraph.NewFieldSpec(actiontextrichtext.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(actiontextrichtext.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -139,11 +142,264 @@ func (_c *ActionTextRichTextCreate) createSpec() (*ActionTextRichText, *sqlgraph
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionTextRichText.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionTextRichTextUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ActionTextRichTextCreate) OnConflict(opts ...sql.ConflictOption) *ActionTextRichTextUpsertOne {
+	_c.conflict = opts
+	return &ActionTextRichTextUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionTextRichText.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ActionTextRichTextCreate) OnConflictColumns(columns ...string) *ActionTextRichTextUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ActionTextRichTextUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// ActionTextRichTextUpsertOne is the builder for "upsert"-ing
+	//  one ActionTextRichText node.
+	ActionTextRichTextUpsertOne struct {
+		create *ActionTextRichTextCreate
+	}
+
+	// ActionTextRichTextUpsert is the "OnConflict" setter.
+	ActionTextRichTextUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *ActionTextRichTextUpsert) SetName(v string) *ActionTextRichTextUpsert {
+	u.Set(actiontextrichtext.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsert) UpdateName() *ActionTextRichTextUpsert {
+	u.SetExcluded(actiontextrichtext.FieldName)
+	return u
+}
+
+// SetRecordID sets the "record_id" field.
+func (u *ActionTextRichTextUpsert) SetRecordID(v int) *ActionTextRichTextUpsert {
+	u.Set(actiontextrichtext.FieldRecordID, v)
+	return u
+}
+
+// UpdateRecordID sets the "record_id" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsert) UpdateRecordID() *ActionTextRichTextUpsert {
+	u.SetExcluded(actiontextrichtext.FieldRecordID)
+	return u
+}
+
+// AddRecordID adds v to the "record_id" field.
+func (u *ActionTextRichTextUpsert) AddRecordID(v int) *ActionTextRichTextUpsert {
+	u.Add(actiontextrichtext.FieldRecordID, v)
+	return u
+}
+
+// SetRecordType sets the "record_type" field.
+func (u *ActionTextRichTextUpsert) SetRecordType(v string) *ActionTextRichTextUpsert {
+	u.Set(actiontextrichtext.FieldRecordType, v)
+	return u
+}
+
+// UpdateRecordType sets the "record_type" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsert) UpdateRecordType() *ActionTextRichTextUpsert {
+	u.SetExcluded(actiontextrichtext.FieldRecordType)
+	return u
+}
+
+// SetBody sets the "body" field.
+func (u *ActionTextRichTextUpsert) SetBody(v string) *ActionTextRichTextUpsert {
+	u.Set(actiontextrichtext.FieldBody, v)
+	return u
+}
+
+// UpdateBody sets the "body" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsert) UpdateBody() *ActionTextRichTextUpsert {
+	u.SetExcluded(actiontextrichtext.FieldBody)
+	return u
+}
+
+// ClearBody clears the value of the "body" field.
+func (u *ActionTextRichTextUpsert) ClearBody() *ActionTextRichTextUpsert {
+	u.SetNull(actiontextrichtext.FieldBody)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.ActionTextRichText.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionTextRichTextUpsertOne) UpdateNewValues() *ActionTextRichTextUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionTextRichText.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ActionTextRichTextUpsertOne) Ignore() *ActionTextRichTextUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionTextRichTextUpsertOne) DoNothing() *ActionTextRichTextUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionTextRichTextCreate.OnConflict
+// documentation for more info.
+func (u *ActionTextRichTextUpsertOne) Update(set func(*ActionTextRichTextUpsert)) *ActionTextRichTextUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionTextRichTextUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *ActionTextRichTextUpsertOne) SetName(v string) *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertOne) UpdateName() *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetRecordID sets the "record_id" field.
+func (u *ActionTextRichTextUpsertOne) SetRecordID(v int) *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetRecordID(v)
+	})
+}
+
+// AddRecordID adds v to the "record_id" field.
+func (u *ActionTextRichTextUpsertOne) AddRecordID(v int) *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.AddRecordID(v)
+	})
+}
+
+// UpdateRecordID sets the "record_id" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertOne) UpdateRecordID() *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateRecordID()
+	})
+}
+
+// SetRecordType sets the "record_type" field.
+func (u *ActionTextRichTextUpsertOne) SetRecordType(v string) *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetRecordType(v)
+	})
+}
+
+// UpdateRecordType sets the "record_type" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertOne) UpdateRecordType() *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateRecordType()
+	})
+}
+
+// SetBody sets the "body" field.
+func (u *ActionTextRichTextUpsertOne) SetBody(v string) *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetBody(v)
+	})
+}
+
+// UpdateBody sets the "body" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertOne) UpdateBody() *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateBody()
+	})
+}
+
+// ClearBody clears the value of the "body" field.
+func (u *ActionTextRichTextUpsertOne) ClearBody() *ActionTextRichTextUpsertOne {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.ClearBody()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionTextRichTextUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionTextRichTextCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionTextRichTextUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ActionTextRichTextUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ActionTextRichTextUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ActionTextRichTextCreateBulk is the builder for creating many ActionTextRichText entities in bulk.
 type ActionTextRichTextCreateBulk struct {
 	config
 	err      error
 	builders []*ActionTextRichTextCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ActionTextRichText entities in the database.
@@ -172,6 +428,7 @@ func (_c *ActionTextRichTextCreateBulk) Save(ctx context.Context) ([]*ActionText
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -222,6 +479,180 @@ func (_c *ActionTextRichTextCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *ActionTextRichTextCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionTextRichText.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionTextRichTextUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ActionTextRichTextCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionTextRichTextUpsertBulk {
+	_c.conflict = opts
+	return &ActionTextRichTextUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionTextRichText.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ActionTextRichTextCreateBulk) OnConflictColumns(columns ...string) *ActionTextRichTextUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ActionTextRichTextUpsertBulk{
+		create: _c,
+	}
+}
+
+// ActionTextRichTextUpsertBulk is the builder for "upsert"-ing
+// a bulk of ActionTextRichText nodes.
+type ActionTextRichTextUpsertBulk struct {
+	create *ActionTextRichTextCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ActionTextRichText.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionTextRichTextUpsertBulk) UpdateNewValues() *ActionTextRichTextUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionTextRichText.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ActionTextRichTextUpsertBulk) Ignore() *ActionTextRichTextUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionTextRichTextUpsertBulk) DoNothing() *ActionTextRichTextUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionTextRichTextCreateBulk.OnConflict
+// documentation for more info.
+func (u *ActionTextRichTextUpsertBulk) Update(set func(*ActionTextRichTextUpsert)) *ActionTextRichTextUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionTextRichTextUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *ActionTextRichTextUpsertBulk) SetName(v string) *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertBulk) UpdateName() *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetRecordID sets the "record_id" field.
+func (u *ActionTextRichTextUpsertBulk) SetRecordID(v int) *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetRecordID(v)
+	})
+}
+
+// AddRecordID adds v to the "record_id" field.
+func (u *ActionTextRichTextUpsertBulk) AddRecordID(v int) *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.AddRecordID(v)
+	})
+}
+
+// UpdateRecordID sets the "record_id" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertBulk) UpdateRecordID() *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateRecordID()
+	})
+}
+
+// SetRecordType sets the "record_type" field.
+func (u *ActionTextRichTextUpsertBulk) SetRecordType(v string) *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetRecordType(v)
+	})
+}
+
+// UpdateRecordType sets the "record_type" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertBulk) UpdateRecordType() *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateRecordType()
+	})
+}
+
+// SetBody sets the "body" field.
+func (u *ActionTextRichTextUpsertBulk) SetBody(v string) *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.SetBody(v)
+	})
+}
+
+// UpdateBody sets the "body" field to the value that was provided on create.
+func (u *ActionTextRichTextUpsertBulk) UpdateBody() *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.UpdateBody()
+	})
+}
+
+// ClearBody clears the value of the "body" field.
+func (u *ActionTextRichTextUpsertBulk) ClearBody() *ActionTextRichTextUpsertBulk {
+	return u.Update(func(s *ActionTextRichTextUpsert) {
+		s.ClearBody()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionTextRichTextUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ActionTextRichTextCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionTextRichTextCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionTextRichTextUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

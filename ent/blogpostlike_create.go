@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/blogpostlike"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -17,6 +18,7 @@ type BlogPostLikeCreate struct {
 	config
 	mutation *BlogPostLikeMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetBlogPostID sets the "blog_post_id" field.
@@ -88,6 +90,7 @@ func (_c *BlogPostLikeCreate) createSpec() (*BlogPostLike, *sqlgraph.CreateSpec)
 		_node = &BlogPostLike{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(blogpostlike.Table, sqlgraph.NewFieldSpec(blogpostlike.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.BlogPostID(); ok {
 		_spec.SetField(blogpostlike.FieldBlogPostID, field.TypeInt, value)
 		_node.BlogPostID = value
@@ -95,11 +98,173 @@ func (_c *BlogPostLikeCreate) createSpec() (*BlogPostLike, *sqlgraph.CreateSpec)
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BlogPostLike.Create().
+//		SetBlogPostID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BlogPostLikeUpsert) {
+//			SetBlogPostID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *BlogPostLikeCreate) OnConflict(opts ...sql.ConflictOption) *BlogPostLikeUpsertOne {
+	_c.conflict = opts
+	return &BlogPostLikeUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BlogPostLike.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *BlogPostLikeCreate) OnConflictColumns(columns ...string) *BlogPostLikeUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &BlogPostLikeUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// BlogPostLikeUpsertOne is the builder for "upsert"-ing
+	//  one BlogPostLike node.
+	BlogPostLikeUpsertOne struct {
+		create *BlogPostLikeCreate
+	}
+
+	// BlogPostLikeUpsert is the "OnConflict" setter.
+	BlogPostLikeUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetBlogPostID sets the "blog_post_id" field.
+func (u *BlogPostLikeUpsert) SetBlogPostID(v int) *BlogPostLikeUpsert {
+	u.Set(blogpostlike.FieldBlogPostID, v)
+	return u
+}
+
+// UpdateBlogPostID sets the "blog_post_id" field to the value that was provided on create.
+func (u *BlogPostLikeUpsert) UpdateBlogPostID() *BlogPostLikeUpsert {
+	u.SetExcluded(blogpostlike.FieldBlogPostID)
+	return u
+}
+
+// AddBlogPostID adds v to the "blog_post_id" field.
+func (u *BlogPostLikeUpsert) AddBlogPostID(v int) *BlogPostLikeUpsert {
+	u.Add(blogpostlike.FieldBlogPostID, v)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.BlogPostLike.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BlogPostLikeUpsertOne) UpdateNewValues() *BlogPostLikeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BlogPostLike.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *BlogPostLikeUpsertOne) Ignore() *BlogPostLikeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BlogPostLikeUpsertOne) DoNothing() *BlogPostLikeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BlogPostLikeCreate.OnConflict
+// documentation for more info.
+func (u *BlogPostLikeUpsertOne) Update(set func(*BlogPostLikeUpsert)) *BlogPostLikeUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BlogPostLikeUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetBlogPostID sets the "blog_post_id" field.
+func (u *BlogPostLikeUpsertOne) SetBlogPostID(v int) *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.SetBlogPostID(v)
+	})
+}
+
+// AddBlogPostID adds v to the "blog_post_id" field.
+func (u *BlogPostLikeUpsertOne) AddBlogPostID(v int) *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.AddBlogPostID(v)
+	})
+}
+
+// UpdateBlogPostID sets the "blog_post_id" field to the value that was provided on create.
+func (u *BlogPostLikeUpsertOne) UpdateBlogPostID() *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.UpdateBlogPostID()
+	})
+}
+
+// Exec executes the query.
+func (u *BlogPostLikeUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BlogPostLikeCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BlogPostLikeUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *BlogPostLikeUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *BlogPostLikeUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // BlogPostLikeCreateBulk is the builder for creating many BlogPostLike entities in bulk.
 type BlogPostLikeCreateBulk struct {
 	config
 	err      error
 	builders []*BlogPostLikeCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the BlogPostLike entities in the database.
@@ -128,6 +293,7 @@ func (_c *BlogPostLikeCreateBulk) Save(ctx context.Context) ([]*BlogPostLike, er
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -178,6 +344,131 @@ func (_c *BlogPostLikeCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *BlogPostLikeCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BlogPostLike.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BlogPostLikeUpsert) {
+//			SetBlogPostID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *BlogPostLikeCreateBulk) OnConflict(opts ...sql.ConflictOption) *BlogPostLikeUpsertBulk {
+	_c.conflict = opts
+	return &BlogPostLikeUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BlogPostLike.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *BlogPostLikeCreateBulk) OnConflictColumns(columns ...string) *BlogPostLikeUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &BlogPostLikeUpsertBulk{
+		create: _c,
+	}
+}
+
+// BlogPostLikeUpsertBulk is the builder for "upsert"-ing
+// a bulk of BlogPostLike nodes.
+type BlogPostLikeUpsertBulk struct {
+	create *BlogPostLikeCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.BlogPostLike.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BlogPostLikeUpsertBulk) UpdateNewValues() *BlogPostLikeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BlogPostLike.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *BlogPostLikeUpsertBulk) Ignore() *BlogPostLikeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BlogPostLikeUpsertBulk) DoNothing() *BlogPostLikeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BlogPostLikeCreateBulk.OnConflict
+// documentation for more info.
+func (u *BlogPostLikeUpsertBulk) Update(set func(*BlogPostLikeUpsert)) *BlogPostLikeUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BlogPostLikeUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetBlogPostID sets the "blog_post_id" field.
+func (u *BlogPostLikeUpsertBulk) SetBlogPostID(v int) *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.SetBlogPostID(v)
+	})
+}
+
+// AddBlogPostID adds v to the "blog_post_id" field.
+func (u *BlogPostLikeUpsertBulk) AddBlogPostID(v int) *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.AddBlogPostID(v)
+	})
+}
+
+// UpdateBlogPostID sets the "blog_post_id" field to the value that was provided on create.
+func (u *BlogPostLikeUpsertBulk) UpdateBlogPostID() *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.UpdateBlogPostID()
+	})
+}
+
+// Exec executes the query.
+func (u *BlogPostLikeUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the BlogPostLikeCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BlogPostLikeCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BlogPostLikeUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

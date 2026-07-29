@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/activestorageblob"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -17,6 +18,7 @@ type ActiveStorageBlobCreate struct {
 	config
 	mutation *ActiveStorageBlobMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetKey sets the "key" field.
@@ -111,6 +113,7 @@ func (_c *ActiveStorageBlobCreate) createSpec() (*ActiveStorageBlob, *sqlgraph.C
 		_node = &ActiveStorageBlob{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(activestorageblob.Table, sqlgraph.NewFieldSpec(activestorageblob.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Key(); ok {
 		_spec.SetField(activestorageblob.FieldKey, field.TypeString, value)
 		_node.Key = value
@@ -126,11 +129,225 @@ func (_c *ActiveStorageBlobCreate) createSpec() (*ActiveStorageBlob, *sqlgraph.C
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActiveStorageBlob.Create().
+//		SetKey(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActiveStorageBlobUpsert) {
+//			SetKey(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ActiveStorageBlobCreate) OnConflict(opts ...sql.ConflictOption) *ActiveStorageBlobUpsertOne {
+	_c.conflict = opts
+	return &ActiveStorageBlobUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActiveStorageBlob.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ActiveStorageBlobCreate) OnConflictColumns(columns ...string) *ActiveStorageBlobUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ActiveStorageBlobUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// ActiveStorageBlobUpsertOne is the builder for "upsert"-ing
+	//  one ActiveStorageBlob node.
+	ActiveStorageBlobUpsertOne struct {
+		create *ActiveStorageBlobCreate
+	}
+
+	// ActiveStorageBlobUpsert is the "OnConflict" setter.
+	ActiveStorageBlobUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetKey sets the "key" field.
+func (u *ActiveStorageBlobUpsert) SetKey(v string) *ActiveStorageBlobUpsert {
+	u.Set(activestorageblob.FieldKey, v)
+	return u
+}
+
+// UpdateKey sets the "key" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsert) UpdateKey() *ActiveStorageBlobUpsert {
+	u.SetExcluded(activestorageblob.FieldKey)
+	return u
+}
+
+// SetFilename sets the "filename" field.
+func (u *ActiveStorageBlobUpsert) SetFilename(v string) *ActiveStorageBlobUpsert {
+	u.Set(activestorageblob.FieldFilename, v)
+	return u
+}
+
+// UpdateFilename sets the "filename" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsert) UpdateFilename() *ActiveStorageBlobUpsert {
+	u.SetExcluded(activestorageblob.FieldFilename)
+	return u
+}
+
+// SetContentType sets the "content_type" field.
+func (u *ActiveStorageBlobUpsert) SetContentType(v string) *ActiveStorageBlobUpsert {
+	u.Set(activestorageblob.FieldContentType, v)
+	return u
+}
+
+// UpdateContentType sets the "content_type" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsert) UpdateContentType() *ActiveStorageBlobUpsert {
+	u.SetExcluded(activestorageblob.FieldContentType)
+	return u
+}
+
+// ClearContentType clears the value of the "content_type" field.
+func (u *ActiveStorageBlobUpsert) ClearContentType() *ActiveStorageBlobUpsert {
+	u.SetNull(activestorageblob.FieldContentType)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.ActiveStorageBlob.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActiveStorageBlobUpsertOne) UpdateNewValues() *ActiveStorageBlobUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActiveStorageBlob.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ActiveStorageBlobUpsertOne) Ignore() *ActiveStorageBlobUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActiveStorageBlobUpsertOne) DoNothing() *ActiveStorageBlobUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActiveStorageBlobCreate.OnConflict
+// documentation for more info.
+func (u *ActiveStorageBlobUpsertOne) Update(set func(*ActiveStorageBlobUpsert)) *ActiveStorageBlobUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActiveStorageBlobUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetKey sets the "key" field.
+func (u *ActiveStorageBlobUpsertOne) SetKey(v string) *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.SetKey(v)
+	})
+}
+
+// UpdateKey sets the "key" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsertOne) UpdateKey() *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.UpdateKey()
+	})
+}
+
+// SetFilename sets the "filename" field.
+func (u *ActiveStorageBlobUpsertOne) SetFilename(v string) *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.SetFilename(v)
+	})
+}
+
+// UpdateFilename sets the "filename" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsertOne) UpdateFilename() *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.UpdateFilename()
+	})
+}
+
+// SetContentType sets the "content_type" field.
+func (u *ActiveStorageBlobUpsertOne) SetContentType(v string) *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.SetContentType(v)
+	})
+}
+
+// UpdateContentType sets the "content_type" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsertOne) UpdateContentType() *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.UpdateContentType()
+	})
+}
+
+// ClearContentType clears the value of the "content_type" field.
+func (u *ActiveStorageBlobUpsertOne) ClearContentType() *ActiveStorageBlobUpsertOne {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.ClearContentType()
+	})
+}
+
+// Exec executes the query.
+func (u *ActiveStorageBlobUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActiveStorageBlobCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActiveStorageBlobUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ActiveStorageBlobUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ActiveStorageBlobUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ActiveStorageBlobCreateBulk is the builder for creating many ActiveStorageBlob entities in bulk.
 type ActiveStorageBlobCreateBulk struct {
 	config
 	err      error
 	builders []*ActiveStorageBlobCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ActiveStorageBlob entities in the database.
@@ -159,6 +376,7 @@ func (_c *ActiveStorageBlobCreateBulk) Save(ctx context.Context) ([]*ActiveStora
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -209,6 +427,159 @@ func (_c *ActiveStorageBlobCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *ActiveStorageBlobCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActiveStorageBlob.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActiveStorageBlobUpsert) {
+//			SetKey(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ActiveStorageBlobCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActiveStorageBlobUpsertBulk {
+	_c.conflict = opts
+	return &ActiveStorageBlobUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActiveStorageBlob.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ActiveStorageBlobCreateBulk) OnConflictColumns(columns ...string) *ActiveStorageBlobUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ActiveStorageBlobUpsertBulk{
+		create: _c,
+	}
+}
+
+// ActiveStorageBlobUpsertBulk is the builder for "upsert"-ing
+// a bulk of ActiveStorageBlob nodes.
+type ActiveStorageBlobUpsertBulk struct {
+	create *ActiveStorageBlobCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ActiveStorageBlob.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActiveStorageBlobUpsertBulk) UpdateNewValues() *ActiveStorageBlobUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActiveStorageBlob.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ActiveStorageBlobUpsertBulk) Ignore() *ActiveStorageBlobUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActiveStorageBlobUpsertBulk) DoNothing() *ActiveStorageBlobUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActiveStorageBlobCreateBulk.OnConflict
+// documentation for more info.
+func (u *ActiveStorageBlobUpsertBulk) Update(set func(*ActiveStorageBlobUpsert)) *ActiveStorageBlobUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActiveStorageBlobUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetKey sets the "key" field.
+func (u *ActiveStorageBlobUpsertBulk) SetKey(v string) *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.SetKey(v)
+	})
+}
+
+// UpdateKey sets the "key" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsertBulk) UpdateKey() *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.UpdateKey()
+	})
+}
+
+// SetFilename sets the "filename" field.
+func (u *ActiveStorageBlobUpsertBulk) SetFilename(v string) *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.SetFilename(v)
+	})
+}
+
+// UpdateFilename sets the "filename" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsertBulk) UpdateFilename() *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.UpdateFilename()
+	})
+}
+
+// SetContentType sets the "content_type" field.
+func (u *ActiveStorageBlobUpsertBulk) SetContentType(v string) *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.SetContentType(v)
+	})
+}
+
+// UpdateContentType sets the "content_type" field to the value that was provided on create.
+func (u *ActiveStorageBlobUpsertBulk) UpdateContentType() *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.UpdateContentType()
+	})
+}
+
+// ClearContentType clears the value of the "content_type" field.
+func (u *ActiveStorageBlobUpsertBulk) ClearContentType() *ActiveStorageBlobUpsertBulk {
+	return u.Update(func(s *ActiveStorageBlobUpsert) {
+		s.ClearContentType()
+	})
+}
+
+// Exec executes the query.
+func (u *ActiveStorageBlobUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ActiveStorageBlobCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActiveStorageBlobCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActiveStorageBlobUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

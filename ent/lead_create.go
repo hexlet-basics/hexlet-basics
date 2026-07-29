@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/lead"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -18,6 +19,7 @@ type LeadCreate struct {
 	config
 	mutation *LeadMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetUserID sets the "user_id" field.
@@ -182,6 +184,7 @@ func (_c *LeadCreate) createSpec() (*Lead, *sqlgraph.CreateSpec) {
 		_node = &Lead{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(lead.Table, sqlgraph.NewFieldSpec(lead.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(lead.FieldUserID, field.TypeInt, value)
 		_node.UserID = value
@@ -217,11 +220,412 @@ func (_c *LeadCreate) createSpec() (*Lead, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Lead.Create().
+//		SetUserID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LeadUpsert) {
+//			SetUserID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LeadCreate) OnConflict(opts ...sql.ConflictOption) *LeadUpsertOne {
+	_c.conflict = opts
+	return &LeadUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Lead.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LeadCreate) OnConflictColumns(columns ...string) *LeadUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LeadUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LeadUpsertOne is the builder for "upsert"-ing
+	//  one Lead node.
+	LeadUpsertOne struct {
+		create *LeadCreate
+	}
+
+	// LeadUpsert is the "OnConflict" setter.
+	LeadUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUserID sets the "user_id" field.
+func (u *LeadUpsert) SetUserID(v int) *LeadUpsert {
+	u.Set(lead.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateUserID() *LeadUpsert {
+	u.SetExcluded(lead.FieldUserID)
+	return u
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *LeadUpsert) AddUserID(v int) *LeadUpsert {
+	u.Add(lead.FieldUserID, v)
+	return u
+}
+
+// SetEmail sets the "email" field.
+func (u *LeadUpsert) SetEmail(v string) *LeadUpsert {
+	u.Set(lead.FieldEmail, v)
+	return u
+}
+
+// UpdateEmail sets the "email" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateEmail() *LeadUpsert {
+	u.SetExcluded(lead.FieldEmail)
+	return u
+}
+
+// ClearEmail clears the value of the "email" field.
+func (u *LeadUpsert) ClearEmail() *LeadUpsert {
+	u.SetNull(lead.FieldEmail)
+	return u
+}
+
+// SetPhone sets the "phone" field.
+func (u *LeadUpsert) SetPhone(v string) *LeadUpsert {
+	u.Set(lead.FieldPhone, v)
+	return u
+}
+
+// UpdatePhone sets the "phone" field to the value that was provided on create.
+func (u *LeadUpsert) UpdatePhone() *LeadUpsert {
+	u.SetExcluded(lead.FieldPhone)
+	return u
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (u *LeadUpsert) ClearPhone() *LeadUpsert {
+	u.SetNull(lead.FieldPhone)
+	return u
+}
+
+// SetWhatsapp sets the "whatsapp" field.
+func (u *LeadUpsert) SetWhatsapp(v string) *LeadUpsert {
+	u.Set(lead.FieldWhatsapp, v)
+	return u
+}
+
+// UpdateWhatsapp sets the "whatsapp" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateWhatsapp() *LeadUpsert {
+	u.SetExcluded(lead.FieldWhatsapp)
+	return u
+}
+
+// ClearWhatsapp clears the value of the "whatsapp" field.
+func (u *LeadUpsert) ClearWhatsapp() *LeadUpsert {
+	u.SetNull(lead.FieldWhatsapp)
+	return u
+}
+
+// SetTelegram sets the "telegram" field.
+func (u *LeadUpsert) SetTelegram(v string) *LeadUpsert {
+	u.Set(lead.FieldTelegram, v)
+	return u
+}
+
+// UpdateTelegram sets the "telegram" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateTelegram() *LeadUpsert {
+	u.SetExcluded(lead.FieldTelegram)
+	return u
+}
+
+// ClearTelegram clears the value of the "telegram" field.
+func (u *LeadUpsert) ClearTelegram() *LeadUpsert {
+	u.SetNull(lead.FieldTelegram)
+	return u
+}
+
+// SetSurveyAnswersData sets the "survey_answers_data" field.
+func (u *LeadUpsert) SetSurveyAnswersData(v string) *LeadUpsert {
+	u.Set(lead.FieldSurveyAnswersData, v)
+	return u
+}
+
+// UpdateSurveyAnswersData sets the "survey_answers_data" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateSurveyAnswersData() *LeadUpsert {
+	u.SetExcluded(lead.FieldSurveyAnswersData)
+	return u
+}
+
+// ClearSurveyAnswersData clears the value of the "survey_answers_data" field.
+func (u *LeadUpsert) ClearSurveyAnswersData() *LeadUpsert {
+	u.SetNull(lead.FieldSurveyAnswersData)
+	return u
+}
+
+// SetCoursesData sets the "courses_data" field.
+func (u *LeadUpsert) SetCoursesData(v string) *LeadUpsert {
+	u.Set(lead.FieldCoursesData, v)
+	return u
+}
+
+// UpdateCoursesData sets the "courses_data" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateCoursesData() *LeadUpsert {
+	u.SetExcluded(lead.FieldCoursesData)
+	return u
+}
+
+// ClearCoursesData clears the value of the "courses_data" field.
+func (u *LeadUpsert) ClearCoursesData() *LeadUpsert {
+	u.SetNull(lead.FieldCoursesData)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.Lead.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LeadUpsertOne) UpdateNewValues() *LeadUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(lead.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Lead.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LeadUpsertOne) Ignore() *LeadUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LeadUpsertOne) DoNothing() *LeadUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LeadCreate.OnConflict
+// documentation for more info.
+func (u *LeadUpsertOne) Update(set func(*LeadUpsert)) *LeadUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LeadUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *LeadUpsertOne) SetUserID(v int) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *LeadUpsertOne) AddUserID(v int) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateUserID() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetEmail sets the "email" field.
+func (u *LeadUpsertOne) SetEmail(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetEmail(v)
+	})
+}
+
+// UpdateEmail sets the "email" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateEmail() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateEmail()
+	})
+}
+
+// ClearEmail clears the value of the "email" field.
+func (u *LeadUpsertOne) ClearEmail() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearEmail()
+	})
+}
+
+// SetPhone sets the "phone" field.
+func (u *LeadUpsertOne) SetPhone(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetPhone(v)
+	})
+}
+
+// UpdatePhone sets the "phone" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdatePhone() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdatePhone()
+	})
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (u *LeadUpsertOne) ClearPhone() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearPhone()
+	})
+}
+
+// SetWhatsapp sets the "whatsapp" field.
+func (u *LeadUpsertOne) SetWhatsapp(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetWhatsapp(v)
+	})
+}
+
+// UpdateWhatsapp sets the "whatsapp" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateWhatsapp() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateWhatsapp()
+	})
+}
+
+// ClearWhatsapp clears the value of the "whatsapp" field.
+func (u *LeadUpsertOne) ClearWhatsapp() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearWhatsapp()
+	})
+}
+
+// SetTelegram sets the "telegram" field.
+func (u *LeadUpsertOne) SetTelegram(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetTelegram(v)
+	})
+}
+
+// UpdateTelegram sets the "telegram" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateTelegram() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateTelegram()
+	})
+}
+
+// ClearTelegram clears the value of the "telegram" field.
+func (u *LeadUpsertOne) ClearTelegram() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearTelegram()
+	})
+}
+
+// SetSurveyAnswersData sets the "survey_answers_data" field.
+func (u *LeadUpsertOne) SetSurveyAnswersData(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetSurveyAnswersData(v)
+	})
+}
+
+// UpdateSurveyAnswersData sets the "survey_answers_data" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateSurveyAnswersData() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateSurveyAnswersData()
+	})
+}
+
+// ClearSurveyAnswersData clears the value of the "survey_answers_data" field.
+func (u *LeadUpsertOne) ClearSurveyAnswersData() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearSurveyAnswersData()
+	})
+}
+
+// SetCoursesData sets the "courses_data" field.
+func (u *LeadUpsertOne) SetCoursesData(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetCoursesData(v)
+	})
+}
+
+// UpdateCoursesData sets the "courses_data" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateCoursesData() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateCoursesData()
+	})
+}
+
+// ClearCoursesData clears the value of the "courses_data" field.
+func (u *LeadUpsertOne) ClearCoursesData() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearCoursesData()
+	})
+}
+
+// Exec executes the query.
+func (u *LeadUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LeadCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LeadUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LeadUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LeadUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LeadCreateBulk is the builder for creating many Lead entities in bulk.
 type LeadCreateBulk struct {
 	config
 	err      error
 	builders []*LeadCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Lead entities in the database.
@@ -250,6 +654,7 @@ func (_c *LeadCreateBulk) Save(ctx context.Context) ([]*Lead, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -300,6 +705,264 @@ func (_c *LeadCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LeadCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Lead.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LeadUpsert) {
+//			SetUserID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LeadCreateBulk) OnConflict(opts ...sql.ConflictOption) *LeadUpsertBulk {
+	_c.conflict = opts
+	return &LeadUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Lead.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LeadCreateBulk) OnConflictColumns(columns ...string) *LeadUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LeadUpsertBulk{
+		create: _c,
+	}
+}
+
+// LeadUpsertBulk is the builder for "upsert"-ing
+// a bulk of Lead nodes.
+type LeadUpsertBulk struct {
+	create *LeadCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Lead.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LeadUpsertBulk) UpdateNewValues() *LeadUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(lead.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Lead.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LeadUpsertBulk) Ignore() *LeadUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LeadUpsertBulk) DoNothing() *LeadUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LeadCreateBulk.OnConflict
+// documentation for more info.
+func (u *LeadUpsertBulk) Update(set func(*LeadUpsert)) *LeadUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LeadUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *LeadUpsertBulk) SetUserID(v int) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *LeadUpsertBulk) AddUserID(v int) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateUserID() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetEmail sets the "email" field.
+func (u *LeadUpsertBulk) SetEmail(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetEmail(v)
+	})
+}
+
+// UpdateEmail sets the "email" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateEmail() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateEmail()
+	})
+}
+
+// ClearEmail clears the value of the "email" field.
+func (u *LeadUpsertBulk) ClearEmail() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearEmail()
+	})
+}
+
+// SetPhone sets the "phone" field.
+func (u *LeadUpsertBulk) SetPhone(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetPhone(v)
+	})
+}
+
+// UpdatePhone sets the "phone" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdatePhone() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdatePhone()
+	})
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (u *LeadUpsertBulk) ClearPhone() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearPhone()
+	})
+}
+
+// SetWhatsapp sets the "whatsapp" field.
+func (u *LeadUpsertBulk) SetWhatsapp(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetWhatsapp(v)
+	})
+}
+
+// UpdateWhatsapp sets the "whatsapp" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateWhatsapp() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateWhatsapp()
+	})
+}
+
+// ClearWhatsapp clears the value of the "whatsapp" field.
+func (u *LeadUpsertBulk) ClearWhatsapp() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearWhatsapp()
+	})
+}
+
+// SetTelegram sets the "telegram" field.
+func (u *LeadUpsertBulk) SetTelegram(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetTelegram(v)
+	})
+}
+
+// UpdateTelegram sets the "telegram" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateTelegram() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateTelegram()
+	})
+}
+
+// ClearTelegram clears the value of the "telegram" field.
+func (u *LeadUpsertBulk) ClearTelegram() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearTelegram()
+	})
+}
+
+// SetSurveyAnswersData sets the "survey_answers_data" field.
+func (u *LeadUpsertBulk) SetSurveyAnswersData(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetSurveyAnswersData(v)
+	})
+}
+
+// UpdateSurveyAnswersData sets the "survey_answers_data" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateSurveyAnswersData() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateSurveyAnswersData()
+	})
+}
+
+// ClearSurveyAnswersData clears the value of the "survey_answers_data" field.
+func (u *LeadUpsertBulk) ClearSurveyAnswersData() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearSurveyAnswersData()
+	})
+}
+
+// SetCoursesData sets the "courses_data" field.
+func (u *LeadUpsertBulk) SetCoursesData(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetCoursesData(v)
+	})
+}
+
+// UpdateCoursesData sets the "courses_data" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateCoursesData() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateCoursesData()
+	})
+}
+
+// ClearCoursesData clears the value of the "courses_data" field.
+func (u *LeadUpsertBulk) ClearCoursesData() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearCoursesData()
+	})
+}
+
+// Exec executes the query.
+func (u *LeadUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LeadCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LeadCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LeadUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

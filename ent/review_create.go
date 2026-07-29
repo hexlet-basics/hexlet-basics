@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/user"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -20,6 +21,7 @@ type ReviewCreate struct {
 	config
 	mutation *ReviewMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -253,6 +255,7 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 		_node = &Review{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(review.Table, sqlgraph.NewFieldSpec(review.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Body(); ok {
 		_spec.SetField(review.FieldBody, field.TypeString, value)
 		_node.Body = &value
@@ -322,11 +325,451 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Review.Create().
+//		SetLanguageID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ReviewUpsert) {
+//			SetLanguageID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ReviewCreate) OnConflict(opts ...sql.ConflictOption) *ReviewUpsertOne {
+	_c.conflict = opts
+	return &ReviewUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Review.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ReviewCreate) OnConflictColumns(columns ...string) *ReviewUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ReviewUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// ReviewUpsertOne is the builder for "upsert"-ing
+	//  one Review node.
+	ReviewUpsertOne struct {
+		create *ReviewCreate
+	}
+
+	// ReviewUpsert is the "OnConflict" setter.
+	ReviewUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetLanguageID sets the "language_id" field.
+func (u *ReviewUpsert) SetLanguageID(v int) *ReviewUpsert {
+	u.Set(review.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateLanguageID() *ReviewUpsert {
+	u.SetExcluded(review.FieldLanguageID)
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *ReviewUpsert) SetUserID(v int) *ReviewUpsert {
+	u.Set(review.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateUserID() *ReviewUpsert {
+	u.SetExcluded(review.FieldUserID)
+	return u
+}
+
+// SetBody sets the "body" field.
+func (u *ReviewUpsert) SetBody(v string) *ReviewUpsert {
+	u.Set(review.FieldBody, v)
+	return u
+}
+
+// UpdateBody sets the "body" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateBody() *ReviewUpsert {
+	u.SetExcluded(review.FieldBody)
+	return u
+}
+
+// ClearBody clears the value of the "body" field.
+func (u *ReviewUpsert) ClearBody() *ReviewUpsert {
+	u.SetNull(review.FieldBody)
+	return u
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *ReviewUpsert) SetFirstName(v string) *ReviewUpsert {
+	u.Set(review.FieldFirstName, v)
+	return u
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateFirstName() *ReviewUpsert {
+	u.SetExcluded(review.FieldFirstName)
+	return u
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *ReviewUpsert) ClearFirstName() *ReviewUpsert {
+	u.SetNull(review.FieldFirstName)
+	return u
+}
+
+// SetLastName sets the "last_name" field.
+func (u *ReviewUpsert) SetLastName(v string) *ReviewUpsert {
+	u.Set(review.FieldLastName, v)
+	return u
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateLastName() *ReviewUpsert {
+	u.SetExcluded(review.FieldLastName)
+	return u
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (u *ReviewUpsert) ClearLastName() *ReviewUpsert {
+	u.SetNull(review.FieldLastName)
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *ReviewUpsert) SetLocale(v string) *ReviewUpsert {
+	u.Set(review.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateLocale() *ReviewUpsert {
+	u.SetExcluded(review.FieldLocale)
+	return u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *ReviewUpsert) ClearLocale() *ReviewUpsert {
+	u.SetNull(review.FieldLocale)
+	return u
+}
+
+// SetState sets the "state" field.
+func (u *ReviewUpsert) SetState(v string) *ReviewUpsert {
+	u.Set(review.FieldState, v)
+	return u
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateState() *ReviewUpsert {
+	u.SetExcluded(review.FieldState)
+	return u
+}
+
+// ClearState clears the value of the "state" field.
+func (u *ReviewUpsert) ClearState() *ReviewUpsert {
+	u.SetNull(review.FieldState)
+	return u
+}
+
+// SetPinned sets the "pinned" field.
+func (u *ReviewUpsert) SetPinned(v bool) *ReviewUpsert {
+	u.Set(review.FieldPinned, v)
+	return u
+}
+
+// UpdatePinned sets the "pinned" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdatePinned() *ReviewUpsert {
+	u.SetExcluded(review.FieldPinned)
+	return u
+}
+
+// ClearPinned clears the value of the "pinned" field.
+func (u *ReviewUpsert) ClearPinned() *ReviewUpsert {
+	u.SetNull(review.FieldPinned)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ReviewUpsert) SetUpdatedAt(v time.Time) *ReviewUpsert {
+	u.Set(review.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateUpdatedAt() *ReviewUpsert {
+	u.SetExcluded(review.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.Review.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ReviewUpsertOne) UpdateNewValues() *ReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(review.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Review.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ReviewUpsertOne) Ignore() *ReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ReviewUpsertOne) DoNothing() *ReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ReviewCreate.OnConflict
+// documentation for more info.
+func (u *ReviewUpsertOne) Update(set func(*ReviewUpsert)) *ReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ReviewUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *ReviewUpsertOne) SetLanguageID(v int) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateLanguageID() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *ReviewUpsertOne) SetUserID(v int) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateUserID() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetBody sets the "body" field.
+func (u *ReviewUpsertOne) SetBody(v string) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetBody(v)
+	})
+}
+
+// UpdateBody sets the "body" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateBody() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateBody()
+	})
+}
+
+// ClearBody clears the value of the "body" field.
+func (u *ReviewUpsertOne) ClearBody() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearBody()
+	})
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *ReviewUpsertOne) SetFirstName(v string) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetFirstName(v)
+	})
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateFirstName() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateFirstName()
+	})
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *ReviewUpsertOne) ClearFirstName() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearFirstName()
+	})
+}
+
+// SetLastName sets the "last_name" field.
+func (u *ReviewUpsertOne) SetLastName(v string) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetLastName(v)
+	})
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateLastName() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateLastName()
+	})
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (u *ReviewUpsertOne) ClearLastName() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearLastName()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *ReviewUpsertOne) SetLocale(v string) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateLocale() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *ReviewUpsertOne) ClearLocale() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *ReviewUpsertOne) SetState(v string) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateState() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *ReviewUpsertOne) ClearState() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetPinned sets the "pinned" field.
+func (u *ReviewUpsertOne) SetPinned(v bool) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetPinned(v)
+	})
+}
+
+// UpdatePinned sets the "pinned" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdatePinned() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdatePinned()
+	})
+}
+
+// ClearPinned clears the value of the "pinned" field.
+func (u *ReviewUpsertOne) ClearPinned() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearPinned()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ReviewUpsertOne) SetUpdatedAt(v time.Time) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateUpdatedAt() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *ReviewUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ReviewCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ReviewUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ReviewUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ReviewUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ReviewCreateBulk is the builder for creating many Review entities in bulk.
 type ReviewCreateBulk struct {
 	config
 	err      error
 	builders []*ReviewCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Review entities in the database.
@@ -356,6 +799,7 @@ func (_c *ReviewCreateBulk) Save(ctx context.Context) ([]*Review, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -406,6 +850,285 @@ func (_c *ReviewCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *ReviewCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Review.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ReviewUpsert) {
+//			SetLanguageID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *ReviewCreateBulk) OnConflict(opts ...sql.ConflictOption) *ReviewUpsertBulk {
+	_c.conflict = opts
+	return &ReviewUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Review.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *ReviewCreateBulk) OnConflictColumns(columns ...string) *ReviewUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &ReviewUpsertBulk{
+		create: _c,
+	}
+}
+
+// ReviewUpsertBulk is the builder for "upsert"-ing
+// a bulk of Review nodes.
+type ReviewUpsertBulk struct {
+	create *ReviewCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Review.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ReviewUpsertBulk) UpdateNewValues() *ReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(review.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Review.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ReviewUpsertBulk) Ignore() *ReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ReviewUpsertBulk) DoNothing() *ReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ReviewCreateBulk.OnConflict
+// documentation for more info.
+func (u *ReviewUpsertBulk) Update(set func(*ReviewUpsert)) *ReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ReviewUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *ReviewUpsertBulk) SetLanguageID(v int) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateLanguageID() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *ReviewUpsertBulk) SetUserID(v int) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateUserID() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetBody sets the "body" field.
+func (u *ReviewUpsertBulk) SetBody(v string) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetBody(v)
+	})
+}
+
+// UpdateBody sets the "body" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateBody() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateBody()
+	})
+}
+
+// ClearBody clears the value of the "body" field.
+func (u *ReviewUpsertBulk) ClearBody() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearBody()
+	})
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *ReviewUpsertBulk) SetFirstName(v string) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetFirstName(v)
+	})
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateFirstName() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateFirstName()
+	})
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *ReviewUpsertBulk) ClearFirstName() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearFirstName()
+	})
+}
+
+// SetLastName sets the "last_name" field.
+func (u *ReviewUpsertBulk) SetLastName(v string) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetLastName(v)
+	})
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateLastName() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateLastName()
+	})
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (u *ReviewUpsertBulk) ClearLastName() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearLastName()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *ReviewUpsertBulk) SetLocale(v string) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateLocale() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *ReviewUpsertBulk) ClearLocale() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *ReviewUpsertBulk) SetState(v string) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateState() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *ReviewUpsertBulk) ClearState() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetPinned sets the "pinned" field.
+func (u *ReviewUpsertBulk) SetPinned(v bool) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetPinned(v)
+	})
+}
+
+// UpdatePinned sets the "pinned" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdatePinned() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdatePinned()
+	})
+}
+
+// ClearPinned clears the value of the "pinned" field.
+func (u *ReviewUpsertBulk) ClearPinned() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.ClearPinned()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ReviewUpsertBulk) SetUpdatedAt(v time.Time) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateUpdatedAt() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *ReviewUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ReviewCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ReviewCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ReviewUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

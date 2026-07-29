@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // LanguageLesson maps the legacy `language_lessons` table (a single lesson in a
@@ -44,5 +45,11 @@ func (LanguageLesson) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("infos", LanguageLessonVersionInfo.Type).
 			Ref("lesson"),
+	}
+}
+
+func (LanguageLesson) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("language_id", "slug").Unique(),
 	}
 }

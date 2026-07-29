@@ -121,11 +121,16 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 	// First build.
 	v1 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, v1.ID))
+	module1 := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).OnlyX(ctx)
 	lesson1 := db.LanguageLesson.Query().Where(languagelesson.LanguageID(course.ID)).OnlyX(ctx)
 
 	// Second build reuses the SAME lesson identity (learner progress FKs it).
 	v2 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, v2.ID))
+
+	modules := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).AllX(ctx)
+	require.Len(t, modules, 1)
+	assert.Equal(t, module1.ID, modules[0].ID)
 
 	lessons := db.LanguageLesson.Query().Where(languagelesson.LanguageID(course.ID)).AllX(ctx)
 	require.Len(t, lessons, 1)

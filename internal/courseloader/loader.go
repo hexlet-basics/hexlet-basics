@@ -284,55 +284,41 @@ func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Tx, languageID, v
 	return nil
 }
 
-// upsertModule finds the stable module row for (course, slug) or creates it.
-// Identity is kept across rebuilds so downstream references survive; the per-build
-// ordering lives on the module version, not here.
+// upsertModule atomically creates or finds the stable module row for (course,
+// slug). Identity is kept across rebuilds so downstream references survive; the
+// per-build ordering lives on the module version, not here.
 func upsertModule(ctx context.Context, tx *ent.Tx, languageID int, slug string) (int, error) {
-	existing, err := tx.LanguageModule.Query().
-		Where(languagemodule.LanguageID(languageID), languagemodule.Slug(slug)).
-		Only(ctx)
-	if err == nil {
-		return existing.ID, nil
-	}
-	if !ent.IsNotFound(err) {
-		return 0, oops.Wrapf(err, "query module %q", slug)
-	}
-	created, err := tx.LanguageModule.Create().
+	id, err := tx.LanguageModule.Create().
 		SetLanguageID(languageID).
 		SetSlug(slug).
-		Save(ctx)
+		OnConflictColumns(languagemodule.FieldLanguageID, languagemodule.FieldSlug).
+		UpdateNewValues().
+		ID(ctx)
 	if err != nil {
-		return 0, oops.Wrapf(err, "create module %q", slug)
+		return 0, oops.Wrapf(err, "upsert module %q", slug)
 	}
-	return created.ID, nil
+	return id, nil
 }
 
-// upsertLesson finds the stable lesson row for (course, slug) or creates it, and
-// (re)points it at its current module — a lesson can move between modules across
-// rebuilds. Learner progress FKs this stable id, so it must NOT be recreated.
+// upsertLesson atomically creates or finds the stable lesson row for (course,
+// slug), and (re)points it at its current module — a lesson can move between
+// modules across rebuilds. Learner progress FKs this stable id, so it must NOT be
+// recreated.
 func upsertLesson(ctx context.Context, tx *ent.Tx, languageID, moduleID int, slug string) (int, error) {
-	existing, err := tx.LanguageLesson.Query().
-		Where(languagelesson.LanguageID(languageID), languagelesson.Slug(slug)).
-		Only(ctx)
-	if err == nil {
-		if _, err := tx.LanguageLesson.UpdateOne(existing).SetModuleID(moduleID).Save(ctx); err != nil {
-			return 0, oops.Wrapf(err, "repoint lesson %q module", slug)
-		}
-		return existing.ID, nil
-	}
-	if !ent.IsNotFound(err) {
-		return 0, oops.Wrapf(err, "query lesson %q", slug)
-	}
-	created, err := tx.LanguageLesson.Create().
+	id, err := tx.LanguageLesson.Create().
 		SetLanguageID(languageID).
 		SetModuleID(moduleID).
 		SetSlug(slug).
 		SetState(lessonStateCreated).
-		Save(ctx)
+		OnConflictColumns(languagelesson.FieldLanguageID, languagelesson.FieldSlug).
+		Update(func(update *ent.LanguageLessonUpsert) {
+			update.SetModuleID(moduleID)
+		}).
+		ID(ctx)
 	if err != nil {
-		return 0, oops.Wrapf(err, "create lesson %q", slug)
+		return 0, oops.Wrapf(err, "upsert lesson %q", slug)
 	}
-	return created.ID, nil
+	return id, nil
 }
 
 // uploadImages walks every lesson info and rewrites its theory in place: each

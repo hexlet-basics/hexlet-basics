@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/landingpageqnaitem"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -18,6 +19,7 @@ type LandingPageQnaItemCreate struct {
 	config
 	mutation *LandingPageQnaItemMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
@@ -164,6 +166,7 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 		_node = &LandingPageQnaItem{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(landingpageqnaitem.Table, sqlgraph.NewFieldSpec(landingpageqnaitem.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.LanguageLandingPageID(); ok {
 		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
 		_node.LanguageLandingPageID = value
@@ -187,11 +190,282 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LandingPageQnaItem.Create().
+//		SetLanguageLandingPageID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LandingPageQnaItemUpsert) {
+//			SetLanguageLandingPageID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LandingPageQnaItemCreate) OnConflict(opts ...sql.ConflictOption) *LandingPageQnaItemUpsertOne {
+	_c.conflict = opts
+	return &LandingPageQnaItemUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LandingPageQnaItem.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LandingPageQnaItemCreate) OnConflictColumns(columns ...string) *LandingPageQnaItemUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LandingPageQnaItemUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LandingPageQnaItemUpsertOne is the builder for "upsert"-ing
+	//  one LandingPageQnaItem node.
+	LandingPageQnaItemUpsertOne struct {
+		create *LandingPageQnaItemCreate
+	}
+
+	// LandingPageQnaItemUpsert is the "OnConflict" setter.
+	LandingPageQnaItemUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetLanguageLandingPageID sets the "language_landing_page_id" field.
+func (u *LandingPageQnaItemUpsert) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsert {
+	u.Set(landingpageqnaitem.FieldLanguageLandingPageID, v)
+	return u
+}
+
+// UpdateLanguageLandingPageID sets the "language_landing_page_id" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsert) UpdateLanguageLandingPageID() *LandingPageQnaItemUpsert {
+	u.SetExcluded(landingpageqnaitem.FieldLanguageLandingPageID)
+	return u
+}
+
+// AddLanguageLandingPageID adds v to the "language_landing_page_id" field.
+func (u *LandingPageQnaItemUpsert) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpsert {
+	u.Add(landingpageqnaitem.FieldLanguageLandingPageID, v)
+	return u
+}
+
+// SetQuestion sets the "question" field.
+func (u *LandingPageQnaItemUpsert) SetQuestion(v string) *LandingPageQnaItemUpsert {
+	u.Set(landingpageqnaitem.FieldQuestion, v)
+	return u
+}
+
+// UpdateQuestion sets the "question" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsert) UpdateQuestion() *LandingPageQnaItemUpsert {
+	u.SetExcluded(landingpageqnaitem.FieldQuestion)
+	return u
+}
+
+// ClearQuestion clears the value of the "question" field.
+func (u *LandingPageQnaItemUpsert) ClearQuestion() *LandingPageQnaItemUpsert {
+	u.SetNull(landingpageqnaitem.FieldQuestion)
+	return u
+}
+
+// SetAnswer sets the "answer" field.
+func (u *LandingPageQnaItemUpsert) SetAnswer(v string) *LandingPageQnaItemUpsert {
+	u.Set(landingpageqnaitem.FieldAnswer, v)
+	return u
+}
+
+// UpdateAnswer sets the "answer" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsert) UpdateAnswer() *LandingPageQnaItemUpsert {
+	u.SetExcluded(landingpageqnaitem.FieldAnswer)
+	return u
+}
+
+// ClearAnswer clears the value of the "answer" field.
+func (u *LandingPageQnaItemUpsert) ClearAnswer() *LandingPageQnaItemUpsert {
+	u.SetNull(landingpageqnaitem.FieldAnswer)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageQnaItemUpsert) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsert {
+	u.Set(landingpageqnaitem.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsert) UpdateUpdatedAt() *LandingPageQnaItemUpsert {
+	u.SetExcluded(landingpageqnaitem.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LandingPageQnaItem.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LandingPageQnaItemUpsertOne) UpdateNewValues() *LandingPageQnaItemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(landingpageqnaitem.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LandingPageQnaItem.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LandingPageQnaItemUpsertOne) Ignore() *LandingPageQnaItemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LandingPageQnaItemUpsertOne) DoNothing() *LandingPageQnaItemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LandingPageQnaItemCreate.OnConflict
+// documentation for more info.
+func (u *LandingPageQnaItemUpsertOne) Update(set func(*LandingPageQnaItemUpsert)) *LandingPageQnaItemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LandingPageQnaItemUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLanguageLandingPageID sets the "language_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertOne) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetLanguageLandingPageID(v)
+	})
+}
+
+// AddLanguageLandingPageID adds v to the "language_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertOne) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.AddLanguageLandingPageID(v)
+	})
+}
+
+// UpdateLanguageLandingPageID sets the "language_landing_page_id" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertOne) UpdateLanguageLandingPageID() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateLanguageLandingPageID()
+	})
+}
+
+// SetQuestion sets the "question" field.
+func (u *LandingPageQnaItemUpsertOne) SetQuestion(v string) *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetQuestion(v)
+	})
+}
+
+// UpdateQuestion sets the "question" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertOne) UpdateQuestion() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateQuestion()
+	})
+}
+
+// ClearQuestion clears the value of the "question" field.
+func (u *LandingPageQnaItemUpsertOne) ClearQuestion() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.ClearQuestion()
+	})
+}
+
+// SetAnswer sets the "answer" field.
+func (u *LandingPageQnaItemUpsertOne) SetAnswer(v string) *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetAnswer(v)
+	})
+}
+
+// UpdateAnswer sets the "answer" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertOne) UpdateAnswer() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateAnswer()
+	})
+}
+
+// ClearAnswer clears the value of the "answer" field.
+func (u *LandingPageQnaItemUpsertOne) ClearAnswer() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.ClearAnswer()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageQnaItemUpsertOne) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertOne) UpdateUpdatedAt() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LandingPageQnaItemUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LandingPageQnaItemCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LandingPageQnaItemUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LandingPageQnaItemUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LandingPageQnaItemUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LandingPageQnaItemCreateBulk is the builder for creating many LandingPageQnaItem entities in bulk.
 type LandingPageQnaItemCreateBulk struct {
 	config
 	err      error
 	builders []*LandingPageQnaItemCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LandingPageQnaItem entities in the database.
@@ -221,6 +495,7 @@ func (_c *LandingPageQnaItemCreateBulk) Save(ctx context.Context) ([]*LandingPag
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -271,6 +546,194 @@ func (_c *LandingPageQnaItemCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LandingPageQnaItemCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LandingPageQnaItem.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LandingPageQnaItemUpsert) {
+//			SetLanguageLandingPageID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LandingPageQnaItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *LandingPageQnaItemUpsertBulk {
+	_c.conflict = opts
+	return &LandingPageQnaItemUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LandingPageQnaItem.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LandingPageQnaItemCreateBulk) OnConflictColumns(columns ...string) *LandingPageQnaItemUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LandingPageQnaItemUpsertBulk{
+		create: _c,
+	}
+}
+
+// LandingPageQnaItemUpsertBulk is the builder for "upsert"-ing
+// a bulk of LandingPageQnaItem nodes.
+type LandingPageQnaItemUpsertBulk struct {
+	create *LandingPageQnaItemCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LandingPageQnaItem.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LandingPageQnaItemUpsertBulk) UpdateNewValues() *LandingPageQnaItemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(landingpageqnaitem.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LandingPageQnaItem.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LandingPageQnaItemUpsertBulk) Ignore() *LandingPageQnaItemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LandingPageQnaItemUpsertBulk) DoNothing() *LandingPageQnaItemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LandingPageQnaItemCreateBulk.OnConflict
+// documentation for more info.
+func (u *LandingPageQnaItemUpsertBulk) Update(set func(*LandingPageQnaItemUpsert)) *LandingPageQnaItemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LandingPageQnaItemUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLanguageLandingPageID sets the "language_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertBulk) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetLanguageLandingPageID(v)
+	})
+}
+
+// AddLanguageLandingPageID adds v to the "language_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertBulk) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.AddLanguageLandingPageID(v)
+	})
+}
+
+// UpdateLanguageLandingPageID sets the "language_landing_page_id" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertBulk) UpdateLanguageLandingPageID() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateLanguageLandingPageID()
+	})
+}
+
+// SetQuestion sets the "question" field.
+func (u *LandingPageQnaItemUpsertBulk) SetQuestion(v string) *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetQuestion(v)
+	})
+}
+
+// UpdateQuestion sets the "question" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertBulk) UpdateQuestion() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateQuestion()
+	})
+}
+
+// ClearQuestion clears the value of the "question" field.
+func (u *LandingPageQnaItemUpsertBulk) ClearQuestion() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.ClearQuestion()
+	})
+}
+
+// SetAnswer sets the "answer" field.
+func (u *LandingPageQnaItemUpsertBulk) SetAnswer(v string) *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetAnswer(v)
+	})
+}
+
+// UpdateAnswer sets the "answer" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertBulk) UpdateAnswer() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateAnswer()
+	})
+}
+
+// ClearAnswer clears the value of the "answer" field.
+func (u *LandingPageQnaItemUpsertBulk) ClearAnswer() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.ClearAnswer()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageQnaItemUpsertBulk) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertBulk) UpdateUpdatedAt() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LandingPageQnaItemUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LandingPageQnaItemCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LandingPageQnaItemCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LandingPageQnaItemUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

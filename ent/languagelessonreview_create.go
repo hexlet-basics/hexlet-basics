@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/languagelessonreview"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -20,6 +21,7 @@ type LanguageLessonReviewCreate struct {
 	config
 	mutation *LanguageLessonReviewMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetLocale sets the "locale" field.
@@ -173,6 +175,7 @@ func (_c *LanguageLessonReviewCreate) createSpec() (*LanguageLessonReview, *sqlg
 		_node = &LanguageLessonReview{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(languagelessonreview.Table, sqlgraph.NewFieldSpec(languagelessonreview.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Locale(); ok {
 		_spec.SetField(languagelessonreview.FieldLocale, field.TypeString, value)
 		_node.Locale = value
@@ -230,11 +233,321 @@ func (_c *LanguageLessonReviewCreate) createSpec() (*LanguageLessonReview, *sqlg
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLessonReview.Create().
+//		SetLocale(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonReviewUpsert) {
+//			SetLocale(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonReviewCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonReviewUpsertOne {
+	_c.conflict = opts
+	return &LanguageLessonReviewUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLessonReview.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonReviewCreate) OnConflictColumns(columns ...string) *LanguageLessonReviewUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonReviewUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LanguageLessonReviewUpsertOne is the builder for "upsert"-ing
+	//  one LanguageLessonReview node.
+	LanguageLessonReviewUpsertOne struct {
+		create *LanguageLessonReviewCreate
+	}
+
+	// LanguageLessonReviewUpsert is the "OnConflict" setter.
+	LanguageLessonReviewUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetLocale sets the "locale" field.
+func (u *LanguageLessonReviewUpsert) SetLocale(v string) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateLocale() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldLocale)
+	return u
+}
+
+// SetSummary sets the "summary" field.
+func (u *LanguageLessonReviewUpsert) SetSummary(v string) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldSummary, v)
+	return u
+}
+
+// UpdateSummary sets the "summary" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateSummary() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldSummary)
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonReviewUpsert) SetLanguageID(v int) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateLanguageID() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldLanguageID)
+	return u
+}
+
+// SetLanguageLessonID sets the "language_lesson_id" field.
+func (u *LanguageLessonReviewUpsert) SetLanguageLessonID(v int) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldLanguageLessonID, v)
+	return u
+}
+
+// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateLanguageLessonID() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldLanguageLessonID)
+	return u
+}
+
+// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
+func (u *LanguageLessonReviewUpsert) SetLanguageLessonVersionID(v int) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldLanguageLessonVersionID, v)
+	return u
+}
+
+// UpdateLanguageLessonVersionID sets the "language_lesson_version_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateLanguageLessonVersionID() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldLanguageLessonVersionID)
+	return u
+}
+
+// AddLanguageLessonVersionID adds v to the "language_lesson_version_id" field.
+func (u *LanguageLessonReviewUpsert) AddLanguageLessonVersionID(v int) *LanguageLessonReviewUpsert {
+	u.Add(languagelessonreview.FieldLanguageLessonVersionID, v)
+	return u
+}
+
+// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
+func (u *LanguageLessonReviewUpsert) SetLanguageLessonVersionInfoID(v int) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldLanguageLessonVersionInfoID, v)
+	return u
+}
+
+// UpdateLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateLanguageLessonVersionInfoID() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldLanguageLessonVersionInfoID)
+	return u
+}
+
+// AddLanguageLessonVersionInfoID adds v to the "language_lesson_version_info_id" field.
+func (u *LanguageLessonReviewUpsert) AddLanguageLessonVersionInfoID(v int) *LanguageLessonReviewUpsert {
+	u.Add(languagelessonreview.FieldLanguageLessonVersionInfoID, v)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonReview.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonReviewUpsertOne) UpdateNewValues() *LanguageLessonReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(languagelessonreview.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonReview.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LanguageLessonReviewUpsertOne) Ignore() *LanguageLessonReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonReviewUpsertOne) DoNothing() *LanguageLessonReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonReviewCreate.OnConflict
+// documentation for more info.
+func (u *LanguageLessonReviewUpsertOne) Update(set func(*LanguageLessonReviewUpsert)) *LanguageLessonReviewUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonReviewUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageLessonReviewUpsertOne) SetLocale(v string) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateLocale() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// SetSummary sets the "summary" field.
+func (u *LanguageLessonReviewUpsertOne) SetSummary(v string) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetSummary(v)
+	})
+}
+
+// UpdateSummary sets the "summary" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateSummary() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateSummary()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonReviewUpsertOne) SetLanguageID(v int) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateLanguageID() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageLessonID sets the "language_lesson_id" field.
+func (u *LanguageLessonReviewUpsertOne) SetLanguageLessonID(v int) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageLessonID(v)
+	})
+}
+
+// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateLanguageLessonID() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageLessonID()
+	})
+}
+
+// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
+func (u *LanguageLessonReviewUpsertOne) SetLanguageLessonVersionID(v int) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageLessonVersionID(v)
+	})
+}
+
+// AddLanguageLessonVersionID adds v to the "language_lesson_version_id" field.
+func (u *LanguageLessonReviewUpsertOne) AddLanguageLessonVersionID(v int) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.AddLanguageLessonVersionID(v)
+	})
+}
+
+// UpdateLanguageLessonVersionID sets the "language_lesson_version_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateLanguageLessonVersionID() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageLessonVersionID()
+	})
+}
+
+// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
+func (u *LanguageLessonReviewUpsertOne) SetLanguageLessonVersionInfoID(v int) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageLessonVersionInfoID(v)
+	})
+}
+
+// AddLanguageLessonVersionInfoID adds v to the "language_lesson_version_info_id" field.
+func (u *LanguageLessonReviewUpsertOne) AddLanguageLessonVersionInfoID(v int) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.AddLanguageLessonVersionInfoID(v)
+	})
+}
+
+// UpdateLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateLanguageLessonVersionInfoID() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageLessonVersionInfoID()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonReviewUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonReviewCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonReviewUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LanguageLessonReviewUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LanguageLessonReviewUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LanguageLessonReviewCreateBulk is the builder for creating many LanguageLessonReview entities in bulk.
 type LanguageLessonReviewCreateBulk struct {
 	config
 	err      error
 	builders []*LanguageLessonReviewCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LanguageLessonReview entities in the database.
@@ -263,6 +576,7 @@ func (_c *LanguageLessonReviewCreateBulk) Save(ctx context.Context) ([]*Language
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -313,6 +627,215 @@ func (_c *LanguageLessonReviewCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LanguageLessonReviewCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLessonReview.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonReviewUpsert) {
+//			SetLocale(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonReviewCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonReviewUpsertBulk {
+	_c.conflict = opts
+	return &LanguageLessonReviewUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLessonReview.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonReviewCreateBulk) OnConflictColumns(columns ...string) *LanguageLessonReviewUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonReviewUpsertBulk{
+		create: _c,
+	}
+}
+
+// LanguageLessonReviewUpsertBulk is the builder for "upsert"-ing
+// a bulk of LanguageLessonReview nodes.
+type LanguageLessonReviewUpsertBulk struct {
+	create *LanguageLessonReviewCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LanguageLessonReview.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonReviewUpsertBulk) UpdateNewValues() *LanguageLessonReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(languagelessonreview.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLessonReview.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LanguageLessonReviewUpsertBulk) Ignore() *LanguageLessonReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonReviewUpsertBulk) DoNothing() *LanguageLessonReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonReviewCreateBulk.OnConflict
+// documentation for more info.
+func (u *LanguageLessonReviewUpsertBulk) Update(set func(*LanguageLessonReviewUpsert)) *LanguageLessonReviewUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonReviewUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageLessonReviewUpsertBulk) SetLocale(v string) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateLocale() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// SetSummary sets the "summary" field.
+func (u *LanguageLessonReviewUpsertBulk) SetSummary(v string) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetSummary(v)
+	})
+}
+
+// UpdateSummary sets the "summary" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateSummary() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateSummary()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonReviewUpsertBulk) SetLanguageID(v int) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateLanguageID() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageLessonID sets the "language_lesson_id" field.
+func (u *LanguageLessonReviewUpsertBulk) SetLanguageLessonID(v int) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageLessonID(v)
+	})
+}
+
+// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateLanguageLessonID() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageLessonID()
+	})
+}
+
+// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
+func (u *LanguageLessonReviewUpsertBulk) SetLanguageLessonVersionID(v int) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageLessonVersionID(v)
+	})
+}
+
+// AddLanguageLessonVersionID adds v to the "language_lesson_version_id" field.
+func (u *LanguageLessonReviewUpsertBulk) AddLanguageLessonVersionID(v int) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.AddLanguageLessonVersionID(v)
+	})
+}
+
+// UpdateLanguageLessonVersionID sets the "language_lesson_version_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateLanguageLessonVersionID() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageLessonVersionID()
+	})
+}
+
+// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
+func (u *LanguageLessonReviewUpsertBulk) SetLanguageLessonVersionInfoID(v int) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetLanguageLessonVersionInfoID(v)
+	})
+}
+
+// AddLanguageLessonVersionInfoID adds v to the "language_lesson_version_info_id" field.
+func (u *LanguageLessonReviewUpsertBulk) AddLanguageLessonVersionInfoID(v int) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.AddLanguageLessonVersionInfoID(v)
+	})
+}
+
+// UpdateLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateLanguageLessonVersionInfoID() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateLanguageLessonVersionInfoID()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonReviewUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LanguageLessonReviewCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonReviewCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonReviewUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

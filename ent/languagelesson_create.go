@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/languagelessonversioninfo"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -19,6 +20,7 @@ type LanguageLessonCreate struct {
 	config
 	mutation *LanguageLessonMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSlug sets the "slug" field.
@@ -213,6 +215,7 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 		_node = &LanguageLesson{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(languagelesson.Table, sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(languagelesson.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -260,11 +263,399 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLesson.Create().
+//		SetSlug(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonUpsert) {
+//			SetSlug(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonUpsertOne {
+	_c.conflict = opts
+	return &LanguageLessonUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLesson.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonCreate) OnConflictColumns(columns ...string) *LanguageLessonUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LanguageLessonUpsertOne is the builder for "upsert"-ing
+	//  one LanguageLesson node.
+	LanguageLessonUpsertOne struct {
+		create *LanguageLessonCreate
+	}
+
+	// LanguageLessonUpsert is the "OnConflict" setter.
+	LanguageLessonUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSlug sets the "slug" field.
+func (u *LanguageLessonUpsert) SetSlug(v string) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldSlug, v)
+	return u
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateSlug() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldSlug)
+	return u
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *LanguageLessonUpsert) ClearSlug() *LanguageLessonUpsert {
+	u.SetNull(languagelesson.FieldSlug)
+	return u
+}
+
+// SetNaturalOrder sets the "natural_order" field.
+func (u *LanguageLessonUpsert) SetNaturalOrder(v int) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldNaturalOrder, v)
+	return u
+}
+
+// UpdateNaturalOrder sets the "natural_order" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateNaturalOrder() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldNaturalOrder)
+	return u
+}
+
+// AddNaturalOrder adds v to the "natural_order" field.
+func (u *LanguageLessonUpsert) AddNaturalOrder(v int) *LanguageLessonUpsert {
+	u.Add(languagelesson.FieldNaturalOrder, v)
+	return u
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (u *LanguageLessonUpsert) ClearNaturalOrder() *LanguageLessonUpsert {
+	u.SetNull(languagelesson.FieldNaturalOrder)
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonUpsert) SetLanguageID(v int) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateLanguageID() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldLanguageID)
+	return u
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonUpsert) AddLanguageID(v int) *LanguageLessonUpsert {
+	u.Add(languagelesson.FieldLanguageID, v)
+	return u
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (u *LanguageLessonUpsert) ClearLanguageID() *LanguageLessonUpsert {
+	u.SetNull(languagelesson.FieldLanguageID)
+	return u
+}
+
+// SetModuleID sets the "module_id" field.
+func (u *LanguageLessonUpsert) SetModuleID(v int) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldModuleID, v)
+	return u
+}
+
+// UpdateModuleID sets the "module_id" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateModuleID() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldModuleID)
+	return u
+}
+
+// AddModuleID adds v to the "module_id" field.
+func (u *LanguageLessonUpsert) AddModuleID(v int) *LanguageLessonUpsert {
+	u.Add(languagelesson.FieldModuleID, v)
+	return u
+}
+
+// ClearModuleID clears the value of the "module_id" field.
+func (u *LanguageLessonUpsert) ClearModuleID() *LanguageLessonUpsert {
+	u.SetNull(languagelesson.FieldModuleID)
+	return u
+}
+
+// SetState sets the "state" field.
+func (u *LanguageLessonUpsert) SetState(v string) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldState, v)
+	return u
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateState() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldState)
+	return u
+}
+
+// ClearState clears the value of the "state" field.
+func (u *LanguageLessonUpsert) ClearState() *LanguageLessonUpsert {
+	u.SetNull(languagelesson.FieldState)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonUpsert) SetUpdatedAt(v time.Time) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateUpdatedAt() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLesson.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonUpsertOne) UpdateNewValues() *LanguageLessonUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(languagelesson.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLesson.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LanguageLessonUpsertOne) Ignore() *LanguageLessonUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonUpsertOne) DoNothing() *LanguageLessonUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonCreate.OnConflict
+// documentation for more info.
+func (u *LanguageLessonUpsertOne) Update(set func(*LanguageLessonUpsert)) *LanguageLessonUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *LanguageLessonUpsertOne) SetSlug(v string) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateSlug() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *LanguageLessonUpsertOne) ClearSlug() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetNaturalOrder sets the "natural_order" field.
+func (u *LanguageLessonUpsertOne) SetNaturalOrder(v int) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetNaturalOrder(v)
+	})
+}
+
+// AddNaturalOrder adds v to the "natural_order" field.
+func (u *LanguageLessonUpsertOne) AddNaturalOrder(v int) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.AddNaturalOrder(v)
+	})
+}
+
+// UpdateNaturalOrder sets the "natural_order" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateNaturalOrder() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateNaturalOrder()
+	})
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (u *LanguageLessonUpsertOne) ClearNaturalOrder() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearNaturalOrder()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonUpsertOne) SetLanguageID(v int) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonUpsertOne) AddLanguageID(v int) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateLanguageID() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (u *LanguageLessonUpsertOne) ClearLanguageID() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearLanguageID()
+	})
+}
+
+// SetModuleID sets the "module_id" field.
+func (u *LanguageLessonUpsertOne) SetModuleID(v int) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetModuleID(v)
+	})
+}
+
+// AddModuleID adds v to the "module_id" field.
+func (u *LanguageLessonUpsertOne) AddModuleID(v int) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.AddModuleID(v)
+	})
+}
+
+// UpdateModuleID sets the "module_id" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateModuleID() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateModuleID()
+	})
+}
+
+// ClearModuleID clears the value of the "module_id" field.
+func (u *LanguageLessonUpsertOne) ClearModuleID() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearModuleID()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *LanguageLessonUpsertOne) SetState(v string) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateState() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *LanguageLessonUpsertOne) ClearState() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateUpdatedAt() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LanguageLessonUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LanguageLessonUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LanguageLessonCreateBulk is the builder for creating many LanguageLesson entities in bulk.
 type LanguageLessonCreateBulk struct {
 	config
 	err      error
 	builders []*LanguageLessonCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LanguageLesson entities in the database.
@@ -294,6 +685,7 @@ func (_c *LanguageLessonCreateBulk) Save(ctx context.Context) ([]*LanguageLesson
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -344,6 +736,257 @@ func (_c *LanguageLessonCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LanguageLessonCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageLesson.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageLessonUpsert) {
+//			SetSlug(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageLessonCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonUpsertBulk {
+	_c.conflict = opts
+	return &LanguageLessonUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageLesson.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageLessonCreateBulk) OnConflictColumns(columns ...string) *LanguageLessonUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageLessonUpsertBulk{
+		create: _c,
+	}
+}
+
+// LanguageLessonUpsertBulk is the builder for "upsert"-ing
+// a bulk of LanguageLesson nodes.
+type LanguageLessonUpsertBulk struct {
+	create *LanguageLessonCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LanguageLesson.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageLessonUpsertBulk) UpdateNewValues() *LanguageLessonUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(languagelesson.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageLesson.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LanguageLessonUpsertBulk) Ignore() *LanguageLessonUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageLessonUpsertBulk) DoNothing() *LanguageLessonUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageLessonCreateBulk.OnConflict
+// documentation for more info.
+func (u *LanguageLessonUpsertBulk) Update(set func(*LanguageLessonUpsert)) *LanguageLessonUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageLessonUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *LanguageLessonUpsertBulk) SetSlug(v string) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateSlug() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *LanguageLessonUpsertBulk) ClearSlug() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetNaturalOrder sets the "natural_order" field.
+func (u *LanguageLessonUpsertBulk) SetNaturalOrder(v int) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetNaturalOrder(v)
+	})
+}
+
+// AddNaturalOrder adds v to the "natural_order" field.
+func (u *LanguageLessonUpsertBulk) AddNaturalOrder(v int) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.AddNaturalOrder(v)
+	})
+}
+
+// UpdateNaturalOrder sets the "natural_order" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateNaturalOrder() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateNaturalOrder()
+	})
+}
+
+// ClearNaturalOrder clears the value of the "natural_order" field.
+func (u *LanguageLessonUpsertBulk) ClearNaturalOrder() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearNaturalOrder()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageLessonUpsertBulk) SetLanguageID(v int) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageLessonUpsertBulk) AddLanguageID(v int) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateLanguageID() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// ClearLanguageID clears the value of the "language_id" field.
+func (u *LanguageLessonUpsertBulk) ClearLanguageID() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearLanguageID()
+	})
+}
+
+// SetModuleID sets the "module_id" field.
+func (u *LanguageLessonUpsertBulk) SetModuleID(v int) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetModuleID(v)
+	})
+}
+
+// AddModuleID adds v to the "module_id" field.
+func (u *LanguageLessonUpsertBulk) AddModuleID(v int) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.AddModuleID(v)
+	})
+}
+
+// UpdateModuleID sets the "module_id" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateModuleID() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateModuleID()
+	})
+}
+
+// ClearModuleID clears the value of the "module_id" field.
+func (u *LanguageLessonUpsertBulk) ClearModuleID() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearModuleID()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *LanguageLessonUpsertBulk) SetState(v string) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateState() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *LanguageLessonUpsertBulk) ClearState() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateUpdatedAt() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageLessonUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LanguageLessonCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageLessonCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageLessonUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

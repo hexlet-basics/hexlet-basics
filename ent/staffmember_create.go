@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/user"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/lib/pq"
@@ -21,6 +22,7 @@ type StaffMemberCreate struct {
 	config
 	mutation *StaffMemberMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetUserID sets the "user_id" field.
@@ -173,6 +175,7 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 		_node = &StaffMember{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(staffmember.Table, sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.AllowedLocales(); ok {
 		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
 		_node.AllowedLocales = value
@@ -222,11 +225,243 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.StaffMember.Create().
+//		SetUserID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.StaffMemberUpsert) {
+//			SetUserID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *StaffMemberCreate) OnConflict(opts ...sql.ConflictOption) *StaffMemberUpsertOne {
+	_c.conflict = opts
+	return &StaffMemberUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.StaffMember.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *StaffMemberCreate) OnConflictColumns(columns ...string) *StaffMemberUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &StaffMemberUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// StaffMemberUpsertOne is the builder for "upsert"-ing
+	//  one StaffMember node.
+	StaffMemberUpsertOne struct {
+		create *StaffMemberCreate
+	}
+
+	// StaffMemberUpsert is the "OnConflict" setter.
+	StaffMemberUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUserID sets the "user_id" field.
+func (u *StaffMemberUpsert) SetUserID(v int) *StaffMemberUpsert {
+	u.Set(staffmember.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *StaffMemberUpsert) UpdateUserID() *StaffMemberUpsert {
+	u.SetExcluded(staffmember.FieldUserID)
+	return u
+}
+
+// SetRoleID sets the "role_id" field.
+func (u *StaffMemberUpsert) SetRoleID(v int) *StaffMemberUpsert {
+	u.Set(staffmember.FieldRoleID, v)
+	return u
+}
+
+// UpdateRoleID sets the "role_id" field to the value that was provided on create.
+func (u *StaffMemberUpsert) UpdateRoleID() *StaffMemberUpsert {
+	u.SetExcluded(staffmember.FieldRoleID)
+	return u
+}
+
+// SetAllowedLocales sets the "allowed_locales" field.
+func (u *StaffMemberUpsert) SetAllowedLocales(v pq.StringArray) *StaffMemberUpsert {
+	u.Set(staffmember.FieldAllowedLocales, v)
+	return u
+}
+
+// UpdateAllowedLocales sets the "allowed_locales" field to the value that was provided on create.
+func (u *StaffMemberUpsert) UpdateAllowedLocales() *StaffMemberUpsert {
+	u.SetExcluded(staffmember.FieldAllowedLocales)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffMemberUpsert) SetUpdatedAt(v time.Time) *StaffMemberUpsert {
+	u.Set(staffmember.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffMemberUpsert) UpdateUpdatedAt() *StaffMemberUpsert {
+	u.SetExcluded(staffmember.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.StaffMember.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *StaffMemberUpsertOne) UpdateNewValues() *StaffMemberUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(staffmember.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.StaffMember.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *StaffMemberUpsertOne) Ignore() *StaffMemberUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *StaffMemberUpsertOne) DoNothing() *StaffMemberUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the StaffMemberCreate.OnConflict
+// documentation for more info.
+func (u *StaffMemberUpsertOne) Update(set func(*StaffMemberUpsert)) *StaffMemberUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&StaffMemberUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *StaffMemberUpsertOne) SetUserID(v int) *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *StaffMemberUpsertOne) UpdateUserID() *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetRoleID sets the "role_id" field.
+func (u *StaffMemberUpsertOne) SetRoleID(v int) *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetRoleID(v)
+	})
+}
+
+// UpdateRoleID sets the "role_id" field to the value that was provided on create.
+func (u *StaffMemberUpsertOne) UpdateRoleID() *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateRoleID()
+	})
+}
+
+// SetAllowedLocales sets the "allowed_locales" field.
+func (u *StaffMemberUpsertOne) SetAllowedLocales(v pq.StringArray) *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetAllowedLocales(v)
+	})
+}
+
+// UpdateAllowedLocales sets the "allowed_locales" field to the value that was provided on create.
+func (u *StaffMemberUpsertOne) UpdateAllowedLocales() *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateAllowedLocales()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffMemberUpsertOne) SetUpdatedAt(v time.Time) *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffMemberUpsertOne) UpdateUpdatedAt() *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *StaffMemberUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for StaffMemberCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *StaffMemberUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *StaffMemberUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *StaffMemberUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // StaffMemberCreateBulk is the builder for creating many StaffMember entities in bulk.
 type StaffMemberCreateBulk struct {
 	config
 	err      error
 	builders []*StaffMemberCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the StaffMember entities in the database.
@@ -256,6 +491,7 @@ func (_c *StaffMemberCreateBulk) Save(ctx context.Context) ([]*StaffMember, erro
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -306,6 +542,173 @@ func (_c *StaffMemberCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *StaffMemberCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.StaffMember.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.StaffMemberUpsert) {
+//			SetUserID(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *StaffMemberCreateBulk) OnConflict(opts ...sql.ConflictOption) *StaffMemberUpsertBulk {
+	_c.conflict = opts
+	return &StaffMemberUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.StaffMember.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *StaffMemberCreateBulk) OnConflictColumns(columns ...string) *StaffMemberUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &StaffMemberUpsertBulk{
+		create: _c,
+	}
+}
+
+// StaffMemberUpsertBulk is the builder for "upsert"-ing
+// a bulk of StaffMember nodes.
+type StaffMemberUpsertBulk struct {
+	create *StaffMemberCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.StaffMember.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *StaffMemberUpsertBulk) UpdateNewValues() *StaffMemberUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(staffmember.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.StaffMember.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *StaffMemberUpsertBulk) Ignore() *StaffMemberUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *StaffMemberUpsertBulk) DoNothing() *StaffMemberUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the StaffMemberCreateBulk.OnConflict
+// documentation for more info.
+func (u *StaffMemberUpsertBulk) Update(set func(*StaffMemberUpsert)) *StaffMemberUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&StaffMemberUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *StaffMemberUpsertBulk) SetUserID(v int) *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *StaffMemberUpsertBulk) UpdateUserID() *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetRoleID sets the "role_id" field.
+func (u *StaffMemberUpsertBulk) SetRoleID(v int) *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetRoleID(v)
+	})
+}
+
+// UpdateRoleID sets the "role_id" field to the value that was provided on create.
+func (u *StaffMemberUpsertBulk) UpdateRoleID() *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateRoleID()
+	})
+}
+
+// SetAllowedLocales sets the "allowed_locales" field.
+func (u *StaffMemberUpsertBulk) SetAllowedLocales(v pq.StringArray) *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetAllowedLocales(v)
+	})
+}
+
+// UpdateAllowedLocales sets the "allowed_locales" field to the value that was provided on create.
+func (u *StaffMemberUpsertBulk) UpdateAllowedLocales() *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateAllowedLocales()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffMemberUpsertBulk) SetUpdatedAt(v time.Time) *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffMemberUpsertBulk) UpdateUpdatedAt() *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *StaffMemberUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the StaffMemberCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for StaffMemberCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *StaffMemberUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

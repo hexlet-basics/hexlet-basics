@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/languagemoduleversioninfo"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -18,6 +19,7 @@ type LanguageModuleVersionInfoCreate struct {
 	config
 	mutation *LanguageModuleVersionInfoMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -196,6 +198,7 @@ func (_c *LanguageModuleVersionInfoCreate) createSpec() (*LanguageModuleVersionI
 		_node = &LanguageModuleVersionInfo{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(languagemoduleversioninfo.Table, sqlgraph.NewFieldSpec(languagemoduleversioninfo.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(languagemoduleversioninfo.FieldName, field.TypeString, value)
 		_node.Name = &value
@@ -231,11 +234,399 @@ func (_c *LanguageModuleVersionInfoCreate) createSpec() (*LanguageModuleVersionI
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageModuleVersionInfoUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageModuleVersionInfoCreate) OnConflict(opts ...sql.ConflictOption) *LanguageModuleVersionInfoUpsertOne {
+	_c.conflict = opts
+	return &LanguageModuleVersionInfoUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageModuleVersionInfoCreate) OnConflictColumns(columns ...string) *LanguageModuleVersionInfoUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageModuleVersionInfoUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// LanguageModuleVersionInfoUpsertOne is the builder for "upsert"-ing
+	//  one LanguageModuleVersionInfo node.
+	LanguageModuleVersionInfoUpsertOne struct {
+		create *LanguageModuleVersionInfoCreate
+	}
+
+	// LanguageModuleVersionInfoUpsert is the "OnConflict" setter.
+	LanguageModuleVersionInfoUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *LanguageModuleVersionInfoUpsert) SetName(v string) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateName() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LanguageModuleVersionInfoUpsert) ClearName() *LanguageModuleVersionInfoUpsert {
+	u.SetNull(languagemoduleversioninfo.FieldName)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *LanguageModuleVersionInfoUpsert) SetDescription(v string) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateDescription() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldDescription)
+	return u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LanguageModuleVersionInfoUpsert) ClearDescription() *LanguageModuleVersionInfoUpsert {
+	u.SetNull(languagemoduleversioninfo.FieldDescription)
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageModuleVersionInfoUpsert) SetLocale(v string) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateLocale() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldLocale)
+	return u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LanguageModuleVersionInfoUpsert) ClearLocale() *LanguageModuleVersionInfoUpsert {
+	u.SetNull(languagemoduleversioninfo.FieldLocale)
+	return u
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageModuleVersionInfoUpsert) SetLanguageID(v int) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldLanguageID, v)
+	return u
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateLanguageID() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldLanguageID)
+	return u
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageModuleVersionInfoUpsert) AddLanguageID(v int) *LanguageModuleVersionInfoUpsert {
+	u.Add(languagemoduleversioninfo.FieldLanguageID, v)
+	return u
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageModuleVersionInfoUpsert) SetLanguageVersionID(v int) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldLanguageVersionID, v)
+	return u
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateLanguageVersionID() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldLanguageVersionID)
+	return u
+}
+
+// AddLanguageVersionID adds v to the "language_version_id" field.
+func (u *LanguageModuleVersionInfoUpsert) AddLanguageVersionID(v int) *LanguageModuleVersionInfoUpsert {
+	u.Add(languagemoduleversioninfo.FieldLanguageVersionID, v)
+	return u
+}
+
+// SetVersionID sets the "version_id" field.
+func (u *LanguageModuleVersionInfoUpsert) SetVersionID(v int) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldVersionID, v)
+	return u
+}
+
+// UpdateVersionID sets the "version_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateVersionID() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldVersionID)
+	return u
+}
+
+// AddVersionID adds v to the "version_id" field.
+func (u *LanguageModuleVersionInfoUpsert) AddVersionID(v int) *LanguageModuleVersionInfoUpsert {
+	u.Add(languagemoduleversioninfo.FieldVersionID, v)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageModuleVersionInfoUpsert) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpsert {
+	u.Set(languagemoduleversioninfo.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsert) UpdateUpdatedAt() *LanguageModuleVersionInfoUpsert {
+	u.SetExcluded(languagemoduleversioninfo.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateNewValues() *LanguageModuleVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(languagemoduleversioninfo.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *LanguageModuleVersionInfoUpsertOne) Ignore() *LanguageModuleVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageModuleVersionInfoUpsertOne) DoNothing() *LanguageModuleVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageModuleVersionInfoCreate.OnConflict
+// documentation for more info.
+func (u *LanguageModuleVersionInfoUpsertOne) Update(set func(*LanguageModuleVersionInfoUpsert)) *LanguageModuleVersionInfoUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageModuleVersionInfoUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetName(v string) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateName() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LanguageModuleVersionInfoUpsertOne) ClearName() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetDescription(v string) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateDescription() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LanguageModuleVersionInfoUpsertOne) ClearDescription() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetLocale(v string) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateLocale() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LanguageModuleVersionInfoUpsertOne) ClearLocale() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetLanguageID(v int) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageModuleVersionInfoUpsertOne) AddLanguageID(v int) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateLanguageID() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetLanguageVersionID(v int) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetLanguageVersionID(v)
+	})
+}
+
+// AddLanguageVersionID adds v to the "language_version_id" field.
+func (u *LanguageModuleVersionInfoUpsertOne) AddLanguageVersionID(v int) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.AddLanguageVersionID(v)
+	})
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateLanguageVersionID() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateLanguageVersionID()
+	})
+}
+
+// SetVersionID sets the "version_id" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetVersionID(v int) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetVersionID(v)
+	})
+}
+
+// AddVersionID adds v to the "version_id" field.
+func (u *LanguageModuleVersionInfoUpsertOne) AddVersionID(v int) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.AddVersionID(v)
+	})
+}
+
+// UpdateVersionID sets the "version_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateVersionID() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateVersionID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageModuleVersionInfoUpsertOne) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertOne) UpdateUpdatedAt() *LanguageModuleVersionInfoUpsertOne {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageModuleVersionInfoUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageModuleVersionInfoCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageModuleVersionInfoUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *LanguageModuleVersionInfoUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *LanguageModuleVersionInfoUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // LanguageModuleVersionInfoCreateBulk is the builder for creating many LanguageModuleVersionInfo entities in bulk.
 type LanguageModuleVersionInfoCreateBulk struct {
 	config
 	err      error
 	builders []*LanguageModuleVersionInfoCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the LanguageModuleVersionInfo entities in the database.
@@ -265,6 +656,7 @@ func (_c *LanguageModuleVersionInfoCreateBulk) Save(ctx context.Context) ([]*Lan
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -315,6 +707,257 @@ func (_c *LanguageModuleVersionInfoCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *LanguageModuleVersionInfoCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.LanguageModuleVersionInfo.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.LanguageModuleVersionInfoUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *LanguageModuleVersionInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageModuleVersionInfoUpsertBulk {
+	_c.conflict = opts
+	return &LanguageModuleVersionInfoUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *LanguageModuleVersionInfoCreateBulk) OnConflictColumns(columns ...string) *LanguageModuleVersionInfoUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &LanguageModuleVersionInfoUpsertBulk{
+		create: _c,
+	}
+}
+
+// LanguageModuleVersionInfoUpsertBulk is the builder for "upsert"-ing
+// a bulk of LanguageModuleVersionInfo nodes.
+type LanguageModuleVersionInfoUpsertBulk struct {
+	create *LanguageModuleVersionInfoCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateNewValues() *LanguageModuleVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(languagemoduleversioninfo.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.LanguageModuleVersionInfo.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *LanguageModuleVersionInfoUpsertBulk) Ignore() *LanguageModuleVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *LanguageModuleVersionInfoUpsertBulk) DoNothing() *LanguageModuleVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the LanguageModuleVersionInfoCreateBulk.OnConflict
+// documentation for more info.
+func (u *LanguageModuleVersionInfoUpsertBulk) Update(set func(*LanguageModuleVersionInfoUpsert)) *LanguageModuleVersionInfoUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&LanguageModuleVersionInfoUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetName(v string) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateName() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) ClearName() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetDescription(v string) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateDescription() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) ClearDescription() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetLocale(v string) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateLocale() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) ClearLocale() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetLanguageID sets the "language_id" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetLanguageID(v int) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetLanguageID(v)
+	})
+}
+
+// AddLanguageID adds v to the "language_id" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) AddLanguageID(v int) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.AddLanguageID(v)
+	})
+}
+
+// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateLanguageID() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateLanguageID()
+	})
+}
+
+// SetLanguageVersionID sets the "language_version_id" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetLanguageVersionID(v int) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetLanguageVersionID(v)
+	})
+}
+
+// AddLanguageVersionID adds v to the "language_version_id" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) AddLanguageVersionID(v int) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.AddLanguageVersionID(v)
+	})
+}
+
+// UpdateLanguageVersionID sets the "language_version_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateLanguageVersionID() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateLanguageVersionID()
+	})
+}
+
+// SetVersionID sets the "version_id" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetVersionID(v int) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetVersionID(v)
+	})
+}
+
+// AddVersionID adds v to the "version_id" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) AddVersionID(v int) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.AddVersionID(v)
+	})
+}
+
+// UpdateVersionID sets the "version_id" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateVersionID() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateVersionID()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageModuleVersionInfoUpsertBulk) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageModuleVersionInfoUpsertBulk) UpdateUpdatedAt() *LanguageModuleVersionInfoUpsertBulk {
+	return u.Update(func(s *LanguageModuleVersionInfoUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *LanguageModuleVersionInfoUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the LanguageModuleVersionInfoCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for LanguageModuleVersionInfoCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *LanguageModuleVersionInfoUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

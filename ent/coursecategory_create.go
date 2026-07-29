@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/coursecategory"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -18,6 +19,7 @@ type CourseCategoryCreate struct {
 	config
 	mutation *CourseCategoryMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSlug sets the "slug" field.
@@ -197,6 +199,7 @@ func (_c *CourseCategoryCreate) createSpec() (*CourseCategory, *sqlgraph.CreateS
 		_node = &CourseCategory{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(coursecategory.Table, sqlgraph.NewFieldSpec(coursecategory.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = _c.conflict
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(coursecategory.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -228,11 +231,360 @@ func (_c *CourseCategoryCreate) createSpec() (*CourseCategory, *sqlgraph.CreateS
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.CourseCategory.Create().
+//		SetSlug(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CourseCategoryUpsert) {
+//			SetSlug(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *CourseCategoryCreate) OnConflict(opts ...sql.ConflictOption) *CourseCategoryUpsertOne {
+	_c.conflict = opts
+	return &CourseCategoryUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.CourseCategory.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *CourseCategoryCreate) OnConflictColumns(columns ...string) *CourseCategoryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &CourseCategoryUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// CourseCategoryUpsertOne is the builder for "upsert"-ing
+	//  one CourseCategory node.
+	CourseCategoryUpsertOne struct {
+		create *CourseCategoryCreate
+	}
+
+	// CourseCategoryUpsert is the "OnConflict" setter.
+	CourseCategoryUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSlug sets the "slug" field.
+func (u *CourseCategoryUpsert) SetSlug(v string) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldSlug, v)
+	return u
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateSlug() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldSlug)
+	return u
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *CourseCategoryUpsert) ClearSlug() *CourseCategoryUpsert {
+	u.SetNull(coursecategory.FieldSlug)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *CourseCategoryUpsert) SetName(v string) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateName() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *CourseCategoryUpsert) ClearName() *CourseCategoryUpsert {
+	u.SetNull(coursecategory.FieldName)
+	return u
+}
+
+// SetHeader sets the "header" field.
+func (u *CourseCategoryUpsert) SetHeader(v string) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldHeader, v)
+	return u
+}
+
+// UpdateHeader sets the "header" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateHeader() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldHeader)
+	return u
+}
+
+// ClearHeader clears the value of the "header" field.
+func (u *CourseCategoryUpsert) ClearHeader() *CourseCategoryUpsert {
+	u.SetNull(coursecategory.FieldHeader)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *CourseCategoryUpsert) SetDescription(v string) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateDescription() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldDescription)
+	return u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *CourseCategoryUpsert) ClearDescription() *CourseCategoryUpsert {
+	u.SetNull(coursecategory.FieldDescription)
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *CourseCategoryUpsert) SetLocale(v string) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateLocale() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldLocale)
+	return u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *CourseCategoryUpsert) ClearLocale() *CourseCategoryUpsert {
+	u.SetNull(coursecategory.FieldLocale)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseCategoryUpsert) SetUpdatedAt(v time.Time) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateUpdatedAt() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldUpdatedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.CourseCategory.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *CourseCategoryUpsertOne) UpdateNewValues() *CourseCategoryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(coursecategory.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.CourseCategory.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *CourseCategoryUpsertOne) Ignore() *CourseCategoryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CourseCategoryUpsertOne) DoNothing() *CourseCategoryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CourseCategoryCreate.OnConflict
+// documentation for more info.
+func (u *CourseCategoryUpsertOne) Update(set func(*CourseCategoryUpsert)) *CourseCategoryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CourseCategoryUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *CourseCategoryUpsertOne) SetSlug(v string) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateSlug() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *CourseCategoryUpsertOne) ClearSlug() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *CourseCategoryUpsertOne) SetName(v string) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateName() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *CourseCategoryUpsertOne) ClearName() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetHeader sets the "header" field.
+func (u *CourseCategoryUpsertOne) SetHeader(v string) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetHeader(v)
+	})
+}
+
+// UpdateHeader sets the "header" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateHeader() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateHeader()
+	})
+}
+
+// ClearHeader clears the value of the "header" field.
+func (u *CourseCategoryUpsertOne) ClearHeader() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearHeader()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *CourseCategoryUpsertOne) SetDescription(v string) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateDescription() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *CourseCategoryUpsertOne) ClearDescription() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *CourseCategoryUpsertOne) SetLocale(v string) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateLocale() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *CourseCategoryUpsertOne) ClearLocale() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseCategoryUpsertOne) SetUpdatedAt(v time.Time) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateUpdatedAt() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *CourseCategoryUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CourseCategoryCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CourseCategoryUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *CourseCategoryUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *CourseCategoryUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // CourseCategoryCreateBulk is the builder for creating many CourseCategory entities in bulk.
 type CourseCategoryCreateBulk struct {
 	config
 	err      error
 	builders []*CourseCategoryCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the CourseCategory entities in the database.
@@ -262,6 +614,7 @@ func (_c *CourseCategoryCreateBulk) Save(ctx context.Context) ([]*CourseCategory
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -312,6 +665,236 @@ func (_c *CourseCategoryCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *CourseCategoryCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.CourseCategory.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CourseCategoryUpsert) {
+//			SetSlug(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *CourseCategoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *CourseCategoryUpsertBulk {
+	_c.conflict = opts
+	return &CourseCategoryUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.CourseCategory.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *CourseCategoryCreateBulk) OnConflictColumns(columns ...string) *CourseCategoryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &CourseCategoryUpsertBulk{
+		create: _c,
+	}
+}
+
+// CourseCategoryUpsertBulk is the builder for "upsert"-ing
+// a bulk of CourseCategory nodes.
+type CourseCategoryUpsertBulk struct {
+	create *CourseCategoryCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.CourseCategory.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *CourseCategoryUpsertBulk) UpdateNewValues() *CourseCategoryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(coursecategory.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.CourseCategory.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *CourseCategoryUpsertBulk) Ignore() *CourseCategoryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CourseCategoryUpsertBulk) DoNothing() *CourseCategoryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CourseCategoryCreateBulk.OnConflict
+// documentation for more info.
+func (u *CourseCategoryUpsertBulk) Update(set func(*CourseCategoryUpsert)) *CourseCategoryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CourseCategoryUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSlug sets the "slug" field.
+func (u *CourseCategoryUpsertBulk) SetSlug(v string) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetSlug(v)
+	})
+}
+
+// UpdateSlug sets the "slug" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateSlug() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateSlug()
+	})
+}
+
+// ClearSlug clears the value of the "slug" field.
+func (u *CourseCategoryUpsertBulk) ClearSlug() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearSlug()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *CourseCategoryUpsertBulk) SetName(v string) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateName() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *CourseCategoryUpsertBulk) ClearName() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetHeader sets the "header" field.
+func (u *CourseCategoryUpsertBulk) SetHeader(v string) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetHeader(v)
+	})
+}
+
+// UpdateHeader sets the "header" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateHeader() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateHeader()
+	})
+}
+
+// ClearHeader clears the value of the "header" field.
+func (u *CourseCategoryUpsertBulk) ClearHeader() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearHeader()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *CourseCategoryUpsertBulk) SetDescription(v string) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateDescription() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *CourseCategoryUpsertBulk) ClearDescription() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearDescription()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *CourseCategoryUpsertBulk) SetLocale(v string) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateLocale() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *CourseCategoryUpsertBulk) ClearLocale() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseCategoryUpsertBulk) SetUpdatedAt(v time.Time) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateUpdatedAt() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *CourseCategoryUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the CourseCategoryCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CourseCategoryCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CourseCategoryUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
