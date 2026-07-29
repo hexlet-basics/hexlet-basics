@@ -19,6 +19,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/telemetry"
 )
 
 type failingCoursesHandler struct {
@@ -56,8 +57,9 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	tracerProvider := sdktrace.NewTracerProvider(sdktrace.WithSampler(sdktrace.AlwaysSample()))
 	ctx, span := tracerProvider.Tracer("test").Start(t.Context(), "request")
 	defer span.End()
+	ctx = sentry.SetHubOnContext(ctx, sentry.NewHub(client, sentry.NewScope()))
 
-	handler := handlers.NewAPIErrorHandler(translator, logger, client)
+	handler := handlers.NewAPIErrorHandler(translator, logger)
 	recorder := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodPost, "/admin/languages", nil).WithContext(ctx)
 	cause := errors.New("database unavailable")
@@ -96,9 +98,10 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	handler := handlers.NewAPIErrorHandler(translator, logger, client)
+	handler := handlers.NewAPIErrorHandler(translator, logger)
 	recorder := httptest.NewRecorder()
-	request := httptest.NewRequest(http.MethodGet, "/api/languages/missing", nil)
+	ctx := sentry.SetHubOnContext(t.Context(), sentry.NewHub(client, sentry.NewScope()))
+	request := httptest.NewRequest(http.MethodGet, "/api/languages/missing", nil).WithContext(ctx)
 	handler.Write(request.Context(), recorder, request, &ogenerrors.DecodeParamsError{
 		OperationContext: ogenerrors.OperationContext{Name: "ListCourses", ID: "listCourses"},
 		Err:              errors.New("invalid query"),
@@ -127,7 +130,6 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 	errorHandler := handlers.NewAPIErrorHandler(
 		translator,
 		slog.New(slog.NewJSONHandler(&bytes.Buffer{}, nil)),
-		sentryClient,
 	)
 	server, err := api.NewServer(
 		&failingCoursesHandler{errorHandler: errorHandler},
@@ -137,7 +139,7 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 	client, err := api.NewClient("http://test", api.WithClient(&http.Client{
 		Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
 			recorder := httptest.NewRecorder()
-			server.ServeHTTP(recorder, request)
+			telemetry.NewSentryHTTPHandler(sentryClient, server).ServeHTTP(recorder, request)
 			return recorder.Result(), nil
 		}),
 	}))
@@ -153,7 +155,10 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 		Title:  "Internal Server Error",
 		Status: http.StatusInternalServerError,
 	}, problem.Response)
-	require.Len(t, transport.Events(), 1)
+	events := transport.Events()
+	require.Len(t, events, 1)
+	assert.Equal(t, http.MethodGet, events[0].Request.Method)
+	assert.Equal(t, "http://test/languages", events[0].Request.URL)
 }
 
 var _ trace.TracerProvider = (*sdktrace.TracerProvider)(nil)

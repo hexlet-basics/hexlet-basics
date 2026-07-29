@@ -21,7 +21,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 	"golang.org/x/crypto/bcrypt"
 
@@ -94,18 +93,13 @@ func NewTranslator(t testing.TB) *localization.Translator {
 	return translator
 }
 
-// NewAPIErrorHandler wires the production handler seam with disabled telemetry
-// so integration tests remain silent and cannot send events off-process.
+// NewAPIErrorHandler wires the production handler seam with a silent logger.
+// Harness requests do not install a Sentry hub, so they cannot send events.
 func NewAPIErrorHandler(t testing.TB, translator *localization.Translator) *handlers.APIErrorHandler {
 	t.Helper()
-	client, err := sentry.NewClient(sentry.ClientOptions{})
-	if err != nil {
-		t.Fatalf("new disabled Sentry client: %v", err)
-	}
 	return handlers.NewAPIErrorHandler(
 		translator,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
-		client,
 	)
 }
 

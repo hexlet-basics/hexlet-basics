@@ -22,6 +22,7 @@ import (
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
 )
 
@@ -49,11 +50,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		sentryClient, err := do.Invoke[*sentry.Client](i)
-		if err != nil {
-			return nil, err
-		}
-		return handlers.NewAPIErrorHandler(translator, logger, sentryClient), nil
+		return handlers.NewAPIErrorHandler(translator, logger), nil
 	}),
 	do.Lazy[*events.Publisher](func(i do.Injector) (*events.Publisher, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -245,10 +242,14 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		sentryClient, err := do.Invoke[*sentry.Client](i)
+		if err != nil {
+			return nil, err
+		}
 		// Dev CORS lets the Vite frontend (on any localhost port) call both
 		// the generated API and the hand-mounted routes.
 		localized := translator.Middleware(router)
-		return cors.New(cors.Options{
+		corsHandler := cors.New(cors.Options{
 			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
 			AllowedMethods: []string{
 				http.MethodGet,
@@ -261,7 +262,8 @@ var serverPackage = do.Package(
 			},
 			AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
 			AllowCredentials: true,
-		}).Handler(localized), nil
+		}).Handler(localized)
+		return telemetry.NewSentryHTTPHandler(sentryClient, corsHandler), nil
 	}),
 	// The process lifecycle coordinator starts and gracefully stops this
 	// server. Keeping the provider on the vendor type avoids coupling DI to

@@ -21,10 +21,14 @@ complementary, so both are kept.
   dependencies.
 - ogen's generated HTTP spans are exported without an additional HTTP tracing
   middleware.
+- The official `sentryhttp` middleware wraps the complete HTTP application. It
+  gives every request an isolated hub, captures panics, and repanics so
+  `net/http` retains its normal failure semantics.
 - The application installs tracer, meter, and logger providers from one SDK;
   metrics and OTel logs remain noop until their pipelines are added to the
   declarative file.
-- Unexpected HTTP failures and River job failures are captured by Sentry at
-  their native error-handler seams; expected HTTP 4xx responses are not.
+- Unexpected returned HTTP failures are captured through the request-local hub
+  at ogen's error-handler seams. River failures stay at River's native error
+  seam, and expected HTTP 4xx responses are not captured.
 - Prometheus and an OTel metrics exporter remain deferred until a metrics
   receiver and operational requirements are confirmed.

@@ -10,7 +10,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -39,14 +38,11 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 
 	translator, err := localization.New()
 	require.NoError(t, err)
-	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
-	require.NoError(t, err)
 	server, err := api.NewServer(
 		handler,
 		api.WithErrorHandler(NewAPIErrorHandler(
 			translator,
 			slog.New(slog.NewTextHandler(io.Discard, nil)),
-			sentryClient,
 		).Write),
 		api.WithNotFound(NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(translator)),

@@ -29,9 +29,8 @@ import (
 // Classification and response construction stay here, while the wire schema and
 // JSON encoder remain generated from TypeSpec.
 type APIErrorHandler struct {
-	translator   *localization.Translator
-	logger       *slog.Logger
-	sentryClient *sentry.Client
+	translator *localization.Translator
+	logger     *slog.Logger
 }
 
 // fieldValidationError carries a declared field-error response through the same
@@ -77,12 +76,10 @@ func withHTTPStatus(status int, err error) error {
 func NewAPIErrorHandler(
 	translator *localization.Translator,
 	logger *slog.Logger,
-	sentryClient *sentry.Client,
 ) *APIErrorHandler {
 	return &APIErrorHandler{
-		translator:   translator,
-		logger:       logger,
-		sentryClient: sentryClient,
+		translator: translator,
+		logger:     logger,
 	}
 }
 
@@ -171,26 +168,29 @@ func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status in
 		"trace_id", traceID,
 		"span_id", spanID,
 	}
-	scope := sentry.NewScope()
-	scope.SetTags(map[string]string{
+	tags := map[string]string{
 		"trace_id": traceID,
 		"span_id":  spanID,
-	})
+	}
+	httpContext := sentry.Context{"status": status}
 	if r != nil {
 		attrs = append(attrs, "method", r.Method, "path", r.URL.Path)
-		scope.SetTags(map[string]string{
-			"http.method": r.Method,
-			"http.path":   r.URL.Path,
-		})
-		scope.SetContext("http", sentry.Context{
-			"method": r.Method,
-			"path":   r.URL.Path,
-			"status": status,
-		})
+		tags["http.method"] = r.Method
+		tags["http.path"] = r.URL.Path
+		httpContext["method"] = r.Method
+		httpContext["path"] = r.URL.Path
 	}
 
 	h.logger.ErrorContext(ctx, "request failed", attrs...)
-	h.sentryClient.CaptureException(err, &sentry.EventHint{Context: ctx}, scope)
+	hub := sentry.GetHubFromContext(ctx)
+	if hub == nil {
+		return
+	}
+	hub.WithScope(func(scope *sentry.Scope) {
+		scope.SetTags(tags)
+		scope.SetContext("http", httpContext)
+		hub.CaptureException(err)
+	})
 }
 
 // NewNotFoundHandler localizes requests that do not match an ogen route.

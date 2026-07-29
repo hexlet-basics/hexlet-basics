@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
 	"github.com/stretchr/testify/assert"
@@ -91,6 +92,38 @@ func TestDevCORSAllowsCredentialedXSRFRequests(t *testing.T) {
 	assert.Equal(t, "true", rec.Header().Get("Access-Control-Allow-Credentials"))
 	assert.Contains(t, strings.ToLower(rec.Header().Get("Access-Control-Allow-Headers")), "x-xsrf-token")
 	assert.Contains(t, rec.Header().Get("Access-Control-Allow-Methods"), http.MethodDelete)
+}
+
+func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
+	configureTestEnvironment(t)
+
+	transport := &sentry.MockTransport{}
+	client, err := sentry.NewClient(sentry.ClientOptions{
+		Dsn:       "https://public@example.com/1",
+		Transport: transport,
+	})
+	require.NoError(t, err)
+
+	injector := newServerContainer()
+	t.Cleanup(func() { _ = injector.Shutdown() })
+	do.OverrideValue(injector, client)
+	do.OverrideNamedValue[http.Handler](injector, routerServiceName, http.HandlerFunc(
+		func(http.ResponseWriter, *http.Request) {
+			panic("router panic")
+		},
+	))
+
+	handler, err := do.InvokeNamed[http.Handler](injector, httpHandlerServiceName)
+	require.NoError(t, err)
+
+	assert.PanicsWithValue(t, "router panic", func() {
+		handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "/panic", nil))
+	})
+
+	events := transport.Events()
+	require.Len(t, events, 1)
+	assert.Equal(t, "router panic", events[0].Message)
+	assert.Equal(t, "http://example.com/panic", events[0].Request.URL)
 }
 
 func TestServerProviderReturnsDependencyError(t *testing.T) {
