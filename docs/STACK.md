@@ -2,7 +2,7 @@
 
 Finalized via a grilling session on 2026-07-26, starting from a reference
 `go.mod` the user pasted and trimming to what has a real consumer at parity.
-Architecture decisions live in [`docs/adr/`](./adr) (0001–0009). Frontend
+Architecture decisions live in [`docs/adr/`](./adr) (0001–0010). Frontend
 rollout is planned in [`docs/FRONTEND_PLAN.md`](./FRONTEND_PLAN.md).
 
 **Cutover:** hard cutover from Rails at parity (no side-by-side). Backward-compat
@@ -16,7 +16,7 @@ kept on **bcrypt passwords** and **URL routes** only (ADR-0002).
 | DB | `entgo.io/ent` + `ariga.io/atlas`, driver `jackc/pgx/v5` | ent replaces hand-written pgx SQL. |
 | Jobs | `river` (+ `riverpgxv5`, `rivertype`, `otelriver`) | ADR-0004. Replaces Solid Queue. |
 | Events | `watermill` (+ `watermill-sql`) | ADR-0004. Domain-event fan-out. |
-| Process lifecycle | `golang.org/x/sync/errgroup` | ADR-0009. Supervises River, Watermill, HTTP, and OS signals; `samber/do` remains DI-only. |
+| Process lifecycle | `golang.org/x/sync/errgroup` | ADR-0010. Separately supervises HTTP and async worker processes; `samber/do` remains DI-only. |
 | Auth | `go-pkgz/auth`, `golang-jwt`, `go-crypt`, **`go-webauthn/webauthn`** | ADR-0003. webauthn ADDED (was missing). JWT sessions. |
 | Email | `aws-sdk-go-v2` (+ `config`, `credentials`) + `service/ses` | ADR-0006. Talks to **Yandex Postbox** SES-compat API (not AWS). |
 | Assets | **`gocloud.dev/blob`** | ADR-0005. ADDED. s3blob (prod) / fileblob (dev) + ent attachment table. |

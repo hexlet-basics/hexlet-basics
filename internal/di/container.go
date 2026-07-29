@@ -45,14 +45,23 @@ const (
 	httpHandlerServiceName = "http-handler"
 )
 
-// New builds the DI container and registers the application's services.
-// Providers resolve their own dependencies from the injector, so the plain
-// constructors (store.NewClient, handlers.NewServer, api.NewServer) stay
-// injector-agnostic and remain usable directly in tests.
-//
-// The container owns construction only. cmd/server supervises long-lived
-// components and closes process resources explicitly.
-func New() *do.RootScope {
+// NewServer builds the synchronous application graph. Its River client can
+// enqueue jobs but has no queues or workers, so this process cannot execute
+// background work.
+func NewServer() *do.RootScope {
+	return newContainer(false)
+}
+
+// NewWorker builds the asynchronous application graph. It owns the Watermill
+// subscribers and the River workers but exposes no HTTP server.
+func NewWorker() *do.RootScope {
+	return newContainer(true)
+}
+
+// newContainer registers the process-specific graph while keeping construction
+// providers local to this package. cmd/server and cmd/worker remain the sole
+// lifecycle owners for the objects they resolve.
+func newContainer(worker bool) *do.RootScope {
 	injector := do.New()
 
 	do.Provide(injector, func(do.Injector) (*config.Config, error) {
@@ -98,39 +107,21 @@ func New() *do.RootScope {
 		return store.New(do.MustInvoke[*sql.DB](i)), nil
 	})
 
-	do.Provide(injector, func(i do.Injector) (*events.Publisher, error) {
-		return events.NewPublisher(
-			do.MustInvoke[*store.Store](i),
-			do.MustInvoke[*slog.Logger](i),
-		), nil
-	})
+	if !worker {
+		do.Provide(injector, func(i do.Injector) (*events.Publisher, error) {
+			return events.NewPublisher(
+				do.MustInvoke[*store.Store](i),
+				do.MustInvoke[*slog.Logger](i),
+			), nil
+		})
 
-	do.Provide(injector, func(i do.Injector) (*accounts.Registrar, error) {
-		return accounts.NewRegistrar(
-			do.MustInvoke[*store.Store](i),
-			do.MustInvoke[*events.Publisher](i),
-		), nil
-	})
-
-	do.Provide(injector, func(i do.Injector) (*events.Runtime, error) {
-		return events.NewRuntime(
-			do.MustInvoke[*sql.DB](i),
-			do.MustInvoke[*slog.Logger](i),
-			eventhandlers.LeadCreated(do.MustInvoke[*river.Client[*sql.Tx]](i)),
-		)
-	})
-
-	do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
-		return handlers.NewServer(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*config.Config](i),
-			do.MustInvoke[*versionbuilds.Starter](i),
-			do.MustInvoke[*accounts.Registrar](i),
-			do.MustInvoke[*events.Publisher](i),
-			do.MustInvoke[*localization.Translator](i),
-			do.MustInvoke[*handlers.APIErrorHandler](i),
-		), nil
-	})
+		do.Provide(injector, func(i do.Injector) (*accounts.Registrar, error) {
+			return accounts.NewRegistrar(
+				do.MustInvoke[*store.Store](i),
+				do.MustInvoke[*events.Publisher](i),
+			), nil
+		})
+	}
 
 	// Blob bucket for uploaded assets (ADR-0005). Closed explicitly in main.go on
 	// shutdown, like the ent client and pgx pool (blob.Bucket has Close, not a do
@@ -150,122 +141,153 @@ func New() *do.RootScope {
 		), nil
 	})
 
-	// The exercise loader (course-version builds) uses the shared asset store for
-	// lesson theory images and a git fetcher for the source repository.
-	do.Provide(injector, func(i do.Injector) (courseloader.Fetcher, error) {
-		cfg := do.MustInvoke[*config.Config](i)
-		return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken), nil
-	})
+	if worker {
+		// The exercise loader (course-version builds) uses the shared asset store
+		// for lesson theory images and a git fetcher for the source repository.
+		do.Provide(injector, func(i do.Injector) (courseloader.Fetcher, error) {
+			cfg := do.MustInvoke[*config.Config](i)
+			return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken), nil
+		})
 
-	do.Provide(injector, func(i do.Injector) (*courseloader.Loader, error) {
-		return courseloader.NewLoader(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*store.Store](i),
-			do.MustInvoke[*assetstore.Store](i),
-			do.MustInvoke[courseloader.Fetcher](i),
-		), nil
-	})
+		do.Provide(injector, func(i do.Injector) (*courseloader.Loader, error) {
+			return courseloader.NewLoader(
+				do.MustInvoke[*ent.Client](i),
+				do.MustInvoke[*store.Store](i),
+				do.MustInvoke[*assetstore.Store](i),
+				do.MustInvoke[courseloader.Fetcher](i),
+			), nil
+		})
 
-	do.Provide(injector, func(i do.Injector) (*amocrm.Client, error) {
-		cfg := do.MustInvoke[*config.Config](i)
-		return amocrm.NewClient(cfg.AmoCRMBaseURL, cfg.AmoCRMAuthToken, cfg.YMCounter), nil
-	})
+		do.Provide(injector, func(i do.Injector) (*amocrm.Client, error) {
+			cfg := do.MustInvoke[*config.Config](i)
+			return amocrm.NewClient(cfg.AmoCRMBaseURL, cfg.AmoCRMAuthToken, cfg.YMCounter), nil
+		})
+	}
 
 	do.Provide(injector, func(i do.Injector) (*river.Client[*sql.Tx], error) {
-		return jobs.NewClient(
+		if worker {
+			return jobs.NewWorkerClient(
+				do.MustInvoke[*sql.DB](i),
+				do.MustInvoke[*courseloader.Loader](i),
+				do.MustInvoke[*amocrm.Client](i),
+				do.MustInvoke[*slog.Logger](i),
+				jobs.NewErrorHandler(do.MustInvoke[*sentry.Client](i)),
+			)
+		}
+		return jobs.NewInsertOnlyClient(
 			do.MustInvoke[*sql.DB](i),
-			do.MustInvoke[*courseloader.Loader](i),
-			do.MustInvoke[*amocrm.Client](i),
 			do.MustInvoke[*slog.Logger](i),
-			jobs.NewErrorHandler(do.MustInvoke[*sentry.Client](i)),
 		)
 	})
 
-	do.Provide(injector, func(i do.Injector) (*versionbuilds.Starter, error) {
-		return versionbuilds.NewStarter(
-			do.MustInvoke[*store.Store](i),
-			do.MustInvoke[*river.Client[*sql.Tx]](i),
-		), nil
-	})
+	if worker {
+		do.Provide(injector, func(i do.Injector) (*events.Runtime, error) {
+			return events.NewRuntime(
+				do.MustInvoke[*sql.DB](i),
+				do.MustInvoke[*slog.Logger](i),
+				eventhandlers.LeadCreated(do.MustInvoke[*river.Client[*sql.Tx]](i)),
+			)
+		})
+	} else {
+		do.Provide(injector, func(i do.Injector) (*versionbuilds.Starter, error) {
+			return versionbuilds.NewStarter(
+				do.MustInvoke[*store.Store](i),
+				do.MustInvoke[*river.Client[*sql.Tx]](i),
+			), nil
+		})
 
-	do.Provide(injector, func(i do.Injector) (*api.Server, error) {
-		// WithErrorHandler installs the central ent-error -> HTTP-status mapping
-		// (404/409), so handlers return raw ent errors instead of typed DTOs.
-		return api.NewServer(
-			do.MustInvoke[*handlers.Server](i),
-			api.WithErrorHandler(do.MustInvoke[*handlers.APIErrorHandler](i).Write),
-			api.WithTracerProvider(do.MustInvoke[*otelconf.SDK](i).TracerProvider()),
-			api.WithNotFound(handlers.NewNotFoundHandler(do.MustInvoke[*localization.Translator](i))),
-			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(do.MustInvoke[*localization.Translator](i))),
-		)
-	})
+		do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
+			return handlers.NewServer(
+				do.MustInvoke[*ent.Client](i),
+				do.MustInvoke[*config.Config](i),
+				do.MustInvoke[*versionbuilds.Starter](i),
+				do.MustInvoke[*accounts.Registrar](i),
+				do.MustInvoke[*events.Publisher](i),
+				do.MustInvoke[*localization.Translator](i),
+				do.MustInvoke[*handlers.APIErrorHandler](i),
+			), nil
+		})
 
-	do.Provide(injector, func(i do.Injector) (*handlers.AttachmentHandler, error) {
-		return handlers.NewAttachmentHandler(
-			do.MustInvoke[*assetstore.Store](i),
-			do.MustInvoke[*localization.Translator](i),
-			do.MustInvoke[*handlers.APIErrorHandler](i),
-		), nil
-	})
+		do.Provide(injector, func(i do.Injector) (*api.Server, error) {
+			// WithErrorHandler installs the central ent-error -> HTTP-status
+			// mapping (404/409), so handlers return raw ent errors instead of
+			// typed DTOs.
+			return api.NewServer(
+				do.MustInvoke[*handlers.Server](i),
+				api.WithErrorHandler(do.MustInvoke[*handlers.APIErrorHandler](i).Write),
+				api.WithTracerProvider(do.MustInvoke[*otelconf.SDK](i).TracerProvider()),
+				api.WithNotFound(handlers.NewNotFoundHandler(do.MustInvoke[*localization.Translator](i))),
+				api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(do.MustInvoke[*localization.Translator](i))),
+			)
+		})
 
-	do.Provide(injector, func(i do.Injector) (*handlers.GitHubWebhookHandler, error) {
-		return handlers.NewGitHubWebhookHandler(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*versionbuilds.Starter](i),
-			do.MustInvoke[*config.Config](i).GitHubWebhookSecret,
-			do.MustInvoke[*localization.Translator](i),
-		), nil
-	})
+		do.Provide(injector, func(i do.Injector) (*handlers.AttachmentHandler, error) {
+			return handlers.NewAttachmentHandler(
+				do.MustInvoke[*assetstore.Store](i),
+				do.MustInvoke[*localization.Translator](i),
+				do.MustInvoke[*handlers.APIErrorHandler](i),
+			), nil
+		})
 
-	// Both the raw router and the middleware-wrapped application handler have
-	// the same http.Handler interface. Named bindings keep those two seams
-	// explicit without adding wrapper types whose only purpose would be DI.
-	do.ProvideNamed(injector, routerServiceName, func(i do.Injector) (http.Handler, error) {
-		return handlers.NewRouter(
-			do.MustInvoke[*api.Server](i),
-			do.MustInvoke[*handlers.AttachmentHandler](i),
-			do.MustInvoke[*handlers.GitHubWebhookHandler](i),
-			do.MustInvoke[*handlers.Server](i).AuthHandler(),
-		), nil
-	})
+		do.Provide(injector, func(i do.Injector) (*handlers.GitHubWebhookHandler, error) {
+			return handlers.NewGitHubWebhookHandler(
+				do.MustInvoke[*ent.Client](i),
+				do.MustInvoke[*versionbuilds.Starter](i),
+				do.MustInvoke[*config.Config](i).GitHubWebhookSecret,
+				do.MustInvoke[*localization.Translator](i),
+			), nil
+		})
 
-	do.ProvideNamed(injector, httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
-		// Dev CORS lets the Vite frontend (on any localhost port) call both the
-		// generated API and the hand-mounted routes. AllowCredentials is needed
-		// for the auth cookie to make the cross-origin round trip.
-		localized := do.MustInvoke[*localization.Translator](i).Middleware(
-			do.MustInvokeNamed[http.Handler](i, routerServiceName),
-		)
-		return cors.New(cors.Options{
-			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
-			AllowedMethods: []string{
-				http.MethodGet,
-				http.MethodHead,
-				http.MethodPost,
-				http.MethodPut,
-				http.MethodPatch,
-				http.MethodDelete,
-				http.MethodOptions,
-			},
-			AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
-			AllowCredentials: true,
-		}).Handler(localized), nil
-	})
+		// Both the raw router and the middleware-wrapped application handler have
+		// the same http.Handler interface. Named bindings keep those two seams
+		// explicit without adding wrapper types whose only purpose would be DI.
+		do.ProvideNamed(injector, routerServiceName, func(i do.Injector) (http.Handler, error) {
+			return handlers.NewRouter(
+				do.MustInvoke[*api.Server](i),
+				do.MustInvoke[*handlers.AttachmentHandler](i),
+				do.MustInvoke[*handlers.GitHubWebhookHandler](i),
+				do.MustInvoke[*handlers.Server](i).AuthHandler(),
+			), nil
+		})
 
-	// The process lifecycle coordinator starts and gracefully stops this server.
-	// Keeping the provider on the vendor type avoids coupling DI to supervision.
-	do.Provide(injector, func(i do.Injector) (*http.Server, error) {
-		cfg := do.MustInvoke[*config.Config](i)
+		do.ProvideNamed(injector, httpHandlerServiceName, func(i do.Injector) (http.Handler, error) {
+			// Dev CORS lets the Vite frontend (on any localhost port) call both
+			// the generated API and the hand-mounted routes.
+			localized := do.MustInvoke[*localization.Translator](i).Middleware(
+				do.MustInvokeNamed[http.Handler](i, routerServiceName),
+			)
+			return cors.New(cors.Options{
+				AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
+				AllowedMethods: []string{
+					http.MethodGet,
+					http.MethodHead,
+					http.MethodPost,
+					http.MethodPut,
+					http.MethodPatch,
+					http.MethodDelete,
+					http.MethodOptions,
+				},
+				AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
+				AllowCredentials: true,
+			}).Handler(localized), nil
+		})
 
-		return &http.Server{
-			Addr:              cfg.Addr,
-			Handler:           do.MustInvokeNamed[http.Handler](i, httpHandlerServiceName),
-			ReadHeaderTimeout: readHeaderTimeout,
-			ReadTimeout:       readTimeout,
-			WriteTimeout:      writeTimeout,
-			IdleTimeout:       idleTimeout,
-		}, nil
-	})
+		// The process lifecycle coordinator starts and gracefully stops this
+		// server. Keeping the provider on the vendor type avoids coupling DI to
+		// supervision.
+		do.Provide(injector, func(i do.Injector) (*http.Server, error) {
+			cfg := do.MustInvoke[*config.Config](i)
+
+			return &http.Server{
+				Addr:              cfg.Addr,
+				Handler:           do.MustInvokeNamed[http.Handler](i, httpHandlerServiceName),
+				ReadHeaderTimeout: readHeaderTimeout,
+				ReadTimeout:       readTimeout,
+				WriteTimeout:      writeTimeout,
+				IdleTimeout:       idleTimeout,
+			}, nil
+		})
+	}
 
 	return injector
 }

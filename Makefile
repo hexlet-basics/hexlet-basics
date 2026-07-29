@@ -2,6 +2,8 @@
 # Rails lives in legacy/ with its own Makefile. Run these from the repo root.
 
 DATABASE_PORT ?= 54330
+AMOCRM_API_REF := 5a24b11242c66c5b64e4a0d1c107a45ee9dfbab3
+AMOCRM_OPENAPI := https://raw.githubusercontent.com/Hexlet/amocrm-api/$(AMOCRM_API_REF)/tsp-output/schema/openapi.yaml
 
 .DEFAULT_GOAL := help
 
@@ -50,13 +52,17 @@ services-stop:
 # Dev (run the stack)
 # ---------------------------------------------------------------------------
 
-## dev: run API (air live-reload) + frontend (vite) together; Ctrl-C stops both
+## dev: run API + async worker (air live-reload) + frontend; Ctrl-C stops all
 dev:
 	pnpm dev:all
 
 ## dev-api: run only the Go API server with live-reload (:3001)
 dev-api:
 	air
+
+## dev-worker: run only the async Go worker with live-reload
+dev-worker:
+	air -c .air.worker.toml
 
 ## dev-web: run only the Vite frontend
 dev-web:
@@ -85,6 +91,25 @@ gen-api:
 gen-client:
 	pnpm generate
 
+## gen-amocrm: generate the typed amoCRM client from the pinned upstream contract
+gen-amocrm:
+	kiota generate \
+		--language Go \
+		--class-name APIClient \
+		--namespace-name hexletbasics/internal/amocrm/generated \
+		--openapi $(AMOCRM_OPENAPI) \
+		--output internal/amocrm/generated \
+		--include-path '/api/v4/leads/unsorted/forms#POST' \
+		--serializer github.com/microsoft/kiota-serialization-json-go.JsonSerializationWriterFactory \
+		--deserializer github.com/microsoft/kiota-serialization-json-go.JsonParseNodeFactory \
+		--structured-mime-types application/json \
+		--structured-mime-types application/hal+json \
+		--structured-mime-types application/problem+json \
+		--exclude-backward-compatible \
+		--clean-output
+	gofmt -w internal/amocrm/generated
+	pnpm exec oxfmt internal/amocrm/generated/kiota-lock.json
+
 ## gen-ent: regenerate the ent ORM from ent/schema
 gen-ent:
 	go generate ./ent
@@ -95,8 +120,8 @@ gen-ent:
 fixtures-import:
 	cd legacy && RAILS_ENV=test bin/rails runner ../scripts/export_fixtures.rb
 
-## gen-all: regenerate everything (ent + full contract pipeline)
-gen-all: gen-ent gen
+## gen-all: regenerate everything (ent + contracts + external clients)
+gen-all: gen-ent gen gen-amocrm
 
 ## tidy: prune/sync go.mod after generation or dep changes
 tidy:
@@ -207,12 +232,16 @@ test-web:
 # Build
 # ---------------------------------------------------------------------------
 
-## build: build the API binary and the frontend bundle
-build: build-api build-web
+## build: build the API, async worker, and frontend bundle
+build: build-api build-worker build-web
 
 ## build-api: compile the Go server to bin/server
 build-api:
 	go build -o bin/server ./cmd/server
+
+## build-worker: compile the async runtime to bin/worker
+build-worker:
+	go build -o bin/worker ./cmd/worker
 
 ## build-web: build the production frontend bundle
 build-web:
@@ -238,7 +267,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help prepare install setup services-start services-stop dev-db-create test-db-create db-create migrate-new test-migrate dev-migrate db-migrate test-load-fixtures test-prepare dev-prepare db-prepare dev dev-api dev-web dev-spec \
-	gen gen-spec gen-api gen-client gen-ent gen-all tidy \
-	lint lint-go lint-web lint-fix test build build-api build-web clean \
+.PHONY: help prepare install setup services-start services-stop dev-db-create test-db-create db-create migrate-new test-migrate dev-migrate db-migrate test-load-fixtures test-prepare dev-prepare db-prepare dev dev-api dev-worker dev-web dev-spec \
+	gen gen-spec gen-api gen-client gen-amocrm gen-ent gen-all tidy \
+	lint lint-go lint-web lint-fix test build build-api build-worker build-web clean \
 	deps-update update-skills

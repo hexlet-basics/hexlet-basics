@@ -1,0 +1,27 @@
+{
+  "descriptionHash": "8E461533D20C09E0A2F4F2F0CFA9D79005B518D874DE483C79B60120174CDB6A49BC2643F6BE5EA2661EFC8C44174D404A48ABDE09267827654C8A210D751F5B",
+  "descriptionLocation": "https://raw.githubusercontent.com/Hexlet/amocrm-api/5a24b11242c66c5b64e4a0d1c107a45ee9dfbab3/tsp-output/schema/openapi.yaml",
+  "lockFileVersion": "1.0.0",
+  "kiotaVersion": "1.34.1",
+  "clientClassName": "APIClient",
+  "typeAccessModifier": "Public",
+  "clientNamespaceName": "hexletbasics/internal/amocrm/generated",
+  "language": "Go",
+  "usesBackingStore": false,
+  "excludeBackwardCompatible": true,
+  "includeAdditionalData": true,
+  "disableSSLValidation": false,
+  "serializers": [
+    "github.com/microsoft/kiota-serialization-json-go.JsonSerializationWriterFactory"
+  ],
+  "deserializers": ["github.com/microsoft/kiota-serialization-json-go.JsonParseNodeFactory"],
+  "structuredMimeTypes": [
+    "application/json",
+    "application/hal\u002Bjson",
+    "application/problem\u002Bjson"
+  ],
+  "includePatterns": ["/api/v4/leads/unsorted/forms#POST"],
+  "excludePatterns": [],
+  "disabledValidationRules": [],
+  "allowedExternalOrigins": []
+}

@@ -1,6 +1,7 @@
 [tools]
 go = "1.26.5"
 golangci-lint = "2.12.2"
+kiota = "1.34.1"
 # atlas: owns the DB schema going forward (versioned migrations). `make
 # test-migrate` applies migrations/ to the test DB; new changes = atlas migrate new.
 atlas = "1.2.0"

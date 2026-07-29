@@ -1,17 +1,20 @@
 package di_test
 
 import (
+	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
 
+	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/internal/di"
+	"hexletbasics/internal/events"
 )
 
 const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
@@ -23,30 +26,48 @@ func testDSN() string {
 	return defaultTestDSN
 }
 
-// TestContainerResolvesHTTPServer proves the whole provider graph wires up: the
-// *http.Server depends (transitively) on the api server, handlers.Server, the
-// river client, the exercise Loader, the git fetcher, the blob bucket and the ent
-// client. Resolving it exercises every provider added for course loading and
-// catches a missing binding or a `do` cycle — which would otherwise only surface
-// at server boot in production. Construction is lazy (no queries run here); the
-// bucket points at a throwaway dir so nothing touches real storage.
-func TestContainerResolvesHTTPServer(t *testing.T) {
+// TestServerContainerResolvesHTTPWithoutAsyncRuntime proves that the synchronous
+// graph has everything needed to serve and enqueue while exposing neither
+// Watermill consumers nor a startable River worker runtime.
+func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 	t.Setenv("DATABASE_URL", testDSN())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
 
-	injector := di.New()
+	injector := di.NewServer()
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
 	require.NoError(t, err)
 	assert.NotNil(t, srv.Handler)
+
+	_, err = do.Invoke[*events.Runtime](injector)
+	require.Error(t, err)
+}
+
+func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
+	t.Setenv("DATABASE_URL", testDSN())
+	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
+
+	injector := di.NewWorker()
+	t.Cleanup(func() { _ = injector.Shutdown() })
+
+	riverClient, err := do.Invoke[*river.Client[*sql.Tx]](injector)
+	require.NoError(t, err)
+	assert.NotNil(t, riverClient)
+
+	eventRuntime, err := do.Invoke[*events.Runtime](injector)
+	require.NoError(t, err)
+	assert.NotNil(t, eventRuntime)
+
+	_, err = do.Invoke[*http.Server](injector)
+	require.Error(t, err)
 }
 
 func TestDevCORSAllowsCredentialedXSRFRequests(t *testing.T) {
 	t.Setenv("DATABASE_URL", testDSN())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
 
-	injector := di.New()
+	injector := di.NewServer()
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)

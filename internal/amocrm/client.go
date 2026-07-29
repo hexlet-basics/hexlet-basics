@@ -2,137 +2,275 @@
 package amocrm
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 	"time"
 
+	kiota "github.com/microsoft/kiota-abstractions-go"
+	kiotaauth "github.com/microsoft/kiota-abstractions-go/authentication"
+	kiotaserialization "github.com/microsoft/kiota-abstractions-go/serialization"
+	kiotahttp "github.com/microsoft/kiota-http-go"
+	kiotajson "github.com/microsoft/kiota-serialization-json-go"
+
+	"hexletbasics/internal/amocrm/generated"
+	"hexletbasics/internal/amocrm/generated/models"
 	"hexletbasics/internal/events"
 )
 
 const (
-	leadPipelineID        = 9_614_774
-	responsibleUserID     = 7_877_026
-	maxErrorResponseBytes = 8 << 10
+	leadPipelineID       int64 = 9_614_774
+	responsibleUserID    int64 = 7_877_026
+	maxErrorMessageBytes       = 8 << 10
+	source                     = "lead_form"
 )
 
 // Client sends lead-created snapshots to amoCRM.
 type Client struct {
-	baseURL   string
-	token     string
-	ymCounter string
-	http      *http.Client
+	baseURL string
+	token   string
+	api     *generated.APIClient
+	http    *http.Client
+	payload payloadBuilder
+	initErr error
 }
 
 // NewClient builds the external integration adapter.
 func NewClient(baseURL, token, ymCounter string) *Client {
-	return &Client{
+	client := &Client{
 		baseURL: strings.TrimRight(baseURL, "/"),
-		token:   token, ymCounter: ymCounter,
-		http: &http.Client{Timeout: 15 * time.Second},
+		token:   token,
+		http: &http.Client{
+			Timeout: 15 * time.Second,
+			// Redirects from an account-specific endpoint indicate configuration
+			// drift. Do not turn one River attempt into multiple HTTP requests.
+			CheckRedirect: func(*http.Request, []*http.Request) error {
+				return http.ErrUseLastResponse
+			},
+		},
 	}
+	// Kiota's registries normalize vendor JSON media types such as
+	// application/hal+json and application/problem+json to application/json.
+	parseNodeFactory := kiotaserialization.NewParseNodeFactoryRegistry()
+	parseNodeFactory.ContentTypeAssociatedFactories["application/json"] = kiotajson.NewJsonParseNodeFactory()
+	writerFactory := kiotaserialization.NewSerializationWriterFactoryRegistry()
+	writerFactory.ContentTypeAssociatedFactories["application/json"] = kiotajson.NewJsonSerializationWriterFactory()
+	adapter, err := kiotahttp.NewNetHttpRequestAdapterWithParseNodeFactoryAndSerializationWriterFactoryAndHttpClient(
+		bearerAuthProvider{token: token},
+		parseNodeFactory,
+		writerFactory,
+		client.http,
+	)
+	if err != nil {
+		client.initErr = fmt.Errorf("initialize amoCRM request adapter: %w", err)
+		return client
+	}
+	adapter.SetBaseUrl(client.baseURL)
+	client.api = generated.NewAPIClient(adapter)
+	client.payload = newPayloadBuilder(ymCounter)
+	return client
 }
 
 // CreateLead creates an unsorted form lead. River owns retries around this
-// network call; a non-2xx response is returned with a bounded diagnostic body.
+// network call; the Kiota adapter deliberately uses a plain http.Client.
 func (c *Client) CreateLead(ctx context.Context, event events.LeadCreated) error {
 	if c.baseURL == "" || c.token == "" {
-		return fmt.Errorf("amoCRM is not configured")
+		return newRequestError(0, "amoCRM is not configured", nil, false)
 	}
-	body, err := json.Marshal(c.payload(event))
+	if c.initErr != nil {
+		return newRequestError(0, "amoCRM client initialization failed", c.initErr, false)
+	}
+	body := []models.UnsortedFormCreateItemable{c.payload.build(event)}
+	_, err := c.api.Api().V4().Leads().Unsorted().Forms().Post(ctx, body, nil)
 	if err != nil {
-		return fmt.Errorf("encode amoCRM lead: %w", err)
-	}
-	req, err := http.NewRequestWithContext(
-		ctx,
-		http.MethodPost,
-		c.baseURL+"/api/v4/leads/unsorted/forms",
-		bytes.NewReader(body),
-	)
-	if err != nil {
-		return fmt.Errorf("create amoCRM request: %w", err)
-	}
-	req.Header.Set("Authorization", "Bearer "+c.token)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := c.http.Do(req)
-	if err != nil {
-		return fmt.Errorf("send amoCRM lead: %w", err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
-		detail, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrorResponseBytes))
-		return fmt.Errorf("amoCRM returned %d: %s", resp.StatusCode, strings.TrimSpace(string(detail)))
+		return classifyRequestError(err)
 	}
 	return nil
 }
 
-func (c *Client) payload(event events.LeadCreated) []any {
-	const source = "lead_form"
-	contactFields := customFields(nil, map[string]*string{
-		"EMAIL": event.Email,
-		"PHONE": event.Phone,
-	})
-	leadFields := customFields(map[string]int{
-		"UTM_CONTENT":  316_913,
-		"UTM_MEDIUM":   316_915,
-		"UTM_CAMPAIGN": 316_917,
-		"UTM_SOURCE":   316_919,
-		"UTM_TERM":     316_921,
-		"_YM_UID":      316_941,
-		"_YM_COUNTER":  316_943,
-	}, map[string]*string{
-		"UTM_CONTENT":  event.UTMContent,
-		"UTM_MEDIUM":   event.UTMMedium,
-		"UTM_CAMPAIGN": event.UTMCampaign,
-		"UTM_SOURCE":   event.UTMSource,
-		"UTM_TERM":     event.UTMTerm,
-		"_YM_UID":      event.YMClientID,
-		"_YM_COUNTER":  stringPtr(c.ymCounter),
-	})
-	leadName := firstNonEmpty(event.Email, stringPtr("Lead from "+source))
-	contactName := firstNonEmpty(event.FirstName, event.Email, event.Phone, event.Telegram, event.WhatsApp, stringPtr("Unknown"))
-	return []any{map[string]any{
-		"source_uid":  fmt.Sprintf("%s-%d", source, event.LeadID),
-		"source_name": source,
-		"metadata": map[string]any{
-			"form_id": source, "form_name": source,
-			"form_sent_at": event.OccurredAt.Unix(),
-		},
-		"_embedded": map[string]any{
-			"contacts": []any{map[string]any{
-				"name": contactName, "first_name": value(event.FirstName),
-				"last_name": value(event.LastName), "custom_fields_values": contactFields,
-			}},
-			"leads": []any{map[string]any{
-				"name": leadName, "pipeline_id": leadPipelineID,
-				"responsible_user_id":  responsibleUserID,
-				"custom_fields_values": leadFields,
-			}},
-		},
-	}}
+type payloadBuilder struct {
+	ymCounter string
 }
 
-func customFields(ids map[string]int, values map[string]*string) []any {
-	result := make([]any, 0, len(values))
-	for code, raw := range values {
-		if raw == nil || *raw == "" {
+func newPayloadBuilder(ymCounter string) payloadBuilder {
+	return payloadBuilder{ymCounter: ymCounter}
+}
+
+func (b payloadBuilder) build(event events.LeadCreated) models.UnsortedFormCreateItemable {
+	metadata := models.NewFormMetadata()
+	formID := models.NewFormMetadata_FormMetadata_form_id()
+	formID.SetString(stringPtr(source))
+	metadata.SetFormId(formID)
+	metadata.SetFormName(stringPtr(source))
+	sentAt := event.OccurredAt.Unix()
+	metadata.SetFormSentAt(&sentAt)
+
+	contact := models.NewContactCreate()
+	contact.SetName(stringPtr(firstNonEmpty(
+		event.FirstName,
+		event.Email,
+		event.Phone,
+		event.Telegram,
+		event.WhatsApp,
+		stringPtr("Unknown"),
+	)))
+	contact.SetFirstName(event.FirstName)
+	contact.SetLastName(event.LastName)
+	contact.SetCustomFieldsValues(customFields(
+		customField{code: "EMAIL", value: event.Email},
+		customField{code: "PHONE", value: event.Phone},
+	))
+
+	lead := models.NewLeadCreate()
+	lead.SetName(stringPtr(firstNonEmpty(event.Email, stringPtr("Lead from "+source))))
+	lead.SetPipelineId(int64Ptr(leadPipelineID))
+	lead.SetResponsibleUserId(int64Ptr(responsibleUserID))
+	lead.SetCustomFieldsValues(customFields(
+		customField{id: 316_913, code: "UTM_CONTENT", value: event.UTMContent},
+		customField{id: 316_915, code: "UTM_MEDIUM", value: event.UTMMedium},
+		customField{id: 316_917, code: "UTM_CAMPAIGN", value: event.UTMCampaign},
+		customField{id: 316_919, code: "UTM_SOURCE", value: event.UTMSource},
+		customField{id: 316_921, code: "UTM_TERM", value: event.UTMTerm},
+		customField{id: 316_941, code: "_YM_UID", value: event.YMClientID},
+		customField{id: 316_943, code: "_YM_COUNTER", value: stringPtr(b.ymCounter)},
+	))
+
+	embedded := models.NewUnsortedEmbeddedCreate()
+	embedded.SetContacts([]models.ContactCreateable{contact})
+	embedded.SetLeads([]models.LeadCreateable{lead})
+
+	item := models.NewUnsortedFormCreateItem()
+	item.SetSourceUid(stringPtr(fmt.Sprintf("%s-%d", source, event.LeadID)))
+	item.SetSourceName(stringPtr(source))
+	item.SetMetadata(metadata)
+	item.SetEmbedded(embedded)
+	return item
+}
+
+type customField struct {
+	id    int64
+	code  string
+	value *string
+}
+
+func customFields(fields ...customField) []models.CustomFieldValueable {
+	result := make([]models.CustomFieldValueable, 0, len(fields))
+	for _, input := range fields {
+		if input.value == nil || *input.value == "" {
 			continue
 		}
-		field := map[string]any{
-			"field_code": code,
-			"values":     []any{map[string]any{"value": *raw}},
+		value := models.NewCustomFieldValueItem_CustomFieldValueItem_value()
+		value.SetString(input.value)
+		valueItem := models.NewCustomFieldValueItem()
+		valueItem.SetValue(value)
+
+		field := models.NewCustomFieldValue()
+		field.SetFieldCode(&input.code)
+		if input.id != 0 {
+			field.SetFieldId(&input.id)
 		}
-		if id := ids[code]; id != 0 {
-			field["field_id"] = id
-		}
+		field.SetValues([]models.CustomFieldValueItemable{valueItem})
 		result = append(result, field)
 	}
 	return result
+}
+
+type bearerAuthProvider struct {
+	token string
+}
+
+var _ kiotaauth.AuthenticationProvider = bearerAuthProvider{}
+
+func (p bearerAuthProvider) AuthenticateRequest(
+	_ context.Context,
+	request *kiota.RequestInformation,
+	_ map[string]any,
+) error {
+	request.Headers.TryAdd("Authorization", "Bearer "+p.token)
+	return nil
+}
+
+type requestError struct {
+	statusCode int
+	message    string
+	cause      error
+	retryable  bool
+}
+
+func newRequestError(statusCode int, message string, cause error, retryable bool) *requestError {
+	return &requestError{
+		statusCode: statusCode,
+		message:    truncate(message, maxErrorMessageBytes),
+		cause:      cause,
+		retryable:  retryable,
+	}
+}
+
+func (e *requestError) Error() string {
+	if e.statusCode != 0 {
+		return fmt.Sprintf("amoCRM returned %d: %s", e.statusCode, e.message)
+	}
+	if e.cause != nil {
+		return fmt.Sprintf("%s: %s", e.message, truncate(e.cause.Error(), maxErrorMessageBytes))
+	}
+	return e.message
+}
+
+func (e *requestError) Unwrap() error {
+	return e.cause
+}
+
+// Retryable reports whether another River attempt can plausibly succeed.
+func (e *requestError) Retryable() bool {
+	return e.retryable
+}
+
+func classifyRequestError(err error) error {
+	var problem *models.ProblemDetails
+	if errors.As(err, &problem) {
+		statusCode := problem.GetStatusCode()
+		return newRequestError(
+			statusCode,
+			joinProblem(problem.GetTitle(), problem.GetDetail()),
+			err,
+			isRetryableStatus(statusCode),
+		)
+	}
+	var apiError kiota.ApiErrorable
+	if errors.As(err, &apiError) {
+		statusCode := apiError.GetStatusCode()
+		return newRequestError(statusCode, err.Error(), err, isRetryableStatus(statusCode))
+	}
+	return newRequestError(0, "send amoCRM lead", err, true)
+}
+
+func isRetryableStatus(statusCode int) bool {
+	return statusCode == http.StatusRequestTimeout ||
+		statusCode == http.StatusTooManyRequests ||
+		statusCode >= http.StatusInternalServerError && statusCode <= 599
+}
+
+func joinProblem(title, detail *string) string {
+	parts := make([]string, 0, 2)
+	if title != nil && *title != "" {
+		parts = append(parts, *title)
+	}
+	if detail != nil && *detail != "" {
+		parts = append(parts, *detail)
+	}
+	if len(parts) == 0 {
+		return "request failed"
+	}
+	return strings.Join(parts, ": ")
+}
+
+func truncate(value string, limit int) string {
+	if len(value) <= limit {
+		return value
+	}
+	return value[:limit]
 }
 
 func firstNonEmpty(values ...*string) string {
@@ -144,11 +282,6 @@ func firstNonEmpty(values ...*string) string {
 	return ""
 }
 
-func value(input *string) string {
-	if input == nil {
-		return ""
-	}
-	return *input
-}
-
 func stringPtr(value string) *string { return &value }
+
+func int64Ptr(value int64) *int64 { return &value }

@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"context"
+	"errors"
 
 	"github.com/riverqueue/river"
 
@@ -27,5 +28,18 @@ type amoCRMLeadWorker struct {
 }
 
 func (w *amoCRMLeadWorker) Work(ctx context.Context, job *river.Job[AmoCRMLeadArgs]) error {
-	return w.syncer.CreateLead(ctx, job.Args.Event)
+	err := w.syncer.CreateLead(ctx, job.Args.Event)
+	if err == nil {
+		return nil
+	}
+	var classified retryableError
+	if errors.As(err, &classified) && !classified.Retryable() {
+		return river.JobCancel(err)
+	}
+	return err
+}
+
+type retryableError interface {
+	error
+	Retryable() bool
 }

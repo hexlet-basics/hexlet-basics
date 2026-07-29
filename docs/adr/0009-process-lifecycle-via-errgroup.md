@@ -1,6 +1,6 @@
 # ADR-0009: Supervise the process lifecycle with errgroup
 
-**Status:** Accepted
+**Status:** Superseded by ADR-0010
 
 ## Context
 

@@ -49,13 +49,14 @@ with its own README and Makefile.
    The server reads `DATABASE_URL` / `ADDR` from the environment but defaults
    to the local development DB and `:3001`.
 
-3. Run the stack (Go API on `:3001` with live-reload + Vite frontend):
+3. Run the stack (Go API on `:3001`, asynchronous worker, and Vite frontend):
 
    ```bash
    make dev
    ```
 
-   Run one side alone with `make dev-api` or `make dev-web`.
+   Run one process alone with `make dev-api`, `make dev-worker`, or
+   `make dev-web`.
 
 ## Code Generation
 
@@ -90,7 +91,7 @@ starting data.
 ## Build
 
 ```bash
-make build  # go build -o bin/server ./cmd/server, and pnpm build
+make build  # builds bin/server, bin/worker, and the frontend bundle
 ```
 
 ## Releases

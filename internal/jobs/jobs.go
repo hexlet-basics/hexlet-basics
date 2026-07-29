@@ -53,12 +53,23 @@ func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer) *river.Workers 
 	return w
 }
 
-// NewClient builds the River client over the same database/sql pool ent uses.
-// It is insert-and-work capable: the caller Start()s it to run workers and
-// Stop()s it on shutdown. Sharing the pool also lets InsertTx participate in an
-// ent business transaction. The loader backs the exercise-build worker; pass
-// nil for an insert-only client.
-func NewClient(
+// NewInsertOnlyClient builds the River adapter used by synchronous callers.
+// It deliberately has no queues or workers and must never be started. Sharing
+// ent's database/sql pool lets InsertTx participate in a business transaction
+// while job execution remains isolated in the worker process.
+func NewInsertOnlyClient(
+	db *sql.DB,
+	logger *slog.Logger,
+) (*river.Client[*sql.Tx], error) {
+	return river.NewClient(riverdatabasesql.New(db), &river.Config{
+		Logger: logger,
+	})
+}
+
+// NewWorkerClient builds the River runtime used only by the worker process.
+// The caller owns Start and Stop. Worker dependencies stay behind this
+// constructor so an HTTP process cannot accidentally execute background jobs.
+func NewWorkerClient(
 	db *sql.DB,
 	loader *courseloader.Loader,
 	leadSyncer LeadSyncer,

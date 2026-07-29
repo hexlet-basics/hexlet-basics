@@ -2,34 +2,37 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"log/slog"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
 	"go.opentelemetry.io/contrib/otelconf"
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/di"
+	"hexletbasics/internal/events"
 )
 
-// shutdownTimeout bounds graceful shutdown: in-flight requests get this long to
-// finish before the process exits (k8s sends SIGKILL after its own grace period).
+// shutdownTimeout bounds process cleanup after River and Watermill have been
+// asked to drain. Deployment termination grace must exceed this value.
 const shutdownTimeout = 15 * time.Second
 
 func main() {
-	injector := di.NewServer()
+	injector := di.NewWorker()
 
 	logger := do.MustInvoke[*slog.Logger](injector)
 	sentryClient := do.MustInvoke[*sentry.Client](injector)
-	srv := do.MustInvoke[*http.Server](injector)
 	db := do.MustInvoke[*ent.Client](injector)
+	riverClient := do.MustInvoke[*river.Client[*sql.Tx]](injector)
+	eventRuntime := do.MustInvoke[*events.Runtime](injector)
 	bucket := do.MustInvoke[*blob.Bucket](injector)
 	otelSDK := do.MustInvoke[*otelconf.SDK](injector)
 
@@ -37,9 +40,9 @@ func main() {
 	defer stop()
 
 	app := application{
-		http:     srv,
-		httpAddr: srv.Addr,
-		logger:   logger,
+		jobs:   riverClient,
+		events: eventRuntime,
+		logger: logger,
 	}
 	runtimeErr := app.run(signalCtx, stop)
 
@@ -48,7 +51,7 @@ func main() {
 	closeResources(cleanupCtx, logger, bucket, db, otelSDK, sentryClient)
 
 	if runtimeErr != nil && !errors.Is(runtimeErr, errRuntimeSignal) {
-		logger.Error("runtime failed", "err", runtimeErr)
+		logger.Error("worker runtime failed", "err", runtimeErr)
 		os.Exit(1)
 	}
 }

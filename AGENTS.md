@@ -63,10 +63,11 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - **DI** is `samber/do` v2, wired in `internal/di/container.go`. Providers
   resolve their own deps from the injector, so the plain constructors
   (`store.NewClient`, `handlers.NewServer`, `api.NewServer`) stay
-  injector-agnostic and are usable directly in tests. `cmd/server` uses a local
-  `errgroup` coordinator for River, Watermill, HTTP, signals, and ordered
-  shutdown; `do` only constructs dependencies. Add a new service by adding a
-  `do.Provide` block, not by threading it through constructors.
+  injector-agnostic and are usable directly in tests. `di.NewServer` builds the
+  HTTP/producer graph; `di.NewWorker` builds the Watermill/River consumer graph.
+  `cmd/server` and `cmd/worker` each own a local `errgroup` coordinator; `do`
+  only constructs dependencies. Add a new service to the appropriate process
+  graph instead of threading it through constructors.
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
   client with `make gen-ent` (`go generate ./ent`) after editing a schema.
 - Other `internal/` packages: `config/` (env config via `caarlos0/env`),
@@ -89,8 +90,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   by the frontend and the api-spec tooling).
 - `make services-start` / `make services-stop` — local Postgres in Docker;
   startup idempotently creates both development and test databases.
-- `make dev` — run API (air live-reload, `:3001`) + Vite frontend together.
-- `make dev-api` — Go API only (air). `make dev-web` — Vite only.
+- `make dev` — run API, async worker (both air live-reload), and Vite together.
+- `make dev-api` — Go API only. `make dev-worker` — async worker only.
+  `make dev-web` — Vite only.
 - `make dev-spec` — watch TypeSpec and re-emit OpenAPI on change.
 - Tooling versions are pinned in `mise.toml` (go, golangci-lint, atlas,
   testfixtures CLI). Use `pnpm`, never `npm`/`npx` directly for JS deps.
@@ -131,7 +133,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 ## Build
 
-- `make build` — `build-api` (`go build -o bin/server ./cmd/server`) +
+- `make build` — `build-api` (`bin/server`) + `build-worker` (`bin/worker`) +
   `build-web` (`pnpm build`). `make clean` removes `bin/` and `dist/`.
 
 ## Frontend (`src/`)
@@ -152,6 +154,8 @@ Change the source, run the generator, commit the output. Never hand-edit or
 
 - `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `make gen-spec`.
 - `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `make gen-api`.
+- `internal/amocrm/generated/**` (Kiota client) ← the pinned amoCRM OpenAPI via
+  `make gen-amocrm`.
 - `src/client/**` (hey-api TS client + Query hooks) ← OpenAPI via `make gen-client`.
 - `ent/**` (except `ent/schema/`) ← `ent/schema` via `make gen-ent`.
 - `internal/apiconv/apiconv.gen.go` — generated converter.

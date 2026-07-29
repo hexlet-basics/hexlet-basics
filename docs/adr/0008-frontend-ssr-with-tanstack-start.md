@@ -52,8 +52,9 @@ screens are generated from the same schema rather than authored per resource.
 
 ## Consequences
 
-- Production runs **two processes**: Go (API, DB, jobs) + Node (SSR, thin BFF).
-  This is the cost of SSR and applies to any runtime-SSR framework.
+- Production runs **three processes**: Go API, Go async worker, and Node SSR
+  (thin BFF). The Node process is the cost of runtime SSR; the Go split keeps
+  HTTP availability independent from background consumption.
 - Auth must be cookie-based end-to-end; the API sets/reads the JWT cookie.
 - Admin CRUD depends on **regular** TypeSpec resources (`list/get/create/
   update/delete`, consistent models) — that contract shape is the first work.

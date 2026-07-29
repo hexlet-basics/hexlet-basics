@@ -8,7 +8,7 @@
     "spec": "tsp compile api-spec",
     "spec:watch": "tsp compile api-spec --watch",
     "dev": "vite dev",
-    "dev:all": "concurrently -k -n api,web -c blue,green \"air\" \"vite dev\"",
+    "dev:all": "concurrently -k -n api,worker,web -c blue,magenta,green \"air\" \"air -c .air.worker.toml\" \"vite dev\"",
     "build": "tsc -b && vite build",
     "check": "tsc -b",
     "lint": "oxlint",

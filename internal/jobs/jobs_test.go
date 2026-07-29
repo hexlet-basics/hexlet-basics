@@ -45,7 +45,7 @@ func TestQueueBackbone(t *testing.T) {
 	// exercise-build worker (and its db/blob deps) is intentionally not registered.
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
 	require.NoError(t, err)
-	client, err := jobs.NewClient(
+	client, err := jobs.NewWorkerClient(
 		db,
 		nil,
 		nil,
