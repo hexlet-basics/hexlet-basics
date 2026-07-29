@@ -17,6 +17,10 @@ import (
 
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
+	"github.com/riverqueue/river/rivertype"
+	"github.com/riverqueue/rivercontrib/otelriver"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/trace"
 
 	"hexletbasics/internal/courseloader"
 )
@@ -60,9 +64,12 @@ func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer) *river.Workers 
 func NewInsertOnlyClient(
 	db *sql.DB,
 	logger *slog.Logger,
+	tracerProvider trace.TracerProvider,
+	meterProvider metric.MeterProvider,
 ) (*river.Client[*sql.Tx], error) {
 	return river.NewClient(riverdatabasesql.New(db), &river.Config{
-		Logger: logger,
+		Logger:  logger,
+		Plugins: openTelemetryPlugins(tracerProvider, meterProvider),
 	})
 }
 
@@ -75,13 +82,32 @@ func NewWorkerClient(
 	leadSyncer LeadSyncer,
 	logger *slog.Logger,
 	errorHandler *ErrorHandler,
+	tracerProvider trace.TracerProvider,
+	meterProvider metric.MeterProvider,
 ) (*river.Client[*sql.Tx], error) {
 	return river.NewClient(riverdatabasesql.New(db), &river.Config{
 		ErrorHandler: errorHandler,
 		Logger:       logger,
+		Plugins:      openTelemetryPlugins(tracerProvider, meterProvider),
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
 		Workers: Workers(loader, leadSyncer),
 	})
+}
+
+// openTelemetryPlugins keeps River's observability policy consistent between
+// producers and workers. Explicit providers bind instruments to the process SDK
+// at construction time instead of relying on mutable OpenTelemetry globals.
+func openTelemetryPlugins(
+	tracerProvider trace.TracerProvider,
+	meterProvider metric.MeterProvider,
+) []rivertype.Plugin {
+	return []rivertype.Plugin{
+		otelriver.NewMiddleware(&otelriver.MiddlewareConfig{
+			EnableTracePropagation: true,
+			MeterProvider:          meterProvider,
+			TracerProvider:         tracerProvider,
+		}),
+	}
 }

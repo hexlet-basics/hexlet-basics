@@ -10,6 +10,8 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	metricnoop "go.opentelemetry.io/otel/metric/noop"
+	tracenoop "go.opentelemetry.io/otel/trace/noop"
 
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/jobs"
@@ -35,7 +37,12 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	t.Cleanup(func() { _ = sqlDB.Close() })
 
 	db := store.NewClient(sqlDB)
-	riverClient, err := jobs.NewInsertOnlyClient(sqlDB, nil)
+	riverClient, err := jobs.NewInsertOnlyClient(
+		sqlDB,
+		nil,
+		tracenoop.NewTracerProvider(),
+		metricnoop.NewMeterProvider(),
+	)
 	require.NoError(t, err)
 	starter := versionbuilds.NewStarter(store.New(sqlDB), riverClient)
 

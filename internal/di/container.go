@@ -259,6 +259,10 @@ func newContainer(worker bool) *do.RootScope {
 		if err != nil {
 			return nil, err
 		}
+		otelSDK, err := do.Invoke[*otelconf.SDK](i)
+		if err != nil {
+			return nil, err
+		}
 
 		if worker {
 			loader, err := do.Invoke[*courseloader.Loader](i)
@@ -279,9 +283,16 @@ func newContainer(worker bool) *do.RootScope {
 				amoCRMClient,
 				logger,
 				jobs.NewErrorHandler(sentryClient),
+				otelSDK.TracerProvider(),
+				otelSDK.MeterProvider(),
 			)
 		}
-		return jobs.NewInsertOnlyClient(db, logger)
+		return jobs.NewInsertOnlyClient(
+			db,
+			logger,
+			otelSDK.TracerProvider(),
+			otelSDK.MeterProvider(),
+		)
 	})
 
 	if worker {
