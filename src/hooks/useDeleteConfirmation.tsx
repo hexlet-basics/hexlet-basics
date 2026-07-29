@@ -8,13 +8,7 @@ import { useTranslation } from "react-i18next";
 export function useDeleteConfirmation() {
   const { t } = useTranslation();
 
-  return ({
-    description,
-    onConfirm,
-  }: {
-    description?: ReactNode;
-    onConfirm: () => void;
-  }) => {
+  return ({ description, onConfirm }: { description?: ReactNode; onConfirm: () => void }) => {
     modals.openConfirmModal({
       title: t(($) => $.admin.crud.confirmDeleteTitle),
       children: <Text>{description}</Text>,

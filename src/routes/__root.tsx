@@ -1,20 +1,11 @@
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
-import {
-  ColorSchemeScript,
-  MantineProvider,
-  mantineHtmlProps,
-} from "@mantine/core";
+import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import type { QueryClient } from "@tanstack/react-query";
-import {
-  createRootRouteWithContext,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import type { i18n as I18n } from "i18next";
 import type { ReactNode } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -57,13 +48,7 @@ function RootComponent() {
   );
 }
 
-function RootDocument({
-  children,
-  lang,
-}: {
-  children: ReactNode;
-  lang: string;
-}) {
+function RootDocument({ children, lang }: { children: ReactNode; lang: string }) {
   return (
     <html lang={lang} {...mantineHtmlProps}>
       <head>

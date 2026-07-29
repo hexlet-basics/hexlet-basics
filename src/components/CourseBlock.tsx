@@ -28,11 +28,7 @@ export default function CourseBlock({ item, lazy, ...props }: Props) {
     <HoverLift h="100%">
       <Card
         renderRoot={(rootProps) => (
-          <Link
-            to="/languages/$slug"
-            params={{ slug: item.slug }}
-            {...rootProps}
-          />
+          <Link to="/languages/$slug" params={{ slug: item.slug }} {...rootProps} />
         )}
         shadow="sm"
         td="none"

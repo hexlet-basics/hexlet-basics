@@ -185,8 +185,7 @@ export default {
         messages: {
           record_invalid: "Validation failed: {{errors}}",
           restrict_dependent_destroy: {
-            has_one:
-              "Cannot delete record because a dependent {{record}} exists",
+            has_one: "Cannot delete record because a dependent {{record}} exists",
             has_many: "Cannot delete record because dependent {{record}} exist",
           },
         },
@@ -216,7 +215,7 @@ export default {
         deleted: "Record deleted",
         edit: "Edit",
         empty: "No records",
-        "new": "New",
+        new: "New",
         save: "Save",
         saveError: "Failed to save the record",
         updated: "Record updated",
@@ -232,7 +231,7 @@ export default {
         index: {
           header: "Banners",
         },
-        "new": {
+        new: {
           header: "New Banner",
         },
       },
@@ -244,7 +243,7 @@ export default {
           add_new_blog_post: "Add New Blog Post",
           header: "Blog Posts",
         },
-        "new": {
+        new: {
           header: "New Blog Post",
         },
       },
@@ -266,7 +265,7 @@ export default {
           add_new_language: "Добавить категорию",
           header: "Категории",
         },
-        "new": {
+        new: {
           header: "Новая категория",
         },
       },
@@ -278,7 +277,7 @@ export default {
           add_new_language: "Добавить лендинг",
           header: "Лендинги",
         },
-        "new": {
+        new: {
           header: "Новый лендинг",
         },
       },
@@ -310,7 +309,7 @@ export default {
           add_new_language: "Add new language",
           header: "Languages",
         },
-        "new": {
+        new: {
           header: "New Language",
         },
       },
@@ -342,7 +341,7 @@ export default {
           index: {
             header: "Roles",
           },
-          "new": {
+          new: {
             header: "New role",
           },
         },
@@ -358,7 +357,7 @@ export default {
           index: {
             header: "Staff members",
           },
-          "new": {
+          new: {
             header: "New staff member",
           },
         },
@@ -392,7 +391,7 @@ export default {
           add_new_review: "Add New Review",
           header: "Reviews",
         },
-        "new": {
+        new: {
           header: "New Review",
         },
       },
@@ -408,7 +407,7 @@ export default {
         index: {
           header: "Сценарии",
         },
-        "new": {
+        new: {
           header: "Новый сценарий",
         },
       },
@@ -419,7 +418,7 @@ export default {
         index: {
           header: "Опросы",
         },
-        "new": {
+        new: {
           header: "Новый опрос",
         },
       },
@@ -474,14 +473,12 @@ export default {
           direction_explanation:
             "Узнаете какие бывают виды разработки и языки. Куда стоит идти и почему",
           interview: "Интервью",
-          interview_explanation:
-            "Подготовитесь к прохождению собеседований и испытательного срока",
+          interview_explanation: "Подготовитесь к прохождению собеседований и испытательного срока",
           plan: "План",
           plan_explanation:
             "Получите готовый план обучения, с темами, ресурсами для изучения и проектами",
           resume: "Резюме",
-          resume_explanation:
-            "Научитесь правильно оформлять резюме и находить подходящие вакансии",
+          resume_explanation: "Научитесь правильно оформлять резюме и находить подходящие вакансии",
         },
         freebook: "Бесплатная электронная книга",
         header: "Книга: Профессия программист. С нуля до трудоустройства\n",
@@ -500,8 +497,7 @@ export default {
           "Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине",
         ],
         header: "Эффективное обучение школьников и студентов программированию",
-        how_to_learn_programming:
-          "Как пользователи изучают программирование в CodeBasics?",
+        how_to_learn_programming: "Как пользователи изучают программирование в CodeBasics?",
         how_to_learn_programming_cards: [
           {
             title:
@@ -519,8 +515,7 @@ export default {
           {
             title:
               "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
-            subtitle:
-              "Если что-то не получается, можно воспользоваться Решением учителя",
+            subtitle: "Если что-то не получается, можно воспользоваться Решением учителя",
             img: "interactive-format-icon",
           },
           {
@@ -532,8 +527,7 @@ export default {
         ],
         integrate_into_education: "Зачем интегрировать CodeBasics в обучение?",
         integrate_now: "Интегрируйте CodeBasics в учебную программу сейчас!",
-        interactive_approach:
-          "Ориентируемся на практику и интерактивный подход:",
+        interactive_approach: "Ориентируемся на практику и интерактивный подход:",
         interactive_approach_list: [
           "Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере",
           "Даем мгновенную обратную связь: показываем правильное решение, даем вывод по каждому тесту",
@@ -551,8 +545,7 @@ export default {
           "Обучаем начинающих программистов лучшим стандартам кодирования, например правильному именованию функций",
           "Охватываем основные языки программирования и продолжаем добавлять курсы по современным технологиям",
         ],
-        programming_competently:
-          "Закладываем основы программирования грамотно:",
+        programming_competently: "Закладываем основы программирования грамотно:",
         quotes_icon: "Ковычки",
         select_course: "Выбрать курс",
         sign_up: "Зарегистрироваться",
@@ -663,8 +656,7 @@ export default {
         submitButtonLabel: "Отправить сообщение",
       },
       showSolution: "Show solution",
-      signInSuggestion:
-        '<a href="/users/new">Create an account</a> to save your progress',
+      signInSuggestion: '<a href="/users/new">Create an account</a> to save your progress',
       solution: "Solution",
       solutionInstructions: "Teacher's solution will be available in:",
       solutionNotice:
@@ -722,8 +714,7 @@ export default {
       show: {
         codes: {
           "403": {
-            description:
-              "Most likely, this is administrative access, so no entry for you :)",
+            description: "Most likely, this is administrative access, so no entry for you :)",
             header: "Access Denied",
           },
           "404": {
@@ -837,8 +828,7 @@ export default {
       },
       auth: {
         callback: {
-          success:
-            "You have signed in successfully. You can start learning now.",
+          success: "You have signed in successfully. You can start learning now.",
         },
       },
       blog_posts: {
@@ -851,16 +841,14 @@ export default {
       },
       books: {
         create_request: {
-          success:
-            "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается",
+          success: "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается",
         },
       },
       google_auth: {
         one_tap: {
           error:
             "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!",
-          success:
-            "You have signed in successfully. You can start learning now.",
+          success: "You have signed in successfully. You can start learning now.",
         },
       },
       languages: {
@@ -874,8 +862,7 @@ export default {
             "Language is under development, please check back later or try any other available language",
           language_in_development_html:
             'Language {{language}} is under development.\nYou can help send a pull request with new lessons or\nsupplement those that already exist <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nWe have prepared guidelines for writing <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">at the link</a>\n',
-          warning:
-            "The Language has lessons only in russian. Switch locale if you can read it :)",
+          warning: "The Language has lessons only in russian. Switch locale if you can read it :)",
         },
         success: {
           error: "В этом курсе есть уроки, которые вы не завершили",
@@ -890,8 +877,7 @@ export default {
       },
       passwords: {
         update: {
-          success:
-            "Password has been changed. Please, login with your new password.",
+          success: "Password has been changed. Please, login with your new password.",
         },
       },
       remind_passwords: {
@@ -903,8 +889,7 @@ export default {
       sessions: {
         create: {
           error: "В форме есть ошибки",
-          success:
-            "You have signed in successfully. You can start learning now.",
+          success: "You have signed in successfully. You can start learning now.",
         },
       },
       surveys: {
@@ -915,8 +900,7 @@ export default {
       users: {
         create: {
           error: "Упс, кажется в форме есть ошибки",
-          success:
-            "You have signed in successfully. You can start learning now.",
+          success: "You have signed in successfully. You can start learning now.",
         },
       },
     },
@@ -1004,8 +988,7 @@ export default {
         title: "Sitemap",
       },
       stats: {
-        trusted_by:
-          "Присоединись к {{count}} изующих программирование с помощью Code Basics\n",
+        trusted_by: "Присоединись к {{count}} изующих программирование с помощью Code Basics\n",
       },
     },
     i18n: {
@@ -1051,8 +1034,7 @@ export default {
             guest:
               "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
             hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
-            not_available:
-              "Our AI assistant will be here soon — we're setting things up right now",
+            not_available: "Our AI assistant will be here soon — we're setting things up right now",
           },
           common_questions: [
             {
@@ -1097,8 +1079,7 @@ export default {
           if_stuck_html:
             "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
           instructions: "Instructions",
-          issues:
-            "Found a bug? Have something to add? Pull requests are welcome!",
+          issues: "Found a bug? Have something to add? Pull requests are welcome!",
           lesson: "Lesson",
           navigation: "Navigation",
           next: "Next →",
@@ -1135,11 +1116,9 @@ export default {
           'Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page" target="_blank">продолжение на Хекслете</a>\n',
         continue: "Continue Learning",
         "convenient format": "Convenient format",
-        course_graduates:
-          "Join 74,761 students who have successfully completed courses",
+        course_graduates: "Join 74,761 students who have successfully completed courses",
         cover_image: "Course cover",
-        demo_description:
-          "Try a demo lesson without signing up. Practice included",
+        demo_description: "Try a demo lesson without signing up. Practice included",
         demo_start: "Start",
         free_course: "Free course for beginners",
         hexlet_program_link: "Profession and employment",
@@ -1174,8 +1153,7 @@ export default {
       success: {
         add_review:
           "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a>тут</a>",
-        changing_career_html:
-          "<a>Карьера</a>: если вы хотите обучиться новой профессии\n",
+        changing_career_html: "<a>Карьера</a>: если вы хотите обучиться новой профессии\n",
         choose_your_path: "🔍 Выберите свой путь:\n",
         description:
           "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
@@ -1240,8 +1218,7 @@ export default {
           english_links: "English links",
           free_call: "Calls within Russia are toll free",
           hexlet: "Hexlet",
-          hexlet_address:
-            'TOO "Hexlet", The Republic of Kazakhstan, Almaty, Auezova St., 14A',
+          hexlet_address: 'TOO "Hexlet", The Republic of Kazakhstan, Almaty, Auezova St., 14A',
           hexlet_blog: "Blog",
           hexlet_number: "BIN 230340043714",
           hexlet_title_html:
@@ -1280,14 +1257,12 @@ export default {
           community: "Community",
           courses: "Courses",
           courses_with_employement: "Курсы с трудоустройством",
-          courses_with_employement_description:
-            "Обучим программированию, аналитике и тестированию",
+          courses_with_employement_description: "Обучим программированию, аналитике и тестированию",
           enable_dark_theme: "Enable dark theme",
           enable_light_theme: "Enable light theme",
           for_authors: "For authors",
           for_teachers: "For school teachers",
-          for_teachers_description:
-            "Организуем обучение школьников и студентов",
+          for_teachers_description: "Организуем обучение школьников и студентов",
           for_whom: "Школа программирования Хекслет",
           hexly: "Хекслет Колледж",
           hexly_description: "Дадим качественное образование (СПО)",
@@ -1305,13 +1280,12 @@ export default {
           upskilling_description: "Обучим новым навыкам в программировании",
         },
         unsupported_browser_warning: {
-          unsupported_browser_warning:
-            "Browser is not supported. Some features may be disabled.",
+          unsupported_browser_warning: "Browser is not supported. Some features may be disabled.",
         },
       },
     },
     leads: {
-      "new": {
+      new: {
         description:
           "Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели",
         do_it:
@@ -1327,8 +1301,7 @@ export default {
       },
     },
     links: {
-      hexlet:
-        "https://hexlet.io/?promo_name=main&promo_position=body&promo_type=link",
+      hexlet: "https://hexlet.io/?promo_name=main&promo_position=body&promo_type=link",
       hexlet_author_school_course:
         "https://ru.hexlet.io/courses/author-school-hexlet?promo_name=course-author-school-hexlet&promo_position=body&promo_type=link",
       hexlet_authors_school:
@@ -1337,8 +1310,7 @@ export default {
         "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
       hexlet_awesome_text_structure:
         "https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link",
-      hexlet_blog:
-        "https://hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link",
+      hexlet_blog: "https://hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link",
       hexlet_courses: "https://hexlet.io/courses",
       hexlet_facebook: "https://www.facebook.com/hexlethq",
       hexlet_frontend:
@@ -1365,11 +1337,10 @@ export default {
       hexlet_telegram: "https://t.me/hexlet_ru",
       hexlet_telegram_volunteers: "https://t.me/hexletcommunity/12",
       hexlet_twitter: "https://twitter.com/hexlet_io",
-      hexlet_youtube:
-        "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ",
+      hexlet_youtube: "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ",
     },
     magic_links: {
-      "new": {
+      new: {
         other_methods: "Other sign-in options",
         submit: "Send the link",
         title: "Sign in by email link",
@@ -1566,7 +1537,7 @@ export default {
           index: {
             header: "Blog Posts",
           },
-          "new": {
+          new: {
             header: "New Blog Post",
           },
         },
@@ -1587,7 +1558,7 @@ export default {
           index: {
             header: "Категории",
           },
-          "new": {
+          new: {
             header: "Новая категория",
           },
         },
@@ -1598,7 +1569,7 @@ export default {
           index: {
             header: "Лендинги",
           },
-          "new": {
+          new: {
             header: "Новый лендинг",
           },
         },
@@ -1629,7 +1600,7 @@ export default {
           index: {
             header: "Languages",
           },
-          "new": {
+          new: {
             header: "New Language",
           },
         },
@@ -1667,7 +1638,7 @@ export default {
           index: {
             header: "Reviews",
           },
-          "new": {
+          new: {
             header: "New Review",
           },
         },
@@ -1683,7 +1654,7 @@ export default {
           index: {
             header: "Сценарии",
           },
-          "new": {
+          new: {
             header: "Новый сценарий",
           },
         },
@@ -1694,7 +1665,7 @@ export default {
           index: {
             header: "Опросы",
           },
-          "new": {
+          new: {
             header: "Новый опрос",
           },
         },
@@ -1731,10 +1702,8 @@ export default {
             "Даем возможность быстро погрузиться в язык программирования и понять, нравится ли он ученику",
             "Помогаем увидеть базовые примеры реальных задач, чтобы присмотреться к профессиональной рутине",
           ],
-          header:
-            "Эффективное обучение школьников и студентов программированию",
-          how_to_learn_programming:
-            "Как пользователи изучают программирование в CodeBasics?",
+          header: "Эффективное обучение школьников и студентов программированию",
+          how_to_learn_programming: "Как пользователи изучают программирование в CodeBasics?",
           how_to_learn_programming_cards: [
             {
               title:
@@ -1752,8 +1721,7 @@ export default {
             {
               title:
                 "Интерактивный формат: система автоматически проверяет выполненные задания, показывает ошибки и правильное решение, а также детальный вывод",
-              subtitle:
-                "Если что-то не получается, можно воспользоваться Решением учителя",
+              subtitle: "Если что-то не получается, можно воспользоваться Решением учителя",
               img: "interactive-format-icon",
             },
             {
@@ -1763,11 +1731,9 @@ export default {
               img: "discussion-icon",
             },
           ],
-          integrate_into_education:
-            "Зачем интегрировать CodeBasics в обучение?",
+          integrate_into_education: "Зачем интегрировать CodeBasics в обучение?",
           integrate_now: "Интегрируйте CodeBasics в учебную программу сейчас!",
-          interactive_approach:
-            "Ориентируемся на практику и интерактивный подход:",
+          interactive_approach: "Ориентируемся на практику и интерактивный подход:",
           interactive_approach_list: [
             "Сопровождаем теоретические материалы курса практическими заданиями прямо в браузере",
             "Даем мгновенную обратную связь: показываем правильное решение, даем вывод по каждому тесту",
@@ -1775,8 +1741,7 @@ export default {
           ],
           lay_programming_foundations:
             "CodeBasics закладывает основы программирования в интерактивной форме, за что получил 3-е место в номинации «Лучший внеплатформенный онлайн-курс» в 2020 году на Международном конкурсе открытых онлайн-курсов EdCrunch Award OOC",
-          open_browser_and_sign_up:
-            "Просто откройте браузер и зарегистрируйтесь",
+          open_browser_and_sign_up: "Просто откройте браузер и зарегистрируйтесь",
           select_course: "Выбрать курс",
           sign_up: "Зарегистрироваться",
           try: "Попробовать",
@@ -1889,8 +1854,7 @@ export default {
             if_stuck_html:
               "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
             instructions: "Instructions",
-            issues:
-              "Found a bug? Have something to add? Pull requests are welcome!",
+            issues: "Found a bug? Have something to add? Pull requests are welcome!",
             lesson: "Lesson",
             navigation: "Navigation",
             next: "Next →",
@@ -1912,11 +1876,9 @@ export default {
           browser_practice: "Practice in the browser",
           continue: "Continue Learning",
           "convenient format": "Convenient format",
-          course_graduates:
-            "Join 74,761 students who have successfully completed courses",
+          course_graduates: "Join 74,761 students who have successfully completed courses",
           cover_image: "Course cover",
-          demo_description:
-            "Try a demo lesson without signing up. Practice included",
+          demo_description: "Try a demo lesson without signing up. Practice included",
           demo_start: "Start",
           free_course: "Free course for beginners",
           hexlet_program_link: "Профессия и Трудоустройство",
@@ -1937,8 +1899,7 @@ export default {
         success: {
           add_review:
             "Не забудьте оставить отзыв, авторам курсов будет приятно (или не очень хехе). Это можно сделать <a>тут</a>",
-          changing_career_html:
-            "<a>Карьера</a>: если вы хотите обучиться новой профессии\n",
+          changing_career_html: "<a>Карьера</a>: если вы хотите обучиться новой профессии\n",
           choose_your_path: "🔍 Выберите свой путь:\n",
           description:
             "Now you have new knowledge and skills, but that's just the beginning - there are more opportunities ahead. It's time to choose your IT career and move on with your life\n",
@@ -1951,7 +1912,7 @@ export default {
         },
       },
       leads: {
-        "new": {
+        new: {
           description:
             "Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели",
           do_it:
@@ -2014,7 +1975,7 @@ export default {
         },
       },
       remind_passwords: {
-        "new": {
+        new: {
           title: "Remind password",
         },
       },
@@ -2026,7 +1987,7 @@ export default {
         },
       },
       sessions: {
-        "new": {
+        new: {
           dont_have_account: "New to Code-Basics?",
           forgot_password: "Forgot password?",
           register: "Sign up",
@@ -2035,9 +1996,8 @@ export default {
         },
       },
       users: {
-        "new": {
-          confirmation_html:
-            "By clicking Sign up, you agree to our <a>service conditions</a>",
+        new: {
+          confirmation_html: "By clicking Sign up, you agree to our <a>service conditions</a>",
           demo_html:
             "<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту",
           have_account: "Already have an account?",
@@ -2054,7 +2014,7 @@ export default {
       },
     },
     phone_auth: {
-      "new": {
+      new: {
         hint: "We'll text you a one-time code to sign in.",
         other_methods: "Other sign-in options",
         phone: "Phone number",
@@ -2140,7 +2100,7 @@ export default {
       value: "value",
     },
     remind_passwords: {
-      "new": {
+      new: {
         dont_have_account: "New to Code-Basics?",
         forgot_password: "Forgot password?",
         login: "Sign in",
@@ -2152,20 +2112,18 @@ export default {
     },
     reviews: {
       index: {
-        add_review:
-          "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a>тут</a>",
+        add_review: "Попробовали наши курсы и хотите оставить отзыв? Это можно сделать <a>тут</a>",
         course: "Course {{language}}",
         empty: "Looks like there is noting yet",
         header: "Reviews",
         meta: {
-          description:
-            "Честные отзывы наших студентов о курсах, процессе обучения и платформе\n",
+          description: "Честные отзывы наших студентов о курсах, процессе обучения и платформе\n",
         },
         read_more: "Read more",
       },
     },
     sessions: {
-      "new": {
+      new: {
         dont_have_account: "New to Code-Basics?",
         email: "Email",
         forgot_password: "Forgot password?",
@@ -2228,9 +2186,8 @@ export default {
       },
     },
     users: {
-      "new": {
-        confirmation_html:
-          "By clicking Sign up, you agree to our <a>service conditions</a>",
+      new: {
+        confirmation_html: "By clicking Sign up, you agree to our <a>service conditions</a>",
         demo_html:
           "<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту",
         have_account: "Already have an account?",

@@ -1,9 +1,4 @@
-import {
-  ActionIcon,
-  type ActionIconProps,
-  Button,
-  type ButtonProps,
-} from "@mantine/core";
+import { ActionIcon, type ActionIconProps, Button, type ButtonProps } from "@mantine/core";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
 import { forwardRef } from "react";
 
@@ -17,9 +12,9 @@ import { forwardRef } from "react";
 
 type ButtonLinkProps = Omit<ButtonProps, "href">;
 
-const ButtonLinkBase = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
-  (props, ref) => <Button ref={ref} component="a" {...props} />,
-);
+const ButtonLinkBase = forwardRef<HTMLAnchorElement, ButtonLinkProps>((props, ref) => (
+  <Button ref={ref} component="a" {...props} />
+));
 
 const ButtonLinkCreated = createLink(ButtonLinkBase);
 
@@ -29,12 +24,12 @@ export const ButtonLink: LinkComponent<typeof ButtonLinkBase> = (props) => (
 
 type ActionIconLinkProps = Omit<ActionIconProps, "href">;
 
-const ActionIconLinkBase = forwardRef<HTMLAnchorElement, ActionIconLinkProps>(
-  (props, ref) => <ActionIcon ref={ref} component="a" {...props} />,
-);
+const ActionIconLinkBase = forwardRef<HTMLAnchorElement, ActionIconLinkProps>((props, ref) => (
+  <ActionIcon ref={ref} component="a" {...props} />
+));
 
 const ActionIconLinkCreated = createLink(ActionIconLinkBase);
 
-export const ActionIconLink: LinkComponent<typeof ActionIconLinkBase> = (
-  props,
-) => <ActionIconLinkCreated preload="intent" {...props} />;
+export const ActionIconLink: LinkComponent<typeof ActionIconLinkBase> = (props) => (
+  <ActionIconLinkCreated preload="intent" {...props} />
+);

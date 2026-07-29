@@ -31,17 +31,12 @@ const pickerToIso = (value: string | null): string | null =>
 // schemas generated from OpenAPI (`src/client/zod.gen.ts`), passed straight to
 // `validators.onSubmit` — zod v4 implements Standard Schema, which TanStack Form
 // consumes natively and maps issues back to fields by path.
-export const { fieldContext, formContext, useFieldContext } =
-  createFormHookContexts();
+export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
 
 function fieldError(errors: unknown[], isTouched: boolean): string | undefined {
   if (!isTouched || errors.length === 0) return undefined;
   return errors
-    .map((e) =>
-      typeof e === "string"
-        ? e
-        : ((e as { message?: string } | null)?.message ?? ""),
-    )
+    .map((e) => (typeof e === "string" ? e : ((e as { message?: string } | null)?.message ?? "")))
     .filter(Boolean)
     .join(", ");
 }

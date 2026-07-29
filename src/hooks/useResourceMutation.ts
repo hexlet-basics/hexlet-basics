@@ -35,9 +35,7 @@ export function useResourceMutation<TData, TError, TVars, TCtx>({
     ...mutation,
     onSuccess: async (data, variables) => {
       await Promise.all(
-        (invalidate ?? []).map((queryKey) =>
-          queryClient.invalidateQueries({ queryKey }),
-        ),
+        (invalidate ?? []).map((queryKey) => queryClient.invalidateQueries({ queryKey })),
       );
       notifications.show({ color: "green", message: successMessage });
       onDone?.(data, variables);

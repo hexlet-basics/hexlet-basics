@@ -65,9 +65,7 @@ export function useBannerFields(): CrudFieldSpec<BannerInput>[] {
       options: [
         {
           value: "cta_gradient",
-          label: t(
-            ($) => $.models.attributes.banner["background/values"].cta_gradient,
-          ),
+          label: t(($) => $.models.attributes.banner["background/values"].cta_gradient),
         },
         {
           value: "dark",
@@ -100,7 +98,6 @@ export function useBannerFields(): CrudFieldSpec<BannerInput>[] {
       label: t(($) => $.models.attributes.banner.body),
       type: "textarea",
       required: true,
-      autoFocus: true,
     },
     {
       name: "url",

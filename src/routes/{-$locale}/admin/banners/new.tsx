@@ -7,10 +7,7 @@ import {
 } from "@/client/@tanstack/react-query.gen";
 import { zBannerInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
-import {
-  emptyBanner,
-  useBannerFields,
-} from "@/components/admin/resources/banner";
+import { emptyBanner, useBannerFields } from "@/components/admin/resources/banner";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/banners/new")({

@@ -4,9 +4,7 @@ import { isLocale, type Locale } from "@/lib/i18n";
 
 // First app-supported locale in Accept-Language (region stripped), mirroring
 // legacy `locale_from_header`.
-function localeFromAcceptLanguage(
-  header: string | undefined,
-): Locale | undefined {
+function localeFromAcceptLanguage(header: string | undefined): Locale | undefined {
   if (!header) return undefined;
   for (const part of header.split(",")) {
     const tag = part.split(";")[0]?.trim().split("-")[0];
@@ -24,9 +22,7 @@ function localeFromAcceptLanguage(
 // country-by-IP via getRequestIP → "RU", and skip-redirect-for-bots (SEO).
 export const detectRootLocale = createIsomorphicFn()
   .server((): Locale | undefined => {
-    const fromHeader = localeFromAcceptLanguage(
-      getRequestHeader("accept-language"),
-    );
+    const fromHeader = localeFromAcceptLanguage(getRequestHeader("accept-language"));
     return fromHeader === "ru" ? "ru" : undefined;
   })
   .client((): Locale | undefined => undefined);

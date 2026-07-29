@@ -213,7 +213,7 @@ export default interface Resources {
         index: {
           header: "Баннеры";
         };
-        "new": {
+        new: {
           header: "Новый баннер";
         };
       };
@@ -225,7 +225,7 @@ export default interface Resources {
           add_new_blog_post: "Добавить новый пост";
           header: "Посты в блоге";
         };
-        "new": {
+        new: {
           header: "Новый пост";
         };
       };
@@ -239,7 +239,7 @@ export default interface Resources {
         deleted: "Запись удалена";
         edit: "Изменить";
         empty: "Записей нет";
-        "new": "Создать";
+        new: "Создать";
         save: "Сохранить";
         saveError: "Не удалось сохранить запись";
         updated: "Запись обновлена";
@@ -262,7 +262,7 @@ export default interface Resources {
           add_new_language: "Добавить категорию";
           header: "Категории";
         };
-        "new": {
+        new: {
           header: "Новая категория";
         };
       };
@@ -274,7 +274,7 @@ export default interface Resources {
           add_new_language: "Добавить лендинг";
           header: "Лендинги";
         };
-        "new": {
+        new: {
           header: "Новый лендинг";
         };
       };
@@ -306,7 +306,7 @@ export default interface Resources {
           add_new_language: "Добавить курс";
           header: "Курсы";
         };
-        "new": {
+        new: {
           header: "Новый курс";
         };
       };
@@ -338,7 +338,7 @@ export default interface Resources {
           index: {
             header: "Роли";
           };
-          "new": {
+          new: {
             header: "Новая роль";
           };
         };
@@ -354,7 +354,7 @@ export default interface Resources {
           index: {
             header: "Сотрудники";
           };
-          "new": {
+          new: {
             header: "Новый сотрудник";
           };
         };
@@ -392,7 +392,7 @@ export default interface Resources {
           add_new_review: "Добавить новый отзыв";
           header: "Отзывы";
         };
-        "new": {
+        new: {
           header: "Новый отзыв";
         };
       };
@@ -408,7 +408,7 @@ export default interface Resources {
         index: {
           header: "Сценарии";
         };
-        "new": {
+        new: {
           header: "Новый сценарий";
         };
       };
@@ -419,7 +419,7 @@ export default interface Resources {
         index: {
           header: "Опросы";
         };
-        "new": {
+        new: {
           header: "Новый опрос";
         };
       };
@@ -1223,7 +1223,7 @@ export default interface Resources {
       };
     };
     leads: {
-      "new": {
+      new: {
         description: "Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели";
         do_it: "📝 <b>Оставьте заявку</b> — наш специалист свяжется с вами, выслушает ваши потребности и поможет подобрать оптимальный план обучения.";
         header: "Консультация со специалистом";
@@ -1262,7 +1262,7 @@ export default interface Resources {
       hexlet_youtube: "https://www.youtube.com/user/HexletUniversity";
     };
     magic_links: {
-      "new": {
+      new: {
         other_methods: "Другие способы входа";
         submit: "Отправить ссылку";
         title: "Вход по ссылке на email";
@@ -1458,7 +1458,7 @@ export default interface Resources {
           index: {
             header: "Посты в блоге";
           };
-          "new": {
+          new: {
             header: "Новый пост";
           };
         };
@@ -1479,7 +1479,7 @@ export default interface Resources {
           index: {
             header: "Категории";
           };
-          "new": {
+          new: {
             header: "Новая категория";
           };
         };
@@ -1490,7 +1490,7 @@ export default interface Resources {
           index: {
             header: "Лендинги";
           };
-          "new": {
+          new: {
             header: "Новый лендинг";
           };
         };
@@ -1521,7 +1521,7 @@ export default interface Resources {
           index: {
             header: "Курсы";
           };
-          "new": {
+          new: {
             header: "Новый курс";
           };
         };
@@ -1559,7 +1559,7 @@ export default interface Resources {
           index: {
             header: "Отзывы";
           };
-          "new": {
+          new: {
             header: "Новый отзыв";
           };
         };
@@ -1575,7 +1575,7 @@ export default interface Resources {
           index: {
             header: "Сценарии";
           };
-          "new": {
+          new: {
             header: "Новый сценарий";
           };
         };
@@ -1586,7 +1586,7 @@ export default interface Resources {
           index: {
             header: "Опросы";
           };
-          "new": {
+          new: {
             header: "Новый опрос";
           };
         };
@@ -1806,7 +1806,7 @@ export default interface Resources {
         };
       };
       leads: {
-        "new": {
+        new: {
           description: "Понимаем, что выбрать направление и план обучения непросто. Заполните форму — мы подскажем, с чего начать и как двигаться дальше, учитывая ваши интересы и цели";
           do_it: "📝 <b>Оставьте заявку</b> — наш специалист свяжется с вами, выслушает ваши потребности и поможет подобрать оптимальный план обучения.";
           header: "Консультация со специалистом";
@@ -1864,7 +1864,7 @@ export default interface Resources {
         };
       };
       remind_passwords: {
-        "new": {
+        new: {
           title: "Восстановление пароля";
         };
       };
@@ -1875,7 +1875,7 @@ export default interface Resources {
         };
       };
       sessions: {
-        "new": {
+        new: {
           dont_have_account: "Первый раз на сайте?";
           forgot_password: "Забыли пароль?";
           register: "Регистрация";
@@ -1884,7 +1884,7 @@ export default interface Resources {
         };
       };
       users: {
-        "new": {
+        new: {
           confirmation_html: "Регистрируясь, вы соглашаетесь с <a>условиями использования</a>";
           demo_html: "<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту";
           have_account: "Есть аккаунт?";
@@ -1901,7 +1901,7 @@ export default interface Resources {
       };
     };
     phone_auth: {
-      "new": {
+      new: {
         hint: "Пришлём одноразовый код для входа по SMS.";
         other_methods: "Другие способы входа";
         phone: "Номер телефона";
@@ -1987,7 +1987,7 @@ export default interface Resources {
       value: "значение";
     };
     remind_passwords: {
-      "new": {
+      new: {
         dont_have_account: "Нет аккаунта?";
         forgot_password: "Забыли пароль";
         login: "Войти";
@@ -2010,7 +2010,7 @@ export default interface Resources {
       };
     };
     sessions: {
-      "new": {
+      new: {
         dont_have_account: "Первый раз на сайте?";
         email: "Email";
         forgot_password: "Забыли пароль?";
@@ -2071,7 +2071,7 @@ export default interface Resources {
       };
     };
     users: {
-      "new": {
+      new: {
         confirmation_html: "Регистрируясь, вы соглашаетесь с <a>условиями использования</a>";
         demo_html: "<b>Зарегистрируйтесь</b> для продолжения бесплатного обучения. Так мы сможем сохранить ваш прогресс и открыть доступ к нашему ассистенту";
         have_account: "Есть аккаунт?";

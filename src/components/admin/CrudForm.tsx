@@ -13,7 +13,6 @@ export interface CrudFieldSpec<T> {
   // Options for `type: "select"`. Ignored otherwise.
   options?: { value: string; label: string }[];
   required?: boolean;
-  autoFocus?: boolean;
 }
 
 export interface CrudFormProps<T extends Record<string, unknown>> {
@@ -73,37 +72,19 @@ export function CrudForm<T extends Record<string, unknown>>({
             {(field) => {
               switch (spec.type) {
                 case "textarea":
-                  return (
-                    <field.TextareaField
-                      label={spec.label}
-                      required={spec.required}
-                      autoFocus={spec.autoFocus}
-                    />
-                  );
+                  return <field.TextareaField label={spec.label} required={spec.required} />;
                 case "select":
                   return (
                     <field.SelectField
                       label={spec.label}
                       data={spec.options ?? []}
                       required={spec.required}
-                      autoFocus={spec.autoFocus}
                     />
                   );
                 case "datetime":
-                  return (
-                    <field.DateTimeField
-                      label={spec.label}
-                      required={spec.required}
-                    />
-                  );
+                  return <field.DateTimeField label={spec.label} required={spec.required} />;
                 default:
-                  return (
-                    <field.TextField
-                      label={spec.label}
-                      required={spec.required}
-                      autoFocus={spec.autoFocus}
-                    />
-                  );
+                  return <field.TextField label={spec.label} required={spec.required} />;
               }
             }}
           </form.AppField>

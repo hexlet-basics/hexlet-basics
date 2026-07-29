@@ -1,11 +1,6 @@
 import { AppShell, Burger, Group, NavLink, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { requireAdmin } from "@/lib/auth";
 

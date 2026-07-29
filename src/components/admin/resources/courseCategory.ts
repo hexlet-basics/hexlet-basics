@@ -15,9 +15,7 @@ export const emptyCourseCategory: CourseCategoryInput = {
 
 // Seed the form from an existing row: the required columns are nullable on the
 // read model, so coalesce them to "" to keep the inputs controlled.
-export function courseCategoryToForm(
-  category: CourseCategory,
-): CourseCategoryInput {
+export function courseCategoryToForm(category: CourseCategory): CourseCategoryInput {
   return {
     name: category.name ?? "",
     header: category.header ?? "",
@@ -35,7 +33,6 @@ export function useCourseCategoryFields(): CrudFieldSpec<CourseCategoryInput>[] 
       name: "name",
       label: t(($) => $.models.attributes.language_category.name),
       required: true,
-      autoFocus: true,
     },
     {
       name: "header",

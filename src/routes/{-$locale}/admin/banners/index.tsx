@@ -1,11 +1,7 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type {
-  ColumnDef,
-  PaginationState,
-  SortingState,
-} from "@tanstack/react-table";
+import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -90,8 +86,7 @@ function BannersList() {
               onClick={() =>
                 confirmDelete({
                   description: row.original.body,
-                  onConfirm: () =>
-                    deleteMutation.mutate({ path: { id: row.original.id } }),
+                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
                 })
               }
             >
@@ -107,9 +102,7 @@ function BannersList() {
     <Stack>
       <Group justify="space-between">
         <Title order={2}>{t(($) => $.admin.resources.banners)}</Title>
-        <ButtonLink to="/{-$locale}/admin/banners/new">
-          {t(($) => $.admin.crud.new)}
-        </ButtonLink>
+        <ButtonLink to="/{-$locale}/admin/banners/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
       <CrudList

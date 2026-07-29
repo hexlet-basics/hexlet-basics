@@ -1,26 +1,11 @@
-import {
-  Alert,
-  Anchor,
-  Button,
-  Card,
-  Container,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Alert, Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  createSessionMutation,
-  getCurrentUserQueryKey,
-} from "@/client/@tanstack/react-query.gen";
+import { createSessionMutation, getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import { zSessionInput } from "@/client/zod.gen";
-import {
-  currentPasswordInputProps,
-  loginEmailInputProps,
-} from "@/lib/authFieldProps";
+import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authFieldProps";
 import { useAppForm } from "@/lib/form";
 
 // Login page, ported from legacy sessions/new. Email + password only; the
@@ -63,11 +48,7 @@ function New() {
           {t(($) => $.sessions.new.title)}
         </Title>
 
-        <Card
-          withBorder
-          p="xl"
-          w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}
-        >
+        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
           <Stack
             component="form"
             onSubmit={(event) => {
@@ -82,7 +63,6 @@ function New() {
                 <field.TextField
                   label={t(($) => $.models.attributes.user.email)}
                   required
-                  autoFocus
                   {...loginEmailInputProps}
                 />
               )}

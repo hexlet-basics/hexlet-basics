@@ -1,11 +1,7 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type {
-  ColumnDef,
-  PaginationState,
-  SortingState,
-} from "@tanstack/react-table";
+import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -88,8 +84,7 @@ function CourseCategoriesList() {
               onClick={() =>
                 confirmDelete({
                   description: row.original.name ?? String(row.original.id),
-                  onConfirm: () =>
-                    deleteMutation.mutate({ path: { id: row.original.id } }),
+                  onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
                 })
               }
             >

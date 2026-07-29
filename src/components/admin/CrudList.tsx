@@ -1,12 +1,4 @@
-import {
-  Center,
-  Group,
-  Loader,
-  Pagination,
-  Stack,
-  Table,
-  Text,
-} from "@mantine/core";
+import { Center, Group, Loader, Pagination, Stack, Table, Text } from "@mantine/core";
 import {
   type ColumnDef,
   flexRender,
@@ -78,18 +70,11 @@ export function CrudList<T>({
                   return (
                     <Table.Th
                       key={header.id}
-                      onClick={
-                        canSort
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
-                      }
+                      onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                       style={{ cursor: canSort ? "pointer" : undefined }}
                     >
                       <Group gap={4} wrap="nowrap">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                        {flexRender(header.column.columnDef.header, header.getContext())}
                         {sorted === "asc" && "▲"}
                         {sorted === "desc" && "▼"}
                       </Group>
@@ -121,10 +106,7 @@ export function CrudList<T>({
                 <Table.Tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <Table.Td key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </Table.Td>
                   ))}
                 </Table.Tr>
@@ -139,9 +121,7 @@ export function CrudList<T>({
           <Pagination
             total={pageCount}
             value={pagination.pageIndex + 1}
-            onChange={(page) =>
-              onPaginationChange({ ...pagination, pageIndex: page - 1 })
-            }
+            onChange={(page) => onPaginationChange({ ...pagination, pageIndex: page - 1 })}
           />
         </Group>
       )}

@@ -13,9 +13,7 @@ import {
 } from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-export const Route = createFileRoute(
-  "/{-$locale}/admin/language_categories/new",
-)({
+export const Route = createFileRoute("/{-$locale}/admin/language_categories/new")({
   component: NewCourseCategory,
 });
 
@@ -24,8 +22,7 @@ export function NewCourseCategory() {
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();
 
-  const backToList = () =>
-    navigate({ to: "/{-$locale}/admin/language_categories" });
+  const backToList = () => navigate({ to: "/{-$locale}/admin/language_categories" });
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseCategoryMutation(),

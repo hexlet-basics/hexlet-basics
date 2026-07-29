@@ -9,11 +9,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import {
-  IconBrandGithub,
-  IconBrandYoutube,
-  IconSend,
-} from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandYoutube, IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -40,10 +36,7 @@ export default function Footer() {
   const { data: courses } = useQuery(listCoursesOptions());
 
   const landingPages = courses ?? [];
-  const landingGroups = chunk(
-    landingPages,
-    Math.ceil(landingPages.length / 2) || 1,
-  );
+  const landingGroups = chunk(landingPages, Math.ceil(landingPages.length / 2) || 1);
 
   return (
     <Box mt={100} py="lg" fz="sm">
@@ -69,11 +62,7 @@ export default function Footer() {
                     key={lp.id}
                     fz="sm"
                     renderRoot={(props) => (
-                      <Link
-                        to="/languages/$slug"
-                        params={{ slug: lp.slug }}
-                        {...props}
-                      />
+                      <Link to="/languages/$slug" params={{ slug: lp.slug }} {...props} />
                     )}
                   >
                     {lp.name}
@@ -138,8 +127,8 @@ export default function Footer() {
                   ООО «Хекслет Рус»
                 </Anchor>
                 <Text fz="sm">
-                  108813 г. Москва, вн.тер.г. поселение Московский, г.
-                  Московский, ул. Солнечная, д. 3А, стр. 1, помещ. 10/3
+                  108813 г. Москва, вн.тер.г. поселение Московский, г. Московский, ул. Солнечная, д.
+                  3А, стр. 1, помещ. 10/3
                 </Text>
                 <Text fz="sm">ОГРН 1217300010476</Text>
               </Stack>

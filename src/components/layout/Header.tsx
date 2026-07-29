@@ -144,11 +144,7 @@ function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
             <Menu.Item
               key={item.id}
               renderRoot={(props) => (
-                <Link
-                  to="/languages/$slug"
-                  params={{ slug: item.slug }}
-                  {...props}
-                />
+                <Link to="/languages/$slug" params={{ slug: item.slug }} {...props} />
               )}
               leftSection={
                 <Image
@@ -220,10 +216,7 @@ function AuthLinks() {
             </Text>
           </Menu.Label>
         )}
-        <Menu.Item
-          leftSection={<IconLogout2 size={14} />}
-          onClick={() => logout({})}
-        >
+        <Menu.Item leftSection={<IconLogout2 size={14} />} onClick={() => logout({})}>
           {t(($) => $.layouts.shared.nav.sign_out)}
         </Menu.Item>
       </Menu.Dropdown>
@@ -246,8 +239,7 @@ function LocaleSwitcher() {
 
   // Strip any existing locale prefix; `en` is served unprefixed.
   const base = pathname.replace(/^\/(ru|es)(?=\/|$)/, "") || "/";
-  const hrefFor = (code: string) =>
-    code === "en" ? base : `/${code}${base === "/" ? "" : base}`;
+  const hrefFor = (code: string) => (code === "en" ? base : `/${code}${base === "/" ? "" : base}`);
 
   const current = LOCALES.find((l) => l.code === i18n.language) ?? LOCALES[0];
 
@@ -263,11 +255,7 @@ function LocaleSwitcher() {
       </Menu.Target>
       <Menu.Dropdown>
         {LOCALES.map((locale) => (
-          <Menu.Item
-            key={locale.code}
-            component="a"
-            href={hrefFor(locale.code)}
-          >
+          <Menu.Item key={locale.code} component="a" href={hrefFor(locale.code)}>
             {locale.label}
           </Menu.Item>
         ))}
@@ -287,17 +275,8 @@ export function ThemeSwitcher() {
   const label = t(($) => $.layouts.shared.nav.switch_theme);
 
   return (
-    <ActionIcon
-      aria-label={label}
-      onClick={toggleColorScheme}
-      size="sm"
-      variant="transparent"
-    >
-      {isDark ? (
-        <IconSun stroke={1.2} size={14} />
-      ) : (
-        <IconMoon stroke={1.2} size={14} />
-      )}
+    <ActionIcon aria-label={label} onClick={toggleColorScheme} size="sm" variant="transparent">
+      {isDark ? <IconSun stroke={1.2} size={14} /> : <IconMoon stroke={1.2} size={14} />}
     </ActionIcon>
   );
 }
@@ -313,9 +292,7 @@ function SolutionsMenu() {
     {
       icon: IconTarget,
       title: t(($) => $.layouts.shared.nav.courses_with_employement),
-      description: t(
-        ($) => $.layouts.shared.nav.courses_with_employement_description,
-      ),
+      description: t(($) => $.layouts.shared.nav.courses_with_employement_description),
       href: "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral",
     },
     {

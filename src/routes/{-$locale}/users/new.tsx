@@ -1,23 +1,10 @@
-import {
-  Alert,
-  Anchor,
-  Box,
-  Button,
-  Card,
-  Container,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Alert, Anchor, Box, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { z } from "zod";
-import {
-  createUserMutation,
-  getCurrentUserQueryKey,
-} from "@/client/@tanstack/react-query.gen";
+import { createUserMutation, getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
 import { zSignUpInput } from "@/client/zod.gen";
 import {
   firstNameInputProps,
@@ -68,11 +55,7 @@ function New() {
           {t(($) => $.users.new.title)}
         </Title>
 
-        <Card
-          withBorder
-          p="xl"
-          w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}
-        >
+        <Card withBorder p="xl" w={{ base: "100%", sm: "80%", md: "70%", lg: "50%" }}>
           <Stack
             component="form"
             onSubmit={(event) => {
@@ -86,7 +69,6 @@ function New() {
               {(field) => (
                 <field.TextField
                   label={t(($) => $.models.attributes.user.first_name)}
-                  autoFocus
                   {...firstNameInputProps}
                 />
               )}

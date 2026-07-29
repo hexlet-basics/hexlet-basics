@@ -55,9 +55,7 @@ export default function CourseCatalog() {
       {isRuLocale && (
         <Card withBorder p="xl">
           <Stack gap="md">
-            <Title order={2}>
-              {t(($) => $.pages.languages.index.hexlet.title)}
-            </Title>
+            <Title order={2}>{t(($) => $.pages.languages.index.hexlet.title)}</Title>
             <Text>{t(($) => $.pages.languages.index.hexlet.description)}</Text>
             <Box>
               <Text fw="bold" mb="sm">
@@ -92,11 +90,7 @@ export default function CourseCatalog() {
                   </Anchor>
                 </List.Item>
                 <List.Item>
-                  <Anchor
-                    href="https://ru.hexlet.io/programs/go"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <Anchor href="https://ru.hexlet.io/programs/go" target="_blank" rel="noreferrer">
                     {t(($) => $.pages.languages.index.hexlet.go)}
                   </Anchor>
                 </List.Item>

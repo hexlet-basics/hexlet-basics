@@ -113,14 +113,18 @@ lint-go:
 	go vet ./...
 	golangci-lint run
 
-## lint-web: TypeScript project build
+## lint-web: oxlint, oxfmt check, and TypeScript project build
 lint-web:
+	pnpm lint
+	pnpm format:check
 	pnpm check
 
-## lint-fix: auto-fix Go formatting and lint findings
+## lint-fix: auto-fix Go and frontend formatting and lint findings
 lint-fix:
 	gofmt -w cmd internal ent/schema
 	-golangci-lint run --fix
+	pnpm lint:fix
+	pnpm format
 
 # ---------------------------------------------------------------------------
 # Test

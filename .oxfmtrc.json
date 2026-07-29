@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/*.md",
+    "**/*.yaml",
+    "**/*.yml",
+    "api-spec/**",
+    "docs/**",
+    "fixtures/**",
+    "legacy/**",
+    ".air.toml",
+    "pnpm-lock.yaml",
+    "public/**",
+    "src/client/**",
+    "src/routeTree.gen.ts",
+    "stats.html"
+  ]
+}

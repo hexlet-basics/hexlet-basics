@@ -16,9 +16,7 @@ import {
 } from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-export const Route = createFileRoute(
-  "/{-$locale}/admin/language_categories/$id",
-)({
+export const Route = createFileRoute("/{-$locale}/admin/language_categories/$id")({
   component: EditCourseCategory,
 });
 
@@ -29,12 +27,9 @@ function EditCourseCategory() {
   const { id } = Route.useParams();
   const categoryId = Number(id);
 
-  const { data, isLoading } = useQuery(
-    adminGetCourseCategoryOptions({ path: { id: categoryId } }),
-  );
+  const { data, isLoading } = useQuery(adminGetCourseCategoryOptions({ path: { id: categoryId } }));
 
-  const backToList = () =>
-    navigate({ to: "/{-$locale}/admin/language_categories" });
+  const backToList = () => navigate({ to: "/{-$locale}/admin/language_categories" });
 
   const mutation = useResourceMutation({
     mutation: adminUpdateCourseCategoryMutation(),
@@ -62,9 +57,7 @@ function EditCourseCategory() {
           fields={fields}
           schema={zCourseCategoryInput}
           defaultValues={courseCategoryToForm(data)}
-          onSubmit={(values) =>
-            mutation.mutate({ path: { id: categoryId }, body: values })
-          }
+          onSubmit={(values) => mutation.mutate({ path: { id: categoryId }, body: values })}
           submitLabel={t(($) => $.admin.crud.save)}
           onCancel={backToList}
           isPending={mutation.isPending}
