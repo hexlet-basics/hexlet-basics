@@ -40,7 +40,7 @@ func configureTestEnvironment(t *testing.T) {
 func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 	configureTestEnvironment(t)
 
-	injector := newContainer(false)
+	injector := newServerContainer()
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
@@ -54,7 +54,7 @@ func TestServerContainerResolvesHTTPWithoutAsyncRuntime(t *testing.T) {
 func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 	configureTestEnvironment(t)
 
-	injector := newContainer(true)
+	injector := newWorkerContainer()
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	riverClient, err := do.Invoke[*river.Client[*sql.Tx]](injector)
@@ -72,7 +72,7 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 func TestDevCORSAllowsCredentialedXSRFRequests(t *testing.T) {
 	configureTestEnvironment(t)
 
-	injector := newContainer(false)
+	injector := newServerContainer()
 	t.Cleanup(func() { _ = injector.Shutdown() })
 
 	srv, err := do.Invoke[*http.Server](injector)
@@ -97,7 +97,7 @@ func TestServerProviderReturnsDependencyError(t *testing.T) {
 	configureTestEnvironment(t)
 
 	wantErr := errors.New("load localization")
-	injector := newContainer(false)
+	injector := newServerContainer()
 	do.Override(injector, func(do.Injector) (*localization.Translator, error) {
 		return nil, wantErr
 	})
