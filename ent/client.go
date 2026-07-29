@@ -11,7 +11,6 @@ import (
 
 	"hexletbasics/ent/migrate"
 
-	"hexletbasics/ent/actiontextrichtext"
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/activestorageblob"
 	"hexletbasics/ent/attachment"
@@ -50,8 +49,6 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// ActionTextRichText is the client for interacting with the ActionTextRichText builders.
-	ActionTextRichText *ActionTextRichTextClient
 	// ActiveStorageAttachment is the client for interacting with the ActiveStorageAttachment builders.
 	ActiveStorageAttachment *ActiveStorageAttachmentClient
 	// ActiveStorageBlob is the client for interacting with the ActiveStorageBlob builders.
@@ -115,7 +112,6 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.ActionTextRichText = NewActionTextRichTextClient(c.config)
 	c.ActiveStorageAttachment = NewActiveStorageAttachmentClient(c.config)
 	c.ActiveStorageBlob = NewActiveStorageBlobClient(c.config)
 	c.Attachment = NewAttachmentClient(c.config)
@@ -234,7 +230,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:                       ctx,
 		config:                    cfg,
-		ActionTextRichText:        NewActionTextRichTextClient(cfg),
 		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
 		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
@@ -280,7 +275,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:                       ctx,
 		config:                    cfg,
-		ActionTextRichText:        NewActionTextRichTextClient(cfg),
 		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
 		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
@@ -313,7 +307,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		ActionTextRichText.
+//		ActiveStorageAttachment.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -336,13 +330,13 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.ActionTextRichText, c.ActiveStorageAttachment, c.ActiveStorageBlob,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
-		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
-		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
-		c.LanguageLessonReview, c.LanguageLessonVersion, c.LanguageLessonVersionInfo,
-		c.LanguageModule, c.LanguageModuleVersion, c.LanguageModuleVersionInfo, c.Lead,
-		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.Attachment, c.Banner,
+		c.BlogPost, c.BlogPostLike, c.CategoryQnaItem, c.Course, c.CourseCategory,
+		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.LanguageLesson,
+		c.LanguageLessonMember, c.LanguageLessonReview, c.LanguageLessonVersion,
+		c.LanguageLessonVersionInfo, c.LanguageModule, c.LanguageModuleVersion,
+		c.LanguageModuleVersionInfo, c.Lead, c.Review, c.StaffMember, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -352,13 +346,13 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.ActionTextRichText, c.ActiveStorageAttachment, c.ActiveStorageBlob,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
-		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
-		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
-		c.LanguageLessonReview, c.LanguageLessonVersion, c.LanguageLessonVersionInfo,
-		c.LanguageModule, c.LanguageModuleVersion, c.LanguageModuleVersionInfo, c.Lead,
-		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.Attachment, c.Banner,
+		c.BlogPost, c.BlogPostLike, c.CategoryQnaItem, c.Course, c.CourseCategory,
+		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.LanguageLesson,
+		c.LanguageLessonMember, c.LanguageLessonReview, c.LanguageLessonVersion,
+		c.LanguageLessonVersionInfo, c.LanguageModule, c.LanguageModuleVersion,
+		c.LanguageModuleVersionInfo, c.Lead, c.Review, c.StaffMember, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -367,8 +361,6 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *ActionTextRichTextMutation:
-		return c.ActionTextRichText.mutate(ctx, m)
 	case *ActiveStorageAttachmentMutation:
 		return c.ActiveStorageAttachment.mutate(ctx, m)
 	case *ActiveStorageBlobMutation:
@@ -423,139 +415,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// ActionTextRichTextClient is a client for the ActionTextRichText schema.
-type ActionTextRichTextClient struct {
-	config
-}
-
-// NewActionTextRichTextClient returns a client for the ActionTextRichText from the given config.
-func NewActionTextRichTextClient(c config) *ActionTextRichTextClient {
-	return &ActionTextRichTextClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `actiontextrichtext.Hooks(f(g(h())))`.
-func (c *ActionTextRichTextClient) Use(hooks ...Hook) {
-	c.hooks.ActionTextRichText = append(c.hooks.ActionTextRichText, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `actiontextrichtext.Intercept(f(g(h())))`.
-func (c *ActionTextRichTextClient) Intercept(interceptors ...Interceptor) {
-	c.inters.ActionTextRichText = append(c.inters.ActionTextRichText, interceptors...)
-}
-
-// Create returns a builder for creating a ActionTextRichText entity.
-func (c *ActionTextRichTextClient) Create() *ActionTextRichTextCreate {
-	mutation := newActionTextRichTextMutation(c.config, OpCreate)
-	return &ActionTextRichTextCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of ActionTextRichText entities.
-func (c *ActionTextRichTextClient) CreateBulk(builders ...*ActionTextRichTextCreate) *ActionTextRichTextCreateBulk {
-	return &ActionTextRichTextCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *ActionTextRichTextClient) MapCreateBulk(slice any, setFunc func(*ActionTextRichTextCreate, int)) *ActionTextRichTextCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &ActionTextRichTextCreateBulk{err: fmt.Errorf("calling to ActionTextRichTextClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*ActionTextRichTextCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &ActionTextRichTextCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for ActionTextRichText.
-func (c *ActionTextRichTextClient) Update() *ActionTextRichTextUpdate {
-	mutation := newActionTextRichTextMutation(c.config, OpUpdate)
-	return &ActionTextRichTextUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *ActionTextRichTextClient) UpdateOne(_m *ActionTextRichText) *ActionTextRichTextUpdateOne {
-	mutation := newActionTextRichTextMutation(c.config, OpUpdateOne, withActionTextRichText(_m))
-	return &ActionTextRichTextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *ActionTextRichTextClient) UpdateOneID(id int) *ActionTextRichTextUpdateOne {
-	mutation := newActionTextRichTextMutation(c.config, OpUpdateOne, withActionTextRichTextID(id))
-	return &ActionTextRichTextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for ActionTextRichText.
-func (c *ActionTextRichTextClient) Delete() *ActionTextRichTextDelete {
-	mutation := newActionTextRichTextMutation(c.config, OpDelete)
-	return &ActionTextRichTextDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *ActionTextRichTextClient) DeleteOne(_m *ActionTextRichText) *ActionTextRichTextDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ActionTextRichTextClient) DeleteOneID(id int) *ActionTextRichTextDeleteOne {
-	builder := c.Delete().Where(actiontextrichtext.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &ActionTextRichTextDeleteOne{builder}
-}
-
-// Query returns a query builder for ActionTextRichText.
-func (c *ActionTextRichTextClient) Query() *ActionTextRichTextQuery {
-	return &ActionTextRichTextQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeActionTextRichText},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a ActionTextRichText entity by its id.
-func (c *ActionTextRichTextClient) Get(ctx context.Context, id int) (*ActionTextRichText, error) {
-	return c.Query().Where(actiontextrichtext.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *ActionTextRichTextClient) GetX(ctx context.Context, id int) *ActionTextRichText {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *ActionTextRichTextClient) Hooks() []Hook {
-	return c.hooks.ActionTextRichText
-}
-
-// Interceptors returns the client interceptors.
-func (c *ActionTextRichTextClient) Interceptors() []Interceptor {
-	return c.inters.ActionTextRichText
-}
-
-func (c *ActionTextRichTextClient) mutate(ctx context.Context, m *ActionTextRichTextMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&ActionTextRichTextCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&ActionTextRichTextUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&ActionTextRichTextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&ActionTextRichTextDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown ActionTextRichText mutation op: %q", m.Op())
 	}
 }
 
@@ -4324,21 +4183,19 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ActionTextRichText, ActiveStorageAttachment, ActiveStorageBlob, Attachment,
-		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
-		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
-		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersion,
-		LanguageLessonVersionInfo, LanguageModule, LanguageModuleVersion,
-		LanguageModuleVersionInfo, Lead, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Hook
+		ActiveStorageAttachment, ActiveStorageBlob, Attachment, Banner, BlogPost,
+		BlogPostLike, CategoryQnaItem, Course, CourseCategory, CourseVersion,
+		LandingPage, LandingPageQnaItem, LanguageLesson, LanguageLessonMember,
+		LanguageLessonReview, LanguageLessonVersion, LanguageLessonVersionInfo,
+		LanguageModule, LanguageModuleVersion, LanguageModuleVersionInfo, Lead, Review,
+		StaffMember, StaffRole, StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
-		ActionTextRichText, ActiveStorageAttachment, ActiveStorageBlob, Attachment,
-		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
-		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
-		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersion,
-		LanguageLessonVersionInfo, LanguageModule, LanguageModuleVersion,
-		LanguageModuleVersionInfo, Lead, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Interceptor
+		ActiveStorageAttachment, ActiveStorageBlob, Attachment, Banner, BlogPost,
+		BlogPostLike, CategoryQnaItem, Course, CourseCategory, CourseVersion,
+		LandingPage, LandingPageQnaItem, LanguageLesson, LanguageLessonMember,
+		LanguageLessonReview, LanguageLessonVersion, LanguageLessonVersionInfo,
+		LanguageModule, LanguageModuleVersion, LanguageModuleVersionInfo, Lead, Review,
+		StaffMember, StaffRole, StaffRolePermission, User []ent.Interceptor
 	}
 )

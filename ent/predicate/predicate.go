@@ -6,9 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// ActionTextRichText is the predicate function for actiontextrichtext builders.
-type ActionTextRichText func(*sql.Selector)
-
 // ActiveStorageAttachment is the predicate function for activestorageattachment builders.
 type ActiveStorageAttachment func(*sql.Selector)
 

@@ -81,6 +81,22 @@ func TestAdminGetBlogPost(t *testing.T) {
 	assert.Equal(t, "http://localhost:3001/storage/blogcoverkey001", post.CoverMainVariant.Value)
 }
 
+func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	trustedHTML := `<script>alert("trusted")</script><iframe src="https://example.com/embed" onload="ready()"></iframe><p style="background-image:url(javascript:alert(1))">Body</p>`
+	err := h.DB.BlogPost.UpdateOneID(6001).
+		SetRichBody(trustedHTML).
+		Exec(ctx)
+	require.NoError(t, err)
+
+	post, err := h.Client.AdminGetBlogPost(ctx, api.AdminGetBlogPostParams{ID: 6001})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
+	assert.Equal(t, trustedHTML, post.RichBodyHtml)
+}
+
 func TestAdminGetBlogPostNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()

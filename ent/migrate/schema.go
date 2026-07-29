@@ -9,20 +9,6 @@ import (
 )
 
 var (
-	// ActionTextRichTextsColumns holds the columns for the "action_text_rich_texts" table.
-	ActionTextRichTextsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "record_id", Type: field.TypeInt},
-		{Name: "record_type", Type: field.TypeString},
-		{Name: "body", Type: field.TypeString, Nullable: true, Size: 2147483647},
-	}
-	// ActionTextRichTextsTable holds the schema information for the "action_text_rich_texts" table.
-	ActionTextRichTextsTable = &schema.Table{
-		Name:       "action_text_rich_texts",
-		Columns:    ActionTextRichTextsColumns,
-		PrimaryKey: []*schema.Column{ActionTextRichTextsColumns[0]},
-	}
 	// ActiveStorageAttachmentsColumns holds the columns for the "active_storage_attachments" table.
 	ActiveStorageAttachmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -100,6 +86,7 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
 		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "rich_body", Type: field.TypeString, Size: 2147483647, Default: ""},
 		{Name: "language_id", Type: field.TypeInt, Nullable: true},
 		{Name: "related_language_items_count", Type: field.TypeInt, Default: 0},
 		{Name: "created_at", Type: field.TypeTime},
@@ -113,7 +100,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "blog_posts_users_creator",
-				Columns:    []*schema.Column{BlogPostsColumns[9]},
+				Columns:    []*schema.Column{BlogPostsColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -611,7 +598,6 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ActionTextRichTextsTable,
 		ActiveStorageAttachmentsTable,
 		ActiveStorageBlobsTable,
 		AttachmentsTable,
@@ -642,9 +628,6 @@ var (
 )
 
 func init() {
-	ActionTextRichTextsTable.Annotation = &entsql.Annotation{
-		Table: "action_text_rich_texts",
-	}
 	ActiveStorageAttachmentsTable.ForeignKeys[0].RefTable = ActiveStorageBlobsTable
 	ActiveStorageAttachmentsTable.Annotation = &entsql.Annotation{
 		Table: "active_storage_attachments",

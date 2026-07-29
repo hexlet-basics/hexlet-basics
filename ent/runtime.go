@@ -59,8 +59,12 @@ func init() {
 	banner.UpdateDefaultUpdatedAt = bannerDescUpdatedAt.UpdateDefault.(func() time.Time)
 	blogpostFields := schema.BlogPost{}.Fields()
 	_ = blogpostFields
+	// blogpostDescRichBody is the schema descriptor for rich_body field.
+	blogpostDescRichBody := blogpostFields[5].Descriptor()
+	// blogpost.DefaultRichBody holds the default value on creation for the rich_body field.
+	blogpost.DefaultRichBody = blogpostDescRichBody.Default.(string)
 	// blogpostDescRelatedLanguageItemsCount is the schema descriptor for related_language_items_count field.
-	blogpostDescRelatedLanguageItemsCount := blogpostFields[7].Descriptor()
+	blogpostDescRelatedLanguageItemsCount := blogpostFields[8].Descriptor()
 	// blogpost.DefaultRelatedLanguageItemsCount holds the default value on creation for the related_language_items_count field.
 	blogpost.DefaultRelatedLanguageItemsCount = blogpostDescRelatedLanguageItemsCount.Default.(int)
 	categoryqnaitemFields := schema.CategoryQnaItem{}.Fields()

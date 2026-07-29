@@ -7,7 +7,6 @@ import (
 	"golang.org/x/net/html"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/actiontextrichtext"
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
@@ -15,30 +14,23 @@ import (
 	"hexletbasics/internal/apiconv"
 )
 
-// Blog posts are READ-ONLY for now (list/get): the new stack will edit the rich
-// body with the Mantine editor in a later phase, so create/update/delete/
-// relatedCourses stay on the embedded UnimplementedHandler. The read side maps
-// the EXISTING legacy structure (no new column, no data migration) so the Go
-// read path can deploy at parity:
-//   - `richBodyHtml` = the stored ActionText body passed through as-is (inline
-//     action-text-attachment rewriting is deferred — decoding Rails signed sgids
-//     in Go is its own subsystem);
-//   - the cover is the single ActiveStorage cover blob, served for all three
-//     variant URLs (ADR-0005 deferred image variants) via the shipped
-//     `/storage/{key}` read path (the Go bucket is the ActiveStorage bucket).
+// Blog posts are READ-ONLY for now (list/get): create/update/delete/
+// relatedCourses stay on the embedded UnimplementedHandler. `rich_body` is
+// trusted editor HTML and is returned exactly as stored; the five production
+// posts are migrated by hand, with no ActionText compatibility layer. The cover
+// remains the single ActiveStorage blob served through `/storage/{key}`.
 
 const (
 	// wordsPerMinute mirrors the legacy reading-time divisor (BlogPostResource).
 	wordsPerMinute = 260
-	// blogPostRecordType/…Name/coverName key the polymorphic ActionText and
-	// ActiveStorage rows to a BlogPost (Rails stores the model class name).
+	// blogPostRecordType/coverName key the polymorphic ActiveStorage rows to a
+	// BlogPost (Rails stores the model class name).
 	blogPostRecordType = "BlogPost"
-	richBodyName       = "rich_body"
 	coverName          = "cover"
 )
 
 // AdminListBlogPosts returns a page of blog posts, newest first.
-func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (*api.BlogPostPage, error) {
+func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlogPostsParams) (api.AdminListBlogPostsRes, error) {
 	page := newPagination(params.Page, params.PerPage)
 
 	total, err := s.db.BlogPost.Query().Count(ctx)
@@ -66,7 +58,7 @@ func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlo
 
 // AdminGetBlogPost returns one blog post; a missing id surfaces as ent
 // not-found, which the central APIErrorHandler maps to 404.
-func (s *Server) AdminGetBlogPost(ctx context.Context, params api.AdminGetBlogPostParams) (*api.BlogPost, error) {
+func (s *Server) AdminGetBlogPost(ctx context.Context, params api.AdminGetBlogPostParams) (api.AdminGetBlogPostRes, error) {
 	post, err := s.db.BlogPost.Query().
 		Where(blogpost.IDEQ(int(params.ID))).
 		WithCreator().
@@ -82,10 +74,10 @@ func (s *Server) AdminGetBlogPost(ctx context.Context, params api.AdminGetBlogPo
 	return &items[0], nil
 }
 
-// blogPostsToAPI assembles the read model for a set of posts. The rich body,
-// cover, and like count are NOT columns on blog_posts, so they are fetched in
-// three batched queries (keyed by the posts' ids) rather than per-post, to keep
-// the list handler off an N+1 path.
+// blogPostsToAPI assembles the read model for a set of posts. The cover and like
+// count are not columns on blog_posts, so they are fetched in two batched
+// queries keyed by post id rather than per-post, keeping the list handler off an
+// N+1 path.
 func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]api.BlogPost, error) {
 	if len(posts) == 0 {
 		return []api.BlogPost{}, nil
@@ -96,10 +88,6 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 		ids[i] = p.ID
 	}
 
-	richByPost, err := s.blogRichBodies(ctx, ids)
-	if err != nil {
-		return nil, err
-	}
 	coverKeyByPost, err := s.blogCoverKeys(ctx, ids)
 	if err != nil {
 		return nil, err
@@ -111,7 +99,6 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 
 	items := make([]api.BlogPost, len(posts))
 	for i, p := range posts {
-		richBodyHTML := richByPost[p.ID]
 		items[i] = api.BlogPost{
 			ID:                      int32(p.ID),
 			Creator:                 s.conv.ToUser(p.Edges.Creator),
@@ -121,8 +108,8 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 			State:                   nilBlogPostState(p.State),
 			Locale:                  apiconv.NilStringFromPtr(p.Locale),
 			URL:                     s.blogPostURL(p.Slug, p.Locale),
-			RichBodyHtml:            richBodyHTML,
-			ReadingTime:             readingTime(richBodyHTML),
+			RichBodyHtml:            p.RichBody,
+			ReadingTime:             readingTime(p.RichBody),
 			LikesCount:              int32(likesByPost[p.ID]),
 			RelatedCourseItemsCount: int32(p.RelatedLanguageItemsCount),
 			CoverThumbVariant:       s.coverVariant(coverKeyByPost[p.ID]),
@@ -132,27 +119,6 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 		}
 	}
 	return items, nil
-}
-
-// blogRichBodies returns each post's stored ActionText body (as-is HTML) by id.
-func (s *Server) blogRichBodies(ctx context.Context, ids []int) (map[int]string, error) {
-	rows, err := s.db.ActionTextRichText.Query().
-		Where(
-			actiontextrichtext.RecordType(blogPostRecordType),
-			actiontextrichtext.Name(richBodyName),
-			actiontextrichtext.RecordIDIn(ids...),
-		).
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	out := make(map[int]string, len(rows))
-	for _, r := range rows {
-		if r.Body != nil {
-			out[r.RecordID] = *r.Body
-		}
-	}
-	return out, nil
 }
 
 // blogCoverKeys returns each post's cover blob storage key by id (posts without

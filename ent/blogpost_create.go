@@ -93,6 +93,20 @@ func (_c *BlogPostCreate) SetNillableState(v *string) *BlogPostCreate {
 	return _c
 }
 
+// SetRichBody sets the "rich_body" field.
+func (_c *BlogPostCreate) SetRichBody(v string) *BlogPostCreate {
+	_c.mutation.SetRichBody(v)
+	return _c
+}
+
+// SetNillableRichBody sets the "rich_body" field if the given value is not nil.
+func (_c *BlogPostCreate) SetNillableRichBody(v *string) *BlogPostCreate {
+	if v != nil {
+		_c.SetRichBody(*v)
+	}
+	return _c
+}
+
 // SetCreatorID sets the "creator_id" field.
 func (_c *BlogPostCreate) SetCreatorID(v int) *BlogPostCreate {
 	_c.mutation.SetCreatorID(v)
@@ -173,6 +187,10 @@ func (_c *BlogPostCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *BlogPostCreate) defaults() {
+	if _, ok := _c.mutation.RichBody(); !ok {
+		v := blogpost.DefaultRichBody
+		_c.mutation.SetRichBody(v)
+	}
 	if _, ok := _c.mutation.RelatedLanguageItemsCount(); !ok {
 		v := blogpost.DefaultRelatedLanguageItemsCount
 		_c.mutation.SetRelatedLanguageItemsCount(v)
@@ -181,6 +199,9 @@ func (_c *BlogPostCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *BlogPostCreate) check() error {
+	if _, ok := _c.mutation.RichBody(); !ok {
+		return &ValidationError{Name: "rich_body", err: errors.New(`ent: missing required field "BlogPost.rich_body"`)}
+	}
 	if _, ok := _c.mutation.CreatorID(); !ok {
 		return &ValidationError{Name: "creator_id", err: errors.New(`ent: missing required field "BlogPost.creator_id"`)}
 	}
@@ -239,6 +260,10 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.State(); ok {
 		_spec.SetField(blogpost.FieldState, field.TypeString, value)
 		_node.State = &value
+	}
+	if value, ok := _c.mutation.RichBody(); ok {
+		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
+		_node.RichBody = value
 	}
 	if value, ok := _c.mutation.LanguageID(); ok {
 		_spec.SetField(blogpost.FieldLanguageID, field.TypeInt, value)
@@ -408,6 +433,18 @@ func (u *BlogPostUpsert) UpdateState() *BlogPostUpsert {
 // ClearState clears the value of the "state" field.
 func (u *BlogPostUpsert) ClearState() *BlogPostUpsert {
 	u.SetNull(blogpost.FieldState)
+	return u
+}
+
+// SetRichBody sets the "rich_body" field.
+func (u *BlogPostUpsert) SetRichBody(v string) *BlogPostUpsert {
+	u.Set(blogpost.FieldRichBody, v)
+	return u
+}
+
+// UpdateRichBody sets the "rich_body" field to the value that was provided on create.
+func (u *BlogPostUpsert) UpdateRichBody() *BlogPostUpsert {
+	u.SetExcluded(blogpost.FieldRichBody)
 	return u
 }
 
@@ -612,6 +649,20 @@ func (u *BlogPostUpsertOne) UpdateState() *BlogPostUpsertOne {
 func (u *BlogPostUpsertOne) ClearState() *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
 		s.ClearState()
+	})
+}
+
+// SetRichBody sets the "rich_body" field.
+func (u *BlogPostUpsertOne) SetRichBody(v string) *BlogPostUpsertOne {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.SetRichBody(v)
+	})
+}
+
+// UpdateRichBody sets the "rich_body" field to the value that was provided on create.
+func (u *BlogPostUpsertOne) UpdateRichBody() *BlogPostUpsertOne {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.UpdateRichBody()
 	})
 }
 
@@ -991,6 +1042,20 @@ func (u *BlogPostUpsertBulk) UpdateState() *BlogPostUpsertBulk {
 func (u *BlogPostUpsertBulk) ClearState() *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
 		s.ClearState()
+	})
+}
+
+// SetRichBody sets the "rich_body" field.
+func (u *BlogPostUpsertBulk) SetRichBody(v string) *BlogPostUpsertBulk {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.SetRichBody(v)
+	})
+}
+
+// UpdateRichBody sets the "rich_body" field to the value that was provided on create.
+func (u *BlogPostUpsertBulk) UpdateRichBody() *BlogPostUpsertBulk {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.UpdateRichBody()
 	})
 }
 

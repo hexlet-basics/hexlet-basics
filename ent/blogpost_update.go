@@ -128,6 +128,20 @@ func (_u *BlogPostUpdate) ClearState() *BlogPostUpdate {
 	return _u
 }
 
+// SetRichBody sets the "rich_body" field.
+func (_u *BlogPostUpdate) SetRichBody(v string) *BlogPostUpdate {
+	_u.mutation.SetRichBody(v)
+	return _u
+}
+
+// SetNillableRichBody sets the "rich_body" field if the given value is not nil.
+func (_u *BlogPostUpdate) SetNillableRichBody(v *string) *BlogPostUpdate {
+	if v != nil {
+		_u.SetRichBody(*v)
+	}
+	return _u
+}
+
 // SetCreatorID sets the "creator_id" field.
 func (_u *BlogPostUpdate) SetCreatorID(v int) *BlogPostUpdate {
 	_u.mutation.SetCreatorID(v)
@@ -282,6 +296,9 @@ func (_u *BlogPostUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(blogpost.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.RichBody(); ok {
+		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.LanguageID(); ok {
 		_spec.SetField(blogpost.FieldLanguageID, field.TypeInt, value)
@@ -444,6 +461,20 @@ func (_u *BlogPostUpdateOne) SetNillableState(v *string) *BlogPostUpdateOne {
 // ClearState clears the value of the "state" field.
 func (_u *BlogPostUpdateOne) ClearState() *BlogPostUpdateOne {
 	_u.mutation.ClearState()
+	return _u
+}
+
+// SetRichBody sets the "rich_body" field.
+func (_u *BlogPostUpdateOne) SetRichBody(v string) *BlogPostUpdateOne {
+	_u.mutation.SetRichBody(v)
+	return _u
+}
+
+// SetNillableRichBody sets the "rich_body" field if the given value is not nil.
+func (_u *BlogPostUpdateOne) SetNillableRichBody(v *string) *BlogPostUpdateOne {
+	if v != nil {
+		_u.SetRichBody(*v)
+	}
 	return _u
 }
 
@@ -631,6 +662,9 @@ func (_u *BlogPostUpdateOne) sqlSave(ctx context.Context) (_node *BlogPost, err 
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(blogpost.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.RichBody(); ok {
+		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.LanguageID(); ok {
 		_spec.SetField(blogpost.FieldLanguageID, field.TypeInt, value)

@@ -3777,7 +3777,7 @@ components:
           nullable: true
         richBody:
           type: string
-          description: Markdown/rich source; `richBodyHtml` is derived on read.
+          description: Trusted editor HTML, stored and returned without sanitization.
         coverAttachmentId:
           type: integer
           format: int32

@@ -80,6 +80,11 @@ func State(v string) predicate.BlogPost {
 	return predicate.BlogPost(sql.FieldEQ(FieldState, v))
 }
 
+// RichBody applies equality check predicate on the "rich_body" field. It's identical to RichBodyEQ.
+func RichBody(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEQ(FieldRichBody, v))
+}
+
 // CreatorID applies equality check predicate on the "creator_id" field. It's identical to CreatorIDEQ.
 func CreatorID(v int) predicate.BlogPost {
 	return predicate.BlogPost(sql.FieldEQ(FieldCreatorID, v))
@@ -473,6 +478,71 @@ func StateEqualFold(v string) predicate.BlogPost {
 // StateContainsFold applies the ContainsFold predicate on the "state" field.
 func StateContainsFold(v string) predicate.BlogPost {
 	return predicate.BlogPost(sql.FieldContainsFold(FieldState, v))
+}
+
+// RichBodyEQ applies the EQ predicate on the "rich_body" field.
+func RichBodyEQ(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEQ(FieldRichBody, v))
+}
+
+// RichBodyNEQ applies the NEQ predicate on the "rich_body" field.
+func RichBodyNEQ(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNEQ(FieldRichBody, v))
+}
+
+// RichBodyIn applies the In predicate on the "rich_body" field.
+func RichBodyIn(vs ...string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldIn(FieldRichBody, vs...))
+}
+
+// RichBodyNotIn applies the NotIn predicate on the "rich_body" field.
+func RichBodyNotIn(vs ...string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNotIn(FieldRichBody, vs...))
+}
+
+// RichBodyGT applies the GT predicate on the "rich_body" field.
+func RichBodyGT(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldGT(FieldRichBody, v))
+}
+
+// RichBodyGTE applies the GTE predicate on the "rich_body" field.
+func RichBodyGTE(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldGTE(FieldRichBody, v))
+}
+
+// RichBodyLT applies the LT predicate on the "rich_body" field.
+func RichBodyLT(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldLT(FieldRichBody, v))
+}
+
+// RichBodyLTE applies the LTE predicate on the "rich_body" field.
+func RichBodyLTE(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldLTE(FieldRichBody, v))
+}
+
+// RichBodyContains applies the Contains predicate on the "rich_body" field.
+func RichBodyContains(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldContains(FieldRichBody, v))
+}
+
+// RichBodyHasPrefix applies the HasPrefix predicate on the "rich_body" field.
+func RichBodyHasPrefix(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldHasPrefix(FieldRichBody, v))
+}
+
+// RichBodyHasSuffix applies the HasSuffix predicate on the "rich_body" field.
+func RichBodyHasSuffix(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldHasSuffix(FieldRichBody, v))
+}
+
+// RichBodyEqualFold applies the EqualFold predicate on the "rich_body" field.
+func RichBodyEqualFold(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEqualFold(FieldRichBody, v))
+}
+
+// RichBodyContainsFold applies the ContainsFold predicate on the "rich_body" field.
+func RichBodyContainsFold(v string) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldContainsFold(FieldRichBody, v))
 }
 
 // CreatorIDEQ applies the EQ predicate on the "creator_id" field.

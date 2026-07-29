@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hexletbasics/ent/actiontextrichtext"
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/activestorageblob"
 	"hexletbasics/ent/attachment"
@@ -51,7 +50,6 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeActionTextRichText        = "ActionTextRichText"
 	TypeActiveStorageAttachment   = "ActiveStorageAttachment"
 	TypeActiveStorageBlob         = "ActiveStorageBlob"
 	TypeAttachment                = "Attachment"
@@ -79,552 +77,6 @@ const (
 	TypeStaffRolePermission       = "StaffRolePermission"
 	TypeUser                      = "User"
 )
-
-// ActionTextRichTextMutation represents an operation that mutates the ActionTextRichText nodes in the graph.
-type ActionTextRichTextMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *int
-	name          *string
-	record_id     *int
-	addrecord_id  *int
-	record_type   *string
-	body          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*ActionTextRichText, error)
-	predicates    []predicate.ActionTextRichText
-}
-
-var _ ent.Mutation = (*ActionTextRichTextMutation)(nil)
-
-// actiontextrichtextOption allows management of the mutation configuration using functional options.
-type actiontextrichtextOption func(*ActionTextRichTextMutation)
-
-// newActionTextRichTextMutation creates new mutation for the ActionTextRichText entity.
-func newActionTextRichTextMutation(c config, op Op, opts ...actiontextrichtextOption) *ActionTextRichTextMutation {
-	m := &ActionTextRichTextMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeActionTextRichText,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withActionTextRichTextID sets the ID field of the mutation.
-func withActionTextRichTextID(id int) actiontextrichtextOption {
-	return func(m *ActionTextRichTextMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ActionTextRichText
-		)
-		m.oldValue = func(ctx context.Context) (*ActionTextRichText, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ActionTextRichText.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withActionTextRichText sets the old ActionTextRichText of the mutation.
-func withActionTextRichText(node *ActionTextRichText) actiontextrichtextOption {
-	return func(m *ActionTextRichTextMutation) {
-		m.oldValue = func(context.Context) (*ActionTextRichText, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ActionTextRichTextMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ActionTextRichTextMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ActionTextRichTextMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ActionTextRichTextMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ActionTextRichText.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *ActionTextRichTextMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *ActionTextRichTextMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the ActionTextRichText entity.
-// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionTextRichTextMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *ActionTextRichTextMutation) ResetName() {
-	m.name = nil
-}
-
-// SetRecordID sets the "record_id" field.
-func (m *ActionTextRichTextMutation) SetRecordID(i int) {
-	m.record_id = &i
-	m.addrecord_id = nil
-}
-
-// RecordID returns the value of the "record_id" field in the mutation.
-func (m *ActionTextRichTextMutation) RecordID() (r int, exists bool) {
-	v := m.record_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRecordID returns the old "record_id" field's value of the ActionTextRichText entity.
-// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionTextRichTextMutation) OldRecordID(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRecordID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRecordID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRecordID: %w", err)
-	}
-	return oldValue.RecordID, nil
-}
-
-// AddRecordID adds i to the "record_id" field.
-func (m *ActionTextRichTextMutation) AddRecordID(i int) {
-	if m.addrecord_id != nil {
-		*m.addrecord_id += i
-	} else {
-		m.addrecord_id = &i
-	}
-}
-
-// AddedRecordID returns the value that was added to the "record_id" field in this mutation.
-func (m *ActionTextRichTextMutation) AddedRecordID() (r int, exists bool) {
-	v := m.addrecord_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetRecordID resets all changes to the "record_id" field.
-func (m *ActionTextRichTextMutation) ResetRecordID() {
-	m.record_id = nil
-	m.addrecord_id = nil
-}
-
-// SetRecordType sets the "record_type" field.
-func (m *ActionTextRichTextMutation) SetRecordType(s string) {
-	m.record_type = &s
-}
-
-// RecordType returns the value of the "record_type" field in the mutation.
-func (m *ActionTextRichTextMutation) RecordType() (r string, exists bool) {
-	v := m.record_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRecordType returns the old "record_type" field's value of the ActionTextRichText entity.
-// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionTextRichTextMutation) OldRecordType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRecordType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRecordType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRecordType: %w", err)
-	}
-	return oldValue.RecordType, nil
-}
-
-// ResetRecordType resets all changes to the "record_type" field.
-func (m *ActionTextRichTextMutation) ResetRecordType() {
-	m.record_type = nil
-}
-
-// SetBody sets the "body" field.
-func (m *ActionTextRichTextMutation) SetBody(s string) {
-	m.body = &s
-}
-
-// Body returns the value of the "body" field in the mutation.
-func (m *ActionTextRichTextMutation) Body() (r string, exists bool) {
-	v := m.body
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBody returns the old "body" field's value of the ActionTextRichText entity.
-// If the ActionTextRichText object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ActionTextRichTextMutation) OldBody(ctx context.Context) (v *string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBody is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBody requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBody: %w", err)
-	}
-	return oldValue.Body, nil
-}
-
-// ClearBody clears the value of the "body" field.
-func (m *ActionTextRichTextMutation) ClearBody() {
-	m.body = nil
-	m.clearedFields[actiontextrichtext.FieldBody] = struct{}{}
-}
-
-// BodyCleared returns if the "body" field was cleared in this mutation.
-func (m *ActionTextRichTextMutation) BodyCleared() bool {
-	_, ok := m.clearedFields[actiontextrichtext.FieldBody]
-	return ok
-}
-
-// ResetBody resets all changes to the "body" field.
-func (m *ActionTextRichTextMutation) ResetBody() {
-	m.body = nil
-	delete(m.clearedFields, actiontextrichtext.FieldBody)
-}
-
-// Where appends a list predicates to the ActionTextRichTextMutation builder.
-func (m *ActionTextRichTextMutation) Where(ps ...predicate.ActionTextRichText) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ActionTextRichTextMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ActionTextRichTextMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ActionTextRichText, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ActionTextRichTextMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ActionTextRichTextMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ActionTextRichText).
-func (m *ActionTextRichTextMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ActionTextRichTextMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.name != nil {
-		fields = append(fields, actiontextrichtext.FieldName)
-	}
-	if m.record_id != nil {
-		fields = append(fields, actiontextrichtext.FieldRecordID)
-	}
-	if m.record_type != nil {
-		fields = append(fields, actiontextrichtext.FieldRecordType)
-	}
-	if m.body != nil {
-		fields = append(fields, actiontextrichtext.FieldBody)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ActionTextRichTextMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case actiontextrichtext.FieldName:
-		return m.Name()
-	case actiontextrichtext.FieldRecordID:
-		return m.RecordID()
-	case actiontextrichtext.FieldRecordType:
-		return m.RecordType()
-	case actiontextrichtext.FieldBody:
-		return m.Body()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ActionTextRichTextMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case actiontextrichtext.FieldName:
-		return m.OldName(ctx)
-	case actiontextrichtext.FieldRecordID:
-		return m.OldRecordID(ctx)
-	case actiontextrichtext.FieldRecordType:
-		return m.OldRecordType(ctx)
-	case actiontextrichtext.FieldBody:
-		return m.OldBody(ctx)
-	}
-	return nil, fmt.Errorf("unknown ActionTextRichText field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ActionTextRichTextMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case actiontextrichtext.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case actiontextrichtext.FieldRecordID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRecordID(v)
-		return nil
-	case actiontextrichtext.FieldRecordType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRecordType(v)
-		return nil
-	case actiontextrichtext.FieldBody:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBody(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ActionTextRichText field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ActionTextRichTextMutation) AddedFields() []string {
-	var fields []string
-	if m.addrecord_id != nil {
-		fields = append(fields, actiontextrichtext.FieldRecordID)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ActionTextRichTextMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case actiontextrichtext.FieldRecordID:
-		return m.AddedRecordID()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ActionTextRichTextMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case actiontextrichtext.FieldRecordID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddRecordID(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ActionTextRichText numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ActionTextRichTextMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(actiontextrichtext.FieldBody) {
-		fields = append(fields, actiontextrichtext.FieldBody)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ActionTextRichTextMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ActionTextRichTextMutation) ClearField(name string) error {
-	switch name {
-	case actiontextrichtext.FieldBody:
-		m.ClearBody()
-		return nil
-	}
-	return fmt.Errorf("unknown ActionTextRichText nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ActionTextRichTextMutation) ResetField(name string) error {
-	switch name {
-	case actiontextrichtext.FieldName:
-		m.ResetName()
-		return nil
-	case actiontextrichtext.FieldRecordID:
-		m.ResetRecordID()
-		return nil
-	case actiontextrichtext.FieldRecordType:
-		m.ResetRecordType()
-		return nil
-	case actiontextrichtext.FieldBody:
-		m.ResetBody()
-		return nil
-	}
-	return fmt.Errorf("unknown ActionTextRichText field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ActionTextRichTextMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ActionTextRichTextMutation) AddedIDs(name string) []ent.Value {
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ActionTextRichTextMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ActionTextRichTextMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ActionTextRichTextMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ActionTextRichTextMutation) EdgeCleared(name string) bool {
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ActionTextRichTextMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown ActionTextRichText unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ActionTextRichTextMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown ActionTextRichText edge %s", name)
-}
 
 // ActiveStorageAttachmentMutation represents an operation that mutates the ActiveStorageAttachment nodes in the graph.
 type ActiveStorageAttachmentMutation struct {
@@ -3067,6 +2519,7 @@ type BlogPostMutation struct {
 	description                     *string
 	locale                          *string
 	state                           *string
+	rich_body                       *string
 	language_id                     *int
 	addlanguage_id                  *int
 	related_language_items_count    *int
@@ -3423,6 +2876,42 @@ func (m *BlogPostMutation) ResetState() {
 	delete(m.clearedFields, blogpost.FieldState)
 }
 
+// SetRichBody sets the "rich_body" field.
+func (m *BlogPostMutation) SetRichBody(s string) {
+	m.rich_body = &s
+}
+
+// RichBody returns the value of the "rich_body" field in the mutation.
+func (m *BlogPostMutation) RichBody() (r string, exists bool) {
+	v := m.rich_body
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRichBody returns the old "rich_body" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldRichBody(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRichBody is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRichBody requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRichBody: %w", err)
+	}
+	return oldValue.RichBody, nil
+}
+
+// ResetRichBody resets all changes to the "rich_body" field.
+func (m *BlogPostMutation) ResetRichBody() {
+	m.rich_body = nil
+}
+
 // SetCreatorID sets the "creator_id" field.
 func (m *BlogPostMutation) SetCreatorID(i int) {
 	m.creator = &i
@@ -3682,7 +3171,7 @@ func (m *BlogPostMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BlogPostMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.name != nil {
 		fields = append(fields, blogpost.FieldName)
 	}
@@ -3697,6 +3186,9 @@ func (m *BlogPostMutation) Fields() []string {
 	}
 	if m.state != nil {
 		fields = append(fields, blogpost.FieldState)
+	}
+	if m.rich_body != nil {
+		fields = append(fields, blogpost.FieldRichBody)
 	}
 	if m.creator != nil {
 		fields = append(fields, blogpost.FieldCreatorID)
@@ -3728,6 +3220,8 @@ func (m *BlogPostMutation) Field(name string) (ent.Value, bool) {
 		return m.Locale()
 	case blogpost.FieldState:
 		return m.State()
+	case blogpost.FieldRichBody:
+		return m.RichBody()
 	case blogpost.FieldCreatorID:
 		return m.CreatorID()
 	case blogpost.FieldLanguageID:
@@ -3755,6 +3249,8 @@ func (m *BlogPostMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldLocale(ctx)
 	case blogpost.FieldState:
 		return m.OldState(ctx)
+	case blogpost.FieldRichBody:
+		return m.OldRichBody(ctx)
 	case blogpost.FieldCreatorID:
 		return m.OldCreatorID(ctx)
 	case blogpost.FieldLanguageID:
@@ -3806,6 +3302,13 @@ func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetState(v)
+		return nil
+	case blogpost.FieldRichBody:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRichBody(v)
 		return nil
 	case blogpost.FieldCreatorID:
 		v, ok := value.(int)
@@ -3964,6 +3467,9 @@ func (m *BlogPostMutation) ResetField(name string) error {
 		return nil
 	case blogpost.FieldState:
 		m.ResetState()
+		return nil
+	case blogpost.FieldRichBody:
+		m.ResetRichBody()
 		return nil
 	case blogpost.FieldCreatorID:
 		m.ResetCreatorID()

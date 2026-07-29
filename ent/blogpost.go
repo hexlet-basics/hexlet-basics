@@ -28,6 +28,8 @@ type BlogPost struct {
 	Locale *string `json:"locale,omitempty"`
 	// State holds the value of the "state" field.
 	State *string `json:"state,omitempty"`
+	// RichBody holds the value of the "rich_body" field.
+	RichBody string `json:"rich_body,omitempty"`
 	// CreatorID holds the value of the "creator_id" field.
 	CreatorID int `json:"creator_id,omitempty"`
 	// LanguageID holds the value of the "language_id" field.
@@ -69,7 +71,7 @@ func (*BlogPost) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case blogpost.FieldID, blogpost.FieldCreatorID, blogpost.FieldLanguageID, blogpost.FieldRelatedLanguageItemsCount:
 			values[i] = new(sql.NullInt64)
-		case blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldDescription, blogpost.FieldLocale, blogpost.FieldState:
+		case blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldDescription, blogpost.FieldLocale, blogpost.FieldState, blogpost.FieldRichBody:
 			values[i] = new(sql.NullString)
 		case blogpost.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -128,6 +130,12 @@ func (_m *BlogPost) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.State = new(string)
 				*_m.State = value.String
+			}
+		case blogpost.FieldRichBody:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field rich_body", values[i])
+			} else if value.Valid {
+				_m.RichBody = value.String
 			}
 		case blogpost.FieldCreatorID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -219,6 +227,9 @@ func (_m *BlogPost) String() string {
 		builder.WriteString("state=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	builder.WriteString("rich_body=")
+	builder.WriteString(_m.RichBody)
 	builder.WriteString(", ")
 	builder.WriteString("creator_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.CreatorID))

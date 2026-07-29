@@ -666,7 +666,7 @@ type BlogPostInput struct {
 	Slug        NilString        `json:"slug"`
 	Description NilString        `json:"description"`
 	State       NilBlogPostState `json:"state"`
-	// Markdown/rich source; `richBodyHtml` is derived on read.
+	// Trusted editor HTML, stored and returned without sanitization.
 	RichBody string `json:"richBody"`
 	// Attachment id from `POST /admin/attachments`, or null to keep/clear.
 	CoverAttachmentId NilInt32 `json:"coverAttachmentId"`

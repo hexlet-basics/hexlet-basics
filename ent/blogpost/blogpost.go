@@ -22,6 +22,8 @@ const (
 	FieldLocale = "locale"
 	// FieldState holds the string denoting the state field in the database.
 	FieldState = "state"
+	// FieldRichBody holds the string denoting the rich_body field in the database.
+	FieldRichBody = "rich_body"
 	// FieldCreatorID holds the string denoting the creator_id field in the database.
 	FieldCreatorID = "creator_id"
 	// FieldLanguageID holds the string denoting the language_id field in the database.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldLocale,
 	FieldState,
+	FieldRichBody,
 	FieldCreatorID,
 	FieldLanguageID,
 	FieldRelatedLanguageItemsCount,
@@ -68,6 +71,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultRichBody holds the default value on creation for the "rich_body" field.
+	DefaultRichBody string
 	// DefaultRelatedLanguageItemsCount holds the default value on creation for the "related_language_items_count" field.
 	DefaultRelatedLanguageItemsCount int
 )
@@ -103,6 +108,11 @@ func ByLocale(opts ...sql.OrderTermOption) OrderOption {
 // ByState orders the results by the state field.
 func ByState(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldState, opts...).ToFunc()
+}
+
+// ByRichBody orders the results by the rich_body field.
+func ByRichBody(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRichBody, opts...).ToFunc()
 }
 
 // ByCreatorID orders the results by the creator_id field.

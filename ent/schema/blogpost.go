@@ -6,19 +6,11 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// BlogPost maps the legacy `blog_posts` table. The admin surface is READ-ONLY
-// for now (list/get) — the new stack will edit the rich body with the Mantine
-// editor and store plain HTML in a future phase, so no write path and no new
-// column land here yet. ent only reads, so nullable columns are mirrored with
-// Optional().Nillable() to avoid scan errors.
-//
-// The rich body and cover are NOT columns on this table: the body lives in the
-// polymorphic `action_text_rich_texts` (ActionText) and the cover in
-// ActiveStorage (`active_storage_attachments`/`active_storage_blobs`). Those are
-// read via their own schemas + explicit record_type/record_id queries in the
-// handler, since ent has no clean polymorphic edge. `related_language_items_count`
-// is a real counter column (no join needed); likes are counted from
-// `blog_post_likes`.
+// BlogPost maps the legacy `blog_posts` table plus the Go-stack `rich_body`
+// column. Blog HTML is intentionally trusted and returned as stored: the five
+// production posts are migrated by hand, so there is no ActionText compatibility
+// or synchronization layer. The cover remains in ActiveStorage and is read via
+// its explicit polymorphic attachment query.
 //
 // The table name already matches ent's default plural of `BlogPost`, so no
 // @Table annotation is needed.
@@ -33,6 +25,7 @@ func (BlogPost) Fields() []ent.Field {
 		field.String("description").Optional().Nillable(),
 		field.String("locale").Optional().Nillable(),
 		field.String("state").Optional().Nillable(),
+		field.Text("rich_body").Default(""),
 		// creator_id is NOT NULL (FK to users); the read model embeds the creator.
 		field.Int("creator_id"),
 		field.Int("language_id").Optional().Nillable(),

@@ -155,7 +155,7 @@ model BlogPostInput {
   description: string | null;
   state: BlogPostState | null;
 
-  /** Markdown/rich source; `richBodyHtml` is derived on read. */
+  /** Trusted editor HTML, stored and returned without sanitization. */
   richBody: string;
 
   /** Attachment id from `POST /admin/attachments`, or null to keep/clear. */

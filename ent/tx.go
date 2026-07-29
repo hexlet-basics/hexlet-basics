@@ -12,8 +12,6 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// ActionTextRichText is the client for interacting with the ActionTextRichText builders.
-	ActionTextRichText *ActionTextRichTextClient
 	// ActiveStorageAttachment is the client for interacting with the ActiveStorageAttachment builders.
 	ActiveStorageAttachment *ActiveStorageAttachmentClient
 	// ActiveStorageBlob is the client for interacting with the ActiveStorageBlob builders.
@@ -197,7 +195,6 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.ActionTextRichText = NewActionTextRichTextClient(tx.config)
 	tx.ActiveStorageAttachment = NewActiveStorageAttachmentClient(tx.config)
 	tx.ActiveStorageBlob = NewActiveStorageBlobClient(tx.config)
 	tx.Attachment = NewAttachmentClient(tx.config)
@@ -233,7 +230,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: ActionTextRichText.QueryXXX(), the query will be executed
+// applies a query, for example: ActiveStorageAttachment.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

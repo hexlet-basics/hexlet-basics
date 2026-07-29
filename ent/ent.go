@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hexletbasics/ent/actiontextrichtext"
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/activestorageblob"
 	"hexletbasics/ent/attachment"
@@ -99,7 +98,6 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			actiontextrichtext.Table:        actiontextrichtext.ValidColumn,
 			activestorageattachment.Table:   activestorageattachment.ValidColumn,
 			activestorageblob.Table:         activestorageblob.ValidColumn,
 			attachment.Table:                attachment.ValidColumn,

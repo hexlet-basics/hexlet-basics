@@ -116,7 +116,7 @@ export type BlogPostInput = {
   description: string | null;
   state: BlogPostState | null;
   /**
-   * Markdown/rich source; `richBodyHtml` is derived on read.
+   * Trusted editor HTML, stored and returned without sanitization.
    */
   richBody: string;
   /**
