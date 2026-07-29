@@ -11,6 +11,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/localization"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -29,16 +30,18 @@ type Server struct {
 	cfg     *config.Config
 	starter VersionBuildStarter
 	auth    *AuthHandler
+	i18n    *localization.Translator
 }
 
 // NewServer wires the handler to its dependencies.
-func NewServer(db *ent.Client, cfg *config.Config, starter VersionBuildStarter) *Server {
+func NewServer(db *ent.Client, cfg *config.Config, starter VersionBuildStarter, translator *localization.Translator) *Server {
 	return &Server{
 		db:      db,
 		conv:    &apiconv.ConverterImpl{},
 		cfg:     cfg,
 		starter: starter,
-		auth:    NewAuthHandler(db, cfg),
+		auth:    NewAuthHandler(db, cfg, translator),
+		i18n:    translator,
 	}
 }
 

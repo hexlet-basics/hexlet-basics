@@ -26,7 +26,7 @@ func testDSN() string {
 
 // TestQueueBackbone proves the river backbone end to end against the test DB:
 // a ping job is enqueued, the worker runs it, and a completion event fires.
-// It uses a real pool (not the harness's rolled-back txdb), so it cleans up the
+// It uses a real pool (not the harness's rolled-back transaction), so it cleans up the
 // river_job rows it creates.
 func TestQueueBackbone(t *testing.T) {
 	ctx := context.Background()

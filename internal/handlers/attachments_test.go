@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
 
+	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/testsupport"
@@ -31,7 +32,7 @@ var tinyPNG = []byte{
 }
 
 // newAttachmentRouter builds the real router over an in-memory blob bucket and a
-// txdb-backed ent client. The api side is a stub — these tests exercise only the
+// transaction-bound ent client. The api side is a stub — these tests exercise only the
 // multipart/blob routes, which live outside the generated server.
 func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Helper()
@@ -39,12 +40,13 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
-	att := handlers.NewAttachmentHandler(assets)
-	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "")
+	translator := testsupport.NewTranslator(t)
+	att := handlers.NewAttachmentHandler(assets, translator)
+	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "", translator)
 	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	})
-	return handlers.NewRouter(apiStub, att, gh)
+	return translator.Middleware(handlers.NewRouter(apiStub, att, gh))
 }
 
 // uploadRequest builds a multipart POST with one file part whose declared
@@ -107,6 +109,20 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	got, err := io.ReadAll(dl.Body)
 	require.NoError(t, err)
 	assert.Equal(t, tinyPNG, got)
+}
+
+func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
+	router := newAttachmentRouter(t)
+	req := httptest.NewRequest(http.MethodPost, "/admin/attachments", nil)
+	req.Header.Set("Accept-Language", "es")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+	var body api.ValidationError
+	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
+	assert.Equal(t, []string{"Se requiere un archivo"}, body.Errors["file"])
 }
 
 func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {

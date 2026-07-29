@@ -9,9 +9,10 @@ import (
 	"github.com/ogen-go/ogen/ogenerrors"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/localization"
 )
 
-// APIErrorHandler is the central ogen ErrorHandler. It maps ent's error
+// NewAPIErrorHandler builds the central ogen ErrorHandler. It maps ent's error
 // taxonomy to HTTP status codes so every handler can return the raw ent error
 // (`return nil, err`) instead of assembling a typed error DTO per operation.
 //
@@ -27,22 +28,44 @@ import (
 //
 // Wired via api.WithErrorHandler in the DI container and reused by the test
 // harness, so tests exercise the exact same mapping the server runs.
-func APIErrorHandler(_ context.Context, w http.ResponseWriter, _ *http.Request, err error) {
-	status := http.StatusInternalServerError
-	var ogenErr ogenerrors.Error
-	switch {
-	case ent.IsNotFound(err):
-		status = http.StatusNotFound
-	case ent.IsConstraintError(err):
-		status = http.StatusConflict
-	case errors.As(err, &ogenErr):
-		status = ogenErr.Code()
-	}
+func NewAPIErrorHandler(translator *localization.Translator) ogenerrors.ErrorHandler {
+	return func(ctx context.Context, w http.ResponseWriter, _ *http.Request, err error) {
+		status := http.StatusInternalServerError
+		var ogenErr ogenerrors.Error
+		switch {
+		case ent.IsNotFound(err):
+			status = http.StatusNotFound
+		case ent.IsConstraintError(err):
+			status = http.StatusConflict
+		case errors.As(err, &ogenErr):
+			status = ogenErr.Code()
+		}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(status)
-	// The status code carries the meaning; the body is a minimal, uniform
-	// envelope. ogen's generated client treats these undeclared statuses as
-	// errors, which the handler tests assert on via the recorded status code.
-	_, _ = fmt.Fprintf(w, `{"error":%q}`, http.StatusText(status))
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(status)
+		// The status code carries the meaning; the body is a minimal, uniform
+		// envelope. ogen's generated client treats these undeclared statuses as
+		// errors, which the handler tests assert on via the recorded status code.
+		_, _ = fmt.Fprintf(w, `{"error":%q}`, translator.StatusText(ctx, status))
+	}
+}
+
+// NewNotFoundHandler localizes requests that do not match an ogen route.
+func NewNotFoundHandler(translator *localization.Translator) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, translator.StatusText(r.Context(), http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+// NewMethodNotAllowedHandler preserves ogen's Allow/OPTIONS behavior while
+// localizing the human-readable 405 body.
+func NewMethodNotAllowedHandler(translator *localization.Translator) func(http.ResponseWriter, *http.Request, string) {
+	return func(w http.ResponseWriter, r *http.Request, allowed string) {
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		w.Header().Set("Allow", allowed)
+		http.Error(w, translator.StatusText(r.Context(), http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
 }

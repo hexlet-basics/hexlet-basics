@@ -20,6 +20,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/localization"
 )
 
 const (
@@ -38,10 +39,11 @@ type AuthHandler struct {
 	conv       apiconv.Converter
 	jwt        *token.Service
 	directAuth http.Handler
+	i18n       *localization.Translator
 }
 
 // NewAuthHandler builds the auth implementation used by the ogen handlers.
-func NewAuthHandler(db *ent.Client, cfg *config.Config) *AuthHandler {
+func NewAuthHandler(db *ent.Client, cfg *config.Config, translator *localization.Translator) *AuthHandler {
 	tokenOpts := token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
 			return cfg.JWTSecret, nil
@@ -78,6 +80,7 @@ func NewAuthHandler(db *ent.Client, cfg *config.Config) *AuthHandler {
 		conv:       &apiconv.ConverterImpl{},
 		jwt:        token.NewService(tokenOpts),
 		directAuth: directAuth,
+		i18n:       translator,
 	}
 }
 
@@ -91,7 +94,7 @@ func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) 
 	rec := httptest.NewRecorder()
 	h.directAuth.ServeHTTP(rec, authReq)
 	if rec.Code != http.StatusOK {
-		return validationError("password", "Wrong email or password"), nil
+		return validationError("password", h.i18n.Text(ctx, localization.WrongCredentials)), nil
 	}
 
 	u, err := h.db.User.Query().Where(user.Email(req.Email)).Only(ctx)
@@ -110,7 +113,7 @@ func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) 
 func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api.CreateUserRes, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return validationError("password", "Could not process the password"), nil
+		return validationError("password", h.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
 	}
 	var firstName *string
 	if value, ok := req.FirstName.Get(); ok {
@@ -123,7 +126,10 @@ func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api
 		SetNillableFirstName(firstName).
 		Save(ctx)
 	if err != nil {
-		return validationError("email", "This email is already taken"), nil
+		if ent.IsConstraintError(err) {
+			return validationError("email", h.i18n.Text(ctx, localization.EmailTaken)), nil
+		}
+		return nil, err
 	}
 
 	cookie, err := h.issueCookie(u)

@@ -4,7 +4,6 @@ go 1.26.4
 
 require (
 	entgo.io/ent v0.14.6
-	github.com/DATA-DOG/go-txdb v0.2.1
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
@@ -16,6 +15,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.12.3
 	github.com/lmittmann/tint v1.2.0
+	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	github.com/ogen-go/ogen v1.23.0
 	github.com/oklog/ulid/v2 v2.1.2
 	github.com/riverqueue/river v0.41.0
@@ -33,6 +33,7 @@ require (
 	gocloud.dev v0.46.0
 	golang.org/x/crypto v0.54.0
 	golang.org/x/net v0.57.0
+	golang.org/x/text v0.40.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -152,7 +153,6 @@ require (
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.40.0 // indirect
 	golang.org/x/tools v0.48.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	google.golang.org/api v0.290.0 // indirect

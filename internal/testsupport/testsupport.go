@@ -1,6 +1,6 @@
 // Package testsupport provides Rails-style integration-test plumbing: each test
-// runs against a real Postgres transaction that is rolled back on cleanup
-// (go-txdb), over a baseline prepared once by `make test-prepare` — the atlas
+// runs against a real Postgres transaction that is rolled back on cleanup,
+// over a baseline prepared once by `make test-prepare` — the atlas
 // migrations plus the fixtures/ YAML loaded by the testfixtures CLI. Handlers
 // hit a real database; every test's writes are discarded on rollback, so the
 // shared baseline is never mutated and nothing is left behind.
@@ -14,17 +14,11 @@ package testsupport
 
 import (
 	"context"
-	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"sync"
 	"testing"
 
-	"entgo.io/ent/dialect"
-	entsql "entgo.io/ent/dialect/sql"
-	txdb "github.com/DATA-DOG/go-txdb"
-	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/riverqueue/river"
 
 	"hexletbasics/ent"
@@ -32,6 +26,8 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/localization"
+	"hexletbasics/internal/store"
 )
 
 // testConfig gives handlers fixed public hosts so URL-building assertions are
@@ -43,8 +39,6 @@ var testConfig = &config.Config{
 
 const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
 
-var registerOnce sync.Once
-
 func testDSN() string {
 	if v := os.Getenv("TEST_DATABASE_URL"); v != "" {
 		return v
@@ -52,32 +46,43 @@ func testDSN() string {
 	return defaultTestDSN
 }
 
-// NewClient opens an ent client bound to a fresh go-txdb transaction that is
-// rolled back when the test finishes. Fixtures are not loaded here: they are the
-// pre-loaded baseline from `make test-prepare`, which every test sees and whose
-// own writes vanish on rollback. Run `make test-prepare` before `go test`.
+// NewClient opens an ent client bound to a fresh sql.Tx that is rolled back when
+// the test finishes, matching Rails' transactional test lifecycle. Fixtures are
+// the pre-loaded baseline from `make test-prepare`; every test sees them and its
+// own writes vanish on rollback.
 func NewClient(t *testing.T) *ent.Client {
 	t.Helper()
 
-	registerOnce.Do(func() {
-		txdb.Register("txdb", "pgx", testDSN())
-	})
-
-	db, err := sql.Open("txdb", t.Name())
+	db, err := store.NewDB(testDSN())
 	if err != nil {
-		t.Fatalf("open txdb: %v", err)
+		t.Fatalf("open test database: %v", err)
 	}
-	t.Cleanup(func() { _ = db.Close() }) // rolls the transaction back
+	t.Cleanup(func() { _ = db.Close() })
 
-	drv := entsql.OpenDB(dialect.Postgres, db)
-	return ent.NewClient(ent.Driver(drv))
+	tx, err := db.BeginTx(t.Context(), nil)
+	if err != nil {
+		t.Fatalf("begin test transaction: %v", err)
+	}
+	t.Cleanup(func() { _ = tx.Rollback() })
+
+	return store.NewTxClient(tx)
+}
+
+// NewTranslator loads the same embedded backend catalogs as production.
+func NewTranslator(t testing.TB) *localization.Translator {
+	t.Helper()
+	translator, err := localization.New()
+	if err != nil {
+		t.Fatalf("new translator: %v", err)
+	}
+	return translator
 }
 
 // Harness bundles the generated API client, wired to an in-process server, with
-// the ent client behind it — both over the same rolled-back txdb transaction, so
+// the ent client behind it — both over the same rolled-back SQL transaction, so
 // the client's writes are visible to DB assertions and discarded together.
 //
-// One-transaction caveat: the whole test shares a single txdb transaction with no
+// One-transaction caveat: the whole test shares a single transaction with no
 // per-request savepoint, so a write that violates a DB constraint aborts it
 // (Postgres 25P02). After an intentional conflict you therefore cannot query the
 // DB, nor issue a further "then a valid write" call — assert the conflict's status
@@ -99,7 +104,7 @@ type Harness struct {
 // assert the code here instead of destructuring a typed error member.
 func (h *Harness) LastStatus() int { return h.doer.status }
 
-// NewHarness builds the in-process test stack: an ent client over a fresh txdb
+// NewHarness builds the in-process test stack: an ent client over a fresh SQL
 // transaction, the handlers.Server, the ogen api.Server with the production
 // ErrorHandler, and a generated client whose transport dispatches straight into
 // that server's ServeHTTP — so tests run the full request pipeline without a
@@ -110,12 +115,18 @@ func NewHarness(t *testing.T) *Harness {
 	db := NewClient(t)
 
 	enqueuer := &RecordingEnqueuer{DB: db}
-	srv, err := api.NewServer(handlers.NewServer(db, testConfig, enqueuer), api.WithErrorHandler(handlers.APIErrorHandler))
+	translator := NewTranslator(t)
+	srv, err := api.NewServer(
+		handlers.NewServer(db, testConfig, enqueuer, translator),
+		api.WithErrorHandler(handlers.NewAPIErrorHandler(translator)),
+		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
+		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+	)
 	if err != nil {
 		t.Fatalf("new api server: %v", err)
 	}
 
-	doer := &inProcessDoer{server: srv}
+	doer := &inProcessDoer{server: translator.Middleware(srv)}
 	client, err := api.NewClient("http://test", api.WithClient(doer))
 	if err != nil {
 		t.Fatalf("new api client: %v", err)
@@ -150,7 +161,7 @@ func (e *RecordingEnqueuer) Start(ctx context.Context, courseID int) (*ent.Cours
 // straight through the server's ServeHTTP against an in-memory recorder — no TCP
 // listener, no port. It records the last status for LastStatus().
 type inProcessDoer struct {
-	server *api.Server
+	server http.Handler
 	status int
 }
 

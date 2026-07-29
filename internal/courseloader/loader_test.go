@@ -48,7 +48,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	ctx := context.Background()
 
 	// Arrange: a course with a freshly-created version, the state the loader
-	// requires. (Its own writes roll back with the txdb transaction.)
+	// requires. (Its own writes roll back with the test transaction.)
 	course := db.Course.Create().SetSlug("loader-test-lang").SetName("Loader Test").SaveX(ctx)
 	version := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 

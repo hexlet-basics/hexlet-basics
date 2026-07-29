@@ -21,6 +21,11 @@ import (
 
 const webhookSecret = "test-secret"
 
+func newWebhookHandler(t *testing.T, enq *testsupport.RecordingEnqueuer, secret string) *handlers.GitHubWebhookHandler {
+	t.Helper()
+	return handlers.NewGitHubWebhookHandler(enq.DB, enq, secret, testsupport.NewTranslator(t))
+}
+
 // signedRequest builds a POST /webhooks/github request for the given event and
 // JSON payload, signed with webhookSecret exactly as GitHub would.
 func signedRequest(t *testing.T, event string, payload any) *http.Request {
@@ -51,7 +56,7 @@ func TestGitHubWebhookTriggersBuild(t *testing.T) {
 	db := testsupport.NewClient(t)
 	ctx := context.Background()
 	enq := &testsupport.RecordingEnqueuer{DB: db}
-	h := handlers.NewGitHubWebhookHandler(db, enq, webhookSecret)
+	h := newWebhookHandler(t, enq, webhookSecret)
 
 	rec := httptest.NewRecorder()
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby")))
@@ -72,7 +77,7 @@ func TestGitHubWebhookTriggersBuild(t *testing.T) {
 func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 	db := testsupport.NewClient(t)
 	enq := &testsupport.RecordingEnqueuer{DB: db}
-	h := handlers.NewGitHubWebhookHandler(db, enq, webhookSecret)
+	h := newWebhookHandler(t, enq, webhookSecret)
 
 	req := signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby"))
 	req.Header.Set("X-Hub-Signature-256", "sha256=deadbeef")
@@ -87,7 +92,7 @@ func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
 	db := testsupport.NewClient(t)
 	enq := &testsupport.RecordingEnqueuer{DB: db}
-	h := handlers.NewGitHubWebhookHandler(db, enq, "")
+	h := newWebhookHandler(t, enq, "")
 
 	rec := httptest.NewRecorder()
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby")))
@@ -99,7 +104,7 @@ func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
 func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 	db := testsupport.NewClient(t)
 	enq := &testsupport.RecordingEnqueuer{DB: db}
-	h := handlers.NewGitHubWebhookHandler(db, enq, webhookSecret)
+	h := newWebhookHandler(t, enq, webhookSecret)
 
 	payload := workflowRunSuccess("exercises-ruby")
 	payload["workflow_run"].(map[string]any)["conclusion"] = "failure"
@@ -114,7 +119,7 @@ func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 func TestGitHubWebhookIgnoresUnknownCourse(t *testing.T) {
 	db := testsupport.NewClient(t)
 	enq := &testsupport.RecordingEnqueuer{DB: db}
-	h := handlers.NewGitHubWebhookHandler(db, enq, webhookSecret)
+	h := newWebhookHandler(t, enq, webhookSecret)
 
 	rec := httptest.NewRecorder()
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-nonexistent-course")))

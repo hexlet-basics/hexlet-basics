@@ -38,9 +38,16 @@ with its own README and Makefile.
    ```
 
    Postgres is published on port `54330` so it does not conflict with a local
-   database on `5432`. The server reads `DATABASE_URL` / `ADDR` from the
-   environment but defaults to this local DB and `:3001`, so no config is needed
-   for local dev.
+   database on `5432`. Startup creates separate development and test databases.
+
+   Prepare both schemas and the test fixture baseline:
+
+   ```bash
+   make db-prepare
+   ```
+
+   The server reads `DATABASE_URL` / `ADDR` from the environment but defaults
+   to the local development DB and `:3001`.
 
 3. Run the stack (Go API on `:3001` with live-reload + Vite frontend):
 
@@ -71,6 +78,8 @@ make lint-fix      # auto-fix Go formatting and lint findings
 
 make test-prepare  # apply atlas migrations + load fixtures/ into the test DB
 make test          # go test ./...
+make dev-prepare   # create/migrate dev DB without replacing development data
+make db-prepare    # prepare both dev and test DBs
 ```
 
 Run `make test-prepare` once before `make test` (CI does the same). The schema

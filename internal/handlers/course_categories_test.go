@@ -129,7 +129,7 @@ func TestAdminCreateCourseCategoryDuplicateName(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	// No DB assertion after the conflict on purpose: the failed INSERT aborts the
-	// surrounding txdb transaction (Postgres 25P02), so any further query in it
+	// surrounding test transaction (Postgres 25P02), so any further query in it
 	// errors. In production each request inserts in autocommit, so the failure is
 	// isolated and no row persists — the 409 is the behavioural proof of that.
 }

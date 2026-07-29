@@ -86,7 +86,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 - `make setup` — `go mod download` + `pnpm install` (root package.json is shared
   by the frontend and the api-spec tooling).
-- `make services-start` / `make services-stop` — local Postgres in Docker.
+- `make services-start` / `make services-stop` — local Postgres in Docker;
+  startup idempotently creates both development and test databases.
 - `make dev` — run API (air live-reload, `:3001`) + Vite frontend together.
 - `make dev-api` — Go API only (air). `make dev-web` — Vite only.
 - `make dev-spec` — watch TypeSpec and re-emit OpenAPI on change.
@@ -115,14 +116,17 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - `make test-prepare` — ready the test DB **before** `make test`: applies atlas
   migrations (`test-migrate`) then loads the committed `fixtures/` snapshot
   (`test-load-fixtures` via the testfixtures CLI). CI does exactly this.
+- `make dev-prepare` prepares the development DB without replacing its data;
+  `make db-prepare` prepares both development and test databases.
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **Fixtures** in `fixtures/` are the starting data (converted from the legacy
   Rails set via `make fixtures-import`, which borrows the Rails runtime). Their
   ids are legacy crc32 values, so **assert on business facts (slug, order),
   never on raw ids** — see `courses_test.go` for the pattern.
-- Tests use `stretchr/testify` (`require`/`assert`); handler tests build a
-  `Server` directly via the `newServer(t)` helper in `testsupport`.
+- Tests use `stretchr/testify` (`require`/`assert`); each handler test gets an
+  explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
+  tests, and builds a `Server` through `testsupport`.
 
 ## Build
 

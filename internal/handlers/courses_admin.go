@@ -8,6 +8,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/inputconv"
+	"hexletbasics/internal/localization"
 )
 
 // Admin course endpoints (legacy `/admin/languages`). The API embeds the
@@ -77,7 +78,7 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminCreateCourseVersionParams) (api.AdminCreateCourseVersionRes, error) {
 	c, err := s.db.Course.Get(ctx, int(params.ID))
 	if ent.IsNotFound(err) {
-		return &api.NotFoundError{Message: "course not found"}, nil
+		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.CourseNotFound)}, nil
 	}
 	if err != nil {
 		return nil, err

@@ -9,6 +9,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/localization"
 )
 
 // multipartOverheadBytes leaves room for the multipart envelope while the
@@ -23,11 +24,12 @@ const multipartOverheadBytes = 1 << 20
 // assetstore.Store rather than in this transport adapter.
 type AttachmentHandler struct {
 	assets *assetstore.Store
+	i18n   *localization.Translator
 }
 
 // NewAttachmentHandler wires the HTTP adapter to the shared asset store.
-func NewAttachmentHandler(assets *assetstore.Store) *AttachmentHandler {
-	return &AttachmentHandler{assets: assets}
+func NewAttachmentHandler(assets *assetstore.Store, translator *localization.Translator) *AttachmentHandler {
+	return &AttachmentHandler{assets: assets, i18n: translator}
 }
 
 // attachmentResponse mirrors the OpenAPI `Attachment` schema exactly (camelCase,
@@ -56,10 +58,10 @@ func (h *AttachmentHandler) Upload(w http.ResponseWriter, r *http.Request) {
 		// A body over the limit surfaces here as *http.MaxBytesError.
 		var tooBig *http.MaxBytesError
 		if errors.As(err, &tooBig) {
-			writeValidationError(w, "file", "file is too large")
+			writeValidationError(w, "file", h.i18n.Text(ctx, localization.FileTooLarge))
 			return
 		}
-		writeValidationError(w, "file", "a file part is required")
+		writeValidationError(w, "file", h.i18n.Text(ctx, localization.FileRequired))
 		return
 	}
 	defer func() { _ = file.Close() }()
@@ -69,15 +71,15 @@ func (h *AttachmentHandler) Upload(w http.ResponseWriter, r *http.Request) {
 		Body:     file,
 	})
 	if errors.Is(err, assetstore.ErrUnsupportedMediaType) {
-		writeValidationError(w, "file", "unsupported file type")
+		writeValidationError(w, "file", h.i18n.Text(ctx, localization.UnsupportedFileType))
 		return
 	}
 	if errors.Is(err, assetstore.ErrTooLarge) {
-		writeValidationError(w, "file", "file is too large")
+		writeValidationError(w, "file", h.i18n.Text(ctx, localization.FileTooLarge))
 		return
 	}
 	if err != nil {
-		http.Error(w, "failed to store file", http.StatusInternalServerError)
+		http.Error(w, h.i18n.Text(ctx, localization.StoreFileFailed), http.StatusInternalServerError)
 		return
 	}
 
@@ -100,10 +102,10 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	reader, err := h.assets.Open(ctx, key)
 	if err != nil {
 		if errors.Is(err, assetstore.ErrNotFound) {
-			http.NotFound(w, r)
+			http.Error(w, h.i18n.StatusText(ctx, http.StatusNotFound), http.StatusNotFound)
 			return
 		}
-		http.Error(w, "failed to read file", http.StatusInternalServerError)
+		http.Error(w, h.i18n.Text(ctx, localization.ReadFileFailed), http.StatusInternalServerError)
 		return
 	}
 	defer func() { _ = reader.Close() }()

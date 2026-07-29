@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -35,7 +36,12 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 
 	translator, err := localization.New()
 	require.NoError(t, err)
-	server, err := api.NewServer(handler, api.WithErrorHandler(NewAPIErrorHandler(translator)))
+	server, err := api.NewServer(
+		handler,
+		api.WithErrorHandler(NewAPIErrorHandler(translator)),
+		api.WithNotFound(NewNotFoundHandler(translator)),
+		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(translator)),
+	)
 	require.NoError(t, err)
 	return translator.Middleware(server)
 }
@@ -77,6 +83,50 @@ func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 	}
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
 	assert.Equal(t, "Некорректный запрос", body.Error)
+}
+
+func TestRouterErrorsUseRequestLocale(t *testing.T) {
+	router := newPaginationRouter(t, &paginationContractHandler{})
+	tests := []struct {
+		name       string
+		method     string
+		path       string
+		status     int
+		body       string
+		allowValue string
+	}{
+		{
+			name:   "not found",
+			method: http.MethodGet,
+			path:   "/missing",
+			status: http.StatusNotFound,
+			body:   "No encontrado",
+		},
+		{
+			name:       "method not allowed",
+			method:     http.MethodDelete,
+			path:       "/reviews",
+			status:     http.StatusMethodNotAllowed,
+			body:       "Método no permitido",
+			allowValue: "GET",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(tt.method, tt.path, nil)
+			req.Header.Set("Accept-Language", "es")
+			rec := httptest.NewRecorder()
+
+			router.ServeHTTP(rec, req)
+
+			assert.Equal(t, tt.status, rec.Code)
+			assert.Equal(t, tt.body, strings.TrimSpace(rec.Body.String()))
+			if tt.allowValue != "" {
+				assert.Contains(t, rec.Header().Get("Allow"), tt.allowValue)
+			}
+		})
+	}
 }
 
 func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {

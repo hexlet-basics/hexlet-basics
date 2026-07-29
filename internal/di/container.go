@@ -20,6 +20,7 @@ import (
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/localization"
 	"hexletbasics/internal/logging"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/versionbuilds"
@@ -55,6 +56,10 @@ func New() *do.RootScope {
 		return logging.New(slog.LevelInfo), nil
 	})
 
+	do.Provide(injector, func(do.Injector) (*localization.Translator, error) {
+		return localization.New()
+	})
+
 	do.Provide(injector, func(i do.Injector) (*sql.DB, error) {
 		return store.NewDB(do.MustInvoke[*config.Config](i).DatabaseURL)
 	})
@@ -68,6 +73,7 @@ func New() *do.RootScope {
 			do.MustInvoke[*ent.Client](i),
 			do.MustInvoke[*config.Config](i),
 			do.MustInvoke[*versionbuilds.Starter](i),
+			do.MustInvoke[*localization.Translator](i),
 		), nil
 	})
 
@@ -123,13 +129,16 @@ func New() *do.RootScope {
 		// (404/409), so handlers return raw ent errors instead of typed DTOs.
 		return api.NewServer(
 			do.MustInvoke[*handlers.Server](i),
-			api.WithErrorHandler(handlers.APIErrorHandler),
+			api.WithErrorHandler(handlers.NewAPIErrorHandler(do.MustInvoke[*localization.Translator](i))),
+			api.WithNotFound(handlers.NewNotFoundHandler(do.MustInvoke[*localization.Translator](i))),
+			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(do.MustInvoke[*localization.Translator](i))),
 		)
 	})
 
 	do.Provide(injector, func(i do.Injector) (*handlers.AttachmentHandler, error) {
 		return handlers.NewAttachmentHandler(
 			do.MustInvoke[*assetstore.Store](i),
+			do.MustInvoke[*localization.Translator](i),
 		), nil
 	})
 
@@ -138,6 +147,7 @@ func New() *do.RootScope {
 			do.MustInvoke[*ent.Client](i),
 			do.MustInvoke[*versionbuilds.Starter](i),
 			do.MustInvoke[*config.Config](i).GitHubWebhookSecret,
+			do.MustInvoke[*localization.Translator](i),
 		), nil
 	})
 
@@ -156,10 +166,13 @@ func New() *do.RootScope {
 		// Dev CORS lets the Vite frontend (on any localhost port) call both the
 		// generated API and the hand-mounted routes. AllowCredentials is needed
 		// for the auth cookie to make the cross-origin round trip.
+		localized := do.MustInvoke[*localization.Translator](i).Middleware(
+			do.MustInvokeNamed[http.Handler](i, routerServiceName),
+		)
 		return cors.New(cors.Options{
 			AllowedOrigins:   []string{"http://localhost:*", "http://127.0.0.1:*"},
 			AllowCredentials: true,
-		}).Handler(do.MustInvokeNamed[http.Handler](i, routerServiceName)), nil
+		}).Handler(localized), nil
 	})
 
 	// *http.Server natively satisfies do's ShutdownerWithContextAndError (its

@@ -12,6 +12,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
+	"hexletbasics/internal/localization"
 )
 
 // maxWebhookBytes bounds a webhook body. GitHub deliveries are well under this;
@@ -38,11 +39,12 @@ type GitHubWebhookHandler struct {
 	// secret disables the endpoint (fail closed) — an unauthenticated build
 	// trigger must never be reachable.
 	secret string
+	i18n   *localization.Translator
 }
 
 // NewGitHubWebhookHandler wires the webhook to its dependencies.
-func NewGitHubWebhookHandler(db *ent.Client, starter VersionBuildStarter, secret string) *GitHubWebhookHandler {
-	return &GitHubWebhookHandler{db: db, starter: starter, secret: secret}
+func NewGitHubWebhookHandler(db *ent.Client, starter VersionBuildStarter, secret string, translator *localization.Translator) *GitHubWebhookHandler {
+	return &GitHubWebhookHandler{db: db, starter: starter, secret: secret, i18n: translator}
 }
 
 // workflowRunPayload is the slice of the `workflow_run` event this handler acts
@@ -67,19 +69,20 @@ type workflowRunPayload struct {
 //     these so GitHub does not retry a delivery there is simply nothing to do about,
 //   - 202 when a build was enqueued.
 func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	if h.secret == "" {
-		http.NotFound(w, r)
+		http.Error(w, h.i18n.StatusText(ctx, http.StatusNotFound), http.StatusNotFound)
 		return
 	}
 
 	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxWebhookBytes))
 	if err != nil {
-		http.Error(w, "failed to read body", http.StatusBadRequest)
+		http.Error(w, h.i18n.Text(ctx, localization.ReadWebhookBodyFailed), http.StatusBadRequest)
 		return
 	}
 
 	if !h.validSignature(r.Header.Get("X-Hub-Signature-256"), body) {
-		http.Error(w, "invalid signature", http.StatusUnauthorized)
+		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookSignature), http.StatusUnauthorized)
 		return
 	}
 
@@ -91,7 +94,7 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	var payload workflowRunPayload
 	if err := json.Unmarshal(body, &payload); err != nil {
-		http.Error(w, "invalid payload", http.StatusBadRequest)
+		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookPayload), http.StatusBadRequest)
 		return
 	}
 
@@ -101,9 +104,9 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	built, err := h.triggerBuild(r.Context(), slug)
+	built, err := h.triggerBuild(ctx, slug)
 	if err != nil {
-		http.Error(w, "failed to trigger build", http.StatusInternalServerError)
+		http.Error(w, h.i18n.Text(ctx, localization.TriggerBuildFailed), http.StatusInternalServerError)
 		return
 	}
 	if !built {

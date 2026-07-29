@@ -1,6 +1,7 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
+import { getRequest, getRequestHeader } from "@tanstack/react-start/server";
 import { client } from "@/client/client.gen";
+import { localeFromPathname } from "@/lib/locale-path";
 
 // Read the incoming SSR request's cookie header. Server-only (the client impl
 // is a no-op), so the server import is stripped from the browser bundle — the
@@ -8,6 +9,13 @@ import { client } from "@/client/client.gen";
 const getRequestCookie = createIsomorphicFn()
   .server(() => getRequestHeader("cookie"))
   .client(() => undefined);
+
+// Resolve the active URL locale at request time. Reading inside the interceptor
+// is request-safe during SSR and avoids mutating the generated client singleton
+// when concurrent renders use different locales.
+const getRequestLocale = createIsomorphicFn()
+  .server(() => localeFromPathname(new URL(getRequest().url).pathname))
+  .client(() => localeFromPathname(window.location.pathname));
 
 // The generated hey-api client is a singleton. During SSR the Node process
 // reaches Go over the internal network (API_URL); in the browser it uses the
@@ -30,6 +38,7 @@ client.setConfig({
 client.interceptors.request.use((request) => {
   const cookie = getRequestCookie();
   if (cookie) request.headers.set("cookie", cookie);
+  request.headers.set("accept-language", getRequestLocale());
   return request;
 });
 
