@@ -47,7 +47,7 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 			translator,
 			slog.New(slog.NewTextHandler(io.Discard, nil)),
 			sentryClient,
-		).Handle),
+		).Write),
 		api.WithNotFound(NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(NewMethodNotAllowedHandler(translator)),
 	)
@@ -87,11 +87,9 @@ func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	require.Equal(t, http.StatusBadRequest, rec.Code)
-	var body struct {
-		Error string `json:"error"`
-	}
+	var body api.ProblemDetails
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
-	assert.Equal(t, "Некорректный запрос", body.Error)
+	assert.Equal(t, "Некорректный запрос", body.Title)
 }
 
 func TestRouterErrorsUseRequestLocale(t *testing.T) {

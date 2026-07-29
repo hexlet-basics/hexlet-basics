@@ -155,7 +155,7 @@ func New() *do.RootScope {
 		// (404/409), so handlers return raw ent errors instead of typed DTOs.
 		return api.NewServer(
 			do.MustInvoke[*handlers.Server](i),
-			api.WithErrorHandler(do.MustInvoke[*handlers.APIErrorHandler](i).Handle),
+			api.WithErrorHandler(do.MustInvoke[*handlers.APIErrorHandler](i).Write),
 			api.WithTracerProvider(do.MustInvoke[*sdktrace.TracerProvider](i)),
 			api.WithNotFound(handlers.NewNotFoundHandler(do.MustInvoke[*localization.Translator](i))),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(do.MustInvoke[*localization.Translator](i))),
@@ -166,6 +166,7 @@ func New() *do.RootScope {
 		return handlers.NewAttachmentHandler(
 			do.MustInvoke[*assetstore.Store](i),
 			do.MustInvoke[*localization.Translator](i),
+			do.MustInvoke[*handlers.APIErrorHandler](i),
 		), nil
 	})
 

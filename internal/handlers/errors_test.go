@@ -61,7 +61,7 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodPost, "/admin/languages", nil).WithContext(ctx)
 	cause := errors.New("database unavailable")
-	handler.Handle(ctx, recorder, request, cause)
+	handler.Write(ctx, recorder, request, cause)
 
 	require.Equal(t, http.StatusInternalServerError, recorder.Code)
 	assert.Equal(t, "application/problem+json", recorder.Header().Get("Content-Type"))
@@ -99,7 +99,7 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 	handler := handlers.NewAPIErrorHandler(translator, logger, client)
 	recorder := httptest.NewRecorder()
 	request := httptest.NewRequest(http.MethodGet, "/api/languages/missing", nil)
-	handler.Handle(request.Context(), recorder, request, &ogenerrors.DecodeParamsError{
+	handler.Write(request.Context(), recorder, request, &ogenerrors.DecodeParamsError{
 		OperationContext: ogenerrors.OperationContext{Name: "ListCourses", ID: "listCourses"},
 		Err:              errors.New("invalid query"),
 	})
@@ -131,7 +131,7 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 	)
 	server, err := api.NewServer(
 		&failingCoursesHandler{errorHandler: errorHandler},
-		api.WithErrorHandler(errorHandler.Handle),
+		api.WithErrorHandler(errorHandler.Write),
 	)
 	require.NoError(t, err)
 	client, err := api.NewClient("http://test", api.WithClient(&http.Client{

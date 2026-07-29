@@ -137,7 +137,7 @@ func NewHarness(t *testing.T) *Harness {
 	errorHandler := NewAPIErrorHandler(t, translator)
 	srv, err := api.NewServer(
 		handlers.NewServer(db, testConfig, enqueuer, translator, errorHandler),
-		api.WithErrorHandler(errorHandler.Handle),
+		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)

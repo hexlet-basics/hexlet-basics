@@ -8,12 +8,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/textproto"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
+	"gopkg.in/yaml.v3"
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
@@ -41,7 +43,11 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
-	att := handlers.NewAttachmentHandler(assets, translator)
+	att := handlers.NewAttachmentHandler(
+		assets,
+		translator,
+		testsupport.NewAPIErrorHandler(t, translator),
+	)
 	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "", translator)
 	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
@@ -79,6 +85,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "application/octet-stream", tinyPNG))
 
 	require.Equal(t, http.StatusCreated, rec.Code)
+	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
 
 	var att struct {
 		ID          int    `json:"id"`
@@ -109,6 +116,34 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	got, err := io.ReadAll(dl.Body)
 	require.NoError(t, err)
 	assert.Equal(t, tinyPNG, got)
+}
+
+func TestUploadAttachmentResponseMatchesOpenAPIContract(t *testing.T) {
+	router := newAttachmentRouter(t)
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+	require.Equal(t, http.StatusCreated, rec.Code)
+
+	var response map[string]json.RawMessage
+	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &response))
+
+	specData, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
+	require.NoError(t, err)
+	var spec struct {
+		Components struct {
+			Schemas map[string]struct {
+				Required   []string               `yaml:"required"`
+				Properties map[string]interface{} `yaml:"properties"`
+			} `yaml:"schemas"`
+		} `yaml:"components"`
+	}
+	require.NoError(t, yaml.Unmarshal(specData, &spec))
+
+	attachment, ok := spec.Components.Schemas["Attachment"]
+	require.True(t, ok, "OpenAPI must define the Attachment response schema")
+	assert.ElementsMatch(t, attachment.Required, mapKeys(response))
+	assert.ElementsMatch(t, mapKeys(attachment.Properties), mapKeys(response),
+		"the manual JSON adapter must emit exactly the OpenAPI Attachment properties")
 }
 
 func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
@@ -162,4 +197,18 @@ func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
 	router.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/storage/does-not-exist.png", nil))
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
+	assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))
+	assert.JSONEq(t, `{
+		"type":"about:blank",
+		"title":"Not Found",
+		"status":404
+	}`, rec.Body.String())
+}
+
+func mapKeys[V any](values map[string]V) []string {
+	keys := make([]string, 0, len(values))
+	for key := range values {
+		keys = append(keys, key)
+	}
+	return keys
 }

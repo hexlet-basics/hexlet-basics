@@ -38,7 +38,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 	)
 	server, err := api.NewServer(
 		handler,
-		api.WithErrorHandler(errorHandler.Handle),
+		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)

@@ -3,11 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/localization"
 )
@@ -25,11 +25,16 @@ const multipartOverheadBytes = 1 << 20
 type AttachmentHandler struct {
 	assets *assetstore.Store
 	i18n   *localization.Translator
+	errors *APIErrorHandler
 }
 
 // NewAttachmentHandler wires the HTTP adapter to the shared asset store.
-func NewAttachmentHandler(assets *assetstore.Store, translator *localization.Translator) *AttachmentHandler {
-	return &AttachmentHandler{assets: assets, i18n: translator}
+func NewAttachmentHandler(
+	assets *assetstore.Store,
+	translator *localization.Translator,
+	errorHandler *APIErrorHandler,
+) *AttachmentHandler {
+	return &AttachmentHandler{assets: assets, i18n: translator, errors: errorHandler}
 }
 
 // attachmentResponse mirrors the OpenAPI `Attachment` schema exactly (camelCase,
@@ -58,10 +63,10 @@ func (h *AttachmentHandler) Upload(w http.ResponseWriter, r *http.Request) {
 		// A body over the limit surfaces here as *http.MaxBytesError.
 		var tooBig *http.MaxBytesError
 		if errors.As(err, &tooBig) {
-			writeValidationError(w, "file", h.i18n.Text(ctx, localization.FileTooLarge))
+			h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.FileTooLarge)))
 			return
 		}
-		writeValidationError(w, "file", h.i18n.Text(ctx, localization.FileRequired))
+		h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.FileRequired)))
 		return
 	}
 	defer func() { _ = file.Close() }()
@@ -71,15 +76,15 @@ func (h *AttachmentHandler) Upload(w http.ResponseWriter, r *http.Request) {
 		Body:     file,
 	})
 	if errors.Is(err, assetstore.ErrUnsupportedMediaType) {
-		writeValidationError(w, "file", h.i18n.Text(ctx, localization.UnsupportedFileType))
+		h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.UnsupportedFileType)))
 		return
 	}
 	if errors.Is(err, assetstore.ErrTooLarge) {
-		writeValidationError(w, "file", h.i18n.Text(ctx, localization.FileTooLarge))
+		h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.FileTooLarge)))
 		return
 	}
 	if err != nil {
-		http.Error(w, h.i18n.Text(ctx, localization.StoreFileFailed), http.StatusInternalServerError)
+		h.errors.Write(ctx, w, r, fmt.Errorf("store uploaded attachment: %w", err))
 		return
 	}
 
@@ -102,10 +107,10 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	reader, err := h.assets.Open(ctx, key)
 	if err != nil {
 		if errors.Is(err, assetstore.ErrNotFound) {
-			http.Error(w, h.i18n.StatusText(ctx, http.StatusNotFound), http.StatusNotFound)
+			h.errors.Write(ctx, w, r, withHTTPStatus(http.StatusNotFound, err))
 			return
 		}
-		http.Error(w, h.i18n.Text(ctx, localization.ReadFileFailed), http.StatusInternalServerError)
+		h.errors.Write(ctx, w, r, fmt.Errorf("open stored attachment %q: %w", key, err))
 		return
 	}
 	defer func() { _ = reader.Close() }()
@@ -126,13 +131,4 @@ func writeJSON(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(body)
-}
-
-// writeValidationError emits the OpenAPI ValidationError shape (422, errors keyed
-// by field) so a failed upload is indistinguishable on the wire from the ogen
-// writes' 422s the frontend already handles.
-func writeValidationError(w http.ResponseWriter, field, message string) {
-	writeJSON(w, http.StatusUnprocessableEntity, api.ValidationError{
-		Errors: api.ValidationErrorErrors{field: {message}},
-	})
 }

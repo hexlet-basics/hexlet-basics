@@ -23,7 +23,7 @@ import (
 //
 //   - NewError implements ogen's convenient-error method for raw errors returned
 //     by application handlers.
-//   - Handle is installed with api.WithErrorHandler for request decoding,
+//   - Write is installed with api.WithErrorHandler for request decoding,
 //     security, and response-encoding failures that occur outside a handler.
 //
 // Classification and response construction stay here, while the wire schema and
@@ -32,6 +32,45 @@ type APIErrorHandler struct {
 	translator   *localization.Translator
 	logger       *slog.Logger
 	sentryClient *sentry.Client
+}
+
+// fieldValidationError carries a declared field-error response through the same
+// writer as transport and application failures.
+type fieldValidationError struct {
+	errors api.ValidationErrorErrors
+}
+
+func (e *fieldValidationError) Error() string {
+	return "request validation failed"
+}
+
+// statusError assigns an expected HTTP status without teaching the central
+// writer about an adapter's dependency-specific sentinel errors.
+type statusError struct {
+	status int
+	err    error
+}
+
+func (e *statusError) Error() string {
+	return e.err.Error()
+}
+
+func (e *statusError) Unwrap() error {
+	return e.err
+}
+
+func (e *statusError) HTTPStatus() int {
+	return e.status
+}
+
+func newValidationError(field, message string) error {
+	return &fieldValidationError{
+		errors: api.ValidationErrorErrors{field: {message}},
+	}
+}
+
+func withHTTPStatus(status int, err error) error {
+	return &statusError{status: status, err: err}
 }
 
 // NewAPIErrorHandler builds the central error adapter.
@@ -63,10 +102,23 @@ func (s *Server) NewError(ctx context.Context, err error) *api.ProblemDetailsSta
 	return s.errors.NewError(ctx, err)
 }
 
-// Handle writes contract-shaped errors raised before or after an application
+// Write writes contract-shaped errors raised before or after an application
 // handler runs. ogen's generated convenient-error encoder owns handler-returned
 // errors; this hook covers decode, security, and response-encoding errors.
-func (h *APIErrorHandler) Handle(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+	var validation *fieldValidationError
+	if errors.As(err, &validation) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		encoder := new(jx.Encoder)
+		response := api.ValidationError{Errors: validation.errors}
+		response.Encode(encoder)
+		if _, writeErr := encoder.WriteTo(w); writeErr != nil {
+			h.logger.ErrorContext(ctx, "writing validation error response", "err", writeErr)
+		}
+		return
+	}
+
 	status := errorStatus(err)
 	h.report(ctx, r, status, err)
 
@@ -82,11 +134,14 @@ func (h *APIErrorHandler) Handle(ctx context.Context, w http.ResponseWriter, r *
 
 func errorStatus(err error) int {
 	var ogenErr ogenerrors.Error
+	var statusErr interface{ HTTPStatus() int }
 	switch {
 	case ent.IsNotFound(err):
 		return http.StatusNotFound
 	case ent.IsConstraintError(err):
 		return http.StatusConflict
+	case errors.As(err, &statusErr):
+		return statusErr.HTTPStatus()
 	case errors.As(err, &ogenErr):
 		return ogenErr.Code()
 	default:
