@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
 
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/testsupport"
 )
@@ -37,7 +38,8 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 	db := testsupport.NewClient(t)
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
-	att := handlers.NewAttachmentHandler(db, bucket)
+	assets := assetstore.New(db, bucket, "http://assets.example.test")
+	att := handlers.NewAttachmentHandler(assets)
 	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "")
 	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
@@ -45,9 +47,9 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 	return handlers.NewRouter(apiStub, att, gh)
 }
 
-// uploadRequest builds a multipart POST with one file part whose Content-Type is
-// set explicitly (multipart.CreateFormFile hardcodes octet-stream, so the part
-// header is written by hand to drive the allowlist).
+// uploadRequest builds a multipart POST with one file part whose declared
+// Content-Type can differ from the bytes; assetstore derives the stored type
+// from content rather than trusting this header.
 func uploadRequest(t *testing.T, filename, contentType string, data []byte) *http.Request {
 	t.Helper()
 	var body bytes.Buffer
@@ -72,7 +74,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "application/octet-stream", tinyPNG))
 
 	require.Equal(t, http.StatusCreated, rec.Code)
 
@@ -89,11 +91,11 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	assert.Equal(t, "cover.png", att.Filename)
 	assert.Equal(t, "image/png", att.ContentType)
 	assert.Equal(t, int64(len(tinyPNG)), att.ByteSize)
-	// Absolute against the request origin — the frontend is a different origin
-	// than the API, so a root-relative url would 404 in an <img src>.
-	assert.True(t, strings.HasPrefix(att.URL, "http://example.com/storage/"),
-		"url must be absolute against the request origin, got %q", att.URL)
-	assert.Contains(t, att.URL, ".png", "the read URL keeps the original extension")
+	// The configured public origin is canonical even when the request arrived
+	// through a different host or proxy.
+	assert.True(t, strings.HasPrefix(att.URL, "http://assets.example.test/storage/"),
+		"url must use the configured public origin, got %q", att.URL)
+	assert.Contains(t, att.URL, ".png", "the read URL uses the detected image extension")
 
 	// The returned url must actually serve the stored bytes.
 	dl := httptest.NewRecorder()
@@ -111,7 +113,7 @@ func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, uploadRequest(t, "notes.txt", "text/plain", []byte("hello")))
+	router.ServeHTTP(rec, uploadRequest(t, "notes.png", "image/png", []byte("hello")))
 
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
 	var body struct {

@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"mime"
-	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
@@ -15,14 +13,12 @@ import (
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/text"
-	"gocloud.dev/blob"
 	"gopkg.in/yaml.v3"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagemodule"
-	"hexletbasics/internal/config"
-	"hexletbasics/internal/ids"
+	"hexletbasics/internal/assetstore"
 )
 
 // Course version states, mirroring the legacy AASM machine on
@@ -47,15 +43,14 @@ const lessonStateCreated = "created"
 // broken rebuild never takes a live course offline.
 type Loader struct {
 	db      *ent.Client
-	bucket  *blob.Bucket
+	assets  *assetstore.Store
 	fetcher Fetcher
-	cfg     *config.Config
 }
 
 // NewLoader wires the loader to its dependencies. The fetcher is an interface so
 // tests can supply a fixture directory instead of cloning.
-func NewLoader(db *ent.Client, bucket *blob.Bucket, fetcher Fetcher, cfg *config.Config) *Loader {
-	return &Loader{db: db, bucket: bucket, fetcher: fetcher, cfg: cfg}
+func NewLoader(db *ent.Client, assets *assetstore.Store, fetcher Fetcher) *Loader {
+	return &Loader{db: db, assets: assets, fetcher: fetcher}
 }
 
 // Run builds the given course version. It is idempotent against dead runs: a
@@ -441,49 +436,31 @@ func sourceSliceOffset(source, part []byte) (int, bool) {
 	return 0, false
 }
 
-// uploadImage reads a theory image referenced relative to the locale dir, stores
-// it under a fresh key, records an Attachment row, and returns its absolute read
-// URL. The path is confined to localeDir to stop a crafted `../` reference from
-// reading outside the repo checkout.
+// uploadImage opens a theory image referenced relative to the locale dir and
+// delegates its complete storage lifecycle to the shared asset store. The path
+// is confined to localeDir to stop a crafted `../` reference from reading
+// outside the repo checkout.
 func (l *Loader) uploadImage(ctx context.Context, localeDir, ref string) (string, error) {
 	full := filepath.Join(localeDir, filepath.Clean("/"+ref))
 	if !strings.HasPrefix(full, filepath.Clean(localeDir)+string(os.PathSeparator)) {
 		return "", oops.Errorf("image ref %q escapes locale dir", ref)
 	}
 
-	data, err := os.ReadFile(full)
+	file, err := os.Open(full)
 	if err != nil {
-		return "", oops.Wrapf(err, "read image %q", ref)
+		return "", oops.Wrapf(err, "open image %q", ref)
 	}
+	defer func() { _ = file.Close() }()
 
-	contentType := mime.TypeByExtension(filepath.Ext(full))
-	if contentType == "" {
-		contentType = http.DetectContentType(data)
-	}
-
-	key := ids.New() + filepath.Ext(full)
-	w, err := l.bucket.NewWriter(ctx, key, &blob.WriterOptions{ContentType: contentType})
+	attachment, err := l.assets.Put(ctx, assetstore.Upload{
+		Filename: filepath.Base(full),
+		Body:     file,
+	})
 	if err != nil {
-		return "", oops.Wrapf(err, "open blob writer for %q", key)
-	}
-	if _, err := w.Write(data); err != nil {
-		_ = w.Close()
-		return "", oops.Wrapf(err, "write blob %q", key)
-	}
-	if err := w.Close(); err != nil {
-		return "", oops.Wrapf(err, "close blob %q", key)
+		return "", oops.Wrapf(err, "store image %q", ref)
 	}
 
-	if _, err := l.db.Attachment.Create().
-		SetStorageKey(key).
-		SetFilename(filepath.Base(full)).
-		SetContentType(contentType).
-		SetByteSize(int64(len(data))).
-		Save(ctx); err != nil {
-		return "", oops.Wrapf(err, "record attachment %q", key)
-	}
-
-	return l.cfg.PublicURL + "/storage/" + key, nil
+	return attachment.URL, nil
 }
 
 // marshalYAML serializes tips/definitions to the YAML-array form Rails'

@@ -38,7 +38,7 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	db := store.NewClient(sqlDB)
 	// A non-nil loader registers the exercise_loader worker. It is never started
 	// in this test, so its own dependencies are intentionally nil.
-	riverClient, err := jobs.NewClient(sqlDB, courseloader.NewLoader(nil, nil, nil, nil))
+	riverClient, err := jobs.NewClient(sqlDB, courseloader.NewLoader(nil, nil, nil))
 	require.NoError(t, err)
 	starter := versionbuilds.NewStarter(sqlDB, riverClient)
 

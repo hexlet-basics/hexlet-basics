@@ -2,6 +2,8 @@ package courseloader_test
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -14,7 +16,7 @@ import (
 	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/ent/languagemodule"
 	"hexletbasics/ent/languagemoduleversion"
-	"hexletbasics/internal/config"
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/testsupport"
 )
@@ -31,8 +33,8 @@ func newLoaderWith(t *testing.T, db *ent.Client, fetcher courseloader.Fetcher) *
 	t.Helper()
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
-	cfg := &config.Config{PublicURL: "http://localhost:3001"}
-	return courseloader.NewLoader(db, bucket, fetcher, cfg)
+	assets := assetstore.New(db, bucket, "http://localhost:3001")
+	return courseloader.NewLoader(db, assets, fetcher)
 }
 
 // newLoader builds a loader that fetches the committed fixture course.
@@ -163,6 +165,30 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 	// ...and the live version is STILL v1 — the broken rebuild changed nothing.
 	course = db.Course.GetX(ctx, course.ID)
 	assert.Equal(t, v1.ID, *course.CurrentVersionID)
+}
+
+func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
+	db := testsupport.NewClient(t)
+	ctx := context.Background()
+	repo := t.TempDir()
+	require.NoError(t, os.CopyFS(repo, os.DirFS(fixtureRepo(t))))
+
+	imagePath := filepath.Join(
+		repo,
+		"modules", "10-basics", "10-hello-world", "en", "assets", "dart.png",
+	)
+	require.NoError(t, os.WriteFile(imagePath, []byte("<svg><script>alert(1)</script></svg>"), 0o644))
+
+	course := db.Course.Create().SetSlug("loader-invalid-image-lang").SetName("Invalid Image").SaveX(ctx)
+	version := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
+	loader := newLoaderWith(t, db, fakeFetcher{dir: repo})
+
+	err := loader.Run(ctx, version.ID)
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "unsupported asset media type")
+	version = db.CourseVersion.GetX(ctx, version.ID)
+	assert.Equal(t, "failed", derefStr(version.State))
 }
 
 func derefStr(s *string) string {

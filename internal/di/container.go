@@ -15,6 +15,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/handlers"
@@ -78,8 +79,18 @@ func New() *do.RootScope {
 		return store.NewBucket(context.Background(), cfg.BlobBucketURL)
 	})
 
-	// The exercise loader (course-version builds) needs the ent client for writes,
-	// the blob bucket for lesson theory images, and a git fetcher for the repo.
+	// Asset storage owns MIME policy, blob writes, attachment persistence,
+	// compensation, and public URLs for every upload path.
+	do.Provide(injector, func(i do.Injector) (*assetstore.Store, error) {
+		return assetstore.New(
+			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*blob.Bucket](i),
+			do.MustInvoke[*config.Config](i).PublicURL,
+		), nil
+	})
+
+	// The exercise loader (course-version builds) uses the shared asset store for
+	// lesson theory images and a git fetcher for the source repository.
 	do.Provide(injector, func(i do.Injector) (courseloader.Fetcher, error) {
 		cfg := do.MustInvoke[*config.Config](i)
 		return courseloader.NewGitFetcher(cfg.CourseRepoBaseURL, cfg.GitHubToken), nil
@@ -88,9 +99,8 @@ func New() *do.RootScope {
 	do.Provide(injector, func(i do.Injector) (*courseloader.Loader, error) {
 		return courseloader.NewLoader(
 			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*blob.Bucket](i),
+			do.MustInvoke[*assetstore.Store](i),
 			do.MustInvoke[courseloader.Fetcher](i),
-			do.MustInvoke[*config.Config](i),
 		), nil
 	})
 
@@ -119,8 +129,7 @@ func New() *do.RootScope {
 
 	do.Provide(injector, func(i do.Injector) (*handlers.AttachmentHandler, error) {
 		return handlers.NewAttachmentHandler(
-			do.MustInvoke[*ent.Client](i),
-			do.MustInvoke[*blob.Bucket](i),
+			do.MustInvoke[*assetstore.Store](i),
 		), nil
 	})
 
