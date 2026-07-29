@@ -1,15 +1,17 @@
-# Authentication via go-pkgz/auth (JWT), adapting to its model
+# Authentication via go-pkgz/auth JWT tokens
 
-Authentication is built on **go-pkgz/auth** rather than assembled from
-primitives. We adapt our design to its JWT-cookie token model to reuse the large
-amount of ready-made logic it provides (OAuth flows, middleware, token
-handling). The legacy app used opaque DB-backed sessions; we deliberately move
-to JWT here.
+Authentication uses **go-pkgz/auth's `token.Service`** rather than assembling
+JWT signing, parsing, and cookie handling from primitives. The application owns
+credential verification and adapts the token service's HTTP-oriented methods to
+the generated ogen contract. The legacy app used opaque DB-backed sessions; we
+deliberately move to JWT here.
 
 ## How each legacy sign-in method maps
 
-- **Email + password** — go-pkgz/auth `direct` provider with a `CredCheckerFunc`
-  that verifies existing bcrypt hashes via `go-crypt/crypt` (password compat).
+- **Email + password** — the auth module loads the user through ent, verifies
+  the existing bcrypt hash, and passes that same user to `token.Service` for JWT
+  issuance. The library's `direct` provider is not used because its HTTP-only
+  interface would add an internal HTTP round-trip at the ogen handler seam.
 - **Google / GitHub / Facebook** — built-in OAuth2 providers.
 - **Passkey (WebAuthn)** — verified with `go-webauthn/webauthn` (added to the
   stack; it was missing from the reference lib set), then a go-pkgz/auth token is

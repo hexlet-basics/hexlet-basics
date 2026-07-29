@@ -1,16 +1,14 @@
 package handlers
 
 import (
-	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
 	"time"
 
-	pkgzauth "github.com/go-pkgz/auth/v2"
-	"github.com/go-pkgz/auth/v2/provider"
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -30,16 +28,17 @@ const (
 	authCookie    = "JWT"
 )
 
-// AuthHandler adapts go-pkgz/auth's HTTP-oriented JWT/direct-provider model to
-// the generated ogen interface. The adapter captures the provider's cookie and
-// returns it as the Set-Cookie response header modeled in TypeSpec; the public
-// HTTP seam therefore remains the generated contract.
+var errInvalidCredentials = errors.New("invalid credentials")
+
+// AuthHandler keeps credential verification and go-pkgz/auth JWT handling
+// behind the generated ogen interface. Cookie headers are returned through the
+// response models declared in TypeSpec, so the public HTTP seam remains the
+// generated contract.
 type AuthHandler struct {
-	db         *ent.Client
-	conv       apiconv.Converter
-	jwt        *token.Service
-	directAuth http.Handler
-	i18n       *localization.Translator
+	db   *ent.Client
+	conv apiconv.Converter
+	jwt  *token.Service
+	i18n *localization.Translator
 }
 
 // NewAuthHandler builds the auth implementation used by the ogen handlers.
@@ -55,61 +54,34 @@ func NewAuthHandler(db *ent.Client, cfg *config.Config, translator *localization
 		SameSite:       http.SameSiteLaxMode,
 	}
 
-	authService := pkgzauth.NewService(pkgzauth.Opts{
-		SecretReader:   tokenOpts.SecretReader,
-		Issuer:         tokenOpts.Issuer,
-		TokenDuration:  tokenOpts.TokenDuration,
-		CookieDuration: tokenOpts.CookieDuration,
-		DisableXSRF:    tokenOpts.DisableXSRF,
-		SameSiteCookie: tokenOpts.SameSite,
-	})
-	authService.AddDirectProvider("direct", provider.CredCheckerFunc(func(email, password string) (bool, error) {
-		u, err := db.User.Query().Where(user.Email(email)).Only(context.Background())
-		if ent.IsNotFound(err) || err == nil && u.PasswordDigest == nil {
-			return false, nil
-		}
-		if err != nil {
-			return false, err
-		}
-		return bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password)) == nil, nil
-	}))
-	directAuth, _ := authService.Handlers()
-
 	return &AuthHandler{
-		db:         db,
-		conv:       &apiconv.ConverterImpl{},
-		jwt:        token.NewService(tokenOpts),
-		directAuth: directAuth,
-		i18n:       translator,
+		db:   db,
+		conv: &apiconv.ConverterImpl{},
+		jwt:  token.NewService(tokenOpts),
+		i18n: translator,
 	}
 }
 
-// CreateSession delegates credential verification and JWT issuance to the
-// go-pkgz/auth direct provider, then maps its response to the contract model.
+// CreateSession authenticates once and reuses the loaded user for both the JWT
+// claims and the response, keeping password login free of internal HTTP
+// round-trips and duplicate database queries.
 func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) (api.CreateSessionRes, error) {
-	body := fmt.Sprintf(`{"user":%q,"passwd":%q,"aud":%q}`, req.Email, req.Password, authIssuer)
-	authReq := httptest.NewRequest(http.MethodPost, "/auth/direct/login", bytes.NewBufferString(body)).
-		WithContext(ctx)
-	authReq.Header.Set("Content-Type", "application/json")
-	rec := httptest.NewRecorder()
-	h.directAuth.ServeHTTP(rec, authReq)
-	if rec.Code != http.StatusOK {
+	u, err := h.authenticate(ctx, req.Email, req.Password)
+	if errors.Is(err, errInvalidCredentials) {
 		return validationError("password", h.i18n.Text(ctx, localization.WrongCredentials)), nil
 	}
-
-	u, err := h.db.User.Query().Where(user.Email(req.Email)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
-	cookie, err := responseCookie(rec, authCookie)
+
+	cookie, err := h.issueCookie(u)
 	if err != nil {
 		return nil, err
 	}
 	return &api.UserHeaders{SetCookie: cookie, Response: h.conv.ToUser(u)}, nil
 }
 
-// CreateUser creates an account and issues the same go-pkgz/auth JWT cookie
-// used by the direct provider.
+// CreateUser creates an account and issues a go-pkgz/auth JWT cookie.
 func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api.CreateUserRes, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -170,6 +142,23 @@ func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentU
 		return nil, err
 	}
 	return &api.CurrentUser{User: api.NewNilUser(h.conv.ToUser(u))}, nil
+}
+
+func (h *AuthHandler) authenticate(ctx context.Context, email, password string) (*ent.User, error) {
+	u, err := h.db.User.Query().Where(user.Email(email)).Only(ctx)
+	if ent.IsNotFound(err) {
+		return nil, errInvalidCredentials
+	}
+	if err != nil {
+		return nil, err
+	}
+	if u.PasswordDigest == nil {
+		return nil, errInvalidCredentials
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password)); err != nil {
+		return nil, errInvalidCredentials
+	}
+	return u, nil
 }
 
 func (h *AuthHandler) issueCookie(u *ent.User) (string, error) {

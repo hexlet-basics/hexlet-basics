@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -10,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
@@ -20,7 +22,11 @@ import (
 // proving the auth routes are implemented through the contract seam.
 func newAuthRouter(t *testing.T) http.Handler {
 	t.Helper()
-	db := testsupport.NewClient(t)
+	return newAuthRouterWithDB(t, testsupport.NewClient(t))
+}
+
+func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
+	t.Helper()
 	translator := testsupport.NewTranslator(t)
 	handler := handlers.NewServer(
 		db,
@@ -61,7 +67,8 @@ func do(t *testing.T, router http.Handler, method, path, body string, cookie *ht
 }
 
 func TestAuthRegisterLoginFlow(t *testing.T) {
-	router := newAuthRouter(t)
+	db := testsupport.NewClient(t)
+	router := newAuthRouterWithDB(t, db)
 	const email = "auth-flow@example.com"
 	const password = "s3cret-pass"
 
@@ -105,16 +112,54 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&anon))
 	assert.Nil(t, anon.User)
 
+	userQueries := 0
+	db.User.Intercept(ent.InterceptFunc(func(next ent.Querier) ent.Querier {
+		return ent.QuerierFunc(func(ctx context.Context, query ent.Query) (ent.Value, error) {
+			userQueries++
+			return next.Query(ctx, query)
+		})
+	}))
+
 	// Login with the registered credentials succeeds and re-issues the cookie.
 	resp = do(t, router, http.MethodPost, "/session",
 		`{"email":"`+email+`","password":"`+password+`"}`, nil)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.NotNil(t, jwtCookie(resp))
+	loginCookie := jwtCookie(resp)
+	require.NotNil(t, loginCookie)
+	assert.Equal(t, 1, userQueries, "login must load the user only once")
+
+	// Login and signup issue equivalent cookies that resolve through /me.
+	resp = do(t, router, http.MethodGet, "/me", "", loginCookie)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&me))
+	require.NotNil(t, me.User)
+	assert.Equal(t, email, me.User.Email)
 
 	// A wrong password is rejected with a 422 validation error.
 	resp = do(t, router, http.MethodPost, "/session",
 		`{"email":"`+email+`","password":"wrong"}`, nil)
-	assert.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+	var wrongPassword api.ValidationError
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&wrongPassword))
+
+	// Unknown users produce the same response and cannot be enumerated.
+	resp = do(t, router, http.MethodPost, "/session",
+		`{"email":"missing-auth-flow@example.com","password":"wrong"}`, nil)
+	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+	var missingUser api.ValidationError
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&missingUser))
+	assert.Equal(t, wrongPassword, missingUser)
+
+	// Accounts without a password digest are also rejected as invalid
+	// credentials rather than causing a panic or exposing account state.
+	_, err := db.User.Create().SetEmail("passwordless-auth-flow@example.com").Save(t.Context())
+	require.NoError(t, err)
+	resp = do(t, router, http.MethodPost, "/session",
+		`{"email":"passwordless-auth-flow@example.com","password":"wrong"}`, nil)
+	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+	var passwordlessUser api.ValidationError
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&passwordlessUser))
+	assert.Equal(t, wrongPassword, passwordlessUser)
 }
 
 func TestAuthLogoutClearsCookie(t *testing.T) {
