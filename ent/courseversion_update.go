@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/course"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
 	"time"
@@ -256,9 +257,45 @@ func (_u *CourseVersionUpdate) SetUpdatedAt(v time.Time) *CourseVersionUpdate {
 	return _u
 }
 
+// AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by IDs.
+func (_u *CourseVersionUpdate) AddCurrentCourseIDs(ids ...int) *CourseVersionUpdate {
+	_u.mutation.AddCurrentCourseIDs(ids...)
+	return _u
+}
+
+// AddCurrentCourses adds the "current_courses" edges to the Course entity.
+func (_u *CourseVersionUpdate) AddCurrentCourses(v ...*Course) *CourseVersionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCurrentCourseIDs(ids...)
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_u *CourseVersionUpdate) Mutation() *CourseVersionMutation {
 	return _u.mutation
+}
+
+// ClearCurrentCourses clears all "current_courses" edges to the Course entity.
+func (_u *CourseVersionUpdate) ClearCurrentCourses() *CourseVersionUpdate {
+	_u.mutation.ClearCurrentCourses()
+	return _u
+}
+
+// RemoveCurrentCourseIDs removes the "current_courses" edge to Course entities by IDs.
+func (_u *CourseVersionUpdate) RemoveCurrentCourseIDs(ids ...int) *CourseVersionUpdate {
+	_u.mutation.RemoveCurrentCourseIDs(ids...)
+	return _u
+}
+
+// RemoveCurrentCourses removes "current_courses" edges to Course entities.
+func (_u *CourseVersionUpdate) RemoveCurrentCourses(v ...*Course) *CourseVersionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCurrentCourseIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -374,6 +411,51 @@ func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.CurrentCoursesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCurrentCoursesIDs(); len(nodes) > 0 && !_u.mutation.CurrentCoursesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CurrentCoursesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -623,9 +705,45 @@ func (_u *CourseVersionUpdateOne) SetUpdatedAt(v time.Time) *CourseVersionUpdate
 	return _u
 }
 
+// AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by IDs.
+func (_u *CourseVersionUpdateOne) AddCurrentCourseIDs(ids ...int) *CourseVersionUpdateOne {
+	_u.mutation.AddCurrentCourseIDs(ids...)
+	return _u
+}
+
+// AddCurrentCourses adds the "current_courses" edges to the Course entity.
+func (_u *CourseVersionUpdateOne) AddCurrentCourses(v ...*Course) *CourseVersionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCurrentCourseIDs(ids...)
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_u *CourseVersionUpdateOne) Mutation() *CourseVersionMutation {
 	return _u.mutation
+}
+
+// ClearCurrentCourses clears all "current_courses" edges to the Course entity.
+func (_u *CourseVersionUpdateOne) ClearCurrentCourses() *CourseVersionUpdateOne {
+	_u.mutation.ClearCurrentCourses()
+	return _u
+}
+
+// RemoveCurrentCourseIDs removes the "current_courses" edge to Course entities by IDs.
+func (_u *CourseVersionUpdateOne) RemoveCurrentCourseIDs(ids ...int) *CourseVersionUpdateOne {
+	_u.mutation.RemoveCurrentCourseIDs(ids...)
+	return _u
+}
+
+// RemoveCurrentCourses removes "current_courses" edges to Course entities.
+func (_u *CourseVersionUpdateOne) RemoveCurrentCourses(v ...*Course) *CourseVersionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCurrentCourseIDs(ids...)
 }
 
 // Where appends a list predicates to the CourseVersionUpdate builder.
@@ -771,6 +889,51 @@ func (_u *CourseVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseVer
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.CurrentCoursesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCurrentCoursesIDs(); len(nodes) > 0 && !_u.mutation.CurrentCoursesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CurrentCoursesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &CourseVersion{config: _u.config}
 	_spec.Assign = _node.assignValues

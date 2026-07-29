@@ -4,6 +4,8 @@ package ent
 
 import (
 	"fmt"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonmember"
 	"strings"
 	"time"
@@ -28,8 +30,44 @@ type LanguageLessonMember struct {
 	// MessagesCount holds the value of the "messages_count" field.
 	MessagesCount *int `json:"messages_count,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt    time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the LanguageLessonMemberQuery when eager-loading is set.
+	Edges        LanguageLessonMemberEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// LanguageLessonMemberEdges holds the relations/edges for other nodes in the graph.
+type LanguageLessonMemberEdges struct {
+	// Course holds the value of the course edge.
+	Course *Course `json:"course,omitempty"`
+	// Lesson holds the value of the lesson edge.
+	Lesson *LanguageLesson `json:"lesson,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// CourseOrErr returns the Course value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e LanguageLessonMemberEdges) CourseOrErr() (*Course, error) {
+	if e.Course != nil {
+		return e.Course, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: course.Label}
+	}
+	return nil, &NotLoadedError{edge: "course"}
+}
+
+// LessonOrErr returns the Lesson value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e LanguageLessonMemberEdges) LessonOrErr() (*LanguageLesson, error) {
+	if e.Lesson != nil {
+		return e.Lesson, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: languagelesson.Label}
+	}
+	return nil, &NotLoadedError{edge: "lesson"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -113,6 +151,16 @@ func (_m *LanguageLessonMember) assignValues(columns []string, values []any) err
 // This includes values selected through modifiers, order, etc.
 func (_m *LanguageLessonMember) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryCourse queries the "course" edge of the LanguageLessonMember entity.
+func (_m *LanguageLessonMember) QueryCourse() *CourseQuery {
+	return NewLanguageLessonMemberClient(_m.config).QueryCourse(_m)
+}
+
+// QueryLesson queries the "lesson" edge of the LanguageLessonMember entity.
+func (_m *LanguageLessonMember) QueryLesson() *LanguageLessonQuery {
+	return NewLanguageLessonMemberClient(_m.config).QueryLesson(_m)
 }
 
 // Update returns a builder for updating this LanguageLessonMember.

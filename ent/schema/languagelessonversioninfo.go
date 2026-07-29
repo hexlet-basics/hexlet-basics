@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -41,5 +42,18 @@ func (LanguageLessonVersionInfo) Fields() []ent.Field {
 		field.Int("version_id"),
 		field.Time("created_at").Default(time.Now).Immutable(),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
+	}
+}
+
+func (LanguageLessonVersionInfo) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("lesson", LanguageLesson.Type).
+			Field("language_lesson_id").
+			Unique().
+			Required(),
+		edge.To("course_version", CourseVersion.Type).
+			Field("language_version_id").
+			Unique().
+			Required(),
 	}
 }

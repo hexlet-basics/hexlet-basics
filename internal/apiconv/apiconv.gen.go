@@ -47,9 +47,7 @@ func (c *ConverterImpl) ToCatalogItem(source *ent.LandingPage) api.CourseCatalog
 		if (*source).Edges.Course != nil {
 			pInt = &(*source).Edges.Course.MembersCount
 		}
-		if pInt != nil {
-			apiCourseCatalogItem.MembersCount = Int32FromInt(*pInt)
-		}
+		apiCourseCatalogItem.MembersCount = Int32FromPtr(pInt)
 		apiCourseCatalogItem.CoverUrl = coverURLNull(source)
 		apiCourseCatalogItem.Course = c.ToCourse((*source).Edges.Course)
 	}
@@ -161,9 +159,7 @@ func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseL
 		if (*source).Edges.Course != nil {
 			pInt = &(*source).Edges.Course.MembersCount
 		}
-		if pInt != nil {
-			apiCourseLandingPage.MembersCount = Int32FromInt(*pInt)
-		}
+		apiCourseLandingPage.MembersCount = Int32FromPtr(pInt)
 	}
 	return apiCourseLandingPage
 }
@@ -176,6 +172,101 @@ func (c *ConverterImpl) ToCourseLandingPages(source []*ent.LandingPage) []api.Co
 		}
 	}
 	return apiCourseLandingPageList
+}
+func (c *ConverterImpl) ToCourseLessonListItem(source *ent.LanguageLessonVersionInfo) api.CourseLessonListItem {
+	var apiCourseLessonListItem api.CourseLessonListItem
+	if source != nil {
+		apiCourseLessonListItem.ID = Int32FromInt((*source).LanguageLessonID)
+		apiCourseLessonListItem.Name = NilStringFromPtr((*source).Name)
+		apiCourseLessonListItem.Description = NilStringFromPtr((*source).Description)
+		var pString *string
+		if (*source).Edges.Lesson != nil {
+			pString = (*source).Edges.Lesson.Slug
+		}
+		apiCourseLessonListItem.Slug = StringFromPtr(pString)
+	}
+	return apiCourseLessonListItem
+}
+func (c *ConverterImpl) ToCourseLessonListItems(source []*ent.LanguageLessonVersionInfo) []api.CourseLessonListItem {
+	var apiCourseLessonListItemList []api.CourseLessonListItem
+	if source != nil {
+		apiCourseLessonListItemList = make([]api.CourseLessonListItem, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseLessonListItemList[i] = c.ToCourseLessonListItem(source[i])
+		}
+	}
+	return apiCourseLessonListItemList
+}
+func (c *ConverterImpl) ToCourseLessonMember(source *ent.LanguageLessonMember) api.CourseLessonMember {
+	var apiCourseLessonMember api.CourseLessonMember
+	if source != nil {
+		apiCourseLessonMember.ID = Int32FromInt((*source).ID)
+		apiCourseLessonMember.UserId = Int32FromInt((*source).UserID)
+		apiCourseLessonMember.State = MemberStateFromPtr((*source).State)
+		apiCourseLessonMember.MessagesCount = NilInt32FromPtr((*source).MessagesCount)
+		apiCourseLessonMember.CreatedAt = TimeIdentity((*source).CreatedAt)
+		var pString *string
+		if (*source).Edges.Course != nil {
+			pString = (*source).Edges.Course.Slug
+		}
+		apiCourseLessonMember.CourseSlug = StringFromPtr(pString)
+		var pString2 *string
+		if (*source).Edges.Lesson != nil {
+			pString2 = (*source).Edges.Lesson.Slug
+		}
+		apiCourseLessonMember.CourseLessonSlug = StringFromPtr(pString2)
+		apiCourseLessonMember.CourseLessonName = courseLessonMemberName(source)
+	}
+	return apiCourseLessonMember
+}
+func (c *ConverterImpl) ToCourseLessonMembers(source []*ent.LanguageLessonMember) []api.CourseLessonMember {
+	var apiCourseLessonMemberList []api.CourseLessonMember
+	if source != nil {
+		apiCourseLessonMemberList = make([]api.CourseLessonMember, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseLessonMemberList[i] = c.ToCourseLessonMember(source[i])
+		}
+	}
+	return apiCourseLessonMemberList
+}
+func (c *ConverterImpl) ToCourseLessonReview(source *ent.LanguageLessonReview) api.CourseLessonReview {
+	var apiCourseLessonReview api.CourseLessonReview
+	if source != nil {
+		apiCourseLessonReview.ID = Int32FromInt((*source).ID)
+		apiCourseLessonReview.Locale = (*source).Locale
+		apiCourseLessonReview.CourseId = Int32FromInt((*source).LanguageID)
+		apiCourseLessonReview.CourseLessonId = Int32FromInt((*source).LanguageLessonID)
+		apiCourseLessonReview.CourseLessonVersionId = Int32FromInt((*source).LanguageLessonVersionID)
+		apiCourseLessonReview.CourseLessonVersionInfoId = Int32FromInt((*source).LanguageLessonVersionInfoID)
+		apiCourseLessonReview.Summary = (*source).Summary
+		var pString *string
+		if (*source).Edges.Lesson != nil {
+			pString = (*source).Edges.Lesson.Slug
+		}
+		apiCourseLessonReview.Slug = StringFromPtr(pString)
+		var pInt *int
+		if (*source).Edges.Lesson != nil {
+			pInt = (*source).Edges.Lesson.NaturalOrder
+		}
+		apiCourseLessonReview.LessonNaturalOrder = Int32FromPtr(pInt)
+		var pString2 *string
+		if (*source).Edges.Course != nil {
+			pString2 = (*source).Edges.Course.Slug
+		}
+		apiCourseLessonReview.CourseSlug = StringFromPtr(pString2)
+		apiCourseLessonReview.CreatedAt = TimeIdentity((*source).CreatedAt)
+	}
+	return apiCourseLessonReview
+}
+func (c *ConverterImpl) ToCourseLessonReviews(source []*ent.LanguageLessonReview) []api.CourseLessonReview {
+	var apiCourseLessonReviewList []api.CourseLessonReview
+	if source != nil {
+		apiCourseLessonReviewList = make([]api.CourseLessonReview, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseLessonReviewList[i] = c.ToCourseLessonReview(source[i])
+		}
+	}
+	return apiCourseLessonReviewList
 }
 func (c *ConverterImpl) ToCourses(source []*ent.Course) []api.Course {
 	var apiCourseList []api.Course

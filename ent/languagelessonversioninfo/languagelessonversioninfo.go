@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -39,8 +40,26 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeLesson holds the string denoting the lesson edge name in mutations.
+	EdgeLesson = "lesson"
+	// EdgeCourseVersion holds the string denoting the course_version edge name in mutations.
+	EdgeCourseVersion = "course_version"
 	// Table holds the table name of the languagelessonversioninfo in the database.
 	Table = "language_lesson_version_infos"
+	// LessonTable is the table that holds the lesson relation/edge.
+	LessonTable = "language_lesson_version_infos"
+	// LessonInverseTable is the table name for the LanguageLesson entity.
+	// It exists in this package in order to avoid circular dependency with the "languagelesson" package.
+	LessonInverseTable = "language_lessons"
+	// LessonColumn is the table column denoting the lesson relation/edge.
+	LessonColumn = "language_lesson_id"
+	// CourseVersionTable is the table that holds the course_version relation/edge.
+	CourseVersionTable = "language_lesson_version_infos"
+	// CourseVersionInverseTable is the table name for the CourseVersion entity.
+	// It exists in this package in order to avoid circular dependency with the "courseversion" package.
+	CourseVersionInverseTable = "language_versions"
+	// CourseVersionColumn is the table column denoting the course_version relation/edge.
+	CourseVersionColumn = "language_version_id"
 )
 
 // Columns holds all SQL columns for languagelessonversioninfo fields.
@@ -151,4 +170,32 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByLessonField orders the results by lesson field.
+func ByLessonField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLessonStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByCourseVersionField orders the results by course_version field.
+func ByCourseVersionField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCourseVersionStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newLessonStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LessonInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+	)
+}
+func newCourseVersionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CourseVersionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, CourseVersionTable, CourseVersionColumn),
+	)
 }

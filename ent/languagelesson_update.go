@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/languagelesson"
+	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/ent/predicate"
 	"time"
 
@@ -155,9 +156,45 @@ func (_u *LanguageLessonUpdate) SetUpdatedAt(v time.Time) *LanguageLessonUpdate 
 	return _u
 }
 
+// AddInfoIDs adds the "infos" edge to the LanguageLessonVersionInfo entity by IDs.
+func (_u *LanguageLessonUpdate) AddInfoIDs(ids ...int) *LanguageLessonUpdate {
+	_u.mutation.AddInfoIDs(ids...)
+	return _u
+}
+
+// AddInfos adds the "infos" edges to the LanguageLessonVersionInfo entity.
+func (_u *LanguageLessonUpdate) AddInfos(v ...*LanguageLessonVersionInfo) *LanguageLessonUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddInfoIDs(ids...)
+}
+
 // Mutation returns the LanguageLessonMutation object of the builder.
 func (_u *LanguageLessonUpdate) Mutation() *LanguageLessonMutation {
 	return _u.mutation
+}
+
+// ClearInfos clears all "infos" edges to the LanguageLessonVersionInfo entity.
+func (_u *LanguageLessonUpdate) ClearInfos() *LanguageLessonUpdate {
+	_u.mutation.ClearInfos()
+	return _u
+}
+
+// RemoveInfoIDs removes the "infos" edge to LanguageLessonVersionInfo entities by IDs.
+func (_u *LanguageLessonUpdate) RemoveInfoIDs(ids ...int) *LanguageLessonUpdate {
+	_u.mutation.RemoveInfoIDs(ids...)
+	return _u
+}
+
+// RemoveInfos removes "infos" edges to LanguageLessonVersionInfo entities.
+func (_u *LanguageLessonUpdate) RemoveInfos(v ...*LanguageLessonVersionInfo) *LanguageLessonUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveInfoIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -246,6 +283,51 @@ func (_u *LanguageLessonUpdate) sqlSave(ctx context.Context) (_node int, err err
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.InfosCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedInfosIDs(); len(nodes) > 0 && !_u.mutation.InfosCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.InfosIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -394,9 +476,45 @@ func (_u *LanguageLessonUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonUpda
 	return _u
 }
 
+// AddInfoIDs adds the "infos" edge to the LanguageLessonVersionInfo entity by IDs.
+func (_u *LanguageLessonUpdateOne) AddInfoIDs(ids ...int) *LanguageLessonUpdateOne {
+	_u.mutation.AddInfoIDs(ids...)
+	return _u
+}
+
+// AddInfos adds the "infos" edges to the LanguageLessonVersionInfo entity.
+func (_u *LanguageLessonUpdateOne) AddInfos(v ...*LanguageLessonVersionInfo) *LanguageLessonUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddInfoIDs(ids...)
+}
+
 // Mutation returns the LanguageLessonMutation object of the builder.
 func (_u *LanguageLessonUpdateOne) Mutation() *LanguageLessonMutation {
 	return _u.mutation
+}
+
+// ClearInfos clears all "infos" edges to the LanguageLessonVersionInfo entity.
+func (_u *LanguageLessonUpdateOne) ClearInfos() *LanguageLessonUpdateOne {
+	_u.mutation.ClearInfos()
+	return _u
+}
+
+// RemoveInfoIDs removes the "infos" edge to LanguageLessonVersionInfo entities by IDs.
+func (_u *LanguageLessonUpdateOne) RemoveInfoIDs(ids ...int) *LanguageLessonUpdateOne {
+	_u.mutation.RemoveInfoIDs(ids...)
+	return _u
+}
+
+// RemoveInfos removes "infos" edges to LanguageLessonVersionInfo entities.
+func (_u *LanguageLessonUpdateOne) RemoveInfos(v ...*LanguageLessonVersionInfo) *LanguageLessonUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveInfoIDs(ids...)
 }
 
 // Where appends a list predicates to the LanguageLessonUpdate builder.
@@ -515,6 +633,51 @@ func (_u *LanguageLessonUpdateOne) sqlSave(ctx context.Context) (_node *Language
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.InfosCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedInfosIDs(); len(nodes) > 0 && !_u.mutation.InfosCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.InfosIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &LanguageLesson{config: _u.config}
 	_spec.Assign = _node.assignValues

@@ -4,6 +4,8 @@ package ent
 
 import (
 	"fmt"
+	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"strings"
 	"time"
@@ -42,8 +44,44 @@ type LanguageLessonVersionInfo struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the LanguageLessonVersionInfoQuery when eager-loading is set.
+	Edges        LanguageLessonVersionInfoEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// LanguageLessonVersionInfoEdges holds the relations/edges for other nodes in the graph.
+type LanguageLessonVersionInfoEdges struct {
+	// Lesson holds the value of the lesson edge.
+	Lesson *LanguageLesson `json:"lesson,omitempty"`
+	// CourseVersion holds the value of the course_version edge.
+	CourseVersion *CourseVersion `json:"course_version,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// LessonOrErr returns the Lesson value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e LanguageLessonVersionInfoEdges) LessonOrErr() (*LanguageLesson, error) {
+	if e.Lesson != nil {
+		return e.Lesson, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: languagelesson.Label}
+	}
+	return nil, &NotLoadedError{edge: "lesson"}
+}
+
+// CourseVersionOrErr returns the CourseVersion value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e LanguageLessonVersionInfoEdges) CourseVersionOrErr() (*CourseVersion, error) {
+	if e.CourseVersion != nil {
+		return e.CourseVersion, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: courseversion.Label}
+	}
+	return nil, &NotLoadedError{edge: "course_version"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -174,6 +212,16 @@ func (_m *LanguageLessonVersionInfo) assignValues(columns []string, values []any
 // This includes values selected through modifiers, order, etc.
 func (_m *LanguageLessonVersionInfo) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryLesson queries the "lesson" edge of the LanguageLessonVersionInfo entity.
+func (_m *LanguageLessonVersionInfo) QueryLesson() *LanguageLessonQuery {
+	return NewLanguageLessonVersionInfoClient(_m.config).QueryLesson(_m)
+}
+
+// QueryCourseVersion queries the "course_version" edge of the LanguageLessonVersionInfo entity.
+func (_m *LanguageLessonVersionInfo) QueryCourseVersion() *CourseVersionQuery {
+	return NewLanguageLessonVersionInfoClient(_m.config).QueryCourseVersion(_m)
 }
 
 // Update returns a builder for updating this LanguageLessonVersionInfo.

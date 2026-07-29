@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -25,5 +26,18 @@ func (LanguageLessonReview) Fields() []ent.Field {
 		field.Int("language_lesson_version_id"),
 		field.Int("language_lesson_version_info_id"),
 		field.Time("created_at").Immutable(),
+	}
+}
+
+func (LanguageLessonReview) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("course", Course.Type).
+			Field("language_id").
+			Unique().
+			Required(),
+		edge.To("lesson", LanguageLesson.Type).
+			Field("language_lesson_id").
+			Unique().
+			Required(),
 	}
 }

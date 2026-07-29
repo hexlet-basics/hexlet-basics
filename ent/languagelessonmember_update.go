@@ -6,6 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonmember"
 	"hexletbasics/ent/predicate"
 
@@ -50,7 +52,6 @@ func (_u *LanguageLessonMemberUpdate) AddUserID(v int) *LanguageLessonMemberUpda
 
 // SetLanguageID sets the "language_id" field.
 func (_u *LanguageLessonMemberUpdate) SetLanguageID(v int) *LanguageLessonMemberUpdate {
-	_u.mutation.ResetLanguageID()
 	_u.mutation.SetLanguageID(v)
 	return _u
 }
@@ -63,15 +64,8 @@ func (_u *LanguageLessonMemberUpdate) SetNillableLanguageID(v *int) *LanguageLes
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *LanguageLessonMemberUpdate) AddLanguageID(v int) *LanguageLessonMemberUpdate {
-	_u.mutation.AddLanguageID(v)
-	return _u
-}
-
 // SetLessonID sets the "lesson_id" field.
 func (_u *LanguageLessonMemberUpdate) SetLessonID(v int) *LanguageLessonMemberUpdate {
-	_u.mutation.ResetLessonID()
 	_u.mutation.SetLessonID(v)
 	return _u
 }
@@ -81,12 +75,6 @@ func (_u *LanguageLessonMemberUpdate) SetNillableLessonID(v *int) *LanguageLesso
 	if v != nil {
 		_u.SetLessonID(*v)
 	}
-	return _u
-}
-
-// AddLessonID adds value to the "lesson_id" field.
-func (_u *LanguageLessonMemberUpdate) AddLessonID(v int) *LanguageLessonMemberUpdate {
-	_u.mutation.AddLessonID(v)
 	return _u
 }
 
@@ -137,9 +125,37 @@ func (_u *LanguageLessonMemberUpdate) ClearMessagesCount() *LanguageLessonMember
 	return _u
 }
 
+// SetCourseID sets the "course" edge to the Course entity by ID.
+func (_u *LanguageLessonMemberUpdate) SetCourseID(id int) *LanguageLessonMemberUpdate {
+	_u.mutation.SetCourseID(id)
+	return _u
+}
+
+// SetCourse sets the "course" edge to the Course entity.
+func (_u *LanguageLessonMemberUpdate) SetCourse(v *Course) *LanguageLessonMemberUpdate {
+	return _u.SetCourseID(v.ID)
+}
+
+// SetLesson sets the "lesson" edge to the LanguageLesson entity.
+func (_u *LanguageLessonMemberUpdate) SetLesson(v *LanguageLesson) *LanguageLessonMemberUpdate {
+	return _u.SetLessonID(v.ID)
+}
+
 // Mutation returns the LanguageLessonMemberMutation object of the builder.
 func (_u *LanguageLessonMemberUpdate) Mutation() *LanguageLessonMemberMutation {
 	return _u.mutation
+}
+
+// ClearCourse clears the "course" edge to the Course entity.
+func (_u *LanguageLessonMemberUpdate) ClearCourse() *LanguageLessonMemberUpdate {
+	_u.mutation.ClearCourse()
+	return _u
+}
+
+// ClearLesson clears the "lesson" edge to the LanguageLesson entity.
+func (_u *LanguageLessonMemberUpdate) ClearLesson() *LanguageLessonMemberUpdate {
+	_u.mutation.ClearLesson()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -169,7 +185,21 @@ func (_u *LanguageLessonMemberUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *LanguageLessonMemberUpdate) check() error {
+	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "LanguageLessonMember.course"`)
+	}
+	if _u.mutation.LessonCleared() && len(_u.mutation.LessonIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "LanguageLessonMember.lesson"`)
+	}
+	return nil
+}
+
 func (_u *LanguageLessonMemberUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(languagelessonmember.Table, languagelessonmember.Columns, sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -183,18 +213,6 @@ func (_u *LanguageLessonMemberUpdate) sqlSave(ctx context.Context) (_node int, e
 	}
 	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(languagelessonmember.FieldUserID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(languagelessonmember.FieldLanguageID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(languagelessonmember.FieldLanguageID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.LessonID(); ok {
-		_spec.SetField(languagelessonmember.FieldLessonID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedLessonID(); ok {
-		_spec.AddField(languagelessonmember.FieldLessonID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.State(); ok {
 		_spec.SetField(languagelessonmember.FieldState, field.TypeString, value)
@@ -210,6 +228,64 @@ func (_u *LanguageLessonMemberUpdate) sqlSave(ctx context.Context) (_node int, e
 	}
 	if _u.mutation.MessagesCountCleared() {
 		_spec.ClearField(languagelessonmember.FieldMessagesCount, field.TypeInt)
+	}
+	if _u.mutation.CourseCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.CourseTable,
+			Columns: []string{languagelessonmember.CourseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CourseIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.CourseTable,
+			Columns: []string{languagelessonmember.CourseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.LessonCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.LessonTable,
+			Columns: []string{languagelessonmember.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.LessonTable,
+			Columns: []string{languagelessonmember.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -254,7 +330,6 @@ func (_u *LanguageLessonMemberUpdateOne) AddUserID(v int) *LanguageLessonMemberU
 
 // SetLanguageID sets the "language_id" field.
 func (_u *LanguageLessonMemberUpdateOne) SetLanguageID(v int) *LanguageLessonMemberUpdateOne {
-	_u.mutation.ResetLanguageID()
 	_u.mutation.SetLanguageID(v)
 	return _u
 }
@@ -267,15 +342,8 @@ func (_u *LanguageLessonMemberUpdateOne) SetNillableLanguageID(v *int) *Language
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *LanguageLessonMemberUpdateOne) AddLanguageID(v int) *LanguageLessonMemberUpdateOne {
-	_u.mutation.AddLanguageID(v)
-	return _u
-}
-
 // SetLessonID sets the "lesson_id" field.
 func (_u *LanguageLessonMemberUpdateOne) SetLessonID(v int) *LanguageLessonMemberUpdateOne {
-	_u.mutation.ResetLessonID()
 	_u.mutation.SetLessonID(v)
 	return _u
 }
@@ -285,12 +353,6 @@ func (_u *LanguageLessonMemberUpdateOne) SetNillableLessonID(v *int) *LanguageLe
 	if v != nil {
 		_u.SetLessonID(*v)
 	}
-	return _u
-}
-
-// AddLessonID adds value to the "lesson_id" field.
-func (_u *LanguageLessonMemberUpdateOne) AddLessonID(v int) *LanguageLessonMemberUpdateOne {
-	_u.mutation.AddLessonID(v)
 	return _u
 }
 
@@ -341,9 +403,37 @@ func (_u *LanguageLessonMemberUpdateOne) ClearMessagesCount() *LanguageLessonMem
 	return _u
 }
 
+// SetCourseID sets the "course" edge to the Course entity by ID.
+func (_u *LanguageLessonMemberUpdateOne) SetCourseID(id int) *LanguageLessonMemberUpdateOne {
+	_u.mutation.SetCourseID(id)
+	return _u
+}
+
+// SetCourse sets the "course" edge to the Course entity.
+func (_u *LanguageLessonMemberUpdateOne) SetCourse(v *Course) *LanguageLessonMemberUpdateOne {
+	return _u.SetCourseID(v.ID)
+}
+
+// SetLesson sets the "lesson" edge to the LanguageLesson entity.
+func (_u *LanguageLessonMemberUpdateOne) SetLesson(v *LanguageLesson) *LanguageLessonMemberUpdateOne {
+	return _u.SetLessonID(v.ID)
+}
+
 // Mutation returns the LanguageLessonMemberMutation object of the builder.
 func (_u *LanguageLessonMemberUpdateOne) Mutation() *LanguageLessonMemberMutation {
 	return _u.mutation
+}
+
+// ClearCourse clears the "course" edge to the Course entity.
+func (_u *LanguageLessonMemberUpdateOne) ClearCourse() *LanguageLessonMemberUpdateOne {
+	_u.mutation.ClearCourse()
+	return _u
+}
+
+// ClearLesson clears the "lesson" edge to the LanguageLesson entity.
+func (_u *LanguageLessonMemberUpdateOne) ClearLesson() *LanguageLessonMemberUpdateOne {
+	_u.mutation.ClearLesson()
+	return _u
 }
 
 // Where appends a list predicates to the LanguageLessonMemberUpdate builder.
@@ -386,7 +476,21 @@ func (_u *LanguageLessonMemberUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *LanguageLessonMemberUpdateOne) check() error {
+	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "LanguageLessonMember.course"`)
+	}
+	if _u.mutation.LessonCleared() && len(_u.mutation.LessonIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "LanguageLessonMember.lesson"`)
+	}
+	return nil
+}
+
 func (_u *LanguageLessonMemberUpdateOne) sqlSave(ctx context.Context) (_node *LanguageLessonMember, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(languagelessonmember.Table, languagelessonmember.Columns, sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -418,18 +522,6 @@ func (_u *LanguageLessonMemberUpdateOne) sqlSave(ctx context.Context) (_node *La
 	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(languagelessonmember.FieldUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(languagelessonmember.FieldLanguageID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(languagelessonmember.FieldLanguageID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.LessonID(); ok {
-		_spec.SetField(languagelessonmember.FieldLessonID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedLessonID(); ok {
-		_spec.AddField(languagelessonmember.FieldLessonID, field.TypeInt, value)
-	}
 	if value, ok := _u.mutation.State(); ok {
 		_spec.SetField(languagelessonmember.FieldState, field.TypeString, value)
 	}
@@ -444,6 +536,64 @@ func (_u *LanguageLessonMemberUpdateOne) sqlSave(ctx context.Context) (_node *La
 	}
 	if _u.mutation.MessagesCountCleared() {
 		_spec.ClearField(languagelessonmember.FieldMessagesCount, field.TypeInt)
+	}
+	if _u.mutation.CourseCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.CourseTable,
+			Columns: []string{languagelessonmember.CourseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CourseIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.CourseTable,
+			Columns: []string{languagelessonmember.CourseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.LessonCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.LessonTable,
+			Columns: []string{languagelessonmember.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.LessonTable,
+			Columns: []string{languagelessonmember.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &LanguageLessonMember{config: _u.config}
 	_spec.Assign = _node.assignValues

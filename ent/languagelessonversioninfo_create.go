@@ -6,6 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"time"
 
@@ -170,6 +172,28 @@ func (_c *LanguageLessonVersionInfoCreate) SetNillableUpdatedAt(v *time.Time) *L
 	return _c
 }
 
+// SetLessonID sets the "lesson" edge to the LanguageLesson entity by ID.
+func (_c *LanguageLessonVersionInfoCreate) SetLessonID(id int) *LanguageLessonVersionInfoCreate {
+	_c.mutation.SetLessonID(id)
+	return _c
+}
+
+// SetLesson sets the "lesson" edge to the LanguageLesson entity.
+func (_c *LanguageLessonVersionInfoCreate) SetLesson(v *LanguageLesson) *LanguageLessonVersionInfoCreate {
+	return _c.SetLessonID(v.ID)
+}
+
+// SetCourseVersionID sets the "course_version" edge to the CourseVersion entity by ID.
+func (_c *LanguageLessonVersionInfoCreate) SetCourseVersionID(id int) *LanguageLessonVersionInfoCreate {
+	_c.mutation.SetCourseVersionID(id)
+	return _c
+}
+
+// SetCourseVersion sets the "course_version" edge to the CourseVersion entity.
+func (_c *LanguageLessonVersionInfoCreate) SetCourseVersion(v *CourseVersion) *LanguageLessonVersionInfoCreate {
+	return _c.SetCourseVersionID(v.ID)
+}
+
 // Mutation returns the LanguageLessonVersionInfoMutation object of the builder.
 func (_c *LanguageLessonVersionInfoCreate) Mutation() *LanguageLessonVersionInfoMutation {
 	return _c.mutation
@@ -235,6 +259,12 @@ func (_c *LanguageLessonVersionInfoCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LanguageLessonVersionInfo.updated_at"`)}
 	}
+	if len(_c.mutation.LessonIDs()) == 0 {
+		return &ValidationError{Name: "lesson", err: errors.New(`ent: missing required edge "LanguageLessonVersionInfo.lesson"`)}
+	}
+	if len(_c.mutation.CourseVersionIDs()) == 0 {
+		return &ValidationError{Name: "course_version", err: errors.New(`ent: missing required edge "LanguageLessonVersionInfo.course_version"`)}
+	}
 	return nil
 }
 
@@ -277,14 +307,6 @@ func (_c *LanguageLessonVersionInfoCreate) createSpec() (*LanguageLessonVersionI
 		_spec.SetField(languagelessonversioninfo.FieldLanguageID, field.TypeInt, value)
 		_node.LanguageID = value
 	}
-	if value, ok := _c.mutation.LanguageLessonID(); ok {
-		_spec.SetField(languagelessonversioninfo.FieldLanguageLessonID, field.TypeInt, value)
-		_node.LanguageLessonID = value
-	}
-	if value, ok := _c.mutation.LanguageVersionID(); ok {
-		_spec.SetField(languagelessonversioninfo.FieldLanguageVersionID, field.TypeInt, value)
-		_node.LanguageVersionID = value
-	}
 	if value, ok := _c.mutation.Theory(); ok {
 		_spec.SetField(languagelessonversioninfo.FieldTheory, field.TypeString, value)
 		_node.Theory = &value
@@ -312,6 +334,40 @@ func (_c *LanguageLessonVersionInfoCreate) createSpec() (*LanguageLessonVersionI
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(languagelessonversioninfo.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonversioninfo.LessonTable,
+			Columns: []string{languagelessonversioninfo.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.LanguageLessonID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CourseVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonversioninfo.CourseVersionTable,
+			Columns: []string{languagelessonversioninfo.CourseVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.LanguageVersionID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

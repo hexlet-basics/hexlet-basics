@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -404,26 +405,6 @@ func LanguageLessonIDNotIn(vs ...int) predicate.LanguageLessonVersionInfo {
 	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldLanguageLessonID, vs...))
 }
 
-// LanguageLessonIDGT applies the GT predicate on the "language_lesson_id" field.
-func LanguageLessonIDGT(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldLanguageLessonID, v))
-}
-
-// LanguageLessonIDGTE applies the GTE predicate on the "language_lesson_id" field.
-func LanguageLessonIDGTE(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldLanguageLessonID, v))
-}
-
-// LanguageLessonIDLT applies the LT predicate on the "language_lesson_id" field.
-func LanguageLessonIDLT(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldLanguageLessonID, v))
-}
-
-// LanguageLessonIDLTE applies the LTE predicate on the "language_lesson_id" field.
-func LanguageLessonIDLTE(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldLanguageLessonID, v))
-}
-
 // LanguageVersionIDEQ applies the EQ predicate on the "language_version_id" field.
 func LanguageVersionIDEQ(v int) predicate.LanguageLessonVersionInfo {
 	return predicate.LanguageLessonVersionInfo(sql.FieldEQ(FieldLanguageVersionID, v))
@@ -442,26 +423,6 @@ func LanguageVersionIDIn(vs ...int) predicate.LanguageLessonVersionInfo {
 // LanguageVersionIDNotIn applies the NotIn predicate on the "language_version_id" field.
 func LanguageVersionIDNotIn(vs ...int) predicate.LanguageLessonVersionInfo {
 	return predicate.LanguageLessonVersionInfo(sql.FieldNotIn(FieldLanguageVersionID, vs...))
-}
-
-// LanguageVersionIDGT applies the GT predicate on the "language_version_id" field.
-func LanguageVersionIDGT(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldGT(FieldLanguageVersionID, v))
-}
-
-// LanguageVersionIDGTE applies the GTE predicate on the "language_version_id" field.
-func LanguageVersionIDGTE(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldGTE(FieldLanguageVersionID, v))
-}
-
-// LanguageVersionIDLT applies the LT predicate on the "language_version_id" field.
-func LanguageVersionIDLT(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldLT(FieldLanguageVersionID, v))
-}
-
-// LanguageVersionIDLTE applies the LTE predicate on the "language_version_id" field.
-func LanguageVersionIDLTE(v int) predicate.LanguageLessonVersionInfo {
-	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldLanguageVersionID, v))
 }
 
 // TheoryEQ applies the EQ predicate on the "theory" field.
@@ -882,6 +843,52 @@ func UpdatedAtLT(v time.Time) predicate.LanguageLessonVersionInfo {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.LanguageLessonVersionInfo {
 	return predicate.LanguageLessonVersionInfo(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// HasLesson applies the HasEdge predicate on the "lesson" edge.
+func HasLesson() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLessonWith applies the HasEdge predicate on the "lesson" edge with a given conditions (other predicates).
+func HasLessonWith(preds ...predicate.LanguageLesson) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(func(s *sql.Selector) {
+		step := newLessonStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasCourseVersion applies the HasEdge predicate on the "course_version" edge.
+func HasCourseVersion() predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, CourseVersionTable, CourseVersionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCourseVersionWith applies the HasEdge predicate on the "course_version" edge with a given conditions (other predicates).
+func HasCourseVersionWith(preds ...predicate.CourseVersion) predicate.LanguageLessonVersionInfo {
+	return predicate.LanguageLessonVersionInfo(func(s *sql.Selector) {
+		step := newCourseVersionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

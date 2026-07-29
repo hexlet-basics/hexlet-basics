@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -27,8 +28,17 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeInfos holds the string denoting the infos edge name in mutations.
+	EdgeInfos = "infos"
 	// Table holds the table name of the languagelesson in the database.
 	Table = "language_lessons"
+	// InfosTable is the table that holds the infos relation/edge.
+	InfosTable = "language_lesson_version_infos"
+	// InfosInverseTable is the table name for the LanguageLessonVersionInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "languagelessonversioninfo" package.
+	InfosInverseTable = "language_lesson_version_infos"
+	// InfosColumn is the table column denoting the infos relation/edge.
+	InfosColumn = "language_lesson_id"
 )
 
 // Columns holds all SQL columns for languagelesson fields.
@@ -103,4 +113,25 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByInfosCount orders the results by infos count.
+func ByInfosCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newInfosStep(), opts...)
+	}
+}
+
+// ByInfos orders the results by infos terms.
+func ByInfos(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInfosStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newInfosStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(InfosInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, InfosTable, InfosColumn),
+	)
 }

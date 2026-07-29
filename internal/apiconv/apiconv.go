@@ -24,6 +24,7 @@ import (
 // goverter:output:file ./apiconv.gen.go
 // goverter:useZeroValueOnPointerInconsistency yes
 // goverter:extend Int32FromInt
+// goverter:extend Int32FromPtr
 // goverter:extend StringFromPtr
 // goverter:extend NilStringFromPtr
 // goverter:extend NilInt32FromPtr
@@ -38,6 +39,7 @@ import (
 // goverter:extend LocalesFromPq
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
+// goverter:extend MemberStateFromPtr
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
 
@@ -157,6 +159,36 @@ type Converter interface {
 	ToStaffMember(source *ent.StaffMember) api.StaffMember
 
 	ToStaffMembers(source []*ent.StaffMember) []api.StaffMember
+
+	// Lesson list rows are version infos with the stable lesson identity loaded
+	// through WithLesson.
+	// goverter:map LanguageLessonID ID
+	// goverter:map Edges.Lesson.Slug Slug
+	ToCourseLessonListItem(source *ent.LanguageLessonVersionInfo) api.CourseLessonListItem
+
+	ToCourseLessonListItems(source []*ent.LanguageLessonVersionInfo) []api.CourseLessonListItem
+
+	// Member projections require WithCourse and WithLesson; the lesson query
+	// additionally eager-loads locale-filtered infos in ascending id order.
+	// goverter:map UserID UserId
+	// goverter:map Edges.Course.Slug CourseSlug
+	// goverter:map Edges.Lesson.Slug CourseLessonSlug
+	// goverter:map . CourseLessonName | courseLessonMemberName
+	ToCourseLessonMember(source *ent.LanguageLessonMember) api.CourseLessonMember
+
+	ToCourseLessonMembers(source []*ent.LanguageLessonMember) []api.CourseLessonMember
+
+	// Review projections require WithCourse and WithLesson.
+	// goverter:map LanguageID CourseId
+	// goverter:map LanguageLessonID CourseLessonId
+	// goverter:map LanguageLessonVersionID CourseLessonVersionId
+	// goverter:map LanguageLessonVersionInfoID CourseLessonVersionInfoId
+	// goverter:map Edges.Lesson.Slug Slug
+	// goverter:map Edges.Lesson.NaturalOrder LessonNaturalOrder
+	// goverter:map Edges.Course.Slug CourseSlug
+	ToCourseLessonReview(source *ent.LanguageLessonReview) api.CourseLessonReview
+
+	ToCourseLessonReviews(source []*ent.LanguageLessonReview) []api.CourseLessonReview
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -166,8 +198,29 @@ func TimeIdentity(v time.Time) time.Time { return v }
 // Int32FromInt narrows an ent int id/count to the contract's int32.
 func Int32FromInt(v int) int32 { return int32(v) }
 
+// Int32FromPtr resolves a nullable ent integer to a required contract field.
+func Int32FromPtr(v *int) int32 { return int32(lo.FromPtr(v)) }
+
 // StringFromPtr resolves a nullable ent column to a required string field.
 func StringFromPtr(v *string) string { return lo.FromPtr(v) }
+
+// MemberStateFromPtr mirrors AASM's initial state for nullable legacy rows.
+func MemberStateFromPtr(v *string) api.MemberState {
+	if v == nil || *v == "" {
+		return api.MemberStateStarted
+	}
+	return api.MemberState(*v)
+}
+
+// courseLessonMemberName reads the first eager-loaded localized info. The
+// handler orders the edge by id so "first" is deterministic and matches the
+// legacy Lesson#localed_info convention.
+func courseLessonMemberName(source *ent.LanguageLessonMember) string {
+	if source == nil || source.Edges.Lesson == nil || len(source.Edges.Lesson.Edges.Infos) == 0 {
+		return ""
+	}
+	return StringFromPtr(source.Edges.Lesson.Edges.Infos[0].Name)
+}
 
 // NilStringFromPtr bridges a nullable ent column to ogen's NilString.
 func NilStringFromPtr(v *string) api.NilString {

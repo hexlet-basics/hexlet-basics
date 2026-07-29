@@ -6,6 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonmember"
 	"time"
 
@@ -72,6 +74,22 @@ func (_c *LanguageLessonMemberCreate) SetCreatedAt(v time.Time) *LanguageLessonM
 	return _c
 }
 
+// SetCourseID sets the "course" edge to the Course entity by ID.
+func (_c *LanguageLessonMemberCreate) SetCourseID(id int) *LanguageLessonMemberCreate {
+	_c.mutation.SetCourseID(id)
+	return _c
+}
+
+// SetCourse sets the "course" edge to the Course entity.
+func (_c *LanguageLessonMemberCreate) SetCourse(v *Course) *LanguageLessonMemberCreate {
+	return _c.SetCourseID(v.ID)
+}
+
+// SetLesson sets the "lesson" edge to the LanguageLesson entity.
+func (_c *LanguageLessonMemberCreate) SetLesson(v *LanguageLesson) *LanguageLessonMemberCreate {
+	return _c.SetLessonID(v.ID)
+}
+
 // Mutation returns the LanguageLessonMemberMutation object of the builder.
 func (_c *LanguageLessonMemberCreate) Mutation() *LanguageLessonMemberMutation {
 	return _c.mutation
@@ -118,6 +136,12 @@ func (_c *LanguageLessonMemberCreate) check() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LanguageLessonMember.created_at"`)}
 	}
+	if len(_c.mutation.CourseIDs()) == 0 {
+		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "LanguageLessonMember.course"`)}
+	}
+	if len(_c.mutation.LessonIDs()) == 0 {
+		return &ValidationError{Name: "lesson", err: errors.New(`ent: missing required edge "LanguageLessonMember.lesson"`)}
+	}
 	return nil
 }
 
@@ -148,14 +172,6 @@ func (_c *LanguageLessonMemberCreate) createSpec() (*LanguageLessonMember, *sqlg
 		_spec.SetField(languagelessonmember.FieldUserID, field.TypeInt, value)
 		_node.UserID = value
 	}
-	if value, ok := _c.mutation.LanguageID(); ok {
-		_spec.SetField(languagelessonmember.FieldLanguageID, field.TypeInt, value)
-		_node.LanguageID = value
-	}
-	if value, ok := _c.mutation.LessonID(); ok {
-		_spec.SetField(languagelessonmember.FieldLessonID, field.TypeInt, value)
-		_node.LessonID = value
-	}
 	if value, ok := _c.mutation.State(); ok {
 		_spec.SetField(languagelessonmember.FieldState, field.TypeString, value)
 		_node.State = &value
@@ -167,6 +183,40 @@ func (_c *LanguageLessonMemberCreate) createSpec() (*LanguageLessonMember, *sqlg
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(languagelessonmember.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.CourseTable,
+			Columns: []string{languagelessonmember.CourseColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.LanguageID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   languagelessonmember.LessonTable,
+			Columns: []string{languagelessonmember.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.LessonID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

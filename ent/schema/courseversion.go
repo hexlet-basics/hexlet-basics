@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -51,5 +52,16 @@ func (CourseVersion) Fields() []ent.Field {
 		// Rails-owned timestamp (NOT NULL, no DB default); supplied by ent now that
 		// the loader writes this table.
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
+	}
+}
+
+func (CourseVersion) Edges() []ent.Edge {
+	return []ent.Edge{
+		// A version can be selected as current by a course through the FK stored
+		// on languages.current_version_id. The inverse edge lets read queries
+		// express "info belongs to a completed course's current version"
+		// without first materializing version ids in the handler.
+		edge.From("current_courses", Course.Type).
+			Ref("current_version"),
 	}
 }

@@ -290,34 +290,62 @@ var (
 	LanguageLessonMembersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeInt},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "lesson_id", Type: field.TypeInt},
 		{Name: "state", Type: field.TypeString, Nullable: true},
 		{Name: "messages_count", Type: field.TypeInt, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "lesson_id", Type: field.TypeInt},
 	}
 	// LanguageLessonMembersTable holds the schema information for the "language_lesson_members" table.
 	LanguageLessonMembersTable = &schema.Table{
 		Name:       "language_lesson_members",
 		Columns:    LanguageLessonMembersColumns,
 		PrimaryKey: []*schema.Column{LanguageLessonMembersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_lesson_members_languages_course",
+				Columns:    []*schema.Column{LanguageLessonMembersColumns[5]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_members_language_lessons_lesson",
+				Columns:    []*schema.Column{LanguageLessonMembersColumns[6]},
+				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// LanguageLessonReviewsColumns holds the columns for the "language_lesson_reviews" table.
 	LanguageLessonReviewsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "locale", Type: field.TypeString},
 		{Name: "summary", Type: field.TypeString},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "language_lesson_id", Type: field.TypeInt},
 		{Name: "language_lesson_version_id", Type: field.TypeInt},
 		{Name: "language_lesson_version_info_id", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_lesson_id", Type: field.TypeInt},
 	}
 	// LanguageLessonReviewsTable holds the schema information for the "language_lesson_reviews" table.
 	LanguageLessonReviewsTable = &schema.Table{
 		Name:       "language_lesson_reviews",
 		Columns:    LanguageLessonReviewsColumns,
 		PrimaryKey: []*schema.Column{LanguageLessonReviewsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_lesson_reviews_languages_course",
+				Columns:    []*schema.Column{LanguageLessonReviewsColumns[6]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_reviews_language_lessons_lesson",
+				Columns:    []*schema.Column{LanguageLessonReviewsColumns[7]},
+				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// LanguageLessonVersionsColumns holds the columns for the "language_lesson_versions" table.
 	LanguageLessonVersionsColumns = []*schema.Column{
@@ -348,8 +376,6 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
 		{Name: "language_id", Type: field.TypeInt},
-		{Name: "language_lesson_id", Type: field.TypeInt},
-		{Name: "language_version_id", Type: field.TypeInt},
 		{Name: "theory", Type: field.TypeString, Nullable: true},
 		{Name: "instructions", Type: field.TypeString, Nullable: true},
 		{Name: "tips", Type: field.TypeString, Nullable: true},
@@ -357,12 +383,28 @@ var (
 		{Name: "version_id", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "language_lesson_id", Type: field.TypeInt},
+		{Name: "language_version_id", Type: field.TypeInt},
 	}
 	// LanguageLessonVersionInfosTable holds the schema information for the "language_lesson_version_infos" table.
 	LanguageLessonVersionInfosTable = &schema.Table{
 		Name:       "language_lesson_version_infos",
 		Columns:    LanguageLessonVersionInfosColumns,
 		PrimaryKey: []*schema.Column{LanguageLessonVersionInfosColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_lesson_version_infos_language_lessons_lesson",
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[12]},
+				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_version_infos_language_versions_course_version",
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[13]},
+				RefColumns: []*schema.Column{LanguageVersionsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// LanguageModulesColumns holds the columns for the "language_modules" table.
 	LanguageModulesColumns = []*schema.Column{
@@ -617,6 +659,12 @@ func init() {
 	LanguageLandingPageQnaItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_landing_page_qna_items",
 	}
+	LanguageLessonMembersTable.ForeignKeys[0].RefTable = LanguagesTable
+	LanguageLessonMembersTable.ForeignKeys[1].RefTable = LanguageLessonsTable
+	LanguageLessonReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
+	LanguageLessonReviewsTable.ForeignKeys[1].RefTable = LanguageLessonsTable
+	LanguageLessonVersionInfosTable.ForeignKeys[0].RefTable = LanguageLessonsTable
+	LanguageLessonVersionInfosTable.ForeignKeys[1].RefTable = LanguageVersionsTable
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
 	StaffMembersTable.ForeignKeys[0].RefTable = UsersTable

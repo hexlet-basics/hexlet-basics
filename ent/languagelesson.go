@@ -30,8 +30,29 @@ type LanguageLesson struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the LanguageLessonQuery when eager-loading is set.
+	Edges        LanguageLessonEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// LanguageLessonEdges holds the relations/edges for other nodes in the graph.
+type LanguageLessonEdges struct {
+	// Infos holds the value of the infos edge.
+	Infos []*LanguageLessonVersionInfo `json:"infos,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// InfosOrErr returns the Infos value or an error if the edge
+// was not loaded in eager-loading.
+func (e LanguageLessonEdges) InfosOrErr() ([]*LanguageLessonVersionInfo, error) {
+	if e.loadedTypes[0] {
+		return e.Infos, nil
+	}
+	return nil, &NotLoadedError{edge: "infos"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -124,6 +145,11 @@ func (_m *LanguageLesson) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *LanguageLesson) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryInfos queries the "infos" edge of the LanguageLesson entity.
+func (_m *LanguageLesson) QueryInfos() *LanguageLessonVersionInfoQuery {
+	return NewLanguageLessonClient(_m.config).QueryInfos(_m)
 }
 
 // Update returns a builder for updating this LanguageLesson.

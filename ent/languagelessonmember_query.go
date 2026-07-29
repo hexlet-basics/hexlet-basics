@@ -5,6 +5,8 @@ package ent
 import (
 	"context"
 	"fmt"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonmember"
 	"hexletbasics/ent/predicate"
 	"math"
@@ -22,6 +24,8 @@ type LanguageLessonMemberQuery struct {
 	order      []languagelessonmember.OrderOption
 	inters     []Interceptor
 	predicates []predicate.LanguageLessonMember
+	withCourse *CourseQuery
+	withLesson *LanguageLessonQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +60,50 @@ func (_q *LanguageLessonMemberQuery) Unique(unique bool) *LanguageLessonMemberQu
 func (_q *LanguageLessonMemberQuery) Order(o ...languagelessonmember.OrderOption) *LanguageLessonMemberQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryCourse chains the current query on the "course" edge.
+func (_q *LanguageLessonMemberQuery) QueryCourse() *CourseQuery {
+	query := (&CourseClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(languagelessonmember.Table, languagelessonmember.FieldID, selector),
+			sqlgraph.To(course.Table, course.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, languagelessonmember.CourseTable, languagelessonmember.CourseColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryLesson chains the current query on the "lesson" edge.
+func (_q *LanguageLessonMemberQuery) QueryLesson() *LanguageLessonQuery {
+	query := (&LanguageLessonClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(languagelessonmember.Table, languagelessonmember.FieldID, selector),
+			sqlgraph.To(languagelesson.Table, languagelesson.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, languagelessonmember.LessonTable, languagelessonmember.LessonColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first LanguageLessonMember entity from the query.
@@ -250,10 +298,34 @@ func (_q *LanguageLessonMemberQuery) Clone() *LanguageLessonMemberQuery {
 		order:      append([]languagelessonmember.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
 		predicates: append([]predicate.LanguageLessonMember{}, _q.predicates...),
+		withCourse: _q.withCourse.Clone(),
+		withLesson: _q.withLesson.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithCourse tells the query-builder to eager-load the nodes that are connected to
+// the "course" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *LanguageLessonMemberQuery) WithCourse(opts ...func(*CourseQuery)) *LanguageLessonMemberQuery {
+	query := (&CourseClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCourse = query
+	return _q
+}
+
+// WithLesson tells the query-builder to eager-load the nodes that are connected to
+// the "lesson" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *LanguageLessonMemberQuery) WithLesson(opts ...func(*LanguageLessonQuery)) *LanguageLessonMemberQuery {
+	query := (&LanguageLessonClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withLesson = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +404,12 @@ func (_q *LanguageLessonMemberQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *LanguageLessonMemberQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*LanguageLessonMember, error) {
 	var (
-		nodes = []*LanguageLessonMember{}
-		_spec = _q.querySpec()
+		nodes       = []*LanguageLessonMember{}
+		_spec       = _q.querySpec()
+		loadedTypes = [2]bool{
+			_q.withCourse != nil,
+			_q.withLesson != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*LanguageLessonMember).scanValues(nil, columns)
@@ -341,6 +417,7 @@ func (_q *LanguageLessonMemberQuery) sqlAll(ctx context.Context, hooks ...queryH
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &LanguageLessonMember{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +429,78 @@ func (_q *LanguageLessonMemberQuery) sqlAll(ctx context.Context, hooks ...queryH
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withCourse; query != nil {
+		if err := _q.loadCourse(ctx, query, nodes, nil,
+			func(n *LanguageLessonMember, e *Course) { n.Edges.Course = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withLesson; query != nil {
+		if err := _q.loadLesson(ctx, query, nodes, nil,
+			func(n *LanguageLessonMember, e *LanguageLesson) { n.Edges.Lesson = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *LanguageLessonMemberQuery) loadCourse(ctx context.Context, query *CourseQuery, nodes []*LanguageLessonMember, init func(*LanguageLessonMember), assign func(*LanguageLessonMember, *Course)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*LanguageLessonMember)
+	for i := range nodes {
+		fk := nodes[i].LanguageID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(course.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "language_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *LanguageLessonMemberQuery) loadLesson(ctx context.Context, query *LanguageLessonQuery, nodes []*LanguageLessonMember, init func(*LanguageLessonMember), assign func(*LanguageLessonMember, *LanguageLesson)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*LanguageLessonMember)
+	for i := range nodes {
+		fk := nodes[i].LessonID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(languagelesson.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "lesson_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (_q *LanguageLessonMemberQuery) sqlCount(ctx context.Context) (int, error) {
@@ -379,6 +527,12 @@ func (_q *LanguageLessonMemberQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != languagelessonmember.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withCourse != nil {
+			_spec.Node.AddColumnOnce(languagelessonmember.FieldLanguageID)
+		}
+		if _q.withLesson != nil {
+			_spec.Node.AddColumnOnce(languagelessonmember.FieldLessonID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

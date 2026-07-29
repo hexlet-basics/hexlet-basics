@@ -4,6 +4,7 @@ package languagelessonmember
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -23,8 +24,26 @@ const (
 	FieldMessagesCount = "messages_count"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeCourse holds the string denoting the course edge name in mutations.
+	EdgeCourse = "course"
+	// EdgeLesson holds the string denoting the lesson edge name in mutations.
+	EdgeLesson = "lesson"
 	// Table holds the table name of the languagelessonmember in the database.
 	Table = "language_lesson_members"
+	// CourseTable is the table that holds the course relation/edge.
+	CourseTable = "language_lesson_members"
+	// CourseInverseTable is the table name for the Course entity.
+	// It exists in this package in order to avoid circular dependency with the "course" package.
+	CourseInverseTable = "languages"
+	// CourseColumn is the table column denoting the course relation/edge.
+	CourseColumn = "language_id"
+	// LessonTable is the table that holds the lesson relation/edge.
+	LessonTable = "language_lesson_members"
+	// LessonInverseTable is the table name for the LanguageLesson entity.
+	// It exists in this package in order to avoid circular dependency with the "languagelesson" package.
+	LessonInverseTable = "language_lessons"
+	// LessonColumn is the table column denoting the lesson relation/edge.
+	LessonColumn = "lesson_id"
 )
 
 // Columns holds all SQL columns for languagelessonmember fields.
@@ -84,4 +103,32 @@ func ByMessagesCount(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByCourseField orders the results by course field.
+func ByCourseField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCourseStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByLessonField orders the results by lesson field.
+func ByLessonField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLessonStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newCourseStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CourseInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, CourseTable, CourseColumn),
+	)
+}
+func newLessonStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LessonInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+	)
 }

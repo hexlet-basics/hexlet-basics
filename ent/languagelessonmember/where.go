@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -144,26 +145,6 @@ func LanguageIDNotIn(vs ...int) predicate.LanguageLessonMember {
 	return predicate.LanguageLessonMember(sql.FieldNotIn(FieldLanguageID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldGT(FieldLanguageID, v))
-}
-
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldGTE(FieldLanguageID, v))
-}
-
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldLT(FieldLanguageID, v))
-}
-
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldLTE(FieldLanguageID, v))
-}
-
 // LessonIDEQ applies the EQ predicate on the "lesson_id" field.
 func LessonIDEQ(v int) predicate.LanguageLessonMember {
 	return predicate.LanguageLessonMember(sql.FieldEQ(FieldLessonID, v))
@@ -182,26 +163,6 @@ func LessonIDIn(vs ...int) predicate.LanguageLessonMember {
 // LessonIDNotIn applies the NotIn predicate on the "lesson_id" field.
 func LessonIDNotIn(vs ...int) predicate.LanguageLessonMember {
 	return predicate.LanguageLessonMember(sql.FieldNotIn(FieldLessonID, vs...))
-}
-
-// LessonIDGT applies the GT predicate on the "lesson_id" field.
-func LessonIDGT(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldGT(FieldLessonID, v))
-}
-
-// LessonIDGTE applies the GTE predicate on the "lesson_id" field.
-func LessonIDGTE(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldGTE(FieldLessonID, v))
-}
-
-// LessonIDLT applies the LT predicate on the "lesson_id" field.
-func LessonIDLT(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldLT(FieldLessonID, v))
-}
-
-// LessonIDLTE applies the LTE predicate on the "lesson_id" field.
-func LessonIDLTE(v int) predicate.LanguageLessonMember {
-	return predicate.LanguageLessonMember(sql.FieldLTE(FieldLessonID, v))
 }
 
 // StateEQ applies the EQ predicate on the "state" field.
@@ -367,6 +328,52 @@ func CreatedAtLT(v time.Time) predicate.LanguageLessonMember {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.LanguageLessonMember {
 	return predicate.LanguageLessonMember(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasCourse applies the HasEdge predicate on the "course" edge.
+func HasCourse() predicate.LanguageLessonMember {
+	return predicate.LanguageLessonMember(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, CourseTable, CourseColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCourseWith applies the HasEdge predicate on the "course" edge with a given conditions (other predicates).
+func HasCourseWith(preds ...predicate.Course) predicate.LanguageLessonMember {
+	return predicate.LanguageLessonMember(func(s *sql.Selector) {
+		step := newCourseStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasLesson applies the HasEdge predicate on the "lesson" edge.
+func HasLesson() predicate.LanguageLessonMember {
+	return predicate.LanguageLessonMember(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLessonWith applies the HasEdge predicate on the "lesson" edge with a given conditions (other predicates).
+func HasLessonWith(preds ...predicate.LanguageLesson) predicate.LanguageLessonMember {
+	return predicate.LanguageLessonMember(func(s *sql.Selector) {
+		step := newLessonStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

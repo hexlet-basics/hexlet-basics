@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/course"
 	"hexletbasics/ent/courseversion"
 	"time"
 
@@ -194,6 +195,21 @@ func (_c *CourseVersionCreate) SetNillableUpdatedAt(v *time.Time) *CourseVersion
 	return _c
 }
 
+// AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by IDs.
+func (_c *CourseVersionCreate) AddCurrentCourseIDs(ids ...int) *CourseVersionCreate {
+	_c.mutation.AddCurrentCourseIDs(ids...)
+	return _c
+}
+
+// AddCurrentCourses adds the "current_courses" edges to the Course entity.
+func (_c *CourseVersionCreate) AddCurrentCourses(v ...*Course) *CourseVersionCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddCurrentCourseIDs(ids...)
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_c *CourseVersionCreate) Mutation() *CourseVersionMutation {
 	return _c.mutation
@@ -334,6 +350,22 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.CurrentCoursesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.CurrentCoursesTable,
+			Columns: []string{courseversion.CurrentCoursesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -239,26 +240,6 @@ func LanguageIDNotIn(vs ...int) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldNotIn(FieldLanguageID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldGT(FieldLanguageID, v))
-}
-
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldGTE(FieldLanguageID, v))
-}
-
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldLT(FieldLanguageID, v))
-}
-
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldLTE(FieldLanguageID, v))
-}
-
 // LanguageLessonIDEQ applies the EQ predicate on the "language_lesson_id" field.
 func LanguageLessonIDEQ(v int) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldEQ(FieldLanguageLessonID, v))
@@ -277,26 +258,6 @@ func LanguageLessonIDIn(vs ...int) predicate.LanguageLessonReview {
 // LanguageLessonIDNotIn applies the NotIn predicate on the "language_lesson_id" field.
 func LanguageLessonIDNotIn(vs ...int) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldNotIn(FieldLanguageLessonID, vs...))
-}
-
-// LanguageLessonIDGT applies the GT predicate on the "language_lesson_id" field.
-func LanguageLessonIDGT(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldGT(FieldLanguageLessonID, v))
-}
-
-// LanguageLessonIDGTE applies the GTE predicate on the "language_lesson_id" field.
-func LanguageLessonIDGTE(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldGTE(FieldLanguageLessonID, v))
-}
-
-// LanguageLessonIDLT applies the LT predicate on the "language_lesson_id" field.
-func LanguageLessonIDLT(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldLT(FieldLanguageLessonID, v))
-}
-
-// LanguageLessonIDLTE applies the LTE predicate on the "language_lesson_id" field.
-func LanguageLessonIDLTE(v int) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldLTE(FieldLanguageLessonID, v))
 }
 
 // LanguageLessonVersionIDEQ applies the EQ predicate on the "language_lesson_version_id" field.
@@ -417,6 +378,52 @@ func CreatedAtLT(v time.Time) predicate.LanguageLessonReview {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasCourse applies the HasEdge predicate on the "course" edge.
+func HasCourse() predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, CourseTable, CourseColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCourseWith applies the HasEdge predicate on the "course" edge with a given conditions (other predicates).
+func HasCourseWith(preds ...predicate.Course) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(func(s *sql.Selector) {
+		step := newCourseStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasLesson applies the HasEdge predicate on the "lesson" edge.
+func HasLesson() predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLessonWith applies the HasEdge predicate on the "lesson" edge with a given conditions (other predicates).
+func HasLessonWith(preds ...predicate.LanguageLesson) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(func(s *sql.Selector) {
+		step := newLessonStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

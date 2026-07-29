@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -39,8 +40,17 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeCurrentCourses holds the string denoting the current_courses edge name in mutations.
+	EdgeCurrentCourses = "current_courses"
 	// Table holds the table name of the courseversion in the database.
 	Table = "language_versions"
+	// CurrentCoursesTable is the table that holds the current_courses relation/edge.
+	CurrentCoursesTable = "languages"
+	// CurrentCoursesInverseTable is the table name for the Course entity.
+	// It exists in this package in order to avoid circular dependency with the "course" package.
+	CurrentCoursesInverseTable = "languages"
+	// CurrentCoursesColumn is the table column denoting the current_courses relation/edge.
+	CurrentCoursesColumn = "current_version_id"
 )
 
 // Columns holds all SQL columns for courseversion fields.
@@ -153,4 +163,25 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCurrentCoursesCount orders the results by current_courses count.
+func ByCurrentCoursesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCurrentCoursesStep(), opts...)
+	}
+}
+
+// ByCurrentCourses orders the results by current_courses terms.
+func ByCurrentCourses(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCurrentCoursesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newCurrentCoursesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CurrentCoursesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, CurrentCoursesTable, CurrentCoursesColumn),
+	)
 }

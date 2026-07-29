@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/languagelesson"
+	"hexletbasics/ent/languagelessonversioninfo"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -118,6 +119,21 @@ func (_c *LanguageLessonCreate) SetNillableUpdatedAt(v *time.Time) *LanguageLess
 	return _c
 }
 
+// AddInfoIDs adds the "infos" edge to the LanguageLessonVersionInfo entity by IDs.
+func (_c *LanguageLessonCreate) AddInfoIDs(ids ...int) *LanguageLessonCreate {
+	_c.mutation.AddInfoIDs(ids...)
+	return _c
+}
+
+// AddInfos adds the "infos" edges to the LanguageLessonVersionInfo entity.
+func (_c *LanguageLessonCreate) AddInfos(v ...*LanguageLessonVersionInfo) *LanguageLessonCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddInfoIDs(ids...)
+}
+
 // Mutation returns the LanguageLessonMutation object of the builder.
 func (_c *LanguageLessonCreate) Mutation() *LanguageLessonMutation {
 	return _c.mutation
@@ -224,6 +240,22 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.InfosIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   languagelesson.InfosTable,
+			Columns: []string{languagelesson.InfosColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(languagelessonversioninfo.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

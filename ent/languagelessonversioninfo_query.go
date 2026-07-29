@@ -5,6 +5,8 @@ package ent
 import (
 	"context"
 	"fmt"
+	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/ent/predicate"
 	"math"
@@ -18,10 +20,12 @@ import (
 // LanguageLessonVersionInfoQuery is the builder for querying LanguageLessonVersionInfo entities.
 type LanguageLessonVersionInfoQuery struct {
 	config
-	ctx        *QueryContext
-	order      []languagelessonversioninfo.OrderOption
-	inters     []Interceptor
-	predicates []predicate.LanguageLessonVersionInfo
+	ctx               *QueryContext
+	order             []languagelessonversioninfo.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.LanguageLessonVersionInfo
+	withLesson        *LanguageLessonQuery
+	withCourseVersion *CourseVersionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +60,50 @@ func (_q *LanguageLessonVersionInfoQuery) Unique(unique bool) *LanguageLessonVer
 func (_q *LanguageLessonVersionInfoQuery) Order(o ...languagelessonversioninfo.OrderOption) *LanguageLessonVersionInfoQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QueryLesson chains the current query on the "lesson" edge.
+func (_q *LanguageLessonVersionInfoQuery) QueryLesson() *LanguageLessonQuery {
+	query := (&LanguageLessonClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(languagelessonversioninfo.Table, languagelessonversioninfo.FieldID, selector),
+			sqlgraph.To(languagelesson.Table, languagelesson.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, languagelessonversioninfo.LessonTable, languagelessonversioninfo.LessonColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCourseVersion chains the current query on the "course_version" edge.
+func (_q *LanguageLessonVersionInfoQuery) QueryCourseVersion() *CourseVersionQuery {
+	query := (&CourseVersionClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(languagelessonversioninfo.Table, languagelessonversioninfo.FieldID, selector),
+			sqlgraph.To(courseversion.Table, courseversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, languagelessonversioninfo.CourseVersionTable, languagelessonversioninfo.CourseVersionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first LanguageLessonVersionInfo entity from the query.
@@ -245,15 +293,39 @@ func (_q *LanguageLessonVersionInfoQuery) Clone() *LanguageLessonVersionInfoQuer
 		return nil
 	}
 	return &LanguageLessonVersionInfoQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]languagelessonversioninfo.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.LanguageLessonVersionInfo{}, _q.predicates...),
+		config:            _q.config,
+		ctx:               _q.ctx.Clone(),
+		order:             append([]languagelessonversioninfo.OrderOption{}, _q.order...),
+		inters:            append([]Interceptor{}, _q.inters...),
+		predicates:        append([]predicate.LanguageLessonVersionInfo{}, _q.predicates...),
+		withLesson:        _q.withLesson.Clone(),
+		withCourseVersion: _q.withCourseVersion.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithLesson tells the query-builder to eager-load the nodes that are connected to
+// the "lesson" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *LanguageLessonVersionInfoQuery) WithLesson(opts ...func(*LanguageLessonQuery)) *LanguageLessonVersionInfoQuery {
+	query := (&LanguageLessonClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withLesson = query
+	return _q
+}
+
+// WithCourseVersion tells the query-builder to eager-load the nodes that are connected to
+// the "course_version" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *LanguageLessonVersionInfoQuery) WithCourseVersion(opts ...func(*CourseVersionQuery)) *LanguageLessonVersionInfoQuery {
+	query := (&CourseVersionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withCourseVersion = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +404,12 @@ func (_q *LanguageLessonVersionInfoQuery) prepareQuery(ctx context.Context) erro
 
 func (_q *LanguageLessonVersionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*LanguageLessonVersionInfo, error) {
 	var (
-		nodes = []*LanguageLessonVersionInfo{}
-		_spec = _q.querySpec()
+		nodes       = []*LanguageLessonVersionInfo{}
+		_spec       = _q.querySpec()
+		loadedTypes = [2]bool{
+			_q.withLesson != nil,
+			_q.withCourseVersion != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*LanguageLessonVersionInfo).scanValues(nil, columns)
@@ -341,6 +417,7 @@ func (_q *LanguageLessonVersionInfoQuery) sqlAll(ctx context.Context, hooks ...q
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &LanguageLessonVersionInfo{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +429,78 @@ func (_q *LanguageLessonVersionInfoQuery) sqlAll(ctx context.Context, hooks ...q
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withLesson; query != nil {
+		if err := _q.loadLesson(ctx, query, nodes, nil,
+			func(n *LanguageLessonVersionInfo, e *LanguageLesson) { n.Edges.Lesson = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withCourseVersion; query != nil {
+		if err := _q.loadCourseVersion(ctx, query, nodes, nil,
+			func(n *LanguageLessonVersionInfo, e *CourseVersion) { n.Edges.CourseVersion = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *LanguageLessonVersionInfoQuery) loadLesson(ctx context.Context, query *LanguageLessonQuery, nodes []*LanguageLessonVersionInfo, init func(*LanguageLessonVersionInfo), assign func(*LanguageLessonVersionInfo, *LanguageLesson)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*LanguageLessonVersionInfo)
+	for i := range nodes {
+		fk := nodes[i].LanguageLessonID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(languagelesson.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "language_lesson_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (_q *LanguageLessonVersionInfoQuery) loadCourseVersion(ctx context.Context, query *CourseVersionQuery, nodes []*LanguageLessonVersionInfo, init func(*LanguageLessonVersionInfo), assign func(*LanguageLessonVersionInfo, *CourseVersion)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*LanguageLessonVersionInfo)
+	for i := range nodes {
+		fk := nodes[i].LanguageVersionID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(courseversion.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "language_version_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (_q *LanguageLessonVersionInfoQuery) sqlCount(ctx context.Context) (int, error) {
@@ -379,6 +527,12 @@ func (_q *LanguageLessonVersionInfoQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != languagelessonversioninfo.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if _q.withLesson != nil {
+			_spec.Node.AddColumnOnce(languagelessonversioninfo.FieldLanguageLessonID)
+		}
+		if _q.withCourseVersion != nil {
+			_spec.Node.AddColumnOnce(languagelessonversioninfo.FieldLanguageVersionID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {
