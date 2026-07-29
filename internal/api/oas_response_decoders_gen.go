@@ -7227,19 +7227,37 @@ func decodeCreateSessionResponse(resp *http.Response) (res CreateSessionRes, _ e
 				if err := func() error {
 					if err := h.HasParam(cfg); err == nil {
 						if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-							val, err := d.DecodeValue()
-							if err != nil {
-								return err
-							}
+							wrapper.SetCookie = nil
+							return d.DecodeArray(func(d uri.Decoder) error {
+								var wrapperDotSetCookieVal string
+								if err := func() error {
+									val, err := d.DecodeValue()
+									if err != nil {
+										return err
+									}
 
-							c, err := conv.ToString(val)
-							if err != nil {
-								return err
-							}
+									c, err := conv.ToString(val)
+									if err != nil {
+										return err
+									}
 
-							wrapper.SetCookie = c
-							return nil
+									wrapperDotSetCookieVal = c
+									return nil
+								}(); err != nil {
+									return err
+								}
+								wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+								return nil
+							})
 						}); err != nil {
+							return err
+						}
+						if err := func() error {
+							if wrapper.SetCookie == nil {
+								return errors.New("nil is invalid value")
+							}
+							return nil
+						}(); err != nil {
 							return err
 						}
 					} else {
@@ -7398,19 +7416,37 @@ func decodeCreateUserResponse(resp *http.Response) (res CreateUserRes, _ error) 
 				if err := func() error {
 					if err := h.HasParam(cfg); err == nil {
 						if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-							val, err := d.DecodeValue()
-							if err != nil {
-								return err
-							}
+							wrapper.SetCookie = nil
+							return d.DecodeArray(func(d uri.Decoder) error {
+								var wrapperDotSetCookieVal string
+								if err := func() error {
+									val, err := d.DecodeValue()
+									if err != nil {
+										return err
+									}
 
-							c, err := conv.ToString(val)
-							if err != nil {
-								return err
-							}
+									c, err := conv.ToString(val)
+									if err != nil {
+										return err
+									}
 
-							wrapper.SetCookie = c
-							return nil
+									wrapperDotSetCookieVal = c
+									return nil
+								}(); err != nil {
+									return err
+								}
+								wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+								return nil
+							})
 						}); err != nil {
+							return err
+						}
+						if err := func() error {
+							if wrapper.SetCookie == nil {
+								return errors.New("nil is invalid value")
+							}
+							return nil
+						}(); err != nil {
 							return err
 						}
 					} else {
@@ -7702,19 +7738,37 @@ func decodeDeleteSessionResponse(resp *http.Response) (res *DeleteSessionNoConte
 			if err := func() error {
 				if err := h.HasParam(cfg); err == nil {
 					if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
-						val, err := d.DecodeValue()
-						if err != nil {
-							return err
-						}
+						wrapper.SetCookie = nil
+						return d.DecodeArray(func(d uri.Decoder) error {
+							var wrapperDotSetCookieVal string
+							if err := func() error {
+								val, err := d.DecodeValue()
+								if err != nil {
+									return err
+								}
 
-						c, err := conv.ToString(val)
-						if err != nil {
-							return err
-						}
+								c, err := conv.ToString(val)
+								if err != nil {
+									return err
+								}
 
-						wrapper.SetCookie = c
-						return nil
+								wrapperDotSetCookieVal = c
+								return nil
+							}(); err != nil {
+								return err
+							}
+							wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+							return nil
+						})
 					}); err != nil {
+						return err
+					}
+					if err := func() error {
+						if wrapper.SetCookie == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
 						return err
 					}
 				} else {

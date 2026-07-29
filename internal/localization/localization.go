@@ -19,7 +19,10 @@ import (
 //go:embed locales/*.json
 var localeFiles embed.FS
 
-type localizerContextKey struct{}
+type (
+	localizerContextKey struct{}
+	localeContextKey    struct{}
+)
 
 // Message is a backend message registered with the localization module.
 //
@@ -33,7 +36,8 @@ type Message struct {
 // Translator owns the process-wide translation bundle. A request-specific
 // go-i18n localizer is derived by Middleware and carried through context.
 type Translator struct {
-	bundle *i18n.Bundle
+	bundle  *i18n.Bundle
+	matcher language.Matcher
 }
 
 // New loads and validates every embedded locale catalog.
@@ -54,7 +58,10 @@ func New() (*Translator, error) {
 		}
 	}
 
-	return &Translator{bundle: bundle}, nil
+	return &Translator{
+		bundle:  bundle,
+		matcher: language.NewMatcher(bundle.LanguageTags()),
+	}, nil
 }
 
 // Middleware resolves Accept-Language once per request and makes the resulting
@@ -62,10 +69,27 @@ func New() (*Translator, error) {
 func (t *Translator) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Vary", "Accept-Language")
-		localizer := i18n.NewLocalizer(t.bundle, r.Header.Get("Accept-Language"))
+		header := r.Header.Get("Accept-Language")
+		localizer := i18n.NewLocalizer(t.bundle, header)
 		ctx := context.WithValue(r.Context(), localizerContextKey{}, localizer)
+		tags, _, err := language.ParseAcceptLanguage(header)
+		if err != nil || len(tags) == 0 {
+			tags = []language.Tag{language.English}
+		}
+		tag, _, _ := t.matcher.Match(tags...)
+		base, _ := tag.Base()
+		ctx = context.WithValue(ctx, localeContextKey{}, base.String())
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+// Locale returns the canonical request locale used by domain facts. Contexts
+// outside HTTP intentionally use English, matching Text's fallback.
+func (t *Translator) Locale(ctx context.Context) string {
+	if locale, ok := ctx.Value(localeContextKey{}).(string); ok {
+		return locale
+	}
+	return language.English.String()
 }
 
 // Text translates message for the locale attached to ctx. Contexts that did

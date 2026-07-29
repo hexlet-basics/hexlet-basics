@@ -46,6 +46,7 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	riverClient, err := jobs.NewClient(
 		sqlDB,
 		courseloader.NewLoader(nil, nil, nil),
+		nil,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
 		jobs.NewErrorHandler(sentryClient),
 	)

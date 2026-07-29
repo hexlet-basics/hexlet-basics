@@ -33,6 +33,7 @@
     "@tanstack/react-router-ssr-query": "1.167.1",
     "@tanstack/react-start": "1.168.32",
     "@tanstack/react-table": "^8.21.3",
+    "axios": "^1.18.1",
     "dayjs": "^1.11.21",
     "i18next": "^26.3.6",
     "motion": "^12.43.0",

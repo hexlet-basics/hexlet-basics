@@ -10,5 +10,5 @@ import { defineConfig } from "@hey-api/openapi-ts";
 export default defineConfig({
   input: "api-spec/dist/openapi.yaml",
   output: "src/client",
-  plugins: ["@hey-api/client-fetch", "@tanstack/react-query", "zod"],
+  plugins: ["@hey-api/client-axios", "@tanstack/react-query", "zod"],
 });

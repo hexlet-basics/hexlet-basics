@@ -9,15 +9,21 @@ import (
 	"strconv"
 	"time"
 
+	authlogger "github.com/go-pkgz/auth/v2/logger"
+	authmiddleware "github.com/go-pkgz/auth/v2/middleware"
+	"github.com/go-pkgz/auth/v2/provider"
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/events"
+	"hexletbasics/internal/ids"
 	"hexletbasics/internal/localization"
 )
 
@@ -26,6 +32,8 @@ const (
 	authCookieTTL = 31 * 24 * time.Hour
 	authIssuer    = "hexlet-basics"
 	authCookie    = "JWT"
+	authProvider  = "password"
+	xsrfCookie    = "XSRF-TOKEN"
 )
 
 var errInvalidCredentials = errors.New("invalid credentials")
@@ -35,14 +43,24 @@ var errInvalidCredentials = errors.New("invalid credentials")
 // response models declared in TypeSpec, so the public HTTP seam remains the
 // generated contract.
 type AuthHandler struct {
-	db   *ent.Client
-	conv apiconv.Converter
-	jwt  *token.Service
-	i18n *localization.Translator
+	db     *ent.Client
+	conv   apiconv.Converter
+	jwt    *token.Service
+	auth   authmiddleware.Authenticator
+	i18n   *localization.Translator
+	users  accounts.UserRegistrar
+	events events.StandalonePublisher
 }
 
 // NewAuthHandler builds the auth implementation used by the ogen handlers.
-func NewAuthHandler(db *ent.Client, cfg *config.Config, translator *localization.Translator) *AuthHandler {
+func NewAuthHandler(
+	db *ent.Client,
+	cfg *config.Config,
+	translator *localization.Translator,
+	errorHandler *APIErrorHandler,
+	registrar accounts.UserRegistrar,
+	eventPublisher events.StandalonePublisher,
+) *AuthHandler {
 	tokenOpts := token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
 			return cfg.JWTSecret, nil
@@ -50,16 +68,48 @@ func NewAuthHandler(db *ent.Client, cfg *config.Config, translator *localization
 		Issuer:         authIssuer,
 		TokenDuration:  authTokenTTL,
 		CookieDuration: authCookieTTL,
-		DisableXSRF:    true,
-		SameSite:       http.SameSiteLaxMode,
+		XSRFIgnoreMethods: []string{
+			http.MethodGet,
+			http.MethodHead,
+			http.MethodOptions,
+		},
+		SameSite: http.SameSiteLaxMode,
 	}
+	jwtService := token.NewService(tokenOpts)
 
 	return &AuthHandler{
 		db:   db,
 		conv: &apiconv.ConverterImpl{},
-		jwt:  token.NewService(tokenOpts),
-		i18n: translator,
+		jwt:  jwtService,
+		auth: authmiddleware.Authenticator{
+			L:          authlogger.NoOp,
+			JWTService: jwtService,
+			Providers: []provider.Service{{
+				Provider: provider.DirectHandler{ProviderName: authProvider},
+			}},
+			ErrorHandler: func(w http.ResponseWriter, r *http.Request, status int, err error) {
+				errorHandler.Write(r.Context(), w, r, withHTTPStatus(status, err))
+			},
+		},
+		i18n:   translator,
+		users:  registrar,
+		events: eventPublisher,
 	}
+}
+
+// Trace applies go-pkgz/auth's optional authentication middleware.
+func (h *AuthHandler) Trace(next http.Handler) http.Handler {
+	return h.auth.Trace(next)
+}
+
+// Auth applies go-pkgz/auth's required authentication and XSRF middleware.
+func (h *AuthHandler) Auth(next http.Handler) http.Handler {
+	return h.auth.Auth(next)
+}
+
+// Admin applies go-pkgz/auth's required authentication and admin authorization.
+func (h *AuthHandler) Admin(next http.Handler) http.Handler {
+	return h.auth.AdminOnly(next)
 }
 
 // CreateSession authenticates once and reuses the loaded user for both the JWT
@@ -73,68 +123,75 @@ func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) 
 	if err != nil {
 		return nil, err
 	}
+	if err := h.events.PublishStandalone(ctx, events.UserSignedIn{
+		UserID:          u.ID,
+		OccurrenceCount: -1,
+		Email:           u.Email,
+		Locale:          h.i18n.Locale(ctx),
+		OccurredAt:      time.Now().UTC(),
+	}); err != nil {
+		return nil, err
+	}
 
-	cookie, err := h.issueCookie(u)
+	cookies, err := h.issueCookies(u)
 	if err != nil {
 		return nil, err
 	}
-	return &api.UserHeaders{SetCookie: cookie, Response: h.conv.ToUser(u)}, nil
+	return &api.UserHeaders{SetCookie: cookies, Response: h.conv.ToUser(u)}, nil
 }
 
 // CreateUser creates an account and issues a go-pkgz/auth JWT cookie.
 func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api.CreateUserRes, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return validationError("password", h.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
-	}
 	var firstName *string
 	if value, ok := req.FirstName.Get(); ok {
 		firstName = &value
 	}
 
-	u, err := h.db.User.Create().
-		SetEmail(req.Email).
-		SetPasswordDigest(string(hash)).
-		SetNillableFirstName(firstName).
-		Save(ctx)
+	u, err := h.users.Register(ctx, accounts.Registration{
+		Email:     req.Email,
+		Password:  req.Password,
+		FirstName: firstName,
+		Locale:    h.i18n.Locale(ctx),
+	})
 	if err != nil {
+		if errors.Is(err, accounts.ErrPasswordProcessing) {
+			return validationError("password", h.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
+		}
 		if ent.IsConstraintError(err) {
 			return validationError("email", h.i18n.Text(ctx, localization.EmailTaken)), nil
 		}
 		return nil, err
 	}
 
-	cookie, err := h.issueCookie(u)
+	cookies, err := h.issueCookies(u)
 	if err != nil {
 		return nil, err
 	}
-	return &api.UserHeaders{SetCookie: cookie, Response: h.conv.ToUser(u)}, nil
+	return &api.UserHeaders{SetCookie: cookies, Response: h.conv.ToUser(u)}, nil
 }
 
-// DeleteSession returns the expired JWT cookie through ogen's typed response.
+// DeleteSession returns go-pkgz/auth's expired session cookies.
 func (h *AuthHandler) DeleteSession(context.Context) (*api.DeleteSessionNoContent, error) {
 	rec := httptest.NewRecorder()
 	h.jwt.Reset(rec)
-	cookie, err := responseCookie(rec, authCookie)
+	cookies, err := responseCookies(rec, authCookie, xsrfCookie)
 	if err != nil {
 		return nil, err
 	}
-	return &api.DeleteSessionNoContent{SetCookie: cookie}, nil
+	return &api.DeleteSessionNoContent{SetCookie: cookies}, nil
 }
 
-// GetCurrentUser resolves the optional Cookie request header modeled by the
-// contract. Missing, invalid, or stale sessions are anonymous.
+// GetCurrentUser resolves the user populated by go-pkgz/auth's Trace middleware.
+// Missing, invalid, or stale sessions are anonymous.
 func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentUserParams) (*api.CurrentUser, error) {
+	_ = params
 	authReq := httptest.NewRequest(http.MethodGet, "/me", nil).WithContext(ctx)
-	if cookie, ok := params.Cookie.Get(); ok {
-		authReq.Header.Set("Cookie", cookie)
-	}
-	claims, _, err := h.jwt.Get(authReq)
-	if err != nil || claims.User == nil {
+	authUser, err := token.GetUserInfo(authReq)
+	if err != nil {
 		return anonymousCurrentUser(), nil
 	}
 
-	userID, err := strconv.Atoi(claims.User.ID)
+	userID, err := strconv.Atoi(authUser.ID)
 	if err != nil {
 		return anonymousCurrentUser(), nil
 	}
@@ -166,29 +223,44 @@ func (h *AuthHandler) authenticate(ctx context.Context, email, password string) 
 	return u, nil
 }
 
-func (h *AuthHandler) issueCookie(u *ent.User) (string, error) {
+func (h *AuthHandler) issueCookies(u *ent.User) ([]string, error) {
 	rec := httptest.NewRecorder()
+	authUser := &token.User{ID: strconv.Itoa(u.ID), Name: *u.Email}
+	authUser.SetAdmin(u.Admin != nil && *u.Admin)
 	_, err := h.jwt.Set(rec, token.Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ID:       strconv.Itoa(u.ID),
+			ID:       ids.New(),
 			Issuer:   authIssuer,
 			Audience: jwt.ClaimStrings{authIssuer},
 		},
-		User: &token.User{ID: strconv.Itoa(u.ID), Name: *u.Email},
+		User:         authUser,
+		AuthProvider: &token.AuthProvider{Name: authProvider},
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return responseCookie(rec, authCookie)
+	return responseCookies(rec, authCookie, xsrfCookie)
 }
 
-func responseCookie(rec *httptest.ResponseRecorder, name string) (string, error) {
+func responseCookies(rec *httptest.ResponseRecorder, names ...string) ([]string, error) {
+	found := make(map[string]string, len(names))
 	for _, cookie := range rec.Result().Cookies() {
-		if cookie.Name == name {
-			return cookie.String(), nil
+		for _, name := range names {
+			if cookie.Name == name {
+				found[name] = cookie.String()
+			}
 		}
 	}
-	return "", fmt.Errorf("%s cookie missing from auth response", name)
+
+	result := make([]string, 0, len(names))
+	for _, name := range names {
+		value, ok := found[name]
+		if !ok {
+			return nil, fmt.Errorf("%s cookie missing from auth response", name)
+		}
+		result = append(result, value)
+	}
+	return result, nil
 }
 
 func validationError(field, message string) *api.ValidationError {

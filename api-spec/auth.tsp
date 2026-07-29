@@ -86,20 +86,20 @@ model CurrentUser {
  * implementation stays behind the generated ogen seam.
  */
 model SessionResponse {
-  @header("Set-Cookie") setCookie: string;
+  @header("Set-Cookie") setCookie: string[];
   @body user: User;
 }
 
 /** A successful sign-out with the expired auth cookies. */
 model SessionDeleted {
   @statusCode statusCode: 204;
-  @header("Set-Cookie") setCookie: string;
+  @header("Set-Cookie") setCookie: string[];
 }
 
 /** A newly-created user and the auth cookies issued for that user. */
 model UserCreated {
   @statusCode statusCode: 201;
-  @header("Set-Cookie") setCookie: string;
+  @header("Set-Cookie") setCookie: string[];
   @body user: User;
 }
 

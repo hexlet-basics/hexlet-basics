@@ -17,6 +17,33 @@ boundary:
 work does NOT do it inline — it enqueues a river job. Events =
 notification/routing; jobs = execution.
 
+## Implementation
+
+Domain events use Watermill's CQRS components over the PostgreSQL SQL Pub/Sub.
+All event types share the durable `domain_events` topic. Each handler has a
+stable, independently persisted consumer-group name; changing that name would
+replay the stream for that handler.
+
+Business state and its event are inserted through the same `database/sql`
+transaction. Atlas creates the Watermill message and offset tables, and runtime
+schema initialization is disabled. Handlers publish domain facts through their
+own business module rather than calling downstream integrations or maintaining
+a subscriber list.
+
+Delivery is at least once. Subscribers must therefore be idempotent. Watermill
+recovers panics, retries a handler three times with short exponential backoff,
+then Nacks the message for durable SQL redelivery. A stuck consumer group does
+not block independent groups.
+
+The first contract is `user_signed_up` schema version 1. Its payload captures
+the legacy-compatible user and locale snapshot plus occurrence time. The
+initial production consumer validates and logs the event id, name, user id, and
+time without logging the event's PII fields.
+
+Version 1 retains domain-event rows indefinitely for replay and diagnosis.
+Retention or PII erasure must be designed explicitly before adding a cleanup
+job; deleting rows without considering every consumer offset can lose events.
+
 ## Considered Options
 
 - **Both (chosen)** — decoupled fan-out for events plus a real job queue.
@@ -29,3 +56,7 @@ notification/routing; jobs = execution.
 
 - Two Postgres-backed async systems to operate and monitor; the boundary rule
   above keeps their responsibilities from bleeding together.
+- Event handlers can receive a message more than once and must make external
+  effects idempotent.
+- Event names, schema versions, and consumer-group names become persistent
+  compatibility identifiers.

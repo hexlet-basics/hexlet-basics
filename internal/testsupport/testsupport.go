@@ -23,10 +23,13 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
+	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
@@ -113,8 +116,10 @@ type Harness struct {
 	DB *ent.Client
 	// Enqueuer records background jobs the handlers scheduled, so a test can
 	// assert an operation both wrote to the DB and enqueued its follow-up work.
-	Enqueuer *RecordingEnqueuer
-	doer     *inProcessDoer
+	Enqueuer  *RecordingEnqueuer
+	Registrar *RecordingRegistrar
+	Events    *RecordingEventPublisher
+	doer      *inProcessDoer
 }
 
 // LastStatus is the HTTP status of the most recent client call. It remains a
@@ -133,10 +138,12 @@ func NewHarness(t *testing.T) *Harness {
 	db := NewClient(t)
 
 	enqueuer := &RecordingEnqueuer{DB: db}
+	registrar := NewRecordingRegistrar(db)
+	eventPublisher := &RecordingEventPublisher{}
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
 	srv, err := api.NewServer(
-		handlers.NewServer(db, testConfig, enqueuer, translator, errorHandler),
+		handlers.NewServer(db, testConfig, enqueuer, registrar, eventPublisher, translator, errorHandler),
 		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
@@ -151,7 +158,62 @@ func NewHarness(t *testing.T) *Harness {
 		t.Fatalf("new api client: %v", err)
 	}
 
-	return &Harness{Client: client, DB: db, doer: doer, Enqueuer: enqueuer}
+	return &Harness{
+		Client: client, DB: db, doer: doer,
+		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
+	}
+}
+
+// RecordingEventPublisher captures standalone domain facts in handler tests.
+type RecordingEventPublisher struct {
+	Published []events.Event
+	Err       error
+}
+
+// PublishStandalone records the fact without touching the SQL outbox.
+func (p *RecordingEventPublisher) PublishStandalone(
+	_ context.Context,
+	event events.Event,
+) error {
+	if p.Err != nil {
+		return p.Err
+	}
+	p.Published = append(p.Published, event)
+	return nil
+}
+
+// RecordingRegistrar mirrors account creation inside the harness transaction
+// and records the requested registration without touching Watermill.
+type RecordingRegistrar struct {
+	DB            *ent.Client
+	Registrations []accounts.Registration
+}
+
+// NewRecordingRegistrar builds the auth test adapter.
+func NewRecordingRegistrar(db *ent.Client) *RecordingRegistrar {
+	return &RecordingRegistrar{DB: db}
+}
+
+// Register persists a bcrypt-compatible user so login tests exercise the real
+// credential path after registration.
+func (r *RecordingRegistrar) Register(
+	ctx context.Context,
+	input accounts.Registration,
+) (*ent.User, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, accounts.ErrPasswordProcessing
+	}
+	u, err := r.DB.User.Create().
+		SetEmail(input.Email).
+		SetPasswordDigest(string(hash)).
+		SetNillableFirstName(input.FirstName).
+		Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	r.Registrations = append(r.Registrations, input)
+	return u, nil
 }
 
 // RecordingEnqueuer is a test adapter for handlers.VersionBuildStarter. It

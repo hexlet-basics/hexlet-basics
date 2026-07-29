@@ -18,6 +18,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/di"
+	"hexletbasics/internal/events"
 )
 
 // shutdownTimeout bounds graceful shutdown: in-flight requests get this long to
@@ -35,6 +36,7 @@ func main() {
 	db := do.MustInvoke[*ent.Client](injector)
 	// The river job queue is likewise stopped explicitly.
 	riverClient := do.MustInvoke[*river.Client[*sql.Tx]](injector)
+	eventRuntime := do.MustInvoke[*events.Runtime](injector)
 	// The blob bucket exposes Close, not a do Shutdowner, so drain it explicitly
 	// once the HTTP server (its only user) has stopped serving.
 	bucket := do.MustInvoke[*blob.Bucket](injector)
@@ -45,18 +47,30 @@ func main() {
 		logger.Error("starting job queue", "err", err)
 		os.Exit(1)
 	}
+	if err := eventRuntime.Start(context.Background()); err != nil {
+		logger.Error("starting domain event router", "err", err)
+		os.Exit(1)
+	}
 
+	serverErrors := make(chan error, 1)
 	go func() {
 		logger.Info("backend listening", "addr", srv.Addr)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logger.Error("http server failed", "err", err)
-			os.Exit(1)
+			serverErrors <- err
 		}
 	}()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
-	<-ctx.Done()
+	select {
+	case <-ctx.Done():
+	case err := <-eventRuntime.Errors():
+		if err != nil {
+			logger.Error("domain event router failed", "err", err)
+		}
+	case err := <-serverErrors:
+		logger.Error("http server failed", "err", err)
+	}
 	stop() // restore default signal handling so a second signal force-quits
 
 	logger.Info("shutting down")
@@ -68,6 +82,9 @@ func main() {
 	// (graceful drain) with this context.
 	if report := injector.ShutdownWithContext(shutdownCtx); !report.Succeed {
 		logger.Error("shutdown reported errors", "err", report.Error())
+	}
+	if err := eventRuntime.Close(); err != nil {
+		logger.Error("stopping domain event router", "err", err)
 	}
 	// Drain in-flight jobs before closing ent, which owns their shared SQL pool.
 	if err := riverClient.Stop(shutdownCtx); err != nil {

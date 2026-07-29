@@ -48,6 +48,7 @@ func TestQueueBackbone(t *testing.T) {
 	client, err := jobs.NewClient(
 		db,
 		nil,
+		nil,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
 		jobs.NewErrorHandler(sentryClient),
 	)

@@ -13,7 +13,7 @@ import { afterAll, afterEach, beforeAll } from "vitest";
 import { client } from "@/client/client.gen";
 import { worker } from "./msw";
 
-client.setConfig({ baseUrl: "http://localhost" });
+client.setConfig({ baseURL: "http://localhost" });
 
 beforeAll(() => worker.start({ onUnhandledRequest: "bypass", quiet: true }));
 afterEach(() => worker.resetHandlers());

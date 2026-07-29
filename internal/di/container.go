@@ -16,10 +16,14 @@ import (
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/accounts"
+	"hexletbasics/internal/amocrm"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
+	"hexletbasics/internal/eventhandlers"
+	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
@@ -90,11 +94,35 @@ func New() *do.RootScope {
 		return store.NewClient(do.MustInvoke[*sql.DB](i)), nil
 	})
 
+	do.Provide(injector, func(i do.Injector) (*events.Publisher, error) {
+		return events.NewPublisher(
+			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*slog.Logger](i),
+		), nil
+	})
+
+	do.Provide(injector, func(i do.Injector) (*accounts.Registrar, error) {
+		return accounts.NewRegistrar(
+			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*events.Publisher](i),
+		), nil
+	})
+
+	do.Provide(injector, func(i do.Injector) (*events.Runtime, error) {
+		return events.NewRuntime(
+			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*slog.Logger](i),
+			eventhandlers.LeadCreated(do.MustInvoke[*river.Client[*sql.Tx]](i)),
+		)
+	})
+
 	do.Provide(injector, func(i do.Injector) (*handlers.Server, error) {
 		return handlers.NewServer(
 			do.MustInvoke[*ent.Client](i),
 			do.MustInvoke[*config.Config](i),
 			do.MustInvoke[*versionbuilds.Starter](i),
+			do.MustInvoke[*accounts.Registrar](i),
+			do.MustInvoke[*events.Publisher](i),
 			do.MustInvoke[*localization.Translator](i),
 			do.MustInvoke[*handlers.APIErrorHandler](i),
 		), nil
@@ -133,10 +161,16 @@ func New() *do.RootScope {
 		), nil
 	})
 
+	do.Provide(injector, func(i do.Injector) (*amocrm.Client, error) {
+		cfg := do.MustInvoke[*config.Config](i)
+		return amocrm.NewClient(cfg.AmoCRMBaseURL, cfg.AmoCRMAuthToken, cfg.YMCounter), nil
+	})
+
 	do.Provide(injector, func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		return jobs.NewClient(
 			do.MustInvoke[*sql.DB](i),
 			do.MustInvoke[*courseloader.Loader](i),
+			do.MustInvoke[*amocrm.Client](i),
 			do.MustInvoke[*slog.Logger](i),
 			jobs.NewErrorHandler(do.MustInvoke[*sentry.Client](i)),
 		)
@@ -186,6 +220,7 @@ func New() *do.RootScope {
 			do.MustInvoke[*api.Server](i),
 			do.MustInvoke[*handlers.AttachmentHandler](i),
 			do.MustInvoke[*handlers.GitHubWebhookHandler](i),
+			do.MustInvoke[*handlers.Server](i).AuthHandler(),
 		), nil
 	})
 
@@ -197,7 +232,17 @@ func New() *do.RootScope {
 			do.MustInvokeNamed[http.Handler](i, routerServiceName),
 		)
 		return cors.New(cors.Options{
-			AllowedOrigins:   []string{"http://localhost:*", "http://127.0.0.1:*"},
+			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
+			AllowedMethods: []string{
+				http.MethodGet,
+				http.MethodHead,
+				http.MethodPost,
+				http.MethodPut,
+				http.MethodPatch,
+				http.MethodDelete,
+				http.MethodOptions,
+			},
+			AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
 			AllowCredentials: true,
 		}).Handler(localized), nil
 	})

@@ -19,17 +19,19 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 		name     string
 		header   string
 		expected string
+		locale   string
 	}{
-		{name: "missing header", expected: "Wrong email or password"},
-		{name: "Russian region", header: "ru-RU", expected: "Неверный адрес электронной почты или пароль"},
-		{name: "Spanish", header: "es", expected: "Correo electrónico o contraseña incorrectos"},
-		{name: "quality priority", header: "es;q=0.7, ru-RU;q=0.9", expected: "Неверный адрес электронной почты или пароль"},
-		{name: "unsupported", header: "de-DE", expected: "Wrong email or password"},
+		{name: "missing header", expected: "Wrong email or password", locale: "en"},
+		{name: "Russian region", header: "ru-RU", expected: "Неверный адрес электронной почты или пароль", locale: "ru"},
+		{name: "Spanish", header: "es", expected: "Correo electrónico o contraseña incorrectos", locale: "es"},
+		{name: "quality priority", header: "es;q=0.7, ru-RU;q=0.9", expected: "Неверный адрес электронной почты или пароль", locale: "ru"},
+		{name: "unsupported", header: "de-DE", expected: "Wrong email or password", locale: "en"},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			handler := translator.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				assert.Equal(t, tt.locale, translator.Locale(r.Context()))
 				_, _ = w.Write([]byte(translator.Text(r.Context(), localization.WrongCredentials)))
 			}))
 			req := httptest.NewRequest(http.MethodGet, "/", nil)

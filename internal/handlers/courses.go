@@ -8,9 +8,11 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
 )
 
@@ -39,6 +41,8 @@ func NewServer(
 	db *ent.Client,
 	cfg *config.Config,
 	starter VersionBuildStarter,
+	registrar accounts.UserRegistrar,
+	eventPublisher events.StandalonePublisher,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 ) *Server {
@@ -47,10 +51,16 @@ func NewServer(
 		conv:    &apiconv.ConverterImpl{},
 		cfg:     cfg,
 		starter: starter,
-		auth:    NewAuthHandler(db, cfg, translator),
+		auth:    NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher),
 		i18n:    translator,
 		errors:  errorHandler,
 	}
+}
+
+// AuthHandler returns the shared go-pkgz/auth adapter used by both the ogen
+// handlers and the outer HTTP router.
+func (s *Server) AuthHandler() *AuthHandler {
+	return s.auth
 }
 
 // ListCourses returns the published course catalog.

@@ -3006,16 +3006,16 @@ func (*DeletePasskeyNoContent) deletePasskeyRes() {}
 
 // DeleteSessionNoContent is response for DeleteSession operation.
 type DeleteSessionNoContent struct {
-	SetCookie string
+	SetCookie []string
 }
 
 // GetSetCookie returns the value of SetCookie.
-func (s *DeleteSessionNoContent) GetSetCookie() string {
+func (s *DeleteSessionNoContent) GetSetCookie() []string {
 	return s.SetCookie
 }
 
 // SetSetCookie sets the value of SetCookie.
-func (s *DeleteSessionNoContent) SetSetCookie(val string) {
+func (s *DeleteSessionNoContent) SetSetCookie(val []string) {
 	s.SetCookie = val
 }
 
@@ -6640,12 +6640,12 @@ func (s *UserCrudPage) SetPerPage(val int32) {
 
 // UserHeaders wraps User with response headers.
 type UserHeaders struct {
-	SetCookie string
+	SetCookie []string
 	Response  User
 }
 
 // GetSetCookie returns the value of SetCookie.
-func (s *UserHeaders) GetSetCookie() string {
+func (s *UserHeaders) GetSetCookie() []string {
 	return s.SetCookie
 }
 
@@ -6655,7 +6655,7 @@ func (s *UserHeaders) GetResponse() User {
 }
 
 // SetSetCookie sets the value of SetCookie.
-func (s *UserHeaders) SetSetCookie(val string) {
+func (s *UserHeaders) SetSetCookie(val []string) {
 	s.SetCookie = val
 }
 

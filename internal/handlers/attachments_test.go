@@ -12,6 +12,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/go-pkgz/auth/v2/token"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
@@ -19,7 +21,9 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/ids"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -33,6 +37,20 @@ var tinyPNG = []byte{
 	0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
 }
 
+type authenticatedHandler struct {
+	next    http.Handler
+	cookies []*http.Cookie
+	xsrf    string
+}
+
+func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	for _, cookie := range h.cookies {
+		r.AddCookie(cookie)
+	}
+	r.Header.Set("X-XSRF-TOKEN", h.xsrf)
+	h.next.ServeHTTP(w, r)
+}
+
 // newAttachmentRouter builds the real router over an in-memory blob bucket and a
 // transaction-bound ent client. The api side is a stub — these tests exercise only the
 // multipart/blob routes, which live outside the generated server.
@@ -43,16 +61,49 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
+	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	att := handlers.NewAttachmentHandler(
 		assets,
 		translator,
-		testsupport.NewAPIErrorHandler(t, translator),
+		errorHandler,
 	)
 	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "", translator)
 	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	})
-	return translator.Middleware(handlers.NewRouter(apiStub, att, gh))
+	cfg := &config.Config{JWTSecret: "test-secret"}
+	auth := handlers.NewAuthHandler(
+		db,
+		cfg,
+		translator,
+		errorHandler,
+		testsupport.NewRecordingRegistrar(db),
+		&testsupport.RecordingEventPublisher{},
+	)
+	router := translator.Middleware(handlers.NewRouter(apiStub, att, gh, auth))
+
+	jti := ids.New()
+	rec := httptest.NewRecorder()
+	authUser := &token.User{ID: "password_1", Name: "test"}
+	authUser.SetAdmin(true)
+	_, err := token.NewService(token.Opts{
+		SecretReader: token.SecretFunc(func(string) (string, error) {
+			return cfg.JWTSecret, nil
+		}),
+	}).Set(rec, token.Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ID:       jti,
+			Audience: jwt.ClaimStrings{"hexlet-basics"},
+		},
+		User: authUser,
+	})
+	require.NoError(t, err)
+
+	return authenticatedHandler{
+		next:    router,
+		cookies: rec.Result().Cookies(),
+		xsrf:    jti,
+	}
 }
 
 // uploadRequest builds a multipart POST with one file part whose declared

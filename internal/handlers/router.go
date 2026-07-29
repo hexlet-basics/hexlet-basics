@@ -10,17 +10,34 @@ import "net/http"
 // patterns for the attachment routes are strictly more specific, so Go's
 // ServeMux routes them first and only unmatched requests fall through to ogen.
 //
-// Auth note: there is no auth middleware yet (none of the /admin/* operations
-// are protected today). When it lands, wrap the returned http.Handler so it
-// covers BOTH the custom routes and the generated server — do not wrap only the
-// api.Server, or these uploads would sit outside the protected perimeter.
-func NewRouter(apiHandler http.Handler, att *AttachmentHandler, gh *GitHubWebhookHandler) http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("POST /admin/attachments", att.Upload)
-	mux.HandleFunc("GET /storage/{key}", att.Download)
+// The inner mux owns transport dispatch. The outer mux applies go-pkgz/auth's
+// required middleware to authenticated route families and its optional Trace
+// middleware to the public surface. Keeping the generated API and custom
+// attachment route behind the same branch prevents uploads from bypassing auth.
+func NewRouter(
+	apiHandler http.Handler,
+	att *AttachmentHandler,
+	gh *GitHubWebhookHandler,
+	auth *AuthHandler,
+) http.Handler {
+	transport := http.NewServeMux()
+	transport.HandleFunc("POST /admin/attachments", att.Upload)
+	transport.HandleFunc("GET /storage/{key}", att.Download)
 	// GitHub webhook: verifies its own HMAC signature, so it is safe outside any
-	// future admin-auth middleware — but it must stay a build TRIGGER only.
-	mux.HandleFunc("POST /webhooks/github", gh.Handle)
-	mux.Handle("/", apiHandler)
-	return mux
+	// auth middleware — but it must stay a build TRIGGER only.
+	transport.HandleFunc("POST /webhooks/github", gh.Handle)
+	transport.Handle("/", apiHandler)
+
+	required := auth.Auth(transport)
+	admin := auth.Admin(transport)
+	optional := auth.Trace(transport)
+
+	router := http.NewServeMux()
+	router.Handle("/admin/", admin)
+	router.Handle("/account/", required)
+	router.Handle("/ai/lessons/", required)
+	router.Handle("/my", required)
+	router.Handle("DELETE /session", required)
+	router.Handle("/", optional)
+	return router
 }

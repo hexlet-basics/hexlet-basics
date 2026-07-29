@@ -1266,7 +1266,16 @@ func encodeCreateSessionResponse(response CreateSessionRes, w http.ResponseWrite
 					Explode: false,
 				}
 				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					return e.EncodeValue(conv.StringToString(response.SetCookie))
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
+							}
+						}
+						return nil
+					})
 				}); err != nil {
 					return errors.Wrap(err, "encode Set-Cookie header")
 				}
@@ -1314,7 +1323,16 @@ func encodeCreateUserResponse(response CreateUserRes, w http.ResponseWriter, spa
 					Explode: false,
 				}
 				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-					return e.EncodeValue(conv.StringToString(response.SetCookie))
+					return e.EncodeArray(func(e uri.Encoder) error {
+						for i, item := range response.SetCookie {
+							if err := func() error {
+								return e.EncodeValue(conv.StringToString(item))
+							}(); err != nil {
+								return errors.Wrapf(err, "[%d]", i)
+							}
+						}
+						return nil
+					})
 				}); err != nil {
 					return errors.Wrap(err, "encode Set-Cookie header")
 				}
@@ -1407,7 +1425,16 @@ func encodeDeleteSessionResponse(response *DeleteSessionNoContent, w http.Respon
 				Explode: false,
 			}
 			if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
-				return e.EncodeValue(conv.StringToString(response.SetCookie))
+				return e.EncodeArray(func(e uri.Encoder) error {
+					for i, item := range response.SetCookie {
+						if err := func() error {
+							return e.EncodeValue(conv.StringToString(item))
+						}(); err != nil {
+							return errors.Wrapf(err, "[%d]", i)
+						}
+					}
+					return nil
+				})
 			}); err != nil {
 				return errors.Wrap(err, "encode Set-Cookie header")
 			}

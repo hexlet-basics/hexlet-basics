@@ -33,6 +33,8 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 		db,
 		&config.Config{JWTSecret: "test-secret"},
 		&testsupport.RecordingEnqueuer{DB: db},
+		testsupport.NewRecordingRegistrar(db),
+		&testsupport.RecordingEventPublisher{},
 		translator,
 		errorHandler,
 	)
@@ -43,7 +45,10 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
 	require.NoError(t, err)
-	return translator.Middleware(server)
+	router := http.NewServeMux()
+	router.Handle("DELETE /session", handler.AuthHandler().Auth(server))
+	router.Handle("/", handler.AuthHandler().Trace(server))
+	return translator.Middleware(router)
 }
 
 // jwtCookie returns the JWT auth cookie from a response, or nil if absent.
@@ -56,12 +61,35 @@ func jwtCookie(resp *http.Response) *http.Cookie {
 	return nil
 }
 
+// xsrfCookie returns go-pkgz/auth's script-readable double-submit cookie.
+func xsrfCookieFromResponse(resp *http.Response) *http.Cookie {
+	for _, c := range resp.Cookies() {
+		if c.Name == "XSRF-TOKEN" {
+			return c
+		}
+	}
+	return nil
+}
+
 func do(t *testing.T, router http.Handler, method, path, body string, cookie *http.Cookie) *http.Response {
+	return doWithXSRF(t, router, method, path, body, cookie, "")
+}
+
+func doWithXSRF(
+	t *testing.T,
+	router http.Handler,
+	method, path, body string,
+	cookie *http.Cookie,
+	xsrf string,
+) *http.Response {
 	t.Helper()
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	if cookie != nil {
 		req.AddCookie(cookie)
+	}
+	if xsrf != "" {
+		req.Header.Set("X-XSRF-TOKEN", xsrf)
 	}
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
@@ -85,6 +113,11 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	cookie := jwtCookie(resp)
 	require.NotNil(t, cookie, "register must set the JWT cookie")
+	xsrf := xsrfCookieFromResponse(resp)
+	require.NotNil(t, xsrf, "register must set the XSRF cookie")
+	assert.True(t, cookie.HttpOnly)
+	assert.False(t, xsrf.HttpOnly)
+	assert.NotEmpty(t, xsrf.Value)
 
 	var created struct {
 		Email string `json:"email"`
@@ -198,14 +231,32 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 func TestAuthLogoutClearsCookie(t *testing.T) {
 	router := newAuthRouter(t)
 
-	resp := do(t, router, http.MethodDelete, "/session", "", nil)
+	resp := do(t, router, http.MethodPost, "/users",
+		`{"firstName":"Ada","email":"logout-auth-flow@example.com","password":"s3cret-pass"}`, nil)
+	require.Equal(t, http.StatusCreated, resp.StatusCode)
+	jwt := jwtCookie(resp)
+	xsrf := xsrfCookieFromResponse(resp)
+	require.NotNil(t, jwt)
+	require.NotNil(t, xsrf)
+
+	resp = do(t, router, http.MethodDelete, "/session", "", jwt)
+	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
+
+	resp = doWithXSRF(t, router, http.MethodDelete, "/session", "", jwt, "wrong")
+	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
+
+	resp = doWithXSRF(t, router, http.MethodDelete, "/session", "", jwt, xsrf.Value)
 	require.Equal(t, http.StatusNoContent, resp.StatusCode)
 
-	// Reset writes an expired JWT cookie so the browser drops it.
+	// Reset writes expired JWT and XSRF cookies so the browser drops both.
 	cookie := jwtCookie(resp)
 	require.NotNil(t, cookie)
 	assert.True(t, cookie.MaxAge < 0 || cookie.Value == "",
 		"logout must expire or empty the JWT cookie")
+	xsrf = xsrfCookieFromResponse(resp)
+	require.NotNil(t, xsrf)
+	assert.True(t, xsrf.MaxAge < 0 || xsrf.Value == "",
+		"logout must expire or empty the XSRF cookie")
 }
 
 func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {

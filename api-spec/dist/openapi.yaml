@@ -3374,7 +3374,9 @@ paths:
             Set-Cookie:
               required: true
               schema:
-                type: string
+                type: array
+                items:
+                  type: string
           content:
             application/json:
               schema:
@@ -3417,7 +3419,9 @@ paths:
             Set-Cookie:
               required: true
               schema:
-                type: string
+                type: array
+                items:
+                  type: string
         default:
           description: |-
             Default error response shared by every operation.
@@ -3442,7 +3446,9 @@ paths:
             Set-Cookie:
               required: true
               schema:
-                type: string
+                type: array
+                items:
+                  type: string
           content:
             application/json:
               schema:

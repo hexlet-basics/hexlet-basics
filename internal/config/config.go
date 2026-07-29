@@ -36,6 +36,10 @@ type Config struct {
 	// with (HMAC-SHA256). The webhook route rejects any delivery whose signature
 	// doesn't verify; an empty secret disables the webhook (fail closed).
 	GitHubWebhookSecret string `env:"GITHUB_WEBHOOK_SECRET"`
+	// amoCRM receives lead_created events through a Watermill -> River handler.
+	AmoCRMBaseURL   string `env:"AMOCRM_BASE_URL"`
+	AmoCRMAuthToken string `env:"AMOCRM_AUTH_TOKEN"`
+	YMCounter       string `env:"YM_COUNTER"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
 	SentryDSN         string `env:"SENTRY_DSN"`

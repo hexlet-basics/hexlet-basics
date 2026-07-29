@@ -41,11 +41,14 @@ func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { retur
 // Workers builds the worker registry. The exercise loader is registered when a
 // loader is supplied; a nil loader (insert-only clients that never Start) skips
 // it, since only the worker process needs the loader's db/blob dependencies.
-func Workers(loader *courseloader.Loader) *river.Workers {
+func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer) *river.Workers {
 	w := river.NewWorkers()
 	river.AddWorker(w, &pingWorker{})
 	if loader != nil {
 		river.AddWorker(w, &exerciseLoaderWorker{loader: loader})
+	}
+	if leadSyncer != nil {
+		river.AddWorker(w, &amoCRMLeadWorker{syncer: leadSyncer})
 	}
 	return w
 }
@@ -58,6 +61,7 @@ func Workers(loader *courseloader.Loader) *river.Workers {
 func NewClient(
 	db *sql.DB,
 	loader *courseloader.Loader,
+	leadSyncer LeadSyncer,
 	logger *slog.Logger,
 	errorHandler *ErrorHandler,
 ) (*river.Client[*sql.Tx], error) {
@@ -67,6 +71,6 @@ func NewClient(
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
-		Workers: Workers(loader),
+		Workers: Workers(loader, leadSyncer),
 	})
 }
