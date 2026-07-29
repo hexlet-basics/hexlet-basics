@@ -2413,6 +2413,7 @@ components:
       schema:
         type: integer
         format: int32
+        minimum: 1
       explode: false
     ListQuery.perPage:
       name: perPage
@@ -2421,6 +2422,8 @@ components:
       schema:
         type: integer
         format: int32
+        minimum: 1
+        maximum: 100
       explode: false
     ListQuery.sortField:
       name: sortField

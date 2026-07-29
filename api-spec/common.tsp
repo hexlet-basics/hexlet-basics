@@ -44,8 +44,14 @@ model Page<T> {
 
 /** Standard pagination + sorting query params for every admin list. */
 model ListQuery {
-  @query page?: int32;
-  @query perPage?: int32;
+  @query
+  @minValue(1)
+  page?: int32;
+
+  @query
+  @minValue(1)
+  @maxValue(100)
+  perPage?: int32;
 
   /** Sort field (ransack `sf`). */
   @query sortField?: string;

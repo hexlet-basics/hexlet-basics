@@ -12,13 +12,13 @@ type pagination struct {
 	PerPage int32
 }
 
-// newPagination resolves the optional page/perPage query params, applying
-// defaults and ignoring non-positive values (page defaults to 1, perPage to
-// defaultPerPage).
+// newPagination resolves absent page/perPage query params. The generated ogen
+// decoder rejects values outside the bounds declared by ListQuery in TypeSpec
+// before a request reaches a handler.
 func newPagination(page, perPage api.OptInt32) pagination {
 	return pagination{
-		Page:    optPositive(page, 1),
-		PerPage: optPositive(perPage, defaultPerPage),
+		Page:    optOrDefault(page, 1),
+		PerPage: optOrDefault(perPage, defaultPerPage),
 	}
 }
 
@@ -28,9 +28,9 @@ func (p pagination) Offset() int { return int((p.Page - 1) * p.PerPage) }
 // Limit is the SQL LIMIT for this window.
 func (p pagination) Limit() int { return int(p.PerPage) }
 
-// optPositive returns v when present and > 0, otherwise def.
-func optPositive(v api.OptInt32, def int32) int32 {
-	if n, ok := v.Get(); ok && n > 0 {
+// optOrDefault returns v when present, otherwise def.
+func optOrDefault(v api.OptInt32, def int32) int32 {
+	if n, ok := v.Get(); ok {
 		return n
 	}
 	return def
