@@ -625,6 +625,19 @@ export const zPhoneInput = z.object({
 });
 
 /**
+ * RFC 9457 problem details returned by the transport when request decoding,
+ * authorization, persistence, or an unexpected server failure prevents an
+ * operation from producing its declared domain response.
+ */
+export const zProblemDetails = z.object({
+  type: z.string(),
+  title: z.string(),
+  status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  detail: z.string().optional(),
+  instance: z.string().optional()
+});
+
+/**
  * Profile edit form (legacy: `UserProfileForm`).
  */
 export const zProfileInput = z.object({

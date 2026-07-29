@@ -48,7 +48,7 @@ interface AdminAttachments {
   upload(@header contentType: "multipart/form-data", @multipartBody body: AttachmentUploadForm): {
     @statusCode statusCode: 201;
     @body attachment: Attachment;
-  } | ValidationError;
+  } | ValidationError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -74,14 +74,14 @@ interface AdminCourseCategories {
   /** List course categories (paginated). */
   @get
   @operationId("adminListCourseCategories")
-  list(...ListQuery): Page<CourseCategory>;
+  list(...ListQuery): Page<CourseCategory> | ApiError;
 
   /** Get a single course category. A missing id surfaces as 404 via the
       central ent-error handler, not a typed union member. */
   @get
   @route("/{id}")
   @operationId("adminGetCourseCategory")
-  get(@path id: int32): CourseCategory;
+  get(@path id: int32): CourseCategory | ApiError;
 
   /** Create a course category. A uniqueness violation (name/header/slug) is a
       DB constraint, surfaced as 409 by the central ent-error handler. */
@@ -90,20 +90,20 @@ interface AdminCourseCategories {
   create(@body body: CourseCategoryInput): {
     @statusCode statusCode: 201;
     @body category: CourseCategory;
-  };
+  } | ApiError;
 
   /** Update a course category. 404 (missing) and 409 (uniqueness) both flow
       through the central ent-error handler. */
   @put
   @route("/{id}")
   @operationId("adminUpdateCourseCategory")
-  update(@path id: int32, @body body: CourseCategoryInput): CourseCategory;
+  update(@path id: int32, @body body: CourseCategoryInput): CourseCategory | ApiError;
 
   /** Delete a course category. */
   @delete
   @route("/{id}")
   @operationId("adminDeleteCourseCategory")
-  delete(@path id: int32): NoContent;
+  delete(@path id: int32): NoContent | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -124,11 +124,11 @@ model BannerInput {
 @tag("Admin: Banners")
 interface AdminBanners {
   /** List banners (paginated). */
-  @get @operationId("adminListBanners") list(...ListQuery): Page<Banner>;
+  @get @operationId("adminListBanners") list(...ListQuery): Page<Banner> | ApiError;
 
   /** Get a single banner. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetBanner") get(@path id: int32): Banner;
+  @get @route("/{id}") @operationId("adminGetBanner") get(@path id: int32): Banner | ApiError;
 
   /** Create a banner. A body violating the schema (e.g. an empty `body`)
       surfaces as 400 via the central handler; banners carry no uniqueness
@@ -136,13 +136,13 @@ interface AdminBanners {
   @post @operationId("adminCreateBanner") create(@body body: BannerInput): {
     @statusCode statusCode: 201;
     @body banner: Banner;
-  };
+  } | ApiError;
 
   /** Update a banner. A missing id surfaces as 404 via the central handler. */
-  @put @route("/{id}") @operationId("adminUpdateBanner") update(@path id: int32, @body body: BannerInput): Banner;
+  @put @route("/{id}") @operationId("adminUpdateBanner") update(@path id: int32, @body body: BannerInput): Banner | ApiError;
 
   /** Delete a banner. */
-  @delete @route("/{id}") @operationId("adminDeleteBanner") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteBanner") delete(@path id: int32): NoContent | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -170,24 +170,24 @@ model BlogPostRelatedCoursesInput {
 @route("/admin/blog_posts")
 @tag("Admin: Blog Posts")
 interface AdminBlogPosts {
-  @get @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost>;
+  @get @operationId("adminListBlogPosts") list(...ListQuery): Page<BlogPost> | ApiError;
 
-  // 404 comes from the central APIErrorHandler (ent not-found), like every other
-  // admin get — so no explicit NotFoundError union here.
-  @get @route("/{id}") @operationId("adminGetBlogPost") get(@path id: int32): BlogPost;
+  // 404 comes from the shared ApiError response (ent not-found), like every
+  // other admin get — so no operation-specific NotFoundError member is needed.
+  @get @route("/{id}") @operationId("adminGetBlogPost") get(@path id: int32): BlogPost | ApiError;
 
   @post @operationId("adminCreateBlogPost") create(@body body: BlogPostInput): {
     @statusCode statusCode: 201;
     @body post: BlogPost;
-  } | ValidationError;
+  } | ValidationError | ApiError;
 
-  @put @route("/{id}") @operationId("adminUpdateBlogPost") update(@path id: int32, @body body: BlogPostInput): BlogPost | ValidationError;
+  @put @route("/{id}") @operationId("adminUpdateBlogPost") update(@path id: int32, @body body: BlogPostInput): BlogPost | ValidationError | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent | ApiError;
 
   /** Set the related/promoted courses for a post. */
   @post @route("/{id}/related_courses") @operationId("adminSetBlogPostRelatedCourses")
-  relatedCourses(@path id: int32, @body body: BlogPostRelatedCoursesInput): BlogPost | ValidationError;
+  relatedCourses(@path id: int32, @body body: BlogPostRelatedCoursesInput): BlogPost | ValidationError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -207,22 +207,22 @@ model ReviewInput {
 @route("/admin/reviews")
 @tag("Admin: Reviews")
 interface AdminReviews {
-  @get @operationId("adminListReviews") list(...ListQuery): Page<Review>;
+  @get @operationId("adminListReviews") list(...ListQuery): Page<Review> | ApiError;
 
   /** Get a single review. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetReview") get(@path id: int32): Review;
+  @get @route("/{id}") @operationId("adminGetReview") get(@path id: int32): Review | ApiError;
 
   @post @operationId("adminCreateReview") create(@body body: ReviewInput): {
     @statusCode statusCode: 201;
     @body review: Review;
-  };
+  } | ApiError;
 
   /** Update a review. A missing id surfaces as 404 via the central ent-error
       handler. */
-  @put @route("/{id}") @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review;
+  @put @route("/{id}") @operationId("adminUpdateReview") update(@path id: int32, @body body: ReviewInput): Review | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteReview") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteReview") delete(@path id: int32): NoContent | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -244,28 +244,28 @@ model CourseInput {
 @route("/admin/languages")
 @tag("Admin: Courses")
 interface AdminCourses {
-  @get @operationId("adminListCourses") list(...ListQuery): Page<Course>;
+  @get @operationId("adminListCourses") list(...ListQuery): Page<Course> | ApiError;
 
   /** Get a single course. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetCourse") get(@path id: int32): Course;
+  @get @route("/{id}") @operationId("adminGetCourse") get(@path id: int32): Course | ApiError;
 
   @post @operationId("adminCreateCourse") create(@body body: CourseInput): {
     @statusCode statusCode: 201;
     @body course: Course;
-  };
+  } | ApiError;
 
-  @put @route("/{id}") @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course;
+  @put @route("/{id}") @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | ApiError;
 
   /** Enqueue AI re-review of every current lesson version. */
-  @post @route("/{id}/review") @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError;
+  @post @route("/{id}/review") @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | ApiError;
 
   /** Build a new version of the course exercises. */
   @post @route("/{id}/versions") @operationId("adminCreateCourseVersion")
   createVersion(@path id: int32): {
     @statusCode statusCode: 201;
     @body version: CourseVersion;
-  } | NotFoundError;
+  } | NotFoundError | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -300,22 +300,22 @@ model CourseLandingPageInput {
 @route("/admin/language_landing_pages")
 @tag("Admin: Course Landing Pages")
 interface AdminCourseLandingPages {
-  @get @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage>;
+  @get @operationId("adminListCourseLandingPages") list(...ListQuery): Page<CourseLandingPage> | ApiError;
 
   /** Get a single landing page. A missing id surfaces as 404 via the central
       ent-error handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage;
+  @get @route("/{id}") @operationId("adminGetCourseLandingPage") get(@path id: int32): CourseLandingPage | ApiError;
 
   @post @operationId("adminCreateCourseLandingPage") create(@body body: CourseLandingPageInput): {
     @statusCode statusCode: 201;
     @body landingPage: CourseLandingPage;
-  };
+  } | ApiError;
 
   /** Update a landing page. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @put @route("/{id}") @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage;
+  @put @route("/{id}") @operationId("adminUpdateCourseLandingPage") update(@path id: int32, @body body: CourseLandingPageInput): CourseLandingPage | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteCourseLandingPage") delete(@path id: int32): NoContent | ApiError;
 }
 
 // ---- Nested QnA items ------------------------------------------------------
@@ -328,35 +328,35 @@ model QnaItemInput {
 @route("/admin/language_landing_pages/{landingPageId}/qna_items")
 @tag("Admin: Course Landing Pages")
 interface AdminCourseLandingPageQnaItems {
-  @get @operationId("adminListLandingPageQnaItems") list(@path landingPageId: int32): QnaItem[];
+  @get @operationId("adminListLandingPageQnaItems") list(@path landingPageId: int32): QnaItem[] | ApiError;
 
   @post @operationId("adminCreateLandingPageQnaItem") create(@path landingPageId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
-  };
+  } | ApiError;
 
   /** Update a QnA item. A missing id (or one under a different parent) surfaces
       as 404 via the central ent-error handler. */
-  @put @route("/{id}") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem;
+  @put @route("/{id}") @operationId("adminUpdateLandingPageQnaItem") update(@path landingPageId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent | ApiError;
 }
 
 @route("/admin/language_categories/{categoryId}/qna_items")
 @tag("Admin: Course Categories")
 interface AdminCourseCategoryQnaItems {
-  @get @operationId("adminListCategoryQnaItems") list(@path categoryId: int32): QnaItem[];
+  @get @operationId("adminListCategoryQnaItems") list(@path categoryId: int32): QnaItem[] | ApiError;
 
   @post @operationId("adminCreateCategoryQnaItem") create(@path categoryId: int32, @body body: QnaItemInput): {
     @statusCode statusCode: 201;
     @body item: QnaItem;
-  };
+  } | ApiError;
 
   /** Update a QnA item. A missing id (or one under a different parent) surfaces
       as 404 via the central ent-error handler. */
-  @put @route("/{id}") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem;
+  @put @route("/{id}") @operationId("adminUpdateCategoryQnaItem") update(@path categoryId: int32, @path id: int32, @body body: QnaItemInput): QnaItem | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteCategoryQnaItem") delete(@path categoryId: int32, @path id: int32): NoContent | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -366,34 +366,34 @@ interface AdminCourseCategoryQnaItems {
 @route("/admin/language_lessons")
 @tag("Admin: Course Lessons")
 interface AdminCourseLessons {
-  @get @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem>;
+  @get @operationId("adminListCourseLessons") list(...ListQuery): Page<CourseLessonListItem> | ApiError;
 
   /** Enqueue AI review for a single lesson. */
-  @post @route("/{id}/review") @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError;
+  @post @route("/{id}/review") @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | ApiError;
 }
 
 @route("/admin/language_lesson_members")
 @tag("Admin: Course Lesson Members")
 interface AdminCourseLessonMembers {
-  @get @operationId("adminListCourseLessonMembers") list(...ListQuery): Page<CourseLessonMember>;
+  @get @operationId("adminListCourseLessonMembers") list(...ListQuery): Page<CourseLessonMember> | ApiError;
 }
 
 @route("/admin/language_lesson_reviews")
 @tag("Admin: Course Lesson Reviews")
 interface AdminCourseLessonReviews {
-  @get @operationId("adminListCourseLessonReviews") list(...ListQuery): Page<CourseLessonReview>;
+  @get @operationId("adminListCourseLessonReviews") list(...ListQuery): Page<CourseLessonReview> | ApiError;
 }
 
 @route("/admin/leads")
 @tag("Admin: Leads")
 interface AdminLeads {
-  @get @operationId("adminListLeads") list(...ListQuery): Page<Lead>;
+  @get @operationId("adminListLeads") list(...ListQuery): Page<Lead> | ApiError;
 }
 
 @route("/admin/messages")
 @tag("Admin: Messages")
 interface AdminMessages {
-  @get @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage>;
+  @get @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -410,27 +410,27 @@ model UserInput {
 @route("/admin/api/users")
 @tag("Admin: Users")
 interface AdminUsers {
-  @get @operationId("adminListUsers") list(...ListQuery): Page<UserCrud>;
+  @get @operationId("adminListUsers") list(...ListQuery): Page<UserCrud> | ApiError;
 
   /** Typeahead search by name/email. */
-  @get @route("/search") @operationId("adminSearchUsers") search(@query q: string): UserCrud[];
+  @get @route("/search") @operationId("adminSearchUsers") search(@query q: string): UserCrud[] | ApiError;
 
   /** Get a single user. A missing id surfaces as 404 via the central ent-error
       handler, not a typed union member. */
-  @get @route("/{id}") @operationId("adminGetUser") get(@path id: int32): UserCrud;
+  @get @route("/{id}") @operationId("adminGetUser") get(@path id: int32): UserCrud | ApiError;
 
   /** Create a user. A duplicate email is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
   @post @operationId("adminCreateUser") create(@body body: UserInput): {
     @statusCode statusCode: 201;
     @body user: UserCrud;
-  };
+  } | ApiError;
 
   /** Update a user. 404 (missing) and 409 (duplicate email) both flow through
       the central ent-error handler. */
-  @put @route("/{id}") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud;
+  @put @route("/{id}") @operationId("adminUpdateUser") update(@path id: int32, @body body: UserInput): UserCrud | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteUser") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteUser") delete(@path id: int32): NoContent | ApiError;
 }
 
 // ---------------------------------------------------------------------------
@@ -445,22 +445,22 @@ model RoleInput {
 @route("/admin/management/roles")
 @tag("Admin: Roles")
 interface AdminRoles {
-  @get @operationId("adminListRoles") list(...ListQuery): Page<StaffRole>;
+  @get @operationId("adminListRoles") list(...ListQuery): Page<StaffRole> | ApiError;
 
   /** Get a role with its permission matrix. A missing id surfaces as 404 via
       the central ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail;
+  @get @route("/{id}") @operationId("adminGetRole") get(@path id: int32): StaffRoleDetail | ApiError;
 
   /** Create a role. A duplicate name is a DB unique constraint, surfaced as 409
       by the central ent-error handler. */
   @post @operationId("adminCreateRole") create(@body body: RoleInput): {
     @statusCode statusCode: 201;
     @body role: StaffRoleDetail;
-  };
+  } | ApiError;
 
-  @put @route("/{id}") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail;
+  @put @route("/{id}") @operationId("adminUpdateRole") update(@path id: int32, @body body: RoleInput): StaffRoleDetail | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteRole") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteRole") delete(@path id: int32): NoContent | ApiError;
 }
 
 /** One permission row to set on a role. */
@@ -481,10 +481,10 @@ model RolePermissionsInput {
 @tag("Admin: Roles")
 interface AdminRolePermissions {
   /** The permission matrix for a role. */
-  @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail;
+  @get @route("/{roleId}") @operationId("adminGetRolePermissions") get(@path roleId: int32): StaffRoleDetail | ApiError;
 
   /** Replace the permission matrix for a role. */
-  @put @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail;
+  @put @route("/{roleId}") @operationId("adminUpdateRolePermissions") update(@path roleId: int32, @body body: RolePermissionsInput): StaffRoleDetail | ApiError;
 }
 
 model StaffMemberInput {
@@ -496,28 +496,28 @@ model StaffMemberInput {
 @route("/admin/management/staff_members")
 @tag("Admin: Staff Members")
 interface AdminStaffMembers {
-  @get @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember>;
+  @get @operationId("adminListStaffMembers") list(...ListQuery): Page<StaffMember> | ApiError;
 
-  @get @route("/{id}") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember;
+  @get @route("/{id}") @operationId("adminGetStaffMember") get(@path id: int32): StaffMember | ApiError;
 
   @post @operationId("adminCreateStaffMember") create(@body body: StaffMemberInput): {
     @statusCode statusCode: 201;
     @body staffMember: StaffMember;
-  };
+  } | ApiError;
 
-  @put @route("/{id}") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember;
+  @put @route("/{id}") @operationId("adminUpdateStaffMember") update(@path id: int32, @body body: StaffMemberInput): StaffMember | ApiError;
 
-  @delete @route("/{id}") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent;
+  @delete @route("/{id}") @operationId("adminDeleteStaffMember") delete(@path id: int32): NoContent | ApiError;
 }
 
 @route("/admin/management/users")
 @tag("Admin: Users")
 interface AdminManagementUsers {
-  @get @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud>;
+  @get @operationId("adminListManagementUsers") list(...ListQuery): Page<UserCrud> | ApiError;
 
   /** Get a management user. A missing id surfaces as 404 via the central
       ent-error handler. */
-  @get @route("/{id}") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud;
+  @get @route("/{id}") @operationId("adminGetManagementUser") get(@path id: int32): UserCrud | ApiError;
 
-  @put @route("/{id}") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud;
+  @put @route("/{id}") @operationId("adminUpdateManagementUser") update(@path id: int32, @body body: UserInput): UserCrud | ApiError;
 }

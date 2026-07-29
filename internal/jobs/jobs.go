@@ -13,6 +13,7 @@ package jobs
 import (
 	"context"
 	"database/sql"
+	"log/slog"
 
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
@@ -54,8 +55,15 @@ func Workers(loader *courseloader.Loader) *river.Workers {
 // Stop()s it on shutdown. Sharing the pool also lets InsertTx participate in an
 // ent business transaction. The loader backs the exercise-build worker; pass
 // nil for an insert-only client.
-func NewClient(db *sql.DB, loader *courseloader.Loader) (*river.Client[*sql.Tx], error) {
+func NewClient(
+	db *sql.DB,
+	loader *courseloader.Loader,
+	logger *slog.Logger,
+	errorHandler *ErrorHandler,
+) (*river.Client[*sql.Tx], error) {
 	return river.NewClient(riverdatabasesql.New(db), &river.Config{
+		ErrorHandler: errorHandler,
+		Logger:       logger,
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},

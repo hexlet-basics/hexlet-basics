@@ -3,51 +3,139 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
+	"log/slog"
 	"net/http"
 
+	"github.com/getsentry/sentry-go"
+	"github.com/go-faster/jx"
 	"github.com/ogen-go/ogen/ogenerrors"
+	"go.opentelemetry.io/otel/trace"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/api"
 	"hexletbasics/internal/localization"
 )
 
-// NewAPIErrorHandler builds the central ogen ErrorHandler. It maps ent's error
-// taxonomy to HTTP status codes so every handler can return the raw ent error
-// (`return nil, err`) instead of assembling a typed error DTO per operation.
+// APIErrorHandler maps application and transport errors to the contract's
+// generated RFC 9457 response and reports unexpected failures.
 //
-// This is the one place that decides what a database failure means to a client:
+// It sits at both ogen error seams:
 //
-//   - ent.IsNotFound        -> 404: a Get/Update/Delete against a missing row.
-//   - ent.IsConstraintError -> 409: a DB unique-index violation (the uniqueness
-//     rules once checked by hand in the handler now live as constraints).
-//   - ogenerrors.Error      -> its own code (400 for a request that fails schema
-//     decode/validation, e.g. a body violating `minLength`; 401 for security).
-//     This keeps a malformed request from masquerading as a 500.
-//   - anything else         -> 500.
+//   - NewError implements ogen's convenient-error method for raw errors returned
+//     by application handlers.
+//   - Handle is installed with api.WithErrorHandler for request decoding,
+//     security, and response-encoding failures that occur outside a handler.
 //
-// Wired via api.WithErrorHandler in the DI container and reused by the test
-// harness, so tests exercise the exact same mapping the server runs.
-func NewAPIErrorHandler(translator *localization.Translator) ogenerrors.ErrorHandler {
-	return func(ctx context.Context, w http.ResponseWriter, _ *http.Request, err error) {
-		status := http.StatusInternalServerError
-		var ogenErr ogenerrors.Error
-		switch {
-		case ent.IsNotFound(err):
-			status = http.StatusNotFound
-		case ent.IsConstraintError(err):
-			status = http.StatusConflict
-		case errors.As(err, &ogenErr):
-			status = ogenErr.Code()
-		}
+// Classification and response construction stay here, while the wire schema and
+// JSON encoder remain generated from TypeSpec.
+type APIErrorHandler struct {
+	translator   *localization.Translator
+	logger       *slog.Logger
+	sentryClient *sentry.Client
+}
 
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(status)
-		// The status code carries the meaning; the body is a minimal, uniform
-		// envelope. ogen's generated client treats these undeclared statuses as
-		// errors, which the handler tests assert on via the recorded status code.
-		_, _ = fmt.Fprintf(w, `{"error":%q}`, translator.StatusText(ctx, status))
+// NewAPIErrorHandler builds the central error adapter.
+func NewAPIErrorHandler(
+	translator *localization.Translator,
+	logger *slog.Logger,
+	sentryClient *sentry.Client,
+) *APIErrorHandler {
+	return &APIErrorHandler{
+		translator:   translator,
+		logger:       logger,
+		sentryClient: sentryClient,
 	}
+}
+
+// NewError creates ogen's generated default response for an error returned by
+// an application handler.
+func (h *APIErrorHandler) NewError(ctx context.Context, err error) *api.ProblemDetailsStatusCode {
+	status := errorStatus(err)
+	h.report(ctx, nil, status, err)
+	return &api.ProblemDetailsStatusCode{
+		StatusCode: status,
+		Response:   h.problem(ctx, status),
+	}
+}
+
+// NewError implements ogen's generated convenient-error seam.
+func (s *Server) NewError(ctx context.Context, err error) *api.ProblemDetailsStatusCode {
+	return s.errors.NewError(ctx, err)
+}
+
+// Handle writes contract-shaped errors raised before or after an application
+// handler runs. ogen's generated convenient-error encoder owns handler-returned
+// errors; this hook covers decode, security, and response-encoding errors.
+func (h *APIErrorHandler) Handle(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
+	status := errorStatus(err)
+	h.report(ctx, r, status, err)
+
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(status)
+	encoder := new(jx.Encoder)
+	problem := h.problem(ctx, status)
+	problem.Encode(encoder)
+	if _, writeErr := encoder.WriteTo(w); writeErr != nil {
+		h.logger.ErrorContext(ctx, "writing error response", "err", writeErr)
+	}
+}
+
+func errorStatus(err error) int {
+	var ogenErr ogenerrors.Error
+	switch {
+	case ent.IsNotFound(err):
+		return http.StatusNotFound
+	case ent.IsConstraintError(err):
+		return http.StatusConflict
+	case errors.As(err, &ogenErr):
+		return ogenErr.Code()
+	default:
+		return http.StatusInternalServerError
+	}
+}
+
+func (h *APIErrorHandler) problem(ctx context.Context, status int) api.ProblemDetails {
+	return api.ProblemDetails{
+		Type:   "about:blank",
+		Title:  h.translator.StatusText(ctx, status),
+		Status: int32(status),
+	}
+}
+
+func (h *APIErrorHandler) report(ctx context.Context, r *http.Request, status int, err error) {
+	if status < http.StatusInternalServerError {
+		return
+	}
+
+	spanContext := trace.SpanContextFromContext(ctx)
+	traceID := spanContext.TraceID().String()
+	spanID := spanContext.SpanID().String()
+	attrs := []any{
+		"err", err,
+		"status", status,
+		"trace_id", traceID,
+		"span_id", spanID,
+	}
+	scope := sentry.NewScope()
+	scope.SetTags(map[string]string{
+		"trace_id": traceID,
+		"span_id":  spanID,
+	})
+	if r != nil {
+		attrs = append(attrs, "method", r.Method, "path", r.URL.Path)
+		scope.SetTags(map[string]string{
+			"http.method": r.Method,
+			"http.path":   r.URL.Path,
+		})
+		scope.SetContext("http", sentry.Context{
+			"method": r.Method,
+			"path":   r.URL.Path,
+			"status": status,
+		})
+	}
+
+	h.logger.ErrorContext(ctx, "request failed", attrs...)
+	h.sentryClient.CaptureException(err, &sentry.EventHint{Context: ctx}, scope)
 }
 
 // NewNotFoundHandler localizes requests that do not match an ogen route.

@@ -120,12 +120,12 @@ interface Session {
   /** Log in with email + password; sets the JWT cookie. */
   @post
   @operationId("createSession")
-  create(@body body: SessionInput): SessionResponse | ValidationError;
+  create(@body body: SessionInput): SessionResponse | ValidationError | ApiError;
 
   /** Log out; clears the JWT cookie. */
   @delete
   @operationId("deleteSession")
-  delete(): SessionDeleted;
+  delete(): SessionDeleted | ApiError;
 }
 
 @route("/me")
@@ -134,7 +134,7 @@ interface Me {
   /** Resolve the current user from the session cookie (for SSR). */
   @get
   @operationId("getCurrentUser")
-  get(@header("Cookie") cookie?: string): CurrentUser;
+  get(@header("Cookie") cookie?: string): CurrentUser | ApiError;
 }
 
 @route("/my")
@@ -143,7 +143,7 @@ interface My {
   /** The signed-in user's course dashboard. */
   @get
   @operationId("getMyDashboard")
-  get(): MyDashboard | UnauthorizedError;
+  get(): MyDashboard | UnauthorizedError | ApiError;
 }
 
 // ---- Registration & recovery ---------------------------------------------
@@ -154,7 +154,7 @@ interface Registration {
   /** Sign up; sets the JWT cookie on success. */
   @post
   @operationId("createUser")
-  create(@body body: SignUpInput): UserCreated | ValidationError;
+  create(@body body: SignUpInput): UserCreated | ValidationError | ApiError;
 }
 
 @route("/magic_links")
@@ -163,13 +163,13 @@ interface MagicLinks {
   /** Email a one-time sign-in link. */
   @post
   @operationId("createMagicLink")
-  create(@body body: EmailInput): NoContent | ValidationError;
+  create(@body body: EmailInput): NoContent | ValidationError | ApiError;
 
   /** Consume a magic link token; sets the JWT cookie. */
   @get
   @route("/{token}")
   @operationId("consumeMagicLink")
-  consume(@path token: string): User | NotFoundError;
+  consume(@path token: string): User | NotFoundError | ApiError;
 }
 
 @route("/remind_password")
@@ -178,7 +178,7 @@ interface RemindPassword {
   /** Email a password-reset link. */
   @post
   @operationId("createPasswordReminder")
-  create(@body body: EmailInput): NoContent | ValidationError;
+  create(@body body: EmailInput): NoContent | ValidationError | ApiError;
 }
 
 @route("/password")
@@ -188,13 +188,13 @@ interface PasswordReset {
   @get
   @route("/{token}/edit")
   @operationId("checkPasswordResetToken")
-  check(@path token: string): NoContent | NotFoundError;
+  check(@path token: string): NoContent | NotFoundError | ApiError;
 
   /** Set a new password using a reset token. */
   @patch
   @route("/{token}")
   @operationId("updatePassword")
-  update(@path token: string, @body body: ResetPasswordInput): NoContent | ValidationError;
+  update(@path token: string, @body body: ResetPasswordInput): NoContent | ValidationError | ApiError;
 }
 
 @route("/phone_auth")
@@ -203,13 +203,13 @@ interface PhoneAuth {
   /** Send an SMS verification code. */
   @post
   @operationId("createPhoneAuth")
-  create(@body body: PhoneInput): NoContent | ValidationError;
+  create(@body body: PhoneInput): NoContent | ValidationError | ApiError;
 
   /** Confirm the SMS code; sets the JWT cookie. */
   @post
   @route("/confirm")
   @operationId("confirmPhoneAuth")
-  confirm(@body body: PhoneConfirmInput): User | ValidationError;
+  confirm(@body body: PhoneConfirmInput): User | ValidationError | ApiError;
 }
 
 // ---- Passkeys / WebAuthn --------------------------------------------------
@@ -221,12 +221,12 @@ interface PasskeySession {
   @get
   @route("/new")
   @operationId("newPasskeySession")
-  new(): PasskeyChallenge;
+  new(): PasskeyChallenge | ApiError;
 
   /** Complete a passkey login; sets the JWT cookie. */
   @post
   @operationId("createPasskeySession")
-  create(@body body: PasskeyAssertionInput): User | ValidationError;
+  create(@body body: PasskeyAssertionInput): User | ValidationError | ApiError;
 }
 
 @route("/account/passkeys")
@@ -235,13 +235,13 @@ interface AccountPasskeys {
   /** List the current user's passkeys. */
   @get
   @operationId("listPasskeys")
-  list(): UserCredential[] | UnauthorizedError;
+  list(): UserCredential[] | UnauthorizedError | ApiError;
 
   /** Begin a passkey registration ceremony. */
   @get
   @route("/new")
   @operationId("newPasskey")
-  new(): PasskeyChallenge | UnauthorizedError;
+  new(): PasskeyChallenge | UnauthorizedError | ApiError;
 
   /** Register a new passkey for the current user. */
   @post
@@ -249,13 +249,13 @@ interface AccountPasskeys {
   create(@body body: PasskeyRegistrationInput): {
     @statusCode statusCode: 201;
     @body credential: UserCredential;
-  } | ValidationError;
+  } | ValidationError | ApiError;
 
   /** Remove a passkey. */
   @delete
   @route("/{id}")
   @operationId("deletePasskey")
-  delete(@path id: int32): NoContent | NotFoundError;
+  delete(@path id: int32): NoContent | NotFoundError | ApiError;
 }
 
 // ---- Account profile ------------------------------------------------------
@@ -267,17 +267,17 @@ interface AccountProfile {
   @get
   @route("/edit")
   @operationId("getProfile")
-  get(): User | UnauthorizedError;
+  get(): User | UnauthorizedError | ApiError;
 
   /** Update the current user's profile. */
   @patch
   @operationId("updateProfile")
-  update(@body body: ProfileInput): User | ValidationError;
+  update(@body body: ProfileInput): User | ValidationError | ApiError;
 
   /** Delete the current user's account. */
   @delete
   @operationId("deleteAccount")
-  delete(): NoContent | UnauthorizedError;
+  delete(): NoContent | UnauthorizedError | ApiError;
 }
 
 // ---- Locale ---------------------------------------------------------------
@@ -289,5 +289,5 @@ interface LocaleSwitch {
   @get
   @route("/switch")
   @operationId("switchLocale")
-  switch(@query locale: Locale): NoContent;
+  switch(@query locale: Locale): NoContent | ApiError;
 }

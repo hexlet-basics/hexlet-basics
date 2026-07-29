@@ -61,6 +61,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
     post:
@@ -83,6 +93,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
       requestBody:
@@ -109,6 +129,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
   /account/passkeys/{id}:
@@ -131,6 +161,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
   /account/profile:
@@ -154,6 +194,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
       requestBody:
@@ -175,6 +225,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
   /account/profile/edit:
@@ -195,6 +255,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
   /admin/api/users:
@@ -212,6 +282,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrudPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
     post:
@@ -227,6 +307,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
       requestBody:
@@ -255,6 +345,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserCrud'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
   /admin/api/users/{id}:
@@ -277,6 +377,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
     put:
@@ -298,6 +408,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
       requestBody:
@@ -318,6 +438,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
   /admin/attachments:
@@ -341,6 +471,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Attachments'
       requestBody:
@@ -368,6 +508,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BannerPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
     post:
@@ -384,6 +534,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
       requestBody:
@@ -412,6 +572,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
     put:
@@ -431,6 +601,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
       requestBody:
@@ -452,6 +632,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
   /admin/blog_posts:
@@ -469,6 +659,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPostPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
     post:
@@ -490,6 +690,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
       requestBody:
@@ -515,6 +725,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
     put:
@@ -542,6 +762,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
       requestBody:
@@ -562,6 +792,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
   /admin/blog_posts/{id}/related_courses:
@@ -591,6 +831,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
       requestBody:
@@ -615,6 +865,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategoryPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
     post:
@@ -630,6 +890,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -657,6 +927,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/QnaItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
     post:
@@ -675,6 +955,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -709,6 +999,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -735,6 +1035,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
   /admin/language_categories/{id}:
@@ -757,6 +1067,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
     put:
@@ -778,6 +1098,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
       requestBody:
@@ -799,6 +1129,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
   /admin/language_landing_pages:
@@ -816,6 +1156,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPagePage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
     post:
@@ -828,6 +1178,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:
@@ -856,6 +1216,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
     put:
@@ -877,6 +1247,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:
@@ -897,6 +1277,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
   /admin/language_landing_pages/{landingPageId}/qna_items:
@@ -918,6 +1308,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/QnaItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
     post:
@@ -936,6 +1336,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:
@@ -970,6 +1380,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
       requestBody:
@@ -996,6 +1416,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
   /admin/language_lesson_members:
@@ -1013,6 +1443,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonMemberPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lesson Members'
   /admin/language_lesson_reviews:
@@ -1030,6 +1470,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonReviewPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lesson Reviews'
   /admin/language_lessons:
@@ -1047,6 +1497,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonListItemPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lessons'
   /admin/language_lessons/{id}/review:
@@ -1069,6 +1529,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lessons'
   /admin/languages:
@@ -1086,6 +1556,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CoursePage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
     post:
@@ -1098,6 +1578,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
       requestBody:
@@ -1126,6 +1616,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
     put:
@@ -1144,6 +1644,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
       requestBody:
@@ -1172,6 +1682,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
   /admin/languages/{id}/versions:
@@ -1198,6 +1718,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
   /admin/leads:
@@ -1215,6 +1745,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeadPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Leads'
   /admin/management/role_permissions/{roleId}:
@@ -1235,6 +1775,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
     put:
@@ -1254,6 +1804,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
       requestBody:
@@ -1277,6 +1837,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRolePage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
     post:
@@ -1292,6 +1862,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
       requestBody:
@@ -1320,6 +1900,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
     put:
@@ -1338,6 +1928,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
       requestBody:
@@ -1358,6 +1958,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
   /admin/management/staff_members:
@@ -1375,6 +1985,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMemberPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
     post:
@@ -1387,6 +2007,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
       requestBody:
@@ -1412,6 +2042,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
     put:
@@ -1430,6 +2070,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
       requestBody:
@@ -1450,6 +2100,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
   /admin/management/users:
@@ -1467,6 +2127,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrudPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
   /admin/management/users/{id}:
@@ -1489,6 +2159,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
     put:
@@ -1507,6 +2187,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
       requestBody:
@@ -1530,6 +2220,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonAssistantMessagePage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Messages'
   /admin/reviews:
@@ -1547,6 +2247,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReviewPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
     post:
@@ -1559,6 +2269,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
       requestBody:
@@ -1587,6 +2307,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
     put:
@@ -1608,6 +2338,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
       requestBody:
@@ -1628,6 +2368,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
   /ai/lessons/{lessonId}/messages:
@@ -1656,6 +2406,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Lesson Player
     post:
@@ -1679,6 +2439,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Lesson Player
       requestBody:
@@ -1703,6 +2473,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPostPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
   /blog_posts/{id}/likes:
@@ -1729,6 +2509,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
   /blog_posts/{id}/next:
@@ -1755,6 +2545,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
   /blog_posts/{slug}:
@@ -1780,6 +2580,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
   /book/create_request:
@@ -1799,6 +2609,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Marketing
       requestBody:
@@ -1821,6 +2641,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CourseCategory'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Course Categories
   /language_categories/{slug}:
@@ -1846,6 +2676,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Course Categories
   /languages:
@@ -1862,6 +2702,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CourseCatalogItem'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Courses
   /languages/{courseSlug}/lessons/{slug}:
@@ -1892,6 +2742,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Courses
   /languages/{slug}:
@@ -1917,6 +2777,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Courses
   /leads:
@@ -1940,6 +2810,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Leads
       requestBody:
@@ -1977,6 +2857,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Lesson Player
       requestBody:
@@ -1999,6 +2889,16 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
   /magic_links:
@@ -2018,6 +2918,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2049,6 +2959,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
   /map:
@@ -2063,6 +2983,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sitemap'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Sitemap
   /me:
@@ -2082,6 +3012,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
   /my:
@@ -2102,6 +3042,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
   /pages/{slug}:
@@ -2127,6 +3077,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Pages
   /passkey_session:
@@ -2150,6 +3110,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2170,6 +3140,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PasskeyChallenge'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
   /password/{token}:
@@ -2194,6 +3174,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2221,6 +3211,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
   /phone_auth:
@@ -2240,6 +3240,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2269,6 +3279,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2294,6 +3314,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2318,6 +3348,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReviewPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Reviews
   /session:
@@ -2348,6 +3388,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -2368,6 +3418,16 @@ paths:
               required: true
               schema:
                 type: string
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
   /users:
@@ -2396,6 +3456,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
       requestBody:
@@ -3948,6 +5018,33 @@ components:
         phone:
           type: string
           minLength: 1
+    ProblemDetails:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          description: URI identifying the problem type. `about:blank` means the HTTP status.
+        title:
+          type: string
+          description: Short, localized summary for this problem type.
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code generated for this occurrence.
+        detail:
+          type: string
+          description: Optional occurrence-specific explanation that is safe for clients.
+        instance:
+          type: string
+          description: Optional URI identifying this particular occurrence.
+      description: |-
+        RFC 9457 problem details returned by the transport when request decoding,
+        authorization, persistence, or an unexpected server failure prevents an
+        operation from producing its declared domain response.
     ProfileInput:
       type: object
       required:

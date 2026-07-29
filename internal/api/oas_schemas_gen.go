@@ -3,10 +3,15 @@
 package api
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-faster/errors"
 )
+
+func (s *ProblemDetailsStatusCode) Error() string {
+	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+}
 
 // AdminDeleteBannerNoContent is response for AdminDeleteBanner operation.
 type AdminDeleteBannerNoContent struct{}
@@ -4960,6 +4965,99 @@ func (s *PhoneInput) GetPhone() string {
 // SetPhone sets the value of Phone.
 func (s *PhoneInput) SetPhone(val string) {
 	s.Phone = val
+}
+
+// RFC 9457 problem details returned by the transport when request decoding, authorization,
+// persistence, or an unexpected server failure prevents an operation from producing its declared
+// domain response.
+// Ref: #/components/schemas/ProblemDetails
+type ProblemDetails struct {
+	// URI identifying the problem type. `about:blank` means the HTTP status.
+	Type string `json:"type"`
+	// Short, localized summary for this problem type.
+	Title string `json:"title"`
+	// HTTP status code generated for this occurrence.
+	Status int32 `json:"status"`
+	// Optional occurrence-specific explanation that is safe for clients.
+	Detail OptString `json:"detail"`
+	// Optional URI identifying this particular occurrence.
+	Instance OptString `json:"instance"`
+}
+
+// GetType returns the value of Type.
+func (s *ProblemDetails) GetType() string {
+	return s.Type
+}
+
+// GetTitle returns the value of Title.
+func (s *ProblemDetails) GetTitle() string {
+	return s.Title
+}
+
+// GetStatus returns the value of Status.
+func (s *ProblemDetails) GetStatus() int32 {
+	return s.Status
+}
+
+// GetDetail returns the value of Detail.
+func (s *ProblemDetails) GetDetail() OptString {
+	return s.Detail
+}
+
+// GetInstance returns the value of Instance.
+func (s *ProblemDetails) GetInstance() OptString {
+	return s.Instance
+}
+
+// SetType sets the value of Type.
+func (s *ProblemDetails) SetType(val string) {
+	s.Type = val
+}
+
+// SetTitle sets the value of Title.
+func (s *ProblemDetails) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetStatus sets the value of Status.
+func (s *ProblemDetails) SetStatus(val int32) {
+	s.Status = val
+}
+
+// SetDetail sets the value of Detail.
+func (s *ProblemDetails) SetDetail(val OptString) {
+	s.Detail = val
+}
+
+// SetInstance sets the value of Instance.
+func (s *ProblemDetails) SetInstance(val OptString) {
+	s.Instance = val
+}
+
+// ProblemDetailsStatusCode wraps ProblemDetails with StatusCode.
+type ProblemDetailsStatusCode struct {
+	StatusCode int
+	Response   ProblemDetails
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *ProblemDetailsStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *ProblemDetailsStatusCode) GetResponse() ProblemDetails {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *ProblemDetailsStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *ProblemDetailsStatusCode) SetResponse(val ProblemDetails) {
+	s.Response = val
 }
 
 // Profile edit form (legacy: `UserProfileForm`).

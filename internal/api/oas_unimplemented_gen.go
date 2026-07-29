@@ -908,3 +908,11 @@ func (UnimplementedHandler) UpdatePassword(ctx context.Context, req *ResetPasswo
 func (UnimplementedHandler) UpdateProfile(ctx context.Context, req *ProfileInput) (r UpdateProfileRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
+
+// NewError creates *ProblemDetailsStatusCode from error returned by handler.
+//
+// Used for common default response.
+func (UnimplementedHandler) NewError(ctx context.Context, err error) (r *ProblemDetailsStatusCode) {
+	r = new(ProblemDetailsStatusCode)
+	return r
+}

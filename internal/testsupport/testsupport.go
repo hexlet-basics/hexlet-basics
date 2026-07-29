@@ -14,11 +14,14 @@ package testsupport
 
 import (
 	"context"
+	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 
 	"hexletbasics/ent"
@@ -78,6 +81,21 @@ func NewTranslator(t testing.TB) *localization.Translator {
 	return translator
 }
 
+// NewAPIErrorHandler wires the production handler seam with disabled telemetry
+// so integration tests remain silent and cannot send events off-process.
+func NewAPIErrorHandler(t testing.TB, translator *localization.Translator) *handlers.APIErrorHandler {
+	t.Helper()
+	client, err := sentry.NewClient(sentry.ClientOptions{})
+	if err != nil {
+		t.Fatalf("new disabled Sentry client: %v", err)
+	}
+	return handlers.NewAPIErrorHandler(
+		translator,
+		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		client,
+	)
+}
+
 // Harness bundles the generated API client, wired to an in-process server, with
 // the ent client behind it — both over the same rolled-back SQL transaction, so
 // the client's writes are visible to DB assertions and discarded together.
@@ -99,9 +117,9 @@ type Harness struct {
 	doer     *inProcessDoer
 }
 
-// LastStatus is the HTTP status of the most recent client call. Error responses
-// (404/409) are undeclared statuses the generated client surfaces as an error;
-// assert the code here instead of destructuring a typed error member.
+// LastStatus is the HTTP status of the most recent client call. It remains a
+// concise assertion helper even though default errors now decode to the
+// generated ProblemDetailsStatusCode type.
 func (h *Harness) LastStatus() int { return h.doer.status }
 
 // NewHarness builds the in-process test stack: an ent client over a fresh SQL
@@ -116,9 +134,10 @@ func NewHarness(t *testing.T) *Harness {
 
 	enqueuer := &RecordingEnqueuer{DB: db}
 	translator := NewTranslator(t)
+	errorHandler := NewAPIErrorHandler(t, translator)
 	srv, err := api.NewServer(
-		handlers.NewServer(db, testConfig, enqueuer, translator),
-		api.WithErrorHandler(handlers.NewAPIErrorHandler(translator)),
+		handlers.NewServer(db, testConfig, enqueuer, translator, errorHandler),
+		api.WithErrorHandler(errorHandler.Handle),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)

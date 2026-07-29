@@ -92,6 +92,40 @@ model ForbiddenError {
   message: string;
 }
 
+/**
+ * RFC 9457 problem details returned by the transport when request decoding,
+ * authorization, persistence, or an unexpected server failure prevents an
+ * operation from producing its declared domain response.
+ */
+model ProblemDetails {
+  /** URI identifying the problem type. `about:blank` means the HTTP status. */
+  type: string;
+
+  /** Short, localized summary for this problem type. */
+  title: string;
+
+  /** HTTP status code generated for this occurrence. */
+  status: int32;
+
+  /** Optional occurrence-specific explanation that is safe for clients. */
+  detail?: string;
+
+  /** Optional URI identifying this particular occurrence. */
+  instance?: string;
+}
+
+/**
+ * Default error response shared by every operation.
+ *
+ * `@error` emits an OpenAPI `default` response, keeping central transport
+ * failures typed without enumerating every status on every operation.
+ */
+@error
+model ApiError {
+  @header contentType: "application/problem+json";
+  @body body: ProblemDetails;
+}
+
 /** Empty 204 response for deletes and other content-less successes. */
 model NoContent {
   @statusCode statusCode: 204;

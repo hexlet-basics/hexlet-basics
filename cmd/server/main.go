@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 	"github.com/samber/do/v2"
 	"gocloud.dev/blob"
@@ -27,6 +28,7 @@ func main() {
 	injector := di.New()
 
 	logger := do.MustInvoke[*slog.Logger](injector)
+	sentryClient := do.MustInvoke[*sentry.Client](injector)
 	srv := do.MustInvoke[*http.Server](injector)
 	// Held before shutdown: ent.Client exposes Close, not a do Shutdowner, so it
 	// is closed explicitly once the injector has drained the HTTP server.
@@ -76,5 +78,8 @@ func main() {
 	}
 	if err := db.Close(); err != nil {
 		logger.Error("closing database", "err", err)
+	}
+	if !sentryClient.FlushWithContext(shutdownCtx) {
+		logger.Error("flushing Sentry events timed out")
 	}
 }

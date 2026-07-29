@@ -28,15 +28,17 @@ func newAuthRouter(t *testing.T) http.Handler {
 func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
+	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	handler := handlers.NewServer(
 		db,
 		&config.Config{JWTSecret: "test-secret"},
 		&testsupport.RecordingEnqueuer{DB: db},
 		translator,
+		errorHandler,
 	)
 	server, err := api.NewServer(
 		handler,
-		api.WithErrorHandler(handlers.NewAPIErrorHandler(translator)),
+		api.WithErrorHandler(errorHandler.Handle),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)

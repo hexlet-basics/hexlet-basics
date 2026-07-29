@@ -8,9 +8,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
 	"github.com/rs/cors"
 	"github.com/samber/do/v2"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"gocloud.dev/blob"
 
 	"hexletbasics/ent"
@@ -23,6 +25,7 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/logging"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
 )
 
@@ -56,6 +59,26 @@ func New() *do.RootScope {
 		return logging.New(slog.LevelInfo), nil
 	})
 
+	do.Provide(injector, func(i do.Injector) (*sentry.Client, error) {
+		return telemetry.NewSentryClient(do.MustInvoke[*config.Config](i))
+	})
+
+	do.Provide(injector, func(i do.Injector) (*sdktrace.TracerProvider, error) {
+		return telemetry.NewTracerProvider(
+			context.Background(),
+			do.MustInvoke[*slog.Logger](i),
+			do.MustInvoke[*config.Config](i),
+		)
+	})
+
+	do.Provide(injector, func(i do.Injector) (*handlers.APIErrorHandler, error) {
+		return handlers.NewAPIErrorHandler(
+			do.MustInvoke[*localization.Translator](i),
+			do.MustInvoke[*slog.Logger](i),
+			do.MustInvoke[*sentry.Client](i),
+		), nil
+	})
+
 	do.Provide(injector, func(do.Injector) (*localization.Translator, error) {
 		return localization.New()
 	})
@@ -74,6 +97,7 @@ func New() *do.RootScope {
 			do.MustInvoke[*config.Config](i),
 			do.MustInvoke[*versionbuilds.Starter](i),
 			do.MustInvoke[*localization.Translator](i),
+			do.MustInvoke[*handlers.APIErrorHandler](i),
 		), nil
 	})
 
@@ -114,6 +138,8 @@ func New() *do.RootScope {
 		return jobs.NewClient(
 			do.MustInvoke[*sql.DB](i),
 			do.MustInvoke[*courseloader.Loader](i),
+			do.MustInvoke[*slog.Logger](i),
+			jobs.NewErrorHandler(do.MustInvoke[*sentry.Client](i)),
 		)
 	})
 
@@ -129,7 +155,8 @@ func New() *do.RootScope {
 		// (404/409), so handlers return raw ent errors instead of typed DTOs.
 		return api.NewServer(
 			do.MustInvoke[*handlers.Server](i),
-			api.WithErrorHandler(handlers.NewAPIErrorHandler(do.MustInvoke[*localization.Translator](i))),
+			api.WithErrorHandler(do.MustInvoke[*handlers.APIErrorHandler](i).Handle),
+			api.WithTracerProvider(do.MustInvoke[*sdktrace.TracerProvider](i)),
 			api.WithNotFound(handlers.NewNotFoundHandler(do.MustInvoke[*localization.Translator](i))),
 			api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(do.MustInvoke[*localization.Translator](i))),
 		)

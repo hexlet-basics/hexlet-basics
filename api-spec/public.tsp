@@ -45,13 +45,13 @@ interface Courses {
   /** List the published course catalog. */
   @get
   @operationId("listCourses")
-  list(): CourseCatalogItem[];
+  list(): CourseCatalogItem[] | ApiError;
 
   /** Course landing page by slug. */
   @get
   @route("/{slug}")
   @operationId("getCourse")
-  get(@path slug: string): CourseView | NotFoundError;
+  get(@path slug: string): CourseView | NotFoundError | ApiError;
 }
 
 @route("/languages/{courseSlug}/lessons")
@@ -61,7 +61,7 @@ interface CourseLessons {
   @get
   @route("/{slug}")
   @operationId("getCourseLesson")
-  get(@path courseSlug: string, @path slug: string): CourseLesson | NotFoundError;
+  get(@path courseSlug: string, @path slug: string): CourseLesson | NotFoundError | ApiError;
 }
 
 @route("/language_categories")
@@ -70,13 +70,13 @@ interface PublicCourseCategories {
   /** List published categories. */
   @get
   @operationId("listPublicCourseCategories")
-  list(): CourseCategory[];
+  list(): CourseCategory[] | ApiError;
 
   /** A category and the courses it groups. */
   @get
   @route("/{slug}")
   @operationId("getPublicCourseCategory")
-  get(@path slug: string): CourseCategoryView | NotFoundError;
+  get(@path slug: string): CourseCategoryView | NotFoundError | ApiError;
 }
 
 @route("/blog_posts")
@@ -85,19 +85,19 @@ interface Blog {
   /** Paginated published blog posts. */
   @get
   @operationId("listBlogPosts")
-  list(...ListQuery): Page<BlogPost>;
+  list(...ListQuery): Page<BlogPost> | ApiError;
 
   /** A single blog post by slug. */
   @get
   @route("/{slug}")
   @operationId("getBlogPost")
-  get(@path slug: string): BlogPost | NotFoundError;
+  get(@path slug: string): BlogPost | NotFoundError | ApiError;
 
   /** The next post to read after this one. */
   @get
   @route("/{id}/next")
   @operationId("getNextBlogPost")
-  next(@path id: int32): BlogPost | NotFoundError;
+  next(@path id: int32): BlogPost | NotFoundError | ApiError;
 
   /** Like a post (idempotent per visitor). */
   @post
@@ -106,7 +106,7 @@ interface Blog {
   like(@path id: int32): {
     @statusCode statusCode: 201;
     @body body: BlogPost;
-  } | NotFoundError;
+  } | NotFoundError | ApiError;
 }
 
 @route("/reviews")
@@ -115,7 +115,7 @@ interface PublicReviews {
   /** Paginated published student reviews. */
   @get
   @operationId("listPublicReviews")
-  list(...ListQuery): Page<Review>;
+  list(...ListQuery): Page<Review> | ApiError;
 }
 
 @route("/pages")
@@ -125,7 +125,7 @@ interface Pages {
   @get
   @route("/{slug}")
   @operationId("getPage")
-  get(@path slug: string): PageContent | NotFoundError;
+  get(@path slug: string): PageContent | NotFoundError | ApiError;
 }
 
 // ---- Marketing writes -----------------------------------------------------
@@ -146,7 +146,7 @@ interface PublicLeads {
   create(@body body: LeadInput): {
     @statusCode statusCode: 201;
     @body lead: Lead;
-  } | ValidationError;
+  } | ValidationError | ApiError;
 }
 
 /** A request to download the free book (ru marketing funnel). */
@@ -162,7 +162,7 @@ interface Book {
   @post
   @route("/create_request")
   @operationId("createBookRequest")
-  createRequest(@body body: BookRequestInput): NoContent | ValidationError;
+  createRequest(@body body: BookRequestInput): NoContent | ValidationError | ApiError;
 }
 
 // ---- Sitemap --------------------------------------------------------------
@@ -180,5 +180,5 @@ interface SitemapFeed {
   /** Everything the sitemap generator needs. */
   @get
   @operationId("getSitemap")
-  get(): Sitemap;
+  get(): Sitemap | ApiError;
 }

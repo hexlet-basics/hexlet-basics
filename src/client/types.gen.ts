@@ -760,6 +760,34 @@ export type PhoneInput = {
 };
 
 /**
+ * RFC 9457 problem details returned by the transport when request decoding,
+ * authorization, persistence, or an unexpected server failure prevents an
+ * operation from producing its declared domain response.
+ */
+export type ProblemDetails = {
+  /**
+   * URI identifying the problem type. `about:blank` means the HTTP status.
+   */
+  type: string;
+  /**
+   * Short, localized summary for this problem type.
+   */
+  title: string;
+  /**
+   * HTTP status code generated for this occurrence.
+   */
+  status: number;
+  /**
+   * Optional occurrence-specific explanation that is safe for clients.
+   */
+  detail?: string;
+  /**
+   * Optional URI identifying this particular occurrence.
+   */
+  instance?: string;
+};
+
+/**
  * Profile edit form (legacy: `UserProfileForm`).
  */
 export type ProfileInput = {
@@ -1128,6 +1156,13 @@ export type ListPasskeysErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type ListPasskeysError = ListPasskeysErrors[keyof ListPasskeysErrors];
@@ -1155,6 +1190,13 @@ export type CreatePasskeyErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreatePasskeyError = CreatePasskeyErrors[keyof CreatePasskeyErrors];
@@ -1180,6 +1222,13 @@ export type NewPasskeyErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type NewPasskeyError = NewPasskeyErrors[keyof NewPasskeyErrors];
@@ -1207,6 +1256,13 @@ export type DeletePasskeyErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type DeletePasskeyError = DeletePasskeyErrors[keyof DeletePasskeyErrors];
@@ -1232,6 +1288,13 @@ export type DeleteAccountErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
@@ -1259,6 +1322,13 @@ export type UpdateProfileErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type UpdateProfileError = UpdateProfileErrors[keyof UpdateProfileErrors];
@@ -1284,6 +1354,13 @@ export type GetProfileErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetProfileError = GetProfileErrors[keyof GetProfileErrors];
@@ -1315,6 +1392,18 @@ export type AdminListUsersData = {
   url: '/admin/api/users';
 };
 
+export type AdminListUsersErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListUsersError = AdminListUsersErrors[keyof AdminListUsersErrors];
+
 export type AdminListUsersResponses = {
   /**
    * The request has succeeded.
@@ -1330,6 +1419,18 @@ export type AdminCreateUserData = {
   query?: never;
   url: '/admin/api/users';
 };
+
+export type AdminCreateUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateUserError = AdminCreateUserErrors[keyof AdminCreateUserErrors];
 
 export type AdminCreateUserResponses = {
   /**
@@ -1349,6 +1450,18 @@ export type AdminSearchUsersData = {
   url: '/admin/api/users/search';
 };
 
+export type AdminSearchUsersErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminSearchUsersError = AdminSearchUsersErrors[keyof AdminSearchUsersErrors];
+
 export type AdminSearchUsersResponses = {
   /**
    * The request has succeeded.
@@ -1366,6 +1479,18 @@ export type AdminDeleteUserData = {
   query?: never;
   url: '/admin/api/users/{id}';
 };
+
+export type AdminDeleteUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteUserError = AdminDeleteUserErrors[keyof AdminDeleteUserErrors];
 
 export type AdminDeleteUserResponses = {
   /**
@@ -1385,6 +1510,18 @@ export type AdminGetUserData = {
   url: '/admin/api/users/{id}';
 };
 
+export type AdminGetUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetUserError = AdminGetUserErrors[keyof AdminGetUserErrors];
+
 export type AdminGetUserResponses = {
   /**
    * The request has succeeded.
@@ -1402,6 +1539,18 @@ export type AdminUpdateUserData = {
   query?: never;
   url: '/admin/api/users/{id}';
 };
+
+export type AdminUpdateUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateUserError = AdminUpdateUserErrors[keyof AdminUpdateUserErrors];
 
 export type AdminUpdateUserResponses = {
   /**
@@ -1426,6 +1575,13 @@ export type AdminUploadAttachmentErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminUploadAttachmentError = AdminUploadAttachmentErrors[keyof AdminUploadAttachmentErrors];
@@ -1457,6 +1613,18 @@ export type AdminListBannersData = {
   url: '/admin/banners';
 };
 
+export type AdminListBannersErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListBannersError = AdminListBannersErrors[keyof AdminListBannersErrors];
+
 export type AdminListBannersResponses = {
   /**
    * The request has succeeded.
@@ -1472,6 +1640,18 @@ export type AdminCreateBannerData = {
   query?: never;
   url: '/admin/banners';
 };
+
+export type AdminCreateBannerErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateBannerError = AdminCreateBannerErrors[keyof AdminCreateBannerErrors];
 
 export type AdminCreateBannerResponses = {
   /**
@@ -1491,6 +1671,18 @@ export type AdminDeleteBannerData = {
   url: '/admin/banners/{id}';
 };
 
+export type AdminDeleteBannerErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteBannerError = AdminDeleteBannerErrors[keyof AdminDeleteBannerErrors];
+
 export type AdminDeleteBannerResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -1509,6 +1701,18 @@ export type AdminGetBannerData = {
   url: '/admin/banners/{id}';
 };
 
+export type AdminGetBannerErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetBannerError = AdminGetBannerErrors[keyof AdminGetBannerErrors];
+
 export type AdminGetBannerResponses = {
   /**
    * The request has succeeded.
@@ -1526,6 +1730,18 @@ export type AdminUpdateBannerData = {
   query?: never;
   url: '/admin/banners/{id}';
 };
+
+export type AdminUpdateBannerErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateBannerError = AdminUpdateBannerErrors[keyof AdminUpdateBannerErrors];
 
 export type AdminUpdateBannerResponses = {
   /**
@@ -1554,6 +1770,18 @@ export type AdminListBlogPostsData = {
   url: '/admin/blog_posts';
 };
 
+export type AdminListBlogPostsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListBlogPostsError = AdminListBlogPostsErrors[keyof AdminListBlogPostsErrors];
+
 export type AdminListBlogPostsResponses = {
   /**
    * The request has succeeded.
@@ -1577,6 +1805,13 @@ export type AdminCreateBlogPostErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminCreateBlogPostError = AdminCreateBlogPostErrors[keyof AdminCreateBlogPostErrors];
@@ -1599,6 +1834,18 @@ export type AdminDeleteBlogPostData = {
   url: '/admin/blog_posts/{id}';
 };
 
+export type AdminDeleteBlogPostErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteBlogPostError = AdminDeleteBlogPostErrors[keyof AdminDeleteBlogPostErrors];
+
 export type AdminDeleteBlogPostResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -1616,6 +1863,18 @@ export type AdminGetBlogPostData = {
   query?: never;
   url: '/admin/blog_posts/{id}';
 };
+
+export type AdminGetBlogPostErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetBlogPostError = AdminGetBlogPostErrors[keyof AdminGetBlogPostErrors];
 
 export type AdminGetBlogPostResponses = {
   /**
@@ -1642,6 +1901,13 @@ export type AdminUpdateBlogPostErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminUpdateBlogPostError = AdminUpdateBlogPostErrors[keyof AdminUpdateBlogPostErrors];
@@ -1671,6 +1937,13 @@ export type AdminSetBlogPostRelatedCoursesErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminSetBlogPostRelatedCoursesError = AdminSetBlogPostRelatedCoursesErrors[keyof AdminSetBlogPostRelatedCoursesErrors];
@@ -1702,6 +1975,18 @@ export type AdminListCourseCategoriesData = {
   url: '/admin/language_categories';
 };
 
+export type AdminListCourseCategoriesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseCategoriesError = AdminListCourseCategoriesErrors[keyof AdminListCourseCategoriesErrors];
+
 export type AdminListCourseCategoriesResponses = {
   /**
    * The request has succeeded.
@@ -1717,6 +2002,18 @@ export type AdminCreateCourseCategoryData = {
   query?: never;
   url: '/admin/language_categories';
 };
+
+export type AdminCreateCourseCategoryErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateCourseCategoryError = AdminCreateCourseCategoryErrors[keyof AdminCreateCourseCategoryErrors];
 
 export type AdminCreateCourseCategoryResponses = {
   /**
@@ -1736,6 +2033,18 @@ export type AdminListCategoryQnaItemsData = {
   url: '/admin/language_categories/{categoryId}/qna_items';
 };
 
+export type AdminListCategoryQnaItemsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCategoryQnaItemsError = AdminListCategoryQnaItemsErrors[keyof AdminListCategoryQnaItemsErrors];
+
 export type AdminListCategoryQnaItemsResponses = {
   /**
    * The request has succeeded.
@@ -1753,6 +2062,18 @@ export type AdminCreateCategoryQnaItemData = {
   query?: never;
   url: '/admin/language_categories/{categoryId}/qna_items';
 };
+
+export type AdminCreateCategoryQnaItemErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateCategoryQnaItemError = AdminCreateCategoryQnaItemErrors[keyof AdminCreateCategoryQnaItemErrors];
 
 export type AdminCreateCategoryQnaItemResponses = {
   /**
@@ -1773,6 +2094,18 @@ export type AdminDeleteCategoryQnaItemData = {
   url: '/admin/language_categories/{categoryId}/qna_items/{id}';
 };
 
+export type AdminDeleteCategoryQnaItemErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteCategoryQnaItemError = AdminDeleteCategoryQnaItemErrors[keyof AdminDeleteCategoryQnaItemErrors];
+
 export type AdminDeleteCategoryQnaItemResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -1792,6 +2125,18 @@ export type AdminUpdateCategoryQnaItemData = {
   url: '/admin/language_categories/{categoryId}/qna_items/{id}';
 };
 
+export type AdminUpdateCategoryQnaItemErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateCategoryQnaItemError = AdminUpdateCategoryQnaItemErrors[keyof AdminUpdateCategoryQnaItemErrors];
+
 export type AdminUpdateCategoryQnaItemResponses = {
   /**
    * The request has succeeded.
@@ -1809,6 +2154,18 @@ export type AdminDeleteCourseCategoryData = {
   query?: never;
   url: '/admin/language_categories/{id}';
 };
+
+export type AdminDeleteCourseCategoryErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteCourseCategoryError = AdminDeleteCourseCategoryErrors[keyof AdminDeleteCourseCategoryErrors];
 
 export type AdminDeleteCourseCategoryResponses = {
   /**
@@ -1828,6 +2185,18 @@ export type AdminGetCourseCategoryData = {
   url: '/admin/language_categories/{id}';
 };
 
+export type AdminGetCourseCategoryErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetCourseCategoryError = AdminGetCourseCategoryErrors[keyof AdminGetCourseCategoryErrors];
+
 export type AdminGetCourseCategoryResponses = {
   /**
    * The request has succeeded.
@@ -1845,6 +2214,18 @@ export type AdminUpdateCourseCategoryData = {
   query?: never;
   url: '/admin/language_categories/{id}';
 };
+
+export type AdminUpdateCourseCategoryErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateCourseCategoryError = AdminUpdateCourseCategoryErrors[keyof AdminUpdateCourseCategoryErrors];
 
 export type AdminUpdateCourseCategoryResponses = {
   /**
@@ -1873,6 +2254,18 @@ export type AdminListCourseLandingPagesData = {
   url: '/admin/language_landing_pages';
 };
 
+export type AdminListCourseLandingPagesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseLandingPagesError = AdminListCourseLandingPagesErrors[keyof AdminListCourseLandingPagesErrors];
+
 export type AdminListCourseLandingPagesResponses = {
   /**
    * The request has succeeded.
@@ -1888,6 +2281,18 @@ export type AdminCreateCourseLandingPageData = {
   query?: never;
   url: '/admin/language_landing_pages';
 };
+
+export type AdminCreateCourseLandingPageErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateCourseLandingPageError = AdminCreateCourseLandingPageErrors[keyof AdminCreateCourseLandingPageErrors];
 
 export type AdminCreateCourseLandingPageResponses = {
   /**
@@ -1907,6 +2312,18 @@ export type AdminDeleteCourseLandingPageData = {
   url: '/admin/language_landing_pages/{id}';
 };
 
+export type AdminDeleteCourseLandingPageErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteCourseLandingPageError = AdminDeleteCourseLandingPageErrors[keyof AdminDeleteCourseLandingPageErrors];
+
 export type AdminDeleteCourseLandingPageResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -1924,6 +2341,18 @@ export type AdminGetCourseLandingPageData = {
   query?: never;
   url: '/admin/language_landing_pages/{id}';
 };
+
+export type AdminGetCourseLandingPageErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetCourseLandingPageError = AdminGetCourseLandingPageErrors[keyof AdminGetCourseLandingPageErrors];
 
 export type AdminGetCourseLandingPageResponses = {
   /**
@@ -1943,6 +2372,18 @@ export type AdminUpdateCourseLandingPageData = {
   url: '/admin/language_landing_pages/{id}';
 };
 
+export type AdminUpdateCourseLandingPageErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateCourseLandingPageError = AdminUpdateCourseLandingPageErrors[keyof AdminUpdateCourseLandingPageErrors];
+
 export type AdminUpdateCourseLandingPageResponses = {
   /**
    * The request has succeeded.
@@ -1961,6 +2402,18 @@ export type AdminListLandingPageQnaItemsData = {
   url: '/admin/language_landing_pages/{landingPageId}/qna_items';
 };
 
+export type AdminListLandingPageQnaItemsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListLandingPageQnaItemsError = AdminListLandingPageQnaItemsErrors[keyof AdminListLandingPageQnaItemsErrors];
+
 export type AdminListLandingPageQnaItemsResponses = {
   /**
    * The request has succeeded.
@@ -1978,6 +2431,18 @@ export type AdminCreateLandingPageQnaItemData = {
   query?: never;
   url: '/admin/language_landing_pages/{landingPageId}/qna_items';
 };
+
+export type AdminCreateLandingPageQnaItemErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateLandingPageQnaItemError = AdminCreateLandingPageQnaItemErrors[keyof AdminCreateLandingPageQnaItemErrors];
 
 export type AdminCreateLandingPageQnaItemResponses = {
   /**
@@ -1998,6 +2463,18 @@ export type AdminDeleteLandingPageQnaItemData = {
   url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
 };
 
+export type AdminDeleteLandingPageQnaItemErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteLandingPageQnaItemError = AdminDeleteLandingPageQnaItemErrors[keyof AdminDeleteLandingPageQnaItemErrors];
+
 export type AdminDeleteLandingPageQnaItemResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -2016,6 +2493,18 @@ export type AdminUpdateLandingPageQnaItemData = {
   query?: never;
   url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
 };
+
+export type AdminUpdateLandingPageQnaItemErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateLandingPageQnaItemError = AdminUpdateLandingPageQnaItemErrors[keyof AdminUpdateLandingPageQnaItemErrors];
 
 export type AdminUpdateLandingPageQnaItemResponses = {
   /**
@@ -2044,6 +2533,18 @@ export type AdminListCourseLessonMembersData = {
   url: '/admin/language_lesson_members';
 };
 
+export type AdminListCourseLessonMembersErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseLessonMembersError = AdminListCourseLessonMembersErrors[keyof AdminListCourseLessonMembersErrors];
+
 export type AdminListCourseLessonMembersResponses = {
   /**
    * The request has succeeded.
@@ -2070,6 +2571,18 @@ export type AdminListCourseLessonReviewsData = {
   };
   url: '/admin/language_lesson_reviews';
 };
+
+export type AdminListCourseLessonReviewsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseLessonReviewsError = AdminListCourseLessonReviewsErrors[keyof AdminListCourseLessonReviewsErrors];
 
 export type AdminListCourseLessonReviewsResponses = {
   /**
@@ -2098,6 +2611,18 @@ export type AdminListCourseLessonsData = {
   url: '/admin/language_lessons';
 };
 
+export type AdminListCourseLessonsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCourseLessonsError = AdminListCourseLessonsErrors[keyof AdminListCourseLessonsErrors];
+
 export type AdminListCourseLessonsResponses = {
   /**
    * The request has succeeded.
@@ -2121,6 +2646,13 @@ export type AdminReviewCourseLessonErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminReviewCourseLessonError = AdminReviewCourseLessonErrors[keyof AdminReviewCourseLessonErrors];
@@ -2152,6 +2684,18 @@ export type AdminListCoursesData = {
   url: '/admin/languages';
 };
 
+export type AdminListCoursesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListCoursesError = AdminListCoursesErrors[keyof AdminListCoursesErrors];
+
 export type AdminListCoursesResponses = {
   /**
    * The request has succeeded.
@@ -2167,6 +2711,18 @@ export type AdminCreateCourseData = {
   query?: never;
   url: '/admin/languages';
 };
+
+export type AdminCreateCourseErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateCourseError = AdminCreateCourseErrors[keyof AdminCreateCourseErrors];
 
 export type AdminCreateCourseResponses = {
   /**
@@ -2186,6 +2742,18 @@ export type AdminGetCourseData = {
   url: '/admin/languages/{id}';
 };
 
+export type AdminGetCourseErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetCourseError = AdminGetCourseErrors[keyof AdminGetCourseErrors];
+
 export type AdminGetCourseResponses = {
   /**
    * The request has succeeded.
@@ -2203,6 +2771,18 @@ export type AdminUpdateCourseData = {
   query?: never;
   url: '/admin/languages/{id}';
 };
+
+export type AdminUpdateCourseErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateCourseError = AdminUpdateCourseErrors[keyof AdminUpdateCourseErrors];
 
 export type AdminUpdateCourseResponses = {
   /**
@@ -2227,6 +2807,13 @@ export type AdminReviewCourseErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminReviewCourseError = AdminReviewCourseErrors[keyof AdminReviewCourseErrors];
@@ -2254,6 +2841,13 @@ export type AdminCreateCourseVersionErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type AdminCreateCourseVersionError = AdminCreateCourseVersionErrors[keyof AdminCreateCourseVersionErrors];
@@ -2285,6 +2879,18 @@ export type AdminListLeadsData = {
   url: '/admin/leads';
 };
 
+export type AdminListLeadsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListLeadsError = AdminListLeadsErrors[keyof AdminListLeadsErrors];
+
 export type AdminListLeadsResponses = {
   /**
    * The request has succeeded.
@@ -2303,6 +2909,18 @@ export type AdminGetRolePermissionsData = {
   url: '/admin/management/role_permissions/{roleId}';
 };
 
+export type AdminGetRolePermissionsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetRolePermissionsError = AdminGetRolePermissionsErrors[keyof AdminGetRolePermissionsErrors];
+
 export type AdminGetRolePermissionsResponses = {
   /**
    * The request has succeeded.
@@ -2320,6 +2938,18 @@ export type AdminUpdateRolePermissionsData = {
   query?: never;
   url: '/admin/management/role_permissions/{roleId}';
 };
+
+export type AdminUpdateRolePermissionsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateRolePermissionsError = AdminUpdateRolePermissionsErrors[keyof AdminUpdateRolePermissionsErrors];
 
 export type AdminUpdateRolePermissionsResponses = {
   /**
@@ -2348,6 +2978,18 @@ export type AdminListRolesData = {
   url: '/admin/management/roles';
 };
 
+export type AdminListRolesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListRolesError = AdminListRolesErrors[keyof AdminListRolesErrors];
+
 export type AdminListRolesResponses = {
   /**
    * The request has succeeded.
@@ -2363,6 +3005,18 @@ export type AdminCreateRoleData = {
   query?: never;
   url: '/admin/management/roles';
 };
+
+export type AdminCreateRoleErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateRoleError = AdminCreateRoleErrors[keyof AdminCreateRoleErrors];
 
 export type AdminCreateRoleResponses = {
   /**
@@ -2382,6 +3036,18 @@ export type AdminDeleteRoleData = {
   url: '/admin/management/roles/{id}';
 };
 
+export type AdminDeleteRoleErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteRoleError = AdminDeleteRoleErrors[keyof AdminDeleteRoleErrors];
+
 export type AdminDeleteRoleResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -2400,6 +3066,18 @@ export type AdminGetRoleData = {
   url: '/admin/management/roles/{id}';
 };
 
+export type AdminGetRoleErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetRoleError = AdminGetRoleErrors[keyof AdminGetRoleErrors];
+
 export type AdminGetRoleResponses = {
   /**
    * The request has succeeded.
@@ -2417,6 +3095,18 @@ export type AdminUpdateRoleData = {
   query?: never;
   url: '/admin/management/roles/{id}';
 };
+
+export type AdminUpdateRoleErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateRoleError = AdminUpdateRoleErrors[keyof AdminUpdateRoleErrors];
 
 export type AdminUpdateRoleResponses = {
   /**
@@ -2445,6 +3135,18 @@ export type AdminListStaffMembersData = {
   url: '/admin/management/staff_members';
 };
 
+export type AdminListStaffMembersErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListStaffMembersError = AdminListStaffMembersErrors[keyof AdminListStaffMembersErrors];
+
 export type AdminListStaffMembersResponses = {
   /**
    * The request has succeeded.
@@ -2460,6 +3162,18 @@ export type AdminCreateStaffMemberData = {
   query?: never;
   url: '/admin/management/staff_members';
 };
+
+export type AdminCreateStaffMemberErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateStaffMemberError = AdminCreateStaffMemberErrors[keyof AdminCreateStaffMemberErrors];
 
 export type AdminCreateStaffMemberResponses = {
   /**
@@ -2479,6 +3193,18 @@ export type AdminDeleteStaffMemberData = {
   url: '/admin/management/staff_members/{id}';
 };
 
+export type AdminDeleteStaffMemberErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteStaffMemberError = AdminDeleteStaffMemberErrors[keyof AdminDeleteStaffMemberErrors];
+
 export type AdminDeleteStaffMemberResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -2497,6 +3223,18 @@ export type AdminGetStaffMemberData = {
   url: '/admin/management/staff_members/{id}';
 };
 
+export type AdminGetStaffMemberErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetStaffMemberError = AdminGetStaffMemberErrors[keyof AdminGetStaffMemberErrors];
+
 export type AdminGetStaffMemberResponses = {
   /**
    * The request has succeeded.
@@ -2514,6 +3252,18 @@ export type AdminUpdateStaffMemberData = {
   query?: never;
   url: '/admin/management/staff_members/{id}';
 };
+
+export type AdminUpdateStaffMemberErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateStaffMemberError = AdminUpdateStaffMemberErrors[keyof AdminUpdateStaffMemberErrors];
 
 export type AdminUpdateStaffMemberResponses = {
   /**
@@ -2542,6 +3292,18 @@ export type AdminListManagementUsersData = {
   url: '/admin/management/users';
 };
 
+export type AdminListManagementUsersErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListManagementUsersError = AdminListManagementUsersErrors[keyof AdminListManagementUsersErrors];
+
 export type AdminListManagementUsersResponses = {
   /**
    * The request has succeeded.
@@ -2560,6 +3322,18 @@ export type AdminGetManagementUserData = {
   url: '/admin/management/users/{id}';
 };
 
+export type AdminGetManagementUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetManagementUserError = AdminGetManagementUserErrors[keyof AdminGetManagementUserErrors];
+
 export type AdminGetManagementUserResponses = {
   /**
    * The request has succeeded.
@@ -2577,6 +3351,18 @@ export type AdminUpdateManagementUserData = {
   query?: never;
   url: '/admin/management/users/{id}';
 };
+
+export type AdminUpdateManagementUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateManagementUserError = AdminUpdateManagementUserErrors[keyof AdminUpdateManagementUserErrors];
 
 export type AdminUpdateManagementUserResponses = {
   /**
@@ -2605,6 +3391,18 @@ export type AdminListMessagesData = {
   url: '/admin/messages';
 };
 
+export type AdminListMessagesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListMessagesError = AdminListMessagesErrors[keyof AdminListMessagesErrors];
+
 export type AdminListMessagesResponses = {
   /**
    * The request has succeeded.
@@ -2632,6 +3430,18 @@ export type AdminListReviewsData = {
   url: '/admin/reviews';
 };
 
+export type AdminListReviewsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListReviewsError = AdminListReviewsErrors[keyof AdminListReviewsErrors];
+
 export type AdminListReviewsResponses = {
   /**
    * The request has succeeded.
@@ -2647,6 +3457,18 @@ export type AdminCreateReviewData = {
   query?: never;
   url: '/admin/reviews';
 };
+
+export type AdminCreateReviewErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminCreateReviewError = AdminCreateReviewErrors[keyof AdminCreateReviewErrors];
 
 export type AdminCreateReviewResponses = {
   /**
@@ -2666,6 +3488,18 @@ export type AdminDeleteReviewData = {
   url: '/admin/reviews/{id}';
 };
 
+export type AdminDeleteReviewErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminDeleteReviewError = AdminDeleteReviewErrors[keyof AdminDeleteReviewErrors];
+
 export type AdminDeleteReviewResponses = {
   /**
    * Empty 204 response for deletes and other content-less successes.
@@ -2684,6 +3518,18 @@ export type AdminGetReviewData = {
   url: '/admin/reviews/{id}';
 };
 
+export type AdminGetReviewErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminGetReviewError = AdminGetReviewErrors[keyof AdminGetReviewErrors];
+
 export type AdminGetReviewResponses = {
   /**
    * The request has succeeded.
@@ -2701,6 +3547,18 @@ export type AdminUpdateReviewData = {
   query?: never;
   url: '/admin/reviews/{id}';
 };
+
+export type AdminUpdateReviewErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminUpdateReviewError = AdminUpdateReviewErrors[keyof AdminUpdateReviewErrors];
 
 export type AdminUpdateReviewResponses = {
   /**
@@ -2725,6 +3583,13 @@ export type ListAssistantMessagesErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type ListAssistantMessagesError = ListAssistantMessagesErrors[keyof ListAssistantMessagesErrors];
@@ -2752,6 +3617,13 @@ export type CreateAssistantMessageErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreateAssistantMessageError = CreateAssistantMessageErrors[keyof CreateAssistantMessageErrors];
@@ -2781,6 +3653,18 @@ export type ListBlogPostsData = {
   url: '/blog_posts';
 };
 
+export type ListBlogPostsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ListBlogPostsError = ListBlogPostsErrors[keyof ListBlogPostsErrors];
+
 export type ListBlogPostsResponses = {
   /**
    * The request has succeeded.
@@ -2804,6 +3688,13 @@ export type LikeBlogPostErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type LikeBlogPostError = LikeBlogPostErrors[keyof LikeBlogPostErrors];
@@ -2831,6 +3722,13 @@ export type GetNextBlogPostErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetNextBlogPostError = GetNextBlogPostErrors[keyof GetNextBlogPostErrors];
@@ -2858,6 +3756,13 @@ export type GetBlogPostErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetBlogPostError = GetBlogPostErrors[keyof GetBlogPostErrors];
@@ -2885,6 +3790,13 @@ export type CreateBookRequestErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreateBookRequestError = CreateBookRequestErrors[keyof CreateBookRequestErrors];
@@ -2904,6 +3816,18 @@ export type ListPublicCourseCategoriesData = {
   query?: never;
   url: '/language_categories';
 };
+
+export type ListPublicCourseCategoriesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ListPublicCourseCategoriesError = ListPublicCourseCategoriesErrors[keyof ListPublicCourseCategoriesErrors];
 
 export type ListPublicCourseCategoriesResponses = {
   /**
@@ -2928,6 +3852,13 @@ export type GetPublicCourseCategoryErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetPublicCourseCategoryError = GetPublicCourseCategoryErrors[keyof GetPublicCourseCategoryErrors];
@@ -2947,6 +3878,18 @@ export type ListCoursesData = {
   query?: never;
   url: '/languages';
 };
+
+export type ListCoursesErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ListCoursesError = ListCoursesErrors[keyof ListCoursesErrors];
 
 export type ListCoursesResponses = {
   /**
@@ -2972,6 +3915,13 @@ export type GetCourseLessonErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetCourseLessonError = GetCourseLessonErrors[keyof GetCourseLessonErrors];
@@ -2999,6 +3949,13 @@ export type GetCourseErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
@@ -3026,6 +3983,13 @@ export type CreateLeadErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreateLeadError = CreateLeadErrors[keyof CreateLeadErrors];
@@ -3055,6 +4019,13 @@ export type CheckLessonErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CheckLessonError = CheckLessonErrors[keyof CheckLessonErrors];
@@ -3076,6 +4047,18 @@ export type SwitchLocaleData = {
   };
   url: '/locale/switch';
 };
+
+export type SwitchLocaleErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type SwitchLocaleError = SwitchLocaleErrors[keyof SwitchLocaleErrors];
 
 export type SwitchLocaleResponses = {
   /**
@@ -3100,6 +4083,13 @@ export type CreateMagicLinkErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreateMagicLinkError = CreateMagicLinkErrors[keyof CreateMagicLinkErrors];
@@ -3127,6 +4117,13 @@ export type ConsumeMagicLinkErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type ConsumeMagicLinkError = ConsumeMagicLinkErrors[keyof ConsumeMagicLinkErrors];
@@ -3147,6 +4144,18 @@ export type GetSitemapData = {
   url: '/map';
 };
 
+export type GetSitemapErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetSitemapError = GetSitemapErrors[keyof GetSitemapErrors];
+
 export type GetSitemapResponses = {
   /**
    * The request has succeeded.
@@ -3165,6 +4174,18 @@ export type GetCurrentUserData = {
   query?: never;
   url: '/me';
 };
+
+export type GetCurrentUserErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetCurrentUserError = GetCurrentUserErrors[keyof GetCurrentUserErrors];
 
 export type GetCurrentUserResponses = {
   /**
@@ -3187,6 +4208,13 @@ export type GetMyDashboardErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: UnauthorizedError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetMyDashboardError = GetMyDashboardErrors[keyof GetMyDashboardErrors];
@@ -3214,6 +4242,13 @@ export type GetPageErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type GetPageError = GetPageErrors[keyof GetPageErrors];
@@ -3241,6 +4276,13 @@ export type CreatePasskeySessionErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreatePasskeySessionError = CreatePasskeySessionErrors[keyof CreatePasskeySessionErrors];
@@ -3260,6 +4302,18 @@ export type NewPasskeySessionData = {
   query?: never;
   url: '/passkey_session/new';
 };
+
+export type NewPasskeySessionErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type NewPasskeySessionError = NewPasskeySessionErrors[keyof NewPasskeySessionErrors];
 
 export type NewPasskeySessionResponses = {
   /**
@@ -3286,6 +4340,13 @@ export type UpdatePasswordErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type UpdatePasswordError = UpdatePasswordErrors[keyof UpdatePasswordErrors];
@@ -3313,6 +4374,13 @@ export type CheckPasswordResetTokenErrors = {
    * A resource was not found.
    */
   404: NotFoundError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CheckPasswordResetTokenError = CheckPasswordResetTokenErrors[keyof CheckPasswordResetTokenErrors];
@@ -3340,6 +4408,13 @@ export type CreatePhoneAuthErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreatePhoneAuthError = CreatePhoneAuthErrors[keyof CreatePhoneAuthErrors];
@@ -3367,6 +4442,13 @@ export type ConfirmPhoneAuthErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type ConfirmPhoneAuthError = ConfirmPhoneAuthErrors[keyof ConfirmPhoneAuthErrors];
@@ -3394,6 +4476,13 @@ export type CreatePasswordReminderErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreatePasswordReminderError = CreatePasswordReminderErrors[keyof CreatePasswordReminderErrors];
@@ -3425,6 +4514,18 @@ export type ListPublicReviewsData = {
   url: '/reviews';
 };
 
+export type ListPublicReviewsErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type ListPublicReviewsError = ListPublicReviewsErrors[keyof ListPublicReviewsErrors];
+
 export type ListPublicReviewsResponses = {
   /**
    * The request has succeeded.
@@ -3440,6 +4541,18 @@ export type DeleteSessionData = {
   query?: never;
   url: '/session';
 };
+
+export type DeleteSessionErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type DeleteSessionError = DeleteSessionErrors[keyof DeleteSessionErrors];
 
 export type DeleteSessionResponses = {
   /**
@@ -3464,6 +4577,13 @@ export type CreateSessionErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreateSessionError = CreateSessionErrors[keyof CreateSessionErrors];
@@ -3492,6 +4612,13 @@ export type CreateUserErrors = {
    * including constraints the schema cannot express, like uniqueness.
    */
   422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
 };
 
 export type CreateUserError = CreateUserErrors[keyof CreateUserErrors];

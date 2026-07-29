@@ -586,6 +586,10 @@ type Handler interface {
 	//
 	// PATCH /account/profile
 	UpdateProfile(ctx context.Context, req *ProfileInput) (UpdateProfileRes, error)
+	// NewError creates *ProblemDetailsStatusCode from error returned by handler.
+	//
+	// Used for common default response.
+	NewError(ctx context.Context, err error) *ProblemDetailsStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and

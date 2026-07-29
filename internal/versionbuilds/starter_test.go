@@ -3,10 +3,13 @@ package versionbuilds_test
 import (
 	"context"
 	"database/sql"
+	"io"
+	"log/slog"
 	"os"
 	"strconv"
 	"testing"
 
+	"github.com/getsentry/sentry-go"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -38,7 +41,14 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	db := store.NewClient(sqlDB)
 	// A non-nil loader registers the exercise_loader worker. It is never started
 	// in this test, so its own dependencies are intentionally nil.
-	riverClient, err := jobs.NewClient(sqlDB, courseloader.NewLoader(nil, nil, nil))
+	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
+	require.NoError(t, err)
+	riverClient, err := jobs.NewClient(
+		sqlDB,
+		courseloader.NewLoader(nil, nil, nil),
+		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		jobs.NewErrorHandler(sentryClient),
+	)
 	require.NoError(t, err)
 	starter := versionbuilds.NewStarter(sqlDB, riverClient)
 

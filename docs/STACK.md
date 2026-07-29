@@ -22,7 +22,7 @@ kept on **bcrypt passwords** and **URL routes** only (ADR-0002).
 | i18n | `nicksnyder/go-i18n/v2` | Backend-emitted strings only. Content localization = ent data; UI i18n = React i18next. |
 | Config / DI / utils | `caarlos0/env`, `samber/do`, `samber/lo`, `samber/oops`, `oklog/ulid`, `gosimple/slug` | `caarlos0/env` over `spf13/viper`: config is env-only (12-factor), no files/remote/flags — struct-tag parsing fits, viper's weight didn't. |
 | Logs / errors | `slog` + `lmittmann/tint`, **`getsentry/sentry-go`** | ADR-0007. sentry-go ADDED (OTel ≠ error tracking). |
-| Tracing (lean) | `go.opentelemetry.io/otel` + `sdk` + `trace` | ogen emits OTel natively. |
+| Tracing | `go.opentelemetry.io/otel` + OTLP/HTTP exporter | ogen emits OTel natively; exporter is endpoint-gated. |
 | Tests | `stretchr/testify`, stdlib `sql.Tx`, `testfixtures` | Fixtures baseline + per-test rollback, like legacy. |
 
 ## Added beyond the reference list

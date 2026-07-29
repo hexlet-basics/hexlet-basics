@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AdminCreateBannerData, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseLandingPageData, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserResponses, AdminGetReviewData, AdminGetReviewResponses, AdminGetRoleData, AdminGetRolePermissionsData, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserResponses, AdminListBannersData, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesResponses, AdminListCourseLessonMembersData, AdminListCourseLessonMembersResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsResponses, AdminListCoursesData, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsResponses, AdminListManagementUsersData, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesResponses, AdminListReviewsData, AdminListReviewsResponses, AdminListRolesData, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminUpdateBannerData, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConfirmPhoneAuthData, ConfirmPhoneAuthErrors, ConfirmPhoneAuthResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasskeyData, CreatePasskeyErrors, CreatePasskeyResponses, CreatePasskeySessionData, CreatePasskeySessionErrors, CreatePasskeySessionResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreatePhoneAuthData, CreatePhoneAuthErrors, CreatePhoneAuthResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeletePasskeyData, DeletePasskeyErrors, DeletePasskeyResponses, DeleteSessionData, DeleteSessionResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetPageData, GetPageErrors, GetPageResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsResponses, ListCoursesData, ListCoursesResponses, ListPasskeysData, ListPasskeysErrors, ListPasskeysResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsResponses, NewPasskeyData, NewPasskeyErrors, NewPasskeyResponses, NewPasskeySessionData, NewPasskeySessionResponses, SwitchLocaleData, SwitchLocaleResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
+import type { AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonMembersData, AdminListCourseLessonMembersErrors, AdminListCourseLessonMembersResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConfirmPhoneAuthData, ConfirmPhoneAuthErrors, ConfirmPhoneAuthResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasskeyData, CreatePasskeyErrors, CreatePasskeyResponses, CreatePasskeySessionData, CreatePasskeySessionErrors, CreatePasskeySessionResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreatePhoneAuthData, CreatePhoneAuthErrors, CreatePhoneAuthResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeletePasskeyData, DeletePasskeyErrors, DeletePasskeyResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetPageData, GetPageErrors, GetPageResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPasskeysData, ListPasskeysErrors, ListPasskeysResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, NewPasskeyData, NewPasskeyErrors, NewPasskeyResponses, NewPasskeySessionData, NewPasskeySessionErrors, NewPasskeySessionResponses, SwitchLocaleData, SwitchLocaleErrors, SwitchLocaleResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
   /**
@@ -67,13 +67,13 @@ export const updateProfile = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const getProfile = <ThrowOnError extends boolean = false>(options?: Options<GetProfileData, ThrowOnError>): RequestResult<GetProfileResponses, GetProfileErrors, ThrowOnError> => (options?.client ?? client).get<GetProfileResponses, GetProfileErrors, ThrowOnError>({ url: '/account/profile/edit', ...options });
 
-export const adminListUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListUsersData, ThrowOnError>): RequestResult<AdminListUsersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListUsersResponses, unknown, ThrowOnError>({ url: '/admin/api/users', ...options });
+export const adminListUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListUsersData, ThrowOnError>): RequestResult<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError>({ url: '/admin/api/users', ...options });
 
 /**
  * Create a user. A duplicate email is a DB unique constraint, surfaced as 409
  *       by the central ent-error handler.
  */
-export const adminCreateUser = <ThrowOnError extends boolean = false>(options: Options<AdminCreateUserData, ThrowOnError>): RequestResult<AdminCreateUserResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateUserResponses, unknown, ThrowOnError>({
+export const adminCreateUser = <ThrowOnError extends boolean = false>(options: Options<AdminCreateUserData, ThrowOnError>): RequestResult<AdminCreateUserResponses, AdminCreateUserErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateUserResponses, AdminCreateUserErrors, ThrowOnError>({
   url: '/admin/api/users',
   ...options,
   headers: {
@@ -85,21 +85,21 @@ export const adminCreateUser = <ThrowOnError extends boolean = false>(options: O
 /**
  * Typeahead search by name/email.
  */
-export const adminSearchUsers = <ThrowOnError extends boolean = false>(options: Options<AdminSearchUsersData, ThrowOnError>): RequestResult<AdminSearchUsersResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminSearchUsersResponses, unknown, ThrowOnError>({ url: '/admin/api/users/search', ...options });
+export const adminSearchUsers = <ThrowOnError extends boolean = false>(options: Options<AdminSearchUsersData, ThrowOnError>): RequestResult<AdminSearchUsersResponses, AdminSearchUsersErrors, ThrowOnError> => (options.client ?? client).get<AdminSearchUsersResponses, AdminSearchUsersErrors, ThrowOnError>({ url: '/admin/api/users/search', ...options });
 
-export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteUserData, ThrowOnError>): RequestResult<AdminDeleteUserResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteUserResponses, unknown, ThrowOnError>({ url: '/admin/api/users/{id}', ...options });
+export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteUserData, ThrowOnError>): RequestResult<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError>({ url: '/admin/api/users/{id}', ...options });
 
 /**
  * Get a single user. A missing id surfaces as 404 via the central ent-error
  *       handler, not a typed union member.
  */
-export const adminGetUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetUserData, ThrowOnError>): RequestResult<AdminGetUserResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetUserResponses, unknown, ThrowOnError>({ url: '/admin/api/users/{id}', ...options });
+export const adminGetUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetUserData, ThrowOnError>): RequestResult<AdminGetUserResponses, AdminGetUserErrors, ThrowOnError> => (options.client ?? client).get<AdminGetUserResponses, AdminGetUserErrors, ThrowOnError>({ url: '/admin/api/users/{id}', ...options });
 
 /**
  * Update a user. 404 (missing) and 409 (duplicate email) both flow through
  *       the central ent-error handler.
  */
-export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateUserResponses, unknown, ThrowOnError>({
+export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError>({
   url: '/admin/api/users/{id}',
   ...options,
   headers: {
@@ -124,14 +124,14 @@ export const adminUploadAttachment = <ThrowOnError extends boolean = false>(opti
 /**
  * List banners (paginated).
  */
-export const adminListBanners = <ThrowOnError extends boolean = false>(options?: Options<AdminListBannersData, ThrowOnError>): RequestResult<AdminListBannersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListBannersResponses, unknown, ThrowOnError>({ url: '/admin/banners', ...options });
+export const adminListBanners = <ThrowOnError extends boolean = false>(options?: Options<AdminListBannersData, ThrowOnError>): RequestResult<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError>({ url: '/admin/banners', ...options });
 
 /**
  * Create a banner. A body violating the schema (e.g. an empty `body`)
  *       surfaces as 400 via the central handler; banners carry no uniqueness
  *       constraint, so there is no 409 path.
  */
-export const adminCreateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBannerData, ThrowOnError>): RequestResult<AdminCreateBannerResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateBannerResponses, unknown, ThrowOnError>({
+export const adminCreateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBannerData, ThrowOnError>): RequestResult<AdminCreateBannerResponses, AdminCreateBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateBannerResponses, AdminCreateBannerErrors, ThrowOnError>({
   url: '/admin/banners',
   ...options,
   headers: {
@@ -143,18 +143,18 @@ export const adminCreateBanner = <ThrowOnError extends boolean = false>(options:
 /**
  * Delete a banner.
  */
-export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBannerData, ThrowOnError>): RequestResult<AdminDeleteBannerResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBannerResponses, unknown, ThrowOnError>({ url: '/admin/banners/{id}', ...options });
+export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBannerData, ThrowOnError>): RequestResult<AdminDeleteBannerResponses, AdminDeleteBannerErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBannerResponses, AdminDeleteBannerErrors, ThrowOnError>({ url: '/admin/banners/{id}', ...options });
 
 /**
  * Get a single banner. A missing id surfaces as 404 via the central
  *       ent-error handler, not a typed union member.
  */
-export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Options<AdminGetBannerData, ThrowOnError>): RequestResult<AdminGetBannerResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetBannerResponses, unknown, ThrowOnError>({ url: '/admin/banners/{id}', ...options });
+export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Options<AdminGetBannerData, ThrowOnError>): RequestResult<AdminGetBannerResponses, AdminGetBannerErrors, ThrowOnError> => (options.client ?? client).get<AdminGetBannerResponses, AdminGetBannerErrors, ThrowOnError>({ url: '/admin/banners/{id}', ...options });
 
 /**
  * Update a banner. A missing id surfaces as 404 via the central handler.
  */
-export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBannerData, ThrowOnError>): RequestResult<AdminUpdateBannerResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateBannerResponses, unknown, ThrowOnError>({
+export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBannerData, ThrowOnError>): RequestResult<AdminUpdateBannerResponses, AdminUpdateBannerErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateBannerResponses, AdminUpdateBannerErrors, ThrowOnError>({
   url: '/admin/banners/{id}',
   ...options,
   headers: {
@@ -163,7 +163,7 @@ export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options:
   }
 });
 
-export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<AdminListBlogPostsData, ThrowOnError>): RequestResult<AdminListBlogPostsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListBlogPostsResponses, unknown, ThrowOnError>({ url: '/admin/blog_posts', ...options });
+export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<AdminListBlogPostsData, ThrowOnError>): RequestResult<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError>({ url: '/admin/blog_posts', ...options });
 
 export const adminCreateBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBlogPostData, ThrowOnError>): RequestResult<AdminCreateBlogPostResponses, AdminCreateBlogPostErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateBlogPostResponses, AdminCreateBlogPostErrors, ThrowOnError>({
   url: '/admin/blog_posts',
@@ -174,9 +174,9 @@ export const adminCreateBlogPost = <ThrowOnError extends boolean = false>(option
   }
 });
 
-export const adminDeleteBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBlogPostData, ThrowOnError>): RequestResult<AdminDeleteBlogPostResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBlogPostResponses, unknown, ThrowOnError>({ url: '/admin/blog_posts/{id}', ...options });
+export const adminDeleteBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBlogPostData, ThrowOnError>): RequestResult<AdminDeleteBlogPostResponses, AdminDeleteBlogPostErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBlogPostResponses, AdminDeleteBlogPostErrors, ThrowOnError>({ url: '/admin/blog_posts/{id}', ...options });
 
-export const adminGetBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminGetBlogPostData, ThrowOnError>): RequestResult<AdminGetBlogPostResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetBlogPostResponses, unknown, ThrowOnError>({ url: '/admin/blog_posts/{id}', ...options });
+export const adminGetBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminGetBlogPostData, ThrowOnError>): RequestResult<AdminGetBlogPostResponses, AdminGetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<AdminGetBlogPostResponses, AdminGetBlogPostErrors, ThrowOnError>({ url: '/admin/blog_posts/{id}', ...options });
 
 export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBlogPostData, ThrowOnError>): RequestResult<AdminUpdateBlogPostResponses, AdminUpdateBlogPostErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateBlogPostResponses, AdminUpdateBlogPostErrors, ThrowOnError>({
   url: '/admin/blog_posts/{id}',
@@ -202,13 +202,13 @@ export const adminSetBlogPostRelatedCourses = <ThrowOnError extends boolean = fa
 /**
  * List course categories (paginated).
  */
-export const adminListCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseCategoriesData, ThrowOnError>): RequestResult<AdminListCourseCategoriesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCourseCategoriesResponses, unknown, ThrowOnError>({ url: '/admin/language_categories', ...options });
+export const adminListCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseCategoriesData, ThrowOnError>): RequestResult<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError>({ url: '/admin/language_categories', ...options });
 
 /**
  * Create a course category. A uniqueness violation (name/header/slug) is a
  *       DB constraint, surfaced as 409 by the central ent-error handler.
  */
-export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseCategoryData, ThrowOnError>): RequestResult<AdminCreateCourseCategoryResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseCategoryResponses, unknown, ThrowOnError>({
+export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseCategoryData, ThrowOnError>): RequestResult<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError>({
   url: '/admin/language_categories',
   ...options,
   headers: {
@@ -217,9 +217,9 @@ export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(
   }
 });
 
-export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListCategoryQnaItemsData, ThrowOnError>): RequestResult<AdminListCategoryQnaItemsResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminListCategoryQnaItemsResponses, unknown, ThrowOnError>({ url: '/admin/language_categories/{categoryId}/qna_items', ...options });
+export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListCategoryQnaItemsData, ThrowOnError>): RequestResult<AdminListCategoryQnaItemsResponses, AdminListCategoryQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListCategoryQnaItemsResponses, AdminListCategoryQnaItemsErrors, ThrowOnError>({ url: '/admin/language_categories/{categoryId}/qna_items', ...options });
 
-export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminCreateCategoryQnaItemResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateCategoryQnaItemResponses, unknown, ThrowOnError>({
+export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminCreateCategoryQnaItemResponses, AdminCreateCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCategoryQnaItemResponses, AdminCreateCategoryQnaItemErrors, ThrowOnError>({
   url: '/admin/language_categories/{categoryId}/qna_items',
   ...options,
   headers: {
@@ -228,13 +228,13 @@ export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>
   }
 });
 
-export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCategoryQnaItemData, ThrowOnError>): RequestResult<AdminDeleteCategoryQnaItemResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCategoryQnaItemResponses, unknown, ThrowOnError>({ url: '/admin/language_categories/{categoryId}/qna_items/{id}', ...options });
+export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCategoryQnaItemData, ThrowOnError>): RequestResult<AdminDeleteCategoryQnaItemResponses, AdminDeleteCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCategoryQnaItemResponses, AdminDeleteCategoryQnaItemErrors, ThrowOnError>({ url: '/admin/language_categories/{categoryId}/qna_items/{id}', ...options });
 
 /**
  * Update a QnA item. A missing id (or one under a different parent) surfaces
  *       as 404 via the central ent-error handler.
  */
-export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminUpdateCategoryQnaItemResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateCategoryQnaItemResponses, unknown, ThrowOnError>({
+export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminUpdateCategoryQnaItemResponses, AdminUpdateCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCategoryQnaItemResponses, AdminUpdateCategoryQnaItemErrors, ThrowOnError>({
   url: '/admin/language_categories/{categoryId}/qna_items/{id}',
   ...options,
   headers: {
@@ -246,19 +246,19 @@ export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>
 /**
  * Delete a course category.
  */
-export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseCategoryData, ThrowOnError>): RequestResult<AdminDeleteCourseCategoryResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseCategoryResponses, unknown, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
+export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseCategoryData, ThrowOnError>): RequestResult<AdminDeleteCourseCategoryResponses, AdminDeleteCourseCategoryErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseCategoryResponses, AdminDeleteCourseCategoryErrors, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
 
 /**
  * Get a single course category. A missing id surfaces as 404 via the
  *       central ent-error handler, not a typed union member.
  */
-export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseCategoryData, ThrowOnError>): RequestResult<AdminGetCourseCategoryResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetCourseCategoryResponses, unknown, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
+export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseCategoryData, ThrowOnError>): RequestResult<AdminGetCourseCategoryResponses, AdminGetCourseCategoryErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseCategoryResponses, AdminGetCourseCategoryErrors, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
 
 /**
  * Update a course category. 404 (missing) and 409 (uniqueness) both flow
  *       through the central ent-error handler.
  */
-export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseCategoryData, ThrowOnError>): RequestResult<AdminUpdateCourseCategoryResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseCategoryResponses, unknown, ThrowOnError>({
+export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseCategoryData, ThrowOnError>): RequestResult<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError>({
   url: '/admin/language_categories/{id}',
   ...options,
   headers: {
@@ -267,9 +267,9 @@ export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(
   }
 });
 
-export const adminListCourseLandingPages = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLandingPagesData, ThrowOnError>): RequestResult<AdminListCourseLandingPagesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLandingPagesResponses, unknown, ThrowOnError>({ url: '/admin/language_landing_pages', ...options });
+export const adminListCourseLandingPages = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLandingPagesData, ThrowOnError>): RequestResult<AdminListCourseLandingPagesResponses, AdminListCourseLandingPagesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLandingPagesResponses, AdminListCourseLandingPagesErrors, ThrowOnError>({ url: '/admin/language_landing_pages', ...options });
 
-export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseLandingPageData, ThrowOnError>): RequestResult<AdminCreateCourseLandingPageResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseLandingPageResponses, unknown, ThrowOnError>({
+export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseLandingPageData, ThrowOnError>): RequestResult<AdminCreateCourseLandingPageResponses, AdminCreateCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseLandingPageResponses, AdminCreateCourseLandingPageErrors, ThrowOnError>({
   url: '/admin/language_landing_pages',
   ...options,
   headers: {
@@ -278,19 +278,19 @@ export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = fals
   }
 });
 
-export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseLandingPageData, ThrowOnError>): RequestResult<AdminDeleteCourseLandingPageResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseLandingPageResponses, unknown, ThrowOnError>({ url: '/admin/language_landing_pages/{id}', ...options });
+export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseLandingPageData, ThrowOnError>): RequestResult<AdminDeleteCourseLandingPageResponses, AdminDeleteCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseLandingPageResponses, AdminDeleteCourseLandingPageErrors, ThrowOnError>({ url: '/admin/language_landing_pages/{id}', ...options });
 
 /**
  * Get a single landing page. A missing id surfaces as 404 via the central
  *       ent-error handler, not a typed union member.
  */
-export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseLandingPageData, ThrowOnError>): RequestResult<AdminGetCourseLandingPageResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetCourseLandingPageResponses, unknown, ThrowOnError>({ url: '/admin/language_landing_pages/{id}', ...options });
+export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseLandingPageData, ThrowOnError>): RequestResult<AdminGetCourseLandingPageResponses, AdminGetCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseLandingPageResponses, AdminGetCourseLandingPageErrors, ThrowOnError>({ url: '/admin/language_landing_pages/{id}', ...options });
 
 /**
  * Update a landing page. A missing id surfaces as 404 via the central
  *       ent-error handler.
  */
-export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseLandingPageData, ThrowOnError>): RequestResult<AdminUpdateCourseLandingPageResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseLandingPageResponses, unknown, ThrowOnError>({
+export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseLandingPageData, ThrowOnError>): RequestResult<AdminUpdateCourseLandingPageResponses, AdminUpdateCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseLandingPageResponses, AdminUpdateCourseLandingPageErrors, ThrowOnError>({
   url: '/admin/language_landing_pages/{id}',
   ...options,
   headers: {
@@ -299,9 +299,9 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
   }
 });
 
-export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListLandingPageQnaItemsData, ThrowOnError>): RequestResult<AdminListLandingPageQnaItemsResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminListLandingPageQnaItemsResponses, unknown, ThrowOnError>({ url: '/admin/language_landing_pages/{landingPageId}/qna_items', ...options });
+export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListLandingPageQnaItemsData, ThrowOnError>): RequestResult<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError>({ url: '/admin/language_landing_pages/{landingPageId}/qna_items', ...options });
 
-export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminCreateLandingPageQnaItemResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateLandingPageQnaItemResponses, unknown, ThrowOnError>({
+export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminCreateLandingPageQnaItemResponses, AdminCreateLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateLandingPageQnaItemResponses, AdminCreateLandingPageQnaItemErrors, ThrowOnError>({
   url: '/admin/language_landing_pages/{landingPageId}/qna_items',
   ...options,
   headers: {
@@ -310,13 +310,13 @@ export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = fal
   }
 });
 
-export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminDeleteLandingPageQnaItemResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteLandingPageQnaItemResponses, unknown, ThrowOnError>({ url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}', ...options });
+export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminDeleteLandingPageQnaItemResponses, AdminDeleteLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteLandingPageQnaItemResponses, AdminDeleteLandingPageQnaItemErrors, ThrowOnError>({ url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}', ...options });
 
 /**
  * Update a QnA item. A missing id (or one under a different parent) surfaces
  *       as 404 via the central ent-error handler.
  */
-export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminUpdateLandingPageQnaItemResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateLandingPageQnaItemResponses, unknown, ThrowOnError>({
+export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminUpdateLandingPageQnaItemResponses, AdminUpdateLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateLandingPageQnaItemResponses, AdminUpdateLandingPageQnaItemErrors, ThrowOnError>({
   url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}',
   ...options,
   headers: {
@@ -325,20 +325,20 @@ export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = fal
   }
 });
 
-export const adminListCourseLessonMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonMembersData, ThrowOnError>): RequestResult<AdminListCourseLessonMembersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonMembersResponses, unknown, ThrowOnError>({ url: '/admin/language_lesson_members', ...options });
+export const adminListCourseLessonMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonMembersData, ThrowOnError>): RequestResult<AdminListCourseLessonMembersResponses, AdminListCourseLessonMembersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonMembersResponses, AdminListCourseLessonMembersErrors, ThrowOnError>({ url: '/admin/language_lesson_members', ...options });
 
-export const adminListCourseLessonReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonReviewsData, ThrowOnError>): RequestResult<AdminListCourseLessonReviewsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonReviewsResponses, unknown, ThrowOnError>({ url: '/admin/language_lesson_reviews', ...options });
+export const adminListCourseLessonReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonReviewsData, ThrowOnError>): RequestResult<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError>({ url: '/admin/language_lesson_reviews', ...options });
 
-export const adminListCourseLessons = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonsData, ThrowOnError>): RequestResult<AdminListCourseLessonsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonsResponses, unknown, ThrowOnError>({ url: '/admin/language_lessons', ...options });
+export const adminListCourseLessons = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonsData, ThrowOnError>): RequestResult<AdminListCourseLessonsResponses, AdminListCourseLessonsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonsResponses, AdminListCourseLessonsErrors, ThrowOnError>({ url: '/admin/language_lessons', ...options });
 
 /**
  * Enqueue AI review for a single lesson.
  */
 export const adminReviewCourseLesson = <ThrowOnError extends boolean = false>(options: Options<AdminReviewCourseLessonData, ThrowOnError>): RequestResult<AdminReviewCourseLessonResponses, AdminReviewCourseLessonErrors, ThrowOnError> => (options.client ?? client).post<AdminReviewCourseLessonResponses, AdminReviewCourseLessonErrors, ThrowOnError>({ url: '/admin/language_lessons/{id}/review', ...options });
 
-export const adminListCourses = <ThrowOnError extends boolean = false>(options?: Options<AdminListCoursesData, ThrowOnError>): RequestResult<AdminListCoursesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListCoursesResponses, unknown, ThrowOnError>({ url: '/admin/languages', ...options });
+export const adminListCourses = <ThrowOnError extends boolean = false>(options?: Options<AdminListCoursesData, ThrowOnError>): RequestResult<AdminListCoursesResponses, AdminListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCoursesResponses, AdminListCoursesErrors, ThrowOnError>({ url: '/admin/languages', ...options });
 
-export const adminCreateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseData, ThrowOnError>): RequestResult<AdminCreateCourseResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseResponses, unknown, ThrowOnError>({
+export const adminCreateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseData, ThrowOnError>): RequestResult<AdminCreateCourseResponses, AdminCreateCourseErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseResponses, AdminCreateCourseErrors, ThrowOnError>({
   url: '/admin/languages',
   ...options,
   headers: {
@@ -351,9 +351,9 @@ export const adminCreateCourse = <ThrowOnError extends boolean = false>(options:
  * Get a single course. A missing id surfaces as 404 via the central
  *       ent-error handler.
  */
-export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseData, ThrowOnError>): RequestResult<AdminGetCourseResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetCourseResponses, unknown, ThrowOnError>({ url: '/admin/languages/{id}', ...options });
+export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseData, ThrowOnError>): RequestResult<AdminGetCourseResponses, AdminGetCourseErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseResponses, AdminGetCourseErrors, ThrowOnError>({ url: '/admin/languages/{id}', ...options });
 
-export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseData, ThrowOnError>): RequestResult<AdminUpdateCourseResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseResponses, unknown, ThrowOnError>({
+export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseData, ThrowOnError>): RequestResult<AdminUpdateCourseResponses, AdminUpdateCourseErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseResponses, AdminUpdateCourseErrors, ThrowOnError>({
   url: '/admin/languages/{id}',
   ...options,
   headers: {
@@ -372,17 +372,17 @@ export const adminReviewCourse = <ThrowOnError extends boolean = false>(options:
  */
 export const adminCreateCourseVersion = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseVersionData, ThrowOnError>): RequestResult<AdminCreateCourseVersionResponses, AdminCreateCourseVersionErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseVersionResponses, AdminCreateCourseVersionErrors, ThrowOnError>({ url: '/admin/languages/{id}/versions', ...options });
 
-export const adminListLeads = <ThrowOnError extends boolean = false>(options?: Options<AdminListLeadsData, ThrowOnError>): RequestResult<AdminListLeadsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListLeadsResponses, unknown, ThrowOnError>({ url: '/admin/leads', ...options });
+export const adminListLeads = <ThrowOnError extends boolean = false>(options?: Options<AdminListLeadsData, ThrowOnError>): RequestResult<AdminListLeadsResponses, AdminListLeadsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListLeadsResponses, AdminListLeadsErrors, ThrowOnError>({ url: '/admin/leads', ...options });
 
 /**
  * The permission matrix for a role.
  */
-export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminGetRolePermissionsData, ThrowOnError>): RequestResult<AdminGetRolePermissionsResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetRolePermissionsResponses, unknown, ThrowOnError>({ url: '/admin/management/role_permissions/{roleId}', ...options });
+export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminGetRolePermissionsData, ThrowOnError>): RequestResult<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError>({ url: '/admin/management/role_permissions/{roleId}', ...options });
 
 /**
  * Replace the permission matrix for a role.
  */
-export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRolePermissionsData, ThrowOnError>): RequestResult<AdminUpdateRolePermissionsResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateRolePermissionsResponses, unknown, ThrowOnError>({
+export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRolePermissionsData, ThrowOnError>): RequestResult<AdminUpdateRolePermissionsResponses, AdminUpdateRolePermissionsErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateRolePermissionsResponses, AdminUpdateRolePermissionsErrors, ThrowOnError>({
   url: '/admin/management/role_permissions/{roleId}',
   ...options,
   headers: {
@@ -391,13 +391,13 @@ export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>
   }
 });
 
-export const adminListRoles = <ThrowOnError extends boolean = false>(options?: Options<AdminListRolesData, ThrowOnError>): RequestResult<AdminListRolesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListRolesResponses, unknown, ThrowOnError>({ url: '/admin/management/roles', ...options });
+export const adminListRoles = <ThrowOnError extends boolean = false>(options?: Options<AdminListRolesData, ThrowOnError>): RequestResult<AdminListRolesResponses, AdminListRolesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListRolesResponses, AdminListRolesErrors, ThrowOnError>({ url: '/admin/management/roles', ...options });
 
 /**
  * Create a role. A duplicate name is a DB unique constraint, surfaced as 409
  *       by the central ent-error handler.
  */
-export const adminCreateRole = <ThrowOnError extends boolean = false>(options: Options<AdminCreateRoleData, ThrowOnError>): RequestResult<AdminCreateRoleResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateRoleResponses, unknown, ThrowOnError>({
+export const adminCreateRole = <ThrowOnError extends boolean = false>(options: Options<AdminCreateRoleData, ThrowOnError>): RequestResult<AdminCreateRoleResponses, AdminCreateRoleErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateRoleResponses, AdminCreateRoleErrors, ThrowOnError>({
   url: '/admin/management/roles',
   ...options,
   headers: {
@@ -406,15 +406,15 @@ export const adminCreateRole = <ThrowOnError extends boolean = false>(options: O
   }
 });
 
-export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteRoleData, ThrowOnError>): RequestResult<AdminDeleteRoleResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteRoleResponses, unknown, ThrowOnError>({ url: '/admin/management/roles/{id}', ...options });
+export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteRoleData, ThrowOnError>): RequestResult<AdminDeleteRoleResponses, AdminDeleteRoleErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteRoleResponses, AdminDeleteRoleErrors, ThrowOnError>({ url: '/admin/management/roles/{id}', ...options });
 
 /**
  * Get a role with its permission matrix. A missing id surfaces as 404 via
  *       the central ent-error handler.
  */
-export const adminGetRole = <ThrowOnError extends boolean = false>(options: Options<AdminGetRoleData, ThrowOnError>): RequestResult<AdminGetRoleResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetRoleResponses, unknown, ThrowOnError>({ url: '/admin/management/roles/{id}', ...options });
+export const adminGetRole = <ThrowOnError extends boolean = false>(options: Options<AdminGetRoleData, ThrowOnError>): RequestResult<AdminGetRoleResponses, AdminGetRoleErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRoleResponses, AdminGetRoleErrors, ThrowOnError>({ url: '/admin/management/roles/{id}', ...options });
 
-export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRoleData, ThrowOnError>): RequestResult<AdminUpdateRoleResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateRoleResponses, unknown, ThrowOnError>({
+export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRoleData, ThrowOnError>): RequestResult<AdminUpdateRoleResponses, AdminUpdateRoleErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateRoleResponses, AdminUpdateRoleErrors, ThrowOnError>({
   url: '/admin/management/roles/{id}',
   ...options,
   headers: {
@@ -423,9 +423,9 @@ export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: O
   }
 });
 
-export const adminListStaffMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListStaffMembersData, ThrowOnError>): RequestResult<AdminListStaffMembersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListStaffMembersResponses, unknown, ThrowOnError>({ url: '/admin/management/staff_members', ...options });
+export const adminListStaffMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListStaffMembersData, ThrowOnError>): RequestResult<AdminListStaffMembersResponses, AdminListStaffMembersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListStaffMembersResponses, AdminListStaffMembersErrors, ThrowOnError>({ url: '/admin/management/staff_members', ...options });
 
-export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminCreateStaffMemberData, ThrowOnError>): RequestResult<AdminCreateStaffMemberResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateStaffMemberResponses, unknown, ThrowOnError>({
+export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminCreateStaffMemberData, ThrowOnError>): RequestResult<AdminCreateStaffMemberResponses, AdminCreateStaffMemberErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateStaffMemberResponses, AdminCreateStaffMemberErrors, ThrowOnError>({
   url: '/admin/management/staff_members',
   ...options,
   headers: {
@@ -434,11 +434,11 @@ export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(opt
   }
 });
 
-export const adminDeleteStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteStaffMemberData, ThrowOnError>): RequestResult<AdminDeleteStaffMemberResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteStaffMemberResponses, unknown, ThrowOnError>({ url: '/admin/management/staff_members/{id}', ...options });
+export const adminDeleteStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteStaffMemberData, ThrowOnError>): RequestResult<AdminDeleteStaffMemberResponses, AdminDeleteStaffMemberErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteStaffMemberResponses, AdminDeleteStaffMemberErrors, ThrowOnError>({ url: '/admin/management/staff_members/{id}', ...options });
 
-export const adminGetStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminGetStaffMemberData, ThrowOnError>): RequestResult<AdminGetStaffMemberResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetStaffMemberResponses, unknown, ThrowOnError>({ url: '/admin/management/staff_members/{id}', ...options });
+export const adminGetStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminGetStaffMemberData, ThrowOnError>): RequestResult<AdminGetStaffMemberResponses, AdminGetStaffMemberErrors, ThrowOnError> => (options.client ?? client).get<AdminGetStaffMemberResponses, AdminGetStaffMemberErrors, ThrowOnError>({ url: '/admin/management/staff_members/{id}', ...options });
 
-export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateStaffMemberData, ThrowOnError>): RequestResult<AdminUpdateStaffMemberResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateStaffMemberResponses, unknown, ThrowOnError>({
+export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateStaffMemberData, ThrowOnError>): RequestResult<AdminUpdateStaffMemberResponses, AdminUpdateStaffMemberErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateStaffMemberResponses, AdminUpdateStaffMemberErrors, ThrowOnError>({
   url: '/admin/management/staff_members/{id}',
   ...options,
   headers: {
@@ -447,15 +447,15 @@ export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(opt
   }
 });
 
-export const adminListManagementUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListManagementUsersData, ThrowOnError>): RequestResult<AdminListManagementUsersResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListManagementUsersResponses, unknown, ThrowOnError>({ url: '/admin/management/users', ...options });
+export const adminListManagementUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListManagementUsersData, ThrowOnError>): RequestResult<AdminListManagementUsersResponses, AdminListManagementUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListManagementUsersResponses, AdminListManagementUsersErrors, ThrowOnError>({ url: '/admin/management/users', ...options });
 
 /**
  * Get a management user. A missing id surfaces as 404 via the central
  *       ent-error handler.
  */
-export const adminGetManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetManagementUserData, ThrowOnError>): RequestResult<AdminGetManagementUserResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetManagementUserResponses, unknown, ThrowOnError>({ url: '/admin/management/users/{id}', ...options });
+export const adminGetManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetManagementUserData, ThrowOnError>): RequestResult<AdminGetManagementUserResponses, AdminGetManagementUserErrors, ThrowOnError> => (options.client ?? client).get<AdminGetManagementUserResponses, AdminGetManagementUserErrors, ThrowOnError>({ url: '/admin/management/users/{id}', ...options });
 
-export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateManagementUserData, ThrowOnError>): RequestResult<AdminUpdateManagementUserResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateManagementUserResponses, unknown, ThrowOnError>({
+export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateManagementUserData, ThrowOnError>): RequestResult<AdminUpdateManagementUserResponses, AdminUpdateManagementUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateManagementUserResponses, AdminUpdateManagementUserErrors, ThrowOnError>({
   url: '/admin/management/users/{id}',
   ...options,
   headers: {
@@ -464,11 +464,11 @@ export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(
   }
 });
 
-export const adminListMessages = <ThrowOnError extends boolean = false>(options?: Options<AdminListMessagesData, ThrowOnError>): RequestResult<AdminListMessagesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListMessagesResponses, unknown, ThrowOnError>({ url: '/admin/messages', ...options });
+export const adminListMessages = <ThrowOnError extends boolean = false>(options?: Options<AdminListMessagesData, ThrowOnError>): RequestResult<AdminListMessagesResponses, AdminListMessagesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListMessagesResponses, AdminListMessagesErrors, ThrowOnError>({ url: '/admin/messages', ...options });
 
-export const adminListReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListReviewsData, ThrowOnError>): RequestResult<AdminListReviewsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<AdminListReviewsResponses, unknown, ThrowOnError>({ url: '/admin/reviews', ...options });
+export const adminListReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListReviewsData, ThrowOnError>): RequestResult<AdminListReviewsResponses, AdminListReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListReviewsResponses, AdminListReviewsErrors, ThrowOnError>({ url: '/admin/reviews', ...options });
 
-export const adminCreateReview = <ThrowOnError extends boolean = false>(options: Options<AdminCreateReviewData, ThrowOnError>): RequestResult<AdminCreateReviewResponses, unknown, ThrowOnError> => (options.client ?? client).post<AdminCreateReviewResponses, unknown, ThrowOnError>({
+export const adminCreateReview = <ThrowOnError extends boolean = false>(options: Options<AdminCreateReviewData, ThrowOnError>): RequestResult<AdminCreateReviewResponses, AdminCreateReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateReviewResponses, AdminCreateReviewErrors, ThrowOnError>({
   url: '/admin/reviews',
   ...options,
   headers: {
@@ -477,19 +477,19 @@ export const adminCreateReview = <ThrowOnError extends boolean = false>(options:
   }
 });
 
-export const adminDeleteReview = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteReviewData, ThrowOnError>): RequestResult<AdminDeleteReviewResponses, unknown, ThrowOnError> => (options.client ?? client).delete<AdminDeleteReviewResponses, unknown, ThrowOnError>({ url: '/admin/reviews/{id}', ...options });
+export const adminDeleteReview = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteReviewData, ThrowOnError>): RequestResult<AdminDeleteReviewResponses, AdminDeleteReviewErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteReviewResponses, AdminDeleteReviewErrors, ThrowOnError>({ url: '/admin/reviews/{id}', ...options });
 
 /**
  * Get a single review. A missing id surfaces as 404 via the central
  *       ent-error handler, not a typed union member.
  */
-export const adminGetReview = <ThrowOnError extends boolean = false>(options: Options<AdminGetReviewData, ThrowOnError>): RequestResult<AdminGetReviewResponses, unknown, ThrowOnError> => (options.client ?? client).get<AdminGetReviewResponses, unknown, ThrowOnError>({ url: '/admin/reviews/{id}', ...options });
+export const adminGetReview = <ThrowOnError extends boolean = false>(options: Options<AdminGetReviewData, ThrowOnError>): RequestResult<AdminGetReviewResponses, AdminGetReviewErrors, ThrowOnError> => (options.client ?? client).get<AdminGetReviewResponses, AdminGetReviewErrors, ThrowOnError>({ url: '/admin/reviews/{id}', ...options });
 
 /**
  * Update a review. A missing id surfaces as 404 via the central ent-error
  *       handler.
  */
-export const adminUpdateReview = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateReviewData, ThrowOnError>): RequestResult<AdminUpdateReviewResponses, unknown, ThrowOnError> => (options.client ?? client).put<AdminUpdateReviewResponses, unknown, ThrowOnError>({
+export const adminUpdateReview = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateReviewData, ThrowOnError>): RequestResult<AdminUpdateReviewResponses, AdminUpdateReviewErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateReviewResponses, AdminUpdateReviewErrors, ThrowOnError>({
   url: '/admin/reviews/{id}',
   ...options,
   headers: {
@@ -519,7 +519,7 @@ export const createAssistantMessage = <ThrowOnError extends boolean = false>(opt
 /**
  * Paginated published blog posts.
  */
-export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<ListBlogPostsData, ThrowOnError>): RequestResult<ListBlogPostsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListBlogPostsResponses, unknown, ThrowOnError>({ url: '/blog_posts', ...options });
+export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<ListBlogPostsData, ThrowOnError>): RequestResult<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError>({ url: '/blog_posts', ...options });
 
 /**
  * Like a post (idempotent per visitor).
@@ -551,7 +551,7 @@ export const createBookRequest = <ThrowOnError extends boolean = false>(options:
 /**
  * List published categories.
  */
-export const listPublicCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<ListPublicCourseCategoriesData, ThrowOnError>): RequestResult<ListPublicCourseCategoriesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListPublicCourseCategoriesResponses, unknown, ThrowOnError>({ url: '/language_categories', ...options });
+export const listPublicCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<ListPublicCourseCategoriesData, ThrowOnError>): RequestResult<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError>({ url: '/language_categories', ...options });
 
 /**
  * A category and the courses it groups.
@@ -561,7 +561,7 @@ export const getPublicCourseCategory = <ThrowOnError extends boolean = false>(op
 /**
  * List the published course catalog.
  */
-export const listCourses = <ThrowOnError extends boolean = false>(options?: Options<ListCoursesData, ThrowOnError>): RequestResult<ListCoursesResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListCoursesResponses, unknown, ThrowOnError>({ url: '/languages', ...options });
+export const listCourses = <ThrowOnError extends boolean = false>(options?: Options<ListCoursesData, ThrowOnError>): RequestResult<ListCoursesResponses, ListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<ListCoursesResponses, ListCoursesErrors, ThrowOnError>({ url: '/languages', ...options });
 
 /**
  * Lesson player payload (theory, starter code, tests) by slug.
@@ -601,7 +601,7 @@ export const checkLesson = <ThrowOnError extends boolean = false>(options: Optio
 /**
  * Persist the preferred UI locale on the session.
  */
-export const switchLocale = <ThrowOnError extends boolean = false>(options: Options<SwitchLocaleData, ThrowOnError>): RequestResult<SwitchLocaleResponses, unknown, ThrowOnError> => (options.client ?? client).get<SwitchLocaleResponses, unknown, ThrowOnError>({ url: '/locale/switch', ...options });
+export const switchLocale = <ThrowOnError extends boolean = false>(options: Options<SwitchLocaleData, ThrowOnError>): RequestResult<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError> => (options.client ?? client).get<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError>({ url: '/locale/switch', ...options });
 
 /**
  * Email a one-time sign-in link.
@@ -623,12 +623,12 @@ export const consumeMagicLink = <ThrowOnError extends boolean = false>(options: 
 /**
  * Everything the sitemap generator needs.
  */
-export const getSitemap = <ThrowOnError extends boolean = false>(options?: Options<GetSitemapData, ThrowOnError>): RequestResult<GetSitemapResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetSitemapResponses, unknown, ThrowOnError>({ url: '/map', ...options });
+export const getSitemap = <ThrowOnError extends boolean = false>(options?: Options<GetSitemapData, ThrowOnError>): RequestResult<GetSitemapResponses, GetSitemapErrors, ThrowOnError> => (options?.client ?? client).get<GetSitemapResponses, GetSitemapErrors, ThrowOnError>({ url: '/map', ...options });
 
 /**
  * Resolve the current user from the session cookie (for SSR).
  */
-export const getCurrentUser = <ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserData, ThrowOnError>): RequestResult<GetCurrentUserResponses, unknown, ThrowOnError> => (options?.client ?? client).get<GetCurrentUserResponses, unknown, ThrowOnError>({ url: '/me', ...options });
+export const getCurrentUser = <ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserData, ThrowOnError>): RequestResult<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError> => (options?.client ?? client).get<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError>({ url: '/me', ...options });
 
 /**
  * The signed-in user's course dashboard.
@@ -655,7 +655,7 @@ export const createPasskeySession = <ThrowOnError extends boolean = false>(optio
 /**
  * Begin a passkey login ceremony.
  */
-export const newPasskeySession = <ThrowOnError extends boolean = false>(options?: Options<NewPasskeySessionData, ThrowOnError>): RequestResult<NewPasskeySessionResponses, unknown, ThrowOnError> => (options?.client ?? client).get<NewPasskeySessionResponses, unknown, ThrowOnError>({ url: '/passkey_session/new', ...options });
+export const newPasskeySession = <ThrowOnError extends boolean = false>(options?: Options<NewPasskeySessionData, ThrowOnError>): RequestResult<NewPasskeySessionResponses, NewPasskeySessionErrors, ThrowOnError> => (options?.client ?? client).get<NewPasskeySessionResponses, NewPasskeySessionErrors, ThrowOnError>({ url: '/passkey_session/new', ...options });
 
 /**
  * Set a new password using a reset token.
@@ -713,12 +713,12 @@ export const createPasswordReminder = <ThrowOnError extends boolean = false>(opt
 /**
  * Paginated published student reviews.
  */
-export const listPublicReviews = <ThrowOnError extends boolean = false>(options?: Options<ListPublicReviewsData, ThrowOnError>): RequestResult<ListPublicReviewsResponses, unknown, ThrowOnError> => (options?.client ?? client).get<ListPublicReviewsResponses, unknown, ThrowOnError>({ url: '/reviews', ...options });
+export const listPublicReviews = <ThrowOnError extends boolean = false>(options?: Options<ListPublicReviewsData, ThrowOnError>): RequestResult<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError>({ url: '/reviews', ...options });
 
 /**
  * Log out; clears the JWT cookie.
  */
-export const deleteSession = <ThrowOnError extends boolean = false>(options?: Options<DeleteSessionData, ThrowOnError>): RequestResult<DeleteSessionResponses, unknown, ThrowOnError> => (options?.client ?? client).delete<DeleteSessionResponses, unknown, ThrowOnError>({ url: '/session', ...options });
+export const deleteSession = <ThrowOnError extends boolean = false>(options?: Options<DeleteSessionData, ThrowOnError>): RequestResult<DeleteSessionResponses, DeleteSessionErrors, ThrowOnError> => (options?.client ?? client).delete<DeleteSessionResponses, DeleteSessionErrors, ThrowOnError>({ url: '/session', ...options });
 
 /**
  * Log in with email + password; sets the JWT cookie.

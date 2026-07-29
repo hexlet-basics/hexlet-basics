@@ -3,10 +3,13 @@ package jobs_test
 import (
 	"context"
 	"database/sql"
+	"io"
+	"log/slog"
 	"os"
 	"testing"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
@@ -40,7 +43,14 @@ func TestQueueBackbone(t *testing.T) {
 
 	// nil loader: this smoke test only exercises the ping worker, so the
 	// exercise-build worker (and its db/blob deps) is intentionally not registered.
-	client, err := jobs.NewClient(db, nil)
+	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
+	require.NoError(t, err)
+	client, err := jobs.NewClient(
+		db,
+		nil,
+		slog.New(slog.NewTextHandler(io.Discard, nil)),
+		jobs.NewErrorHandler(sentryClient),
+	)
 	require.NoError(t, err)
 
 	// Subscribe before Start so the completion event can't be missed.

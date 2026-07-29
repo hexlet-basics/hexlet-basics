@@ -31,10 +31,17 @@ type Server struct {
 	starter VersionBuildStarter
 	auth    *AuthHandler
 	i18n    *localization.Translator
+	errors  *APIErrorHandler
 }
 
 // NewServer wires the handler to its dependencies.
-func NewServer(db *ent.Client, cfg *config.Config, starter VersionBuildStarter, translator *localization.Translator) *Server {
+func NewServer(
+	db *ent.Client,
+	cfg *config.Config,
+	starter VersionBuildStarter,
+	translator *localization.Translator,
+	errorHandler *APIErrorHandler,
+) *Server {
 	return &Server{
 		db:      db,
 		conv:    &apiconv.ConverterImpl{},
@@ -42,6 +49,7 @@ func NewServer(db *ent.Client, cfg *config.Config, starter VersionBuildStarter, 
 		starter: starter,
 		auth:    NewAuthHandler(db, cfg, translator),
 		i18n:    translator,
+		errors:  errorHandler,
 	}
 }
 

@@ -52,7 +52,7 @@ interface LessonCheck {
    */
   @post
   @operationId("checkLesson")
-  check(@path id: int32, @body body: CheckLessonInput): LessonCheckingResponse | ValidationError;
+  check(@path id: int32, @body body: CheckLessonInput): LessonCheckingResponse | ValidationError | ApiError;
 }
 
 // ---- AI assistant (in-lesson chat) ----------------------------------------
@@ -82,7 +82,7 @@ interface LessonAssistant {
   /** The assistant chat history for the current user in this lesson. */
   @get
   @operationId("listAssistantMessages")
-  list(@path lessonId: int32): LessonAssistantMessage[] | UnauthorizedError;
+  list(@path lessonId: int32): LessonAssistantMessage[] | UnauthorizedError | ApiError;
 
   /**
    * Ask the assistant. Enqueues generation (river job); the reply is delivered
@@ -92,5 +92,5 @@ interface LessonAssistant {
   @operationId("createAssistantMessage")
   create(@path lessonId: int32, @body body: AssistantMessageInput): {
     @statusCode statusCode: 202;
-  } | UnauthorizedError;
+  } | UnauthorizedError | ApiError;
 }
