@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io"
 	"log/slog"
-	"os"
 	"slices"
 	"testing"
 	"time"
@@ -22,16 +21,8 @@ import (
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/testsupport/testdb"
 )
-
-const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
-
-func testDSN() string {
-	if v := os.Getenv("TEST_DATABASE_URL"); v != "" {
-		return v
-	}
-	return defaultTestDSN
-}
 
 // TestQueueBackbone proves the river backbone and its telemetry end to end
 // against the test DB: an insert-only client enqueues a ping job, the worker
@@ -41,7 +32,7 @@ func testDSN() string {
 func TestQueueBackbone(t *testing.T) {
 	ctx := context.Background()
 
-	db, err := sql.Open("pgx", testDSN())
+	db, err := sql.Open("pgx", testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind = 'ping'")

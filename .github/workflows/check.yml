@@ -64,34 +64,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_DB: code_basics_test
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 54330:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      # Matches internal/testsupport defaultTestDSN. Atlas owns the schema
-      # (baseline = the retired Rails schema; ent only reads it, never migrates),
-      # so `make test-prepare` applies the atlas migrations and loads the fixtures.
-      TEST_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:54330/code_basics_test
-
     steps:
       - uses: actions/checkout@v7
 
       - uses: jdx/mise-action@v2
 
-      # Ready the test DB: load the snapshotted Rails-owned schema (ADR-0002).
-      # Fixtures are committed under fixtures/ and loaded by testfixtures at
-      # runtime, so no fixture generation (or Rails) is needed here.
-      - run: make test-prepare
-
+      # DB packages use testcontainers-go to start independent PostgreSQL 18
+      # instances, apply Atlas migrations, and load the committed fixtures.
       - run: make test

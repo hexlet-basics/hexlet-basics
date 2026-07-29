@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"os"
 	"testing"
 	"time"
 
@@ -19,20 +18,12 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/testsupport/testdb"
 )
-
-const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
-
-func testDSN() string {
-	if value := os.Getenv("TEST_DATABASE_URL"); value != "" {
-		return value
-	}
-	return defaultTestDSN
-}
 
 func openTestDB(t *testing.T) *sql.DB {
 	t.Helper()
-	db, err := store.NewDB(testDSN())
+	db, err := store.NewDB(testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = db.Close() })
 	return db

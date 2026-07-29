@@ -3,7 +3,6 @@ package versionbuilds_test
 import (
 	"context"
 	"database/sql"
-	"os"
 	"strconv"
 	"testing"
 
@@ -16,23 +15,15 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/testsupport/testdb"
 	"hexletbasics/internal/versionbuilds"
 )
-
-const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
-
-func testDSN() string {
-	if value := os.Getenv("TEST_DATABASE_URL"); value != "" {
-		return value
-	}
-	return defaultTestDSN
-}
 
 // TestStarterCommitsVersionAndJobTogether exercises ent and River over their
 // shared database/sql transaction against the real test database.
 func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	ctx := context.Background()
-	sqlDB, err := sql.Open("pgx", testDSN())
+	sqlDB, err := sql.Open("pgx", testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = sqlDB.Close() })
 

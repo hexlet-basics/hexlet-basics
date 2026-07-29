@@ -3,7 +3,6 @@ package courseloader
 import (
 	"context"
 	"database/sql"
-	"os"
 	"sync"
 	"testing"
 
@@ -13,20 +12,12 @@ import (
 
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/testsupport/testdb"
 )
-
-const defaultClaimTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
-
-func claimTestDSN() string {
-	if value := os.Getenv("TEST_DATABASE_URL"); value != "" {
-		return value
-	}
-	return defaultClaimTestDSN
-}
 
 func TestClaimAllowsOnlyOneConcurrentOwner(t *testing.T) {
 	ctx := context.Background()
-	sqlDB, err := sql.Open("pgx", claimTestDSN())
+	sqlDB, err := sql.Open("pgx", testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = sqlDB.Close() })
 

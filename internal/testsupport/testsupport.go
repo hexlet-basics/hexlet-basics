@@ -1,8 +1,7 @@
 // Package testsupport provides Rails-style integration-test plumbing: each test
-// runs against a real Postgres transaction that is rolled back on cleanup,
-// over a baseline prepared once by `make test-prepare` — the atlas
-// migrations plus the fixtures/ YAML loaded by the testfixtures CLI. Handlers
-// hit a real database; every test's writes are discarded on rollback, so the
+// runs against a real Postgres transaction that is rolled back on cleanup, over
+// the migrated and fixture-loaded container owned by testdb. Handlers hit a real
+// database; every test's writes are discarded on rollback, so the package's
 // shared baseline is never mutated and nothing is left behind.
 //
 // Handlers are exercised end-to-end through the generated ogen client against an
@@ -18,7 +17,6 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/riverqueue/river"
@@ -33,6 +31,7 @@ import (
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/store"
+	"hexletbasics/internal/testsupport/testdb"
 )
 
 // testConfig gives handlers fixed public hosts so URL-building assertions are
@@ -42,19 +41,9 @@ var testConfig = &config.Config{
 	PublicURL: "http://localhost:3001",
 }
 
-const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
-
-func testDSN() string {
-	if v := os.Getenv("TEST_DATABASE_URL"); v != "" {
-		return v
-	}
-	return defaultTestDSN
-}
-
 // NewClient opens an ent client bound to a fresh sql.Tx that is rolled back when
-// the test finishes, matching Rails' transactional test lifecycle. Fixtures are
-// the pre-loaded baseline from `make test-prepare`; every test sees them and its
-// own writes vanish on rollback.
+// the test finishes, matching Rails' transactional test lifecycle. Every test
+// sees the container's fixture baseline and its own writes vanish on rollback.
 func NewClient(t *testing.T) *ent.Client {
 	t.Helper()
 	client, _ := NewClientWithTransactor(t)
@@ -67,7 +56,7 @@ func NewClient(t *testing.T) *ent.Client {
 // keeps the shared fixture database clean.
 func NewClientWithTransactor(t *testing.T) (*ent.Client, store.Transactor) {
 	t.Helper()
-	db, err := store.NewDB(testDSN())
+	db, err := store.NewDB(testdb.DatabaseURL())
 	if err != nil {
 		t.Fatalf("open test database: %v", err)
 	}

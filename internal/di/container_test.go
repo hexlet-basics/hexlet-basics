@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -17,20 +16,12 @@ import (
 
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/testsupport/testdb"
 )
-
-const defaultTestDSN = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test"
-
-func testDSN() string {
-	if v := os.Getenv("TEST_DATABASE_URL"); v != "" {
-		return v
-	}
-	return defaultTestDSN
-}
 
 func configureTestEnvironment(t *testing.T) {
 	t.Helper()
-	t.Setenv("DATABASE_URL", testDSN())
+	t.Setenv("DATABASE_URL", testdb.DatabaseURL())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
 	t.Setenv("JWT_SECRET", "test-secret")
 }

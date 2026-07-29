@@ -15,7 +15,7 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## prepare: install the mise-pinned toolchain (go, golangci-lint, atlas, testfixtures)
+## prepare: install the mise-pinned toolchain (go, golangci-lint, atlas)
 prepare:
 	mise install
 
@@ -29,7 +29,7 @@ setup: prepare install
 	cp -n .env.example .env || true
 
 # ---------------------------------------------------------------------------
-# Services (local Postgres in Docker; schema is still owned by legacy Rails)
+# Services (development Postgres in Docker; tests use testcontainers-go)
 # ---------------------------------------------------------------------------
 
 ## services-start: start local Postgres
@@ -39,10 +39,10 @@ services-start:
 		--name code_basics_postgres \
 		-e POSTGRES_DB=code_basics_development \
 		-e POSTGRES_PASSWORD=postgres \
-		-v code_basics_pgdata:/var/lib/postgresql/data \
-		postgres:17
+		-v code_basics_pgdata18:/var/lib/postgresql \
+		postgres:18
 	@until docker exec code_basics_postgres pg_isready -U postgres >/dev/null 2>&1; do sleep 1; done
-	$(MAKE) db-create
+	$(MAKE) dev-db-create
 
 ## services-stop: stop local Postgres
 services-stop:
@@ -165,13 +165,9 @@ lint-fix:
 # Test
 # ---------------------------------------------------------------------------
 
-# Test DB coordinates (override to target a scratch DB, e.g. DB_NAME=some_test).
+# Development DB coordinates.
 DB_HOST ?= 127.0.0.1
-DB_PORT ?= 54330
-DB_NAME ?= code_basics_test
-DB_URL  ?= postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
-
-# Dev DB coordinates (the DATABASE_URL the API server uses by default).
+DB_PORT ?= $(DATABASE_PORT)
 DEV_DB_NAME ?= code_basics_development
 DEV_DB_URL  ?= postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/$(DEV_DB_NAME)?sslmode=disable
 DB_ADMIN_URL ?= postgres://postgres:postgres@$(DB_HOST):$(DB_PORT)/postgres?sslmode=disable
@@ -182,52 +178,20 @@ dev-db-create:
 		createdb --maintenance-db="$(DB_ADMIN_URL)" "$(DEV_DB_NAME)"; \
 	fi
 
-## test-db-create: idempotently create the isolated test database.
-test-db-create:
-	@if ! psql "$(DB_ADMIN_URL)" -tAc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)'" | grep -q 1; then \
-		createdb --maintenance-db="$(DB_ADMIN_URL)" "$(DB_NAME)"; \
-	fi
-
-## db-create: create both databases, including on an existing Docker volume.
-db-create: dev-db-create test-db-create
-
 ## migrate-new: scaffold a new empty migration to hand-author, e.g.
 ## `make migrate-new NAME=add_widgets`. Edit it, then `atlas migrate hash`.
 migrate-new:
 	atlas migrate new $(NAME) --dir "file://migrations"
 	atlas migrate hash --dir "file://migrations"
 
-## test-migrate: apply the atlas migrations (schema) to the test DB. Atlas owns
-## the schema now (baseline = the retired Rails schema); this replaces the old
-## structure.sql load.
-test-migrate: test-db-create
-	atlas migrate apply --env local --url "$(DB_URL)&search_path=public"
-
 ## dev-migrate: apply atlas migrations to the development DB.
 dev-migrate: dev-db-create
 	atlas migrate apply --env local --url "$(DEV_DB_URL)&search_path=public"
 
-## db-migrate: apply atlas migrations to both development and test databases.
-db-migrate: dev-migrate test-migrate
-
-## test-load-fixtures: load the committed fixtures/ snapshot into the test DB via
-## the testfixtures CLI (provided by mise). sslmode=disable because the CLI's
-## lib/pq driver defaults to requiring SSL, which the local/CI Postgres doesn't serve.
-test-load-fixtures:
-	testfixtures -d postgres -D fixtures -c "$(DB_URL)"
-
-## test-prepare: ready the test DB for `make test` — apply migrations, then load
-## the fixtures baseline. Run once before `make test` (CI does exactly this).
-test-prepare: test-db-create test-migrate test-load-fixtures
-
 ## dev-prepare: create and migrate the development DB without replacing its data.
 dev-prepare: dev-db-create dev-migrate
 
-## db-prepare: prepare development and test DBs; test fixtures are refreshed
-## while development data is preserved.
-db-prepare: dev-prepare test-prepare
-
-## test: run the Go test suite
+## test: run the Go suite; DB packages start disposable Postgres 18 containers
 test:
 	go test ./...
 
@@ -275,7 +239,7 @@ deps-update:
 update-skills:
 	npx --yes skills update --project --yes
 
-.PHONY: help prepare install setup services-start services-stop dev-db-create test-db-create db-create migrate-new test-migrate dev-migrate db-migrate test-load-fixtures test-prepare dev-prepare db-prepare dev dev-api dev-worker dev-web dev-spec \
+.PHONY: help prepare install setup services-start services-stop dev-db-create migrate-new dev-migrate dev-prepare dev dev-api dev-worker dev-web dev-spec \
 	gen gen-spec gen-api gen-client gen-amocrm gen-ent gen-all tidy \
 	lint lint-go lint-web lint-fix test build build-api build-worker build-web clean \
 	deps-update update-skills

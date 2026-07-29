@@ -83,21 +83,22 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   ent auto-migrate and *not* Rails migrations.
 - New schema change: edit `ent/schema`, then `make migrate-new NAME=...` to
   scaffold a migration to hand-author, then `atlas migrate hash`.
-- Local Postgres runs in Docker on port **54330** (via `make services-start`)
-  to avoid clashing with a `5432` DB.
+- Local PostgreSQL 18 runs in Docker on port **54330** (via
+  `make services-start`) to avoid clashing with a `5432` DB. It is only for
+  development; tests own disposable PostgreSQL 18 containers.
 
 ## Setup & Dev Commands (run from repo root)
 
 - `make setup` — `go mod download` + `pnpm install` (root package.json is shared
   by the frontend and the api-spec tooling).
 - `make services-start` / `make services-stop` — local Postgres in Docker;
-  startup idempotently creates both development and test databases.
+  startup idempotently creates the development database.
 - `make dev` — run API, async worker (both air live-reload), and Vite together.
 - `make dev-api` — Go API only. `make dev-worker` — async worker only.
   `make dev-web` — Vite only.
 - `make dev-spec` — watch TypeSpec and re-emit OpenAPI on change.
-- Tooling versions are pinned in `mise.toml` (go, golangci-lint, atlas,
-  testfixtures CLI). Use `pnpm`, never `npm`/`npx` directly for JS deps.
+- Tooling versions are pinned in `mise.toml` (go, golangci-lint, atlas). Use
+  `pnpm`, never `npm`/`npx` directly for JS deps.
 
 ## Codegen Commands
 
@@ -118,11 +119,10 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 ## Test
 
 - `make test` — the Go suite (`go test ./...`).
-- `make test-prepare` — ready the test DB **before** `make test`: applies atlas
-  migrations (`test-migrate`) then loads the committed `fixtures/` snapshot
-  (`test-load-fixtures` via the testfixtures CLI). CI does exactly this.
-- `make dev-prepare` prepares the development DB without replacing its data;
-  `make db-prepare` prepares both development and test databases.
+- DB-dependent packages use testcontainers-go to start isolated PostgreSQL 18
+  containers, apply the Atlas migrations, and load the committed `fixtures/`
+  snapshot. Docker is required; no separate test DB preparation is needed.
+- `make dev-prepare` prepares the development DB without replacing its data.
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **Fixtures** in `fixtures/` are the starting data (converted from the legacy
@@ -200,7 +200,7 @@ Change the source, run the generator, commit the output. Never hand-edit or
 - To change the API: edit TypeSpec → `make gen` → implement/adjust the Go
   handler and, if needed, the frontend client usage → run the narrowest Go test.
 - After Go changes: `go build ./...`, then `go test ./...` (or a single package);
-  `make test-prepare` first if the test needs the DB.
+  DB-dependent packages prepare their own testcontainers automatically.
 - After frontend changes: run `tsc -b` (`pnpm check`).
 - Before finishing substantial work: `make lint` and the most relevant tests.
 - Prefer minimal diffs; don't start broad refactors or "normalize" unrelated

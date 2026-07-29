@@ -18,7 +18,7 @@ with its own README and Makefile.
 
 - `make`, `docker`
 - [`mise`](https://mise.jdx.dev) — provisions the pinned toolchain from
-  `mise.toml` (`go`, `golangci-lint`, `atlas`, `testfixtures`). Run `mise install`.
+  `mise.toml` (`go`, `golangci-lint`, `atlas`). Run `mise install`.
 - `node` = 26.5.0 and [`pnpm`](https://pnpm.io)
 - [`air`](https://github.com/air-verse/air) for API live-reload:
   `go install github.com/air-verse/air@latest`
@@ -37,13 +37,14 @@ with its own README and Makefile.
    make services-start
    ```
 
-   Postgres is published on port `54330` so it does not conflict with a local
-   database on `5432`. Startup creates separate development and test databases.
+   PostgreSQL 18 is published on port `54330` so it does not conflict with a
+   local database on `5432`. This service is only for development; Go tests
+   create their own disposable databases.
 
-   Prepare both schemas and the test fixture baseline:
+   Prepare the development schema:
 
    ```bash
-   make db-prepare
+   make dev-prepare
    ```
 
    The server reads `DATABASE_URL` / `ADDR` from the environment but defaults
@@ -77,16 +78,14 @@ make dev-spec  # watch TypeSpec and re-emit OpenAPI on change
 make lint          # gofmt + go vet + golangci-lint, and tsc
 make lint-fix      # auto-fix Go formatting and lint findings
 
-make test-prepare  # apply atlas migrations + load fixtures/ into the test DB
-make test          # go test ./...
+make test          # go test ./... with disposable PostgreSQL 18 containers
 make dev-prepare   # create/migrate dev DB without replacing development data
-make db-prepare    # prepare both dev and test DBs
 ```
 
-Run `make test-prepare` once before `make test` (CI does the same). The schema
-is owned by [atlas](https://atlasgo.io) migrations in `migrations/`; scaffold a
-change with `make migrate-new NAME=...`. Fixtures in `fixtures/` are the test
-starting data.
+`make test` requires Docker. Each DB-dependent Go package starts an independent
+PostgreSQL 18 through testcontainers-go, applies the [atlas](https://atlasgo.io)
+migrations from `migrations/`, and loads `fixtures/` before its tests. Scaffold
+a schema change with `make migrate-new NAME=...`.
 
 ## Build
 
