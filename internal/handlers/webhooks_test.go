@@ -26,6 +26,15 @@ func newWebhookHandler(t *testing.T, enq *testsupport.RecordingEnqueuer, secret 
 	return handlers.NewGitHubWebhookHandler(enq.DB, enq, secret, testsupport.NewTranslator(t))
 }
 
+func rawWebhookRequest(event, body, signature string) *http.Request {
+	req := httptest.NewRequest(http.MethodPost, "/webhooks/github", strings.NewReader(body))
+	req.Header.Set("X-GitHub-Event", event)
+	if signature != "" {
+		req.Header.Set("X-Hub-Signature-256", signature)
+	}
+	return req
+}
+
 // signedRequest builds a POST /webhooks/github request for the given event and
 // JSON payload, signed with webhookSecret exactly as GitHub would.
 func signedRequest(t *testing.T, event string, payload any) *http.Request {
@@ -37,10 +46,7 @@ func signedRequest(t *testing.T, event string, payload any) *http.Request {
 	mac.Write(body)
 	sig := "sha256=" + hex.EncodeToString(mac.Sum(nil))
 
-	req := httptest.NewRequest(http.MethodPost, "/webhooks/github", strings.NewReader(string(body)))
-	req.Header.Set("X-GitHub-Event", event)
-	req.Header.Set("X-Hub-Signature-256", sig)
-	return req
+	return rawWebhookRequest(event, string(body), sig)
 }
 
 // workflowRunSuccess is a minimal successful-CI payload for the given repo.
@@ -89,6 +95,54 @@ func TestGitHubWebhookRejectsBadSignature(t *testing.T) {
 	assert.Empty(t, enq.Inserted)
 }
 
+func TestGitHubWebhookRejectsMissingOrMalformedSignature(t *testing.T) {
+	for _, signature := range []string{"", "not-a-signature", "md5=deadbeef"} {
+		t.Run(signature, func(t *testing.T) {
+			db := testsupport.NewClient(t)
+			enq := &testsupport.RecordingEnqueuer{DB: db}
+			h := newWebhookHandler(t, enq, webhookSecret)
+
+			rec := httptest.NewRecorder()
+			h.Handle(rec, rawWebhookRequest("workflow_run", `{}`, signature))
+
+			assert.Equal(t, http.StatusUnauthorized, rec.Code)
+			assert.Empty(t, enq.Inserted)
+		})
+	}
+}
+
+func TestGitHubWebhookValidatesOfficialSignatureVector(t *testing.T) {
+	const (
+		secret    = "It's a Secret to Everybody"
+		body      = "Hello, World!"
+		signature = "sha256=757107ea0eb2509fc211221cce984b8a37570b6d7586c22c46f4379c8b043e17"
+	)
+
+	t.Run("valid", func(t *testing.T) {
+		db := testsupport.NewClient(t)
+		enq := &testsupport.RecordingEnqueuer{DB: db}
+		h := newWebhookHandler(t, enq, secret)
+
+		rec := httptest.NewRecorder()
+		h.Handle(rec, rawWebhookRequest("ping", body, signature))
+
+		assert.Equal(t, http.StatusNoContent, rec.Code)
+		assert.Empty(t, enq.Inserted)
+	})
+
+	t.Run("tampered payload", func(t *testing.T) {
+		db := testsupport.NewClient(t)
+		enq := &testsupport.RecordingEnqueuer{DB: db}
+		h := newWebhookHandler(t, enq, secret)
+
+		rec := httptest.NewRecorder()
+		h.Handle(rec, rawWebhookRequest("ping", body+"!", signature))
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Empty(t, enq.Inserted)
+	})
+}
+
 func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
 	db := testsupport.NewClient(t)
 	enq := &testsupport.RecordingEnqueuer{DB: db}
@@ -98,6 +152,47 @@ func TestGitHubWebhookDisabledWithoutSecret(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-ruby")))
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
+	assert.Empty(t, enq.Inserted)
+}
+
+func TestGitHubWebhookIgnoresOtherEvent(t *testing.T) {
+	db := testsupport.NewClient(t)
+	enq := &testsupport.RecordingEnqueuer{DB: db}
+	h := newWebhookHandler(t, enq, webhookSecret)
+
+	rec := httptest.NewRecorder()
+	h.Handle(rec, signedRequest(t, "push", map[string]any{"not": "a workflow run"}))
+
+	assert.Equal(t, http.StatusNoContent, rec.Code)
+	assert.Empty(t, enq.Inserted)
+}
+
+func TestGitHubWebhookRejectsMalformedWorkflowRun(t *testing.T) {
+	body := `{`
+	mac := hmac.New(sha256.New, []byte(webhookSecret))
+	mac.Write([]byte(body))
+	signature := "sha256=" + hex.EncodeToString(mac.Sum(nil))
+
+	db := testsupport.NewClient(t)
+	enq := &testsupport.RecordingEnqueuer{DB: db}
+	h := newWebhookHandler(t, enq, webhookSecret)
+
+	rec := httptest.NewRecorder()
+	h.Handle(rec, rawWebhookRequest("workflow_run", body, signature))
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Empty(t, enq.Inserted)
+}
+
+func TestGitHubWebhookIgnoresIncompleteWorkflowRun(t *testing.T) {
+	db := testsupport.NewClient(t)
+	enq := &testsupport.RecordingEnqueuer{DB: db}
+	h := newWebhookHandler(t, enq, webhookSecret)
+
+	rec := httptest.NewRecorder()
+	h.Handle(rec, signedRequest(t, "workflow_run", map[string]any{"action": "completed"}))
+
+	assert.Equal(t, http.StatusNoContent, rec.Code)
 	assert.Empty(t, enq.Inserted)
 }
 
@@ -116,6 +211,37 @@ func TestGitHubWebhookIgnoresFailedRun(t *testing.T) {
 	assert.Empty(t, enq.Inserted)
 }
 
+func TestGitHubWebhookIgnoresNonDefaultBranch(t *testing.T) {
+	db := testsupport.NewClient(t)
+	enq := &testsupport.RecordingEnqueuer{DB: db}
+	h := newWebhookHandler(t, enq, webhookSecret)
+
+	payload := workflowRunSuccess("exercises-ruby")
+	payload["workflow_run"].(map[string]any)["head_branch"] = "feature"
+
+	rec := httptest.NewRecorder()
+	h.Handle(rec, signedRequest(t, "workflow_run", payload))
+
+	assert.Equal(t, http.StatusNoContent, rec.Code)
+	assert.Empty(t, enq.Inserted)
+}
+
+func TestGitHubWebhookIgnoresUnrecognizedRepository(t *testing.T) {
+	for _, repo := range []string{"ruby", "exercises-"} {
+		t.Run(repo, func(t *testing.T) {
+			db := testsupport.NewClient(t)
+			enq := &testsupport.RecordingEnqueuer{DB: db}
+			h := newWebhookHandler(t, enq, webhookSecret)
+
+			rec := httptest.NewRecorder()
+			h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess(repo)))
+
+			assert.Equal(t, http.StatusNoContent, rec.Code)
+			assert.Empty(t, enq.Inserted)
+		})
+	}
+}
+
 func TestGitHubWebhookIgnoresUnknownCourse(t *testing.T) {
 	db := testsupport.NewClient(t)
 	enq := &testsupport.RecordingEnqueuer{DB: db}
@@ -125,5 +251,17 @@ func TestGitHubWebhookIgnoresUnknownCourse(t *testing.T) {
 	h.Handle(rec, signedRequest(t, "workflow_run", workflowRunSuccess("exercises-nonexistent-course")))
 
 	assert.Equal(t, http.StatusNoContent, rec.Code)
+	assert.Empty(t, enq.Inserted)
+}
+
+func TestGitHubWebhookRejectsOversizedBody(t *testing.T) {
+	db := testsupport.NewClient(t)
+	enq := &testsupport.RecordingEnqueuer{DB: db}
+	h := newWebhookHandler(t, enq, webhookSecret)
+
+	rec := httptest.NewRecorder()
+	h.Handle(rec, rawWebhookRequest("workflow_run", strings.Repeat("x", (5<<20)+1), "sha256=deadbeef"))
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
 	assert.Empty(t, enq.Inserted)
 }

@@ -2,13 +2,11 @@ package handlers
 
 import (
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/google/go-github/v89/github"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
@@ -47,20 +45,6 @@ func NewGitHubWebhookHandler(db *ent.Client, starter VersionBuildStarter, secret
 	return &GitHubWebhookHandler{db: db, starter: starter, secret: secret, i18n: translator}
 }
 
-// workflowRunPayload is the slice of the `workflow_run` event this handler acts
-// on. GitHub sends far more; only these fields decide whether to build.
-type workflowRunPayload struct {
-	Action      string `json:"action"`
-	WorkflowRun struct {
-		Conclusion string `json:"conclusion"`
-		HeadBranch string `json:"head_branch"`
-	} `json:"workflow_run"`
-	Repository struct {
-		Name          string `json:"name"`
-		DefaultBranch string `json:"default_branch"`
-	} `json:"repository"`
-}
-
 // Handle processes one delivery. It returns:
 //   - 404 if the endpoint is disabled (no secret configured),
 //   - 401 on a missing/invalid signature,
@@ -81,19 +65,25 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !h.validSignature(r.Header.Get("X-Hub-Signature-256"), body) {
+	if err := github.ValidateSignature(r.Header.Get(github.SHA256SignatureHeader), body, []byte(h.secret)); err != nil {
 		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookSignature), http.StatusUnauthorized)
 		return
 	}
 
 	// Only workflow_run events can trigger a build; ACK everything else.
-	if r.Header.Get("X-GitHub-Event") != "workflow_run" {
+	eventType := github.WebHookType(r)
+	if eventType != "workflow_run" {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
 
-	var payload workflowRunPayload
-	if err := json.Unmarshal(body, &payload); err != nil {
+	parsed, err := github.ParseWebHook(eventType, body)
+	if err != nil {
+		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookPayload), http.StatusBadRequest)
+		return
+	}
+	payload, ok := parsed.(*github.WorkflowRunEvent)
+	if !ok {
 		http.Error(w, h.i18n.Text(ctx, localization.InvalidWebhookPayload), http.StatusBadRequest)
 		return
 	}
@@ -118,37 +108,24 @@ func (h *GitHubWebhookHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 }
 
-// validSignature verifies GitHub's `sha256=<hex>` HMAC over the exact body bytes,
-// in constant time.
-func (h *GitHubWebhookHandler) validSignature(header string, body []byte) bool {
-	const prefix = "sha256="
-	if !strings.HasPrefix(header, prefix) {
-		return false
-	}
-	want, err := hex.DecodeString(strings.TrimPrefix(header, prefix))
-	if err != nil {
-		return false
-	}
-	mac := hmac.New(sha256.New, []byte(h.secret))
-	mac.Write(body)
-	return hmac.Equal(want, mac.Sum(nil))
-}
-
 // buildTargetSlug decides whether a payload should trigger a build and, if so,
 // returns the course slug. A build fires only for a completed, successful run on
 // the repo's default branch of an `exercises-<slug>` repo — the same gate legacy
 // relied on (only CI-built content is served).
-func (h *GitHubWebhookHandler) buildTargetSlug(p workflowRunPayload) (string, bool) {
-	if p.Action != "completed" || p.WorkflowRun.Conclusion != "success" {
+func (h *GitHubWebhookHandler) buildTargetSlug(event *github.WorkflowRunEvent) (string, bool) {
+	run := event.GetWorkflowRun()
+	repo := event.GetRepo()
+	if event.GetAction() != "completed" || run.GetConclusion() != "success" {
 		return "", false
 	}
-	if p.WorkflowRun.HeadBranch != p.Repository.DefaultBranch {
+	if run.GetHeadBranch() != repo.GetDefaultBranch() {
 		return "", false
 	}
-	if !strings.HasPrefix(p.Repository.Name, coursePrefix) {
+	name := repo.GetName()
+	if !strings.HasPrefix(name, coursePrefix) {
 		return "", false
 	}
-	slug := strings.TrimPrefix(p.Repository.Name, coursePrefix)
+	slug := strings.TrimPrefix(name, coursePrefix)
 	if slug == "" {
 		return "", false
 	}
