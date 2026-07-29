@@ -9,6 +9,9 @@ import (
 	"github.com/ThreeDotsLabs/watermill"
 	wmsql "github.com/ThreeDotsLabs/watermill-sql/v4/pkg/sql"
 	"github.com/ThreeDotsLabs/watermill/components/cqrs"
+
+	"hexletbasics/ent"
+	"hexletbasics/internal/store"
 )
 
 // TxPublisher is the transactional seam used by business modules. It does not
@@ -25,29 +28,20 @@ type StandalonePublisher interface {
 
 // Publisher writes Watermill messages through a caller-owned SQL transaction.
 type Publisher struct {
-	db     *sql.DB
+	store  store.Transactor
 	logger watermill.LoggerAdapter
 }
 
 // NewPublisher builds the PostgreSQL domain-event publisher.
-func NewPublisher(db *sql.DB, logger *slog.Logger) *Publisher {
-	return &Publisher{db: db, logger: watermill.NewSlogLogger(logger)}
+func NewPublisher(txStore store.Transactor, logger *slog.Logger) *Publisher {
+	return &Publisher{store: txStore, logger: watermill.NewSlogLogger(logger)}
 }
 
 // PublishStandalone owns a short transaction for facts such as sign-in.
 func (p *Publisher) PublishStandalone(ctx context.Context, event Event) error {
-	tx, err := p.db.BeginTx(ctx, nil)
-	if err != nil {
-		return fmt.Errorf("begin domain event transaction: %w", err)
-	}
-	defer func() { _ = tx.Rollback() }()
-	if err := p.Publish(ctx, tx, event); err != nil {
-		return err
-	}
-	if err := tx.Commit(); err != nil {
-		return fmt.Errorf("commit domain event transaction: %w", err)
-	}
-	return nil
+	return p.store.WithinTx(ctx, func(tx *sql.Tx, _ *ent.Client) error {
+		return p.Publish(ctx, tx, event)
+	})
 }
 
 // Publish inserts the event into the outbox transaction. Atlas owns the

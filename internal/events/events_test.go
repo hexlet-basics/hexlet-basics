@@ -127,7 +127,7 @@ func TestSQLRouterFansOutToIndependentConsumerGroups(t *testing.T) {
 	targetUserID := int(time.Now().UnixNano() & 0x3fffffff)
 	tx, err := db.BeginTx(t.Context(), nil)
 	require.NoError(t, err)
-	publisher := NewPublisher(db, slog.New(slog.NewTextHandler(io.Discard, nil)))
+	publisher := NewPublisher(store.New(db), slog.New(slog.NewTextHandler(io.Discard, nil)))
 	require.NoError(t, publisher.Publish(t.Context(), tx, UserSignedUp{
 		UserID: targetUserID, Locale: "en", OccurredAt: time.Now().UTC(),
 	}))

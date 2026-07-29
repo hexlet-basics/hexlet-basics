@@ -3,6 +3,7 @@ package courseloader
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -20,6 +21,7 @@ import (
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagemodule"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/store"
 )
 
 // Course version states, mirroring the legacy AASM machine on
@@ -44,14 +46,15 @@ const lessonStateCreated = "created"
 // broken rebuild never takes a live course offline.
 type Loader struct {
 	db      *ent.Client
+	txStore store.Transactor
 	assets  *assetstore.Store
 	fetcher Fetcher
 }
 
 // NewLoader wires the loader to its dependencies. The fetcher is an interface so
 // tests can supply a fixture directory instead of cloning.
-func NewLoader(db *ent.Client, assets *assetstore.Store, fetcher Fetcher) *Loader {
-	return &Loader{db: db, assets: assets, fetcher: fetcher}
+func NewLoader(db *ent.Client, txStore store.Transactor, assets *assetstore.Store, fetcher Fetcher) *Loader {
+	return &Loader{db: db, txStore: txStore, assets: assets, fetcher: fetcher}
 }
 
 // Run builds the given course version. It is idempotent against dead runs: a
@@ -143,21 +146,12 @@ func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause err
 // built-state + live-promotion. Atomicity is the point — either the new version
 // is fully present and live, or nothing changed and the old version stays live.
 func (l *Loader) build(ctx context.Context, version *ent.CourseVersion, course *ent.Course, parsed *Course) error {
-	tx, err := l.db.Tx(ctx)
-	if err != nil {
-		return oops.Wrapf(err, "begin build tx")
-	}
-	if err := l.buildTx(ctx, tx, version.ID, course.ID, parsed); err != nil {
-		_ = tx.Rollback()
-		return err
-	}
-	if err := tx.Commit(); err != nil {
-		return oops.Wrapf(err, "commit build tx")
-	}
-	return nil
+	return l.txStore.WithinTx(ctx, func(_ *sql.Tx, txClient *ent.Client) error {
+		return l.buildTx(ctx, txClient, version.ID, course.ID, parsed)
+	})
 }
 
-func (l *Loader) buildTx(ctx context.Context, tx *ent.Tx, versionID, languageID int, parsed *Course) error {
+func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languageID int, parsed *Course) error {
 	spec := parsed.Spec
 	if _, err := tx.CourseVersion.UpdateOneID(versionID).
 		SetName(spec.Name).
@@ -254,7 +248,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Tx, versionID, languageID 
 // uploaded and the markdown rewritten by uploadImages before this transaction, so
 // info.Theory is used as-is here. tips/definitions are serialized as YAML arrays
 // for Rails `serialize type: Array` compatibility.
-func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Tx, languageID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
+func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
 	create := tx.LanguageLessonVersionInfo.Create().
 		SetLanguageID(languageID).
 		SetLanguageVersionID(versionID).
@@ -292,7 +286,7 @@ func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Tx, languageID, v
 // upsertModule atomically creates or finds the stable module row for (course,
 // slug). Identity is kept across rebuilds so downstream references survive; the
 // per-build ordering lives on the module version, not here.
-func upsertModule(ctx context.Context, tx *ent.Tx, languageID int, slug string) (int, error) {
+func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug string) (int, error) {
 	id, err := tx.LanguageModule.Create().
 		SetLanguageID(languageID).
 		SetSlug(slug).
@@ -309,7 +303,7 @@ func upsertModule(ctx context.Context, tx *ent.Tx, languageID int, slug string) 
 // slug), and (re)points it at its current module — a lesson can move between
 // modules across rebuilds. Learner progress FKs this stable id, so it must NOT be
 // recreated.
-func upsertLesson(ctx context.Context, tx *ent.Tx, languageID, moduleID int, slug string) (int, error) {
+func upsertLesson(ctx context.Context, tx *ent.Client, languageID, moduleID int, slug string) (int, error) {
 	id, err := tx.LanguageLesson.Create().
 		SetLanguageID(languageID).
 		SetModuleID(moduleID).

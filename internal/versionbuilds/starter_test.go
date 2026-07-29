@@ -45,13 +45,13 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 	require.NoError(t, err)
 	riverClient, err := jobs.NewClient(
 		sqlDB,
-		courseloader.NewLoader(nil, nil, nil),
+		courseloader.NewLoader(nil, nil, nil, nil),
 		nil,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
 		jobs.NewErrorHandler(sentryClient),
 	)
 	require.NoError(t, err)
-	starter := versionbuilds.NewStarter(sqlDB, riverClient)
+	starter := versionbuilds.NewStarter(store.New(sqlDB), riverClient)
 
 	ruby, err := db.Course.Query().Where(course.Slug("ruby")).Only(ctx)
 	require.NoError(t, err)

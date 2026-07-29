@@ -40,8 +40,9 @@ func openTestDB(t *testing.T) *sql.DB {
 
 func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 	db := openTestDB(t)
+	txStore := store.New(db)
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	registrar := NewRegistrar(db, events.NewPublisher(db, logger))
+	registrar := NewRegistrar(txStore, events.NewPublisher(txStore, logger))
 	occurredAt := time.Date(2026, time.July, 29, 10, 11, 12, 0, time.UTC)
 	registrar.now = func() time.Time { return occurredAt }
 	email := fmt.Sprintf("watermill-%s@example.com", ids.New())
@@ -94,7 +95,7 @@ func (failingPublisher) Publish(context.Context, *sql.Tx, events.Event) error {
 
 func TestRegistrarRollsBackUserWhenPublishingFails(t *testing.T) {
 	db := openTestDB(t)
-	registrar := NewRegistrar(db, failingPublisher{})
+	registrar := NewRegistrar(store.New(db), failingPublisher{})
 	email := fmt.Sprintf("watermill-rollback-%s@example.com", ids.New())
 
 	_, err := registrar.Register(t.Context(), Registration{

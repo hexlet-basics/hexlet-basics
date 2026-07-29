@@ -35,14 +35,14 @@ type UserRegistrar interface {
 
 // Registrar atomically creates an account and its UserSignedUp outbox record.
 type Registrar struct {
-	db        *sql.DB
+	store     store.Transactor
 	publisher events.TxPublisher
 	now       func() time.Time
 }
 
 // NewRegistrar builds the production account registrar.
-func NewRegistrar(db *sql.DB, publisher events.TxPublisher) *Registrar {
-	return &Registrar{db: db, publisher: publisher, now: time.Now}
+func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher) *Registrar {
+	return &Registrar{store: txStore, publisher: publisher, now: time.Now}
 }
 
 // Register creates the user and publishes the corresponding domain fact in the
@@ -53,34 +53,31 @@ func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.Us
 		return nil, fmt.Errorf("%w: %v", ErrPasswordProcessing, err)
 	}
 
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return nil, fmt.Errorf("begin account registration: %w", err)
-	}
-	defer func() { _ = tx.Rollback() }()
+	var u *ent.User
+	err = r.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
+		u, err = txClient.User.Create().
+			SetEmail(input.Email).
+			SetPasswordDigest(string(hash)).
+			SetNillableFirstName(input.FirstName).
+			Save(ctx)
+		if err != nil {
+			return fmt.Errorf("create user: %w", err)
+		}
 
-	txClient := store.NewTxClient(tx)
-	u, err := txClient.User.Create().
-		SetEmail(input.Email).
-		SetPasswordDigest(string(hash)).
-		SetNillableFirstName(input.FirstName).
-		Save(ctx)
+		if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
+			UserID:     u.ID,
+			Email:      u.Email,
+			FirstName:  u.FirstName,
+			LastName:   u.LastName,
+			Locale:     input.Locale,
+			OccurredAt: r.now().UTC(),
+		}); err != nil {
+			return fmt.Errorf("publish user signed up: %w", err)
+		}
+		return nil
+	})
 	if err != nil {
-		return nil, fmt.Errorf("create user: %w", err)
-	}
-
-	if err := r.publisher.Publish(ctx, tx, events.UserSignedUp{
-		UserID:     u.ID,
-		Email:      u.Email,
-		FirstName:  u.FirstName,
-		LastName:   u.LastName,
-		Locale:     input.Locale,
-		OccurredAt: r.now().UTC(),
-	}); err != nil {
-		return nil, fmt.Errorf("publish user signed up: %w", err)
-	}
-	if err := tx.Commit(); err != nil {
-		return nil, fmt.Errorf("commit account registration: %w", err)
+		return nil, err
 	}
 	return u, nil
 }

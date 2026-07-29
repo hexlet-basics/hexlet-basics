@@ -58,7 +58,16 @@ func testDSN() string {
 // own writes vanish on rollback.
 func NewClient(t *testing.T) *ent.Client {
 	t.Helper()
+	client, _ := NewClientWithTransactor(t)
+	return client
+}
 
+// NewClientWithTransactor returns the test's transaction-bound ent client and a
+// savepoint-backed transaction adapter. Business modules can therefore exercise
+// their production transaction seam without escaping the outer rollback that
+// keeps the shared fixture database clean.
+func NewClientWithTransactor(t *testing.T) (*ent.Client, store.Transactor) {
+	t.Helper()
 	db, err := store.NewDB(testDSN())
 	if err != nil {
 		t.Fatalf("open test database: %v", err)
@@ -71,7 +80,8 @@ func NewClient(t *testing.T) *ent.Client {
 	}
 	t.Cleanup(func() { _ = tx.Rollback() })
 
-	return store.NewTxClient(tx)
+	client := store.NewTxClient(tx)
+	return client, newSavepointTransactor(tx, client)
 }
 
 // NewTranslator loads the same embedded backend catalogs as production.

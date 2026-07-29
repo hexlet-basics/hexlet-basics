@@ -94,16 +94,20 @@ func New() *do.RootScope {
 		return store.NewClient(do.MustInvoke[*sql.DB](i)), nil
 	})
 
+	do.Provide(injector, func(i do.Injector) (*store.Store, error) {
+		return store.New(do.MustInvoke[*sql.DB](i)), nil
+	})
+
 	do.Provide(injector, func(i do.Injector) (*events.Publisher, error) {
 		return events.NewPublisher(
-			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*store.Store](i),
 			do.MustInvoke[*slog.Logger](i),
 		), nil
 	})
 
 	do.Provide(injector, func(i do.Injector) (*accounts.Registrar, error) {
 		return accounts.NewRegistrar(
-			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*store.Store](i),
 			do.MustInvoke[*events.Publisher](i),
 		), nil
 	})
@@ -156,6 +160,7 @@ func New() *do.RootScope {
 	do.Provide(injector, func(i do.Injector) (*courseloader.Loader, error) {
 		return courseloader.NewLoader(
 			do.MustInvoke[*ent.Client](i),
+			do.MustInvoke[*store.Store](i),
 			do.MustInvoke[*assetstore.Store](i),
 			do.MustInvoke[courseloader.Fetcher](i),
 		), nil
@@ -178,7 +183,7 @@ func New() *do.RootScope {
 
 	do.Provide(injector, func(i do.Injector) (*versionbuilds.Starter, error) {
 		return versionbuilds.NewStarter(
-			do.MustInvoke[*sql.DB](i),
+			do.MustInvoke[*store.Store](i),
 			do.MustInvoke[*river.Client[*sql.Tx]](i),
 		), nil
 	})

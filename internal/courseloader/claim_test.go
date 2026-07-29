@@ -46,7 +46,7 @@ func TestClaimAllowsOnlyOneConcurrentOwner(t *testing.T) {
 		)
 	})
 
-	loader := NewLoader(db, nil, nil)
+	loader := NewLoader(db, nil, nil, nil)
 	const contenders = 8
 	start := make(chan struct{})
 	results := make(chan bool, contenders)

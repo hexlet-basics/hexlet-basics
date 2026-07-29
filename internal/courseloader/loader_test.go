@@ -18,6 +18,7 @@ import (
 	"hexletbasics/ent/languagemoduleversion"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -35,22 +36,27 @@ func (panicFetcher) Fetch(context.Context, string) (string, func(), error) {
 	panic("fetch must not run for an already-claimed version")
 }
 
-func newLoaderWith(t *testing.T, db *ent.Client, fetcher courseloader.Fetcher) *courseloader.Loader {
+func newLoaderWith(
+	t *testing.T,
+	db *ent.Client,
+	txStore store.Transactor,
+	fetcher courseloader.Fetcher,
+) *courseloader.Loader {
 	t.Helper()
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://localhost:3001")
-	return courseloader.NewLoader(db, assets, fetcher)
+	return courseloader.NewLoader(db, txStore, assets, fetcher)
 }
 
 // newLoader builds a loader that fetches the committed fixture course.
-func newLoader(t *testing.T, db *ent.Client) *courseloader.Loader {
+func newLoader(t *testing.T, db *ent.Client, txStore store.Transactor) *courseloader.Loader {
 	t.Helper()
-	return newLoaderWith(t, db, fakeFetcher{dir: fixtureRepo(t)})
+	return newLoaderWith(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)})
 }
 
 func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
 	// Arrange: a course with a freshly-created version, the state the loader
@@ -58,7 +64,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	course := db.Course.Create().SetSlug("loader-test-lang").SetName("Loader Test").SaveX(ctx)
 	version := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 
-	loader := newLoader(t, db)
+	loader := newLoader(t, db, txStore)
 	require.NoError(t, loader.Run(ctx, version.ID))
 
 	// Version built, spec applied, and promoted to the course's current version.
@@ -99,7 +105,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 }
 
 func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
 	course := db.Course.Create().SetSlug("loader-skip-lang").SetName("Skip").SaveX(ctx)
@@ -110,7 +116,7 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 		SetResult("Success").
 		SaveX(ctx)
 
-	loader := newLoaderWith(t, db, panicFetcher{})
+	loader := newLoaderWith(t, db, txStore, panicFetcher{})
 	require.NoError(t, loader.Run(ctx, version.ID))
 
 	version = db.CourseVersion.GetX(ctx, version.ID)
@@ -122,11 +128,11 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 }
 
 func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
 	course := db.Course.Create().SetSlug("loader-rebuild-lang").SetName("Rebuild").SaveX(ctx)
-	loader := newLoader(t, db)
+	loader := newLoader(t, db, txStore)
 
 	// First build.
 	v1 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
@@ -156,19 +162,19 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 // goes live; v2 fails to parse (empty repo, no spec.yml); the course must still
 // point at v1, and v2 must be recorded as failed.
 func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 
 	course := db.Course.Create().SetSlug("loader-fail-lang").SetName("Fail").SaveX(ctx)
 
 	// v1 builds successfully and is promoted live.
 	v1 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
-	require.NoError(t, newLoader(t, db).Run(ctx, v1.ID))
+	require.NoError(t, newLoader(t, db, txStore).Run(ctx, v1.ID))
 	course = db.Course.GetX(ctx, course.ID)
 	require.Equal(t, v1.ID, *course.CurrentVersionID)
 
 	// v2 fails: an empty checkout has no spec.yml, so Parse errors.
-	badLoader := newLoaderWith(t, db, fakeFetcher{dir: t.TempDir()})
+	badLoader := newLoaderWith(t, db, txStore, fakeFetcher{dir: t.TempDir()})
 	v2 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 	require.Error(t, badLoader.Run(ctx, v2.ID))
 
@@ -183,7 +189,7 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 }
 
 func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, txStore := testsupport.NewClientWithTransactor(t)
 	ctx := context.Background()
 	repo := t.TempDir()
 	require.NoError(t, os.CopyFS(repo, os.DirFS(fixtureRepo(t))))
@@ -196,7 +202,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 
 	course := db.Course.Create().SetSlug("loader-invalid-image-lang").SetName("Invalid Image").SaveX(ctx)
 	version := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
-	loader := newLoaderWith(t, db, fakeFetcher{dir: repo})
+	loader := newLoaderWith(t, db, txStore, fakeFetcher{dir: repo})
 
 	err := loader.Run(ctx, version.ID)
 
