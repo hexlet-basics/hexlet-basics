@@ -2,6 +2,8 @@ module hexletbasics
 
 go 1.26.4
 
+tool github.com/nicksnyder/go-i18n/v2/goi18n
+
 require (
 	entgo.io/ent v0.14.6
 	github.com/ThreeDotsLabs/watermill v1.5.2
@@ -54,6 +56,7 @@ require (
 	ariga.io/atlas v1.2.3 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	dario.cat/mergo v1.0.2 // indirect
+	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.4.1 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect

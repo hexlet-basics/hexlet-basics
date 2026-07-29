@@ -9,7 +9,6 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
-	"io/fs"
 	"net/http"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -29,8 +28,7 @@ type (
 // Its fields are deliberately private: callers choose one of the messages
 // below instead of inventing ad-hoc IDs or fallback text in a handler.
 type Message struct {
-	id      string
-	english string
+	value i18n.Message
 }
 
 // Translator owns the process-wide translation bundle. A request-specific
@@ -50,9 +48,6 @@ func New() (*Translator, error) {
 		"locales/active.ru.json",
 		"locales/active.es.json",
 	} {
-		if err := validateCatalog(localeFiles, name); err != nil {
-			return nil, err
-		}
 		if _, err := bundle.LoadMessageFileFS(localeFiles, name); err != nil {
 			return nil, fmt.Errorf("load localization catalog %s: %w", name, err)
 		}
@@ -102,14 +97,11 @@ func (t *Translator) Text(ctx context.Context, message Message) string {
 	}
 
 	text, err := localizer.Localize(&i18n.LocalizeConfig{
-		MessageID: message.id,
-		DefaultMessage: &i18n.Message{
-			ID:    message.id,
-			Other: message.english,
-		},
+		MessageID:      message.value.ID,
+		DefaultMessage: &message.value,
 	})
 	if err != nil {
-		return message.english
+		return message.value.Other
 	}
 	return text
 }
@@ -124,27 +116,4 @@ func (t *Translator) StatusText(ctx context.Context, status int) string {
 		return text
 	}
 	return t.Text(ctx, InternalServerError)
-}
-
-type catalogMessage struct {
-	Other string `json:"other"`
-}
-
-func validateCatalog(files fs.FS, name string) error {
-	data, err := fs.ReadFile(files, name)
-	if err != nil {
-		return fmt.Errorf("read localization catalog %s: %w", name, err)
-	}
-
-	var catalog map[string]catalogMessage
-	if err := json.Unmarshal(data, &catalog); err != nil {
-		return fmt.Errorf("decode localization catalog %s: %w", name, err)
-	}
-	for _, message := range allMessages {
-		entry, ok := catalog[message.id]
-		if !ok || entry.Other == "" {
-			return fmt.Errorf("localization catalog %s is missing %q", name, message.id)
-		}
-	}
-	return nil
 }

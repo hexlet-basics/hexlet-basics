@@ -21,6 +21,7 @@
 package courseloader
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -130,7 +131,9 @@ func parseSpec(dir string) (*Spec, error) {
 	var doc struct {
 		Language Spec `yaml:"language"`
 	}
-	if err := yaml.Unmarshal(raw, &doc); err != nil {
+	decoder := yaml.NewDecoder(bytes.NewReader(raw))
+	decoder.KnownFields(true)
+	if err := decoder.Decode(&doc); err != nil {
 		return nil, oops.Wrapf(err, "parse %s", path)
 	}
 	s := doc.Language

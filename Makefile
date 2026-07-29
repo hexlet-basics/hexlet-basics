@@ -91,6 +91,10 @@ gen-api:
 gen-client:
 	pnpm generate
 
+## gen-locales: extract the English backend catalog from the message registry
+gen-locales:
+	go generate ./internal/localization
+
 ## gen-amocrm: generate the typed amoCRM client from the pinned upstream contract
 gen-amocrm:
 	kiota generate \
@@ -120,8 +124,8 @@ gen-ent:
 fixtures-import:
 	cd legacy && RAILS_ENV=test bin/rails runner ../scripts/export_fixtures.rb
 
-## gen-all: regenerate everything (ent + contracts + external clients)
-gen-all: gen-ent gen gen-amocrm
+## gen-all: regenerate everything (ent + contracts + locales + external clients)
+gen-all: gen-ent gen gen-locales gen-amocrm
 
 ## tidy: prune/sync go.mod after generation or dep changes
 tidy:
@@ -134,11 +138,15 @@ tidy:
 ## lint: lint Go + frontend
 lint: lint-go lint-web
 
-## lint-go: gofmt check, go vet, golangci-lint (skips generated files)
-lint-go:
+## lint-go: locale catalogs, gofmt, go vet, golangci-lint (skips generated files)
+lint-go: lint-locales
 	@test -z "$$(gofmt -l cmd internal ent/schema)" || (echo "gofmt needed:"; gofmt -l cmd internal ent/schema; exit 1)
 	go vet ./...
 	golangci-lint run
+
+## lint-locales: verify generated source messages and complete translations
+lint-locales:
+	sh scripts/lint_locales.sh
 
 ## lint-web: oxlint, oxfmt check, and TypeScript project build
 lint-web:

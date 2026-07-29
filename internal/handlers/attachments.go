@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
-	"strconv"
 
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/localization"
@@ -97,9 +95,9 @@ func (h *AttachmentHandler) Upload(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// Download handles `GET /storage/{key}`: stream the stored bytes back with the
-// content type they were written with. This is the read side of the `url` the
-// uploader returns — without it that url would point at nothing.
+// Download handles `GET /storage/{key}`: serve the stored bytes with standard
+// conditional and range request semantics. This is the read side of the `url`
+// the uploader returns — without it that url would point at nothing.
 func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	key := r.PathValue("key")
@@ -123,8 +121,7 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	// type than the one we stored (defense in depth alongside the raster-only
 	// upload allowlist).
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.Header().Set("Content-Length", strconv.FormatInt(reader.Size, 10))
-	_, _ = io.Copy(w, reader)
+	http.ServeContent(w, r, key, reader.ModTime, reader)
 }
 
 func writeJSON(w http.ResponseWriter, status int, body any) {

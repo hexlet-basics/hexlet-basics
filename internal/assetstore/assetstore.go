@@ -59,9 +59,9 @@ type Attachment struct {
 // Reader exposes stored bytes and the metadata needed by the HTTP read path
 // without leaking the blob backend or its error model to callers.
 type Reader struct {
-	io.ReadCloser
+	io.ReadSeekCloser
 	ContentType string
-	Size        int64
+	ModTime     time.Time
 }
 
 // Store coordinates blob storage and Attachment persistence as one operation.
@@ -143,9 +143,9 @@ func (s *Store) Open(ctx context.Context, key string) (*Reader, error) {
 		return nil, fmt.Errorf("open asset %q: %w", key, err)
 	}
 	return &Reader{
-		ReadCloser:  reader,
-		ContentType: reader.ContentType(),
-		Size:        reader.Size(),
+		ReadSeekCloser: reader,
+		ContentType:    reader.ContentType(),
+		ModTime:        reader.ModTime(),
 	}, nil
 }
 

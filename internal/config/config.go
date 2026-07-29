@@ -7,6 +7,8 @@ import (
 	"github.com/samber/oops"
 )
 
+const developmentJWTSecret = "dev-insecure-jwt-secret-change-me"
+
 // Config holds the runtime configuration for the server. Fields are populated
 // from environment variables (12-factor); defaults keep local dev zero-config.
 type Config struct {
@@ -46,9 +48,9 @@ type Config struct {
 	SentryEnvironment string `env:"SENTRY_ENVIRONMENT" envDefault:"development"`
 	ReleaseVersion    string `env:"HEXLET_BASICS_RELEASE_VERSION"`
 	// JWTSecret signs the session JWT stored in the auth cookie (ADR-0003). The
-	// dev default keeps local sign-in zero-config; prod MUST override it, since
-	// anyone who knows the secret can forge sessions.
-	JWTSecret string `env:"JWT_SECRET" envDefault:"dev-insecure-jwt-secret-change-me"`
+	// committed .env.example supplies a development value, while deployments
+	// must provide a non-empty secret explicitly.
+	JWTSecret string `env:"JWT_SECRET,required,notEmpty"`
 }
 
 // Load reads configuration from environment variables, applying defaults.
@@ -63,5 +65,18 @@ func Load() (*Config, error) {
 	if err := env.Parse(cfg); err != nil {
 		return nil, oops.Wrapf(err, "parse config from environment")
 	}
+	if err := validateProduction(cfg); err != nil {
+		return nil, oops.Wrapf(err, "validate production config")
+	}
 	return cfg, nil
+}
+
+// validateProduction keeps environment-specific safety policy separate from
+// env decoding. The development secret is committed for local convenience and
+// therefore must never be accepted as a session-signing key in production.
+func validateProduction(cfg *Config) error {
+	if cfg.SentryEnvironment == "production" && cfg.JWTSecret == developmentJWTSecret {
+		return oops.Errorf("JWT_SECRET must differ from the public development value")
+	}
+	return nil
 }

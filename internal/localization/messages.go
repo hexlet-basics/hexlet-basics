@@ -1,129 +1,155 @@
 package localization
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+)
+
+//go:generate go tool goi18n extract -sourceLanguage en -format json -outdir locales .
 
 // Backend message registry. English fallback text stays next to each stable ID;
 // the embedded catalogs contain the complete en/ru/es translations.
 var (
 	WrongCredentials = Message{
-		id:      "auth.wrong_credentials",
-		english: "Wrong email or password",
+		value: i18n.Message{
+			ID:    "auth.wrong_credentials",
+			Other: "Wrong email or password",
+		},
 	}
 	PasswordProcessingFailed = Message{
-		id:      "auth.password_processing_failed",
-		english: "Could not process the password",
+		value: i18n.Message{
+			ID:    "auth.password_processing_failed",
+			Other: "Could not process the password",
+		},
 	}
 	EmailTaken = Message{
-		id:      "auth.email_taken",
-		english: "This email is already taken",
+		value: i18n.Message{
+			ID:    "auth.email_taken",
+			Other: "This email is already taken",
+		},
 	}
 	CourseNotFound = Message{
-		id:      "courses.not_found",
-		english: "course not found",
+		value: i18n.Message{
+			ID:    "courses.not_found",
+			Other: "course not found",
+		},
 	}
 	FileTooLarge = Message{
-		id:      "attachments.file_too_large",
-		english: "file is too large",
+		value: i18n.Message{
+			ID:    "attachments.file_too_large",
+			Other: "file is too large",
+		},
 	}
 	FileRequired = Message{
-		id:      "attachments.file_required",
-		english: "a file part is required",
+		value: i18n.Message{
+			ID:    "attachments.file_required",
+			Other: "a file part is required",
+		},
 	}
 	UnsupportedFileType = Message{
-		id:      "attachments.unsupported_file_type",
-		english: "unsupported file type",
+		value: i18n.Message{
+			ID:    "attachments.unsupported_file_type",
+			Other: "unsupported file type",
+		},
 	}
 	StoreFileFailed = Message{
-		id:      "attachments.store_failed",
-		english: "failed to store file",
+		value: i18n.Message{
+			ID:    "attachments.store_failed",
+			Other: "failed to store file",
+		},
 	}
 	ReadFileFailed = Message{
-		id:      "attachments.read_failed",
-		english: "failed to read file",
+		value: i18n.Message{
+			ID:    "attachments.read_failed",
+			Other: "failed to read file",
+		},
 	}
 	ReadWebhookBodyFailed = Message{
-		id:      "webhooks.read_body_failed",
-		english: "failed to read body",
+		value: i18n.Message{
+			ID:    "webhooks.read_body_failed",
+			Other: "failed to read body",
+		},
 	}
 	InvalidWebhookSignature = Message{
-		id:      "webhooks.invalid_signature",
-		english: "invalid signature",
+		value: i18n.Message{
+			ID:    "webhooks.invalid_signature",
+			Other: "invalid signature",
+		},
 	}
 	InvalidWebhookPayload = Message{
-		id:      "webhooks.invalid_payload",
-		english: "invalid payload",
+		value: i18n.Message{
+			ID:    "webhooks.invalid_payload",
+			Other: "invalid payload",
+		},
 	}
 	TriggerBuildFailed = Message{
-		id:      "webhooks.trigger_build_failed",
-		english: "failed to trigger build",
+		value: i18n.Message{
+			ID:    "webhooks.trigger_build_failed",
+			Other: "failed to trigger build",
+		},
 	}
 	BadRequest = Message{
-		id:      "http.bad_request",
-		english: http.StatusText(http.StatusBadRequest),
+		value: i18n.Message{
+			ID:    "http.bad_request",
+			Other: "Bad Request",
+		},
 	}
 	Unauthorized = Message{
-		id:      "http.unauthorized",
-		english: http.StatusText(http.StatusUnauthorized),
+		value: i18n.Message{
+			ID:    "http.unauthorized",
+			Other: "Unauthorized",
+		},
 	}
 	Forbidden = Message{
-		id:      "http.forbidden",
-		english: http.StatusText(http.StatusForbidden),
+		value: i18n.Message{
+			ID:    "http.forbidden",
+			Other: "Forbidden",
+		},
 	}
 	NotFound = Message{
-		id:      "http.not_found",
-		english: http.StatusText(http.StatusNotFound),
+		value: i18n.Message{
+			ID:    "http.not_found",
+			Other: "Not Found",
+		},
 	}
 	MethodNotAllowed = Message{
-		id:      "http.method_not_allowed",
-		english: http.StatusText(http.StatusMethodNotAllowed),
+		value: i18n.Message{
+			ID:    "http.method_not_allowed",
+			Other: "Method Not Allowed",
+		},
 	}
 	Conflict = Message{
-		id:      "http.conflict",
-		english: http.StatusText(http.StatusConflict),
+		value: i18n.Message{
+			ID:    "http.conflict",
+			Other: "Conflict",
+		},
 	}
 	RequestEntityTooLarge = Message{
-		id:      "http.request_entity_too_large",
-		english: http.StatusText(http.StatusRequestEntityTooLarge),
+		value: i18n.Message{
+			ID:    "http.request_entity_too_large",
+			Other: "Request Entity Too Large",
+		},
 	}
 	UnsupportedMediaType = Message{
-		id:      "http.unsupported_media_type",
-		english: http.StatusText(http.StatusUnsupportedMediaType),
+		value: i18n.Message{
+			ID:    "http.unsupported_media_type",
+			Other: "Unsupported Media Type",
+		},
 	}
 	UnprocessableEntity = Message{
-		id:      "http.unprocessable_entity",
-		english: http.StatusText(http.StatusUnprocessableEntity),
+		value: i18n.Message{
+			ID:    "http.unprocessable_entity",
+			Other: "Unprocessable Entity",
+		},
 	}
 	InternalServerError = Message{
-		id:      "http.internal_server_error",
-		english: http.StatusText(http.StatusInternalServerError),
+		value: i18n.Message{
+			ID:    "http.internal_server_error",
+			Other: "Internal Server Error",
+		},
 	}
 )
-
-var allMessages = []Message{
-	WrongCredentials,
-	PasswordProcessingFailed,
-	EmailTaken,
-	CourseNotFound,
-	FileTooLarge,
-	FileRequired,
-	UnsupportedFileType,
-	StoreFileFailed,
-	ReadFileFailed,
-	ReadWebhookBodyFailed,
-	InvalidWebhookSignature,
-	InvalidWebhookPayload,
-	TriggerBuildFailed,
-	BadRequest,
-	Unauthorized,
-	Forbidden,
-	NotFound,
-	MethodNotAllowed,
-	Conflict,
-	RequestEntityTooLarge,
-	UnsupportedMediaType,
-	UnprocessableEntity,
-	InternalServerError,
-}
 
 var statusMessages = map[int]Message{
 	http.StatusBadRequest:            BadRequest,

@@ -57,10 +57,17 @@ func TestPutAndOpen(t *testing.T) {
 	require.NoError(t, err)
 	defer func() { _ = reader.Close() }()
 	assert.Equal(t, "image/png", reader.ContentType)
-	assert.Equal(t, int64(len(data)), reader.Size)
+	assert.False(t, reader.ModTime.IsZero())
 	stored, err := io.ReadAll(reader)
 	require.NoError(t, err)
 	assert.Equal(t, data, stored)
+
+	offset, err := reader.Seek(int64(len(pngHeader)), io.SeekStart)
+	require.NoError(t, err)
+	assert.Equal(t, int64(len(pngHeader)), offset)
+	storedAfterSeek, err := io.ReadAll(reader)
+	require.NoError(t, err)
+	assert.Equal(t, data[len(pngHeader):], storedAfterSeek)
 }
 
 func TestPutAcceptsExactSizeLimit(t *testing.T) {

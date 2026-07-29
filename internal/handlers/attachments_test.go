@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/textproto"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -129,6 +130,21 @@ func uploadRequest(t *testing.T, filename, contentType string, data []byte) *htt
 	return req
 }
 
+func uploadAttachmentURL(t *testing.T, router http.Handler) string {
+	t.Helper()
+
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+	require.Equal(t, http.StatusCreated, rec.Code)
+
+	var response struct {
+		URL string `json:"url"`
+	}
+	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &response))
+	require.NotEmpty(t, response.URL)
+	return response.URL
+}
+
 func TestUploadAttachmentAndDownload(t *testing.T) {
 	router := newAttachmentRouter(t)
 
@@ -163,10 +179,97 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, dl.Code)
 	assert.Equal(t, "image/png", dl.Header().Get("Content-Type"))
+	assert.Equal(t, strconv.Itoa(len(tinyPNG)), dl.Header().Get("Content-Length"))
+	assert.NotEmpty(t, dl.Header().Get("Last-Modified"))
 	assert.Equal(t, "nosniff", dl.Header().Get("X-Content-Type-Options"))
 	got, err := io.ReadAll(dl.Body)
 	require.NoError(t, err)
 	assert.Equal(t, tinyPNG, got)
+}
+
+func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
+	router := newAttachmentRouter(t)
+	url := uploadAttachmentURL(t, router)
+
+	full := httptest.NewRecorder()
+	router.ServeHTTP(full, httptest.NewRequest(http.MethodGet, url, nil))
+	require.Equal(t, http.StatusOK, full.Code)
+	lastModified := full.Header().Get("Last-Modified")
+	require.NotEmpty(t, lastModified)
+
+	t.Run("range", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req.Header.Set("Range", "bytes=1-8")
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, req)
+
+		require.Equal(t, http.StatusPartialContent, rec.Code)
+		assert.Equal(t, "bytes 1-8/"+strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Range"))
+		assert.Equal(t, "8", rec.Header().Get("Content-Length"))
+		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
+		assert.Equal(t, tinyPNG[1:9], rec.Body.Bytes())
+	})
+
+	t.Run("invalid range", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req.Header.Set("Range", "bytes=1000-2000")
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, req)
+
+		require.Equal(t, http.StatusRequestedRangeNotSatisfiable, rec.Code)
+		assert.Equal(t, "bytes */"+strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Range"))
+		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
+	})
+
+	t.Run("head", func(t *testing.T) {
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, httptest.NewRequest(http.MethodHead, url, nil))
+
+		require.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Length"))
+		assert.Equal(t, lastModified, rec.Header().Get("Last-Modified"))
+		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
+		assert.Empty(t, rec.Body.Bytes())
+	})
+
+	t.Run("not modified", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req.Header.Set("If-Modified-Since", lastModified)
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, req)
+
+		require.Equal(t, http.StatusNotModified, rec.Code)
+		assert.Equal(t, "nosniff", rec.Header().Get("X-Content-Type-Options"))
+		assert.Empty(t, rec.Body.Bytes())
+	})
+
+	t.Run("if range matches", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req.Header.Set("Range", "bytes=1-8")
+		req.Header.Set("If-Range", lastModified)
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, req)
+
+		require.Equal(t, http.StatusPartialContent, rec.Code)
+		assert.Equal(t, tinyPNG[1:9], rec.Body.Bytes())
+	})
+
+	t.Run("if range is stale", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req.Header.Set("Range", "bytes=1-8")
+		req.Header.Set("If-Range", "Mon, 02 Jan 2006 15:04:05 GMT")
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, req)
+
+		require.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, tinyPNG, rec.Body.Bytes())
+	})
 }
 
 func TestUploadAttachmentResponseMatchesOpenAPIContract(t *testing.T) {
