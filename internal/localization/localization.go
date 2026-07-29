@@ -38,7 +38,7 @@ type Translator struct {
 	matcher language.Matcher
 }
 
-// New loads and validates every embedded locale catalog.
+// New loads every embedded locale catalog.
 func New() (*Translator, error) {
 	bundle := i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)

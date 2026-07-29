@@ -7,7 +7,14 @@ catalog_dir="$repo_root/internal/localization/locales"
 work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT HUP INT TERM
 
-cp "$catalog_dir"/active.*.json "$work_dir"
+for locale in en ru es; do
+  catalog="$catalog_dir/active.$locale.json"
+  if [ ! -f "$catalog" ]; then
+    echo "backend locale catalog is missing: active.$locale.json" >&2
+    exit 1
+  fi
+  cp "$catalog" "$work_dir"
+done
 
 cd "$repo_root"
 go tool goi18n extract \
@@ -28,10 +35,10 @@ go tool goi18n merge \
   -outdir "$work_dir" \
   "$work_dir"/active.*.json
 
-missing_catalogs=$(find "$work_dir" -maxdepth 1 -type f -name 'translate.*.json' -print)
-if [ -n "$missing_catalogs" ]; then
+set -- "$work_dir"/translate.*.json
+if [ -e "$1" ]; then
   echo "backend locale catalogs have missing or empty translations:" >&2
-  for catalog in $missing_catalogs; do
+  for catalog in "$@"; do
     echo "  $(basename "$catalog")" >&2
   done
   exit 1
