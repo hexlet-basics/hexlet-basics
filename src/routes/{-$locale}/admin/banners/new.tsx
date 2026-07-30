@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/banners/new")({
   component: NewBanner,
 });
 
-function NewBanner() {
+export function NewBanner() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBannerFields();
