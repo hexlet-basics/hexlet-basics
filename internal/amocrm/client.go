@@ -14,6 +14,7 @@ import (
 	kiotaserialization "github.com/microsoft/kiota-abstractions-go/serialization"
 	kiotahttp "github.com/microsoft/kiota-http-go"
 	kiotajson "github.com/microsoft/kiota-serialization-json-go"
+	"github.com/samber/lo"
 
 	"hexletbasics/internal/amocrm/generated"
 	"hexletbasics/internal/amocrm/generated/models"
@@ -101,20 +102,20 @@ func newPayloadBuilder(ymCounter string) payloadBuilder {
 func (b payloadBuilder) build(event events.LeadCreated) models.UnsortedFormCreateItemable {
 	metadata := models.NewFormMetadata()
 	formID := models.NewFormMetadata_FormMetadata_form_id()
-	formID.SetString(stringPtr(source))
+	formID.SetString(lo.ToPtr(source))
 	metadata.SetFormId(formID)
-	metadata.SetFormName(stringPtr(source))
+	metadata.SetFormName(lo.ToPtr(source))
 	sentAt := event.OccurredAt.Unix()
 	metadata.SetFormSentAt(&sentAt)
 
 	contact := models.NewContactCreate()
-	contact.SetName(stringPtr(firstNonEmpty(
+	contact.SetName(lo.ToPtr(firstNonEmpty(
 		event.FirstName,
 		event.Email,
 		event.Phone,
 		event.Telegram,
 		event.WhatsApp,
-		stringPtr("Unknown"),
+		lo.ToPtr("Unknown"),
 	)))
 	contact.SetFirstName(event.FirstName)
 	contact.SetLastName(event.LastName)
@@ -124,9 +125,9 @@ func (b payloadBuilder) build(event events.LeadCreated) models.UnsortedFormCreat
 	))
 
 	lead := models.NewLeadCreate()
-	lead.SetName(stringPtr(firstNonEmpty(event.Email, stringPtr("Lead from "+source))))
-	lead.SetPipelineId(int64Ptr(leadPipelineID))
-	lead.SetResponsibleUserId(int64Ptr(responsibleUserID))
+	lead.SetName(lo.ToPtr(firstNonEmpty(event.Email, lo.ToPtr("Lead from "+source))))
+	lead.SetPipelineId(lo.ToPtr(leadPipelineID))
+	lead.SetResponsibleUserId(lo.ToPtr(responsibleUserID))
 	lead.SetCustomFieldsValues(customFields(
 		customField{id: 316_913, code: "UTM_CONTENT", value: event.UTMContent},
 		customField{id: 316_915, code: "UTM_MEDIUM", value: event.UTMMedium},
@@ -134,7 +135,7 @@ func (b payloadBuilder) build(event events.LeadCreated) models.UnsortedFormCreat
 		customField{id: 316_919, code: "UTM_SOURCE", value: event.UTMSource},
 		customField{id: 316_921, code: "UTM_TERM", value: event.UTMTerm},
 		customField{id: 316_941, code: "_YM_UID", value: event.YMClientID},
-		customField{id: 316_943, code: "_YM_COUNTER", value: stringPtr(b.ymCounter)},
+		customField{id: 316_943, code: "_YM_COUNTER", value: lo.ToPtr(b.ymCounter)},
 	))
 
 	embedded := models.NewUnsortedEmbeddedCreate()
@@ -142,8 +143,8 @@ func (b payloadBuilder) build(event events.LeadCreated) models.UnsortedFormCreat
 	embedded.SetLeads([]models.LeadCreateable{lead})
 
 	item := models.NewUnsortedFormCreateItem()
-	item.SetSourceUid(stringPtr(fmt.Sprintf("%s-%d", source, event.LeadID)))
-	item.SetSourceName(stringPtr(source))
+	item.SetSourceUid(lo.ToPtr(fmt.Sprintf("%s-%d", source, event.LeadID)))
+	item.SetSourceName(lo.ToPtr(source))
 	item.SetMetadata(metadata)
 	item.SetEmbedded(embedded)
 	return item
@@ -281,7 +282,3 @@ func firstNonEmpty(values ...*string) string {
 	}
 	return ""
 }
-
-func stringPtr(value string) *string { return &value }
-
-func int64Ptr(value int64) *int64 { return &value }

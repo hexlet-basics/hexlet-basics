@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"sync"
+	"sync/atomic"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -125,32 +125,14 @@ func (a *application) logShutdownError(err error) {
 }
 
 type runtimeState struct {
-	mu sync.RWMutex
-
-	jobsStarted   bool
-	eventsStarted bool
+	jobsStarted   atomic.Bool
+	eventsStarted atomic.Bool
 }
 
-func (s *runtimeState) markJobsStarted() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.jobsStarted = true
-}
+func (s *runtimeState) markJobsStarted() { s.jobsStarted.Store(true) }
 
-func (s *runtimeState) markEventsStarted() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.eventsStarted = true
-}
+func (s *runtimeState) markEventsStarted() { s.eventsStarted.Store(true) }
 
-func (s *runtimeState) jobsWereStarted() bool {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.jobsStarted
-}
+func (s *runtimeState) jobsWereStarted() bool { return s.jobsStarted.Load() }
 
-func (s *runtimeState) eventsWereStarted() bool {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.eventsStarted
-}
+func (s *runtimeState) eventsWereStarted() bool { return s.eventsStarted.Load() }
