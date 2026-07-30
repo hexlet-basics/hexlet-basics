@@ -2,6 +2,10 @@ module hexletbasics
 
 go 1.26.4
 
+// node_modules (pnpm symlink farm) is not Go code; without this, every
+// `go ... ./...` walk prints "warning: ignoring symlink" for each package.
+ignore node_modules
+
 tool github.com/nicksnyder/go-i18n/v2/goi18n
 
 require (
