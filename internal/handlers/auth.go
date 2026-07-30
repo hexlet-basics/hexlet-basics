@@ -176,8 +176,9 @@ func (h *AuthHandler) HandleXsrfToken(
 }
 
 // RequireAdmin protects the temporary multipart adapter that ogen cannot
-// generate yet. The exact route uses the same auth implementation as generated
-// operations; no URL-family policy lives in the router.
+// generate yet. It delegates to the same HandleAdminSession/HandleXsrfToken
+// methods ogen invokes for generated operations, so the admin+XSRF policy is
+// defined once; only cookie extraction and error writing are manual here.
 func (h *AuthHandler) RequireAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie(authCookie)
@@ -186,27 +187,12 @@ func (h *AuthHandler) RequireAdmin(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx, err := h.loadAuthenticatedUser(r.Context(), cookie.Value)
+		ctx, err := h.HandleAdminSession(r.Context(), "", api.AdminSession{APIKey: cookie.Value})
+		if err == nil {
+			_, err = h.HandleXsrfToken(ctx, "", api.XsrfToken{APIKey: r.Header.Get("X-XSRF-TOKEN")})
+		}
 		if errors.Is(err, errUnauthenticated) {
 			err = withHTTPStatus(http.StatusUnauthorized, err)
-		}
-		if err == nil {
-			var u *ent.User
-			u, _ = AuthenticatedUser(ctx)
-			if u == nil {
-				err = withHTTPStatus(http.StatusUnauthorized, errUnauthenticated)
-			} else if u.Admin == nil || !*u.Admin {
-				err = withHTTPStatus(http.StatusForbidden, errAdminRequired)
-			}
-		}
-		if err == nil {
-			authenticated := ctx.Value(authenticatedUserContextKey{}).(*authenticatedUserContext)
-			if subtle.ConstantTimeCompare(
-				[]byte(authenticated.jti),
-				[]byte(r.Header.Get("X-XSRF-TOKEN")),
-			) != 1 {
-				err = withHTTPStatus(http.StatusUnauthorized, errUnauthenticated)
-			}
 		}
 		if err != nil {
 			h.errors.Write(ctx, w, r, err)
