@@ -32,6 +32,30 @@ func (f ActiveStorageBlobFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActiveStorageBlobMutation", m)
 }
 
+// The AiChatFunc type is an adapter to allow the use of ordinary
+// function as AiChat mutator.
+type AiChatFunc func(context.Context, *ent.AiChatMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AiChatFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AiChatMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AiChatMutation", m)
+}
+
+// The AiMessageFunc type is an adapter to allow the use of ordinary
+// function as AiMessage mutator.
+type AiMessageFunc func(context.Context, *ent.AiMessageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AiMessageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AiMessageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AiMessageMutation", m)
+}
+
 // The AttachmentFunc type is an adapter to allow the use of ordinary
 // function as Attachment mutator.
 type AttachmentFunc func(context.Context, *ent.AttachmentMutation) (ent.Value, error)

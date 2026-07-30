@@ -3,6 +3,8 @@
 package ent
 
 import (
+	"hexletbasics/ent/aichat"
+	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
@@ -31,6 +33,36 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	aichatMixin := schema.AiChat{}.Mixin()
+	aichatMixinFields0 := aichatMixin[0].Fields()
+	_ = aichatMixinFields0
+	aichatFields := schema.AiChat{}.Fields()
+	_ = aichatFields
+	// aichatDescCreatedAt is the schema descriptor for created_at field.
+	aichatDescCreatedAt := aichatMixinFields0[0].Descriptor()
+	// aichat.DefaultCreatedAt holds the default value on creation for the created_at field.
+	aichat.DefaultCreatedAt = aichatDescCreatedAt.Default.(func() time.Time)
+	// aichatDescUpdatedAt is the schema descriptor for updated_at field.
+	aichatDescUpdatedAt := aichatMixinFields0[1].Descriptor()
+	// aichat.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	aichat.DefaultUpdatedAt = aichatDescUpdatedAt.Default.(func() time.Time)
+	// aichat.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	aichat.UpdateDefaultUpdatedAt = aichatDescUpdatedAt.UpdateDefault.(func() time.Time)
+	aimessageMixin := schema.AiMessage{}.Mixin()
+	aimessageMixinFields0 := aimessageMixin[0].Fields()
+	_ = aimessageMixinFields0
+	aimessageFields := schema.AiMessage{}.Fields()
+	_ = aimessageFields
+	// aimessageDescCreatedAt is the schema descriptor for created_at field.
+	aimessageDescCreatedAt := aimessageMixinFields0[0].Descriptor()
+	// aimessage.DefaultCreatedAt holds the default value on creation for the created_at field.
+	aimessage.DefaultCreatedAt = aimessageDescCreatedAt.Default.(func() time.Time)
+	// aimessageDescUpdatedAt is the schema descriptor for updated_at field.
+	aimessageDescUpdatedAt := aimessageMixinFields0[1].Descriptor()
+	// aimessage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	aimessage.DefaultUpdatedAt = aimessageDescUpdatedAt.Default.(func() time.Time)
+	// aimessage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	aimessage.UpdateDefaultUpdatedAt = aimessageDescUpdatedAt.UpdateDefault.(func() time.Time)
 	attachmentFields := schema.Attachment{}.Fields()
 	_ = attachmentFields
 	// attachmentDescCreatedAt is the schema descriptor for created_at field.

@@ -178,6 +178,18 @@ type Converter interface {
 
 	ToCourseLessonMembers(source []*ent.LanguageLessonMember) []api.CourseLessonMember
 
+	// Assistant messages are the admin read model over `ai_messages` (legacy
+	// AiMessageResource). Course/lesson identity travels through
+	// chat → member → course/lesson; the handler eager-loads the lesson's
+	// locale-filtered infos so the name resolves like the member list.
+	// goverter:map UserID UserId
+	// goverter:map Edges.Chat.Edges.Member.Edges.Course.Slug CourseSlug
+	// goverter:map Edges.Chat.Edges.Member.Edges.Lesson.Slug CourseLessonSlug
+	// goverter:map . CourseLessonName | assistantMessageLessonName
+	ToLessonAssistantMessage(source *ent.AiMessage) api.LessonAssistantMessage
+
+	ToLessonAssistantMessages(source []*ent.AiMessage) []api.LessonAssistantMessage
+
 	// Review projections require WithCourse and WithLesson.
 	// goverter:map LanguageID CourseId
 	// goverter:map LanguageLessonID CourseLessonId
@@ -220,6 +232,16 @@ func courseLessonMemberName(source *ent.LanguageLessonMember) string {
 		return ""
 	}
 	return StringFromPtr(source.Edges.Lesson.Edges.Infos[0].Name)
+}
+
+// assistantMessageLessonName resolves the lesson display name through
+// chat → member → lesson → first eager-loaded localized info (the same
+// convention as courseLessonMemberName, which it reuses).
+func assistantMessageLessonName(source *ent.AiMessage) string {
+	if source == nil || source.Edges.Chat == nil || source.Edges.Chat.Edges.Member == nil {
+		return ""
+	}
+	return courseLessonMemberName(source.Edges.Chat.Edges.Member)
 }
 
 // NilStringFromPtr bridges a nullable ent column to ogen's NilString.

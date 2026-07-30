@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/activestorageblob"
+	"hexletbasics/ent/aichat"
+	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
@@ -100,6 +102,8 @@ func checkColumn(t, c string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			activestorageattachment.Table:   activestorageattachment.ValidColumn,
 			activestorageblob.Table:         activestorageblob.ValidColumn,
+			aichat.Table:                    aichat.ValidColumn,
+			aimessage.Table:                 aimessage.ValidColumn,
 			attachment.Table:                attachment.ValidColumn,
 			banner.Table:                    banner.ValidColumn,
 			blogpost.Table:                  blogpost.ValidColumn,

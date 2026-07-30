@@ -13,6 +13,8 @@ import (
 
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/activestorageblob"
+	"hexletbasics/ent/aichat"
+	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
@@ -53,6 +55,10 @@ type Client struct {
 	ActiveStorageAttachment *ActiveStorageAttachmentClient
 	// ActiveStorageBlob is the client for interacting with the ActiveStorageBlob builders.
 	ActiveStorageBlob *ActiveStorageBlobClient
+	// AiChat is the client for interacting with the AiChat builders.
+	AiChat *AiChatClient
+	// AiMessage is the client for interacting with the AiMessage builders.
+	AiMessage *AiMessageClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
 	// Banner is the client for interacting with the Banner builders.
@@ -114,6 +120,8 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.ActiveStorageAttachment = NewActiveStorageAttachmentClient(c.config)
 	c.ActiveStorageBlob = NewActiveStorageBlobClient(c.config)
+	c.AiChat = NewAiChatClient(c.config)
+	c.AiMessage = NewAiMessageClient(c.config)
 	c.Attachment = NewAttachmentClient(c.config)
 	c.Banner = NewBannerClient(c.config)
 	c.BlogPost = NewBlogPostClient(c.config)
@@ -232,6 +240,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:                    cfg,
 		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
 		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
+		AiChat:                    NewAiChatClient(cfg),
+		AiMessage:                 NewAiMessageClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
 		Banner:                    NewBannerClient(cfg),
 		BlogPost:                  NewBlogPostClient(cfg),
@@ -277,6 +287,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:                    cfg,
 		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
 		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
+		AiChat:                    NewAiChatClient(cfg),
+		AiMessage:                 NewAiMessageClient(cfg),
 		Attachment:                NewAttachmentClient(cfg),
 		Banner:                    NewBannerClient(cfg),
 		BlogPost:                  NewBlogPostClient(cfg),
@@ -330,13 +342,13 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.Attachment, c.Banner,
-		c.BlogPost, c.BlogPostLike, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.LanguageLesson,
-		c.LanguageLessonMember, c.LanguageLessonReview, c.LanguageLessonVersion,
-		c.LanguageLessonVersionInfo, c.LanguageModule, c.LanguageModuleVersion,
-		c.LanguageModuleVersionInfo, c.Lead, c.Review, c.StaffMember, c.StaffRole,
-		c.StaffRolePermission, c.User,
+		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
+		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
+		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
+		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
+		c.LanguageLessonReview, c.LanguageLessonVersion, c.LanguageLessonVersionInfo,
+		c.LanguageModule, c.LanguageModuleVersion, c.LanguageModuleVersionInfo, c.Lead,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -346,13 +358,13 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.Attachment, c.Banner,
-		c.BlogPost, c.BlogPostLike, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.LanguageLesson,
-		c.LanguageLessonMember, c.LanguageLessonReview, c.LanguageLessonVersion,
-		c.LanguageLessonVersionInfo, c.LanguageModule, c.LanguageModuleVersion,
-		c.LanguageModuleVersionInfo, c.Lead, c.Review, c.StaffMember, c.StaffRole,
-		c.StaffRolePermission, c.User,
+		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
+		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
+		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
+		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
+		c.LanguageLessonReview, c.LanguageLessonVersion, c.LanguageLessonVersionInfo,
+		c.LanguageModule, c.LanguageModuleVersion, c.LanguageModuleVersionInfo, c.Lead,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -365,6 +377,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ActiveStorageAttachment.mutate(ctx, m)
 	case *ActiveStorageBlobMutation:
 		return c.ActiveStorageBlob.mutate(ctx, m)
+	case *AiChatMutation:
+		return c.AiChat.mutate(ctx, m)
+	case *AiMessageMutation:
+		return c.AiMessage.mutate(ctx, m)
 	case *AttachmentMutation:
 		return c.Attachment.mutate(ctx, m)
 	case *BannerMutation:
@@ -697,6 +713,320 @@ func (c *ActiveStorageBlobClient) mutate(ctx context.Context, m *ActiveStorageBl
 		return (&ActiveStorageBlobDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown ActiveStorageBlob mutation op: %q", m.Op())
+	}
+}
+
+// AiChatClient is a client for the AiChat schema.
+type AiChatClient struct {
+	config
+}
+
+// NewAiChatClient returns a client for the AiChat from the given config.
+func NewAiChatClient(c config) *AiChatClient {
+	return &AiChatClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `aichat.Hooks(f(g(h())))`.
+func (c *AiChatClient) Use(hooks ...Hook) {
+	c.hooks.AiChat = append(c.hooks.AiChat, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `aichat.Intercept(f(g(h())))`.
+func (c *AiChatClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AiChat = append(c.inters.AiChat, interceptors...)
+}
+
+// Create returns a builder for creating a AiChat entity.
+func (c *AiChatClient) Create() *AiChatCreate {
+	mutation := newAiChatMutation(c.config, OpCreate)
+	return &AiChatCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AiChat entities.
+func (c *AiChatClient) CreateBulk(builders ...*AiChatCreate) *AiChatCreateBulk {
+	return &AiChatCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AiChatClient) MapCreateBulk(slice any, setFunc func(*AiChatCreate, int)) *AiChatCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AiChatCreateBulk{err: fmt.Errorf("calling to AiChatClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AiChatCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AiChatCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AiChat.
+func (c *AiChatClient) Update() *AiChatUpdate {
+	mutation := newAiChatMutation(c.config, OpUpdate)
+	return &AiChatUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AiChatClient) UpdateOne(_m *AiChat) *AiChatUpdateOne {
+	mutation := newAiChatMutation(c.config, OpUpdateOne, withAiChat(_m))
+	return &AiChatUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AiChatClient) UpdateOneID(id int) *AiChatUpdateOne {
+	mutation := newAiChatMutation(c.config, OpUpdateOne, withAiChatID(id))
+	return &AiChatUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AiChat.
+func (c *AiChatClient) Delete() *AiChatDelete {
+	mutation := newAiChatMutation(c.config, OpDelete)
+	return &AiChatDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AiChatClient) DeleteOne(_m *AiChat) *AiChatDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AiChatClient) DeleteOneID(id int) *AiChatDeleteOne {
+	builder := c.Delete().Where(aichat.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AiChatDeleteOne{builder}
+}
+
+// Query returns a query builder for AiChat.
+func (c *AiChatClient) Query() *AiChatQuery {
+	return &AiChatQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAiChat},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AiChat entity by its id.
+func (c *AiChatClient) Get(ctx context.Context, id int) (*AiChat, error) {
+	return c.Query().Where(aichat.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AiChatClient) GetX(ctx context.Context, id int) *AiChat {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryMember queries the member edge of a AiChat.
+func (c *AiChatClient) QueryMember(_m *AiChat) *LanguageLessonMemberQuery {
+	query := (&LanguageLessonMemberClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(aichat.Table, aichat.FieldID, id),
+			sqlgraph.To(languagelessonmember.Table, languagelessonmember.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, aichat.MemberTable, aichat.MemberColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryUser queries the user edge of a AiChat.
+func (c *AiChatClient) QueryUser(_m *AiChat) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(aichat.Table, aichat.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, aichat.UserTable, aichat.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AiChatClient) Hooks() []Hook {
+	return c.hooks.AiChat
+}
+
+// Interceptors returns the client interceptors.
+func (c *AiChatClient) Interceptors() []Interceptor {
+	return c.inters.AiChat
+}
+
+func (c *AiChatClient) mutate(ctx context.Context, m *AiChatMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AiChatCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AiChatUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AiChatUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AiChatDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AiChat mutation op: %q", m.Op())
+	}
+}
+
+// AiMessageClient is a client for the AiMessage schema.
+type AiMessageClient struct {
+	config
+}
+
+// NewAiMessageClient returns a client for the AiMessage from the given config.
+func NewAiMessageClient(c config) *AiMessageClient {
+	return &AiMessageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `aimessage.Hooks(f(g(h())))`.
+func (c *AiMessageClient) Use(hooks ...Hook) {
+	c.hooks.AiMessage = append(c.hooks.AiMessage, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `aimessage.Intercept(f(g(h())))`.
+func (c *AiMessageClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AiMessage = append(c.inters.AiMessage, interceptors...)
+}
+
+// Create returns a builder for creating a AiMessage entity.
+func (c *AiMessageClient) Create() *AiMessageCreate {
+	mutation := newAiMessageMutation(c.config, OpCreate)
+	return &AiMessageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AiMessage entities.
+func (c *AiMessageClient) CreateBulk(builders ...*AiMessageCreate) *AiMessageCreateBulk {
+	return &AiMessageCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AiMessageClient) MapCreateBulk(slice any, setFunc func(*AiMessageCreate, int)) *AiMessageCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AiMessageCreateBulk{err: fmt.Errorf("calling to AiMessageClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AiMessageCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AiMessageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AiMessage.
+func (c *AiMessageClient) Update() *AiMessageUpdate {
+	mutation := newAiMessageMutation(c.config, OpUpdate)
+	return &AiMessageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AiMessageClient) UpdateOne(_m *AiMessage) *AiMessageUpdateOne {
+	mutation := newAiMessageMutation(c.config, OpUpdateOne, withAiMessage(_m))
+	return &AiMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AiMessageClient) UpdateOneID(id int) *AiMessageUpdateOne {
+	mutation := newAiMessageMutation(c.config, OpUpdateOne, withAiMessageID(id))
+	return &AiMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AiMessage.
+func (c *AiMessageClient) Delete() *AiMessageDelete {
+	mutation := newAiMessageMutation(c.config, OpDelete)
+	return &AiMessageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AiMessageClient) DeleteOne(_m *AiMessage) *AiMessageDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AiMessageClient) DeleteOneID(id int) *AiMessageDeleteOne {
+	builder := c.Delete().Where(aimessage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AiMessageDeleteOne{builder}
+}
+
+// Query returns a query builder for AiMessage.
+func (c *AiMessageClient) Query() *AiMessageQuery {
+	return &AiMessageQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAiMessage},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AiMessage entity by its id.
+func (c *AiMessageClient) Get(ctx context.Context, id int) (*AiMessage, error) {
+	return c.Query().Where(aimessage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AiMessageClient) GetX(ctx context.Context, id int) *AiMessage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryChat queries the chat edge of a AiMessage.
+func (c *AiMessageClient) QueryChat(_m *AiMessage) *AiChatQuery {
+	query := (&AiChatClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(aimessage.Table, aimessage.FieldID, id),
+			sqlgraph.To(aichat.Table, aichat.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, aimessage.ChatTable, aimessage.ChatColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AiMessageClient) Hooks() []Hook {
+	return c.hooks.AiMessage
+}
+
+// Interceptors returns the client interceptors.
+func (c *AiMessageClient) Interceptors() []Interceptor {
+	return c.inters.AiMessage
+}
+
+func (c *AiMessageClient) mutate(ctx context.Context, m *AiMessageMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AiMessageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AiMessageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AiMessageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AiMessageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AiMessage mutation op: %q", m.Op())
 	}
 }
 
@@ -4183,19 +4513,21 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ActiveStorageAttachment, ActiveStorageBlob, Attachment, Banner, BlogPost,
-		BlogPostLike, CategoryQnaItem, Course, CourseCategory, CourseVersion,
-		LandingPage, LandingPageQnaItem, LanguageLesson, LanguageLessonMember,
-		LanguageLessonReview, LanguageLessonVersion, LanguageLessonVersionInfo,
-		LanguageModule, LanguageModuleVersion, LanguageModuleVersionInfo, Lead, Review,
-		StaffMember, StaffRole, StaffRolePermission, User []ent.Hook
+		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
+		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
+		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
+		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersion,
+		LanguageLessonVersionInfo, LanguageModule, LanguageModuleVersion,
+		LanguageModuleVersionInfo, Lead, Review, StaffMember, StaffRole,
+		StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
-		ActiveStorageAttachment, ActiveStorageBlob, Attachment, Banner, BlogPost,
-		BlogPostLike, CategoryQnaItem, Course, CourseCategory, CourseVersion,
-		LandingPage, LandingPageQnaItem, LanguageLesson, LanguageLessonMember,
-		LanguageLessonReview, LanguageLessonVersion, LanguageLessonVersionInfo,
-		LanguageModule, LanguageModuleVersion, LanguageModuleVersionInfo, Lead, Review,
-		StaffMember, StaffRole, StaffRolePermission, User []ent.Interceptor
+		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
+		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
+		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
+		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersion,
+		LanguageLessonVersionInfo, LanguageModule, LanguageModuleVersion,
+		LanguageModuleVersionInfo, Lead, Review, StaffMember, StaffRole,
+		StaffRolePermission, User []ent.Interceptor
 	}
 )

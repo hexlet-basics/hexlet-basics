@@ -16,6 +16,10 @@ type Tx struct {
 	ActiveStorageAttachment *ActiveStorageAttachmentClient
 	// ActiveStorageBlob is the client for interacting with the ActiveStorageBlob builders.
 	ActiveStorageBlob *ActiveStorageBlobClient
+	// AiChat is the client for interacting with the AiChat builders.
+	AiChat *AiChatClient
+	// AiMessage is the client for interacting with the AiMessage builders.
+	AiMessage *AiMessageClient
 	// Attachment is the client for interacting with the Attachment builders.
 	Attachment *AttachmentClient
 	// Banner is the client for interacting with the Banner builders.
@@ -197,6 +201,8 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.ActiveStorageAttachment = NewActiveStorageAttachmentClient(tx.config)
 	tx.ActiveStorageBlob = NewActiveStorageBlobClient(tx.config)
+	tx.AiChat = NewAiChatClient(tx.config)
+	tx.AiMessage = NewAiMessageClient(tx.config)
 	tx.Attachment = NewAttachmentClient(tx.config)
 	tx.Banner = NewBannerClient(tx.config)
 	tx.BlogPost = NewBlogPostClient(tx.config)

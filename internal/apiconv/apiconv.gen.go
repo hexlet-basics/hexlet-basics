@@ -323,6 +323,38 @@ func (c *ConverterImpl) ToLeads(source []*ent.Lead) []api.Lead {
 	}
 	return apiLeadList
 }
+func (c *ConverterImpl) ToLessonAssistantMessage(source *ent.AiMessage) api.LessonAssistantMessage {
+	var apiLessonAssistantMessage api.LessonAssistantMessage
+	if source != nil {
+		apiLessonAssistantMessage.ID = Int32FromInt((*source).ID)
+		apiLessonAssistantMessage.Role = (*source).Role
+		apiLessonAssistantMessage.UserId = NilInt32FromPtr((*source).UserID)
+		apiLessonAssistantMessage.Content = StringFromPtr((*source).Content)
+		var pString *string
+		if (*source).Edges.Chat != nil && (*source).Edges.Chat.Edges.Member != nil && (*source).Edges.Chat.Edges.Member.Edges.Course != nil {
+			pString = (*source).Edges.Chat.Edges.Member.Edges.Course.Slug
+		}
+		apiLessonAssistantMessage.CourseSlug = StringFromPtr(pString)
+		var pString2 *string
+		if (*source).Edges.Chat != nil && (*source).Edges.Chat.Edges.Member != nil && (*source).Edges.Chat.Edges.Member.Edges.Lesson != nil {
+			pString2 = (*source).Edges.Chat.Edges.Member.Edges.Lesson.Slug
+		}
+		apiLessonAssistantMessage.CourseLessonSlug = StringFromPtr(pString2)
+		apiLessonAssistantMessage.CourseLessonName = assistantMessageLessonName(source)
+		apiLessonAssistantMessage.CreatedAt = TimeIdentity((*source).CreatedAt)
+	}
+	return apiLessonAssistantMessage
+}
+func (c *ConverterImpl) ToLessonAssistantMessages(source []*ent.AiMessage) []api.LessonAssistantMessage {
+	var apiLessonAssistantMessageList []api.LessonAssistantMessage
+	if source != nil {
+		apiLessonAssistantMessageList = make([]api.LessonAssistantMessage, len(source))
+		for i := 0; i < len(source); i++ {
+			apiLessonAssistantMessageList[i] = c.ToLessonAssistantMessage(source[i])
+		}
+	}
+	return apiLessonAssistantMessageList
+}
 func (c *ConverterImpl) ToReview(source *ent.Review) api.Review {
 	var apiReview api.Review
 	if source != nil {

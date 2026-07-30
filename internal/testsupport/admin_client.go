@@ -280,3 +280,7 @@ func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.A
 func (c *Client) AdminListLeads(ctx context.Context, params api.AdminListLeadsParams) (*api.LeadPage, error) {
 	return success[api.LeadPage](c.Client.AdminListLeads(ctx, params))
 }
+
+func (c *Client) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (*api.LessonAssistantMessagePage, error) {
+	return success[api.LessonAssistantMessagePage](c.Client.AdminListMessages(ctx, params))
+}

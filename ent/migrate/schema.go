@@ -44,6 +44,60 @@ var (
 		Columns:    ActiveStorageBlobsColumns,
 		PrimaryKey: []*schema.Column{ActiveStorageBlobsColumns[0]},
 	}
+	// AiChatsColumns holds the columns for the "ai_chats" table.
+	AiChatsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "language_lesson_member_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
+	}
+	// AiChatsTable holds the schema information for the "ai_chats" table.
+	AiChatsTable = &schema.Table{
+		Name:       "ai_chats",
+		Columns:    AiChatsColumns,
+		PrimaryKey: []*schema.Column{AiChatsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "ai_chats_language_lesson_members_member",
+				Columns:    []*schema.Column{AiChatsColumns[3]},
+				RefColumns: []*schema.Column{LanguageLessonMembersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "ai_chats_users_user",
+				Columns:    []*schema.Column{AiChatsColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// AiMessagesColumns holds the columns for the "ai_messages" table.
+	AiMessagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "role", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "input_tokens", Type: field.TypeInt, Nullable: true},
+		{Name: "output_tokens", Type: field.TypeInt, Nullable: true},
+		{Name: "ai_chat_id", Type: field.TypeInt},
+	}
+	// AiMessagesTable holds the schema information for the "ai_messages" table.
+	AiMessagesTable = &schema.Table{
+		Name:       "ai_messages",
+		Columns:    AiMessagesColumns,
+		PrimaryKey: []*schema.Column{AiMessagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "ai_messages_ai_chats_chat",
+				Columns:    []*schema.Column{AiMessagesColumns[8]},
+				RefColumns: []*schema.Column{AiChatsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// AttachmentsColumns holds the columns for the "attachments" table.
 	AttachmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -600,6 +654,8 @@ var (
 	Tables = []*schema.Table{
 		ActiveStorageAttachmentsTable,
 		ActiveStorageBlobsTable,
+		AiChatsTable,
+		AiMessagesTable,
 		AttachmentsTable,
 		BannersTable,
 		BlogPostsTable,
@@ -635,6 +691,9 @@ func init() {
 	ActiveStorageBlobsTable.Annotation = &entsql.Annotation{
 		Table: "active_storage_blobs",
 	}
+	AiChatsTable.ForeignKeys[0].RefTable = LanguageLessonMembersTable
+	AiChatsTable.ForeignKeys[1].RefTable = UsersTable
+	AiMessagesTable.ForeignKeys[0].RefTable = AiChatsTable
 	BlogPostsTable.ForeignKeys[0].RefTable = UsersTable
 	LanguageCategoryQnaItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_category_qna_items",

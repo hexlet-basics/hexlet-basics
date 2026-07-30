@@ -1,0 +1,28 @@
+# Fixtures for `ai_messages`, HAND-CURATED. The admin messages list maps id,
+# role, content, user_id (null on assistant replies), token counts and the
+# course/lesson identity enriched through the chat's member. 8001/8002 are a
+# user question + assistant reply in the hello-world lesson chat (7001); 8003
+# is a lone question in the variables lesson chat (7002).
+- id: 8001
+  ai_chat_id: 7001
+  role: user
+  content: 'How do I print a string?'
+  user_id: 501
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 8002
+  ai_chat_id: 7001
+  role: assistant
+  content: 'Use console.log to print a string.'
+  user_id:
+  input_tokens: 120
+  output_tokens: 45
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
+- id: 8003
+  ai_chat_id: 7002
+  role: user
+  content: 'What is a variable?'
+  user_id: 502
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'

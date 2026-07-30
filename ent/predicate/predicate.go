@@ -12,6 +12,12 @@ type ActiveStorageAttachment func(*sql.Selector)
 // ActiveStorageBlob is the predicate function for activestorageblob builders.
 type ActiveStorageBlob func(*sql.Selector)
 
+// AiChat is the predicate function for aichat builders.
+type AiChat func(*sql.Selector)
+
+// AiMessage is the predicate function for aimessage builders.
+type AiMessage func(*sql.Selector)
+
 // Attachment is the predicate function for attachment builders.
 type Attachment func(*sql.Selector)
 
