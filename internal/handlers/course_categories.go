@@ -6,7 +6,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/inputconv"
 )
 
 // AdminListCourseCategories returns a page of course categories, newest first.
@@ -37,12 +36,7 @@ func (s *Server) AdminGetCourseCategory(ctx context.Context, params api.AdminGet
 // not a pre-check: a violation returns ent's constraint error, which the central
 // ErrorHandler maps to 409. This is race-free, unlike the former Exist queries.
 func (s *Server) AdminCreateCourseCategory(ctx context.Context, req *api.CourseCategoryInput) (api.AdminCreateCourseCategoryRes, error) {
-	row, err := s.db.CourseCategory.Create().
-		SetName(req.Name).
-		SetHeader(req.Header).
-		SetSlug(req.Slug).
-		SetNillableDescription(inputconv.Ptr(req.Description)).
-		Save(ctx)
+	row, err := s.db.CourseCategory.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -52,14 +46,10 @@ func (s *Server) AdminCreateCourseCategory(ctx context.Context, req *api.CourseC
 }
 
 // AdminUpdateCourseCategory updates a course category. A missing id (404) and a
-// uniqueness violation (409) both surface as ent errors handled centrally.
+// uniqueness violation (409) both surface as ent errors handled centrally. The
+// generated SetInput clears description on null (assign_attributes semantics).
 func (s *Server) AdminUpdateCourseCategory(ctx context.Context, req *api.CourseCategoryInput, params api.AdminUpdateCourseCategoryParams) (api.AdminUpdateCourseCategoryRes, error) {
-	upd := s.db.CourseCategory.UpdateOneID(int(params.ID)).
-		SetName(req.Name).
-		SetHeader(req.Header).
-		SetSlug(req.Slug)
-	applyNil(req.Description.Null, req.Description.Value, upd.SetDescription, upd.ClearDescription)
-	row, err := upd.Save(ctx)
+	row, err := s.db.CourseCategory.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

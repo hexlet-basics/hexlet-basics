@@ -1,0 +1,121 @@
+{{/*
+adminput generates SetInput methods on the Create and UpdateOne builders of
+every schema annotated with schema.AdminInput, mapping the contract input
+type (api.<Schema>Input) onto builder setters. Per-field behavior is driven
+by schema.AdminInputField — see ent/schema/annotations.go for the rules.
+*/}}
+
+{{ define "adminput" }}
+
+{{ $pkg := base $.Config.Package }}
+{{ template "header" $ }}
+
+{{/* Pre-pass: decide whether anything is generated at all, and whether the
+     create-side SetNillable path (the only inputconv user) is ever taken,
+     so the import block never carries an unused import. */}}
+{{- $hasInput := false }}
+{{- $needConv := false }}
+{{- range $n := $.Nodes }}
+	{{- if $n.Annotations.AdminInput }}
+		{{- $hasInput = true }}
+		{{- range $f := $n.Fields }}
+			{{- $fa := $f.Annotations.AdminInputField }}
+			{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") }}
+			{{- $required := not $f.Nillable }}
+			{{- $setOnly := false }}
+			{{- if $fa }}
+				{{- if $fa.Skip }}{{ $skip = true }}{{ end }}
+				{{- if $fa.Required }}{{ $required = true }}{{ end }}
+				{{- if $fa.SetOnly }}{{ $setOnly = true }}{{ end }}
+			{{- end }}
+			{{- if and (not $skip) (not $required) (not $setOnly) }}{{ $needConv = true }}{{ end }}
+		{{- end }}
+	{{- end }}
+{{- end }}
+
+{{ if $hasInput }}
+import (
+	"hexletbasics/internal/api"
+{{- if $needConv }}
+	"hexletbasics/internal/inputconv"
+{{- end }}
+)
+{{ end }}
+
+{{ range $n := $.Nodes }}
+{{- $ann := $n.Annotations.AdminInput }}
+{{- if $ann }}
+{{- $input := printf "%sInput" $n.Name }}
+{{- with $ann.Type }}{{ $input = . }}{{ end }}
+
+// SetInput applies the contract {{ $input }} to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset.
+func (c *{{ $n.Name }}Create) SetInput(i *api.{{ $input }}) *{{ $n.Name }}Create {
+{{- range $f := $n.Fields }}
+{{- $fa := $f.Annotations.AdminInputField }}
+{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") }}
+{{- $required := not $f.Nillable }}
+{{- $setOnly := false }}
+{{- $apiField := $f.StructField }}
+{{- if $fa }}
+{{- if $fa.Skip }}{{ $skip = true }}{{ end }}
+{{- if $fa.Required }}{{ $required = true }}{{ end }}
+{{- if $fa.SetOnly }}{{ $setOnly = true }}{{ end }}
+{{- with $fa.Rename }}{{ $apiField = . }}{{ end }}
+{{- end }}
+{{- if not $skip }}
+{{- $t := $f.Type.String }}
+{{- if $required }}
+	c.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}){{ else if eq $t "int" }}int(i.{{ $apiField }}){{ else }}i.{{ $apiField }}{{ end }})
+{{- else if $setOnly }}
+	if !i.{{ $apiField }}.Null {
+		c.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}.Value){{ else if eq $t "int" }}int(i.{{ $apiField }}.Value){{ else }}i.{{ $apiField }}.Value{{ end }})
+	}
+{{- else }}
+	c.SetNillable{{ $f.StructField }}({{ if eq $t "string" }}inputconv.StringPtr{{ else if eq $t "int" }}inputconv.IntPtr{{ else }}inputconv.Ptr{{ end }}(i.{{ $apiField }}))
+{{- end }}
+{{- end }}
+{{- end }}
+	return c
+}
+
+// SetInput applies the contract {{ $input }} to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a value sets it.
+func (u *{{ $n.Name }}UpdateOne) SetInput(i *api.{{ $input }}) *{{ $n.Name }}UpdateOne {
+{{- range $f := $n.Fields }}
+{{- $fa := $f.Annotations.AdminInputField }}
+{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") }}
+{{- $required := not $f.Nillable }}
+{{- $setOnly := false }}
+{{- $apiField := $f.StructField }}
+{{- if $fa }}
+{{- if $fa.Skip }}{{ $skip = true }}{{ end }}
+{{- if $fa.Required }}{{ $required = true }}{{ end }}
+{{- if $fa.SetOnly }}{{ $setOnly = true }}{{ end }}
+{{- with $fa.Rename }}{{ $apiField = . }}{{ end }}
+{{- end }}
+{{- if not $skip }}
+{{- $t := $f.Type.String }}
+{{- if $required }}
+	u.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}){{ else if eq $t "int" }}int(i.{{ $apiField }}){{ else }}i.{{ $apiField }}{{ end }})
+{{- else if $setOnly }}
+	if !i.{{ $apiField }}.Null {
+		u.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}.Value){{ else if eq $t "int" }}int(i.{{ $apiField }}.Value){{ else }}i.{{ $apiField }}.Value{{ end }})
+	}
+{{- else }}
+	if i.{{ $apiField }}.Null {
+		u.Clear{{ $f.StructField }}()
+	} else {
+		u.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}.Value){{ else if eq $t "int" }}int(i.{{ $apiField }}.Value){{ else }}i.{{ $apiField }}.Value{{ end }})
+	}
+{{- end }}
+{{- end }}
+{{- end }}
+	return u
+}
+{{- end }}
+{{ end }}
+
+{{ end }}

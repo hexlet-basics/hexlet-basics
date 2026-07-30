@@ -1,3 +1,3 @@
 package ent
 
-//go:generate go tool ent generate --feature sql/upsert ./schema
+//go:generate go tool ent generate --feature sql/upsert --template ./template ./schema

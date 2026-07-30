@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 )
 
@@ -17,6 +18,13 @@ import (
 // stays a plain string, mirroring the legacy string-backed enums.
 type Banner struct {
 	ent.Schema
+}
+
+// Annotations opts the schema into the generated SetInput builders (see
+// adminput.tmpl). The default mapping fits as-is: the NOT NULL columns are
+// required in BannerInput, the nullable ones arrive as Nil* wrappers.
+func (Banner) Annotations() []schema.Annotation {
+	return []schema.Annotation{AdminInput{}}
 }
 
 func (Banner) Fields() []ent.Field {

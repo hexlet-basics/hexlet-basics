@@ -6,7 +6,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/banner"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/inputconv"
 )
 
 // AdminListBanners returns a page of banners, newest first.
@@ -26,21 +25,14 @@ func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerPa
 	return getOne(ctx, int(params.ID), s.db.Banner.Get, s.conv.ToBanner)
 }
 
-// AdminCreateBanner creates a banner.
+// AdminCreateBanner creates a banner. The input-to-builder mapping is the
+// generated SetInput (adminput.tmpl), driven by the schema annotations.
 //
 // Banners carry no uniqueness constraint, so there is no 409 path (unlike the
 // course-category resource). An empty `body` is rejected by the contract's
 // minLength at decode time, surfaced as 400 by the central ErrorHandler.
 func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (api.AdminCreateBannerRes, error) {
-	row, err := s.db.Banner.Create().
-		SetState(string(req.State)).
-		SetBackground(string(req.Background)).
-		SetLocale(string(req.Locale)).
-		SetBody(req.Body).
-		SetNillableURL(inputconv.Ptr(req.URL)).
-		SetNillableStartsAt(inputconv.Ptr(req.StartsAt)).
-		SetNillableFinishesAt(inputconv.Ptr(req.FinishesAt)).
-		Save(ctx)
+	row, err := s.db.Banner.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -50,20 +42,10 @@ func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (a
 }
 
 // AdminUpdateBanner updates a banner. A missing id returns ent's not-found error
-// (mapped to 404 centrally). A null nullable field clears the column, matching
-// the legacy assign_attributes semantics; a value sets it.
+// (mapped to 404 centrally). The generated SetInput keeps the legacy
+// assign_attributes semantics: a null nullable field clears the column.
 func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, params api.AdminUpdateBannerParams) (api.AdminUpdateBannerRes, error) {
-	upd := s.db.Banner.UpdateOneID(int(params.ID)).
-		SetState(string(req.State)).
-		SetBackground(string(req.Background)).
-		SetLocale(string(req.Locale)).
-		SetBody(req.Body)
-
-	applyNil(req.URL.Null, req.URL.Value, upd.SetURL, upd.ClearURL)
-	applyNil(req.StartsAt.Null, req.StartsAt.Value, upd.SetStartsAt, upd.ClearStartsAt)
-	applyNil(req.FinishesAt.Null, req.FinishesAt.Value, upd.SetFinishesAt, upd.ClearFinishesAt)
-
-	row, err := upd.Save(ctx)
+	row, err := s.db.Banner.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

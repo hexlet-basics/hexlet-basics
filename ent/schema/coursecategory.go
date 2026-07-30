@@ -19,16 +19,25 @@ type CourseCategory struct {
 func (CourseCategory) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "language_categories"},
+		AdminInput{},
 	}
 }
 
+// The legacy columns are all nullable, but the contract disagrees: name,
+// header and slug are required in CourseCategoryInput (hence Required
+// overrides), and locale is absent from the admin input entirely (hence
+// Skip). Only description keeps the default nullable mapping.
 func (CourseCategory) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("slug").Optional().Nillable(),
-		field.String("name").Optional().Nillable(),
-		field.String("header").Optional().Nillable(),
+		field.String("slug").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
+		field.String("name").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
+		field.String("header").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
 		field.String("description").Optional().Nillable(),
-		field.String("locale").Optional().Nillable(),
+		field.String("locale").Optional().Nillable().
+			Annotations(AdminInputField{Skip: true}),
 	}
 }
 
