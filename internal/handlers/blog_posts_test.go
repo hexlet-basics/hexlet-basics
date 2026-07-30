@@ -8,6 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent"
+	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/blogpostlike"
+	"hexletbasics/ent/blogpostrelatedlanguageitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -102,6 +106,143 @@ func TestAdminGetBlogPostNotFound(t *testing.T) {
 	ctx := context.Background()
 
 	_, err := h.Client.AdminGetBlogPost(ctx, api.AdminGetBlogPostParams{ID: 999999})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+func TestAdminCreateBlogPost(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	post, err := h.Client.AdminCreateBlogPost(ctx, &api.BlogPostInput{
+		Name:        api.NewNilString("Go rewrite notes"),
+		Slug:        api.NewNilString("go-rewrite-notes"),
+		Description: api.NewNilString("Notes from the migration"),
+		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
+		RichBody:    "<p>We moved to Go.</p>",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusCreated, h.LastStatus())
+
+	assert.Equal(t, "go-rewrite-notes", post.Slug.Value)
+	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
+	assert.Equal(t, "<p>We moved to Go.</p>", post.RichBodyHtml)
+	// The creator is the authenticated admin (the harness signs in as the
+	// fixture admin), and the locale is pinned to the default until request
+	// locale reaches handlers.
+	assert.Equal(t, "alice@example.com", post.Creator.Email.Value)
+	assert.Equal(t, "en", post.Locale.Value)
+	assert.Equal(t, int32(0), post.LikesCount)
+	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
+}
+
+func TestAdminUpdateBlogPost(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	post, err := h.Client.AdminUpdateBlogPost(ctx, &api.BlogPostInput{
+		Name:        api.NewNilString("Second post, renamed"),
+		Slug:        api.NewNilString("second-post"),
+		Description: api.NilString{Null: true},
+		State:       api.NewNilBlogPostState(api.BlogPostStatePublished),
+		RichBody:    "<p>Now with a body.</p>",
+	}, api.AdminUpdateBlogPostParams{ID: 6002})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
+
+	assert.Equal(t, "Second post, renamed", post.Name.Value)
+	assert.Equal(t, api.BlogPostStatePublished, post.State.Value)
+	assert.Equal(t, "<p>Now with a body.</p>", post.RichBodyHtml)
+	// Legacy assign_attributes semantics: a null nullable field clears the column.
+	assert.True(t, post.Description.Null)
+	// The stored locale is not re-stamped on update.
+	assert.Equal(t, "en", post.Locale.Value)
+}
+
+func TestAdminUpdateBlogPostNotFound(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminUpdateBlogPost(ctx, &api.BlogPostInput{
+		Name:        api.NilString{Null: true},
+		Slug:        api.NilString{Null: true},
+		Description: api.NilString{Null: true},
+		State:       api.NilBlogPostState{Null: true},
+		RichBody:    "<p>ghost</p>",
+	}, api.AdminUpdateBlogPostParams{ID: 999999})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+func TestAdminDeleteBlogPost(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	// 6001 carries both kinds of dependents: 2 likes and 3 related-course items.
+	err := h.Client.AdminDeleteBlogPost(ctx, api.AdminDeleteBlogPostParams{ID: 6001})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, h.LastStatus())
+
+	gone, err := h.DB.BlogPost.Query().Where(blogpost.IDEQ(6001)).Exist(ctx)
+	require.NoError(t, err)
+	assert.False(t, gone, "post should be deleted")
+
+	likes, err := h.DB.BlogPostLike.Query().Where(blogpostlike.BlogPostIDEQ(6001)).Count(ctx)
+	require.NoError(t, err)
+	assert.Zero(t, likes, "likes should be deleted with the post")
+
+	items, err := h.DB.BlogPostRelatedLanguageItem.Query().
+		Where(blogpostrelatedlanguageitem.BlogPostIDEQ(6001)).Count(ctx)
+	require.NoError(t, err)
+	assert.Zero(t, items, "related-course items should be deleted with the post")
+}
+
+func TestAdminDeleteBlogPostNotFound(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	err := h.Client.AdminDeleteBlogPost(ctx, api.AdminDeleteBlogPostParams{ID: 999999})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	// Replace 6001's three promoted courses with two, in an explicit order.
+	post, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
+		CourseIds: []int32{207281424, 82481401}, // ruby, javascript
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 6001})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
+	assert.Equal(t, int32(2), post.RelatedCourseItemsCount)
+
+	items, err := h.DB.BlogPostRelatedLanguageItem.Query().
+		Where(blogpostrelatedlanguageitem.BlogPostIDEQ(6001)).
+		Order(ent.Asc(blogpostrelatedlanguageitem.FieldOrder)).
+		All(ctx)
+	require.NoError(t, err)
+	require.Len(t, items, 2)
+	// Submission order is the display order.
+	assert.Equal(t, 207281424, items[0].LanguageID)
+	assert.Equal(t, 82481401, items[1].LanguageID)
+
+	// Clearing the set drops the counter to zero.
+	post, err = h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
+		CourseIds: []int32{},
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 6001})
+	require.NoError(t, err)
+	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
+}
+
+func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
+		CourseIds: []int32{82481401},
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }

@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -25,6 +26,12 @@ type BlogPostUpdate struct {
 // Where appends a list predicates to the BlogPostUpdate builder.
 func (_u *BlogPostUpdate) Where(ps ...predicate.BlogPost) *BlogPostUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *BlogPostUpdate) SetUpdatedAt(v time.Time) *BlogPostUpdate {
+	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -222,6 +229,7 @@ func (_u *BlogPostUpdate) ClearCreator() *BlogPostUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *BlogPostUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -247,6 +255,14 @@ func (_u *BlogPostUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *BlogPostUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := blogpost.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_u *BlogPostUpdate) check() error {
 	if _u.mutation.CreatorCleared() && len(_u.mutation.CreatorIDs()) > 0 {
@@ -266,6 +282,9 @@ func (_u *BlogPostUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(blogpost.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(blogpost.FieldName, field.TypeString, value)
@@ -362,6 +381,12 @@ type BlogPostUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *BlogPostMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *BlogPostUpdateOne) SetUpdatedAt(v time.Time) *BlogPostUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetName sets the "name" field.
@@ -571,6 +596,7 @@ func (_u *BlogPostUpdateOne) Select(field string, fields ...string) *BlogPostUpd
 
 // Save executes the query and returns the updated BlogPost entity.
 func (_u *BlogPostUpdateOne) Save(ctx context.Context) (*BlogPost, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -593,6 +619,14 @@ func (_u *BlogPostUpdateOne) Exec(ctx context.Context) error {
 func (_u *BlogPostUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *BlogPostUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := blogpost.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -632,6 +666,9 @@ func (_u *BlogPostUpdateOne) sqlSave(ctx context.Context) (_node *BlogPost, err 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(blogpost.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(blogpost.FieldName, field.TypeString, value)

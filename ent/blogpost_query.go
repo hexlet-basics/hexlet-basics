@@ -298,12 +298,12 @@ func (_q *BlogPostQuery) WithCreator(opts ...func(*UserQuery)) *BlogPostQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.BlogPost.Query().
-//		GroupBy(blogpost.FieldName).
+//		GroupBy(blogpost.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *BlogPostQuery) GroupBy(field string, fields ...string) *BlogPostGroupBy {
@@ -321,11 +321,11 @@ func (_q *BlogPostQuery) GroupBy(field string, fields ...string) *BlogPostGroupB
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.BlogPost.Query().
-//		Select(blogpost.FieldName).
+//		Select(blogpost.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *BlogPostQuery) Select(fields ...string) *BlogPostSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -18,6 +18,10 @@ type BlogPost struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Name holds the value of the "name" field.
 	Name *string `json:"name,omitempty"`
 	// Slug holds the value of the "slug" field.
@@ -36,8 +40,6 @@ type BlogPost struct {
 	LanguageID *int `json:"language_id,omitempty"`
 	// RelatedLanguageItemsCount holds the value of the "related_language_items_count" field.
 	RelatedLanguageItemsCount int `json:"related_language_items_count,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BlogPostQuery when eager-loading is set.
 	Edges        BlogPostEdges `json:"edges"`
@@ -73,7 +75,7 @@ func (*BlogPost) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldDescription, blogpost.FieldLocale, blogpost.FieldState, blogpost.FieldRichBody:
 			values[i] = new(sql.NullString)
-		case blogpost.FieldCreatedAt:
+		case blogpost.FieldCreatedAt, blogpost.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -96,6 +98,18 @@ func (_m *BlogPost) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case blogpost.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case blogpost.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case blogpost.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -156,12 +170,6 @@ func (_m *BlogPost) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.RelatedLanguageItemsCount = int(value.Int64)
 			}
-		case blogpost.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				_m.CreatedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -203,6 +211,12 @@ func (_m *BlogPost) String() string {
 	var builder strings.Builder
 	builder.WriteString("BlogPost(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	if v := _m.Name; v != nil {
 		builder.WriteString("name=")
 		builder.WriteString(*v)
@@ -241,9 +255,6 @@ func (_m *BlogPost) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("related_language_items_count=")
 	builder.WriteString(fmt.Sprintf("%v", _m.RelatedLanguageItemsCount))
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

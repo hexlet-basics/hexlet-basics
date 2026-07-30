@@ -30,6 +30,9 @@ type BlogPost func(*sql.Selector)
 // BlogPostLike is the predicate function for blogpostlike builders.
 type BlogPostLike func(*sql.Selector)
 
+// BlogPostRelatedLanguageItem is the predicate function for blogpostrelatedlanguageitem builders.
+type BlogPostRelatedLanguageItem func(*sql.Selector)
+
 // CategoryQnaItem is the predicate function for categoryqnaitem builders.
 type CategoryQnaItem func(*sql.Selector)
 

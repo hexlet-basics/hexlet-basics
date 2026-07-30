@@ -4,21 +4,24 @@ import (
 	"context"
 	"strings"
 
+	"github.com/samber/lo"
 	"golang.org/x/net/html"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
+	"hexletbasics/ent/blogpostrelatedlanguageitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 )
 
-// Blog posts are READ-ONLY for now (list/get): create/update/delete/
-// relatedCourses stay on the embedded UnimplementedHandler. `rich_body` is
-// trusted editor HTML and is returned exactly as stored; the five production
-// posts are migrated by hand, with no ActionText compatibility layer. The cover
-// remains the single ActiveStorage blob served through `/storage/{key}`.
+// Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
+// set action. `rich_body` is trusted editor HTML stored and returned exactly as
+// given (no ActionText compatibility layer). The cover remains the single
+// ActiveStorage blob served through `/storage/{key}` on read; the input's
+// coverAttachmentId is deferred until blob covers land (same deferral as the
+// course cover).
 
 const (
 	// wordsPerMinute mirrors the legacy reading-time divisor (BlogPostResource).
@@ -59,8 +62,13 @@ func (s *Server) AdminListBlogPosts(ctx context.Context, params api.AdminListBlo
 // AdminGetBlogPost returns one blog post; a missing id surfaces as ent
 // not-found, which the central APIErrorHandler maps to 404.
 func (s *Server) AdminGetBlogPost(ctx context.Context, params api.AdminGetBlogPostParams) (api.AdminGetBlogPostRes, error) {
+	return s.getAdminBlogPost(ctx, int(params.ID))
+}
+
+// getAdminBlogPost is the shared read model every write handler echoes back.
+func (s *Server) getAdminBlogPost(ctx context.Context, id int) (*api.BlogPost, error) {
 	post, err := s.db.BlogPost.Query().
-		Where(blogpost.IDEQ(int(params.ID))).
+		Where(blogpost.IDEQ(id)).
 		WithCreator().
 		Only(ctx)
 	if err != nil {
@@ -72,6 +80,106 @@ func (s *Server) AdminGetBlogPost(ctx context.Context, params api.AdminGetBlogPo
 		return nil, err
 	}
 	return &items[0], nil
+}
+
+// AdminCreateBlogPost creates a post. The input-to-builder mapping is the
+// generated SetInput; the creator is the authenticated admin (legacy
+// `blog_post.creator = current_user`). Locale: legacy stamps the admin UI's
+// request locale, which does not reach ogen handlers yet (the known
+// admin-locale design gap), so the default locale is pinned like the lesson
+// lists do — thread the request locale through when it lands.
+func (s *Server) AdminCreateBlogPost(ctx context.Context, req *api.BlogPostInput) (api.AdminCreateBlogPostRes, error) {
+	creator, ok := AuthenticatedUser(ctx)
+	if !ok {
+		return nil, errUnauthenticated
+	}
+
+	row, err := s.db.BlogPost.Create().
+		SetInput(req).
+		SetCreatorID(creator.ID).
+		SetLocale(defaultAdminLocale).
+		Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.getAdminBlogPost(ctx, row.ID)
+}
+
+// AdminUpdateBlogPost updates a post. The generated SetInput keeps the legacy
+// assign_attributes semantics: a null nullable field clears the column. The
+// stored locale is left untouched (divergence from legacy, which re-stamped
+// the request locale on every update — an accident of its service signature,
+// not behavior worth keeping).
+func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput, params api.AdminUpdateBlogPostParams) (api.AdminUpdateBlogPostRes, error) {
+	row, err := s.db.BlogPost.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.getAdminBlogPost(ctx, row.ID)
+}
+
+// AdminDeleteBlogPost removes a post with its dependents, mirroring the legacy
+// model (`related_language_items dependent: :delete_all`, `likes dependent:
+// :destroy`) — the FKs have no ON DELETE CASCADE, so the children go first.
+func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDeleteBlogPostParams) (api.AdminDeleteBlogPostRes, error) {
+	id := int(params.ID)
+
+	// Ensure the post exists first (404 for a missing id, before any write).
+	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.db.BlogPostRelatedLanguageItem.Delete().
+		Where(blogpostrelatedlanguageitem.BlogPostID(id)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	if _, err := s.db.BlogPostLike.Delete().
+		Where(blogpostlike.BlogPostID(id)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	if err := s.db.BlogPost.DeleteOneID(id).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteBlogPostNoContent{}, nil
+}
+
+// AdminSetBlogPostRelatedCourses replaces the post's promoted-courses set with
+// the submitted ids, keeping their order as the display order and the counter
+// column in sync. Deliberate divergence from legacy (which enqueued an AI
+// "find related courses" job): the contract makes the selection explicit. An
+// unknown course id fails the FK constraint, surfaced as 409 centrally.
+func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.BlogPostRelatedCoursesInput, params api.AdminSetBlogPostRelatedCoursesParams) (api.AdminSetBlogPostRelatedCoursesRes, error) {
+	id := int(params.ID)
+
+	// Ensure the post exists first (404 for a missing id, before any write).
+	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx); err != nil {
+		return nil, err
+	}
+
+	if _, err := s.db.BlogPostRelatedLanguageItem.Delete().
+		Where(blogpostrelatedlanguageitem.BlogPostID(id)).Exec(ctx); err != nil {
+		return nil, err
+	}
+
+	courseIDs := lo.Uniq(req.CourseIds)
+	builders := make([]*ent.BlogPostRelatedLanguageItemCreate, len(courseIDs))
+	for i, courseID := range courseIDs {
+		builders[i] = s.db.BlogPostRelatedLanguageItem.Create().
+			SetBlogPostID(id).
+			SetLanguageID(int(courseID)).
+			SetOrder(i)
+	}
+	if _, err := s.db.BlogPostRelatedLanguageItem.CreateBulk(builders...).Save(ctx); err != nil {
+		return nil, err
+	}
+
+	if err := s.db.BlogPost.UpdateOneID(id).
+		SetRelatedLanguageItemsCount(len(courseIDs)).
+		Exec(ctx); err != nil {
+		return nil, err
+	}
+
+	return s.getAdminBlogPost(ctx, id)
 }
 
 // blogPostsToAPI assembles the read model for a set of posts. The cover and like

@@ -135,6 +135,8 @@ var (
 	// BlogPostsColumns holds the columns for the "blog_posts" table.
 	BlogPostsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "slug", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
@@ -143,7 +145,6 @@ var (
 		{Name: "rich_body", Type: field.TypeString, Size: 2147483647, Default: ""},
 		{Name: "language_id", Type: field.TypeInt, Nullable: true},
 		{Name: "related_language_items_count", Type: field.TypeInt, Default: 0},
-		{Name: "created_at", Type: field.TypeTime},
 		{Name: "creator_id", Type: field.TypeInt},
 	}
 	// BlogPostsTable holds the schema information for the "blog_posts" table.
@@ -154,7 +155,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "blog_posts_users_creator",
-				Columns:    []*schema.Column{BlogPostsColumns[10]},
+				Columns:    []*schema.Column{BlogPostsColumns[11]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -170,6 +171,35 @@ var (
 		Name:       "blog_post_likes",
 		Columns:    BlogPostLikesColumns,
 		PrimaryKey: []*schema.Column{BlogPostLikesColumns[0]},
+	}
+	// BlogPostRelatedLanguageItemsColumns holds the columns for the "blog_post_related_language_items" table.
+	BlogPostRelatedLanguageItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "order", Type: field.TypeInt, Nullable: true},
+		{Name: "blog_post_id", Type: field.TypeInt},
+		{Name: "language_id", Type: field.TypeInt},
+	}
+	// BlogPostRelatedLanguageItemsTable holds the schema information for the "blog_post_related_language_items" table.
+	BlogPostRelatedLanguageItemsTable = &schema.Table{
+		Name:       "blog_post_related_language_items",
+		Columns:    BlogPostRelatedLanguageItemsColumns,
+		PrimaryKey: []*schema.Column{BlogPostRelatedLanguageItemsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "blog_post_related_language_items_blog_posts_post",
+				Columns:    []*schema.Column{BlogPostRelatedLanguageItemsColumns[4]},
+				RefColumns: []*schema.Column{BlogPostsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "blog_post_related_language_items_languages_course",
+				Columns:    []*schema.Column{BlogPostRelatedLanguageItemsColumns[5]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// LanguageCategoryQnaItemsColumns holds the columns for the "language_category_qna_items" table.
 	LanguageCategoryQnaItemsColumns = []*schema.Column{
@@ -660,6 +690,7 @@ var (
 		BannersTable,
 		BlogPostsTable,
 		BlogPostLikesTable,
+		BlogPostRelatedLanguageItemsTable,
 		LanguageCategoryQnaItemsTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
@@ -695,6 +726,8 @@ func init() {
 	AiChatsTable.ForeignKeys[1].RefTable = UsersTable
 	AiMessagesTable.ForeignKeys[0].RefTable = AiChatsTable
 	BlogPostsTable.ForeignKeys[0].RefTable = UsersTable
+	BlogPostRelatedLanguageItemsTable.ForeignKeys[0].RefTable = BlogPostsTable
+	BlogPostRelatedLanguageItemsTable.ForeignKeys[1].RefTable = LanguagesTable
 	LanguageCategoryQnaItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_category_qna_items",
 	}

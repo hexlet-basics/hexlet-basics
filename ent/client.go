@@ -19,6 +19,7 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
+	"hexletbasics/ent/blogpostrelatedlanguageitem"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -67,6 +68,8 @@ type Client struct {
 	BlogPost *BlogPostClient
 	// BlogPostLike is the client for interacting with the BlogPostLike builders.
 	BlogPostLike *BlogPostLikeClient
+	// BlogPostRelatedLanguageItem is the client for interacting with the BlogPostRelatedLanguageItem builders.
+	BlogPostRelatedLanguageItem *BlogPostRelatedLanguageItemClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
@@ -126,6 +129,7 @@ func (c *Client) init() {
 	c.Banner = NewBannerClient(c.config)
 	c.BlogPost = NewBlogPostClient(c.config)
 	c.BlogPostLike = NewBlogPostLikeClient(c.config)
+	c.BlogPostRelatedLanguageItem = NewBlogPostRelatedLanguageItemClient(c.config)
 	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
@@ -236,36 +240,37 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                       ctx,
-		config:                    cfg,
-		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
-		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
-		AiChat:                    NewAiChatClient(cfg),
-		AiMessage:                 NewAiMessageClient(cfg),
-		Attachment:                NewAttachmentClient(cfg),
-		Banner:                    NewBannerClient(cfg),
-		BlogPost:                  NewBlogPostClient(cfg),
-		BlogPostLike:              NewBlogPostLikeClient(cfg),
-		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
-		Course:                    NewCourseClient(cfg),
-		CourseCategory:            NewCourseCategoryClient(cfg),
-		CourseVersion:             NewCourseVersionClient(cfg),
-		LandingPage:               NewLandingPageClient(cfg),
-		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
-		LanguageLesson:            NewLanguageLessonClient(cfg),
-		LanguageLessonMember:      NewLanguageLessonMemberClient(cfg),
-		LanguageLessonReview:      NewLanguageLessonReviewClient(cfg),
-		LanguageLessonVersion:     NewLanguageLessonVersionClient(cfg),
-		LanguageLessonVersionInfo: NewLanguageLessonVersionInfoClient(cfg),
-		LanguageModule:            NewLanguageModuleClient(cfg),
-		LanguageModuleVersion:     NewLanguageModuleVersionClient(cfg),
-		LanguageModuleVersionInfo: NewLanguageModuleVersionInfoClient(cfg),
-		Lead:                      NewLeadClient(cfg),
-		Review:                    NewReviewClient(cfg),
-		StaffMember:               NewStaffMemberClient(cfg),
-		StaffRole:                 NewStaffRoleClient(cfg),
-		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
-		User:                      NewUserClient(cfg),
+		ctx:                         ctx,
+		config:                      cfg,
+		ActiveStorageAttachment:     NewActiveStorageAttachmentClient(cfg),
+		ActiveStorageBlob:           NewActiveStorageBlobClient(cfg),
+		AiChat:                      NewAiChatClient(cfg),
+		AiMessage:                   NewAiMessageClient(cfg),
+		Attachment:                  NewAttachmentClient(cfg),
+		Banner:                      NewBannerClient(cfg),
+		BlogPost:                    NewBlogPostClient(cfg),
+		BlogPostLike:                NewBlogPostLikeClient(cfg),
+		BlogPostRelatedLanguageItem: NewBlogPostRelatedLanguageItemClient(cfg),
+		CategoryQnaItem:             NewCategoryQnaItemClient(cfg),
+		Course:                      NewCourseClient(cfg),
+		CourseCategory:              NewCourseCategoryClient(cfg),
+		CourseVersion:               NewCourseVersionClient(cfg),
+		LandingPage:                 NewLandingPageClient(cfg),
+		LandingPageQnaItem:          NewLandingPageQnaItemClient(cfg),
+		LanguageLesson:              NewLanguageLessonClient(cfg),
+		LanguageLessonMember:        NewLanguageLessonMemberClient(cfg),
+		LanguageLessonReview:        NewLanguageLessonReviewClient(cfg),
+		LanguageLessonVersion:       NewLanguageLessonVersionClient(cfg),
+		LanguageLessonVersionInfo:   NewLanguageLessonVersionInfoClient(cfg),
+		LanguageModule:              NewLanguageModuleClient(cfg),
+		LanguageModuleVersion:       NewLanguageModuleVersionClient(cfg),
+		LanguageModuleVersionInfo:   NewLanguageModuleVersionInfoClient(cfg),
+		Lead:                        NewLeadClient(cfg),
+		Review:                      NewReviewClient(cfg),
+		StaffMember:                 NewStaffMemberClient(cfg),
+		StaffRole:                   NewStaffRoleClient(cfg),
+		StaffRolePermission:         NewStaffRolePermissionClient(cfg),
+		User:                        NewUserClient(cfg),
 	}, nil
 }
 
@@ -283,36 +288,37 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                       ctx,
-		config:                    cfg,
-		ActiveStorageAttachment:   NewActiveStorageAttachmentClient(cfg),
-		ActiveStorageBlob:         NewActiveStorageBlobClient(cfg),
-		AiChat:                    NewAiChatClient(cfg),
-		AiMessage:                 NewAiMessageClient(cfg),
-		Attachment:                NewAttachmentClient(cfg),
-		Banner:                    NewBannerClient(cfg),
-		BlogPost:                  NewBlogPostClient(cfg),
-		BlogPostLike:              NewBlogPostLikeClient(cfg),
-		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
-		Course:                    NewCourseClient(cfg),
-		CourseCategory:            NewCourseCategoryClient(cfg),
-		CourseVersion:             NewCourseVersionClient(cfg),
-		LandingPage:               NewLandingPageClient(cfg),
-		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
-		LanguageLesson:            NewLanguageLessonClient(cfg),
-		LanguageLessonMember:      NewLanguageLessonMemberClient(cfg),
-		LanguageLessonReview:      NewLanguageLessonReviewClient(cfg),
-		LanguageLessonVersion:     NewLanguageLessonVersionClient(cfg),
-		LanguageLessonVersionInfo: NewLanguageLessonVersionInfoClient(cfg),
-		LanguageModule:            NewLanguageModuleClient(cfg),
-		LanguageModuleVersion:     NewLanguageModuleVersionClient(cfg),
-		LanguageModuleVersionInfo: NewLanguageModuleVersionInfoClient(cfg),
-		Lead:                      NewLeadClient(cfg),
-		Review:                    NewReviewClient(cfg),
-		StaffMember:               NewStaffMemberClient(cfg),
-		StaffRole:                 NewStaffRoleClient(cfg),
-		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
-		User:                      NewUserClient(cfg),
+		ctx:                         ctx,
+		config:                      cfg,
+		ActiveStorageAttachment:     NewActiveStorageAttachmentClient(cfg),
+		ActiveStorageBlob:           NewActiveStorageBlobClient(cfg),
+		AiChat:                      NewAiChatClient(cfg),
+		AiMessage:                   NewAiMessageClient(cfg),
+		Attachment:                  NewAttachmentClient(cfg),
+		Banner:                      NewBannerClient(cfg),
+		BlogPost:                    NewBlogPostClient(cfg),
+		BlogPostLike:                NewBlogPostLikeClient(cfg),
+		BlogPostRelatedLanguageItem: NewBlogPostRelatedLanguageItemClient(cfg),
+		CategoryQnaItem:             NewCategoryQnaItemClient(cfg),
+		Course:                      NewCourseClient(cfg),
+		CourseCategory:              NewCourseCategoryClient(cfg),
+		CourseVersion:               NewCourseVersionClient(cfg),
+		LandingPage:                 NewLandingPageClient(cfg),
+		LandingPageQnaItem:          NewLandingPageQnaItemClient(cfg),
+		LanguageLesson:              NewLanguageLessonClient(cfg),
+		LanguageLessonMember:        NewLanguageLessonMemberClient(cfg),
+		LanguageLessonReview:        NewLanguageLessonReviewClient(cfg),
+		LanguageLessonVersion:       NewLanguageLessonVersionClient(cfg),
+		LanguageLessonVersionInfo:   NewLanguageLessonVersionInfoClient(cfg),
+		LanguageModule:              NewLanguageModuleClient(cfg),
+		LanguageModuleVersion:       NewLanguageModuleVersionClient(cfg),
+		LanguageModuleVersionInfo:   NewLanguageModuleVersionInfoClient(cfg),
+		Lead:                        NewLeadClient(cfg),
+		Review:                      NewReviewClient(cfg),
+		StaffMember:                 NewStaffMemberClient(cfg),
+		StaffRole:                   NewStaffRoleClient(cfg),
+		StaffRolePermission:         NewStaffRolePermissionClient(cfg),
+		User:                        NewUserClient(cfg),
 	}, nil
 }
 
@@ -343,12 +349,13 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
-		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
-		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
-		c.LanguageLessonReview, c.LanguageLessonVersion, c.LanguageLessonVersionInfo,
-		c.LanguageModule, c.LanguageModuleVersion, c.LanguageModuleVersionInfo, c.Lead,
-		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
+		c.BlogPostRelatedLanguageItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
+		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.LanguageLesson,
+		c.LanguageLessonMember, c.LanguageLessonReview, c.LanguageLessonVersion,
+		c.LanguageLessonVersionInfo, c.LanguageModule, c.LanguageModuleVersion,
+		c.LanguageModuleVersionInfo, c.Lead, c.Review, c.StaffMember, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -359,12 +366,13 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
-		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike, c.CategoryQnaItem,
-		c.Course, c.CourseCategory, c.CourseVersion, c.LandingPage,
-		c.LandingPageQnaItem, c.LanguageLesson, c.LanguageLessonMember,
-		c.LanguageLessonReview, c.LanguageLessonVersion, c.LanguageLessonVersionInfo,
-		c.LanguageModule, c.LanguageModuleVersion, c.LanguageModuleVersionInfo, c.Lead,
-		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
+		c.BlogPostRelatedLanguageItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
+		c.CourseVersion, c.LandingPage, c.LandingPageQnaItem, c.LanguageLesson,
+		c.LanguageLessonMember, c.LanguageLessonReview, c.LanguageLessonVersion,
+		c.LanguageLessonVersionInfo, c.LanguageModule, c.LanguageModuleVersion,
+		c.LanguageModuleVersionInfo, c.Lead, c.Review, c.StaffMember, c.StaffRole,
+		c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -389,6 +397,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BlogPost.mutate(ctx, m)
 	case *BlogPostLikeMutation:
 		return c.BlogPostLike.mutate(ctx, m)
+	case *BlogPostRelatedLanguageItemMutation:
+		return c.BlogPostRelatedLanguageItem.mutate(ctx, m)
 	case *CategoryQnaItemMutation:
 		return c.CategoryQnaItem.mutate(ctx, m)
 	case *CourseMutation:
@@ -1575,6 +1585,171 @@ func (c *BlogPostLikeClient) mutate(ctx context.Context, m *BlogPostLikeMutation
 		return (&BlogPostLikeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BlogPostLike mutation op: %q", m.Op())
+	}
+}
+
+// BlogPostRelatedLanguageItemClient is a client for the BlogPostRelatedLanguageItem schema.
+type BlogPostRelatedLanguageItemClient struct {
+	config
+}
+
+// NewBlogPostRelatedLanguageItemClient returns a client for the BlogPostRelatedLanguageItem from the given config.
+func NewBlogPostRelatedLanguageItemClient(c config) *BlogPostRelatedLanguageItemClient {
+	return &BlogPostRelatedLanguageItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `blogpostrelatedlanguageitem.Hooks(f(g(h())))`.
+func (c *BlogPostRelatedLanguageItemClient) Use(hooks ...Hook) {
+	c.hooks.BlogPostRelatedLanguageItem = append(c.hooks.BlogPostRelatedLanguageItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `blogpostrelatedlanguageitem.Intercept(f(g(h())))`.
+func (c *BlogPostRelatedLanguageItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BlogPostRelatedLanguageItem = append(c.inters.BlogPostRelatedLanguageItem, interceptors...)
+}
+
+// Create returns a builder for creating a BlogPostRelatedLanguageItem entity.
+func (c *BlogPostRelatedLanguageItemClient) Create() *BlogPostRelatedLanguageItemCreate {
+	mutation := newBlogPostRelatedLanguageItemMutation(c.config, OpCreate)
+	return &BlogPostRelatedLanguageItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BlogPostRelatedLanguageItem entities.
+func (c *BlogPostRelatedLanguageItemClient) CreateBulk(builders ...*BlogPostRelatedLanguageItemCreate) *BlogPostRelatedLanguageItemCreateBulk {
+	return &BlogPostRelatedLanguageItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BlogPostRelatedLanguageItemClient) MapCreateBulk(slice any, setFunc func(*BlogPostRelatedLanguageItemCreate, int)) *BlogPostRelatedLanguageItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BlogPostRelatedLanguageItemCreateBulk{err: fmt.Errorf("calling to BlogPostRelatedLanguageItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BlogPostRelatedLanguageItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BlogPostRelatedLanguageItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BlogPostRelatedLanguageItem.
+func (c *BlogPostRelatedLanguageItemClient) Update() *BlogPostRelatedLanguageItemUpdate {
+	mutation := newBlogPostRelatedLanguageItemMutation(c.config, OpUpdate)
+	return &BlogPostRelatedLanguageItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BlogPostRelatedLanguageItemClient) UpdateOne(_m *BlogPostRelatedLanguageItem) *BlogPostRelatedLanguageItemUpdateOne {
+	mutation := newBlogPostRelatedLanguageItemMutation(c.config, OpUpdateOne, withBlogPostRelatedLanguageItem(_m))
+	return &BlogPostRelatedLanguageItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BlogPostRelatedLanguageItemClient) UpdateOneID(id int) *BlogPostRelatedLanguageItemUpdateOne {
+	mutation := newBlogPostRelatedLanguageItemMutation(c.config, OpUpdateOne, withBlogPostRelatedLanguageItemID(id))
+	return &BlogPostRelatedLanguageItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BlogPostRelatedLanguageItem.
+func (c *BlogPostRelatedLanguageItemClient) Delete() *BlogPostRelatedLanguageItemDelete {
+	mutation := newBlogPostRelatedLanguageItemMutation(c.config, OpDelete)
+	return &BlogPostRelatedLanguageItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BlogPostRelatedLanguageItemClient) DeleteOne(_m *BlogPostRelatedLanguageItem) *BlogPostRelatedLanguageItemDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BlogPostRelatedLanguageItemClient) DeleteOneID(id int) *BlogPostRelatedLanguageItemDeleteOne {
+	builder := c.Delete().Where(blogpostrelatedlanguageitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BlogPostRelatedLanguageItemDeleteOne{builder}
+}
+
+// Query returns a query builder for BlogPostRelatedLanguageItem.
+func (c *BlogPostRelatedLanguageItemClient) Query() *BlogPostRelatedLanguageItemQuery {
+	return &BlogPostRelatedLanguageItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBlogPostRelatedLanguageItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BlogPostRelatedLanguageItem entity by its id.
+func (c *BlogPostRelatedLanguageItemClient) Get(ctx context.Context, id int) (*BlogPostRelatedLanguageItem, error) {
+	return c.Query().Where(blogpostrelatedlanguageitem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BlogPostRelatedLanguageItemClient) GetX(ctx context.Context, id int) *BlogPostRelatedLanguageItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryPost queries the post edge of a BlogPostRelatedLanguageItem.
+func (c *BlogPostRelatedLanguageItemClient) QueryPost(_m *BlogPostRelatedLanguageItem) *BlogPostQuery {
+	query := (&BlogPostClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(blogpostrelatedlanguageitem.Table, blogpostrelatedlanguageitem.FieldID, id),
+			sqlgraph.To(blogpost.Table, blogpost.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, blogpostrelatedlanguageitem.PostTable, blogpostrelatedlanguageitem.PostColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCourse queries the course edge of a BlogPostRelatedLanguageItem.
+func (c *BlogPostRelatedLanguageItemClient) QueryCourse(_m *BlogPostRelatedLanguageItem) *CourseQuery {
+	query := (&CourseClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(blogpostrelatedlanguageitem.Table, blogpostrelatedlanguageitem.FieldID, id),
+			sqlgraph.To(course.Table, course.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, blogpostrelatedlanguageitem.CourseTable, blogpostrelatedlanguageitem.CourseColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *BlogPostRelatedLanguageItemClient) Hooks() []Hook {
+	return c.hooks.BlogPostRelatedLanguageItem
+}
+
+// Interceptors returns the client interceptors.
+func (c *BlogPostRelatedLanguageItemClient) Interceptors() []Interceptor {
+	return c.inters.BlogPostRelatedLanguageItem
+}
+
+func (c *BlogPostRelatedLanguageItemClient) mutate(ctx context.Context, m *BlogPostRelatedLanguageItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BlogPostRelatedLanguageItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BlogPostRelatedLanguageItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BlogPostRelatedLanguageItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BlogPostRelatedLanguageItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BlogPostRelatedLanguageItem mutation op: %q", m.Op())
 	}
 }
 
@@ -4514,20 +4689,20 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 type (
 	hooks struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
-		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
-		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersion,
-		LanguageLessonVersionInfo, LanguageModule, LanguageModuleVersion,
-		LanguageModuleVersionInfo, Lead, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Hook
+		Banner, BlogPost, BlogPostLike, BlogPostRelatedLanguageItem, CategoryQnaItem,
+		Course, CourseCategory, CourseVersion, LandingPage, LandingPageQnaItem,
+		LanguageLesson, LanguageLessonMember, LanguageLessonReview,
+		LanguageLessonVersion, LanguageLessonVersionInfo, LanguageModule,
+		LanguageModuleVersion, LanguageModuleVersionInfo, Lead, Review, StaffMember,
+		StaffRole, StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, CategoryQnaItem, Course, CourseCategory,
-		CourseVersion, LandingPage, LandingPageQnaItem, LanguageLesson,
-		LanguageLessonMember, LanguageLessonReview, LanguageLessonVersion,
-		LanguageLessonVersionInfo, LanguageModule, LanguageModuleVersion,
-		LanguageModuleVersionInfo, Lead, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Interceptor
+		Banner, BlogPost, BlogPostLike, BlogPostRelatedLanguageItem, CategoryQnaItem,
+		Course, CourseCategory, CourseVersion, LandingPage, LandingPageQnaItem,
+		LanguageLesson, LanguageLessonMember, LanguageLessonReview,
+		LanguageLessonVersion, LanguageLessonVersionInfo, LanguageModule,
+		LanguageModuleVersion, LanguageModuleVersionInfo, Lead, Review, StaffMember,
+		StaffRole, StaffRolePermission, User []ent.Interceptor
 	}
 )

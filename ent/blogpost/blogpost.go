@@ -3,6 +3,8 @@
 package blogpost
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -12,6 +14,10 @@ const (
 	Label = "blog_post"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldSlug holds the string denoting the slug field in the database.
@@ -30,8 +36,6 @@ const (
 	FieldLanguageID = "language_id"
 	// FieldRelatedLanguageItemsCount holds the string denoting the related_language_items_count field in the database.
 	FieldRelatedLanguageItemsCount = "related_language_items_count"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// Table holds the table name of the blogpost in the database.
@@ -48,6 +52,8 @@ const (
 // Columns holds all SQL columns for blogpost fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldName,
 	FieldSlug,
 	FieldDescription,
@@ -57,7 +63,6 @@ var Columns = []string{
 	FieldCreatorID,
 	FieldLanguageID,
 	FieldRelatedLanguageItemsCount,
-	FieldCreatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -71,6 +76,12 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultRichBody holds the default value on creation for the "rich_body" field.
 	DefaultRichBody string
 	// DefaultRelatedLanguageItemsCount holds the default value on creation for the "related_language_items_count" field.
@@ -83,6 +94,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
@@ -128,11 +149,6 @@ func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
 // ByRelatedLanguageItemsCount orders the results by the related_language_items_count field.
 func ByRelatedLanguageItemsCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRelatedLanguageItemsCount, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByCreatorField orders the results by creator field.

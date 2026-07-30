@@ -50,6 +50,47 @@ func (u *BannerUpdateOne) SetInput(i *api.BannerInput) *BannerUpdateOne {
 	return u
 }
 
+// SetInput applies the contract BlogPostInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *BlogPostCreate) SetInput(i *api.BlogPostInput) *BlogPostCreate {
+	c.SetNillableName(inputconv.StringPtr(i.Name))
+	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
+	c.SetNillableDescription(inputconv.StringPtr(i.Description))
+	c.SetNillableState(inputconv.StringPtr(i.State))
+	c.SetRichBody(string(i.RichBody))
+	return c
+}
+
+// SetInput applies the contract BlogPostInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *BlogPostUpdateOne) SetInput(i *api.BlogPostInput) *BlogPostUpdateOne {
+	if i.Name.Null {
+		u.ClearName()
+	} else {
+		u.SetName(string(i.Name.Value))
+	}
+	if i.Slug.Null {
+		u.ClearSlug()
+	} else {
+		u.SetSlug(string(i.Slug.Value))
+	}
+	if i.Description.Null {
+		u.ClearDescription()
+	} else {
+		u.SetDescription(string(i.Description.Value))
+	}
+	if i.State.Null {
+		u.ClearState()
+	} else {
+		u.SetState(string(i.State.Value))
+	}
+	u.SetRichBody(string(i.RichBody))
+	return u
+}
+
 // SetInput applies the contract QnaItemInput to the create builder: required
 // contract fields are set directly, nullable ones go through SetNillable so a
 // null leaves the column unset, set-only ones apply only when non-null.

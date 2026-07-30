@@ -1,0 +1,22 @@
+# Fixtures for `blog_post_related_language_items`, HAND-CURATED. Post 6001
+# promotes three courses (matching its related_language_items_count: 3 in
+# blog_posts.yml); post 6002 promotes none. Course ids are from languages.yml
+# (javascript / ruby / python).
+- id: 9001
+  blog_post_id: 6001
+  language_id: 82481401
+  order: 0
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 9002
+  blog_post_id: 6001
+  language_id: 207281424
+  order: 1
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 9003
+  blog_post_id: 6001
+  language_id: 617920698
+  order: 2
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

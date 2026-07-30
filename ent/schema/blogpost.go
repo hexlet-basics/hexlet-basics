@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -18,21 +19,40 @@ type BlogPost struct {
 	ent.Schema
 }
 
+// Annotations opts the schema into the generated SetInput builders. Explicit
+// because the schema is wider than the contract input: locale and creator_id
+// are handler-supplied on create (not editable), the related-items counter is
+// owned by the related-courses action, and the input's coverAttachmentId is
+// deferred until blob covers land (same deferral as the course cover).
+func (BlogPost) Annotations() []schema.Annotation {
+	return []schema.Annotation{AdminInput{Explicit: true}}
+}
+
 func (BlogPost) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").Optional().Nillable(),
-		field.String("slug").Optional().Nillable(),
-		field.String("description").Optional().Nillable(),
+		field.String("name").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.String("slug").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.String("description").Optional().Nillable().
+			Annotations(AdminInputField{}),
 		field.String("locale").Optional().Nillable(),
-		field.String("state").Optional().Nillable(),
-		field.Text("rich_body").Default(""),
+		field.String("state").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.Text("rich_body").Default("").
+			Annotations(AdminInputField{}),
 		// creator_id is NOT NULL (FK to users); the read model embeds the creator.
 		field.Int("creator_id"),
 		field.Int("language_id").Optional().Nillable(),
 		// App-maintained counter; NOT NULL DEFAULT 0 in the baseline.
 		field.Int("related_language_items_count").Default(0),
-		field.Time("created_at").Immutable(),
 	}
+}
+
+// Mixin supplies the Rails-owned timestamps now that admin create/update
+// writes the table (NOT NULL, no DB default).
+func (BlogPost) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }
 
 func (BlogPost) Edges() []ent.Edge {

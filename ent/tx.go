@@ -28,6 +28,8 @@ type Tx struct {
 	BlogPost *BlogPostClient
 	// BlogPostLike is the client for interacting with the BlogPostLike builders.
 	BlogPostLike *BlogPostLikeClient
+	// BlogPostRelatedLanguageItem is the client for interacting with the BlogPostRelatedLanguageItem builders.
+	BlogPostRelatedLanguageItem *BlogPostRelatedLanguageItemClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
@@ -207,6 +209,7 @@ func (tx *Tx) init() {
 	tx.Banner = NewBannerClient(tx.config)
 	tx.BlogPost = NewBlogPostClient(tx.config)
 	tx.BlogPostLike = NewBlogPostLikeClient(tx.config)
+	tx.BlogPostRelatedLanguageItem = NewBlogPostRelatedLanguageItemClient(tx.config)
 	tx.CategoryQnaItem = NewCategoryQnaItemClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)

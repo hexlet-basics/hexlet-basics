@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/blogpostrelatedlanguageitem"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -92,8 +93,21 @@ func init() {
 	bannerDescState := bannerFields[3].Descriptor()
 	// banner.DefaultState holds the default value on creation for the state field.
 	banner.DefaultState = bannerDescState.Default.(string)
+	blogpostMixin := schema.BlogPost{}.Mixin()
+	blogpostMixinFields0 := blogpostMixin[0].Fields()
+	_ = blogpostMixinFields0
 	blogpostFields := schema.BlogPost{}.Fields()
 	_ = blogpostFields
+	// blogpostDescCreatedAt is the schema descriptor for created_at field.
+	blogpostDescCreatedAt := blogpostMixinFields0[0].Descriptor()
+	// blogpost.DefaultCreatedAt holds the default value on creation for the created_at field.
+	blogpost.DefaultCreatedAt = blogpostDescCreatedAt.Default.(func() time.Time)
+	// blogpostDescUpdatedAt is the schema descriptor for updated_at field.
+	blogpostDescUpdatedAt := blogpostMixinFields0[1].Descriptor()
+	// blogpost.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	blogpost.DefaultUpdatedAt = blogpostDescUpdatedAt.Default.(func() time.Time)
+	// blogpost.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	blogpost.UpdateDefaultUpdatedAt = blogpostDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// blogpostDescRichBody is the schema descriptor for rich_body field.
 	blogpostDescRichBody := blogpostFields[5].Descriptor()
 	// blogpost.DefaultRichBody holds the default value on creation for the rich_body field.
@@ -102,6 +116,21 @@ func init() {
 	blogpostDescRelatedLanguageItemsCount := blogpostFields[8].Descriptor()
 	// blogpost.DefaultRelatedLanguageItemsCount holds the default value on creation for the related_language_items_count field.
 	blogpost.DefaultRelatedLanguageItemsCount = blogpostDescRelatedLanguageItemsCount.Default.(int)
+	blogpostrelatedlanguageitemMixin := schema.BlogPostRelatedLanguageItem{}.Mixin()
+	blogpostrelatedlanguageitemMixinFields0 := blogpostrelatedlanguageitemMixin[0].Fields()
+	_ = blogpostrelatedlanguageitemMixinFields0
+	blogpostrelatedlanguageitemFields := schema.BlogPostRelatedLanguageItem{}.Fields()
+	_ = blogpostrelatedlanguageitemFields
+	// blogpostrelatedlanguageitemDescCreatedAt is the schema descriptor for created_at field.
+	blogpostrelatedlanguageitemDescCreatedAt := blogpostrelatedlanguageitemMixinFields0[0].Descriptor()
+	// blogpostrelatedlanguageitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	blogpostrelatedlanguageitem.DefaultCreatedAt = blogpostrelatedlanguageitemDescCreatedAt.Default.(func() time.Time)
+	// blogpostrelatedlanguageitemDescUpdatedAt is the schema descriptor for updated_at field.
+	blogpostrelatedlanguageitemDescUpdatedAt := blogpostrelatedlanguageitemMixinFields0[1].Descriptor()
+	// blogpostrelatedlanguageitem.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	blogpostrelatedlanguageitem.DefaultUpdatedAt = blogpostrelatedlanguageitemDescUpdatedAt.Default.(func() time.Time)
+	// blogpostrelatedlanguageitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	blogpostrelatedlanguageitem.UpdateDefaultUpdatedAt = blogpostrelatedlanguageitemDescUpdatedAt.UpdateDefault.(func() time.Time)
 	categoryqnaitemMixin := schema.CategoryQnaItem{}.Mixin()
 	categoryqnaitemMixinFields0 := categoryqnaitemMixin[0].Fields()
 	_ = categoryqnaitemMixinFields0

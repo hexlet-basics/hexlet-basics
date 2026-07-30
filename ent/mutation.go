@@ -14,6 +14,7 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
+	"hexletbasics/ent/blogpostrelatedlanguageitem"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -52,34 +53,35 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeActiveStorageAttachment   = "ActiveStorageAttachment"
-	TypeActiveStorageBlob         = "ActiveStorageBlob"
-	TypeAiChat                    = "AiChat"
-	TypeAiMessage                 = "AiMessage"
-	TypeAttachment                = "Attachment"
-	TypeBanner                    = "Banner"
-	TypeBlogPost                  = "BlogPost"
-	TypeBlogPostLike              = "BlogPostLike"
-	TypeCategoryQnaItem           = "CategoryQnaItem"
-	TypeCourse                    = "Course"
-	TypeCourseCategory            = "CourseCategory"
-	TypeCourseVersion             = "CourseVersion"
-	TypeLandingPage               = "LandingPage"
-	TypeLandingPageQnaItem        = "LandingPageQnaItem"
-	TypeLanguageLesson            = "LanguageLesson"
-	TypeLanguageLessonMember      = "LanguageLessonMember"
-	TypeLanguageLessonReview      = "LanguageLessonReview"
-	TypeLanguageLessonVersion     = "LanguageLessonVersion"
-	TypeLanguageLessonVersionInfo = "LanguageLessonVersionInfo"
-	TypeLanguageModule            = "LanguageModule"
-	TypeLanguageModuleVersion     = "LanguageModuleVersion"
-	TypeLanguageModuleVersionInfo = "LanguageModuleVersionInfo"
-	TypeLead                      = "Lead"
-	TypeReview                    = "Review"
-	TypeStaffMember               = "StaffMember"
-	TypeStaffRole                 = "StaffRole"
-	TypeStaffRolePermission       = "StaffRolePermission"
-	TypeUser                      = "User"
+	TypeActiveStorageAttachment     = "ActiveStorageAttachment"
+	TypeActiveStorageBlob           = "ActiveStorageBlob"
+	TypeAiChat                      = "AiChat"
+	TypeAiMessage                   = "AiMessage"
+	TypeAttachment                  = "Attachment"
+	TypeBanner                      = "Banner"
+	TypeBlogPost                    = "BlogPost"
+	TypeBlogPostLike                = "BlogPostLike"
+	TypeBlogPostRelatedLanguageItem = "BlogPostRelatedLanguageItem"
+	TypeCategoryQnaItem             = "CategoryQnaItem"
+	TypeCourse                      = "Course"
+	TypeCourseCategory              = "CourseCategory"
+	TypeCourseVersion               = "CourseVersion"
+	TypeLandingPage                 = "LandingPage"
+	TypeLandingPageQnaItem          = "LandingPageQnaItem"
+	TypeLanguageLesson              = "LanguageLesson"
+	TypeLanguageLessonMember        = "LanguageLessonMember"
+	TypeLanguageLessonReview        = "LanguageLessonReview"
+	TypeLanguageLessonVersion       = "LanguageLessonVersion"
+	TypeLanguageLessonVersionInfo   = "LanguageLessonVersionInfo"
+	TypeLanguageModule              = "LanguageModule"
+	TypeLanguageModuleVersion       = "LanguageModuleVersion"
+	TypeLanguageModuleVersionInfo   = "LanguageModuleVersionInfo"
+	TypeLead                        = "Lead"
+	TypeReview                      = "Review"
+	TypeStaffMember                 = "StaffMember"
+	TypeStaffRole                   = "StaffRole"
+	TypeStaffRolePermission         = "StaffRolePermission"
+	TypeUser                        = "User"
 )
 
 // ActiveStorageAttachmentMutation represents an operation that mutates the ActiveStorageAttachment nodes in the graph.
@@ -4077,6 +4079,8 @@ type BlogPostMutation struct {
 	op                              Op
 	typ                             string
 	id                              *int
+	created_at                      *time.Time
+	updated_at                      *time.Time
 	name                            *string
 	slug                            *string
 	description                     *string
@@ -4087,7 +4091,6 @@ type BlogPostMutation struct {
 	addlanguage_id                  *int
 	related_language_items_count    *int
 	addrelated_language_items_count *int
-	created_at                      *time.Time
 	clearedFields                   map[string]struct{}
 	creator                         *int
 	clearedcreator                  bool
@@ -4192,6 +4195,78 @@ func (m *BlogPostMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *BlogPostMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *BlogPostMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *BlogPostMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *BlogPostMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *BlogPostMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the BlogPost entity.
+// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *BlogPostMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetName sets the "name" field.
@@ -4637,42 +4712,6 @@ func (m *BlogPostMutation) ResetRelatedLanguageItemsCount() {
 	m.addrelated_language_items_count = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *BlogPostMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *BlogPostMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the BlogPost entity.
-// If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlogPostMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *BlogPostMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
 // ClearCreator clears the "creator" edge to the User entity.
 func (m *BlogPostMutation) ClearCreator() {
 	m.clearedcreator = true
@@ -4734,7 +4773,13 @@ func (m *BlogPostMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BlogPostMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
+	if m.created_at != nil {
+		fields = append(fields, blogpost.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, blogpost.FieldUpdatedAt)
+	}
 	if m.name != nil {
 		fields = append(fields, blogpost.FieldName)
 	}
@@ -4762,9 +4807,6 @@ func (m *BlogPostMutation) Fields() []string {
 	if m.related_language_items_count != nil {
 		fields = append(fields, blogpost.FieldRelatedLanguageItemsCount)
 	}
-	if m.created_at != nil {
-		fields = append(fields, blogpost.FieldCreatedAt)
-	}
 	return fields
 }
 
@@ -4773,6 +4815,10 @@ func (m *BlogPostMutation) Fields() []string {
 // schema.
 func (m *BlogPostMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case blogpost.FieldCreatedAt:
+		return m.CreatedAt()
+	case blogpost.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case blogpost.FieldName:
 		return m.Name()
 	case blogpost.FieldSlug:
@@ -4791,8 +4837,6 @@ func (m *BlogPostMutation) Field(name string) (ent.Value, bool) {
 		return m.LanguageID()
 	case blogpost.FieldRelatedLanguageItemsCount:
 		return m.RelatedLanguageItemsCount()
-	case blogpost.FieldCreatedAt:
-		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -4802,6 +4846,10 @@ func (m *BlogPostMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *BlogPostMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case blogpost.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case blogpost.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case blogpost.FieldName:
 		return m.OldName(ctx)
 	case blogpost.FieldSlug:
@@ -4820,8 +4868,6 @@ func (m *BlogPostMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldLanguageID(ctx)
 	case blogpost.FieldRelatedLanguageItemsCount:
 		return m.OldRelatedLanguageItemsCount(ctx)
-	case blogpost.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown BlogPost field %s", name)
 }
@@ -4831,6 +4877,20 @@ func (m *BlogPostMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case blogpost.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case blogpost.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case blogpost.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -4893,13 +4953,6 @@ func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRelatedLanguageItemsCount(v)
-		return nil
-	case blogpost.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPost field %s", name)
@@ -5016,6 +5069,12 @@ func (m *BlogPostMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *BlogPostMutation) ResetField(name string) error {
 	switch name {
+	case blogpost.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case blogpost.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case blogpost.FieldName:
 		m.ResetName()
 		return nil
@@ -5042,9 +5101,6 @@ func (m *BlogPostMutation) ResetField(name string) error {
 		return nil
 	case blogpost.FieldRelatedLanguageItemsCount:
 		m.ResetRelatedLanguageItemsCount()
-		return nil
-	case blogpost.FieldCreatedAt:
-		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPost field %s", name)
@@ -5484,6 +5540,733 @@ func (m *BlogPostLikeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *BlogPostLikeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown BlogPostLike edge %s", name)
+}
+
+// BlogPostRelatedLanguageItemMutation represents an operation that mutates the BlogPostRelatedLanguageItem nodes in the graph.
+type BlogPostRelatedLanguageItemMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
+	_order        *int
+	add_order     *int
+	clearedFields map[string]struct{}
+	post          *int
+	clearedpost   bool
+	course        *int
+	clearedcourse bool
+	done          bool
+	oldValue      func(context.Context) (*BlogPostRelatedLanguageItem, error)
+	predicates    []predicate.BlogPostRelatedLanguageItem
+}
+
+var _ ent.Mutation = (*BlogPostRelatedLanguageItemMutation)(nil)
+
+// blogpostrelatedlanguageitemOption allows management of the mutation configuration using functional options.
+type blogpostrelatedlanguageitemOption func(*BlogPostRelatedLanguageItemMutation)
+
+// newBlogPostRelatedLanguageItemMutation creates new mutation for the BlogPostRelatedLanguageItem entity.
+func newBlogPostRelatedLanguageItemMutation(c config, op Op, opts ...blogpostrelatedlanguageitemOption) *BlogPostRelatedLanguageItemMutation {
+	m := &BlogPostRelatedLanguageItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBlogPostRelatedLanguageItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBlogPostRelatedLanguageItemID sets the ID field of the mutation.
+func withBlogPostRelatedLanguageItemID(id int) blogpostrelatedlanguageitemOption {
+	return func(m *BlogPostRelatedLanguageItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BlogPostRelatedLanguageItem
+		)
+		m.oldValue = func(ctx context.Context) (*BlogPostRelatedLanguageItem, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BlogPostRelatedLanguageItem.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBlogPostRelatedLanguageItem sets the old BlogPostRelatedLanguageItem of the mutation.
+func withBlogPostRelatedLanguageItem(node *BlogPostRelatedLanguageItem) blogpostrelatedlanguageitemOption {
+	return func(m *BlogPostRelatedLanguageItemMutation) {
+		m.oldValue = func(context.Context) (*BlogPostRelatedLanguageItem, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BlogPostRelatedLanguageItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BlogPostRelatedLanguageItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BlogPostRelatedLanguageItemMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BlogPostRelatedLanguageItem.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *BlogPostRelatedLanguageItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the BlogPostRelatedLanguageItem entity.
+// If the BlogPostRelatedLanguageItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostRelatedLanguageItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *BlogPostRelatedLanguageItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *BlogPostRelatedLanguageItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the BlogPostRelatedLanguageItem entity.
+// If the BlogPostRelatedLanguageItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostRelatedLanguageItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *BlogPostRelatedLanguageItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetBlogPostID sets the "blog_post_id" field.
+func (m *BlogPostRelatedLanguageItemMutation) SetBlogPostID(i int) {
+	m.post = &i
+}
+
+// BlogPostID returns the value of the "blog_post_id" field in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) BlogPostID() (r int, exists bool) {
+	v := m.post
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBlogPostID returns the old "blog_post_id" field's value of the BlogPostRelatedLanguageItem entity.
+// If the BlogPostRelatedLanguageItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostRelatedLanguageItemMutation) OldBlogPostID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBlogPostID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBlogPostID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBlogPostID: %w", err)
+	}
+	return oldValue.BlogPostID, nil
+}
+
+// ResetBlogPostID resets all changes to the "blog_post_id" field.
+func (m *BlogPostRelatedLanguageItemMutation) ResetBlogPostID() {
+	m.post = nil
+}
+
+// SetLanguageID sets the "language_id" field.
+func (m *BlogPostRelatedLanguageItemMutation) SetLanguageID(i int) {
+	m.course = &i
+}
+
+// LanguageID returns the value of the "language_id" field in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) LanguageID() (r int, exists bool) {
+	v := m.course
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageID returns the old "language_id" field's value of the BlogPostRelatedLanguageItem entity.
+// If the BlogPostRelatedLanguageItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostRelatedLanguageItemMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+	}
+	return oldValue.LanguageID, nil
+}
+
+// ResetLanguageID resets all changes to the "language_id" field.
+func (m *BlogPostRelatedLanguageItemMutation) ResetLanguageID() {
+	m.course = nil
+}
+
+// SetOrder sets the "order" field.
+func (m *BlogPostRelatedLanguageItemMutation) SetOrder(i int) {
+	m._order = &i
+	m.add_order = nil
+}
+
+// Order returns the value of the "order" field in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) Order() (r int, exists bool) {
+	v := m._order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrder returns the old "order" field's value of the BlogPostRelatedLanguageItem entity.
+// If the BlogPostRelatedLanguageItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostRelatedLanguageItemMutation) OldOrder(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrder is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrder requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrder: %w", err)
+	}
+	return oldValue.Order, nil
+}
+
+// AddOrder adds i to the "order" field.
+func (m *BlogPostRelatedLanguageItemMutation) AddOrder(i int) {
+	if m.add_order != nil {
+		*m.add_order += i
+	} else {
+		m.add_order = &i
+	}
+}
+
+// AddedOrder returns the value that was added to the "order" field in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) AddedOrder() (r int, exists bool) {
+	v := m.add_order
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrder clears the value of the "order" field.
+func (m *BlogPostRelatedLanguageItemMutation) ClearOrder() {
+	m._order = nil
+	m.add_order = nil
+	m.clearedFields[blogpostrelatedlanguageitem.FieldOrder] = struct{}{}
+}
+
+// OrderCleared returns if the "order" field was cleared in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) OrderCleared() bool {
+	_, ok := m.clearedFields[blogpostrelatedlanguageitem.FieldOrder]
+	return ok
+}
+
+// ResetOrder resets all changes to the "order" field.
+func (m *BlogPostRelatedLanguageItemMutation) ResetOrder() {
+	m._order = nil
+	m.add_order = nil
+	delete(m.clearedFields, blogpostrelatedlanguageitem.FieldOrder)
+}
+
+// SetPostID sets the "post" edge to the BlogPost entity by id.
+func (m *BlogPostRelatedLanguageItemMutation) SetPostID(id int) {
+	m.post = &id
+}
+
+// ClearPost clears the "post" edge to the BlogPost entity.
+func (m *BlogPostRelatedLanguageItemMutation) ClearPost() {
+	m.clearedpost = true
+	m.clearedFields[blogpostrelatedlanguageitem.FieldBlogPostID] = struct{}{}
+}
+
+// PostCleared reports if the "post" edge to the BlogPost entity was cleared.
+func (m *BlogPostRelatedLanguageItemMutation) PostCleared() bool {
+	return m.clearedpost
+}
+
+// PostID returns the "post" edge ID in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) PostID() (id int, exists bool) {
+	if m.post != nil {
+		return *m.post, true
+	}
+	return
+}
+
+// PostIDs returns the "post" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// PostID instead. It exists only for internal usage by the builders.
+func (m *BlogPostRelatedLanguageItemMutation) PostIDs() (ids []int) {
+	if id := m.post; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetPost resets all changes to the "post" edge.
+func (m *BlogPostRelatedLanguageItemMutation) ResetPost() {
+	m.post = nil
+	m.clearedpost = false
+}
+
+// SetCourseID sets the "course" edge to the Course entity by id.
+func (m *BlogPostRelatedLanguageItemMutation) SetCourseID(id int) {
+	m.course = &id
+}
+
+// ClearCourse clears the "course" edge to the Course entity.
+func (m *BlogPostRelatedLanguageItemMutation) ClearCourse() {
+	m.clearedcourse = true
+	m.clearedFields[blogpostrelatedlanguageitem.FieldLanguageID] = struct{}{}
+}
+
+// CourseCleared reports if the "course" edge to the Course entity was cleared.
+func (m *BlogPostRelatedLanguageItemMutation) CourseCleared() bool {
+	return m.clearedcourse
+}
+
+// CourseID returns the "course" edge ID in the mutation.
+func (m *BlogPostRelatedLanguageItemMutation) CourseID() (id int, exists bool) {
+	if m.course != nil {
+		return *m.course, true
+	}
+	return
+}
+
+// CourseIDs returns the "course" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CourseID instead. It exists only for internal usage by the builders.
+func (m *BlogPostRelatedLanguageItemMutation) CourseIDs() (ids []int) {
+	if id := m.course; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCourse resets all changes to the "course" edge.
+func (m *BlogPostRelatedLanguageItemMutation) ResetCourse() {
+	m.course = nil
+	m.clearedcourse = false
+}
+
+// Where appends a list predicates to the BlogPostRelatedLanguageItemMutation builder.
+func (m *BlogPostRelatedLanguageItemMutation) Where(ps ...predicate.BlogPostRelatedLanguageItem) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the BlogPostRelatedLanguageItemMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *BlogPostRelatedLanguageItemMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.BlogPostRelatedLanguageItem, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *BlogPostRelatedLanguageItemMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *BlogPostRelatedLanguageItemMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (BlogPostRelatedLanguageItem).
+func (m *BlogPostRelatedLanguageItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BlogPostRelatedLanguageItemMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldUpdatedAt)
+	}
+	if m.post != nil {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldBlogPostID)
+	}
+	if m.course != nil {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldLanguageID)
+	}
+	if m._order != nil {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldOrder)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BlogPostRelatedLanguageItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case blogpostrelatedlanguageitem.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case blogpostrelatedlanguageitem.FieldBlogPostID:
+		return m.BlogPostID()
+	case blogpostrelatedlanguageitem.FieldLanguageID:
+		return m.LanguageID()
+	case blogpostrelatedlanguageitem.FieldOrder:
+		return m.Order()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BlogPostRelatedLanguageItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case blogpostrelatedlanguageitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case blogpostrelatedlanguageitem.FieldBlogPostID:
+		return m.OldBlogPostID(ctx)
+	case blogpostrelatedlanguageitem.FieldLanguageID:
+		return m.OldLanguageID(ctx)
+	case blogpostrelatedlanguageitem.FieldOrder:
+		return m.OldOrder(ctx)
+	}
+	return nil, fmt.Errorf("unknown BlogPostRelatedLanguageItem field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BlogPostRelatedLanguageItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case blogpostrelatedlanguageitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case blogpostrelatedlanguageitem.FieldBlogPostID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBlogPostID(v)
+		return nil
+	case blogpostrelatedlanguageitem.FieldLanguageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageID(v)
+		return nil
+	case blogpostrelatedlanguageitem.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrder(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostRelatedLanguageItem field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) AddedFields() []string {
+	var fields []string
+	if m.add_order != nil {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldOrder)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BlogPostRelatedLanguageItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldOrder:
+		return m.AddedOrder()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BlogPostRelatedLanguageItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldOrder:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrder(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostRelatedLanguageItem numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BlogPostRelatedLanguageItemMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(blogpostrelatedlanguageitem.FieldOrder) {
+		fields = append(fields, blogpostrelatedlanguageitem.FieldOrder)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BlogPostRelatedLanguageItemMutation) ClearField(name string) error {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldOrder:
+		m.ClearOrder()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostRelatedLanguageItem nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BlogPostRelatedLanguageItemMutation) ResetField(name string) error {
+	switch name {
+	case blogpostrelatedlanguageitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case blogpostrelatedlanguageitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case blogpostrelatedlanguageitem.FieldBlogPostID:
+		m.ResetBlogPostID()
+		return nil
+	case blogpostrelatedlanguageitem.FieldLanguageID:
+		m.ResetLanguageID()
+		return nil
+	case blogpostrelatedlanguageitem.FieldOrder:
+		m.ResetOrder()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostRelatedLanguageItem field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.post != nil {
+		edges = append(edges, blogpostrelatedlanguageitem.EdgePost)
+	}
+	if m.course != nil {
+		edges = append(edges, blogpostrelatedlanguageitem.EdgeCourse)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case blogpostrelatedlanguageitem.EdgePost:
+		if id := m.post; id != nil {
+			return []ent.Value{*id}
+		}
+	case blogpostrelatedlanguageitem.EdgeCourse:
+		if id := m.course; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedpost {
+		edges = append(edges, blogpostrelatedlanguageitem.EdgePost)
+	}
+	if m.clearedcourse {
+		edges = append(edges, blogpostrelatedlanguageitem.EdgeCourse)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BlogPostRelatedLanguageItemMutation) EdgeCleared(name string) bool {
+	switch name {
+	case blogpostrelatedlanguageitem.EdgePost:
+		return m.clearedpost
+	case blogpostrelatedlanguageitem.EdgeCourse:
+		return m.clearedcourse
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BlogPostRelatedLanguageItemMutation) ClearEdge(name string) error {
+	switch name {
+	case blogpostrelatedlanguageitem.EdgePost:
+		m.ClearPost()
+		return nil
+	case blogpostrelatedlanguageitem.EdgeCourse:
+		m.ClearCourse()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostRelatedLanguageItem unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BlogPostRelatedLanguageItemMutation) ResetEdge(name string) error {
+	switch name {
+	case blogpostrelatedlanguageitem.EdgePost:
+		m.ResetPost()
+		return nil
+	case blogpostrelatedlanguageitem.EdgeCourse:
+		m.ResetCourse()
+		return nil
+	}
+	return fmt.Errorf("unknown BlogPostRelatedLanguageItem edge %s", name)
 }
 
 // CategoryQnaItemMutation represents an operation that mutates the CategoryQnaItem nodes in the graph.

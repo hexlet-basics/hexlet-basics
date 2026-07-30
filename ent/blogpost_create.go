@@ -23,6 +23,34 @@ type BlogPostCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *BlogPostCreate) SetCreatedAt(v time.Time) *BlogPostCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *BlogPostCreate) SetNillableCreatedAt(v *time.Time) *BlogPostCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *BlogPostCreate) SetUpdatedAt(v time.Time) *BlogPostCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *BlogPostCreate) SetNillableUpdatedAt(v *time.Time) *BlogPostCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetName sets the "name" field.
 func (_c *BlogPostCreate) SetName(v string) *BlogPostCreate {
 	_c.mutation.SetName(v)
@@ -141,12 +169,6 @@ func (_c *BlogPostCreate) SetNillableRelatedLanguageItemsCount(v *int) *BlogPost
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *BlogPostCreate) SetCreatedAt(v time.Time) *BlogPostCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
 // SetCreator sets the "creator" edge to the User entity.
 func (_c *BlogPostCreate) SetCreator(v *User) *BlogPostCreate {
 	return _c.SetCreatorID(v.ID)
@@ -187,6 +209,14 @@ func (_c *BlogPostCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *BlogPostCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := blogpost.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := blogpost.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := _c.mutation.RichBody(); !ok {
 		v := blogpost.DefaultRichBody
 		_c.mutation.SetRichBody(v)
@@ -199,6 +229,12 @@ func (_c *BlogPostCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *BlogPostCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "BlogPost.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "BlogPost.updated_at"`)}
+	}
 	if _, ok := _c.mutation.RichBody(); !ok {
 		return &ValidationError{Name: "rich_body", err: errors.New(`ent: missing required field "BlogPost.rich_body"`)}
 	}
@@ -207,9 +243,6 @@ func (_c *BlogPostCreate) check() error {
 	}
 	if _, ok := _c.mutation.RelatedLanguageItemsCount(); !ok {
 		return &ValidationError{Name: "related_language_items_count", err: errors.New(`ent: missing required field "BlogPost.related_language_items_count"`)}
-	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "BlogPost.created_at"`)}
 	}
 	if len(_c.mutation.CreatorIDs()) == 0 {
 		return &ValidationError{Name: "creator", err: errors.New(`ent: missing required edge "BlogPost.creator"`)}
@@ -241,6 +274,14 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(blogpost.Table, sqlgraph.NewFieldSpec(blogpost.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(blogpost.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(blogpost.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(blogpost.FieldName, field.TypeString, value)
 		_node.Name = &value
@@ -273,10 +314,6 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 		_spec.SetField(blogpost.FieldRelatedLanguageItemsCount, field.TypeInt, value)
 		_node.RelatedLanguageItemsCount = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(blogpost.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
 	if nodes := _c.mutation.CreatorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -301,7 +338,7 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.BlogPost.Create().
-//		SetName(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -310,7 +347,7 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.BlogPostUpsert) {
-//			SetName(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *BlogPostCreate) OnConflict(opts ...sql.ConflictOption) *BlogPostUpsertOne {
@@ -345,6 +382,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BlogPostUpsert) SetUpdatedAt(v time.Time) *BlogPostUpsert {
+	u.Set(blogpost.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BlogPostUpsert) UpdateUpdatedAt() *BlogPostUpsert {
+	u.SetExcluded(blogpost.FieldUpdatedAt)
+	return u
+}
 
 // SetName sets the "name" field.
 func (u *BlogPostUpsert) SetName(v string) *BlogPostUpsert {
@@ -545,6 +594,20 @@ func (u *BlogPostUpsertOne) Update(set func(*BlogPostUpsert)) *BlogPostUpsertOne
 		set(&BlogPostUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BlogPostUpsertOne) SetUpdatedAt(v time.Time) *BlogPostUpsertOne {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BlogPostUpsertOne) UpdateUpdatedAt() *BlogPostUpsertOne {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetName sets the "name" field.
@@ -864,7 +927,7 @@ func (_c *BlogPostCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.BlogPostUpsert) {
-//			SetName(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *BlogPostCreateBulk) OnConflict(opts ...sql.ConflictOption) *BlogPostUpsertBulk {
@@ -938,6 +1001,20 @@ func (u *BlogPostUpsertBulk) Update(set func(*BlogPostUpsert)) *BlogPostUpsertBu
 		set(&BlogPostUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BlogPostUpsertBulk) SetUpdatedAt(v time.Time) *BlogPostUpsertBulk {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BlogPostUpsertBulk) UpdateUpdatedAt() *BlogPostUpsertBulk {
+	return u.Update(func(s *BlogPostUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetName sets the "name" field.
