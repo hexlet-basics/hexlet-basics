@@ -262,12 +262,12 @@ func (_q *BannerQuery) Clone() *BannerQuery {
 // Example:
 //
 //	var v []struct {
-//		Background string `json:"background,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Banner.Query().
-//		GroupBy(banner.FieldBackground).
+//		GroupBy(banner.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *BannerQuery) GroupBy(field string, fields ...string) *BannerGroupBy {
@@ -285,11 +285,11 @@ func (_q *BannerQuery) GroupBy(field string, fields ...string) *BannerGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Background string `json:"background,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Banner.Query().
-//		Select(banner.FieldBackground).
+//		Select(banner.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *BannerQuery) Select(fields ...string) *BannerSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

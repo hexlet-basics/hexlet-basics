@@ -18,6 +18,10 @@ type LandingPage struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// LanguageID holds the value of the "language_id" field.
 	LanguageID int `json:"language_id,omitempty"`
 	// Slug holds the value of the "slug" field.
@@ -56,10 +60,6 @@ type LandingPage struct {
 	FooterName *string `json:"footer_name,omitempty"`
 	// LandingPageToRedirectID holds the value of the "landing_page_to_redirect_id" field.
 	LandingPageToRedirectID *int `json:"landing_page_to_redirect_id,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the LandingPageQuery when eager-loading is set.
 	Edges        LandingPageEdges `json:"edges"`
@@ -120,6 +120,18 @@ func (_m *LandingPage) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case landingpage.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case landingpage.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case landingpage.FieldLanguageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field language_id", values[i])
@@ -252,18 +264,6 @@ func (_m *LandingPage) assignValues(columns []string, values []any) error {
 				_m.LandingPageToRedirectID = new(int)
 				*_m.LandingPageToRedirectID = int(value.Int64)
 			}
-		case landingpage.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				_m.CreatedAt = value.Time
-			}
-		case landingpage.FieldUpdatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
-			} else if value.Valid {
-				_m.UpdatedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -305,6 +305,12 @@ func (_m *LandingPage) String() string {
 	var builder strings.Builder
 	builder.WriteString("LandingPage(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("language_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
 	builder.WriteString(", ")
@@ -397,12 +403,6 @@ func (_m *LandingPage) String() string {
 		builder.WriteString("landing_page_to_redirect_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

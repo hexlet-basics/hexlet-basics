@@ -17,6 +17,10 @@ type LanguageModuleVersionInfo struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Name holds the value of the "name" field.
 	Name *string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
@@ -28,11 +32,7 @@ type LanguageModuleVersionInfo struct {
 	// LanguageVersionID holds the value of the "language_version_id" field.
 	LanguageVersionID int `json:"language_version_id,omitempty"`
 	// VersionID holds the value of the "version_id" field.
-	VersionID int `json:"version_id,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	VersionID    int `json:"version_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -68,6 +68,18 @@ func (_m *LanguageModuleVersionInfo) assignValues(columns []string, values []any
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case languagemoduleversioninfo.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case languagemoduleversioninfo.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case languagemoduleversioninfo.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -107,18 +119,6 @@ func (_m *LanguageModuleVersionInfo) assignValues(columns []string, values []any
 			} else if value.Valid {
 				_m.VersionID = int(value.Int64)
 			}
-		case languagemoduleversioninfo.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				_m.CreatedAt = value.Time
-			}
-		case languagemoduleversioninfo.FieldUpdatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
-			} else if value.Valid {
-				_m.UpdatedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -155,6 +155,12 @@ func (_m *LanguageModuleVersionInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("LanguageModuleVersionInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	if v := _m.Name; v != nil {
 		builder.WriteString("name=")
 		builder.WriteString(*v)
@@ -178,12 +184,6 @@ func (_m *LanguageModuleVersionInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("version_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.VersionID))
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

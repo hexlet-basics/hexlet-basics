@@ -14,6 +14,10 @@ const (
 	Label = "course"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldSlug holds the string denoting the slug field in the database.
 	FieldSlug = "slug"
 	// FieldName holds the string denoting the name field in the database.
@@ -34,10 +38,6 @@ const (
 	FieldCurrentVersionID = "current_version_id"
 	// FieldOrder holds the string denoting the order field in the database.
 	FieldOrder = "order"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
 	// EdgeLandingPages holds the string denoting the landing_pages edge name in mutations.
 	EdgeLandingPages = "landing_pages"
 	// EdgeCurrentVersion holds the string denoting the current_version edge name in mutations.
@@ -63,6 +63,8 @@ const (
 // Columns holds all SQL columns for course fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldSlug,
 	FieldName,
 	FieldLearnAs,
@@ -73,8 +75,6 @@ var Columns = []string{
 	FieldCategoryID,
 	FieldCurrentVersionID,
 	FieldOrder,
-	FieldCreatedAt,
-	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -88,16 +88,16 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultMembersCount holds the default value on creation for the "members_count" field.
-	DefaultMembersCount int
-	// DefaultLessonsCount holds the default value on creation for the "lessons_count" field.
-	DefaultLessonsCount int
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// DefaultMembersCount holds the default value on creation for the "members_count" field.
+	DefaultMembersCount int
+	// DefaultLessonsCount holds the default value on creation for the "lessons_count" field.
+	DefaultLessonsCount int
 )
 
 // OrderOption defines the ordering options for the Course queries.
@@ -106,6 +106,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // BySlug orders the results by the slug field.
@@ -156,16 +166,6 @@ func ByCurrentVersionID(opts ...sql.OrderTermOption) OrderOption {
 // ByOrder orders the results by the order field.
 func ByOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrder, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByLandingPagesCount orders the results by landing_pages count.

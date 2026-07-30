@@ -29,6 +29,12 @@ func (_u *CourseVersionUpdate) Where(ps ...predicate.CourseVersion) *CourseVersi
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseVersionUpdate) SetUpdatedAt(v time.Time) *CourseVersionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetResult sets the "result" field.
 func (_u *CourseVersionUpdate) SetResult(v string) *CourseVersionUpdate {
 	_u.mutation.SetResult(v)
@@ -251,12 +257,6 @@ func (_u *CourseVersionUpdate) AddLanguageID(v int) *CourseVersionUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CourseVersionUpdate) SetUpdatedAt(v time.Time) *CourseVersionUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by IDs.
 func (_u *CourseVersionUpdate) AddCurrentCourseIDs(ids ...int) *CourseVersionUpdate {
 	_u.mutation.AddCurrentCourseIDs(ids...)
@@ -343,6 +343,9 @@ func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Result(); ok {
 		_spec.SetField(courseversion.FieldResult, field.TypeString, value)
 	}
@@ -409,9 +412,6 @@ func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	if value, ok := _u.mutation.AddedLanguageID(); ok {
 		_spec.AddField(courseversion.FieldLanguageID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _u.mutation.CurrentCoursesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -475,6 +475,12 @@ type CourseVersionUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CourseVersionMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseVersionUpdateOne) SetUpdatedAt(v time.Time) *CourseVersionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetResult sets the "result" field.
@@ -699,12 +705,6 @@ func (_u *CourseVersionUpdateOne) AddLanguageID(v int) *CourseVersionUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CourseVersionUpdateOne) SetUpdatedAt(v time.Time) *CourseVersionUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by IDs.
 func (_u *CourseVersionUpdateOne) AddCurrentCourseIDs(ids ...int) *CourseVersionUpdateOne {
 	_u.mutation.AddCurrentCourseIDs(ids...)
@@ -821,6 +821,9 @@ func (_u *CourseVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseVer
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Result(); ok {
 		_spec.SetField(courseversion.FieldResult, field.TypeString, value)
 	}
@@ -886,9 +889,6 @@ func (_u *CourseVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseVer
 	}
 	if value, ok := _u.mutation.AddedLanguageID(); ok {
 		_spec.AddField(courseversion.FieldLanguageID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.CurrentCoursesCleared() {
 		edge := &sqlgraph.EdgeSpec{

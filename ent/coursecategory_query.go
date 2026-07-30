@@ -262,12 +262,12 @@ func (_q *CourseCategoryQuery) Clone() *CourseCategoryQuery {
 // Example:
 //
 //	var v []struct {
-//		Slug string `json:"slug,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.CourseCategory.Query().
-//		GroupBy(coursecategory.FieldSlug).
+//		GroupBy(coursecategory.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CourseCategoryQuery) GroupBy(field string, fields ...string) *CourseCategoryGroupBy {
@@ -285,11 +285,11 @@ func (_q *CourseCategoryQuery) GroupBy(field string, fields ...string) *CourseCa
 // Example:
 //
 //	var v []struct {
-//		Slug string `json:"slug,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.CourseCategory.Query().
-//		Select(coursecategory.FieldSlug).
+//		Select(coursecategory.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *CourseCategoryQuery) Select(fields ...string) *CourseCategorySelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -298,12 +298,12 @@ func (_q *LandingPageQuery) WithCourse(opts ...func(*CourseQuery)) *LandingPageQ
 // Example:
 //
 //	var v []struct {
-//		LanguageID int `json:"language_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.LandingPage.Query().
-//		GroupBy(landingpage.FieldLanguageID).
+//		GroupBy(landingpage.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *LandingPageQuery) GroupBy(field string, fields ...string) *LandingPageGroupBy {
@@ -321,11 +321,11 @@ func (_q *LandingPageQuery) GroupBy(field string, fields ...string) *LandingPage
 // Example:
 //
 //	var v []struct {
-//		LanguageID int `json:"language_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.LandingPage.Query().
-//		Select(landingpage.FieldLanguageID).
+//		Select(landingpage.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *LandingPageQuery) Select(fields ...string) *LandingPageSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

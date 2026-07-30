@@ -262,12 +262,12 @@ func (_q *CategoryQnaItemQuery) Clone() *CategoryQnaItemQuery {
 // Example:
 //
 //	var v []struct {
-//		LanguageCategoryID int `json:"language_category_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.CategoryQnaItem.Query().
-//		GroupBy(categoryqnaitem.FieldLanguageCategoryID).
+//		GroupBy(categoryqnaitem.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CategoryQnaItemQuery) GroupBy(field string, fields ...string) *CategoryQnaItemGroupBy {
@@ -285,11 +285,11 @@ func (_q *CategoryQnaItemQuery) GroupBy(field string, fields ...string) *Categor
 // Example:
 //
 //	var v []struct {
-//		LanguageCategoryID int `json:"language_category_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.CategoryQnaItem.Query().
-//		Select(categoryqnaitem.FieldLanguageCategoryID).
+//		Select(categoryqnaitem.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *CategoryQnaItemQuery) Select(fields ...string) *CategoryQnaItemSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

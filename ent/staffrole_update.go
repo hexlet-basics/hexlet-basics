@@ -29,6 +29,12 @@ func (_u *StaffRoleUpdate) Where(ps ...predicate.StaffRole) *StaffRoleUpdate {
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *StaffRoleUpdate) SetUpdatedAt(v time.Time) *StaffRoleUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetName sets the "name" field.
 func (_u *StaffRoleUpdate) SetName(v string) *StaffRoleUpdate {
 	_u.mutation.SetName(v)
@@ -60,12 +66,6 @@ func (_u *StaffRoleUpdate) SetNillableDescription(v *string) *StaffRoleUpdate {
 // ClearDescription clears the value of the "description" field.
 func (_u *StaffRoleUpdate) ClearDescription() *StaffRoleUpdate {
 	_u.mutation.ClearDescription()
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *StaffRoleUpdate) SetUpdatedAt(v time.Time) *StaffRoleUpdate {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -155,6 +155,9 @@ func (_u *StaffRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(staffrole.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(staffrole.FieldName, field.TypeString, value)
 	}
@@ -163,9 +166,6 @@ func (_u *StaffRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(staffrole.FieldDescription, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(staffrole.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -232,6 +232,12 @@ type StaffRoleUpdateOne struct {
 	mutation *StaffRoleMutation
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *StaffRoleUpdateOne) SetUpdatedAt(v time.Time) *StaffRoleUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetName sets the "name" field.
 func (_u *StaffRoleUpdateOne) SetName(v string) *StaffRoleUpdateOne {
 	_u.mutation.SetName(v)
@@ -263,12 +269,6 @@ func (_u *StaffRoleUpdateOne) SetNillableDescription(v *string) *StaffRoleUpdate
 // ClearDescription clears the value of the "description" field.
 func (_u *StaffRoleUpdateOne) ClearDescription() *StaffRoleUpdateOne {
 	_u.mutation.ClearDescription()
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *StaffRoleUpdateOne) SetUpdatedAt(v time.Time) *StaffRoleUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -388,6 +388,9 @@ func (_u *StaffRoleUpdateOne) sqlSave(ctx context.Context) (_node *StaffRole, er
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(staffrole.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(staffrole.FieldName, field.TypeString, value)
 	}
@@ -396,9 +399,6 @@ func (_u *StaffRoleUpdateOne) sqlSave(ctx context.Context) (_node *StaffRole, er
 	}
 	if _u.mutation.DescriptionCleared() {
 		_spec.ClearField(staffrole.FieldDescription, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(staffrole.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{

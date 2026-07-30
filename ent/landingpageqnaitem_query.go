@@ -262,12 +262,12 @@ func (_q *LandingPageQnaItemQuery) Clone() *LandingPageQnaItemQuery {
 // Example:
 //
 //	var v []struct {
-//		LanguageLandingPageID int `json:"language_landing_page_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.LandingPageQnaItem.Query().
-//		GroupBy(landingpageqnaitem.FieldLanguageLandingPageID).
+//		GroupBy(landingpageqnaitem.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *LandingPageQnaItemQuery) GroupBy(field string, fields ...string) *LandingPageQnaItemGroupBy {
@@ -285,11 +285,11 @@ func (_q *LandingPageQnaItemQuery) GroupBy(field string, fields ...string) *Land
 // Example:
 //
 //	var v []struct {
-//		LanguageLandingPageID int `json:"language_landing_page_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.LandingPageQnaItem.Query().
-//		Select(landingpageqnaitem.FieldLanguageLandingPageID).
+//		Select(landingpageqnaitem.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *LandingPageQnaItemQuery) Select(fields ...string) *LandingPageQnaItemSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

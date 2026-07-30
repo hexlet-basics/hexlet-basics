@@ -23,26 +23,6 @@ type StaffRoleCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetName sets the "name" field.
-func (_c *StaffRoleCreate) SetName(v string) *StaffRoleCreate {
-	_c.mutation.SetName(v)
-	return _c
-}
-
-// SetDescription sets the "description" field.
-func (_c *StaffRoleCreate) SetDescription(v string) *StaffRoleCreate {
-	_c.mutation.SetDescription(v)
-	return _c
-}
-
-// SetNillableDescription sets the "description" field if the given value is not nil.
-func (_c *StaffRoleCreate) SetNillableDescription(v *string) *StaffRoleCreate {
-	if v != nil {
-		_c.SetDescription(*v)
-	}
-	return _c
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (_c *StaffRoleCreate) SetCreatedAt(v time.Time) *StaffRoleCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -67,6 +47,26 @@ func (_c *StaffRoleCreate) SetUpdatedAt(v time.Time) *StaffRoleCreate {
 func (_c *StaffRoleCreate) SetNillableUpdatedAt(v *time.Time) *StaffRoleCreate {
 	if v != nil {
 		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
+// SetName sets the "name" field.
+func (_c *StaffRoleCreate) SetName(v string) *StaffRoleCreate {
+	_c.mutation.SetName(v)
+	return _c
+}
+
+// SetDescription sets the "description" field.
+func (_c *StaffRoleCreate) SetDescription(v string) *StaffRoleCreate {
+	_c.mutation.SetDescription(v)
+	return _c
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (_c *StaffRoleCreate) SetNillableDescription(v *string) *StaffRoleCreate {
+	if v != nil {
+		_c.SetDescription(*v)
 	}
 	return _c
 }
@@ -133,14 +133,14 @@ func (_c *StaffRoleCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *StaffRoleCreate) check() error {
-	if _, ok := _c.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "StaffRole.name"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StaffRole.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StaffRole.updated_at"`)}
+	}
+	if _, ok := _c.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "StaffRole.name"`)}
 	}
 	return nil
 }
@@ -169,14 +169,6 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(staffrole.Table, sqlgraph.NewFieldSpec(staffrole.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
-	if value, ok := _c.mutation.Name(); ok {
-		_spec.SetField(staffrole.FieldName, field.TypeString, value)
-		_node.Name = value
-	}
-	if value, ok := _c.mutation.Description(); ok {
-		_spec.SetField(staffrole.FieldDescription, field.TypeString, value)
-		_node.Description = &value
-	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(staffrole.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
@@ -184,6 +176,14 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(staffrole.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := _c.mutation.Name(); ok {
+		_spec.SetField(staffrole.FieldName, field.TypeString, value)
+		_node.Name = value
+	}
+	if value, ok := _c.mutation.Description(); ok {
+		_spec.SetField(staffrole.FieldDescription, field.TypeString, value)
+		_node.Description = &value
 	}
 	if nodes := _c.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -208,7 +208,7 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.StaffRole.Create().
-//		SetName(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -217,7 +217,7 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StaffRoleUpsert) {
-//			SetName(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *StaffRoleCreate) OnConflict(opts ...sql.ConflictOption) *StaffRoleUpsertOne {
@@ -253,6 +253,18 @@ type (
 	}
 )
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRoleUpsert) SetUpdatedAt(v time.Time) *StaffRoleUpsert {
+	u.Set(staffrole.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRoleUpsert) UpdateUpdatedAt() *StaffRoleUpsert {
+	u.SetExcluded(staffrole.FieldUpdatedAt)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *StaffRoleUpsert) SetName(v string) *StaffRoleUpsert {
 	u.Set(staffrole.FieldName, v)
@@ -280,18 +292,6 @@ func (u *StaffRoleUpsert) UpdateDescription() *StaffRoleUpsert {
 // ClearDescription clears the value of the "description" field.
 func (u *StaffRoleUpsert) ClearDescription() *StaffRoleUpsert {
 	u.SetNull(staffrole.FieldDescription)
-	return u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffRoleUpsert) SetUpdatedAt(v time.Time) *StaffRoleUpsert {
-	u.Set(staffrole.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffRoleUpsert) UpdateUpdatedAt() *StaffRoleUpsert {
-	u.SetExcluded(staffrole.FieldUpdatedAt)
 	return u
 }
 
@@ -340,6 +340,20 @@ func (u *StaffRoleUpsertOne) Update(set func(*StaffRoleUpsert)) *StaffRoleUpsert
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRoleUpsertOne) SetUpdatedAt(v time.Time) *StaffRoleUpsertOne {
+	return u.Update(func(s *StaffRoleUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRoleUpsertOne) UpdateUpdatedAt() *StaffRoleUpsertOne {
+	return u.Update(func(s *StaffRoleUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *StaffRoleUpsertOne) SetName(v string) *StaffRoleUpsertOne {
 	return u.Update(func(s *StaffRoleUpsert) {
@@ -372,20 +386,6 @@ func (u *StaffRoleUpsertOne) UpdateDescription() *StaffRoleUpsertOne {
 func (u *StaffRoleUpsertOne) ClearDescription() *StaffRoleUpsertOne {
 	return u.Update(func(s *StaffRoleUpsert) {
 		s.ClearDescription()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffRoleUpsertOne) SetUpdatedAt(v time.Time) *StaffRoleUpsertOne {
-	return u.Update(func(s *StaffRoleUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffRoleUpsertOne) UpdateUpdatedAt() *StaffRoleUpsertOne {
-	return u.Update(func(s *StaffRoleUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -524,7 +524,7 @@ func (_c *StaffRoleCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StaffRoleUpsert) {
-//			SetName(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *StaffRoleCreateBulk) OnConflict(opts ...sql.ConflictOption) *StaffRoleUpsertBulk {
@@ -600,6 +600,20 @@ func (u *StaffRoleUpsertBulk) Update(set func(*StaffRoleUpsert)) *StaffRoleUpser
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRoleUpsertBulk) SetUpdatedAt(v time.Time) *StaffRoleUpsertBulk {
+	return u.Update(func(s *StaffRoleUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRoleUpsertBulk) UpdateUpdatedAt() *StaffRoleUpsertBulk {
+	return u.Update(func(s *StaffRoleUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *StaffRoleUpsertBulk) SetName(v string) *StaffRoleUpsertBulk {
 	return u.Update(func(s *StaffRoleUpsert) {
@@ -632,20 +646,6 @@ func (u *StaffRoleUpsertBulk) UpdateDescription() *StaffRoleUpsertBulk {
 func (u *StaffRoleUpsertBulk) ClearDescription() *StaffRoleUpsertBulk {
 	return u.Update(func(s *StaffRoleUpsert) {
 		s.ClearDescription()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffRoleUpsertBulk) SetUpdatedAt(v time.Time) *StaffRoleUpsertBulk {
-	return u.Update(func(s *StaffRoleUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffRoleUpsertBulk) UpdateUpdatedAt() *StaffRoleUpsertBulk {
-	return u.Update(func(s *StaffRoleUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

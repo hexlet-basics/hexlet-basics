@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -29,7 +27,9 @@ func (CategoryQnaItem) Fields() []ent.Field {
 		field.Int("language_category_id"),
 		field.String("question").Optional().Nillable(),
 		field.String("answer").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
+}
+
+func (CategoryQnaItem) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

@@ -28,6 +28,12 @@ func (_u *LandingPageQnaItemUpdate) Where(ps ...predicate.LandingPageQnaItem) *L
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LandingPageQnaItemUpdate) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
 func (_u *LandingPageQnaItemUpdate) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpdate {
 	_u.mutation.ResetLanguageLandingPageID()
@@ -89,12 +95,6 @@ func (_u *LandingPageQnaItemUpdate) ClearAnswer() *LandingPageQnaItemUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LandingPageQnaItemUpdate) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LandingPageQnaItemMutation object of the builder.
 func (_u *LandingPageQnaItemUpdate) Mutation() *LandingPageQnaItemMutation {
 	return _u.mutation
@@ -145,6 +145,9 @@ func (_u *LandingPageQnaItemUpdate) sqlSave(ctx context.Context) (_node int, err
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.LanguageLandingPageID(); ok {
 		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
 	}
@@ -162,9 +165,6 @@ func (_u *LandingPageQnaItemUpdate) sqlSave(ctx context.Context) (_node int, err
 	}
 	if _u.mutation.AnswerCleared() {
 		_spec.ClearField(landingpageqnaitem.FieldAnswer, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -184,6 +184,12 @@ type LandingPageQnaItemUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LandingPageQnaItemMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LandingPageQnaItemUpdateOne) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
@@ -244,12 +250,6 @@ func (_u *LandingPageQnaItemUpdateOne) SetNillableAnswer(v *string) *LandingPage
 // ClearAnswer clears the value of the "answer" field.
 func (_u *LandingPageQnaItemUpdateOne) ClearAnswer() *LandingPageQnaItemUpdateOne {
 	_u.mutation.ClearAnswer()
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LandingPageQnaItemUpdateOne) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -333,6 +333,9 @@ func (_u *LandingPageQnaItemUpdateOne) sqlSave(ctx context.Context) (_node *Land
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.LanguageLandingPageID(); ok {
 		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
 	}
@@ -350,9 +353,6 @@ func (_u *LandingPageQnaItemUpdateOne) sqlSave(ctx context.Context) (_node *Land
 	}
 	if _u.mutation.AnswerCleared() {
 		_spec.ClearField(landingpageqnaitem.FieldAnswer, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &LandingPageQnaItem{config: _u.config}
 	_spec.Assign = _node.assignValues

@@ -22,6 +22,34 @@ type LandingPageQnaItemCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LandingPageQnaItemCreate) SetCreatedAt(v time.Time) *LandingPageQnaItemCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LandingPageQnaItemCreate) SetNillableCreatedAt(v *time.Time) *LandingPageQnaItemCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LandingPageQnaItemCreate) SetUpdatedAt(v time.Time) *LandingPageQnaItemCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LandingPageQnaItemCreate) SetNillableUpdatedAt(v *time.Time) *LandingPageQnaItemCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
 func (_c *LandingPageQnaItemCreate) SetLanguageLandingPageID(v int) *LandingPageQnaItemCreate {
 	_c.mutation.SetLanguageLandingPageID(v)
@@ -52,34 +80,6 @@ func (_c *LandingPageQnaItemCreate) SetAnswer(v string) *LandingPageQnaItemCreat
 func (_c *LandingPageQnaItemCreate) SetNillableAnswer(v *string) *LandingPageQnaItemCreate {
 	if v != nil {
 		_c.SetAnswer(*v)
-	}
-	return _c
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (_c *LandingPageQnaItemCreate) SetCreatedAt(v time.Time) *LandingPageQnaItemCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *LandingPageQnaItemCreate) SetNillableCreatedAt(v *time.Time) *LandingPageQnaItemCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *LandingPageQnaItemCreate) SetUpdatedAt(v time.Time) *LandingPageQnaItemCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *LandingPageQnaItemCreate) SetNillableUpdatedAt(v *time.Time) *LandingPageQnaItemCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
 	}
 	return _c
 }
@@ -131,14 +131,14 @@ func (_c *LandingPageQnaItemCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *LandingPageQnaItemCreate) check() error {
-	if _, ok := _c.mutation.LanguageLandingPageID(); !ok {
-		return &ValidationError{Name: "language_landing_page_id", err: errors.New(`ent: missing required field "LandingPageQnaItem.language_landing_page_id"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LandingPageQnaItem.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LandingPageQnaItem.updated_at"`)}
+	}
+	if _, ok := _c.mutation.LanguageLandingPageID(); !ok {
+		return &ValidationError{Name: "language_landing_page_id", err: errors.New(`ent: missing required field "LandingPageQnaItem.language_landing_page_id"`)}
 	}
 	return nil
 }
@@ -167,6 +167,14 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 		_spec = sqlgraph.NewCreateSpec(landingpageqnaitem.Table, sqlgraph.NewFieldSpec(landingpageqnaitem.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(landingpageqnaitem.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.LanguageLandingPageID(); ok {
 		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
 		_node.LanguageLandingPageID = value
@@ -179,14 +187,6 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 		_spec.SetField(landingpageqnaitem.FieldAnswer, field.TypeString, value)
 		_node.Answer = &value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(landingpageqnaitem.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	return _node, _spec
 }
 
@@ -194,7 +194,7 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 // of the `INSERT` statement. For example:
 //
 //	client.LandingPageQnaItem.Create().
-//		SetLanguageLandingPageID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -203,7 +203,7 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LandingPageQnaItemUpsert) {
-//			SetLanguageLandingPageID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LandingPageQnaItemCreate) OnConflict(opts ...sql.ConflictOption) *LandingPageQnaItemUpsertOne {
@@ -238,6 +238,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageQnaItemUpsert) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsert {
+	u.Set(landingpageqnaitem.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsert) UpdateUpdatedAt() *LandingPageQnaItemUpsert {
+	u.SetExcluded(landingpageqnaitem.FieldUpdatedAt)
+	return u
+}
 
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
 func (u *LandingPageQnaItemUpsert) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsert {
@@ -293,18 +305,6 @@ func (u *LandingPageQnaItemUpsert) ClearAnswer() *LandingPageQnaItemUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LandingPageQnaItemUpsert) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsert {
-	u.Set(landingpageqnaitem.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LandingPageQnaItemUpsert) UpdateUpdatedAt() *LandingPageQnaItemUpsert {
-	u.SetExcluded(landingpageqnaitem.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -348,6 +348,20 @@ func (u *LandingPageQnaItemUpsertOne) Update(set func(*LandingPageQnaItemUpsert)
 		set(&LandingPageQnaItemUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageQnaItemUpsertOne) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertOne) UpdateUpdatedAt() *LandingPageQnaItemUpsertOne {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
@@ -410,20 +424,6 @@ func (u *LandingPageQnaItemUpsertOne) UpdateAnswer() *LandingPageQnaItemUpsertOn
 func (u *LandingPageQnaItemUpsertOne) ClearAnswer() *LandingPageQnaItemUpsertOne {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
 		s.ClearAnswer()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LandingPageQnaItemUpsertOne) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsertOne {
-	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LandingPageQnaItemUpsertOne) UpdateUpdatedAt() *LandingPageQnaItemUpsertOne {
-	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -562,7 +562,7 @@ func (_c *LandingPageQnaItemCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LandingPageQnaItemUpsert) {
-//			SetLanguageLandingPageID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LandingPageQnaItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *LandingPageQnaItemUpsertBulk {
@@ -638,6 +638,20 @@ func (u *LandingPageQnaItemUpsertBulk) Update(set func(*LandingPageQnaItemUpsert
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageQnaItemUpsertBulk) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertBulk) UpdateUpdatedAt() *LandingPageQnaItemUpsertBulk {
+	return u.Update(func(s *LandingPageQnaItemUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
 func (u *LandingPageQnaItemUpsertBulk) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
@@ -698,20 +712,6 @@ func (u *LandingPageQnaItemUpsertBulk) UpdateAnswer() *LandingPageQnaItemUpsertB
 func (u *LandingPageQnaItemUpsertBulk) ClearAnswer() *LandingPageQnaItemUpsertBulk {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
 		s.ClearAnswer()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LandingPageQnaItemUpsertBulk) SetUpdatedAt(v time.Time) *LandingPageQnaItemUpsertBulk {
-	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LandingPageQnaItemUpsertBulk) UpdateUpdatedAt() *LandingPageQnaItemUpsertBulk {
-	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

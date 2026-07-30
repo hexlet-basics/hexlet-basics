@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/edge"
@@ -29,8 +27,6 @@ func (StaffMember) Fields() []ent.Field {
 		field.Int("role_id"),
 		field.Other("allowed_locales", pq.StringArray{}).
 			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -39,4 +35,8 @@ func (StaffMember) Edges() []ent.Edge {
 		edge.To("user", User.Type).Field("user_id").Unique().Required(),
 		edge.To("role", StaffRole.Type).Field("role_id").Unique().Required(),
 	}
+}
+
+func (StaffMember) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

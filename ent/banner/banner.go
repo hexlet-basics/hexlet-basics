@@ -13,6 +13,10 @@ const (
 	Label = "banner"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldBackground holds the string denoting the background field in the database.
 	FieldBackground = "background"
 	// FieldBody holds the string denoting the body field in the database.
@@ -27,10 +31,6 @@ const (
 	FieldStartsAt = "starts_at"
 	// FieldFinishesAt holds the string denoting the finishes_at field in the database.
 	FieldFinishesAt = "finishes_at"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the banner in the database.
 	Table = "banners"
 )
@@ -38,6 +38,8 @@ const (
 // Columns holds all SQL columns for banner fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldBackground,
 	FieldBody,
 	FieldLocale,
@@ -45,8 +47,6 @@ var Columns = []string{
 	FieldURL,
 	FieldStartsAt,
 	FieldFinishesAt,
-	FieldCreatedAt,
-	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -60,16 +60,16 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultBackground holds the default value on creation for the "background" field.
-	DefaultBackground string
-	// DefaultState holds the default value on creation for the "state" field.
-	DefaultState string
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// DefaultBackground holds the default value on creation for the "background" field.
+	DefaultBackground string
+	// DefaultState holds the default value on creation for the "state" field.
+	DefaultState string
 )
 
 // OrderOption defines the ordering options for the Banner queries.
@@ -78,6 +78,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByBackground orders the results by the background field.
@@ -113,14 +123,4 @@ func ByStartsAt(opts ...sql.OrderTermOption) OrderOption {
 // ByFinishesAt orders the results by the finishes_at field.
 func ByFinishesAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFinishesAt, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

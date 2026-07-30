@@ -13,16 +13,16 @@ const (
 	Label = "category_qna_item"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldLanguageCategoryID holds the string denoting the language_category_id field in the database.
 	FieldLanguageCategoryID = "language_category_id"
 	// FieldQuestion holds the string denoting the question field in the database.
 	FieldQuestion = "question"
 	// FieldAnswer holds the string denoting the answer field in the database.
 	FieldAnswer = "answer"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the categoryqnaitem in the database.
 	Table = "language_category_qna_items"
 )
@@ -30,11 +30,11 @@ const (
 // Columns holds all SQL columns for categoryqnaitem fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldLanguageCategoryID,
 	FieldQuestion,
 	FieldAnswer,
-	FieldCreatedAt,
-	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -64,6 +64,16 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
 // ByLanguageCategoryID orders the results by the language_category_id field.
 func ByLanguageCategoryID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLanguageCategoryID, opts...).ToFunc()
@@ -77,14 +87,4 @@ func ByQuestion(opts ...sql.OrderTermOption) OrderOption {
 // ByAnswer orders the results by the answer field.
 func ByAnswer(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAnswer, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

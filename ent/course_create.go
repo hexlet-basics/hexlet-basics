@@ -24,6 +24,34 @@ type CourseCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *CourseCreate) SetCreatedAt(v time.Time) *CourseCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableCreatedAt(v *time.Time) *CourseCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *CourseCreate) SetUpdatedAt(v time.Time) *CourseCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableUpdatedAt(v *time.Time) *CourseCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetSlug sets the "slug" field.
 func (_c *CourseCreate) SetSlug(v string) *CourseCreate {
 	_c.mutation.SetSlug(v)
@@ -164,34 +192,6 @@ func (_c *CourseCreate) SetNillableOrder(v *int) *CourseCreate {
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *CourseCreate) SetCreatedAt(v time.Time) *CourseCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *CourseCreate) SetNillableCreatedAt(v *time.Time) *CourseCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *CourseCreate) SetUpdatedAt(v time.Time) *CourseCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *CourseCreate) SetNillableUpdatedAt(v *time.Time) *CourseCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
 func (_c *CourseCreate) AddLandingPageIDs(ids ...int) *CourseCreate {
 	_c.mutation.AddLandingPageIDs(ids...)
@@ -247,14 +247,6 @@ func (_c *CourseCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *CourseCreate) defaults() {
-	if _, ok := _c.mutation.MembersCount(); !ok {
-		v := course.DefaultMembersCount
-		_c.mutation.SetMembersCount(v)
-	}
-	if _, ok := _c.mutation.LessonsCount(); !ok {
-		v := course.DefaultLessonsCount
-		_c.mutation.SetLessonsCount(v)
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := course.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -263,21 +255,29 @@ func (_c *CourseCreate) defaults() {
 		v := course.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.MembersCount(); !ok {
+		v := course.DefaultMembersCount
+		_c.mutation.SetMembersCount(v)
+	}
+	if _, ok := _c.mutation.LessonsCount(); !ok {
+		v := course.DefaultLessonsCount
+		_c.mutation.SetLessonsCount(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CourseCreate) check() error {
-	if _, ok := _c.mutation.MembersCount(); !ok {
-		return &ValidationError{Name: "members_count", err: errors.New(`ent: missing required field "Course.members_count"`)}
-	}
-	if _, ok := _c.mutation.LessonsCount(); !ok {
-		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "Course.lessons_count"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Course.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Course.updated_at"`)}
+	}
+	if _, ok := _c.mutation.MembersCount(); !ok {
+		return &ValidationError{Name: "members_count", err: errors.New(`ent: missing required field "Course.members_count"`)}
+	}
+	if _, ok := _c.mutation.LessonsCount(); !ok {
+		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "Course.lessons_count"`)}
 	}
 	return nil
 }
@@ -306,6 +306,14 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(course.Table, sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(course.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(course.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -341,14 +349,6 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Order(); ok {
 		_spec.SetField(course.FieldOrder, field.TypeInt, value)
 		_node.Order = &value
-	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(course.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
 	}
 	if nodes := _c.mutation.LandingPagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -390,7 +390,7 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Course.Create().
-//		SetSlug(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -399,7 +399,7 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CourseUpsert) {
-//			SetSlug(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CourseCreate) OnConflict(opts ...sql.ConflictOption) *CourseUpsertOne {
@@ -434,6 +434,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseUpsert) SetUpdatedAt(v time.Time) *CourseUpsert {
+	u.Set(course.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateUpdatedAt() *CourseUpsert {
+	u.SetExcluded(course.FieldUpdatedAt)
+	return u
+}
 
 // SetSlug sets the "slug" field.
 func (u *CourseUpsert) SetSlug(v string) *CourseUpsert {
@@ -627,18 +639,6 @@ func (u *CourseUpsert) ClearOrder() *CourseUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseUpsert) SetUpdatedAt(v time.Time) *CourseUpsert {
-	u.Set(course.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseUpsert) UpdateUpdatedAt() *CourseUpsert {
-	u.SetExcluded(course.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -682,6 +682,20 @@ func (u *CourseUpsertOne) Update(set func(*CourseUpsert)) *CourseUpsertOne {
 		set(&CourseUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseUpsertOne) SetUpdatedAt(v time.Time) *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateUpdatedAt() *CourseUpsertOne {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetSlug sets the "slug" field.
@@ -908,20 +922,6 @@ func (u *CourseUpsertOne) ClearOrder() *CourseUpsertOne {
 	})
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseUpsertOne) SetUpdatedAt(v time.Time) *CourseUpsertOne {
-	return u.Update(func(s *CourseUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseUpsertOne) UpdateUpdatedAt() *CourseUpsertOne {
-	return u.Update(func(s *CourseUpsert) {
-		s.UpdateUpdatedAt()
-	})
-}
-
 // Exec executes the query.
 func (u *CourseUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1057,7 +1057,7 @@ func (_c *CourseCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CourseUpsert) {
-//			SetSlug(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CourseCreateBulk) OnConflict(opts ...sql.ConflictOption) *CourseUpsertBulk {
@@ -1131,6 +1131,20 @@ func (u *CourseUpsertBulk) Update(set func(*CourseUpsert)) *CourseUpsertBulk {
 		set(&CourseUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseUpsertBulk) SetUpdatedAt(v time.Time) *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateUpdatedAt() *CourseUpsertBulk {
+	return u.Update(func(s *CourseUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetSlug sets the "slug" field.
@@ -1354,20 +1368,6 @@ func (u *CourseUpsertBulk) UpdateOrder() *CourseUpsertBulk {
 func (u *CourseUpsertBulk) ClearOrder() *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
 		s.ClearOrder()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseUpsertBulk) SetUpdatedAt(v time.Time) *CourseUpsertBulk {
-	return u.Update(func(s *CourseUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseUpsertBulk) UpdateUpdatedAt() *CourseUpsertBulk {
-	return u.Update(func(s *CourseUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

@@ -25,24 +25,6 @@ type StaffMemberCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetUserID sets the "user_id" field.
-func (_c *StaffMemberCreate) SetUserID(v int) *StaffMemberCreate {
-	_c.mutation.SetUserID(v)
-	return _c
-}
-
-// SetRoleID sets the "role_id" field.
-func (_c *StaffMemberCreate) SetRoleID(v int) *StaffMemberCreate {
-	_c.mutation.SetRoleID(v)
-	return _c
-}
-
-// SetAllowedLocales sets the "allowed_locales" field.
-func (_c *StaffMemberCreate) SetAllowedLocales(v pq.StringArray) *StaffMemberCreate {
-	_c.mutation.SetAllowedLocales(v)
-	return _c
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (_c *StaffMemberCreate) SetCreatedAt(v time.Time) *StaffMemberCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -68,6 +50,24 @@ func (_c *StaffMemberCreate) SetNillableUpdatedAt(v *time.Time) *StaffMemberCrea
 	if v != nil {
 		_c.SetUpdatedAt(*v)
 	}
+	return _c
+}
+
+// SetUserID sets the "user_id" field.
+func (_c *StaffMemberCreate) SetUserID(v int) *StaffMemberCreate {
+	_c.mutation.SetUserID(v)
+	return _c
+}
+
+// SetRoleID sets the "role_id" field.
+func (_c *StaffMemberCreate) SetRoleID(v int) *StaffMemberCreate {
+	_c.mutation.SetRoleID(v)
+	return _c
+}
+
+// SetAllowedLocales sets the "allowed_locales" field.
+func (_c *StaffMemberCreate) SetAllowedLocales(v pq.StringArray) *StaffMemberCreate {
+	_c.mutation.SetAllowedLocales(v)
 	return _c
 }
 
@@ -128,6 +128,12 @@ func (_c *StaffMemberCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *StaffMemberCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StaffMember.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StaffMember.updated_at"`)}
+	}
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "StaffMember.user_id"`)}
 	}
@@ -136,12 +142,6 @@ func (_c *StaffMemberCreate) check() error {
 	}
 	if _, ok := _c.mutation.AllowedLocales(); !ok {
 		return &ValidationError{Name: "allowed_locales", err: errors.New(`ent: missing required field "StaffMember.allowed_locales"`)}
-	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StaffMember.created_at"`)}
-	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StaffMember.updated_at"`)}
 	}
 	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "StaffMember.user"`)}
@@ -176,10 +176,6 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(staffmember.Table, sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
-	if value, ok := _c.mutation.AllowedLocales(); ok {
-		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
-		_node.AllowedLocales = value
-	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(staffmember.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
@@ -187,6 +183,10 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(staffmember.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := _c.mutation.AllowedLocales(); ok {
+		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
+		_node.AllowedLocales = value
 	}
 	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -229,7 +229,7 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.StaffMember.Create().
-//		SetUserID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -238,7 +238,7 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StaffMemberUpsert) {
-//			SetUserID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *StaffMemberCreate) OnConflict(opts ...sql.ConflictOption) *StaffMemberUpsertOne {
@@ -274,6 +274,18 @@ type (
 	}
 )
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffMemberUpsert) SetUpdatedAt(v time.Time) *StaffMemberUpsert {
+	u.Set(staffmember.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffMemberUpsert) UpdateUpdatedAt() *StaffMemberUpsert {
+	u.SetExcluded(staffmember.FieldUpdatedAt)
+	return u
+}
+
 // SetUserID sets the "user_id" field.
 func (u *StaffMemberUpsert) SetUserID(v int) *StaffMemberUpsert {
 	u.Set(staffmember.FieldUserID, v)
@@ -307,18 +319,6 @@ func (u *StaffMemberUpsert) SetAllowedLocales(v pq.StringArray) *StaffMemberUpse
 // UpdateAllowedLocales sets the "allowed_locales" field to the value that was provided on create.
 func (u *StaffMemberUpsert) UpdateAllowedLocales() *StaffMemberUpsert {
 	u.SetExcluded(staffmember.FieldAllowedLocales)
-	return u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffMemberUpsert) SetUpdatedAt(v time.Time) *StaffMemberUpsert {
-	u.Set(staffmember.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffMemberUpsert) UpdateUpdatedAt() *StaffMemberUpsert {
-	u.SetExcluded(staffmember.FieldUpdatedAt)
 	return u
 }
 
@@ -367,6 +367,20 @@ func (u *StaffMemberUpsertOne) Update(set func(*StaffMemberUpsert)) *StaffMember
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffMemberUpsertOne) SetUpdatedAt(v time.Time) *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffMemberUpsertOne) UpdateUpdatedAt() *StaffMemberUpsertOne {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *StaffMemberUpsertOne) SetUserID(v int) *StaffMemberUpsertOne {
 	return u.Update(func(s *StaffMemberUpsert) {
@@ -406,20 +420,6 @@ func (u *StaffMemberUpsertOne) SetAllowedLocales(v pq.StringArray) *StaffMemberU
 func (u *StaffMemberUpsertOne) UpdateAllowedLocales() *StaffMemberUpsertOne {
 	return u.Update(func(s *StaffMemberUpsert) {
 		s.UpdateAllowedLocales()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffMemberUpsertOne) SetUpdatedAt(v time.Time) *StaffMemberUpsertOne {
-	return u.Update(func(s *StaffMemberUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffMemberUpsertOne) UpdateUpdatedAt() *StaffMemberUpsertOne {
-	return u.Update(func(s *StaffMemberUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -558,7 +558,7 @@ func (_c *StaffMemberCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StaffMemberUpsert) {
-//			SetUserID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *StaffMemberCreateBulk) OnConflict(opts ...sql.ConflictOption) *StaffMemberUpsertBulk {
@@ -634,6 +634,20 @@ func (u *StaffMemberUpsertBulk) Update(set func(*StaffMemberUpsert)) *StaffMembe
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffMemberUpsertBulk) SetUpdatedAt(v time.Time) *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffMemberUpsertBulk) UpdateUpdatedAt() *StaffMemberUpsertBulk {
+	return u.Update(func(s *StaffMemberUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *StaffMemberUpsertBulk) SetUserID(v int) *StaffMemberUpsertBulk {
 	return u.Update(func(s *StaffMemberUpsert) {
@@ -673,20 +687,6 @@ func (u *StaffMemberUpsertBulk) SetAllowedLocales(v pq.StringArray) *StaffMember
 func (u *StaffMemberUpsertBulk) UpdateAllowedLocales() *StaffMemberUpsertBulk {
 	return u.Update(func(s *StaffMemberUpsert) {
 		s.UpdateAllowedLocales()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffMemberUpsertBulk) SetUpdatedAt(v time.Time) *StaffMemberUpsertBulk {
-	return u.Update(func(s *StaffMemberUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffMemberUpsertBulk) UpdateUpdatedAt() *StaffMemberUpsertBulk {
-	return u.Update(func(s *StaffMemberUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

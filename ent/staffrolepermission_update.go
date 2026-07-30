@@ -29,6 +29,12 @@ func (_u *StaffRolePermissionUpdate) Where(ps ...predicate.StaffRolePermission) 
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *StaffRolePermissionUpdate) SetUpdatedAt(v time.Time) *StaffRolePermissionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetRoleID sets the "role_id" field.
 func (_u *StaffRolePermissionUpdate) SetRoleID(v int) *StaffRolePermissionUpdate {
 	_u.mutation.SetRoleID(v)
@@ -113,12 +119,6 @@ func (_u *StaffRolePermissionUpdate) SetNillableCanDestroy(v *bool) *StaffRolePe
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *StaffRolePermissionUpdate) SetUpdatedAt(v time.Time) *StaffRolePermissionUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // SetRole sets the "role" edge to the StaffRole entity.
 func (_u *StaffRolePermissionUpdate) SetRole(v *StaffRole) *StaffRolePermissionUpdate {
 	return _u.SetRoleID(v.ID)
@@ -191,6 +191,9 @@ func (_u *StaffRolePermissionUpdate) sqlSave(ctx context.Context) (_node int, er
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(staffrolepermission.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Resource(); ok {
 		_spec.SetField(staffrolepermission.FieldResource, field.TypeString, value)
 	}
@@ -205,9 +208,6 @@ func (_u *StaffRolePermissionUpdate) sqlSave(ctx context.Context) (_node int, er
 	}
 	if value, ok := _u.mutation.CanDestroy(); ok {
 		_spec.SetField(staffrolepermission.FieldCanDestroy, field.TypeBool, value)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(staffrolepermission.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.RoleCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -256,6 +256,12 @@ type StaffRolePermissionUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *StaffRolePermissionMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *StaffRolePermissionUpdateOne) SetUpdatedAt(v time.Time) *StaffRolePermissionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetRoleID sets the "role_id" field.
@@ -339,12 +345,6 @@ func (_u *StaffRolePermissionUpdateOne) SetNillableCanDestroy(v *bool) *StaffRol
 	if v != nil {
 		_u.SetCanDestroy(*v)
 	}
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *StaffRolePermissionUpdateOne) SetUpdatedAt(v time.Time) *StaffRolePermissionUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -450,6 +450,9 @@ func (_u *StaffRolePermissionUpdateOne) sqlSave(ctx context.Context) (_node *Sta
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(staffrolepermission.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Resource(); ok {
 		_spec.SetField(staffrolepermission.FieldResource, field.TypeString, value)
 	}
@@ -464,9 +467,6 @@ func (_u *StaffRolePermissionUpdateOne) sqlSave(ctx context.Context) (_node *Sta
 	}
 	if value, ok := _u.mutation.CanDestroy(); ok {
 		_spec.SetField(staffrolepermission.FieldCanDestroy, field.TypeBool, value)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(staffrolepermission.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.RoleCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -335,12 +335,12 @@ func (_q *CourseQuery) WithCurrentVersion(opts ...func(*CourseVersionQuery)) *Co
 // Example:
 //
 //	var v []struct {
-//		Slug string `json:"slug,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Course.Query().
-//		GroupBy(course.FieldSlug).
+//		GroupBy(course.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CourseQuery) GroupBy(field string, fields ...string) *CourseGroupBy {
@@ -358,11 +358,11 @@ func (_q *CourseQuery) GroupBy(field string, fields ...string) *CourseGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Slug string `json:"slug,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Course.Query().
-//		Select(course.FieldSlug).
+//		Select(course.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *CourseQuery) Select(fields ...string) *CourseSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

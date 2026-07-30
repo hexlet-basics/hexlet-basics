@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -48,8 +46,6 @@ func (LandingPage) Fields() []ent.Field {
 		field.Bool("footer").Optional().Nillable(),
 		field.String("footer_name").Optional().Nillable(),
 		field.Int("landing_page_to_redirect_id").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -61,4 +57,8 @@ func (LandingPage) Edges() []ent.Edge {
 			Unique().
 			Required(),
 	}
+}
+
+func (LandingPage) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

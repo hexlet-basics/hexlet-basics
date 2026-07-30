@@ -31,6 +31,12 @@ func (_u *StaffMemberUpdate) Where(ps ...predicate.StaffMember) *StaffMemberUpda
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *StaffMemberUpdate) SetUpdatedAt(v time.Time) *StaffMemberUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetUserID sets the "user_id" field.
 func (_u *StaffMemberUpdate) SetUserID(v int) *StaffMemberUpdate {
 	_u.mutation.SetUserID(v)
@@ -62,12 +68,6 @@ func (_u *StaffMemberUpdate) SetNillableRoleID(v *int) *StaffMemberUpdate {
 // SetAllowedLocales sets the "allowed_locales" field.
 func (_u *StaffMemberUpdate) SetAllowedLocales(v pq.StringArray) *StaffMemberUpdate {
 	_u.mutation.SetAllowedLocales(v)
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *StaffMemberUpdate) SetUpdatedAt(v time.Time) *StaffMemberUpdate {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -157,11 +157,11 @@ func (_u *StaffMemberUpdate) sqlSave(ctx context.Context) (_node int, err error)
 			}
 		}
 	}
-	if value, ok := _u.mutation.AllowedLocales(); ok {
-		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
-	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(staffmember.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.AllowedLocales(); ok {
+		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -241,6 +241,12 @@ type StaffMemberUpdateOne struct {
 	mutation *StaffMemberMutation
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *StaffMemberUpdateOne) SetUpdatedAt(v time.Time) *StaffMemberUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetUserID sets the "user_id" field.
 func (_u *StaffMemberUpdateOne) SetUserID(v int) *StaffMemberUpdateOne {
 	_u.mutation.SetUserID(v)
@@ -272,12 +278,6 @@ func (_u *StaffMemberUpdateOne) SetNillableRoleID(v *int) *StaffMemberUpdateOne 
 // SetAllowedLocales sets the "allowed_locales" field.
 func (_u *StaffMemberUpdateOne) SetAllowedLocales(v pq.StringArray) *StaffMemberUpdateOne {
 	_u.mutation.SetAllowedLocales(v)
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *StaffMemberUpdateOne) SetUpdatedAt(v time.Time) *StaffMemberUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -397,11 +397,11 @@ func (_u *StaffMemberUpdateOne) sqlSave(ctx context.Context) (_node *StaffMember
 			}
 		}
 	}
-	if value, ok := _u.mutation.AllowedLocales(); ok {
-		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
-	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(staffmember.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.AllowedLocales(); ok {
+		_spec.SetField(staffmember.FieldAllowedLocales, field.TypeOther, value)
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

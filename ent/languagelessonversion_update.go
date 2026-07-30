@@ -28,6 +28,12 @@ func (_u *LanguageLessonVersionUpdate) Where(ps ...predicate.LanguageLessonVersi
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonVersionUpdate) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetNaturalOrder sets the "natural_order" field.
 func (_u *LanguageLessonVersionUpdate) SetNaturalOrder(v int) *LanguageLessonVersionUpdate {
 	_u.mutation.ResetNaturalOrder()
@@ -246,12 +252,6 @@ func (_u *LanguageLessonVersionUpdate) AddModuleVersionID(v int) *LanguageLesson
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageLessonVersionUpdate) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LanguageLessonVersionMutation object of the builder.
 func (_u *LanguageLessonVersionUpdate) Mutation() *LanguageLessonVersionMutation {
 	return _u.mutation
@@ -301,6 +301,9 @@ func (_u *LanguageLessonVersionUpdate) sqlSave(ctx context.Context) (_node int, 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonversion.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.NaturalOrder(); ok {
 		_spec.SetField(languagelessonversion.FieldNaturalOrder, field.TypeInt, value)
@@ -368,9 +371,6 @@ func (_u *LanguageLessonVersionUpdate) sqlSave(ctx context.Context) (_node int, 
 	if value, ok := _u.mutation.AddedModuleVersionID(); ok {
 		_spec.AddField(languagelessonversion.FieldModuleVersionID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagelessonversion.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{languagelessonversion.Label}
@@ -389,6 +389,12 @@ type LanguageLessonVersionUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LanguageLessonVersionMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonVersionUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetNaturalOrder sets the "natural_order" field.
@@ -609,12 +615,6 @@ func (_u *LanguageLessonVersionUpdateOne) AddModuleVersionID(v int) *LanguageLes
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageLessonVersionUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LanguageLessonVersionMutation object of the builder.
 func (_u *LanguageLessonVersionUpdateOne) Mutation() *LanguageLessonVersionMutation {
 	return _u.mutation
@@ -695,6 +695,9 @@ func (_u *LanguageLessonVersionUpdateOne) sqlSave(ctx context.Context) (_node *L
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonversion.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.NaturalOrder(); ok {
 		_spec.SetField(languagelessonversion.FieldNaturalOrder, field.TypeInt, value)
 	}
@@ -760,9 +763,6 @@ func (_u *LanguageLessonVersionUpdateOne) sqlSave(ctx context.Context) (_node *L
 	}
 	if value, ok := _u.mutation.AddedModuleVersionID(); ok {
 		_spec.AddField(languagelessonversion.FieldModuleVersionID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagelessonversion.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &LanguageLessonVersion{config: _u.config}
 	_spec.Assign = _node.assignValues

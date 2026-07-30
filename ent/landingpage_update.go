@@ -29,6 +29,12 @@ func (_u *LandingPageUpdate) Where(ps ...predicate.LandingPage) *LandingPageUpda
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LandingPageUpdate) SetUpdatedAt(v time.Time) *LandingPageUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetLanguageID sets the "language_id" field.
 func (_u *LandingPageUpdate) SetLanguageID(v int) *LandingPageUpdate {
 	_u.mutation.SetLanguageID(v)
@@ -410,12 +416,6 @@ func (_u *LandingPageUpdate) ClearLandingPageToRedirectID() *LandingPageUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LandingPageUpdate) SetUpdatedAt(v time.Time) *LandingPageUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_u *LandingPageUpdate) SetCourseID(id int) *LandingPageUpdate {
 	_u.mutation.SetCourseID(id)
@@ -493,6 +493,9 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(landingpage.FieldSlug, field.TypeString, value)
@@ -605,9 +608,6 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if _u.mutation.LandingPageToRedirectIDCleared() {
 		_spec.ClearField(landingpage.FieldLandingPageToRedirectID, field.TypeInt)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -655,6 +655,12 @@ type LandingPageUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LandingPageMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LandingPageUpdateOne) SetUpdatedAt(v time.Time) *LandingPageUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -1038,12 +1044,6 @@ func (_u *LandingPageUpdateOne) ClearLandingPageToRedirectID() *LandingPageUpdat
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LandingPageUpdateOne) SetUpdatedAt(v time.Time) *LandingPageUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_u *LandingPageUpdateOne) SetCourseID(id int) *LandingPageUpdateOne {
 	_u.mutation.SetCourseID(id)
@@ -1151,6 +1151,9 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(landingpage.FieldSlug, field.TypeString, value)
@@ -1262,9 +1265,6 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 	}
 	if _u.mutation.LandingPageToRedirectIDCleared() {
 		_spec.ClearField(landingpage.FieldLandingPageToRedirectID, field.TypeInt)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{

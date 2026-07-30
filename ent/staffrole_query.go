@@ -299,12 +299,12 @@ func (_q *StaffRoleQuery) WithPermissions(opts ...func(*StaffRolePermissionQuery
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.StaffRole.Query().
-//		GroupBy(staffrole.FieldName).
+//		GroupBy(staffrole.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *StaffRoleQuery) GroupBy(field string, fields ...string) *StaffRoleGroupBy {
@@ -322,11 +322,11 @@ func (_q *StaffRoleQuery) GroupBy(field string, fields ...string) *StaffRoleGrou
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.StaffRole.Query().
-//		Select(staffrole.FieldName).
+//		Select(staffrole.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *StaffRoleQuery) Select(fields ...string) *StaffRoleSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

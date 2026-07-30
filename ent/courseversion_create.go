@@ -23,6 +23,34 @@ type CourseVersionCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *CourseVersionCreate) SetCreatedAt(v time.Time) *CourseVersionCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableCreatedAt(v *time.Time) *CourseVersionCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *CourseVersionCreate) SetUpdatedAt(v time.Time) *CourseVersionCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *CourseVersionCreate) SetNillableUpdatedAt(v *time.Time) *CourseVersionCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetResult sets the "result" field.
 func (_c *CourseVersionCreate) SetResult(v string) *CourseVersionCreate {
 	_c.mutation.SetResult(v)
@@ -169,34 +197,6 @@ func (_c *CourseVersionCreate) SetLanguageID(v int) *CourseVersionCreate {
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *CourseVersionCreate) SetCreatedAt(v time.Time) *CourseVersionCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *CourseVersionCreate) SetNillableCreatedAt(v *time.Time) *CourseVersionCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *CourseVersionCreate) SetUpdatedAt(v time.Time) *CourseVersionCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *CourseVersionCreate) SetNillableUpdatedAt(v *time.Time) *CourseVersionCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by IDs.
 func (_c *CourseVersionCreate) AddCurrentCourseIDs(ids ...int) *CourseVersionCreate {
 	_c.mutation.AddCurrentCourseIDs(ids...)
@@ -247,10 +247,6 @@ func (_c *CourseVersionCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *CourseVersionCreate) defaults() {
-	if _, ok := _c.mutation.LessonsCount(); !ok {
-		v := courseversion.DefaultLessonsCount
-		_c.mutation.SetLessonsCount(v)
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := courseversion.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -259,21 +255,25 @@ func (_c *CourseVersionCreate) defaults() {
 		v := courseversion.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.LessonsCount(); !ok {
+		v := courseversion.DefaultLessonsCount
+		_c.mutation.SetLessonsCount(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CourseVersionCreate) check() error {
-	if _, ok := _c.mutation.LessonsCount(); !ok {
-		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "CourseVersion.lessons_count"`)}
-	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "CourseVersion.language_id"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "CourseVersion.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CourseVersion.updated_at"`)}
+	}
+	if _, ok := _c.mutation.LessonsCount(); !ok {
+		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "CourseVersion.lessons_count"`)}
+	}
+	if _, ok := _c.mutation.LanguageID(); !ok {
+		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "CourseVersion.language_id"`)}
 	}
 	return nil
 }
@@ -302,6 +302,14 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 		_spec = sqlgraph.NewCreateSpec(courseversion.Table, sqlgraph.NewFieldSpec(courseversion.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(courseversion.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Result(); ok {
 		_spec.SetField(courseversion.FieldResult, field.TypeString, value)
 		_node.Result = &value
@@ -346,14 +354,6 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
 		_node.LanguageID = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(courseversion.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(courseversion.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	if nodes := _c.mutation.CurrentCoursesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -377,7 +377,7 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 // of the `INSERT` statement. For example:
 //
 //	client.CourseVersion.Create().
-//		SetResult(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -386,7 +386,7 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CourseVersionUpsert) {
-//			SetResult(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CourseVersionCreate) OnConflict(opts ...sql.ConflictOption) *CourseVersionUpsertOne {
@@ -421,6 +421,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseVersionUpsert) SetUpdatedAt(v time.Time) *CourseVersionUpsert {
+	u.Set(courseversion.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseVersionUpsert) UpdateUpdatedAt() *CourseVersionUpsert {
+	u.SetExcluded(courseversion.FieldUpdatedAt)
+	return u
+}
 
 // SetResult sets the "result" field.
 func (u *CourseVersionUpsert) SetResult(v string) *CourseVersionUpsert {
@@ -620,18 +632,6 @@ func (u *CourseVersionUpsert) AddLanguageID(v int) *CourseVersionUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseVersionUpsert) SetUpdatedAt(v time.Time) *CourseVersionUpsert {
-	u.Set(courseversion.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseVersionUpsert) UpdateUpdatedAt() *CourseVersionUpsert {
-	u.SetExcluded(courseversion.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -675,6 +675,20 @@ func (u *CourseVersionUpsertOne) Update(set func(*CourseVersionUpsert)) *CourseV
 		set(&CourseVersionUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseVersionUpsertOne) SetUpdatedAt(v time.Time) *CourseVersionUpsertOne {
+	return u.Update(func(s *CourseVersionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseVersionUpsertOne) UpdateUpdatedAt() *CourseVersionUpsertOne {
+	return u.Update(func(s *CourseVersionUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetResult sets the "result" field.
@@ -908,20 +922,6 @@ func (u *CourseVersionUpsertOne) UpdateLanguageID() *CourseVersionUpsertOne {
 	})
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseVersionUpsertOne) SetUpdatedAt(v time.Time) *CourseVersionUpsertOne {
-	return u.Update(func(s *CourseVersionUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseVersionUpsertOne) UpdateUpdatedAt() *CourseVersionUpsertOne {
-	return u.Update(func(s *CourseVersionUpsert) {
-		s.UpdateUpdatedAt()
-	})
-}
-
 // Exec executes the query.
 func (u *CourseVersionUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1057,7 +1057,7 @@ func (_c *CourseVersionCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CourseVersionUpsert) {
-//			SetResult(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CourseVersionCreateBulk) OnConflict(opts ...sql.ConflictOption) *CourseVersionUpsertBulk {
@@ -1131,6 +1131,20 @@ func (u *CourseVersionUpsertBulk) Update(set func(*CourseVersionUpsert)) *Course
 		set(&CourseVersionUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseVersionUpsertBulk) SetUpdatedAt(v time.Time) *CourseVersionUpsertBulk {
+	return u.Update(func(s *CourseVersionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseVersionUpsertBulk) UpdateUpdatedAt() *CourseVersionUpsertBulk {
+	return u.Update(func(s *CourseVersionUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetResult sets the "result" field.
@@ -1361,20 +1375,6 @@ func (u *CourseVersionUpsertBulk) AddLanguageID(v int) *CourseVersionUpsertBulk 
 func (u *CourseVersionUpsertBulk) UpdateLanguageID() *CourseVersionUpsertBulk {
 	return u.Update(func(s *CourseVersionUpsert) {
 		s.UpdateLanguageID()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseVersionUpsertBulk) SetUpdatedAt(v time.Time) *CourseVersionUpsertBulk {
-	return u.Update(func(s *CourseVersionUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseVersionUpsertBulk) UpdateUpdatedAt() *CourseVersionUpsertBulk {
-	return u.Update(func(s *CourseVersionUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

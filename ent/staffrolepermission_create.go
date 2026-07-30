@@ -23,6 +23,34 @@ type StaffRolePermissionCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *StaffRolePermissionCreate) SetCreatedAt(v time.Time) *StaffRolePermissionCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *StaffRolePermissionCreate) SetNillableCreatedAt(v *time.Time) *StaffRolePermissionCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *StaffRolePermissionCreate) SetUpdatedAt(v time.Time) *StaffRolePermissionCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *StaffRolePermissionCreate) SetNillableUpdatedAt(v *time.Time) *StaffRolePermissionCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetRoleID sets the "role_id" field.
 func (_c *StaffRolePermissionCreate) SetRoleID(v int) *StaffRolePermissionCreate {
 	_c.mutation.SetRoleID(v)
@@ -91,34 +119,6 @@ func (_c *StaffRolePermissionCreate) SetNillableCanDestroy(v *bool) *StaffRolePe
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *StaffRolePermissionCreate) SetCreatedAt(v time.Time) *StaffRolePermissionCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *StaffRolePermissionCreate) SetNillableCreatedAt(v *time.Time) *StaffRolePermissionCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *StaffRolePermissionCreate) SetUpdatedAt(v time.Time) *StaffRolePermissionCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *StaffRolePermissionCreate) SetNillableUpdatedAt(v *time.Time) *StaffRolePermissionCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // SetRole sets the "role" edge to the StaffRole entity.
 func (_c *StaffRolePermissionCreate) SetRole(v *StaffRole) *StaffRolePermissionCreate {
 	return _c.SetRoleID(v.ID)
@@ -159,6 +159,14 @@ func (_c *StaffRolePermissionCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *StaffRolePermissionCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := staffrolepermission.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := staffrolepermission.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := _c.mutation.CanIndex(); !ok {
 		v := staffrolepermission.DefaultCanIndex
 		_c.mutation.SetCanIndex(v)
@@ -175,18 +183,16 @@ func (_c *StaffRolePermissionCreate) defaults() {
 		v := staffrolepermission.DefaultCanDestroy
 		_c.mutation.SetCanDestroy(v)
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		v := staffrolepermission.DefaultCreatedAt()
-		_c.mutation.SetCreatedAt(v)
-	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		v := staffrolepermission.DefaultUpdatedAt()
-		_c.mutation.SetUpdatedAt(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *StaffRolePermissionCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StaffRolePermission.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StaffRolePermission.updated_at"`)}
+	}
 	if _, ok := _c.mutation.RoleID(); !ok {
 		return &ValidationError{Name: "role_id", err: errors.New(`ent: missing required field "StaffRolePermission.role_id"`)}
 	}
@@ -204,12 +210,6 @@ func (_c *StaffRolePermissionCreate) check() error {
 	}
 	if _, ok := _c.mutation.CanDestroy(); !ok {
 		return &ValidationError{Name: "can_destroy", err: errors.New(`ent: missing required field "StaffRolePermission.can_destroy"`)}
-	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StaffRolePermission.created_at"`)}
-	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StaffRolePermission.updated_at"`)}
 	}
 	if len(_c.mutation.RoleIDs()) == 0 {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required edge "StaffRolePermission.role"`)}
@@ -241,6 +241,14 @@ func (_c *StaffRolePermissionCreate) createSpec() (*StaffRolePermission, *sqlgra
 		_spec = sqlgraph.NewCreateSpec(staffrolepermission.Table, sqlgraph.NewFieldSpec(staffrolepermission.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(staffrolepermission.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(staffrolepermission.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Resource(); ok {
 		_spec.SetField(staffrolepermission.FieldResource, field.TypeString, value)
 		_node.Resource = value
@@ -260,14 +268,6 @@ func (_c *StaffRolePermissionCreate) createSpec() (*StaffRolePermission, *sqlgra
 	if value, ok := _c.mutation.CanDestroy(); ok {
 		_spec.SetField(staffrolepermission.FieldCanDestroy, field.TypeBool, value)
 		_node.CanDestroy = value
-	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(staffrolepermission.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(staffrolepermission.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
 	}
 	if nodes := _c.mutation.RoleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -293,7 +293,7 @@ func (_c *StaffRolePermissionCreate) createSpec() (*StaffRolePermission, *sqlgra
 // of the `INSERT` statement. For example:
 //
 //	client.StaffRolePermission.Create().
-//		SetRoleID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -302,7 +302,7 @@ func (_c *StaffRolePermissionCreate) createSpec() (*StaffRolePermission, *sqlgra
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StaffRolePermissionUpsert) {
-//			SetRoleID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *StaffRolePermissionCreate) OnConflict(opts ...sql.ConflictOption) *StaffRolePermissionUpsertOne {
@@ -337,6 +337,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRolePermissionUpsert) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsert {
+	u.Set(staffrolepermission.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsert) UpdateUpdatedAt() *StaffRolePermissionUpsert {
+	u.SetExcluded(staffrolepermission.FieldUpdatedAt)
+	return u
+}
 
 // SetRoleID sets the "role_id" field.
 func (u *StaffRolePermissionUpsert) SetRoleID(v int) *StaffRolePermissionUpsert {
@@ -410,18 +422,6 @@ func (u *StaffRolePermissionUpsert) UpdateCanDestroy() *StaffRolePermissionUpser
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffRolePermissionUpsert) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsert {
-	u.Set(staffrolepermission.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffRolePermissionUpsert) UpdateUpdatedAt() *StaffRolePermissionUpsert {
-	u.SetExcluded(staffrolepermission.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -465,6 +465,20 @@ func (u *StaffRolePermissionUpsertOne) Update(set func(*StaffRolePermissionUpser
 		set(&StaffRolePermissionUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRolePermissionUpsertOne) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertOne) UpdateUpdatedAt() *StaffRolePermissionUpsertOne {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetRoleID sets the "role_id" field.
@@ -548,20 +562,6 @@ func (u *StaffRolePermissionUpsertOne) SetCanDestroy(v bool) *StaffRolePermissio
 func (u *StaffRolePermissionUpsertOne) UpdateCanDestroy() *StaffRolePermissionUpsertOne {
 	return u.Update(func(s *StaffRolePermissionUpsert) {
 		s.UpdateCanDestroy()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffRolePermissionUpsertOne) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsertOne {
-	return u.Update(func(s *StaffRolePermissionUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffRolePermissionUpsertOne) UpdateUpdatedAt() *StaffRolePermissionUpsertOne {
-	return u.Update(func(s *StaffRolePermissionUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -700,7 +700,7 @@ func (_c *StaffRolePermissionCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StaffRolePermissionUpsert) {
-//			SetRoleID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *StaffRolePermissionCreateBulk) OnConflict(opts ...sql.ConflictOption) *StaffRolePermissionUpsertBulk {
@@ -774,6 +774,20 @@ func (u *StaffRolePermissionUpsertBulk) Update(set func(*StaffRolePermissionUpse
 		set(&StaffRolePermissionUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *StaffRolePermissionUpsertBulk) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *StaffRolePermissionUpsertBulk) UpdateUpdatedAt() *StaffRolePermissionUpsertBulk {
+	return u.Update(func(s *StaffRolePermissionUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetRoleID sets the "role_id" field.
@@ -857,20 +871,6 @@ func (u *StaffRolePermissionUpsertBulk) SetCanDestroy(v bool) *StaffRolePermissi
 func (u *StaffRolePermissionUpsertBulk) UpdateCanDestroy() *StaffRolePermissionUpsertBulk {
 	return u.Update(func(s *StaffRolePermissionUpsert) {
 		s.UpdateCanDestroy()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *StaffRolePermissionUpsertBulk) SetUpdatedAt(v time.Time) *StaffRolePermissionUpsertBulk {
-	return u.Update(func(s *StaffRolePermissionUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *StaffRolePermissionUpsertBulk) UpdateUpdatedAt() *StaffRolePermissionUpsertBulk {
-	return u.Update(func(s *StaffRolePermissionUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

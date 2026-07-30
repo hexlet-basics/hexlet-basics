@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -30,7 +28,9 @@ func (Banner) Fields() []ent.Field {
 		field.String("url").Optional().Nillable(),
 		field.Time("starts_at").Optional().Nillable(),
 		field.Time("finishes_at").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
+}
+
+func (Banner) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

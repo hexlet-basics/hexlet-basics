@@ -22,6 +22,34 @@ type LanguageLessonVersionCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LanguageLessonVersionCreate) SetCreatedAt(v time.Time) *LanguageLessonVersionCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LanguageLessonVersionCreate) SetNillableCreatedAt(v *time.Time) *LanguageLessonVersionCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LanguageLessonVersionCreate) SetUpdatedAt(v time.Time) *LanguageLessonVersionCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LanguageLessonVersionCreate) SetNillableUpdatedAt(v *time.Time) *LanguageLessonVersionCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetNaturalOrder sets the "natural_order" field.
 func (_c *LanguageLessonVersionCreate) SetNaturalOrder(v int) *LanguageLessonVersionCreate {
 	_c.mutation.SetNaturalOrder(v)
@@ -130,34 +158,6 @@ func (_c *LanguageLessonVersionCreate) SetModuleVersionID(v int) *LanguageLesson
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *LanguageLessonVersionCreate) SetCreatedAt(v time.Time) *LanguageLessonVersionCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *LanguageLessonVersionCreate) SetNillableCreatedAt(v *time.Time) *LanguageLessonVersionCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *LanguageLessonVersionCreate) SetUpdatedAt(v time.Time) *LanguageLessonVersionCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *LanguageLessonVersionCreate) SetNillableUpdatedAt(v *time.Time) *LanguageLessonVersionCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // Mutation returns the LanguageLessonVersionMutation object of the builder.
 func (_c *LanguageLessonVersionCreate) Mutation() *LanguageLessonVersionMutation {
 	return _c.mutation
@@ -205,6 +205,12 @@ func (_c *LanguageLessonVersionCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *LanguageLessonVersionCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LanguageLessonVersion.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LanguageLessonVersion.updated_at"`)}
+	}
 	if _, ok := _c.mutation.LanguageID(); !ok {
 		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "LanguageLessonVersion.language_id"`)}
 	}
@@ -216,12 +222,6 @@ func (_c *LanguageLessonVersionCreate) check() error {
 	}
 	if _, ok := _c.mutation.ModuleVersionID(); !ok {
 		return &ValidationError{Name: "module_version_id", err: errors.New(`ent: missing required field "LanguageLessonVersion.module_version_id"`)}
-	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LanguageLessonVersion.created_at"`)}
-	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LanguageLessonVersion.updated_at"`)}
 	}
 	return nil
 }
@@ -250,6 +250,14 @@ func (_c *LanguageLessonVersionCreate) createSpec() (*LanguageLessonVersion, *sq
 		_spec = sqlgraph.NewCreateSpec(languagelessonversion.Table, sqlgraph.NewFieldSpec(languagelessonversion.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(languagelessonversion.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonversion.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.NaturalOrder(); ok {
 		_spec.SetField(languagelessonversion.FieldNaturalOrder, field.TypeInt, value)
 		_node.NaturalOrder = &value
@@ -290,14 +298,6 @@ func (_c *LanguageLessonVersionCreate) createSpec() (*LanguageLessonVersion, *sq
 		_spec.SetField(languagelessonversion.FieldModuleVersionID, field.TypeInt, value)
 		_node.ModuleVersionID = value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(languagelessonversion.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagelessonversion.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	return _node, _spec
 }
 
@@ -305,7 +305,7 @@ func (_c *LanguageLessonVersionCreate) createSpec() (*LanguageLessonVersion, *sq
 // of the `INSERT` statement. For example:
 //
 //	client.LanguageLessonVersion.Create().
-//		SetNaturalOrder(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -314,7 +314,7 @@ func (_c *LanguageLessonVersionCreate) createSpec() (*LanguageLessonVersion, *sq
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LanguageLessonVersionUpsert) {
-//			SetNaturalOrder(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LanguageLessonVersionCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonVersionUpsertOne {
@@ -349,6 +349,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionUpsert) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsert {
+	u.Set(languagelessonversion.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsert) UpdateUpdatedAt() *LanguageLessonVersionUpsert {
+	u.SetExcluded(languagelessonversion.FieldUpdatedAt)
+	return u
+}
 
 // SetNaturalOrder sets the "natural_order" field.
 func (u *LanguageLessonVersionUpsert) SetNaturalOrder(v int) *LanguageLessonVersionUpsert {
@@ -542,18 +554,6 @@ func (u *LanguageLessonVersionUpsert) AddModuleVersionID(v int) *LanguageLessonV
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LanguageLessonVersionUpsert) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsert {
-	u.Set(languagelessonversion.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LanguageLessonVersionUpsert) UpdateUpdatedAt() *LanguageLessonVersionUpsert {
-	u.SetExcluded(languagelessonversion.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -597,6 +597,20 @@ func (u *LanguageLessonVersionUpsertOne) Update(set func(*LanguageLessonVersionU
 		set(&LanguageLessonVersionUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertOne) UpdateUpdatedAt() *LanguageLessonVersionUpsertOne {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetNaturalOrder sets the "natural_order" field.
@@ -823,20 +837,6 @@ func (u *LanguageLessonVersionUpsertOne) UpdateModuleVersionID() *LanguageLesson
 	})
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LanguageLessonVersionUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsertOne {
-	return u.Update(func(s *LanguageLessonVersionUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LanguageLessonVersionUpsertOne) UpdateUpdatedAt() *LanguageLessonVersionUpsertOne {
-	return u.Update(func(s *LanguageLessonVersionUpsert) {
-		s.UpdateUpdatedAt()
-	})
-}
-
 // Exec executes the query.
 func (u *LanguageLessonVersionUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -972,7 +972,7 @@ func (_c *LanguageLessonVersionCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LanguageLessonVersionUpsert) {
-//			SetNaturalOrder(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LanguageLessonVersionCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonVersionUpsertBulk {
@@ -1046,6 +1046,20 @@ func (u *LanguageLessonVersionUpsertBulk) Update(set func(*LanguageLessonVersion
 		set(&LanguageLessonVersionUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonVersionUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonVersionUpsertBulk) UpdateUpdatedAt() *LanguageLessonVersionUpsertBulk {
+	return u.Update(func(s *LanguageLessonVersionUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetNaturalOrder sets the "natural_order" field.
@@ -1269,20 +1283,6 @@ func (u *LanguageLessonVersionUpsertBulk) AddModuleVersionID(v int) *LanguageLes
 func (u *LanguageLessonVersionUpsertBulk) UpdateModuleVersionID() *LanguageLessonVersionUpsertBulk {
 	return u.Update(func(s *LanguageLessonVersionUpsert) {
 		s.UpdateModuleVersionID()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LanguageLessonVersionUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonVersionUpsertBulk {
-	return u.Update(func(s *LanguageLessonVersionUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LanguageLessonVersionUpsertBulk) UpdateUpdatedAt() *LanguageLessonVersionUpsertBulk {
-	return u.Update(func(s *LanguageLessonVersionUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

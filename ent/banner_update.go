@@ -28,6 +28,12 @@ func (_u *BannerUpdate) Where(ps ...predicate.Banner) *BannerUpdate {
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *BannerUpdate) SetUpdatedAt(v time.Time) *BannerUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetBackground sets the "background" field.
 func (_u *BannerUpdate) SetBackground(v string) *BannerUpdate {
 	_u.mutation.SetBackground(v)
@@ -144,12 +150,6 @@ func (_u *BannerUpdate) ClearFinishesAt() *BannerUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *BannerUpdate) SetUpdatedAt(v time.Time) *BannerUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the BannerMutation object of the builder.
 func (_u *BannerUpdate) Mutation() *BannerMutation {
 	return _u.mutation
@@ -200,6 +200,9 @@ func (_u *BannerUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(banner.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Background(); ok {
 		_spec.SetField(banner.FieldBackground, field.TypeString, value)
 	}
@@ -230,9 +233,6 @@ func (_u *BannerUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.FinishesAtCleared() {
 		_spec.ClearField(banner.FieldFinishesAt, field.TypeTime)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(banner.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{banner.Label}
@@ -251,6 +251,12 @@ type BannerUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *BannerMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *BannerUpdateOne) SetUpdatedAt(v time.Time) *BannerUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetBackground sets the "background" field.
@@ -369,12 +375,6 @@ func (_u *BannerUpdateOne) ClearFinishesAt() *BannerUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *BannerUpdateOne) SetUpdatedAt(v time.Time) *BannerUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the BannerMutation object of the builder.
 func (_u *BannerUpdateOne) Mutation() *BannerMutation {
 	return _u.mutation
@@ -455,6 +455,9 @@ func (_u *BannerUpdateOne) sqlSave(ctx context.Context) (_node *Banner, err erro
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(banner.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Background(); ok {
 		_spec.SetField(banner.FieldBackground, field.TypeString, value)
 	}
@@ -484,9 +487,6 @@ func (_u *BannerUpdateOne) sqlSave(ctx context.Context) (_node *Banner, err erro
 	}
 	if _u.mutation.FinishesAtCleared() {
 		_spec.ClearField(banner.FieldFinishesAt, field.TypeTime)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(banner.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &Banner{config: _u.config}
 	_spec.Assign = _node.assignValues

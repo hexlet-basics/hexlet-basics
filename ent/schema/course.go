@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -38,10 +36,8 @@ func (Course) Fields() []ent.Field {
 		field.Int("category_id").Optional().Nillable(),
 		field.Int("current_version_id").Optional().Nillable(),
 		field.Int("order").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
 		// Rails-owned timestamp; supplied by ent now that admin create/update
 		// writes the table (NOT NULL, no DB default).
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -56,4 +52,8 @@ func (Course) Edges() []ent.Edge {
 			Field("current_version_id").
 			Unique(),
 	}
+}
+
+func (Course) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

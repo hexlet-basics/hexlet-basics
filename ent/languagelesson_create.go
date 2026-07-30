@@ -23,6 +23,34 @@ type LanguageLessonCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LanguageLessonCreate) SetCreatedAt(v time.Time) *LanguageLessonCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LanguageLessonCreate) SetNillableCreatedAt(v *time.Time) *LanguageLessonCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LanguageLessonCreate) SetUpdatedAt(v time.Time) *LanguageLessonCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LanguageLessonCreate) SetNillableUpdatedAt(v *time.Time) *LanguageLessonCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetSlug sets the "slug" field.
 func (_c *LanguageLessonCreate) SetSlug(v string) *LanguageLessonCreate {
 	_c.mutation.SetSlug(v)
@@ -89,34 +117,6 @@ func (_c *LanguageLessonCreate) SetState(v string) *LanguageLessonCreate {
 func (_c *LanguageLessonCreate) SetNillableState(v *string) *LanguageLessonCreate {
 	if v != nil {
 		_c.SetState(*v)
-	}
-	return _c
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (_c *LanguageLessonCreate) SetCreatedAt(v time.Time) *LanguageLessonCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *LanguageLessonCreate) SetNillableCreatedAt(v *time.Time) *LanguageLessonCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *LanguageLessonCreate) SetUpdatedAt(v time.Time) *LanguageLessonCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *LanguageLessonCreate) SetNillableUpdatedAt(v *time.Time) *LanguageLessonCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
 	}
 	return _c
 }
@@ -216,6 +216,14 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 		_spec = sqlgraph.NewCreateSpec(languagelesson.Table, sqlgraph.NewFieldSpec(languagelesson.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(languagelesson.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(languagelesson.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -235,14 +243,6 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 	if value, ok := _c.mutation.State(); ok {
 		_spec.SetField(languagelesson.FieldState, field.TypeString, value)
 		_node.State = &value
-	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(languagelesson.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
 	}
 	if nodes := _c.mutation.InfosIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -267,7 +267,7 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 // of the `INSERT` statement. For example:
 //
 //	client.LanguageLesson.Create().
-//		SetSlug(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -276,7 +276,7 @@ func (_c *LanguageLessonCreate) createSpec() (*LanguageLesson, *sqlgraph.CreateS
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LanguageLessonUpsert) {
-//			SetSlug(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LanguageLessonCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonUpsertOne {
@@ -311,6 +311,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonUpsert) SetUpdatedAt(v time.Time) *LanguageLessonUpsert {
+	u.Set(languagelesson.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonUpsert) UpdateUpdatedAt() *LanguageLessonUpsert {
+	u.SetExcluded(languagelesson.FieldUpdatedAt)
+	return u
+}
 
 // SetSlug sets the "slug" field.
 func (u *LanguageLessonUpsert) SetSlug(v string) *LanguageLessonUpsert {
@@ -420,18 +432,6 @@ func (u *LanguageLessonUpsert) ClearState() *LanguageLessonUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LanguageLessonUpsert) SetUpdatedAt(v time.Time) *LanguageLessonUpsert {
-	u.Set(languagelesson.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LanguageLessonUpsert) UpdateUpdatedAt() *LanguageLessonUpsert {
-	u.SetExcluded(languagelesson.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -475,6 +475,20 @@ func (u *LanguageLessonUpsertOne) Update(set func(*LanguageLessonUpsert)) *Langu
 		set(&LanguageLessonUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonUpsertOne) UpdateUpdatedAt() *LanguageLessonUpsertOne {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetSlug sets the "slug" field.
@@ -600,20 +614,6 @@ func (u *LanguageLessonUpsertOne) UpdateState() *LanguageLessonUpsertOne {
 func (u *LanguageLessonUpsertOne) ClearState() *LanguageLessonUpsertOne {
 	return u.Update(func(s *LanguageLessonUpsert) {
 		s.ClearState()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LanguageLessonUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonUpsertOne {
-	return u.Update(func(s *LanguageLessonUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LanguageLessonUpsertOne) UpdateUpdatedAt() *LanguageLessonUpsertOne {
-	return u.Update(func(s *LanguageLessonUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -752,7 +752,7 @@ func (_c *LanguageLessonCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LanguageLessonUpsert) {
-//			SetSlug(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LanguageLessonCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonUpsertBulk {
@@ -826,6 +826,20 @@ func (u *LanguageLessonUpsertBulk) Update(set func(*LanguageLessonUpsert)) *Lang
 		set(&LanguageLessonUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonUpsertBulk) UpdateUpdatedAt() *LanguageLessonUpsertBulk {
+	return u.Update(func(s *LanguageLessonUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetSlug sets the "slug" field.
@@ -951,20 +965,6 @@ func (u *LanguageLessonUpsertBulk) UpdateState() *LanguageLessonUpsertBulk {
 func (u *LanguageLessonUpsertBulk) ClearState() *LanguageLessonUpsertBulk {
 	return u.Update(func(s *LanguageLessonUpsert) {
 		s.ClearState()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LanguageLessonUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonUpsertBulk {
-	return u.Update(func(s *LanguageLessonUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LanguageLessonUpsertBulk) UpdateUpdatedAt() *LanguageLessonUpsertBulk {
-	return u.Update(func(s *LanguageLessonUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

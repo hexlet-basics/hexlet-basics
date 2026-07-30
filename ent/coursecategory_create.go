@@ -22,6 +22,34 @@ type CourseCategoryCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *CourseCategoryCreate) SetCreatedAt(v time.Time) *CourseCategoryCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *CourseCategoryCreate) SetNillableCreatedAt(v *time.Time) *CourseCategoryCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *CourseCategoryCreate) SetUpdatedAt(v time.Time) *CourseCategoryCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *CourseCategoryCreate) SetNillableUpdatedAt(v *time.Time) *CourseCategoryCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetSlug sets the "slug" field.
 func (_c *CourseCategoryCreate) SetSlug(v string) *CourseCategoryCreate {
 	_c.mutation.SetSlug(v)
@@ -88,34 +116,6 @@ func (_c *CourseCategoryCreate) SetLocale(v string) *CourseCategoryCreate {
 func (_c *CourseCategoryCreate) SetNillableLocale(v *string) *CourseCategoryCreate {
 	if v != nil {
 		_c.SetLocale(*v)
-	}
-	return _c
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (_c *CourseCategoryCreate) SetCreatedAt(v time.Time) *CourseCategoryCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *CourseCategoryCreate) SetNillableCreatedAt(v *time.Time) *CourseCategoryCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *CourseCategoryCreate) SetUpdatedAt(v time.Time) *CourseCategoryCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *CourseCategoryCreate) SetNillableUpdatedAt(v *time.Time) *CourseCategoryCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
 	}
 	return _c
 }
@@ -200,6 +200,14 @@ func (_c *CourseCategoryCreate) createSpec() (*CourseCategory, *sqlgraph.CreateS
 		_spec = sqlgraph.NewCreateSpec(coursecategory.Table, sqlgraph.NewFieldSpec(coursecategory.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(coursecategory.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(coursecategory.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(coursecategory.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -220,14 +228,6 @@ func (_c *CourseCategoryCreate) createSpec() (*CourseCategory, *sqlgraph.CreateS
 		_spec.SetField(coursecategory.FieldLocale, field.TypeString, value)
 		_node.Locale = &value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(coursecategory.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(coursecategory.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	return _node, _spec
 }
 
@@ -235,7 +235,7 @@ func (_c *CourseCategoryCreate) createSpec() (*CourseCategory, *sqlgraph.CreateS
 // of the `INSERT` statement. For example:
 //
 //	client.CourseCategory.Create().
-//		SetSlug(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -244,7 +244,7 @@ func (_c *CourseCategoryCreate) createSpec() (*CourseCategory, *sqlgraph.CreateS
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CourseCategoryUpsert) {
-//			SetSlug(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CourseCategoryCreate) OnConflict(opts ...sql.ConflictOption) *CourseCategoryUpsertOne {
@@ -279,6 +279,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseCategoryUpsert) SetUpdatedAt(v time.Time) *CourseCategoryUpsert {
+	u.Set(coursecategory.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseCategoryUpsert) UpdateUpdatedAt() *CourseCategoryUpsert {
+	u.SetExcluded(coursecategory.FieldUpdatedAt)
+	return u
+}
 
 // SetSlug sets the "slug" field.
 func (u *CourseCategoryUpsert) SetSlug(v string) *CourseCategoryUpsert {
@@ -370,18 +382,6 @@ func (u *CourseCategoryUpsert) ClearLocale() *CourseCategoryUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseCategoryUpsert) SetUpdatedAt(v time.Time) *CourseCategoryUpsert {
-	u.Set(coursecategory.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseCategoryUpsert) UpdateUpdatedAt() *CourseCategoryUpsert {
-	u.SetExcluded(coursecategory.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -425,6 +425,20 @@ func (u *CourseCategoryUpsertOne) Update(set func(*CourseCategoryUpsert)) *Cours
 		set(&CourseCategoryUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseCategoryUpsertOne) SetUpdatedAt(v time.Time) *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseCategoryUpsertOne) UpdateUpdatedAt() *CourseCategoryUpsertOne {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetSlug sets the "slug" field.
@@ -529,20 +543,6 @@ func (u *CourseCategoryUpsertOne) UpdateLocale() *CourseCategoryUpsertOne {
 func (u *CourseCategoryUpsertOne) ClearLocale() *CourseCategoryUpsertOne {
 	return u.Update(func(s *CourseCategoryUpsert) {
 		s.ClearLocale()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseCategoryUpsertOne) SetUpdatedAt(v time.Time) *CourseCategoryUpsertOne {
-	return u.Update(func(s *CourseCategoryUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseCategoryUpsertOne) UpdateUpdatedAt() *CourseCategoryUpsertOne {
-	return u.Update(func(s *CourseCategoryUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -681,7 +681,7 @@ func (_c *CourseCategoryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CourseCategoryUpsert) {
-//			SetSlug(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CourseCategoryCreateBulk) OnConflict(opts ...sql.ConflictOption) *CourseCategoryUpsertBulk {
@@ -755,6 +755,20 @@ func (u *CourseCategoryUpsertBulk) Update(set func(*CourseCategoryUpsert)) *Cour
 		set(&CourseCategoryUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CourseCategoryUpsertBulk) SetUpdatedAt(v time.Time) *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CourseCategoryUpsertBulk) UpdateUpdatedAt() *CourseCategoryUpsertBulk {
+	return u.Update(func(s *CourseCategoryUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetSlug sets the "slug" field.
@@ -859,20 +873,6 @@ func (u *CourseCategoryUpsertBulk) UpdateLocale() *CourseCategoryUpsertBulk {
 func (u *CourseCategoryUpsertBulk) ClearLocale() *CourseCategoryUpsertBulk {
 	return u.Update(func(s *CourseCategoryUpsert) {
 		s.ClearLocale()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CourseCategoryUpsertBulk) SetUpdatedAt(v time.Time) *CourseCategoryUpsertBulk {
-	return u.Update(func(s *CourseCategoryUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CourseCategoryUpsertBulk) UpdateUpdatedAt() *CourseCategoryUpsertBulk {
-	return u.Update(func(s *CourseCategoryUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

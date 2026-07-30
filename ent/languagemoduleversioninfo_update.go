@@ -28,6 +28,12 @@ func (_u *LanguageModuleVersionInfoUpdate) Where(ps ...predicate.LanguageModuleV
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageModuleVersionInfoUpdate) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetName sets the "name" field.
 func (_u *LanguageModuleVersionInfoUpdate) SetName(v string) *LanguageModuleVersionInfoUpdate {
 	_u.mutation.SetName(v)
@@ -151,12 +157,6 @@ func (_u *LanguageModuleVersionInfoUpdate) AddVersionID(v int) *LanguageModuleVe
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageModuleVersionInfoUpdate) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LanguageModuleVersionInfoMutation object of the builder.
 func (_u *LanguageModuleVersionInfoUpdate) Mutation() *LanguageModuleVersionInfoMutation {
 	return _u.mutation
@@ -207,6 +207,9 @@ func (_u *LanguageModuleVersionInfoUpdate) sqlSave(ctx context.Context) (_node i
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagemoduleversioninfo.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(languagemoduleversioninfo.FieldName, field.TypeString, value)
 	}
@@ -243,9 +246,6 @@ func (_u *LanguageModuleVersionInfoUpdate) sqlSave(ctx context.Context) (_node i
 	if value, ok := _u.mutation.AddedVersionID(); ok {
 		_spec.AddField(languagemoduleversioninfo.FieldVersionID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagemoduleversioninfo.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{languagemoduleversioninfo.Label}
@@ -264,6 +264,12 @@ type LanguageModuleVersionInfoUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LanguageModuleVersionInfoMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageModuleVersionInfoUpdateOne) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetName sets the "name" field.
@@ -389,12 +395,6 @@ func (_u *LanguageModuleVersionInfoUpdateOne) AddVersionID(v int) *LanguageModul
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageModuleVersionInfoUpdateOne) SetUpdatedAt(v time.Time) *LanguageModuleVersionInfoUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LanguageModuleVersionInfoMutation object of the builder.
 func (_u *LanguageModuleVersionInfoUpdateOne) Mutation() *LanguageModuleVersionInfoMutation {
 	return _u.mutation
@@ -475,6 +475,9 @@ func (_u *LanguageModuleVersionInfoUpdateOne) sqlSave(ctx context.Context) (_nod
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagemoduleversioninfo.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(languagemoduleversioninfo.FieldName, field.TypeString, value)
 	}
@@ -510,9 +513,6 @@ func (_u *LanguageModuleVersionInfoUpdateOne) sqlSave(ctx context.Context) (_nod
 	}
 	if value, ok := _u.mutation.AddedVersionID(); ok {
 		_spec.AddField(languagemoduleversioninfo.FieldVersionID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagemoduleversioninfo.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &LanguageModuleVersionInfo{config: _u.config}
 	_spec.Assign = _node.assignValues

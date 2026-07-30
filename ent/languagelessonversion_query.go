@@ -262,12 +262,12 @@ func (_q *LanguageLessonVersionQuery) Clone() *LanguageLessonVersionQuery {
 // Example:
 //
 //	var v []struct {
-//		NaturalOrder int `json:"natural_order,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.LanguageLessonVersion.Query().
-//		GroupBy(languagelessonversion.FieldNaturalOrder).
+//		GroupBy(languagelessonversion.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *LanguageLessonVersionQuery) GroupBy(field string, fields ...string) *LanguageLessonVersionGroupBy {
@@ -285,11 +285,11 @@ func (_q *LanguageLessonVersionQuery) GroupBy(field string, fields ...string) *L
 // Example:
 //
 //	var v []struct {
-//		NaturalOrder int `json:"natural_order,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.LanguageLessonVersion.Query().
-//		Select(languagelessonversion.FieldNaturalOrder).
+//		Select(languagelessonversion.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *LanguageLessonVersionQuery) Select(fields ...string) *LanguageLessonVersionSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

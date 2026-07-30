@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -32,8 +30,6 @@ func (Review) Fields() []ent.Field {
 		field.String("locale").Optional().Nillable(),
 		field.String("state").Optional().Nillable(),
 		field.Bool("pinned").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -50,4 +46,8 @@ func (Review) Edges() []ent.Edge {
 			Unique().
 			Required(),
 	}
+}
+
+func (Review) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

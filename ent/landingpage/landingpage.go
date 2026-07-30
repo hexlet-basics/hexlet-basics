@@ -14,6 +14,10 @@ const (
 	Label = "landing_page"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldLanguageID holds the string denoting the language_id field in the database.
 	FieldLanguageID = "language_id"
 	// FieldSlug holds the string denoting the slug field in the database.
@@ -52,10 +56,6 @@ const (
 	FieldFooterName = "footer_name"
 	// FieldLandingPageToRedirectID holds the string denoting the landing_page_to_redirect_id field in the database.
 	FieldLandingPageToRedirectID = "landing_page_to_redirect_id"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
 	// EdgeCourse holds the string denoting the course edge name in mutations.
 	EdgeCourse = "course"
 	// Table holds the table name of the landingpage in the database.
@@ -72,6 +72,8 @@ const (
 // Columns holds all SQL columns for landingpage fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldLanguageID,
 	FieldSlug,
 	FieldHeader,
@@ -91,8 +93,6 @@ var Columns = []string{
 	FieldFooter,
 	FieldFooterName,
 	FieldLandingPageToRedirectID,
-	FieldCreatedAt,
-	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -120,6 +120,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByLanguageID orders the results by the language_id field.
@@ -215,16 +225,6 @@ func ByFooterName(opts ...sql.OrderTermOption) OrderOption {
 // ByLandingPageToRedirectID orders the results by the landing_page_to_redirect_id field.
 func ByLandingPageToRedirectID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLandingPageToRedirectID, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByCourseField orders the results by course field.

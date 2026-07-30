@@ -22,6 +22,34 @@ type BannerCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *BannerCreate) SetCreatedAt(v time.Time) *BannerCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *BannerCreate) SetNillableCreatedAt(v *time.Time) *BannerCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *BannerCreate) SetUpdatedAt(v time.Time) *BannerCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *BannerCreate) SetNillableUpdatedAt(v *time.Time) *BannerCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetBackground sets the "background" field.
 func (_c *BannerCreate) SetBackground(v string) *BannerCreate {
 	_c.mutation.SetBackground(v)
@@ -104,34 +132,6 @@ func (_c *BannerCreate) SetNillableFinishesAt(v *time.Time) *BannerCreate {
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *BannerCreate) SetCreatedAt(v time.Time) *BannerCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *BannerCreate) SetNillableCreatedAt(v *time.Time) *BannerCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *BannerCreate) SetUpdatedAt(v time.Time) *BannerCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *BannerCreate) SetNillableUpdatedAt(v *time.Time) *BannerCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // Mutation returns the BannerMutation object of the builder.
 func (_c *BannerCreate) Mutation() *BannerMutation {
 	return _c.mutation
@@ -167,14 +167,6 @@ func (_c *BannerCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *BannerCreate) defaults() {
-	if _, ok := _c.mutation.Background(); !ok {
-		v := banner.DefaultBackground
-		_c.mutation.SetBackground(v)
-	}
-	if _, ok := _c.mutation.State(); !ok {
-		v := banner.DefaultState
-		_c.mutation.SetState(v)
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		v := banner.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
@@ -183,10 +175,24 @@ func (_c *BannerCreate) defaults() {
 		v := banner.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.Background(); !ok {
+		v := banner.DefaultBackground
+		_c.mutation.SetBackground(v)
+	}
+	if _, ok := _c.mutation.State(); !ok {
+		v := banner.DefaultState
+		_c.mutation.SetState(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *BannerCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Banner.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Banner.updated_at"`)}
+	}
 	if _, ok := _c.mutation.Background(); !ok {
 		return &ValidationError{Name: "background", err: errors.New(`ent: missing required field "Banner.background"`)}
 	}
@@ -198,12 +204,6 @@ func (_c *BannerCreate) check() error {
 	}
 	if _, ok := _c.mutation.State(); !ok {
 		return &ValidationError{Name: "state", err: errors.New(`ent: missing required field "Banner.state"`)}
-	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Banner.created_at"`)}
-	}
-	if _, ok := _c.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Banner.updated_at"`)}
 	}
 	return nil
 }
@@ -232,6 +232,14 @@ func (_c *BannerCreate) createSpec() (*Banner, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(banner.Table, sqlgraph.NewFieldSpec(banner.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(banner.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(banner.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Background(); ok {
 		_spec.SetField(banner.FieldBackground, field.TypeString, value)
 		_node.Background = value
@@ -260,14 +268,6 @@ func (_c *BannerCreate) createSpec() (*Banner, *sqlgraph.CreateSpec) {
 		_spec.SetField(banner.FieldFinishesAt, field.TypeTime, value)
 		_node.FinishesAt = &value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(banner.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(banner.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	return _node, _spec
 }
 
@@ -275,7 +275,7 @@ func (_c *BannerCreate) createSpec() (*Banner, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Banner.Create().
-//		SetBackground(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -284,7 +284,7 @@ func (_c *BannerCreate) createSpec() (*Banner, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.BannerUpsert) {
-//			SetBackground(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *BannerCreate) OnConflict(opts ...sql.ConflictOption) *BannerUpsertOne {
@@ -319,6 +319,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BannerUpsert) SetUpdatedAt(v time.Time) *BannerUpsert {
+	u.Set(banner.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BannerUpsert) UpdateUpdatedAt() *BannerUpsert {
+	u.SetExcluded(banner.FieldUpdatedAt)
+	return u
+}
 
 // SetBackground sets the "background" field.
 func (u *BannerUpsert) SetBackground(v string) *BannerUpsert {
@@ -422,18 +434,6 @@ func (u *BannerUpsert) ClearFinishesAt() *BannerUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *BannerUpsert) SetUpdatedAt(v time.Time) *BannerUpsert {
-	u.Set(banner.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *BannerUpsert) UpdateUpdatedAt() *BannerUpsert {
-	u.SetExcluded(banner.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -477,6 +477,20 @@ func (u *BannerUpsertOne) Update(set func(*BannerUpsert)) *BannerUpsertOne {
 		set(&BannerUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BannerUpsertOne) SetUpdatedAt(v time.Time) *BannerUpsertOne {
+	return u.Update(func(s *BannerUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BannerUpsertOne) UpdateUpdatedAt() *BannerUpsertOne {
+	return u.Update(func(s *BannerUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetBackground sets the "background" field.
@@ -595,20 +609,6 @@ func (u *BannerUpsertOne) UpdateFinishesAt() *BannerUpsertOne {
 func (u *BannerUpsertOne) ClearFinishesAt() *BannerUpsertOne {
 	return u.Update(func(s *BannerUpsert) {
 		s.ClearFinishesAt()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *BannerUpsertOne) SetUpdatedAt(v time.Time) *BannerUpsertOne {
-	return u.Update(func(s *BannerUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *BannerUpsertOne) UpdateUpdatedAt() *BannerUpsertOne {
-	return u.Update(func(s *BannerUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -747,7 +747,7 @@ func (_c *BannerCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.BannerUpsert) {
-//			SetBackground(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *BannerCreateBulk) OnConflict(opts ...sql.ConflictOption) *BannerUpsertBulk {
@@ -821,6 +821,20 @@ func (u *BannerUpsertBulk) Update(set func(*BannerUpsert)) *BannerUpsertBulk {
 		set(&BannerUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BannerUpsertBulk) SetUpdatedAt(v time.Time) *BannerUpsertBulk {
+	return u.Update(func(s *BannerUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BannerUpsertBulk) UpdateUpdatedAt() *BannerUpsertBulk {
+	return u.Update(func(s *BannerUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetBackground sets the "background" field.
@@ -939,20 +953,6 @@ func (u *BannerUpsertBulk) UpdateFinishesAt() *BannerUpsertBulk {
 func (u *BannerUpsertBulk) ClearFinishesAt() *BannerUpsertBulk {
 	return u.Update(func(s *BannerUpsert) {
 		s.ClearFinishesAt()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *BannerUpsertBulk) SetUpdatedAt(v time.Time) *BannerUpsertBulk {
-	return u.Update(func(s *BannerUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *BannerUpsertBulk) UpdateUpdatedAt() *BannerUpsertBulk {
-	return u.Update(func(s *BannerUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

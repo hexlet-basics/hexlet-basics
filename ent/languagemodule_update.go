@@ -28,6 +28,12 @@ func (_u *LanguageModuleUpdate) Where(ps ...predicate.LanguageModule) *LanguageM
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageModuleUpdate) SetUpdatedAt(v time.Time) *LanguageModuleUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetSlug sets the "slug" field.
 func (_u *LanguageModuleUpdate) SetSlug(v string) *LanguageModuleUpdate {
 	_u.mutation.SetSlug(v)
@@ -122,12 +128,6 @@ func (_u *LanguageModuleUpdate) ClearState() *LanguageModuleUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageModuleUpdate) SetUpdatedAt(v time.Time) *LanguageModuleUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LanguageModuleMutation object of the builder.
 func (_u *LanguageModuleUpdate) Mutation() *LanguageModuleMutation {
 	return _u.mutation
@@ -178,6 +178,9 @@ func (_u *LanguageModuleUpdate) sqlSave(ctx context.Context) (_node int, err err
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagemodule.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(languagemodule.FieldSlug, field.TypeString, value)
 	}
@@ -208,9 +211,6 @@ func (_u *LanguageModuleUpdate) sqlSave(ctx context.Context) (_node int, err err
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(languagemodule.FieldState, field.TypeString)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagemodule.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{languagemodule.Label}
@@ -229,6 +229,12 @@ type LanguageModuleUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LanguageModuleMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageModuleUpdateOne) SetUpdatedAt(v time.Time) *LanguageModuleUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetSlug sets the "slug" field.
@@ -325,12 +331,6 @@ func (_u *LanguageModuleUpdateOne) ClearState() *LanguageModuleUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageModuleUpdateOne) SetUpdatedAt(v time.Time) *LanguageModuleUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the LanguageModuleMutation object of the builder.
 func (_u *LanguageModuleUpdateOne) Mutation() *LanguageModuleMutation {
 	return _u.mutation
@@ -411,6 +411,9 @@ func (_u *LanguageModuleUpdateOne) sqlSave(ctx context.Context) (_node *Language
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagemodule.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(languagemodule.FieldSlug, field.TypeString, value)
 	}
@@ -440,9 +443,6 @@ func (_u *LanguageModuleUpdateOne) sqlSave(ctx context.Context) (_node *Language
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(languagemodule.FieldState, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagemodule.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &LanguageModule{config: _u.config}
 	_spec.Assign = _node.assignValues

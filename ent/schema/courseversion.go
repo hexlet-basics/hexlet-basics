@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -48,10 +46,8 @@ func (CourseVersion) Fields() []ent.Field {
 		// language_id is the owning course (NOT NULL FK). A version is always built
 		// for a specific course, so it is a required value field, not nillable.
 		field.Int("language_id"),
-		field.Time("created_at").Default(time.Now).Immutable(),
 		// Rails-owned timestamp (NOT NULL, no DB default); supplied by ent now that
 		// the loader writes this table.
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -64,4 +60,8 @@ func (CourseVersion) Edges() []ent.Edge {
 		edge.From("current_courses", Course.Type).
 			Ref("current_version"),
 	}
+}
+
+func (CourseVersion) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

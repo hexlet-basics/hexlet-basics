@@ -56,6 +56,16 @@ func IDLTE(id int) predicate.StaffMember {
 	return predicate.StaffMember(sql.FieldLTE(FieldID, id))
 }
 
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
 func UserID(v int) predicate.StaffMember {
 	return predicate.StaffMember(sql.FieldEQ(FieldUserID, v))
@@ -69,96 +79,6 @@ func RoleID(v int) predicate.StaffMember {
 // AllowedLocales applies equality check predicate on the "allowed_locales" field. It's identical to AllowedLocalesEQ.
 func AllowedLocales(v pq.StringArray) predicate.StaffMember {
 	return predicate.StaffMember(sql.FieldEQ(FieldAllowedLocales, v))
-}
-
-// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
-func CreatedAt(v time.Time) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
-func UpdatedAt(v time.Time) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldEQ(FieldUpdatedAt, v))
-}
-
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldEQ(FieldUserID, v))
-}
-
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldNEQ(FieldUserID, v))
-}
-
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldIn(FieldUserID, vs...))
-}
-
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldNotIn(FieldUserID, vs...))
-}
-
-// RoleIDEQ applies the EQ predicate on the "role_id" field.
-func RoleIDEQ(v int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldEQ(FieldRoleID, v))
-}
-
-// RoleIDNEQ applies the NEQ predicate on the "role_id" field.
-func RoleIDNEQ(v int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldNEQ(FieldRoleID, v))
-}
-
-// RoleIDIn applies the In predicate on the "role_id" field.
-func RoleIDIn(vs ...int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldIn(FieldRoleID, vs...))
-}
-
-// RoleIDNotIn applies the NotIn predicate on the "role_id" field.
-func RoleIDNotIn(vs ...int) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldNotIn(FieldRoleID, vs...))
-}
-
-// AllowedLocalesEQ applies the EQ predicate on the "allowed_locales" field.
-func AllowedLocalesEQ(v pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldEQ(FieldAllowedLocales, v))
-}
-
-// AllowedLocalesNEQ applies the NEQ predicate on the "allowed_locales" field.
-func AllowedLocalesNEQ(v pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldNEQ(FieldAllowedLocales, v))
-}
-
-// AllowedLocalesIn applies the In predicate on the "allowed_locales" field.
-func AllowedLocalesIn(vs ...pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldIn(FieldAllowedLocales, vs...))
-}
-
-// AllowedLocalesNotIn applies the NotIn predicate on the "allowed_locales" field.
-func AllowedLocalesNotIn(vs ...pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldNotIn(FieldAllowedLocales, vs...))
-}
-
-// AllowedLocalesGT applies the GT predicate on the "allowed_locales" field.
-func AllowedLocalesGT(v pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldGT(FieldAllowedLocales, v))
-}
-
-// AllowedLocalesGTE applies the GTE predicate on the "allowed_locales" field.
-func AllowedLocalesGTE(v pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldGTE(FieldAllowedLocales, v))
-}
-
-// AllowedLocalesLT applies the LT predicate on the "allowed_locales" field.
-func AllowedLocalesLT(v pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldLT(FieldAllowedLocales, v))
-}
-
-// AllowedLocalesLTE applies the LTE predicate on the "allowed_locales" field.
-func AllowedLocalesLTE(v pq.StringArray) predicate.StaffMember {
-	return predicate.StaffMember(sql.FieldLTE(FieldAllowedLocales, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -239,6 +159,86 @@ func UpdatedAtLT(v time.Time) predicate.StaffMember {
 // UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
 func UpdatedAtLTE(v time.Time) predicate.StaffMember {
 	return predicate.StaffMember(sql.FieldLTE(FieldUpdatedAt, v))
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldEQ(FieldUserID, v))
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldNEQ(FieldUserID, v))
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldIn(FieldUserID, vs...))
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldNotIn(FieldUserID, vs...))
+}
+
+// RoleIDEQ applies the EQ predicate on the "role_id" field.
+func RoleIDEQ(v int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldEQ(FieldRoleID, v))
+}
+
+// RoleIDNEQ applies the NEQ predicate on the "role_id" field.
+func RoleIDNEQ(v int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldNEQ(FieldRoleID, v))
+}
+
+// RoleIDIn applies the In predicate on the "role_id" field.
+func RoleIDIn(vs ...int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldIn(FieldRoleID, vs...))
+}
+
+// RoleIDNotIn applies the NotIn predicate on the "role_id" field.
+func RoleIDNotIn(vs ...int) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldNotIn(FieldRoleID, vs...))
+}
+
+// AllowedLocalesEQ applies the EQ predicate on the "allowed_locales" field.
+func AllowedLocalesEQ(v pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldEQ(FieldAllowedLocales, v))
+}
+
+// AllowedLocalesNEQ applies the NEQ predicate on the "allowed_locales" field.
+func AllowedLocalesNEQ(v pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldNEQ(FieldAllowedLocales, v))
+}
+
+// AllowedLocalesIn applies the In predicate on the "allowed_locales" field.
+func AllowedLocalesIn(vs ...pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldIn(FieldAllowedLocales, vs...))
+}
+
+// AllowedLocalesNotIn applies the NotIn predicate on the "allowed_locales" field.
+func AllowedLocalesNotIn(vs ...pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldNotIn(FieldAllowedLocales, vs...))
+}
+
+// AllowedLocalesGT applies the GT predicate on the "allowed_locales" field.
+func AllowedLocalesGT(v pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldGT(FieldAllowedLocales, v))
+}
+
+// AllowedLocalesGTE applies the GTE predicate on the "allowed_locales" field.
+func AllowedLocalesGTE(v pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldGTE(FieldAllowedLocales, v))
+}
+
+// AllowedLocalesLT applies the LT predicate on the "allowed_locales" field.
+func AllowedLocalesLT(v pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldLT(FieldAllowedLocales, v))
+}
+
+// AllowedLocalesLTE applies the LTE predicate on the "allowed_locales" field.
+func AllowedLocalesLTE(v pq.StringArray) predicate.StaffMember {
+	return predicate.StaffMember(sql.FieldLTE(FieldAllowedLocales, v))
 }
 
 // HasUser applies the HasEdge predicate on the "user" edge.

@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -31,7 +29,9 @@ func (CourseCategory) Fields() []ent.Field {
 		field.String("header").Optional().Nillable(),
 		field.String("description").Optional().Nillable(),
 		field.String("locale").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
+}
+
+func (CourseCategory) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

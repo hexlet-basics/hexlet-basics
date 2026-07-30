@@ -334,12 +334,12 @@ func (_q *ReviewQuery) WithUser(opts ...func(*UserQuery)) *ReviewQuery {
 // Example:
 //
 //	var v []struct {
-//		LanguageID int `json:"language_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Review.Query().
-//		GroupBy(review.FieldLanguageID).
+//		GroupBy(review.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *ReviewQuery) GroupBy(field string, fields ...string) *ReviewGroupBy {
@@ -357,11 +357,11 @@ func (_q *ReviewQuery) GroupBy(field string, fields ...string) *ReviewGroupBy {
 // Example:
 //
 //	var v []struct {
-//		LanguageID int `json:"language_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Review.Query().
-//		Select(review.FieldLanguageID).
+//		Select(review.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *ReviewQuery) Select(fields ...string) *ReviewSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

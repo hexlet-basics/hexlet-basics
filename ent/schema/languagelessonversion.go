@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -30,7 +28,9 @@ func (LanguageLessonVersion) Fields() []ent.Field {
 		field.Int("language_version_id"),
 		field.Int("lesson_id"),
 		field.Int("module_version_id"),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
+}
+
+func (LanguageLessonVersion) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

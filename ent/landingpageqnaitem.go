@@ -17,16 +17,16 @@ type LandingPageQnaItem struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// LanguageLandingPageID holds the value of the "language_landing_page_id" field.
 	LanguageLandingPageID int `json:"language_landing_page_id,omitempty"`
 	// Question holds the value of the "question" field.
 	Question *string `json:"question,omitempty"`
 	// Answer holds the value of the "answer" field.
-	Answer *string `json:"answer,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	Answer       *string `json:"answer,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -62,6 +62,18 @@ func (_m *LandingPageQnaItem) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case landingpageqnaitem.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case landingpageqnaitem.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case landingpageqnaitem.FieldLanguageLandingPageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field language_landing_page_id", values[i])
@@ -81,18 +93,6 @@ func (_m *LandingPageQnaItem) assignValues(columns []string, values []any) error
 			} else if value.Valid {
 				_m.Answer = new(string)
 				*_m.Answer = value.String
-			}
-		case landingpageqnaitem.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				_m.CreatedAt = value.Time
-			}
-		case landingpageqnaitem.FieldUpdatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
-			} else if value.Valid {
-				_m.UpdatedAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -130,6 +130,12 @@ func (_m *LandingPageQnaItem) String() string {
 	var builder strings.Builder
 	builder.WriteString("LandingPageQnaItem(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("language_landing_page_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLandingPageID))
 	builder.WriteString(", ")
@@ -142,12 +148,6 @@ func (_m *LandingPageQnaItem) String() string {
 		builder.WriteString("answer=")
 		builder.WriteString(*v)
 	}
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

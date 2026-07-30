@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -29,8 +27,6 @@ func (StaffRole) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name"),
 		field.String("description").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -38,4 +34,8 @@ func (StaffRole) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("permissions", StaffRolePermission.Type),
 	}
+}
+
+func (StaffRole) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

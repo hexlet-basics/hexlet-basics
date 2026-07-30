@@ -30,6 +30,12 @@ func (_u *ReviewUpdate) Where(ps ...predicate.Review) *ReviewUpdate {
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *ReviewUpdate) SetUpdatedAt(v time.Time) *ReviewUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetLanguageID sets the "language_id" field.
 func (_u *ReviewUpdate) SetLanguageID(v int) *ReviewUpdate {
 	_u.mutation.SetLanguageID(v)
@@ -178,12 +184,6 @@ func (_u *ReviewUpdate) ClearPinned() *ReviewUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *ReviewUpdate) SetUpdatedAt(v time.Time) *ReviewUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_u *ReviewUpdate) SetCourseID(id int) *ReviewUpdate {
 	_u.mutation.SetCourseID(id)
@@ -276,6 +276,9 @@ func (_u *ReviewUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(review.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Body(); ok {
 		_spec.SetField(review.FieldBody, field.TypeString, value)
 	}
@@ -311,9 +314,6 @@ func (_u *ReviewUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.PinnedCleared() {
 		_spec.ClearField(review.FieldPinned, field.TypeBool)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(review.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -391,6 +391,12 @@ type ReviewUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ReviewMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *ReviewUpdateOne) SetUpdatedAt(v time.Time) *ReviewUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -541,12 +547,6 @@ func (_u *ReviewUpdateOne) ClearPinned() *ReviewUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *ReviewUpdateOne) SetUpdatedAt(v time.Time) *ReviewUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_u *ReviewUpdateOne) SetCourseID(id int) *ReviewUpdateOne {
 	_u.mutation.SetCourseID(id)
@@ -669,6 +669,9 @@ func (_u *ReviewUpdateOne) sqlSave(ctx context.Context) (_node *Review, err erro
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(review.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Body(); ok {
 		_spec.SetField(review.FieldBody, field.TypeString, value)
 	}
@@ -704,9 +707,6 @@ func (_u *ReviewUpdateOne) sqlSave(ctx context.Context) (_node *Review, err erro
 	}
 	if _u.mutation.PinnedCleared() {
 		_spec.ClearField(review.FieldPinned, field.TypeBool)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(review.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{

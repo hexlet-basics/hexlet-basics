@@ -23,6 +23,34 @@ type LandingPageCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LandingPageCreate) SetCreatedAt(v time.Time) *LandingPageCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableCreatedAt(v *time.Time) *LandingPageCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LandingPageCreate) SetUpdatedAt(v time.Time) *LandingPageCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableUpdatedAt(v *time.Time) *LandingPageCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetLanguageID sets the "language_id" field.
 func (_c *LandingPageCreate) SetLanguageID(v int) *LandingPageCreate {
 	_c.mutation.SetLanguageID(v)
@@ -281,34 +309,6 @@ func (_c *LandingPageCreate) SetNillableLandingPageToRedirectID(v *int) *Landing
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *LandingPageCreate) SetCreatedAt(v time.Time) *LandingPageCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *LandingPageCreate) SetNillableCreatedAt(v *time.Time) *LandingPageCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *LandingPageCreate) SetUpdatedAt(v time.Time) *LandingPageCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *LandingPageCreate) SetNillableUpdatedAt(v *time.Time) *LandingPageCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_c *LandingPageCreate) SetCourseID(id int) *LandingPageCreate {
 	_c.mutation.SetCourseID(id)
@@ -367,14 +367,14 @@ func (_c *LandingPageCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *LandingPageCreate) check() error {
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "LandingPage.language_id"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LandingPage.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LandingPage.updated_at"`)}
+	}
+	if _, ok := _c.mutation.LanguageID(); !ok {
+		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "LandingPage.language_id"`)}
 	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "LandingPage.course"`)}
@@ -406,6 +406,14 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(landingpage.Table, sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(landingpage.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Slug(); ok {
 		_spec.SetField(landingpage.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
@@ -478,14 +486,6 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
 		_node.LandingPageToRedirectID = &value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(landingpage.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -510,7 +510,7 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.LandingPage.Create().
-//		SetLanguageID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -519,7 +519,7 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LandingPageUpsert) {
-//			SetLanguageID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LandingPageCreate) OnConflict(opts ...sql.ConflictOption) *LandingPageUpsertOne {
@@ -554,6 +554,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageUpsert) SetUpdatedAt(v time.Time) *LandingPageUpsert {
+	u.Set(landingpage.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateUpdatedAt() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldUpdatedAt)
+	return u
+}
 
 // SetLanguageID sets the "language_id" field.
 func (u *LandingPageUpsert) SetLanguageID(v int) *LandingPageUpsert {
@@ -897,18 +909,6 @@ func (u *LandingPageUpsert) ClearLandingPageToRedirectID() *LandingPageUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LandingPageUpsert) SetUpdatedAt(v time.Time) *LandingPageUpsert {
-	u.Set(landingpage.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LandingPageUpsert) UpdateUpdatedAt() *LandingPageUpsert {
-	u.SetExcluded(landingpage.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -952,6 +952,20 @@ func (u *LandingPageUpsertOne) Update(set func(*LandingPageUpsert)) *LandingPage
 		set(&LandingPageUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageUpsertOne) SetUpdatedAt(v time.Time) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateUpdatedAt() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -1353,20 +1367,6 @@ func (u *LandingPageUpsertOne) ClearLandingPageToRedirectID() *LandingPageUpsert
 	})
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LandingPageUpsertOne) SetUpdatedAt(v time.Time) *LandingPageUpsertOne {
-	return u.Update(func(s *LandingPageUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LandingPageUpsertOne) UpdateUpdatedAt() *LandingPageUpsertOne {
-	return u.Update(func(s *LandingPageUpsert) {
-		s.UpdateUpdatedAt()
-	})
-}
-
 // Exec executes the query.
 func (u *LandingPageUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -1502,7 +1502,7 @@ func (_c *LandingPageCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LandingPageUpsert) {
-//			SetLanguageID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LandingPageCreateBulk) OnConflict(opts ...sql.ConflictOption) *LandingPageUpsertBulk {
@@ -1576,6 +1576,20 @@ func (u *LandingPageUpsertBulk) Update(set func(*LandingPageUpsert)) *LandingPag
 		set(&LandingPageUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LandingPageUpsertBulk) SetUpdatedAt(v time.Time) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateUpdatedAt() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -1974,20 +1988,6 @@ func (u *LandingPageUpsertBulk) UpdateLandingPageToRedirectID() *LandingPageUpse
 func (u *LandingPageUpsertBulk) ClearLandingPageToRedirectID() *LandingPageUpsertBulk {
 	return u.Update(func(s *LandingPageUpsert) {
 		s.ClearLandingPageToRedirectID()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *LandingPageUpsertBulk) SetUpdatedAt(v time.Time) *LandingPageUpsertBulk {
-	return u.Update(func(s *LandingPageUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *LandingPageUpsertBulk) UpdateUpdatedAt() *LandingPageUpsertBulk {
-	return u.Update(func(s *LandingPageUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

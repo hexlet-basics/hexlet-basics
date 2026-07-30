@@ -299,12 +299,12 @@ func (_q *LanguageLessonQuery) WithInfos(opts ...func(*LanguageLessonVersionInfo
 // Example:
 //
 //	var v []struct {
-//		Slug string `json:"slug,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.LanguageLesson.Query().
-//		GroupBy(languagelesson.FieldSlug).
+//		GroupBy(languagelesson.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *LanguageLessonQuery) GroupBy(field string, fields ...string) *LanguageLessonGroupBy {
@@ -322,11 +322,11 @@ func (_q *LanguageLessonQuery) GroupBy(field string, fields ...string) *Language
 // Example:
 //
 //	var v []struct {
-//		Slug string `json:"slug,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.LanguageLesson.Query().
-//		Select(languagelesson.FieldSlug).
+//		Select(languagelesson.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *LanguageLessonQuery) Select(fields ...string) *LanguageLessonSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

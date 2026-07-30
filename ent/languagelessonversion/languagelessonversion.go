@@ -13,6 +13,10 @@ const (
 	Label = "language_lesson_version"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldNaturalOrder holds the string denoting the natural_order field in the database.
 	FieldNaturalOrder = "natural_order"
 	// FieldOrder holds the string denoting the order field in the database.
@@ -33,10 +37,6 @@ const (
 	FieldLessonID = "lesson_id"
 	// FieldModuleVersionID holds the string denoting the module_version_id field in the database.
 	FieldModuleVersionID = "module_version_id"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the languagelessonversion in the database.
 	Table = "language_lesson_versions"
 )
@@ -44,6 +44,8 @@ const (
 // Columns holds all SQL columns for languagelessonversion fields.
 var Columns = []string{
 	FieldID,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 	FieldNaturalOrder,
 	FieldOrder,
 	FieldOriginalCode,
@@ -54,8 +56,6 @@ var Columns = []string{
 	FieldLanguageVersionID,
 	FieldLessonID,
 	FieldModuleVersionID,
-	FieldCreatedAt,
-	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -83,6 +83,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByNaturalOrder orders the results by the natural_order field.
@@ -133,14 +143,4 @@ func ByLessonID(opts ...sql.OrderTermOption) OrderOption {
 // ByModuleVersionID orders the results by the module_version_id field.
 func ByModuleVersionID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModuleVersionID, opts...).ToFunc()
-}
-
-// ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }

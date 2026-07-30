@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -36,8 +34,6 @@ func (LanguageLesson) Fields() []ent.Field {
 		field.Int("language_id").Optional().Nillable(),
 		field.Int("module_id").Optional().Nillable(),
 		field.String("state").Optional().Nillable(),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -52,4 +48,8 @@ func (LanguageLesson) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("language_id", "slug").Unique(),
 	}
+}
+
+func (LanguageLesson) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

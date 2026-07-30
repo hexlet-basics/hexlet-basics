@@ -17,6 +17,10 @@ type Banner struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Background holds the value of the "background" field.
 	Background string `json:"background,omitempty"`
 	// Body holds the value of the "body" field.
@@ -30,11 +34,7 @@ type Banner struct {
 	// StartsAt holds the value of the "starts_at" field.
 	StartsAt *time.Time `json:"starts_at,omitempty"`
 	// FinishesAt holds the value of the "finishes_at" field.
-	FinishesAt *time.Time `json:"finishes_at,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	FinishesAt   *time.Time `json:"finishes_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -47,7 +47,7 @@ func (*Banner) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case banner.FieldBackground, banner.FieldBody, banner.FieldLocale, banner.FieldState, banner.FieldURL:
 			values[i] = new(sql.NullString)
-		case banner.FieldStartsAt, banner.FieldFinishesAt, banner.FieldCreatedAt, banner.FieldUpdatedAt:
+		case banner.FieldCreatedAt, banner.FieldUpdatedAt, banner.FieldStartsAt, banner.FieldFinishesAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -70,6 +70,18 @@ func (_m *Banner) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case banner.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case banner.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case banner.FieldBackground:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field background", values[i])
@@ -115,18 +127,6 @@ func (_m *Banner) assignValues(columns []string, values []any) error {
 				_m.FinishesAt = new(time.Time)
 				*_m.FinishesAt = value.Time
 			}
-		case banner.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				_m.CreatedAt = value.Time
-			}
-		case banner.FieldUpdatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
-			} else if value.Valid {
-				_m.UpdatedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -163,6 +163,12 @@ func (_m *Banner) String() string {
 	var builder strings.Builder
 	builder.WriteString("Banner(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("background=")
 	builder.WriteString(_m.Background)
 	builder.WriteString(", ")
@@ -189,12 +195,6 @@ func (_m *Banner) String() string {
 		builder.WriteString("finishes_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("updated_at=")
-	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

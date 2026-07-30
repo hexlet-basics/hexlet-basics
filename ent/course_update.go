@@ -30,6 +30,12 @@ func (_u *CourseUpdate) Where(ps ...predicate.Course) *CourseUpdate {
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseUpdate) SetUpdatedAt(v time.Time) *CourseUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetSlug sets the "slug" field.
 func (_u *CourseUpdate) SetSlug(v string) *CourseUpdate {
 	_u.mutation.SetSlug(v)
@@ -246,12 +252,6 @@ func (_u *CourseUpdate) ClearOrder() *CourseUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CourseUpdate) SetUpdatedAt(v time.Time) *CourseUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
 func (_u *CourseUpdate) AddLandingPageIDs(ids ...int) *CourseUpdate {
 	_u.mutation.AddLandingPageIDs(ids...)
@@ -349,6 +349,9 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(course.FieldSlug, field.TypeString, value)
 	}
@@ -408,9 +411,6 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.OrderCleared() {
 		_spec.ClearField(course.FieldOrder, field.TypeInt)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.LandingPagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -504,6 +504,12 @@ type CourseUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CourseMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseUpdateOne) SetUpdatedAt(v time.Time) *CourseUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetSlug sets the "slug" field.
@@ -722,12 +728,6 @@ func (_u *CourseUpdateOne) ClearOrder() *CourseUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CourseUpdateOne) SetUpdatedAt(v time.Time) *CourseUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
 func (_u *CourseUpdateOne) AddLandingPageIDs(ids ...int) *CourseUpdateOne {
 	_u.mutation.AddLandingPageIDs(ids...)
@@ -855,6 +855,9 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(course.FieldSlug, field.TypeString, value)
 	}
@@ -914,9 +917,6 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 	}
 	if _u.mutation.OrderCleared() {
 		_spec.ClearField(course.FieldOrder, field.TypeInt)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(course.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.LandingPagesCleared() {
 		edge := &sqlgraph.EdgeSpec{

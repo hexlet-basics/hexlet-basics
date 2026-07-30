@@ -262,12 +262,12 @@ func (_q *LanguageModuleVersionQuery) Clone() *LanguageModuleVersionQuery {
 // Example:
 //
 //	var v []struct {
-//		Order int `json:"order,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.LanguageModuleVersion.Query().
-//		GroupBy(languagemoduleversion.FieldOrder).
+//		GroupBy(languagemoduleversion.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *LanguageModuleVersionQuery) GroupBy(field string, fields ...string) *LanguageModuleVersionGroupBy {
@@ -285,11 +285,11 @@ func (_q *LanguageModuleVersionQuery) GroupBy(field string, fields ...string) *L
 // Example:
 //
 //	var v []struct {
-//		Order int `json:"order,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.LanguageModuleVersion.Query().
-//		Select(languagemoduleversion.FieldOrder).
+//		Select(languagemoduleversion.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *LanguageModuleVersionQuery) Select(fields ...string) *LanguageModuleVersionSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

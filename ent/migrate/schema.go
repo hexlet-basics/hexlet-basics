@@ -62,6 +62,8 @@ var (
 	// BannersColumns holds the columns for the "banners" table.
 	BannersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "background", Type: field.TypeString, Default: "cta_gradient"},
 		{Name: "body", Type: field.TypeString},
 		{Name: "locale", Type: field.TypeString},
@@ -69,8 +71,6 @@ var (
 		{Name: "url", Type: field.TypeString, Nullable: true},
 		{Name: "starts_at", Type: field.TypeTime, Nullable: true},
 		{Name: "finishes_at", Type: field.TypeTime, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// BannersTable holds the schema information for the "banners" table.
 	BannersTable = &schema.Table{
@@ -120,11 +120,11 @@ var (
 	// LanguageCategoryQnaItemsColumns holds the columns for the "language_category_qna_items" table.
 	LanguageCategoryQnaItemsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "language_category_id", Type: field.TypeInt},
 		{Name: "question", Type: field.TypeString, Nullable: true},
 		{Name: "answer", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageCategoryQnaItemsTable holds the schema information for the "language_category_qna_items" table.
 	LanguageCategoryQnaItemsTable = &schema.Table{
@@ -135,6 +135,8 @@ var (
 	// LanguagesColumns holds the columns for the "languages" table.
 	LanguagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "slug", Type: field.TypeString, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "learn_as", Type: field.TypeString, Nullable: true},
@@ -144,8 +146,6 @@ var (
 		{Name: "lessons_count", Type: field.TypeInt, Default: 0},
 		{Name: "category_id", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "current_version_id", Type: field.TypeInt, Nullable: true},
 	}
 	// LanguagesTable holds the schema information for the "languages" table.
@@ -165,13 +165,13 @@ var (
 	// LanguageCategoriesColumns holds the columns for the "language_categories" table.
 	LanguageCategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "slug", Type: field.TypeString, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "header", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageCategoriesTable holds the schema information for the "language_categories" table.
 	LanguageCategoriesTable = &schema.Table{
@@ -182,6 +182,8 @@ var (
 	// LanguageVersionsColumns holds the columns for the "language_versions" table.
 	LanguageVersionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "result", Type: field.TypeString, Nullable: true},
 		{Name: "state", Type: field.TypeString, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
@@ -193,8 +195,6 @@ var (
 		{Name: "exercise_test_filename", Type: field.TypeString, Nullable: true},
 		{Name: "lessons_count", Type: field.TypeInt, Default: 0},
 		{Name: "language_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageVersionsTable holds the schema information for the "language_versions" table.
 	LanguageVersionsTable = &schema.Table{
@@ -205,6 +205,8 @@ var (
 	// LanguageLandingPagesColumns holds the columns for the "language_landing_pages" table.
 	LanguageLandingPagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "slug", Type: field.TypeString, Nullable: true},
 		{Name: "header", Type: field.TypeString, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
@@ -223,8 +225,6 @@ var (
 		{Name: "footer", Type: field.TypeBool, Nullable: true},
 		{Name: "footer_name", Type: field.TypeString, Nullable: true},
 		{Name: "landing_page_to_redirect_id", Type: field.TypeInt, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "language_id", Type: field.TypeInt},
 	}
 	// LanguageLandingPagesTable holds the schema information for the "language_landing_pages" table.
@@ -244,11 +244,11 @@ var (
 	// LanguageLandingPageQnaItemsColumns holds the columns for the "language_landing_page_qna_items" table.
 	LanguageLandingPageQnaItemsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "language_landing_page_id", Type: field.TypeInt},
 		{Name: "question", Type: field.TypeString, Nullable: true},
 		{Name: "answer", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageLandingPageQnaItemsTable holds the schema information for the "language_landing_page_qna_items" table.
 	LanguageLandingPageQnaItemsTable = &schema.Table{
@@ -259,13 +259,13 @@ var (
 	// LanguageLessonsColumns holds the columns for the "language_lessons" table.
 	LanguageLessonsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "slug", Type: field.TypeString, Nullable: true},
 		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
 		{Name: "language_id", Type: field.TypeInt, Nullable: true},
 		{Name: "module_id", Type: field.TypeInt, Nullable: true},
 		{Name: "state", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageLessonsTable holds the schema information for the "language_lessons" table.
 	LanguageLessonsTable = &schema.Table{
@@ -276,7 +276,7 @@ var (
 			{
 				Name:    "languagelesson_language_id_slug",
 				Unique:  true,
-				Columns: []*schema.Column{LanguageLessonsColumns[3], LanguageLessonsColumns[1]},
+				Columns: []*schema.Column{LanguageLessonsColumns[5], LanguageLessonsColumns[3]},
 			},
 		},
 	}
@@ -344,6 +344,8 @@ var (
 	// LanguageLessonVersionsColumns holds the columns for the "language_lesson_versions" table.
 	LanguageLessonVersionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt, Nullable: true},
 		{Name: "original_code", Type: field.TypeString, Nullable: true},
@@ -354,8 +356,6 @@ var (
 		{Name: "language_version_id", Type: field.TypeInt},
 		{Name: "lesson_id", Type: field.TypeInt},
 		{Name: "module_version_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageLessonVersionsTable holds the schema information for the "language_lesson_versions" table.
 	LanguageLessonVersionsTable = &schema.Table{
@@ -366,6 +366,8 @@ var (
 	// LanguageLessonVersionInfosColumns holds the columns for the "language_lesson_version_infos" table.
 	LanguageLessonVersionInfosColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
@@ -375,8 +377,6 @@ var (
 		{Name: "tips", Type: field.TypeString, Nullable: true},
 		{Name: "definitions", Type: field.TypeString, Nullable: true},
 		{Name: "version_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "language_lesson_id", Type: field.TypeInt},
 		{Name: "language_version_id", Type: field.TypeInt},
 	}
@@ -403,12 +403,12 @@ var (
 	// LanguageModulesColumns holds the columns for the "language_modules" table.
 	LanguageModulesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "slug", Type: field.TypeString, Nullable: true},
 		{Name: "language_id", Type: field.TypeInt, Nullable: true},
 		{Name: "order", Type: field.TypeInt, Nullable: true},
 		{Name: "state", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageModulesTable holds the schema information for the "language_modules" table.
 	LanguageModulesTable = &schema.Table{
@@ -419,19 +419,19 @@ var (
 			{
 				Name:    "languagemodule_language_id_slug",
 				Unique:  true,
-				Columns: []*schema.Column{LanguageModulesColumns[2], LanguageModulesColumns[1]},
+				Columns: []*schema.Column{LanguageModulesColumns[4], LanguageModulesColumns[3]},
 			},
 		},
 	}
 	// LanguageModuleVersionsColumns holds the columns for the "language_module_versions" table.
 	LanguageModuleVersionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "order", Type: field.TypeInt, Nullable: true},
 		{Name: "language_id", Type: field.TypeInt},
 		{Name: "language_version_id", Type: field.TypeInt},
 		{Name: "module_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageModuleVersionsTable holds the schema information for the "language_module_versions" table.
 	LanguageModuleVersionsTable = &schema.Table{
@@ -442,14 +442,14 @@ var (
 	// LanguageModuleVersionInfosColumns holds the columns for the "language_module_version_infos" table.
 	LanguageModuleVersionInfosColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
 		{Name: "language_id", Type: field.TypeInt},
 		{Name: "language_version_id", Type: field.TypeInt},
 		{Name: "version_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// LanguageModuleVersionInfosTable holds the schema information for the "language_module_version_infos" table.
 	LanguageModuleVersionInfosTable = &schema.Table{
@@ -478,14 +478,14 @@ var (
 	// ReviewsColumns holds the columns for the "reviews" table.
 	ReviewsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "body", Type: field.TypeString, Nullable: true},
 		{Name: "first_name", Type: field.TypeString, Nullable: true},
 		{Name: "last_name", Type: field.TypeString, Nullable: true},
 		{Name: "locale", Type: field.TypeString, Nullable: true},
 		{Name: "state", Type: field.TypeString, Nullable: true},
 		{Name: "pinned", Type: field.TypeBool, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "language_id", Type: field.TypeInt},
 		{Name: "user_id", Type: field.TypeInt},
 	}
@@ -512,9 +512,9 @@ var (
 	// StaffMembersColumns holds the columns for the "staff_members" table.
 	StaffMembersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "allowed_locales", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "allowed_locales", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "role_id", Type: field.TypeInt},
 	}
@@ -541,10 +541,10 @@ var (
 	// StaffMemberRolesColumns holds the columns for the "staff_member_roles" table.
 	StaffMemberRolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true},
 	}
 	// StaffMemberRolesTable holds the schema information for the "staff_member_roles" table.
 	StaffMemberRolesTable = &schema.Table{
@@ -555,13 +555,13 @@ var (
 	// StaffMemberRolePermissionsColumns holds the columns for the "staff_member_role_permissions" table.
 	StaffMemberRolePermissionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "resource", Type: field.TypeString},
 		{Name: "can_index", Type: field.TypeBool, Default: false},
 		{Name: "can_create", Type: field.TypeBool, Default: false},
 		{Name: "can_update", Type: field.TypeBool, Default: false},
 		{Name: "can_destroy", Type: field.TypeBool, Default: false},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "role_id", Type: field.TypeInt},
 	}
 	// StaffMemberRolePermissionsTable holds the schema information for the "staff_member_role_permissions" table.
@@ -581,14 +581,14 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "email", Type: field.TypeString, Nullable: true},
 		{Name: "password_digest", Type: field.TypeString, Nullable: true},
 		{Name: "first_name", Type: field.TypeString, Nullable: true},
 		{Name: "last_name", Type: field.TypeString, Nullable: true},
 		{Name: "admin", Type: field.TypeBool, Nullable: true},
 		{Name: "assistant_messages_count", Type: field.TypeInt, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

@@ -29,6 +29,12 @@ func (_u *LanguageLessonUpdate) Where(ps ...predicate.LanguageLesson) *LanguageL
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonUpdate) SetUpdatedAt(v time.Time) *LanguageLessonUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetSlug sets the "slug" field.
 func (_u *LanguageLessonUpdate) SetSlug(v string) *LanguageLessonUpdate {
 	_u.mutation.SetSlug(v)
@@ -150,12 +156,6 @@ func (_u *LanguageLessonUpdate) ClearState() *LanguageLessonUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageLessonUpdate) SetUpdatedAt(v time.Time) *LanguageLessonUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // AddInfoIDs adds the "infos" edge to the LanguageLessonVersionInfo entity by IDs.
 func (_u *LanguageLessonUpdate) AddInfoIDs(ids ...int) *LanguageLessonUpdate {
 	_u.mutation.AddInfoIDs(ids...)
@@ -242,6 +242,9 @@ func (_u *LanguageLessonUpdate) sqlSave(ctx context.Context) (_node int, err err
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(languagelesson.FieldSlug, field.TypeString, value)
 	}
@@ -280,9 +283,6 @@ func (_u *LanguageLessonUpdate) sqlSave(ctx context.Context) (_node int, err err
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(languagelesson.FieldState, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.InfosCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -347,6 +347,12 @@ type LanguageLessonUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LanguageLessonMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetSlug sets the "slug" field.
@@ -470,12 +476,6 @@ func (_u *LanguageLessonUpdateOne) ClearState() *LanguageLessonUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *LanguageLessonUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // AddInfoIDs adds the "infos" edge to the LanguageLessonVersionInfo entity by IDs.
 func (_u *LanguageLessonUpdateOne) AddInfoIDs(ids ...int) *LanguageLessonUpdateOne {
 	_u.mutation.AddInfoIDs(ids...)
@@ -592,6 +592,9 @@ func (_u *LanguageLessonUpdateOne) sqlSave(ctx context.Context) (_node *Language
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(languagelesson.FieldSlug, field.TypeString, value)
 	}
@@ -630,9 +633,6 @@ func (_u *LanguageLessonUpdateOne) sqlSave(ctx context.Context) (_node *Language
 	}
 	if _u.mutation.StateCleared() {
 		_spec.ClearField(languagelesson.FieldState, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(languagelesson.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _u.mutation.InfosCleared() {
 		edge := &sqlgraph.EdgeSpec{

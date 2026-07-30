@@ -1696,6 +1696,8 @@ type BannerMutation struct {
 	op            Op
 	typ           string
 	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
 	background    *string
 	body          *string
 	locale        *string
@@ -1703,8 +1705,6 @@ type BannerMutation struct {
 	url           *string
 	starts_at     *time.Time
 	finishes_at   *time.Time
-	created_at    *time.Time
-	updated_at    *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Banner, error)
@@ -1807,6 +1807,78 @@ func (m *BannerMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *BannerMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *BannerMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Banner entity.
+// If the Banner object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BannerMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *BannerMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *BannerMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *BannerMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Banner entity.
+// If the Banner object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BannerMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *BannerMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetBackground sets the "background" field.
@@ -2100,78 +2172,6 @@ func (m *BannerMutation) ResetFinishesAt() {
 	delete(m.clearedFields, banner.FieldFinishesAt)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *BannerMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *BannerMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the Banner entity.
-// If the Banner object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BannerMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *BannerMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *BannerMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *BannerMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the Banner entity.
-// If the Banner object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BannerMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *BannerMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the BannerMutation builder.
 func (m *BannerMutation) Where(ps ...predicate.Banner) {
 	m.predicates = append(m.predicates, ps...)
@@ -2207,6 +2207,12 @@ func (m *BannerMutation) Type() string {
 // AddedFields().
 func (m *BannerMutation) Fields() []string {
 	fields := make([]string, 0, 9)
+	if m.created_at != nil {
+		fields = append(fields, banner.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, banner.FieldUpdatedAt)
+	}
 	if m.background != nil {
 		fields = append(fields, banner.FieldBackground)
 	}
@@ -2228,12 +2234,6 @@ func (m *BannerMutation) Fields() []string {
 	if m.finishes_at != nil {
 		fields = append(fields, banner.FieldFinishesAt)
 	}
-	if m.created_at != nil {
-		fields = append(fields, banner.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, banner.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -2242,6 +2242,10 @@ func (m *BannerMutation) Fields() []string {
 // schema.
 func (m *BannerMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case banner.FieldCreatedAt:
+		return m.CreatedAt()
+	case banner.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case banner.FieldBackground:
 		return m.Background()
 	case banner.FieldBody:
@@ -2256,10 +2260,6 @@ func (m *BannerMutation) Field(name string) (ent.Value, bool) {
 		return m.StartsAt()
 	case banner.FieldFinishesAt:
 		return m.FinishesAt()
-	case banner.FieldCreatedAt:
-		return m.CreatedAt()
-	case banner.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -2269,6 +2269,10 @@ func (m *BannerMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *BannerMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case banner.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case banner.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case banner.FieldBackground:
 		return m.OldBackground(ctx)
 	case banner.FieldBody:
@@ -2283,10 +2287,6 @@ func (m *BannerMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldStartsAt(ctx)
 	case banner.FieldFinishesAt:
 		return m.OldFinishesAt(ctx)
-	case banner.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case banner.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Banner field %s", name)
 }
@@ -2296,6 +2296,20 @@ func (m *BannerMutation) OldField(ctx context.Context, name string) (ent.Value, 
 // type.
 func (m *BannerMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case banner.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case banner.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case banner.FieldBackground:
 		v, ok := value.(string)
 		if !ok {
@@ -2344,20 +2358,6 @@ func (m *BannerMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFinishesAt(v)
-		return nil
-	case banner.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case banner.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Banner field %s", name)
@@ -2429,6 +2429,12 @@ func (m *BannerMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *BannerMutation) ResetField(name string) error {
 	switch name {
+	case banner.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case banner.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case banner.FieldBackground:
 		m.ResetBackground()
 		return nil
@@ -2449,12 +2455,6 @@ func (m *BannerMutation) ResetField(name string) error {
 		return nil
 	case banner.FieldFinishesAt:
 		m.ResetFinishesAt()
-		return nil
-	case banner.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case banner.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Banner field %s", name)
@@ -3929,12 +3929,12 @@ type CategoryQnaItemMutation struct {
 	op                      Op
 	typ                     string
 	id                      *int
+	created_at              *time.Time
+	updated_at              *time.Time
 	language_category_id    *int
 	addlanguage_category_id *int
 	question                *string
 	answer                  *string
-	created_at              *time.Time
-	updated_at              *time.Time
 	clearedFields           map[string]struct{}
 	done                    bool
 	oldValue                func(context.Context) (*CategoryQnaItem, error)
@@ -4037,6 +4037,78 @@ func (m *CategoryQnaItemMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CategoryQnaItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CategoryQnaItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CategoryQnaItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CategoryQnaItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CategoryQnaItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CategoryQnaItem entity.
+// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryQnaItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CategoryQnaItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetLanguageCategoryID sets the "language_category_id" field.
@@ -4193,78 +4265,6 @@ func (m *CategoryQnaItemMutation) ResetAnswer() {
 	delete(m.clearedFields, categoryqnaitem.FieldAnswer)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *CategoryQnaItemMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *CategoryQnaItemMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the CategoryQnaItem entity.
-// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CategoryQnaItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *CategoryQnaItemMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *CategoryQnaItemMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *CategoryQnaItemMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the CategoryQnaItem entity.
-// If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CategoryQnaItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *CategoryQnaItemMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the CategoryQnaItemMutation builder.
 func (m *CategoryQnaItemMutation) Where(ps ...predicate.CategoryQnaItem) {
 	m.predicates = append(m.predicates, ps...)
@@ -4300,6 +4300,12 @@ func (m *CategoryQnaItemMutation) Type() string {
 // AddedFields().
 func (m *CategoryQnaItemMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, categoryqnaitem.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, categoryqnaitem.FieldUpdatedAt)
+	}
 	if m.language_category_id != nil {
 		fields = append(fields, categoryqnaitem.FieldLanguageCategoryID)
 	}
@@ -4309,12 +4315,6 @@ func (m *CategoryQnaItemMutation) Fields() []string {
 	if m.answer != nil {
 		fields = append(fields, categoryqnaitem.FieldAnswer)
 	}
-	if m.created_at != nil {
-		fields = append(fields, categoryqnaitem.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, categoryqnaitem.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -4323,16 +4323,16 @@ func (m *CategoryQnaItemMutation) Fields() []string {
 // schema.
 func (m *CategoryQnaItemMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case categoryqnaitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case categoryqnaitem.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case categoryqnaitem.FieldLanguageCategoryID:
 		return m.LanguageCategoryID()
 	case categoryqnaitem.FieldQuestion:
 		return m.Question()
 	case categoryqnaitem.FieldAnswer:
 		return m.Answer()
-	case categoryqnaitem.FieldCreatedAt:
-		return m.CreatedAt()
-	case categoryqnaitem.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -4342,16 +4342,16 @@ func (m *CategoryQnaItemMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CategoryQnaItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case categoryqnaitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case categoryqnaitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case categoryqnaitem.FieldLanguageCategoryID:
 		return m.OldLanguageCategoryID(ctx)
 	case categoryqnaitem.FieldQuestion:
 		return m.OldQuestion(ctx)
 	case categoryqnaitem.FieldAnswer:
 		return m.OldAnswer(ctx)
-	case categoryqnaitem.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case categoryqnaitem.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown CategoryQnaItem field %s", name)
 }
@@ -4361,6 +4361,20 @@ func (m *CategoryQnaItemMutation) OldField(ctx context.Context, name string) (en
 // type.
 func (m *CategoryQnaItemMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case categoryqnaitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case categoryqnaitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case categoryqnaitem.FieldLanguageCategoryID:
 		v, ok := value.(int)
 		if !ok {
@@ -4381,20 +4395,6 @@ func (m *CategoryQnaItemMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAnswer(v)
-		return nil
-	case categoryqnaitem.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case categoryqnaitem.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CategoryQnaItem field %s", name)
@@ -4475,6 +4475,12 @@ func (m *CategoryQnaItemMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CategoryQnaItemMutation) ResetField(name string) error {
 	switch name {
+	case categoryqnaitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case categoryqnaitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case categoryqnaitem.FieldLanguageCategoryID:
 		m.ResetLanguageCategoryID()
 		return nil
@@ -4483,12 +4489,6 @@ func (m *CategoryQnaItemMutation) ResetField(name string) error {
 		return nil
 	case categoryqnaitem.FieldAnswer:
 		m.ResetAnswer()
-		return nil
-	case categoryqnaitem.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case categoryqnaitem.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown CategoryQnaItem field %s", name)
@@ -4548,6 +4548,8 @@ type CourseMutation struct {
 	op                          Op
 	typ                         string
 	id                          *int
+	created_at                  *time.Time
+	updated_at                  *time.Time
 	slug                        *string
 	name                        *string
 	learn_as                    *string
@@ -4561,8 +4563,6 @@ type CourseMutation struct {
 	addcategory_id              *int
 	_order                      *int
 	add_order                   *int
-	created_at                  *time.Time
-	updated_at                  *time.Time
 	clearedFields               map[string]struct{}
 	landing_pages               map[int]struct{}
 	removedlanding_pages        map[int]struct{}
@@ -4670,6 +4670,78 @@ func (m *CourseMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CourseMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CourseMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Course entity.
+// If the Course object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CourseMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Course entity.
+// If the Course object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetSlug sets the "slug" field.
@@ -5218,78 +5290,6 @@ func (m *CourseMutation) ResetOrder() {
 	delete(m.clearedFields, course.FieldOrder)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *CourseMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *CourseMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the Course entity.
-// If the Course object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *CourseMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *CourseMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *CourseMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the Course entity.
-// If the Course object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *CourseMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by ids.
 func (m *CourseMutation) AddLandingPageIDs(ids ...int) {
 	if m.landing_pages == nil {
@@ -5406,6 +5406,12 @@ func (m *CourseMutation) Type() string {
 // AddedFields().
 func (m *CourseMutation) Fields() []string {
 	fields := make([]string, 0, 12)
+	if m.created_at != nil {
+		fields = append(fields, course.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, course.FieldUpdatedAt)
+	}
 	if m.slug != nil {
 		fields = append(fields, course.FieldSlug)
 	}
@@ -5436,12 +5442,6 @@ func (m *CourseMutation) Fields() []string {
 	if m._order != nil {
 		fields = append(fields, course.FieldOrder)
 	}
-	if m.created_at != nil {
-		fields = append(fields, course.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, course.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -5450,6 +5450,10 @@ func (m *CourseMutation) Fields() []string {
 // schema.
 func (m *CourseMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case course.FieldCreatedAt:
+		return m.CreatedAt()
+	case course.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case course.FieldSlug:
 		return m.Slug()
 	case course.FieldName:
@@ -5470,10 +5474,6 @@ func (m *CourseMutation) Field(name string) (ent.Value, bool) {
 		return m.CurrentVersionID()
 	case course.FieldOrder:
 		return m.Order()
-	case course.FieldCreatedAt:
-		return m.CreatedAt()
-	case course.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -5483,6 +5483,10 @@ func (m *CourseMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CourseMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case course.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case course.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case course.FieldSlug:
 		return m.OldSlug(ctx)
 	case course.FieldName:
@@ -5503,10 +5507,6 @@ func (m *CourseMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldCurrentVersionID(ctx)
 	case course.FieldOrder:
 		return m.OldOrder(ctx)
-	case course.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case course.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Course field %s", name)
 }
@@ -5516,6 +5516,20 @@ func (m *CourseMutation) OldField(ctx context.Context, name string) (ent.Value, 
 // type.
 func (m *CourseMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case course.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case course.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case course.FieldSlug:
 		v, ok := value.(string)
 		if !ok {
@@ -5585,20 +5599,6 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOrder(v)
-		return nil
-	case course.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case course.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Course field %s", name)
@@ -5751,6 +5751,12 @@ func (m *CourseMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CourseMutation) ResetField(name string) error {
 	switch name {
+	case course.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case course.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case course.FieldSlug:
 		m.ResetSlug()
 		return nil
@@ -5780,12 +5786,6 @@ func (m *CourseMutation) ResetField(name string) error {
 		return nil
 	case course.FieldOrder:
 		m.ResetOrder()
-		return nil
-	case course.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case course.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Course field %s", name)
@@ -5899,13 +5899,13 @@ type CourseCategoryMutation struct {
 	op            Op
 	typ           string
 	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
 	slug          *string
 	name          *string
 	header        *string
 	description   *string
 	locale        *string
-	created_at    *time.Time
-	updated_at    *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*CourseCategory, error)
@@ -6008,6 +6008,78 @@ func (m *CourseCategoryMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CourseCategoryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CourseCategoryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CourseCategoryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseCategoryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseCategoryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CourseCategory entity.
+// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseCategoryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetSlug sets the "slug" field.
@@ -6255,78 +6327,6 @@ func (m *CourseCategoryMutation) ResetLocale() {
 	delete(m.clearedFields, coursecategory.FieldLocale)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *CourseCategoryMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *CourseCategoryMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the CourseCategory entity.
-// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseCategoryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *CourseCategoryMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *CourseCategoryMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *CourseCategoryMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the CourseCategory entity.
-// If the CourseCategory object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseCategoryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *CourseCategoryMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the CourseCategoryMutation builder.
 func (m *CourseCategoryMutation) Where(ps ...predicate.CourseCategory) {
 	m.predicates = append(m.predicates, ps...)
@@ -6362,6 +6362,12 @@ func (m *CourseCategoryMutation) Type() string {
 // AddedFields().
 func (m *CourseCategoryMutation) Fields() []string {
 	fields := make([]string, 0, 7)
+	if m.created_at != nil {
+		fields = append(fields, coursecategory.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, coursecategory.FieldUpdatedAt)
+	}
 	if m.slug != nil {
 		fields = append(fields, coursecategory.FieldSlug)
 	}
@@ -6377,12 +6383,6 @@ func (m *CourseCategoryMutation) Fields() []string {
 	if m.locale != nil {
 		fields = append(fields, coursecategory.FieldLocale)
 	}
-	if m.created_at != nil {
-		fields = append(fields, coursecategory.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, coursecategory.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -6391,6 +6391,10 @@ func (m *CourseCategoryMutation) Fields() []string {
 // schema.
 func (m *CourseCategoryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case coursecategory.FieldCreatedAt:
+		return m.CreatedAt()
+	case coursecategory.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case coursecategory.FieldSlug:
 		return m.Slug()
 	case coursecategory.FieldName:
@@ -6401,10 +6405,6 @@ func (m *CourseCategoryMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case coursecategory.FieldLocale:
 		return m.Locale()
-	case coursecategory.FieldCreatedAt:
-		return m.CreatedAt()
-	case coursecategory.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -6414,6 +6414,10 @@ func (m *CourseCategoryMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CourseCategoryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case coursecategory.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case coursecategory.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case coursecategory.FieldSlug:
 		return m.OldSlug(ctx)
 	case coursecategory.FieldName:
@@ -6424,10 +6428,6 @@ func (m *CourseCategoryMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldDescription(ctx)
 	case coursecategory.FieldLocale:
 		return m.OldLocale(ctx)
-	case coursecategory.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case coursecategory.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown CourseCategory field %s", name)
 }
@@ -6437,6 +6437,20 @@ func (m *CourseCategoryMutation) OldField(ctx context.Context, name string) (ent
 // type.
 func (m *CourseCategoryMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case coursecategory.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case coursecategory.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case coursecategory.FieldSlug:
 		v, ok := value.(string)
 		if !ok {
@@ -6471,20 +6485,6 @@ func (m *CourseCategoryMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLocale(v)
-		return nil
-	case coursecategory.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case coursecategory.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseCategory field %s", name)
@@ -6568,6 +6568,12 @@ func (m *CourseCategoryMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CourseCategoryMutation) ResetField(name string) error {
 	switch name {
+	case coursecategory.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case coursecategory.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case coursecategory.FieldSlug:
 		m.ResetSlug()
 		return nil
@@ -6582,12 +6588,6 @@ func (m *CourseCategoryMutation) ResetField(name string) error {
 		return nil
 	case coursecategory.FieldLocale:
 		m.ResetLocale()
-		return nil
-	case coursecategory.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case coursecategory.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseCategory field %s", name)
@@ -6647,6 +6647,8 @@ type CourseVersionMutation struct {
 	op                     Op
 	typ                    string
 	id                     *int
+	created_at             *time.Time
+	updated_at             *time.Time
 	result                 *string
 	state                  *string
 	name                   *string
@@ -6660,8 +6662,6 @@ type CourseVersionMutation struct {
 	addlessons_count       *int
 	language_id            *int
 	addlanguage_id         *int
-	created_at             *time.Time
-	updated_at             *time.Time
 	clearedFields          map[string]struct{}
 	current_courses        map[int]struct{}
 	removedcurrent_courses map[int]struct{}
@@ -6767,6 +6767,78 @@ func (m *CourseVersionMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CourseVersionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CourseVersionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CourseVersionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseVersionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseVersionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CourseVersion entity.
+// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseVersionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetResult sets the "result" field.
@@ -7322,78 +7394,6 @@ func (m *CourseVersionMutation) ResetLanguageID() {
 	m.addlanguage_id = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *CourseVersionMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *CourseVersionMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the CourseVersion entity.
-// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *CourseVersionMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *CourseVersionMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *CourseVersionMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the CourseVersion entity.
-// If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *CourseVersionMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by ids.
 func (m *CourseVersionMutation) AddCurrentCourseIDs(ids ...int) {
 	if m.current_courses == nil {
@@ -7483,6 +7483,12 @@ func (m *CourseVersionMutation) Type() string {
 // AddedFields().
 func (m *CourseVersionMutation) Fields() []string {
 	fields := make([]string, 0, 13)
+	if m.created_at != nil {
+		fields = append(fields, courseversion.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, courseversion.FieldUpdatedAt)
+	}
 	if m.result != nil {
 		fields = append(fields, courseversion.FieldResult)
 	}
@@ -7516,12 +7522,6 @@ func (m *CourseVersionMutation) Fields() []string {
 	if m.language_id != nil {
 		fields = append(fields, courseversion.FieldLanguageID)
 	}
-	if m.created_at != nil {
-		fields = append(fields, courseversion.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, courseversion.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -7530,6 +7530,10 @@ func (m *CourseVersionMutation) Fields() []string {
 // schema.
 func (m *CourseVersionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case courseversion.FieldCreatedAt:
+		return m.CreatedAt()
+	case courseversion.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case courseversion.FieldResult:
 		return m.Result()
 	case courseversion.FieldState:
@@ -7552,10 +7556,6 @@ func (m *CourseVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.LessonsCount()
 	case courseversion.FieldLanguageID:
 		return m.LanguageID()
-	case courseversion.FieldCreatedAt:
-		return m.CreatedAt()
-	case courseversion.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -7565,6 +7565,10 @@ func (m *CourseVersionMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CourseVersionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case courseversion.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case courseversion.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case courseversion.FieldResult:
 		return m.OldResult(ctx)
 	case courseversion.FieldState:
@@ -7587,10 +7591,6 @@ func (m *CourseVersionMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldLessonsCount(ctx)
 	case courseversion.FieldLanguageID:
 		return m.OldLanguageID(ctx)
-	case courseversion.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case courseversion.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown CourseVersion field %s", name)
 }
@@ -7600,6 +7600,20 @@ func (m *CourseVersionMutation) OldField(ctx context.Context, name string) (ent.
 // type.
 func (m *CourseVersionMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case courseversion.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case courseversion.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case courseversion.FieldResult:
 		v, ok := value.(string)
 		if !ok {
@@ -7676,20 +7690,6 @@ func (m *CourseVersionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLanguageID(v)
-		return nil
-	case courseversion.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case courseversion.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion field %s", name)
@@ -7824,6 +7824,12 @@ func (m *CourseVersionMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CourseVersionMutation) ResetField(name string) error {
 	switch name {
+	case courseversion.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case courseversion.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case courseversion.FieldResult:
 		m.ResetResult()
 		return nil
@@ -7856,12 +7862,6 @@ func (m *CourseVersionMutation) ResetField(name string) error {
 		return nil
 	case courseversion.FieldLanguageID:
 		m.ResetLanguageID()
-		return nil
-	case courseversion.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case courseversion.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion field %s", name)
@@ -7957,6 +7957,8 @@ type LandingPageMutation struct {
 	op                             Op
 	typ                            string
 	id                             *int
+	created_at                     *time.Time
+	updated_at                     *time.Time
 	slug                           *string
 	header                         *string
 	name                           *string
@@ -7976,8 +7978,6 @@ type LandingPageMutation struct {
 	footer_name                    *string
 	landing_page_to_redirect_id    *int
 	addlanding_page_to_redirect_id *int
-	created_at                     *time.Time
-	updated_at                     *time.Time
 	clearedFields                  map[string]struct{}
 	course                         *int
 	clearedcourse                  bool
@@ -8082,6 +8082,78 @@ func (m *LandingPageMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LandingPageMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LandingPageMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LandingPageMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LandingPageMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LandingPageMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LandingPageMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -9023,78 +9095,6 @@ func (m *LandingPageMutation) ResetLandingPageToRedirectID() {
 	delete(m.clearedFields, landingpage.FieldLandingPageToRedirectID)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LandingPageMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LandingPageMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LandingPage entity.
-// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LandingPageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LandingPageMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LandingPageMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LandingPageMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LandingPage entity.
-// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LandingPageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LandingPageMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // SetCourseID sets the "course" edge to the Course entity by id.
 func (m *LandingPageMutation) SetCourseID(id int) {
 	m.course = &id
@@ -9170,6 +9170,12 @@ func (m *LandingPageMutation) Type() string {
 // AddedFields().
 func (m *LandingPageMutation) Fields() []string {
 	fields := make([]string, 0, 21)
+	if m.created_at != nil {
+		fields = append(fields, landingpage.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, landingpage.FieldUpdatedAt)
+	}
 	if m.course != nil {
 		fields = append(fields, landingpage.FieldLanguageID)
 	}
@@ -9227,12 +9233,6 @@ func (m *LandingPageMutation) Fields() []string {
 	if m.landing_page_to_redirect_id != nil {
 		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
 	}
-	if m.created_at != nil {
-		fields = append(fields, landingpage.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, landingpage.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -9241,6 +9241,10 @@ func (m *LandingPageMutation) Fields() []string {
 // schema.
 func (m *LandingPageMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case landingpage.FieldCreatedAt:
+		return m.CreatedAt()
+	case landingpage.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case landingpage.FieldLanguageID:
 		return m.LanguageID()
 	case landingpage.FieldSlug:
@@ -9279,10 +9283,6 @@ func (m *LandingPageMutation) Field(name string) (ent.Value, bool) {
 		return m.FooterName()
 	case landingpage.FieldLandingPageToRedirectID:
 		return m.LandingPageToRedirectID()
-	case landingpage.FieldCreatedAt:
-		return m.CreatedAt()
-	case landingpage.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -9292,6 +9292,10 @@ func (m *LandingPageMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LandingPageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case landingpage.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case landingpage.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case landingpage.FieldLanguageID:
 		return m.OldLanguageID(ctx)
 	case landingpage.FieldSlug:
@@ -9330,10 +9334,6 @@ func (m *LandingPageMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldFooterName(ctx)
 	case landingpage.FieldLandingPageToRedirectID:
 		return m.OldLandingPageToRedirectID(ctx)
-	case landingpage.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case landingpage.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LandingPage field %s", name)
 }
@@ -9343,6 +9343,20 @@ func (m *LandingPageMutation) OldField(ctx context.Context, name string) (ent.Va
 // type.
 func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case landingpage.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case landingpage.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case landingpage.FieldLanguageID:
 		v, ok := value.(int)
 		if !ok {
@@ -9475,20 +9489,6 @@ func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLandingPageToRedirectID(v)
-		return nil
-	case landingpage.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case landingpage.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPage field %s", name)
@@ -9665,6 +9665,12 @@ func (m *LandingPageMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LandingPageMutation) ResetField(name string) error {
 	switch name {
+	case landingpage.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case landingpage.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case landingpage.FieldLanguageID:
 		m.ResetLanguageID()
 		return nil
@@ -9721,12 +9727,6 @@ func (m *LandingPageMutation) ResetField(name string) error {
 		return nil
 	case landingpage.FieldLandingPageToRedirectID:
 		m.ResetLandingPageToRedirectID()
-		return nil
-	case landingpage.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case landingpage.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPage field %s", name)
@@ -9812,12 +9812,12 @@ type LandingPageQnaItemMutation struct {
 	op                          Op
 	typ                         string
 	id                          *int
+	created_at                  *time.Time
+	updated_at                  *time.Time
 	language_landing_page_id    *int
 	addlanguage_landing_page_id *int
 	question                    *string
 	answer                      *string
-	created_at                  *time.Time
-	updated_at                  *time.Time
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*LandingPageQnaItem, error)
@@ -9920,6 +9920,78 @@ func (m *LandingPageQnaItemMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LandingPageQnaItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LandingPageQnaItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LandingPageQnaItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LandingPageQnaItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LandingPageQnaItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LandingPageQnaItem entity.
+// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageQnaItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LandingPageQnaItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetLanguageLandingPageID sets the "language_landing_page_id" field.
@@ -10076,78 +10148,6 @@ func (m *LandingPageQnaItemMutation) ResetAnswer() {
 	delete(m.clearedFields, landingpageqnaitem.FieldAnswer)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LandingPageQnaItemMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LandingPageQnaItemMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LandingPageQnaItem entity.
-// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LandingPageQnaItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LandingPageQnaItemMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LandingPageQnaItemMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LandingPageQnaItemMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LandingPageQnaItem entity.
-// If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LandingPageQnaItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LandingPageQnaItemMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the LandingPageQnaItemMutation builder.
 func (m *LandingPageQnaItemMutation) Where(ps ...predicate.LandingPageQnaItem) {
 	m.predicates = append(m.predicates, ps...)
@@ -10183,6 +10183,12 @@ func (m *LandingPageQnaItemMutation) Type() string {
 // AddedFields().
 func (m *LandingPageQnaItemMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, landingpageqnaitem.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, landingpageqnaitem.FieldUpdatedAt)
+	}
 	if m.language_landing_page_id != nil {
 		fields = append(fields, landingpageqnaitem.FieldLanguageLandingPageID)
 	}
@@ -10192,12 +10198,6 @@ func (m *LandingPageQnaItemMutation) Fields() []string {
 	if m.answer != nil {
 		fields = append(fields, landingpageqnaitem.FieldAnswer)
 	}
-	if m.created_at != nil {
-		fields = append(fields, landingpageqnaitem.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, landingpageqnaitem.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -10206,16 +10206,16 @@ func (m *LandingPageQnaItemMutation) Fields() []string {
 // schema.
 func (m *LandingPageQnaItemMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case landingpageqnaitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case landingpageqnaitem.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case landingpageqnaitem.FieldLanguageLandingPageID:
 		return m.LanguageLandingPageID()
 	case landingpageqnaitem.FieldQuestion:
 		return m.Question()
 	case landingpageqnaitem.FieldAnswer:
 		return m.Answer()
-	case landingpageqnaitem.FieldCreatedAt:
-		return m.CreatedAt()
-	case landingpageqnaitem.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -10225,16 +10225,16 @@ func (m *LandingPageQnaItemMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LandingPageQnaItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case landingpageqnaitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case landingpageqnaitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case landingpageqnaitem.FieldLanguageLandingPageID:
 		return m.OldLanguageLandingPageID(ctx)
 	case landingpageqnaitem.FieldQuestion:
 		return m.OldQuestion(ctx)
 	case landingpageqnaitem.FieldAnswer:
 		return m.OldAnswer(ctx)
-	case landingpageqnaitem.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case landingpageqnaitem.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LandingPageQnaItem field %s", name)
 }
@@ -10244,6 +10244,20 @@ func (m *LandingPageQnaItemMutation) OldField(ctx context.Context, name string) 
 // type.
 func (m *LandingPageQnaItemMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case landingpageqnaitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case landingpageqnaitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case landingpageqnaitem.FieldLanguageLandingPageID:
 		v, ok := value.(int)
 		if !ok {
@@ -10264,20 +10278,6 @@ func (m *LandingPageQnaItemMutation) SetField(name string, value ent.Value) erro
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAnswer(v)
-		return nil
-	case landingpageqnaitem.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case landingpageqnaitem.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPageQnaItem field %s", name)
@@ -10358,6 +10358,12 @@ func (m *LandingPageQnaItemMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LandingPageQnaItemMutation) ResetField(name string) error {
 	switch name {
+	case landingpageqnaitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case landingpageqnaitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case landingpageqnaitem.FieldLanguageLandingPageID:
 		m.ResetLanguageLandingPageID()
 		return nil
@@ -10366,12 +10372,6 @@ func (m *LandingPageQnaItemMutation) ResetField(name string) error {
 		return nil
 	case landingpageqnaitem.FieldAnswer:
 		m.ResetAnswer()
-		return nil
-	case landingpageqnaitem.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case landingpageqnaitem.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPageQnaItem field %s", name)
@@ -10431,6 +10431,8 @@ type LanguageLessonMutation struct {
 	op               Op
 	typ              string
 	id               *int
+	created_at       *time.Time
+	updated_at       *time.Time
 	slug             *string
 	natural_order    *int
 	addnatural_order *int
@@ -10439,8 +10441,6 @@ type LanguageLessonMutation struct {
 	module_id        *int
 	addmodule_id     *int
 	state            *string
-	created_at       *time.Time
-	updated_at       *time.Time
 	clearedFields    map[string]struct{}
 	infos            map[int]struct{}
 	removedinfos     map[int]struct{}
@@ -10546,6 +10546,78 @@ func (m *LanguageLessonMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageLessonMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageLessonMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageLessonMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageLessonMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageLessonMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLesson entity.
+// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageLessonMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetSlug sets the "slug" field.
@@ -10856,78 +10928,6 @@ func (m *LanguageLessonMutation) ResetState() {
 	delete(m.clearedFields, languagelesson.FieldState)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LanguageLessonMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LanguageLessonMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LanguageLesson entity.
-// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageLessonMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LanguageLessonMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LanguageLessonMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LanguageLessonMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLesson entity.
-// If the LanguageLesson object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageLessonMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LanguageLessonMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // AddInfoIDs adds the "infos" edge to the LanguageLessonVersionInfo entity by ids.
 func (m *LanguageLessonMutation) AddInfoIDs(ids ...int) {
 	if m.infos == nil {
@@ -11017,6 +11017,12 @@ func (m *LanguageLessonMutation) Type() string {
 // AddedFields().
 func (m *LanguageLessonMutation) Fields() []string {
 	fields := make([]string, 0, 7)
+	if m.created_at != nil {
+		fields = append(fields, languagelesson.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagelesson.FieldUpdatedAt)
+	}
 	if m.slug != nil {
 		fields = append(fields, languagelesson.FieldSlug)
 	}
@@ -11032,12 +11038,6 @@ func (m *LanguageLessonMutation) Fields() []string {
 	if m.state != nil {
 		fields = append(fields, languagelesson.FieldState)
 	}
-	if m.created_at != nil {
-		fields = append(fields, languagelesson.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, languagelesson.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -11046,6 +11046,10 @@ func (m *LanguageLessonMutation) Fields() []string {
 // schema.
 func (m *LanguageLessonMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case languagelesson.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagelesson.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case languagelesson.FieldSlug:
 		return m.Slug()
 	case languagelesson.FieldNaturalOrder:
@@ -11056,10 +11060,6 @@ func (m *LanguageLessonMutation) Field(name string) (ent.Value, bool) {
 		return m.ModuleID()
 	case languagelesson.FieldState:
 		return m.State()
-	case languagelesson.FieldCreatedAt:
-		return m.CreatedAt()
-	case languagelesson.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -11069,6 +11069,10 @@ func (m *LanguageLessonMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LanguageLessonMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case languagelesson.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagelesson.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case languagelesson.FieldSlug:
 		return m.OldSlug(ctx)
 	case languagelesson.FieldNaturalOrder:
@@ -11079,10 +11083,6 @@ func (m *LanguageLessonMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldModuleID(ctx)
 	case languagelesson.FieldState:
 		return m.OldState(ctx)
-	case languagelesson.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case languagelesson.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageLesson field %s", name)
 }
@@ -11092,6 +11092,20 @@ func (m *LanguageLessonMutation) OldField(ctx context.Context, name string) (ent
 // type.
 func (m *LanguageLessonMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case languagelesson.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagelesson.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case languagelesson.FieldSlug:
 		v, ok := value.(string)
 		if !ok {
@@ -11126,20 +11140,6 @@ func (m *LanguageLessonMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetState(v)
-		return nil
-	case languagelesson.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case languagelesson.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLesson field %s", name)
@@ -11262,6 +11262,12 @@ func (m *LanguageLessonMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LanguageLessonMutation) ResetField(name string) error {
 	switch name {
+	case languagelesson.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagelesson.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case languagelesson.FieldSlug:
 		m.ResetSlug()
 		return nil
@@ -11276,12 +11282,6 @@ func (m *LanguageLessonMutation) ResetField(name string) error {
 		return nil
 	case languagelesson.FieldState:
 		m.ResetState()
-		return nil
-	case languagelesson.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case languagelesson.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLesson field %s", name)
@@ -13042,6 +13042,8 @@ type LanguageLessonVersionMutation struct {
 	op                     Op
 	typ                    string
 	id                     *int
+	created_at             *time.Time
+	updated_at             *time.Time
 	natural_order          *int
 	addnatural_order       *int
 	_order                 *int
@@ -13058,8 +13060,6 @@ type LanguageLessonVersionMutation struct {
 	addlesson_id           *int
 	module_version_id      *int
 	addmodule_version_id   *int
-	created_at             *time.Time
-	updated_at             *time.Time
 	clearedFields          map[string]struct{}
 	done                   bool
 	oldValue               func(context.Context) (*LanguageLessonVersion, error)
@@ -13162,6 +13162,78 @@ func (m *LanguageLessonVersionMutation) IDs(ctx context.Context) ([]int, error) 
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageLessonVersionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageLessonVersionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageLessonVersionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageLessonVersionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageLessonVersionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLessonVersion entity.
+// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageLessonVersionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetNaturalOrder sets the "natural_order" field.
@@ -13724,78 +13796,6 @@ func (m *LanguageLessonVersionMutation) ResetModuleVersionID() {
 	m.addmodule_version_id = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LanguageLessonVersionMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LanguageLessonVersionMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LanguageLessonVersion entity.
-// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageLessonVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LanguageLessonVersionMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LanguageLessonVersionMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LanguageLessonVersionMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLessonVersion entity.
-// If the LanguageLessonVersion object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageLessonVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LanguageLessonVersionMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the LanguageLessonVersionMutation builder.
 func (m *LanguageLessonVersionMutation) Where(ps ...predicate.LanguageLessonVersion) {
 	m.predicates = append(m.predicates, ps...)
@@ -13831,6 +13831,12 @@ func (m *LanguageLessonVersionMutation) Type() string {
 // AddedFields().
 func (m *LanguageLessonVersionMutation) Fields() []string {
 	fields := make([]string, 0, 12)
+	if m.created_at != nil {
+		fields = append(fields, languagelessonversion.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagelessonversion.FieldUpdatedAt)
+	}
 	if m.natural_order != nil {
 		fields = append(fields, languagelessonversion.FieldNaturalOrder)
 	}
@@ -13861,12 +13867,6 @@ func (m *LanguageLessonVersionMutation) Fields() []string {
 	if m.module_version_id != nil {
 		fields = append(fields, languagelessonversion.FieldModuleVersionID)
 	}
-	if m.created_at != nil {
-		fields = append(fields, languagelessonversion.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, languagelessonversion.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -13875,6 +13875,10 @@ func (m *LanguageLessonVersionMutation) Fields() []string {
 // schema.
 func (m *LanguageLessonVersionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case languagelessonversion.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagelessonversion.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case languagelessonversion.FieldNaturalOrder:
 		return m.NaturalOrder()
 	case languagelessonversion.FieldOrder:
@@ -13895,10 +13899,6 @@ func (m *LanguageLessonVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.LessonID()
 	case languagelessonversion.FieldModuleVersionID:
 		return m.ModuleVersionID()
-	case languagelessonversion.FieldCreatedAt:
-		return m.CreatedAt()
-	case languagelessonversion.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -13908,6 +13908,10 @@ func (m *LanguageLessonVersionMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LanguageLessonVersionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case languagelessonversion.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagelessonversion.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case languagelessonversion.FieldNaturalOrder:
 		return m.OldNaturalOrder(ctx)
 	case languagelessonversion.FieldOrder:
@@ -13928,10 +13932,6 @@ func (m *LanguageLessonVersionMutation) OldField(ctx context.Context, name strin
 		return m.OldLessonID(ctx)
 	case languagelessonversion.FieldModuleVersionID:
 		return m.OldModuleVersionID(ctx)
-	case languagelessonversion.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case languagelessonversion.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageLessonVersion field %s", name)
 }
@@ -13941,6 +13941,20 @@ func (m *LanguageLessonVersionMutation) OldField(ctx context.Context, name strin
 // type.
 func (m *LanguageLessonVersionMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case languagelessonversion.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagelessonversion.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case languagelessonversion.FieldNaturalOrder:
 		v, ok := value.(int)
 		if !ok {
@@ -14010,20 +14024,6 @@ func (m *LanguageLessonVersionMutation) SetField(name string, value ent.Value) e
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetModuleVersionID(v)
-		return nil
-	case languagelessonversion.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case languagelessonversion.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersion field %s", name)
@@ -14188,6 +14188,12 @@ func (m *LanguageLessonVersionMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LanguageLessonVersionMutation) ResetField(name string) error {
 	switch name {
+	case languagelessonversion.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagelessonversion.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case languagelessonversion.FieldNaturalOrder:
 		m.ResetNaturalOrder()
 		return nil
@@ -14217,12 +14223,6 @@ func (m *LanguageLessonVersionMutation) ResetField(name string) error {
 		return nil
 	case languagelessonversion.FieldModuleVersionID:
 		m.ResetModuleVersionID()
-		return nil
-	case languagelessonversion.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case languagelessonversion.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersion field %s", name)
@@ -14282,6 +14282,8 @@ type LanguageLessonVersionInfoMutation struct {
 	op                    Op
 	typ                   string
 	id                    *int
+	created_at            *time.Time
+	updated_at            *time.Time
 	name                  *string
 	description           *string
 	locale                *string
@@ -14293,8 +14295,6 @@ type LanguageLessonVersionInfoMutation struct {
 	definitions           *string
 	version_id            *int
 	addversion_id         *int
-	created_at            *time.Time
-	updated_at            *time.Time
 	clearedFields         map[string]struct{}
 	lesson                *int
 	clearedlesson         bool
@@ -14401,6 +14401,78 @@ func (m *LanguageLessonVersionInfoMutation) IDs(ctx context.Context) ([]int, err
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageLessonVersionInfoMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageLessonVersionInfoMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageLessonVersionInfoMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageLessonVersionInfoMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLessonVersionInfo entity.
+// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageLessonVersionInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageLessonVersionInfoMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetName sets the "name" field.
@@ -14930,78 +15002,6 @@ func (m *LanguageLessonVersionInfoMutation) ResetVersionID() {
 	m.addversion_id = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LanguageLessonVersionInfoMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LanguageLessonVersionInfoMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LanguageLessonVersionInfo entity.
-// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageLessonVersionInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LanguageLessonVersionInfoMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LanguageLessonVersionInfoMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LanguageLessonVersionInfoMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LanguageLessonVersionInfo entity.
-// If the LanguageLessonVersionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageLessonVersionInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LanguageLessonVersionInfoMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // SetLessonID sets the "lesson" edge to the LanguageLesson entity by id.
 func (m *LanguageLessonVersionInfoMutation) SetLessonID(id int) {
 	m.lesson = &id
@@ -15117,6 +15117,12 @@ func (m *LanguageLessonVersionInfoMutation) Type() string {
 // AddedFields().
 func (m *LanguageLessonVersionInfoMutation) Fields() []string {
 	fields := make([]string, 0, 13)
+	if m.created_at != nil {
+		fields = append(fields, languagelessonversioninfo.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagelessonversioninfo.FieldUpdatedAt)
+	}
 	if m.name != nil {
 		fields = append(fields, languagelessonversioninfo.FieldName)
 	}
@@ -15150,12 +15156,6 @@ func (m *LanguageLessonVersionInfoMutation) Fields() []string {
 	if m.version_id != nil {
 		fields = append(fields, languagelessonversioninfo.FieldVersionID)
 	}
-	if m.created_at != nil {
-		fields = append(fields, languagelessonversioninfo.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, languagelessonversioninfo.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -15164,6 +15164,10 @@ func (m *LanguageLessonVersionInfoMutation) Fields() []string {
 // schema.
 func (m *LanguageLessonVersionInfoMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case languagelessonversioninfo.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagelessonversioninfo.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case languagelessonversioninfo.FieldName:
 		return m.Name()
 	case languagelessonversioninfo.FieldDescription:
@@ -15186,10 +15190,6 @@ func (m *LanguageLessonVersionInfoMutation) Field(name string) (ent.Value, bool)
 		return m.Definitions()
 	case languagelessonversioninfo.FieldVersionID:
 		return m.VersionID()
-	case languagelessonversioninfo.FieldCreatedAt:
-		return m.CreatedAt()
-	case languagelessonversioninfo.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -15199,6 +15199,10 @@ func (m *LanguageLessonVersionInfoMutation) Field(name string) (ent.Value, bool)
 // database failed.
 func (m *LanguageLessonVersionInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case languagelessonversioninfo.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagelessonversioninfo.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case languagelessonversioninfo.FieldName:
 		return m.OldName(ctx)
 	case languagelessonversioninfo.FieldDescription:
@@ -15221,10 +15225,6 @@ func (m *LanguageLessonVersionInfoMutation) OldField(ctx context.Context, name s
 		return m.OldDefinitions(ctx)
 	case languagelessonversioninfo.FieldVersionID:
 		return m.OldVersionID(ctx)
-	case languagelessonversioninfo.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case languagelessonversioninfo.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageLessonVersionInfo field %s", name)
 }
@@ -15234,6 +15234,20 @@ func (m *LanguageLessonVersionInfoMutation) OldField(ctx context.Context, name s
 // type.
 func (m *LanguageLessonVersionInfoMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case languagelessonversioninfo.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagelessonversioninfo.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case languagelessonversioninfo.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -15310,20 +15324,6 @@ func (m *LanguageLessonVersionInfoMutation) SetField(name string, value ent.Valu
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetVersionID(v)
-		return nil
-	case languagelessonversioninfo.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case languagelessonversioninfo.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersionInfo field %s", name)
@@ -15446,6 +15446,12 @@ func (m *LanguageLessonVersionInfoMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LanguageLessonVersionInfoMutation) ResetField(name string) error {
 	switch name {
+	case languagelessonversioninfo.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagelessonversioninfo.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case languagelessonversioninfo.FieldName:
 		m.ResetName()
 		return nil
@@ -15478,12 +15484,6 @@ func (m *LanguageLessonVersionInfoMutation) ResetField(name string) error {
 		return nil
 	case languagelessonversioninfo.FieldVersionID:
 		m.ResetVersionID()
-		return nil
-	case languagelessonversioninfo.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case languagelessonversioninfo.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageLessonVersionInfo field %s", name)
@@ -15587,14 +15587,14 @@ type LanguageModuleMutation struct {
 	op             Op
 	typ            string
 	id             *int
+	created_at     *time.Time
+	updated_at     *time.Time
 	slug           *string
 	language_id    *int
 	addlanguage_id *int
 	_order         *int
 	add_order      *int
 	state          *string
-	created_at     *time.Time
-	updated_at     *time.Time
 	clearedFields  map[string]struct{}
 	done           bool
 	oldValue       func(context.Context) (*LanguageModule, error)
@@ -15697,6 +15697,78 @@ func (m *LanguageModuleMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageModuleMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageModuleMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageModuleMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageModuleMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageModuleMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModule entity.
+// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageModuleMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetSlug sets the "slug" field.
@@ -15937,78 +16009,6 @@ func (m *LanguageModuleMutation) ResetState() {
 	delete(m.clearedFields, languagemodule.FieldState)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LanguageModuleMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LanguageModuleMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LanguageModule entity.
-// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageModuleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LanguageModuleMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LanguageModuleMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LanguageModuleMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModule entity.
-// If the LanguageModule object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageModuleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LanguageModuleMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the LanguageModuleMutation builder.
 func (m *LanguageModuleMutation) Where(ps ...predicate.LanguageModule) {
 	m.predicates = append(m.predicates, ps...)
@@ -16044,6 +16044,12 @@ func (m *LanguageModuleMutation) Type() string {
 // AddedFields().
 func (m *LanguageModuleMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.created_at != nil {
+		fields = append(fields, languagemodule.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagemodule.FieldUpdatedAt)
+	}
 	if m.slug != nil {
 		fields = append(fields, languagemodule.FieldSlug)
 	}
@@ -16056,12 +16062,6 @@ func (m *LanguageModuleMutation) Fields() []string {
 	if m.state != nil {
 		fields = append(fields, languagemodule.FieldState)
 	}
-	if m.created_at != nil {
-		fields = append(fields, languagemodule.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, languagemodule.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -16070,6 +16070,10 @@ func (m *LanguageModuleMutation) Fields() []string {
 // schema.
 func (m *LanguageModuleMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case languagemodule.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagemodule.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case languagemodule.FieldSlug:
 		return m.Slug()
 	case languagemodule.FieldLanguageID:
@@ -16078,10 +16082,6 @@ func (m *LanguageModuleMutation) Field(name string) (ent.Value, bool) {
 		return m.Order()
 	case languagemodule.FieldState:
 		return m.State()
-	case languagemodule.FieldCreatedAt:
-		return m.CreatedAt()
-	case languagemodule.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -16091,6 +16091,10 @@ func (m *LanguageModuleMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LanguageModuleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case languagemodule.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagemodule.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case languagemodule.FieldSlug:
 		return m.OldSlug(ctx)
 	case languagemodule.FieldLanguageID:
@@ -16099,10 +16103,6 @@ func (m *LanguageModuleMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldOrder(ctx)
 	case languagemodule.FieldState:
 		return m.OldState(ctx)
-	case languagemodule.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case languagemodule.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageModule field %s", name)
 }
@@ -16112,6 +16112,20 @@ func (m *LanguageModuleMutation) OldField(ctx context.Context, name string) (ent
 // type.
 func (m *LanguageModuleMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case languagemodule.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagemodule.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case languagemodule.FieldSlug:
 		v, ok := value.(string)
 		if !ok {
@@ -16139,20 +16153,6 @@ func (m *LanguageModuleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetState(v)
-		return nil
-	case languagemodule.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case languagemodule.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageModule field %s", name)
@@ -16257,6 +16257,12 @@ func (m *LanguageModuleMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LanguageModuleMutation) ResetField(name string) error {
 	switch name {
+	case languagemodule.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagemodule.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case languagemodule.FieldSlug:
 		m.ResetSlug()
 		return nil
@@ -16268,12 +16274,6 @@ func (m *LanguageModuleMutation) ResetField(name string) error {
 		return nil
 	case languagemodule.FieldState:
 		m.ResetState()
-		return nil
-	case languagemodule.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case languagemodule.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageModule field %s", name)
@@ -16333,6 +16333,8 @@ type LanguageModuleVersionMutation struct {
 	op                     Op
 	typ                    string
 	id                     *int
+	created_at             *time.Time
+	updated_at             *time.Time
 	_order                 *int
 	add_order              *int
 	language_id            *int
@@ -16341,8 +16343,6 @@ type LanguageModuleVersionMutation struct {
 	addlanguage_version_id *int
 	module_id              *int
 	addmodule_id           *int
-	created_at             *time.Time
-	updated_at             *time.Time
 	clearedFields          map[string]struct{}
 	done                   bool
 	oldValue               func(context.Context) (*LanguageModuleVersion, error)
@@ -16445,6 +16445,78 @@ func (m *LanguageModuleVersionMutation) IDs(ctx context.Context) ([]int, error) 
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageModuleVersionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageModuleVersionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageModuleVersionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageModuleVersionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageModuleVersionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModuleVersion entity.
+// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageModuleVersionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetOrder sets the "order" field.
@@ -16685,78 +16757,6 @@ func (m *LanguageModuleVersionMutation) ResetModuleID() {
 	m.addmodule_id = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LanguageModuleVersionMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LanguageModuleVersionMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LanguageModuleVersion entity.
-// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageModuleVersionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LanguageModuleVersionMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LanguageModuleVersionMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LanguageModuleVersionMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModuleVersion entity.
-// If the LanguageModuleVersion object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageModuleVersionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LanguageModuleVersionMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the LanguageModuleVersionMutation builder.
 func (m *LanguageModuleVersionMutation) Where(ps ...predicate.LanguageModuleVersion) {
 	m.predicates = append(m.predicates, ps...)
@@ -16792,6 +16792,12 @@ func (m *LanguageModuleVersionMutation) Type() string {
 // AddedFields().
 func (m *LanguageModuleVersionMutation) Fields() []string {
 	fields := make([]string, 0, 6)
+	if m.created_at != nil {
+		fields = append(fields, languagemoduleversion.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagemoduleversion.FieldUpdatedAt)
+	}
 	if m._order != nil {
 		fields = append(fields, languagemoduleversion.FieldOrder)
 	}
@@ -16804,12 +16810,6 @@ func (m *LanguageModuleVersionMutation) Fields() []string {
 	if m.module_id != nil {
 		fields = append(fields, languagemoduleversion.FieldModuleID)
 	}
-	if m.created_at != nil {
-		fields = append(fields, languagemoduleversion.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, languagemoduleversion.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -16818,6 +16818,10 @@ func (m *LanguageModuleVersionMutation) Fields() []string {
 // schema.
 func (m *LanguageModuleVersionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case languagemoduleversion.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagemoduleversion.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case languagemoduleversion.FieldOrder:
 		return m.Order()
 	case languagemoduleversion.FieldLanguageID:
@@ -16826,10 +16830,6 @@ func (m *LanguageModuleVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.LanguageVersionID()
 	case languagemoduleversion.FieldModuleID:
 		return m.ModuleID()
-	case languagemoduleversion.FieldCreatedAt:
-		return m.CreatedAt()
-	case languagemoduleversion.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -16839,6 +16839,10 @@ func (m *LanguageModuleVersionMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LanguageModuleVersionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case languagemoduleversion.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagemoduleversion.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case languagemoduleversion.FieldOrder:
 		return m.OldOrder(ctx)
 	case languagemoduleversion.FieldLanguageID:
@@ -16847,10 +16851,6 @@ func (m *LanguageModuleVersionMutation) OldField(ctx context.Context, name strin
 		return m.OldLanguageVersionID(ctx)
 	case languagemoduleversion.FieldModuleID:
 		return m.OldModuleID(ctx)
-	case languagemoduleversion.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case languagemoduleversion.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageModuleVersion field %s", name)
 }
@@ -16860,6 +16860,20 @@ func (m *LanguageModuleVersionMutation) OldField(ctx context.Context, name strin
 // type.
 func (m *LanguageModuleVersionMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case languagemoduleversion.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagemoduleversion.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case languagemoduleversion.FieldOrder:
 		v, ok := value.(int)
 		if !ok {
@@ -16887,20 +16901,6 @@ func (m *LanguageModuleVersionMutation) SetField(name string, value ent.Value) e
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetModuleID(v)
-		return nil
-	case languagemoduleversion.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case languagemoduleversion.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageModuleVersion field %s", name)
@@ -17011,6 +17011,12 @@ func (m *LanguageModuleVersionMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LanguageModuleVersionMutation) ResetField(name string) error {
 	switch name {
+	case languagemoduleversion.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagemoduleversion.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case languagemoduleversion.FieldOrder:
 		m.ResetOrder()
 		return nil
@@ -17022,12 +17028,6 @@ func (m *LanguageModuleVersionMutation) ResetField(name string) error {
 		return nil
 	case languagemoduleversion.FieldModuleID:
 		m.ResetModuleID()
-		return nil
-	case languagemoduleversion.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case languagemoduleversion.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageModuleVersion field %s", name)
@@ -17087,6 +17087,8 @@ type LanguageModuleVersionInfoMutation struct {
 	op                     Op
 	typ                    string
 	id                     *int
+	created_at             *time.Time
+	updated_at             *time.Time
 	name                   *string
 	description            *string
 	locale                 *string
@@ -17096,8 +17098,6 @@ type LanguageModuleVersionInfoMutation struct {
 	addlanguage_version_id *int
 	version_id             *int
 	addversion_id          *int
-	created_at             *time.Time
-	updated_at             *time.Time
 	clearedFields          map[string]struct{}
 	done                   bool
 	oldValue               func(context.Context) (*LanguageModuleVersionInfo, error)
@@ -17200,6 +17200,78 @@ func (m *LanguageModuleVersionInfoMutation) IDs(ctx context.Context) ([]int, err
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LanguageModuleVersionInfoMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LanguageModuleVersionInfoMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LanguageModuleVersionInfoMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LanguageModuleVersionInfoMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModuleVersionInfo entity.
+// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LanguageModuleVersionInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LanguageModuleVersionInfoMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetName sets the "name" field.
@@ -17517,78 +17589,6 @@ func (m *LanguageModuleVersionInfoMutation) ResetVersionID() {
 	m.addversion_id = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LanguageModuleVersionInfoMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LanguageModuleVersionInfoMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the LanguageModuleVersionInfo entity.
-// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageModuleVersionInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LanguageModuleVersionInfoMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *LanguageModuleVersionInfoMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *LanguageModuleVersionInfoMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the LanguageModuleVersionInfo entity.
-// If the LanguageModuleVersionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LanguageModuleVersionInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *LanguageModuleVersionInfoMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the LanguageModuleVersionInfoMutation builder.
 func (m *LanguageModuleVersionInfoMutation) Where(ps ...predicate.LanguageModuleVersionInfo) {
 	m.predicates = append(m.predicates, ps...)
@@ -17624,6 +17624,12 @@ func (m *LanguageModuleVersionInfoMutation) Type() string {
 // AddedFields().
 func (m *LanguageModuleVersionInfoMutation) Fields() []string {
 	fields := make([]string, 0, 8)
+	if m.created_at != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, languagemoduleversioninfo.FieldUpdatedAt)
+	}
 	if m.name != nil {
 		fields = append(fields, languagemoduleversioninfo.FieldName)
 	}
@@ -17642,12 +17648,6 @@ func (m *LanguageModuleVersionInfoMutation) Fields() []string {
 	if m.version_id != nil {
 		fields = append(fields, languagemoduleversioninfo.FieldVersionID)
 	}
-	if m.created_at != nil {
-		fields = append(fields, languagemoduleversioninfo.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, languagemoduleversioninfo.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -17656,6 +17656,10 @@ func (m *LanguageModuleVersionInfoMutation) Fields() []string {
 // schema.
 func (m *LanguageModuleVersionInfoMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case languagemoduleversioninfo.FieldCreatedAt:
+		return m.CreatedAt()
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case languagemoduleversioninfo.FieldName:
 		return m.Name()
 	case languagemoduleversioninfo.FieldDescription:
@@ -17668,10 +17672,6 @@ func (m *LanguageModuleVersionInfoMutation) Field(name string) (ent.Value, bool)
 		return m.LanguageVersionID()
 	case languagemoduleversioninfo.FieldVersionID:
 		return m.VersionID()
-	case languagemoduleversioninfo.FieldCreatedAt:
-		return m.CreatedAt()
-	case languagemoduleversioninfo.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -17681,6 +17681,10 @@ func (m *LanguageModuleVersionInfoMutation) Field(name string) (ent.Value, bool)
 // database failed.
 func (m *LanguageModuleVersionInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case languagemoduleversioninfo.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case languagemoduleversioninfo.FieldName:
 		return m.OldName(ctx)
 	case languagemoduleversioninfo.FieldDescription:
@@ -17693,10 +17697,6 @@ func (m *LanguageModuleVersionInfoMutation) OldField(ctx context.Context, name s
 		return m.OldLanguageVersionID(ctx)
 	case languagemoduleversioninfo.FieldVersionID:
 		return m.OldVersionID(ctx)
-	case languagemoduleversioninfo.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case languagemoduleversioninfo.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown LanguageModuleVersionInfo field %s", name)
 }
@@ -17706,6 +17706,20 @@ func (m *LanguageModuleVersionInfoMutation) OldField(ctx context.Context, name s
 // type.
 func (m *LanguageModuleVersionInfoMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case languagemoduleversioninfo.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case languagemoduleversioninfo.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -17747,20 +17761,6 @@ func (m *LanguageModuleVersionInfoMutation) SetField(name string, value ent.Valu
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetVersionID(v)
-		return nil
-	case languagemoduleversioninfo.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case languagemoduleversioninfo.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageModuleVersionInfo field %s", name)
@@ -17871,6 +17871,12 @@ func (m *LanguageModuleVersionInfoMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LanguageModuleVersionInfoMutation) ResetField(name string) error {
 	switch name {
+	case languagemoduleversioninfo.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case languagemoduleversioninfo.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case languagemoduleversioninfo.FieldName:
 		m.ResetName()
 		return nil
@@ -17888,12 +17894,6 @@ func (m *LanguageModuleVersionInfoMutation) ResetField(name string) error {
 		return nil
 	case languagemoduleversioninfo.FieldVersionID:
 		m.ResetVersionID()
-		return nil
-	case languagemoduleversioninfo.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case languagemoduleversioninfo.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown LanguageModuleVersionInfo field %s", name)
@@ -18810,14 +18810,14 @@ type ReviewMutation struct {
 	op            Op
 	typ           string
 	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
 	body          *string
 	first_name    *string
 	last_name     *string
 	locale        *string
 	state         *string
 	pinned        *bool
-	created_at    *time.Time
-	updated_at    *time.Time
 	clearedFields map[string]struct{}
 	course        *int
 	clearedcourse bool
@@ -18924,6 +18924,78 @@ func (m *ReviewMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *ReviewMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *ReviewMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Review entity.
+// If the Review object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ReviewMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *ReviewMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *ReviewMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *ReviewMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Review entity.
+// If the Review object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ReviewMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *ReviewMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -19292,78 +19364,6 @@ func (m *ReviewMutation) ResetPinned() {
 	delete(m.clearedFields, review.FieldPinned)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *ReviewMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ReviewMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the Review entity.
-// If the Review object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReviewMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ReviewMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *ReviewMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *ReviewMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the Review entity.
-// If the Review object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReviewMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *ReviewMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // SetCourseID sets the "course" edge to the Course entity by id.
 func (m *ReviewMutation) SetCourseID(id int) {
 	m.course = &id
@@ -19466,6 +19466,12 @@ func (m *ReviewMutation) Type() string {
 // AddedFields().
 func (m *ReviewMutation) Fields() []string {
 	fields := make([]string, 0, 10)
+	if m.created_at != nil {
+		fields = append(fields, review.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, review.FieldUpdatedAt)
+	}
 	if m.course != nil {
 		fields = append(fields, review.FieldLanguageID)
 	}
@@ -19490,12 +19496,6 @@ func (m *ReviewMutation) Fields() []string {
 	if m.pinned != nil {
 		fields = append(fields, review.FieldPinned)
 	}
-	if m.created_at != nil {
-		fields = append(fields, review.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, review.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -19504,6 +19504,10 @@ func (m *ReviewMutation) Fields() []string {
 // schema.
 func (m *ReviewMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case review.FieldCreatedAt:
+		return m.CreatedAt()
+	case review.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case review.FieldLanguageID:
 		return m.LanguageID()
 	case review.FieldUserID:
@@ -19520,10 +19524,6 @@ func (m *ReviewMutation) Field(name string) (ent.Value, bool) {
 		return m.State()
 	case review.FieldPinned:
 		return m.Pinned()
-	case review.FieldCreatedAt:
-		return m.CreatedAt()
-	case review.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -19533,6 +19533,10 @@ func (m *ReviewMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ReviewMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case review.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case review.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case review.FieldLanguageID:
 		return m.OldLanguageID(ctx)
 	case review.FieldUserID:
@@ -19549,10 +19553,6 @@ func (m *ReviewMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldState(ctx)
 	case review.FieldPinned:
 		return m.OldPinned(ctx)
-	case review.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case review.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Review field %s", name)
 }
@@ -19562,6 +19562,20 @@ func (m *ReviewMutation) OldField(ctx context.Context, name string) (ent.Value, 
 // type.
 func (m *ReviewMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case review.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case review.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case review.FieldLanguageID:
 		v, ok := value.(int)
 		if !ok {
@@ -19617,20 +19631,6 @@ func (m *ReviewMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPinned(v)
-		return nil
-	case review.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case review.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Review field %s", name)
@@ -19723,6 +19723,12 @@ func (m *ReviewMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ReviewMutation) ResetField(name string) error {
 	switch name {
+	case review.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case review.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case review.FieldLanguageID:
 		m.ResetLanguageID()
 		return nil
@@ -19746,12 +19752,6 @@ func (m *ReviewMutation) ResetField(name string) error {
 		return nil
 	case review.FieldPinned:
 		m.ResetPinned()
-		return nil
-	case review.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case review.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Review field %s", name)
@@ -19855,9 +19855,9 @@ type StaffMemberMutation struct {
 	op              Op
 	typ             string
 	id              *int
-	allowed_locales *pq.StringArray
 	created_at      *time.Time
 	updated_at      *time.Time
+	allowed_locales *pq.StringArray
 	clearedFields   map[string]struct{}
 	user            *int
 	cleareduser     bool
@@ -19964,6 +19964,78 @@ func (m *StaffMemberMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *StaffMemberMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *StaffMemberMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the StaffMember entity.
+// If the StaffMember object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffMemberMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *StaffMemberMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *StaffMemberMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *StaffMemberMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the StaffMember entity.
+// If the StaffMember object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffMemberMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *StaffMemberMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetUserID sets the "user_id" field.
@@ -20074,78 +20146,6 @@ func (m *StaffMemberMutation) ResetAllowedLocales() {
 	m.allowed_locales = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *StaffMemberMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *StaffMemberMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the StaffMember entity.
-// If the StaffMember object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StaffMemberMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *StaffMemberMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *StaffMemberMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *StaffMemberMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the StaffMember entity.
-// If the StaffMember object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StaffMemberMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *StaffMemberMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // ClearUser clears the "user" edge to the User entity.
 func (m *StaffMemberMutation) ClearUser() {
 	m.cleareduser = true
@@ -20235,6 +20235,12 @@ func (m *StaffMemberMutation) Type() string {
 // AddedFields().
 func (m *StaffMemberMutation) Fields() []string {
 	fields := make([]string, 0, 5)
+	if m.created_at != nil {
+		fields = append(fields, staffmember.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, staffmember.FieldUpdatedAt)
+	}
 	if m.user != nil {
 		fields = append(fields, staffmember.FieldUserID)
 	}
@@ -20244,12 +20250,6 @@ func (m *StaffMemberMutation) Fields() []string {
 	if m.allowed_locales != nil {
 		fields = append(fields, staffmember.FieldAllowedLocales)
 	}
-	if m.created_at != nil {
-		fields = append(fields, staffmember.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, staffmember.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -20258,16 +20258,16 @@ func (m *StaffMemberMutation) Fields() []string {
 // schema.
 func (m *StaffMemberMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case staffmember.FieldCreatedAt:
+		return m.CreatedAt()
+	case staffmember.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case staffmember.FieldUserID:
 		return m.UserID()
 	case staffmember.FieldRoleID:
 		return m.RoleID()
 	case staffmember.FieldAllowedLocales:
 		return m.AllowedLocales()
-	case staffmember.FieldCreatedAt:
-		return m.CreatedAt()
-	case staffmember.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -20277,16 +20277,16 @@ func (m *StaffMemberMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *StaffMemberMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case staffmember.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case staffmember.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case staffmember.FieldUserID:
 		return m.OldUserID(ctx)
 	case staffmember.FieldRoleID:
 		return m.OldRoleID(ctx)
 	case staffmember.FieldAllowedLocales:
 		return m.OldAllowedLocales(ctx)
-	case staffmember.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case staffmember.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown StaffMember field %s", name)
 }
@@ -20296,6 +20296,20 @@ func (m *StaffMemberMutation) OldField(ctx context.Context, name string) (ent.Va
 // type.
 func (m *StaffMemberMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case staffmember.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case staffmember.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case staffmember.FieldUserID:
 		v, ok := value.(int)
 		if !ok {
@@ -20316,20 +20330,6 @@ func (m *StaffMemberMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAllowedLocales(v)
-		return nil
-	case staffmember.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case staffmember.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown StaffMember field %s", name)
@@ -20383,6 +20383,12 @@ func (m *StaffMemberMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *StaffMemberMutation) ResetField(name string) error {
 	switch name {
+	case staffmember.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case staffmember.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case staffmember.FieldUserID:
 		m.ResetUserID()
 		return nil
@@ -20391,12 +20397,6 @@ func (m *StaffMemberMutation) ResetField(name string) error {
 		return nil
 	case staffmember.FieldAllowedLocales:
 		m.ResetAllowedLocales()
-		return nil
-	case staffmember.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case staffmember.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown StaffMember field %s", name)
@@ -20500,10 +20500,10 @@ type StaffRoleMutation struct {
 	op                 Op
 	typ                string
 	id                 *int
-	name               *string
-	description        *string
 	created_at         *time.Time
 	updated_at         *time.Time
+	name               *string
+	description        *string
 	clearedFields      map[string]struct{}
 	permissions        map[int]struct{}
 	removedpermissions map[int]struct{}
@@ -20611,6 +20611,78 @@ func (m *StaffRoleMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (m *StaffRoleMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *StaffRoleMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the StaffRole entity.
+// If the StaffRole object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRoleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *StaffRoleMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *StaffRoleMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *StaffRoleMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the StaffRole entity.
+// If the StaffRole object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRoleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *StaffRoleMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // SetName sets the "name" field.
 func (m *StaffRoleMutation) SetName(s string) {
 	m.name = &s
@@ -20694,78 +20766,6 @@ func (m *StaffRoleMutation) DescriptionCleared() bool {
 func (m *StaffRoleMutation) ResetDescription() {
 	m.description = nil
 	delete(m.clearedFields, staffrole.FieldDescription)
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *StaffRoleMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *StaffRoleMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the StaffRole entity.
-// If the StaffRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StaffRoleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *StaffRoleMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *StaffRoleMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *StaffRoleMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the StaffRole entity.
-// If the StaffRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StaffRoleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *StaffRoleMutation) ResetUpdatedAt() {
-	m.updated_at = nil
 }
 
 // AddPermissionIDs adds the "permissions" edge to the StaffRolePermission entity by ids.
@@ -20857,17 +20857,17 @@ func (m *StaffRoleMutation) Type() string {
 // AddedFields().
 func (m *StaffRoleMutation) Fields() []string {
 	fields := make([]string, 0, 4)
-	if m.name != nil {
-		fields = append(fields, staffrole.FieldName)
-	}
-	if m.description != nil {
-		fields = append(fields, staffrole.FieldDescription)
-	}
 	if m.created_at != nil {
 		fields = append(fields, staffrole.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, staffrole.FieldUpdatedAt)
+	}
+	if m.name != nil {
+		fields = append(fields, staffrole.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, staffrole.FieldDescription)
 	}
 	return fields
 }
@@ -20877,14 +20877,14 @@ func (m *StaffRoleMutation) Fields() []string {
 // schema.
 func (m *StaffRoleMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case staffrole.FieldName:
-		return m.Name()
-	case staffrole.FieldDescription:
-		return m.Description()
 	case staffrole.FieldCreatedAt:
 		return m.CreatedAt()
 	case staffrole.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case staffrole.FieldName:
+		return m.Name()
+	case staffrole.FieldDescription:
+		return m.Description()
 	}
 	return nil, false
 }
@@ -20894,14 +20894,14 @@ func (m *StaffRoleMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *StaffRoleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case staffrole.FieldName:
-		return m.OldName(ctx)
-	case staffrole.FieldDescription:
-		return m.OldDescription(ctx)
 	case staffrole.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case staffrole.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case staffrole.FieldName:
+		return m.OldName(ctx)
+	case staffrole.FieldDescription:
+		return m.OldDescription(ctx)
 	}
 	return nil, fmt.Errorf("unknown StaffRole field %s", name)
 }
@@ -20911,20 +20911,6 @@ func (m *StaffRoleMutation) OldField(ctx context.Context, name string) (ent.Valu
 // type.
 func (m *StaffRoleMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case staffrole.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case staffrole.FieldDescription:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDescription(v)
-		return nil
 	case staffrole.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -20938,6 +20924,20 @@ func (m *StaffRoleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case staffrole.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case staffrole.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
 		return nil
 	}
 	return fmt.Errorf("unknown StaffRole field %s", name)
@@ -20997,17 +20997,17 @@ func (m *StaffRoleMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *StaffRoleMutation) ResetField(name string) error {
 	switch name {
-	case staffrole.FieldName:
-		m.ResetName()
-		return nil
-	case staffrole.FieldDescription:
-		m.ResetDescription()
-		return nil
 	case staffrole.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
 	case staffrole.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case staffrole.FieldName:
+		m.ResetName()
+		return nil
+	case staffrole.FieldDescription:
+		m.ResetDescription()
 		return nil
 	}
 	return fmt.Errorf("unknown StaffRole field %s", name)
@@ -21103,13 +21103,13 @@ type StaffRolePermissionMutation struct {
 	op            Op
 	typ           string
 	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
 	resource      *string
 	can_index     *bool
 	can_create    *bool
 	can_update    *bool
 	can_destroy   *bool
-	created_at    *time.Time
-	updated_at    *time.Time
 	clearedFields map[string]struct{}
 	role          *int
 	clearedrole   bool
@@ -21214,6 +21214,78 @@ func (m *StaffRolePermissionMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *StaffRolePermissionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *StaffRolePermissionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the StaffRolePermission entity.
+// If the StaffRolePermission object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRolePermissionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *StaffRolePermissionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *StaffRolePermissionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *StaffRolePermissionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the StaffRolePermission entity.
+// If the StaffRolePermission object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StaffRolePermissionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *StaffRolePermissionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetRoleID sets the "role_id" field.
@@ -21432,78 +21504,6 @@ func (m *StaffRolePermissionMutation) ResetCanDestroy() {
 	m.can_destroy = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *StaffRolePermissionMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *StaffRolePermissionMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the StaffRolePermission entity.
-// If the StaffRolePermission object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StaffRolePermissionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *StaffRolePermissionMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *StaffRolePermissionMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *StaffRolePermissionMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the StaffRolePermission entity.
-// If the StaffRolePermission object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StaffRolePermissionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *StaffRolePermissionMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // ClearRole clears the "role" edge to the StaffRole entity.
 func (m *StaffRolePermissionMutation) ClearRole() {
 	m.clearedrole = true
@@ -21566,6 +21566,12 @@ func (m *StaffRolePermissionMutation) Type() string {
 // AddedFields().
 func (m *StaffRolePermissionMutation) Fields() []string {
 	fields := make([]string, 0, 8)
+	if m.created_at != nil {
+		fields = append(fields, staffrolepermission.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, staffrolepermission.FieldUpdatedAt)
+	}
 	if m.role != nil {
 		fields = append(fields, staffrolepermission.FieldRoleID)
 	}
@@ -21584,12 +21590,6 @@ func (m *StaffRolePermissionMutation) Fields() []string {
 	if m.can_destroy != nil {
 		fields = append(fields, staffrolepermission.FieldCanDestroy)
 	}
-	if m.created_at != nil {
-		fields = append(fields, staffrolepermission.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, staffrolepermission.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -21598,6 +21598,10 @@ func (m *StaffRolePermissionMutation) Fields() []string {
 // schema.
 func (m *StaffRolePermissionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case staffrolepermission.FieldCreatedAt:
+		return m.CreatedAt()
+	case staffrolepermission.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case staffrolepermission.FieldRoleID:
 		return m.RoleID()
 	case staffrolepermission.FieldResource:
@@ -21610,10 +21614,6 @@ func (m *StaffRolePermissionMutation) Field(name string) (ent.Value, bool) {
 		return m.CanUpdate()
 	case staffrolepermission.FieldCanDestroy:
 		return m.CanDestroy()
-	case staffrolepermission.FieldCreatedAt:
-		return m.CreatedAt()
-	case staffrolepermission.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -21623,6 +21623,10 @@ func (m *StaffRolePermissionMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *StaffRolePermissionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case staffrolepermission.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case staffrolepermission.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case staffrolepermission.FieldRoleID:
 		return m.OldRoleID(ctx)
 	case staffrolepermission.FieldResource:
@@ -21635,10 +21639,6 @@ func (m *StaffRolePermissionMutation) OldField(ctx context.Context, name string)
 		return m.OldCanUpdate(ctx)
 	case staffrolepermission.FieldCanDestroy:
 		return m.OldCanDestroy(ctx)
-	case staffrolepermission.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case staffrolepermission.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown StaffRolePermission field %s", name)
 }
@@ -21648,6 +21648,20 @@ func (m *StaffRolePermissionMutation) OldField(ctx context.Context, name string)
 // type.
 func (m *StaffRolePermissionMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case staffrolepermission.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case staffrolepermission.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case staffrolepermission.FieldRoleID:
 		v, ok := value.(int)
 		if !ok {
@@ -21689,20 +21703,6 @@ func (m *StaffRolePermissionMutation) SetField(name string, value ent.Value) err
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCanDestroy(v)
-		return nil
-	case staffrolepermission.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case staffrolepermission.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown StaffRolePermission field %s", name)
@@ -21756,6 +21756,12 @@ func (m *StaffRolePermissionMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *StaffRolePermissionMutation) ResetField(name string) error {
 	switch name {
+	case staffrolepermission.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case staffrolepermission.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case staffrolepermission.FieldRoleID:
 		m.ResetRoleID()
 		return nil
@@ -21773,12 +21779,6 @@ func (m *StaffRolePermissionMutation) ResetField(name string) error {
 		return nil
 	case staffrolepermission.FieldCanDestroy:
 		m.ResetCanDestroy()
-		return nil
-	case staffrolepermission.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case staffrolepermission.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown StaffRolePermission field %s", name)
@@ -21864,6 +21864,8 @@ type UserMutation struct {
 	op                          Op
 	typ                         string
 	id                          *int
+	created_at                  *time.Time
+	updated_at                  *time.Time
 	email                       *string
 	password_digest             *string
 	first_name                  *string
@@ -21871,8 +21873,6 @@ type UserMutation struct {
 	admin                       *bool
 	assistant_messages_count    *int
 	addassistant_messages_count *int
-	created_at                  *time.Time
-	updated_at                  *time.Time
 	clearedFields               map[string]struct{}
 	done                        bool
 	oldValue                    func(context.Context) (*User, error)
@@ -21975,6 +21975,78 @@ func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *UserMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *UserMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *UserMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *UserMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *UserMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *UserMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetEmail sets the "email" field.
@@ -22292,78 +22364,6 @@ func (m *UserMutation) ResetAssistantMessagesCount() {
 	delete(m.clearedFields, user.FieldAssistantMessagesCount)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *UserMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *UserMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *UserMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *UserMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *UserMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *UserMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -22399,6 +22399,12 @@ func (m *UserMutation) Type() string {
 // AddedFields().
 func (m *UserMutation) Fields() []string {
 	fields := make([]string, 0, 8)
+	if m.created_at != nil {
+		fields = append(fields, user.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, user.FieldUpdatedAt)
+	}
 	if m.email != nil {
 		fields = append(fields, user.FieldEmail)
 	}
@@ -22417,12 +22423,6 @@ func (m *UserMutation) Fields() []string {
 	if m.assistant_messages_count != nil {
 		fields = append(fields, user.FieldAssistantMessagesCount)
 	}
-	if m.created_at != nil {
-		fields = append(fields, user.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, user.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -22431,6 +22431,10 @@ func (m *UserMutation) Fields() []string {
 // schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case user.FieldCreatedAt:
+		return m.CreatedAt()
+	case user.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case user.FieldEmail:
 		return m.Email()
 	case user.FieldPasswordDigest:
@@ -22443,10 +22447,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Admin()
 	case user.FieldAssistantMessagesCount:
 		return m.AssistantMessagesCount()
-	case user.FieldCreatedAt:
-		return m.CreatedAt()
-	case user.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -22456,6 +22456,10 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case user.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case user.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case user.FieldEmail:
 		return m.OldEmail(ctx)
 	case user.FieldPasswordDigest:
@@ -22468,10 +22472,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldAdmin(ctx)
 	case user.FieldAssistantMessagesCount:
 		return m.OldAssistantMessagesCount(ctx)
-	case user.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case user.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -22481,6 +22481,20 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case user.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case user.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case user.FieldEmail:
 		v, ok := value.(string)
 		if !ok {
@@ -22522,20 +22536,6 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAssistantMessagesCount(v)
-		return nil
-	case user.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case user.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
@@ -22640,6 +22640,12 @@ func (m *UserMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
 	switch name {
+	case user.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case user.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case user.FieldEmail:
 		m.ResetEmail()
 		return nil
@@ -22657,12 +22663,6 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldAssistantMessagesCount:
 		m.ResetAssistantMessagesCount()
-		return nil
-	case user.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case user.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

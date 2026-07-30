@@ -28,6 +28,12 @@ func (_u *CourseCategoryUpdate) Where(ps ...predicate.CourseCategory) *CourseCat
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseCategoryUpdate) SetUpdatedAt(v time.Time) *CourseCategoryUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetSlug sets the "slug" field.
 func (_u *CourseCategoryUpdate) SetSlug(v string) *CourseCategoryUpdate {
 	_u.mutation.SetSlug(v)
@@ -128,12 +134,6 @@ func (_u *CourseCategoryUpdate) ClearLocale() *CourseCategoryUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CourseCategoryUpdate) SetUpdatedAt(v time.Time) *CourseCategoryUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the CourseCategoryMutation object of the builder.
 func (_u *CourseCategoryUpdate) Mutation() *CourseCategoryMutation {
 	return _u.mutation
@@ -184,6 +184,9 @@ func (_u *CourseCategoryUpdate) sqlSave(ctx context.Context) (_node int, err err
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(coursecategory.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(coursecategory.FieldSlug, field.TypeString, value)
 	}
@@ -214,9 +217,6 @@ func (_u *CourseCategoryUpdate) sqlSave(ctx context.Context) (_node int, err err
 	if _u.mutation.LocaleCleared() {
 		_spec.ClearField(coursecategory.FieldLocale, field.TypeString)
 	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(coursecategory.FieldUpdatedAt, field.TypeTime, value)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{coursecategory.Label}
@@ -235,6 +235,12 @@ type CourseCategoryUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CourseCategoryMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CourseCategoryUpdateOne) SetUpdatedAt(v time.Time) *CourseCategoryUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetSlug sets the "slug" field.
@@ -337,12 +343,6 @@ func (_u *CourseCategoryUpdateOne) ClearLocale() *CourseCategoryUpdateOne {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CourseCategoryUpdateOne) SetUpdatedAt(v time.Time) *CourseCategoryUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the CourseCategoryMutation object of the builder.
 func (_u *CourseCategoryUpdateOne) Mutation() *CourseCategoryMutation {
 	return _u.mutation
@@ -423,6 +423,9 @@ func (_u *CourseCategoryUpdateOne) sqlSave(ctx context.Context) (_node *CourseCa
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(coursecategory.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Slug(); ok {
 		_spec.SetField(coursecategory.FieldSlug, field.TypeString, value)
 	}
@@ -452,9 +455,6 @@ func (_u *CourseCategoryUpdateOne) sqlSave(ctx context.Context) (_node *CourseCa
 	}
 	if _u.mutation.LocaleCleared() {
 		_spec.ClearField(coursecategory.FieldLocale, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(coursecategory.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &CourseCategory{config: _u.config}
 	_spec.Assign = _node.assignValues

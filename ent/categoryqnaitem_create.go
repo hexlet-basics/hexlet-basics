@@ -22,6 +22,34 @@ type CategoryQnaItemCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *CategoryQnaItemCreate) SetCreatedAt(v time.Time) *CategoryQnaItemCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *CategoryQnaItemCreate) SetNillableCreatedAt(v *time.Time) *CategoryQnaItemCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *CategoryQnaItemCreate) SetUpdatedAt(v time.Time) *CategoryQnaItemCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *CategoryQnaItemCreate) SetNillableUpdatedAt(v *time.Time) *CategoryQnaItemCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetLanguageCategoryID sets the "language_category_id" field.
 func (_c *CategoryQnaItemCreate) SetLanguageCategoryID(v int) *CategoryQnaItemCreate {
 	_c.mutation.SetLanguageCategoryID(v)
@@ -52,34 +80,6 @@ func (_c *CategoryQnaItemCreate) SetAnswer(v string) *CategoryQnaItemCreate {
 func (_c *CategoryQnaItemCreate) SetNillableAnswer(v *string) *CategoryQnaItemCreate {
 	if v != nil {
 		_c.SetAnswer(*v)
-	}
-	return _c
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (_c *CategoryQnaItemCreate) SetCreatedAt(v time.Time) *CategoryQnaItemCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *CategoryQnaItemCreate) SetNillableCreatedAt(v *time.Time) *CategoryQnaItemCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *CategoryQnaItemCreate) SetUpdatedAt(v time.Time) *CategoryQnaItemCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *CategoryQnaItemCreate) SetNillableUpdatedAt(v *time.Time) *CategoryQnaItemCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
 	}
 	return _c
 }
@@ -131,14 +131,14 @@ func (_c *CategoryQnaItemCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CategoryQnaItemCreate) check() error {
-	if _, ok := _c.mutation.LanguageCategoryID(); !ok {
-		return &ValidationError{Name: "language_category_id", err: errors.New(`ent: missing required field "CategoryQnaItem.language_category_id"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "CategoryQnaItem.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CategoryQnaItem.updated_at"`)}
+	}
+	if _, ok := _c.mutation.LanguageCategoryID(); !ok {
+		return &ValidationError{Name: "language_category_id", err: errors.New(`ent: missing required field "CategoryQnaItem.language_category_id"`)}
 	}
 	return nil
 }
@@ -167,6 +167,14 @@ func (_c *CategoryQnaItemCreate) createSpec() (*CategoryQnaItem, *sqlgraph.Creat
 		_spec = sqlgraph.NewCreateSpec(categoryqnaitem.Table, sqlgraph.NewFieldSpec(categoryqnaitem.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(categoryqnaitem.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.LanguageCategoryID(); ok {
 		_spec.SetField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
 		_node.LanguageCategoryID = value
@@ -179,14 +187,6 @@ func (_c *CategoryQnaItemCreate) createSpec() (*CategoryQnaItem, *sqlgraph.Creat
 		_spec.SetField(categoryqnaitem.FieldAnswer, field.TypeString, value)
 		_node.Answer = &value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(categoryqnaitem.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
 	return _node, _spec
 }
 
@@ -194,7 +194,7 @@ func (_c *CategoryQnaItemCreate) createSpec() (*CategoryQnaItem, *sqlgraph.Creat
 // of the `INSERT` statement. For example:
 //
 //	client.CategoryQnaItem.Create().
-//		SetLanguageCategoryID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -203,7 +203,7 @@ func (_c *CategoryQnaItemCreate) createSpec() (*CategoryQnaItem, *sqlgraph.Creat
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CategoryQnaItemUpsert) {
-//			SetLanguageCategoryID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CategoryQnaItemCreate) OnConflict(opts ...sql.ConflictOption) *CategoryQnaItemUpsertOne {
@@ -238,6 +238,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CategoryQnaItemUpsert) SetUpdatedAt(v time.Time) *CategoryQnaItemUpsert {
+	u.Set(categoryqnaitem.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CategoryQnaItemUpsert) UpdateUpdatedAt() *CategoryQnaItemUpsert {
+	u.SetExcluded(categoryqnaitem.FieldUpdatedAt)
+	return u
+}
 
 // SetLanguageCategoryID sets the "language_category_id" field.
 func (u *CategoryQnaItemUpsert) SetLanguageCategoryID(v int) *CategoryQnaItemUpsert {
@@ -293,18 +305,6 @@ func (u *CategoryQnaItemUpsert) ClearAnswer() *CategoryQnaItemUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CategoryQnaItemUpsert) SetUpdatedAt(v time.Time) *CategoryQnaItemUpsert {
-	u.Set(categoryqnaitem.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CategoryQnaItemUpsert) UpdateUpdatedAt() *CategoryQnaItemUpsert {
-	u.SetExcluded(categoryqnaitem.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -348,6 +348,20 @@ func (u *CategoryQnaItemUpsertOne) Update(set func(*CategoryQnaItemUpsert)) *Cat
 		set(&CategoryQnaItemUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CategoryQnaItemUpsertOne) SetUpdatedAt(v time.Time) *CategoryQnaItemUpsertOne {
+	return u.Update(func(s *CategoryQnaItemUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CategoryQnaItemUpsertOne) UpdateUpdatedAt() *CategoryQnaItemUpsertOne {
+	return u.Update(func(s *CategoryQnaItemUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLanguageCategoryID sets the "language_category_id" field.
@@ -410,20 +424,6 @@ func (u *CategoryQnaItemUpsertOne) UpdateAnswer() *CategoryQnaItemUpsertOne {
 func (u *CategoryQnaItemUpsertOne) ClearAnswer() *CategoryQnaItemUpsertOne {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
 		s.ClearAnswer()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CategoryQnaItemUpsertOne) SetUpdatedAt(v time.Time) *CategoryQnaItemUpsertOne {
-	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CategoryQnaItemUpsertOne) UpdateUpdatedAt() *CategoryQnaItemUpsertOne {
-	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 
@@ -562,7 +562,7 @@ func (_c *CategoryQnaItemCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.CategoryQnaItemUpsert) {
-//			SetLanguageCategoryID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *CategoryQnaItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *CategoryQnaItemUpsertBulk {
@@ -638,6 +638,20 @@ func (u *CategoryQnaItemUpsertBulk) Update(set func(*CategoryQnaItemUpsert)) *Ca
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *CategoryQnaItemUpsertBulk) SetUpdatedAt(v time.Time) *CategoryQnaItemUpsertBulk {
+	return u.Update(func(s *CategoryQnaItemUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *CategoryQnaItemUpsertBulk) UpdateUpdatedAt() *CategoryQnaItemUpsertBulk {
+	return u.Update(func(s *CategoryQnaItemUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetLanguageCategoryID sets the "language_category_id" field.
 func (u *CategoryQnaItemUpsertBulk) SetLanguageCategoryID(v int) *CategoryQnaItemUpsertBulk {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
@@ -698,20 +712,6 @@ func (u *CategoryQnaItemUpsertBulk) UpdateAnswer() *CategoryQnaItemUpsertBulk {
 func (u *CategoryQnaItemUpsertBulk) ClearAnswer() *CategoryQnaItemUpsertBulk {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
 		s.ClearAnswer()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *CategoryQnaItemUpsertBulk) SetUpdatedAt(v time.Time) *CategoryQnaItemUpsertBulk {
-	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *CategoryQnaItemUpsertBulk) UpdateUpdatedAt() *CategoryQnaItemUpsertBulk {
-	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

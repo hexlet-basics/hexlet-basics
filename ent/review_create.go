@@ -24,6 +24,34 @@ type ReviewCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *ReviewCreate) SetCreatedAt(v time.Time) *ReviewCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *ReviewCreate) SetNillableCreatedAt(v *time.Time) *ReviewCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *ReviewCreate) SetUpdatedAt(v time.Time) *ReviewCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *ReviewCreate) SetNillableUpdatedAt(v *time.Time) *ReviewCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetLanguageID sets the "language_id" field.
 func (_c *ReviewCreate) SetLanguageID(v int) *ReviewCreate {
 	_c.mutation.SetLanguageID(v)
@@ -120,34 +148,6 @@ func (_c *ReviewCreate) SetNillablePinned(v *bool) *ReviewCreate {
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *ReviewCreate) SetCreatedAt(v time.Time) *ReviewCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (_c *ReviewCreate) SetNillableCreatedAt(v *time.Time) *ReviewCreate {
-	if v != nil {
-		_c.SetCreatedAt(*v)
-	}
-	return _c
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_c *ReviewCreate) SetUpdatedAt(v time.Time) *ReviewCreate {
-	_c.mutation.SetUpdatedAt(v)
-	return _c
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (_c *ReviewCreate) SetNillableUpdatedAt(v *time.Time) *ReviewCreate {
-	if v != nil {
-		_c.SetUpdatedAt(*v)
-	}
-	return _c
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_c *ReviewCreate) SetCourseID(id int) *ReviewCreate {
 	_c.mutation.SetCourseID(id)
@@ -211,17 +211,17 @@ func (_c *ReviewCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *ReviewCreate) check() error {
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "Review.language_id"`)}
-	}
-	if _, ok := _c.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Review.user_id"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Review.created_at"`)}
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Review.updated_at"`)}
+	}
+	if _, ok := _c.mutation.LanguageID(); !ok {
+		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "Review.language_id"`)}
+	}
+	if _, ok := _c.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Review.user_id"`)}
 	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "Review.course"`)}
@@ -256,6 +256,14 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(review.Table, sqlgraph.NewFieldSpec(review.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(review.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(review.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Body(); ok {
 		_spec.SetField(review.FieldBody, field.TypeString, value)
 		_node.Body = &value
@@ -279,14 +287,6 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Pinned(); ok {
 		_spec.SetField(review.FieldPinned, field.TypeBool, value)
 		_node.Pinned = &value
-	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(review.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.UpdatedAt(); ok {
-		_spec.SetField(review.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
 	}
 	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -329,7 +329,7 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Review.Create().
-//		SetLanguageID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -338,7 +338,7 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ReviewUpsert) {
-//			SetLanguageID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *ReviewCreate) OnConflict(opts ...sql.ConflictOption) *ReviewUpsertOne {
@@ -373,6 +373,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ReviewUpsert) SetUpdatedAt(v time.Time) *ReviewUpsert {
+	u.Set(review.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateUpdatedAt() *ReviewUpsert {
+	u.SetExcluded(review.FieldUpdatedAt)
+	return u
+}
 
 // SetLanguageID sets the "language_id" field.
 func (u *ReviewUpsert) SetLanguageID(v int) *ReviewUpsert {
@@ -506,18 +518,6 @@ func (u *ReviewUpsert) ClearPinned() *ReviewUpsert {
 	return u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *ReviewUpsert) SetUpdatedAt(v time.Time) *ReviewUpsert {
-	u.Set(review.FieldUpdatedAt, v)
-	return u
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *ReviewUpsert) UpdateUpdatedAt() *ReviewUpsert {
-	u.SetExcluded(review.FieldUpdatedAt)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -561,6 +561,20 @@ func (u *ReviewUpsertOne) Update(set func(*ReviewUpsert)) *ReviewUpsertOne {
 		set(&ReviewUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ReviewUpsertOne) SetUpdatedAt(v time.Time) *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateUpdatedAt() *ReviewUpsertOne {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -717,20 +731,6 @@ func (u *ReviewUpsertOne) ClearPinned() *ReviewUpsertOne {
 	})
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (u *ReviewUpsertOne) SetUpdatedAt(v time.Time) *ReviewUpsertOne {
-	return u.Update(func(s *ReviewUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *ReviewUpsertOne) UpdateUpdatedAt() *ReviewUpsertOne {
-	return u.Update(func(s *ReviewUpsert) {
-		s.UpdateUpdatedAt()
-	})
-}
-
 // Exec executes the query.
 func (u *ReviewUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -866,7 +866,7 @@ func (_c *ReviewCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.ReviewUpsert) {
-//			SetLanguageID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *ReviewCreateBulk) OnConflict(opts ...sql.ConflictOption) *ReviewUpsertBulk {
@@ -940,6 +940,20 @@ func (u *ReviewUpsertBulk) Update(set func(*ReviewUpsert)) *ReviewUpsertBulk {
 		set(&ReviewUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *ReviewUpsertBulk) SetUpdatedAt(v time.Time) *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateUpdatedAt() *ReviewUpsertBulk {
+	return u.Update(func(s *ReviewUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLanguageID sets the "language_id" field.
@@ -1093,20 +1107,6 @@ func (u *ReviewUpsertBulk) UpdatePinned() *ReviewUpsertBulk {
 func (u *ReviewUpsertBulk) ClearPinned() *ReviewUpsertBulk {
 	return u.Update(func(s *ReviewUpsert) {
 		s.ClearPinned()
-	})
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (u *ReviewUpsertBulk) SetUpdatedAt(v time.Time) *ReviewUpsertBulk {
-	return u.Update(func(s *ReviewUpsert) {
-		s.SetUpdatedAt(v)
-	})
-}
-
-// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
-func (u *ReviewUpsertBulk) UpdateUpdatedAt() *ReviewUpsertBulk {
-	return u.Update(func(s *ReviewUpsert) {
-		s.UpdateUpdatedAt()
 	})
 }
 

@@ -334,12 +334,12 @@ func (_q *StaffMemberQuery) WithRole(opts ...func(*StaffRoleQuery)) *StaffMember
 // Example:
 //
 //	var v []struct {
-//		UserID int `json:"user_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.StaffMember.Query().
-//		GroupBy(staffmember.FieldUserID).
+//		GroupBy(staffmember.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *StaffMemberQuery) GroupBy(field string, fields ...string) *StaffMemberGroupBy {
@@ -357,11 +357,11 @@ func (_q *StaffMemberQuery) GroupBy(field string, fields ...string) *StaffMember
 // Example:
 //
 //	var v []struct {
-//		UserID int `json:"user_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.StaffMember.Query().
-//		Select(staffmember.FieldUserID).
+//		Select(staffmember.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *StaffMemberQuery) Select(fields ...string) *StaffMemberSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

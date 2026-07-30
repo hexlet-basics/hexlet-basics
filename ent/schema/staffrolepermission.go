@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -32,8 +30,6 @@ func (StaffRolePermission) Fields() []ent.Field {
 		field.Bool("can_create").Default(false),
 		field.Bool("can_update").Default(false),
 		field.Bool("can_destroy").Default(false),
-		field.Time("created_at").Default(time.Now).Immutable(),
-		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 	}
 }
 
@@ -45,4 +41,8 @@ func (StaffRolePermission) Edges() []ent.Edge {
 			Unique().
 			Required(),
 	}
+}
+
+func (StaffRolePermission) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }

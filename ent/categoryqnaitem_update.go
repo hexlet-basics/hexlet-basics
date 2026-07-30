@@ -28,6 +28,12 @@ func (_u *CategoryQnaItemUpdate) Where(ps ...predicate.CategoryQnaItem) *Categor
 	return _u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CategoryQnaItemUpdate) SetUpdatedAt(v time.Time) *CategoryQnaItemUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetLanguageCategoryID sets the "language_category_id" field.
 func (_u *CategoryQnaItemUpdate) SetLanguageCategoryID(v int) *CategoryQnaItemUpdate {
 	_u.mutation.ResetLanguageCategoryID()
@@ -89,12 +95,6 @@ func (_u *CategoryQnaItemUpdate) ClearAnswer() *CategoryQnaItemUpdate {
 	return _u
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CategoryQnaItemUpdate) SetUpdatedAt(v time.Time) *CategoryQnaItemUpdate {
-	_u.mutation.SetUpdatedAt(v)
-	return _u
-}
-
 // Mutation returns the CategoryQnaItemMutation object of the builder.
 func (_u *CategoryQnaItemUpdate) Mutation() *CategoryQnaItemMutation {
 	return _u.mutation
@@ -145,6 +145,9 @@ func (_u *CategoryQnaItemUpdate) sqlSave(ctx context.Context) (_node int, err er
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.LanguageCategoryID(); ok {
 		_spec.SetField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
 	}
@@ -162,9 +165,6 @@ func (_u *CategoryQnaItemUpdate) sqlSave(ctx context.Context) (_node int, err er
 	}
 	if _u.mutation.AnswerCleared() {
 		_spec.ClearField(categoryqnaitem.FieldAnswer, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -184,6 +184,12 @@ type CategoryQnaItemUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CategoryQnaItemMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *CategoryQnaItemUpdateOne) SetUpdatedAt(v time.Time) *CategoryQnaItemUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetLanguageCategoryID sets the "language_category_id" field.
@@ -244,12 +250,6 @@ func (_u *CategoryQnaItemUpdateOne) SetNillableAnswer(v *string) *CategoryQnaIte
 // ClearAnswer clears the value of the "answer" field.
 func (_u *CategoryQnaItemUpdateOne) ClearAnswer() *CategoryQnaItemUpdateOne {
 	_u.mutation.ClearAnswer()
-	return _u
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (_u *CategoryQnaItemUpdateOne) SetUpdatedAt(v time.Time) *CategoryQnaItemUpdateOne {
-	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -333,6 +333,9 @@ func (_u *CategoryQnaItemUpdateOne) sqlSave(ctx context.Context) (_node *Categor
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.LanguageCategoryID(); ok {
 		_spec.SetField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
 	}
@@ -350,9 +353,6 @@ func (_u *CategoryQnaItemUpdateOne) sqlSave(ctx context.Context) (_node *Categor
 	}
 	if _u.mutation.AnswerCleared() {
 		_spec.ClearField(categoryqnaitem.FieldAnswer, field.TypeString)
-	}
-	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &CategoryQnaItem{config: _u.config}
 	_spec.Assign = _node.assignValues

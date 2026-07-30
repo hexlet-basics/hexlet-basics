@@ -55,6 +55,16 @@ func IDLTE(id int) predicate.StaffRolePermission {
 	return predicate.StaffRolePermission(sql.FieldLTE(FieldID, id))
 }
 
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
 // RoleID applies equality check predicate on the "role_id" field. It's identical to RoleIDEQ.
 func RoleID(v int) predicate.StaffRolePermission {
 	return predicate.StaffRolePermission(sql.FieldEQ(FieldRoleID, v))
@@ -85,14 +95,84 @@ func CanDestroy(v bool) predicate.StaffRolePermission {
 	return predicate.StaffRolePermission(sql.FieldEQ(FieldCanDestroy, v))
 }
 
-// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
-func CreatedAt(v time.Time) predicate.StaffRolePermission {
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.StaffRolePermission {
 	return predicate.StaffRolePermission(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
-func UpdatedAt(v time.Time) predicate.StaffRolePermission {
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.StaffRolePermission {
 	return predicate.StaffRolePermission(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.StaffRolePermission {
+	return predicate.StaffRolePermission(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // RoleIDEQ applies the EQ predicate on the "role_id" field.
@@ -218,86 +298,6 @@ func CanDestroyEQ(v bool) predicate.StaffRolePermission {
 // CanDestroyNEQ applies the NEQ predicate on the "can_destroy" field.
 func CanDestroyNEQ(v bool) predicate.StaffRolePermission {
 	return predicate.StaffRolePermission(sql.FieldNEQ(FieldCanDestroy, v))
-}
-
-// CreatedAtEQ applies the EQ predicate on the "created_at" field.
-func CreatedAtEQ(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
-func CreatedAtNEQ(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldNEQ(FieldCreatedAt, v))
-}
-
-// CreatedAtIn applies the In predicate on the "created_at" field.
-func CreatedAtIn(vs ...time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldIn(FieldCreatedAt, vs...))
-}
-
-// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
-func CreatedAtNotIn(vs ...time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldNotIn(FieldCreatedAt, vs...))
-}
-
-// CreatedAtGT applies the GT predicate on the "created_at" field.
-func CreatedAtGT(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldGT(FieldCreatedAt, v))
-}
-
-// CreatedAtGTE applies the GTE predicate on the "created_at" field.
-func CreatedAtGTE(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldGTE(FieldCreatedAt, v))
-}
-
-// CreatedAtLT applies the LT predicate on the "created_at" field.
-func CreatedAtLT(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldLT(FieldCreatedAt, v))
-}
-
-// CreatedAtLTE applies the LTE predicate on the "created_at" field.
-func CreatedAtLTE(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldLTE(FieldCreatedAt, v))
-}
-
-// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
-func UpdatedAtEQ(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldEQ(FieldUpdatedAt, v))
-}
-
-// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
-func UpdatedAtNEQ(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldNEQ(FieldUpdatedAt, v))
-}
-
-// UpdatedAtIn applies the In predicate on the "updated_at" field.
-func UpdatedAtIn(vs ...time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldIn(FieldUpdatedAt, vs...))
-}
-
-// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
-func UpdatedAtNotIn(vs ...time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldNotIn(FieldUpdatedAt, vs...))
-}
-
-// UpdatedAtGT applies the GT predicate on the "updated_at" field.
-func UpdatedAtGT(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldGT(FieldUpdatedAt, v))
-}
-
-// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
-func UpdatedAtGTE(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldGTE(FieldUpdatedAt, v))
-}
-
-// UpdatedAtLT applies the LT predicate on the "updated_at" field.
-func UpdatedAtLT(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldLT(FieldUpdatedAt, v))
-}
-
-// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
-func UpdatedAtLTE(v time.Time) predicate.StaffRolePermission {
-	return predicate.StaffRolePermission(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // HasRole applies the HasEdge predicate on the "role" edge.
