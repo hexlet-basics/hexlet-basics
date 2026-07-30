@@ -18,14 +18,19 @@ type LandingPageQnaItem struct {
 func (LandingPageQnaItem) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "language_landing_page_qna_items"},
+		// Same mapping rationale as CategoryQnaItem (shared QnaItemInput).
+		AdminInput{Type: "QnaItemInput"},
 	}
 }
 
 func (LandingPageQnaItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_landing_page_id"),
-		field.String("question").Optional().Nillable(),
-		field.String("answer").Optional().Nillable(),
+		field.Int("language_landing_page_id").
+			Annotations(AdminInputField{Skip: true}),
+		field.String("question").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
+		field.String("answer").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
 	}
 }
 

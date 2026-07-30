@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 )
 
@@ -20,17 +21,30 @@ type User struct {
 	ent.Schema
 }
 
+// Annotations opts the schema into the generated SetInput builders. Explicit
+// because the schema is wider than the admin surface: only the fields carrying
+// an AdminInputField marker map onto UserInput — password_digest and the
+// counters must never be reachable from an admin payload.
+func (User) Annotations() []schema.Annotation {
+	return []schema.Annotation{AdminInput{Type: "UserInput", Explicit: true}}
+}
+
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("email").Optional().Nillable(),
+		// Nullable in the legacy column, required in UserInput.
+		field.String("email").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
 		// bcrypt hash from the legacy `has_secure_password` column. Mapped so the
 		// auth handlers can verify (login) and write (registration) it; atlas owns
 		// the schema, so mapping this existing baseline column needs no migration.
 		// Sensitive() keeps it out of ent's Stringer/log output.
 		field.String("password_digest").Optional().Nillable().Sensitive(),
-		field.String("first_name").Optional().Nillable(),
-		field.String("last_name").Optional().Nillable(),
-		field.Bool("admin").Optional().Nillable(),
+		field.String("first_name").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.String("last_name").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.Bool("admin").Optional().Nillable().
+			Annotations(AdminInputField{}),
 		field.Int("assistant_messages_count").Optional().Nillable(),
 	}
 }

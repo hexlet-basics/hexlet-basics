@@ -6,7 +6,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/review"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/inputconv"
 )
 
 // withReviewEdges loads the course (with its current version, which ToCourse
@@ -45,23 +44,11 @@ func (s *Server) getAdminReview(ctx context.Context, id int32) (*api.Review, err
 
 // AdminCreateReview creates a review. courseId (language_id) and userId are
 // NOT NULL in the DB; a null in the input surfaces as a constraint error via
-// the central ErrorHandler. The created row is reloaded with its edges so the
-// response carries the full embedded course and user.
+// the central ErrorHandler (the schema marks them SetOnly, so SetInput skips
+// nulls). The created row is reloaded with its edges so the response carries
+// the full embedded course and user.
 func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (api.AdminCreateReviewRes, error) {
-	create := s.db.Review.Create().
-		SetNillableBody(inputconv.Ptr(req.Body)).
-		SetNillableFirstName(inputconv.Ptr(req.FirstName)).
-		SetNillableLastName(inputconv.Ptr(req.LastName)).
-		SetNillablePinned(inputconv.Ptr(req.Pinned)).
-		SetNillableState(inputconv.StringPtr(req.State))
-	if !req.CourseId.Null {
-		create.SetLanguageID(int(req.CourseId.Value))
-	}
-	if !req.UserId.Null {
-		create.SetUserID(int(req.UserId.Value))
-	}
-
-	row, err := create.Save(ctx)
+	row, err := s.db.Review.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -69,25 +56,11 @@ func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (a
 }
 
 // AdminUpdateReview updates a review. A missing id returns ent's not-found error
-// (mapped to 404 centrally). A null nullable field clears the column, matching
-// the legacy assign_attributes semantics; the course/user associations are only
-// reassigned when a non-null id is supplied.
+// (mapped to 404 centrally). The generated SetInput keeps the legacy semantics:
+// a null nullable field clears the column, while the course/user associations
+// are only reassigned when a non-null id is supplied (SetOnly).
 func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, params api.AdminUpdateReviewParams) (api.AdminUpdateReviewRes, error) {
-	upd := s.db.Review.UpdateOneID(int(params.ID))
-
-	applyNil(req.Body.Null, req.Body.Value, upd.SetBody, upd.ClearBody)
-	applyNil(req.FirstName.Null, req.FirstName.Value, upd.SetFirstName, upd.ClearFirstName)
-	applyNil(req.LastName.Null, req.LastName.Value, upd.SetLastName, upd.ClearLastName)
-	applyNil(req.Pinned.Null, req.Pinned.Value, upd.SetPinned, upd.ClearPinned)
-	applyNil(req.State.Null, string(req.State.Value), upd.SetState, upd.ClearState)
-	if !req.CourseId.Null {
-		upd.SetLanguageID(int(req.CourseId.Value))
-	}
-	if !req.UserId.Null {
-		upd.SetUserID(int(req.UserId.Value))
-	}
-
-	row, err := upd.Save(ctx)
+	row, err := s.db.Review.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

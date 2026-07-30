@@ -18,16 +18,25 @@ type Course struct {
 func (Course) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "languages"},
+		// Explicit because the schema is wider than the admin surface: only
+		// the marked fields map onto CourseInput. The input's repositoryUrl
+		// and coverAttachmentId are handled elsewhere (derived on read /
+		// deferred until the Attachments uploader), so they map to nothing.
+		AdminInput{Type: "CourseInput", Explicit: true},
 	}
 }
 
 func (Course) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("slug").Optional().Nillable(),
+		field.String("slug").Optional().Nillable().
+			Annotations(AdminInputField{}),
 		field.String("name").Optional().Nillable(),
-		field.String("learn_as").Optional().Nillable(),
-		field.String("progress").Optional().Nillable(),
-		field.String("hexlet_program_landing_page").Optional().Nillable(),
+		field.String("learn_as").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.String("progress").Optional().Nillable().
+			Annotations(AdminInputField{}),
+		field.String("hexlet_program_landing_page").Optional().Nillable().
+			Annotations(AdminInputField{}),
 		// Counters maintained by the app; the baseline columns are NOT NULL
 		// DEFAULT 0, so a newly-created course starts at 0 without the admin
 		// create path having to supply them.

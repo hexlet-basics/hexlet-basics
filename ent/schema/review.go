@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -20,14 +21,26 @@ type Review struct {
 	ent.Schema
 }
 
+// Annotations opts the schema into the generated SetInput builders. The FK
+// columns are NOT NULL yet nullable in ReviewInput — SetOnly gives them the
+// legacy semantics (a null means "leave the association as is", never
+// detach), and Rename bridges the legacy column names to the contract's
+// courseId/userId. `locale` is not part of the admin input.
+func (Review) Annotations() []schema.Annotation {
+	return []schema.Annotation{AdminInput{}}
+}
+
 func (Review) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_id"),
-		field.Int("user_id"),
+		field.Int("language_id").
+			Annotations(AdminInputField{SetOnly: true, Rename: "CourseId"}),
+		field.Int("user_id").
+			Annotations(AdminInputField{SetOnly: true, Rename: "UserId"}),
 		field.String("body").Optional().Nillable(),
 		field.String("first_name").Optional().Nillable(),
 		field.String("last_name").Optional().Nillable(),
-		field.String("locale").Optional().Nillable(),
+		field.String("locale").Optional().Nillable().
+			Annotations(AdminInputField{Skip: true}),
 		field.String("state").Optional().Nillable(),
 		field.Bool("pinned").Optional().Nillable(),
 	}

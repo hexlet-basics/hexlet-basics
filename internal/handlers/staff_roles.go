@@ -7,7 +7,6 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/inputconv"
 )
 
 // roleDetail fetches a role with its permission matrix and converts it to the
@@ -46,10 +45,7 @@ func (s *Server) AdminGetRole(ctx context.Context, params api.AdminGetRoleParams
 // and are set via the role-permissions endpoint. A duplicate name violates the
 // unique index and surfaces as 409 centrally.
 func (s *Server) AdminCreateRole(ctx context.Context, req *api.RoleInput) (api.AdminCreateRoleRes, error) {
-	row, err := s.db.StaffRole.Create().
-		SetName(req.Name).
-		SetNillableDescription(inputconv.Ptr(req.Description)).
-		Save(ctx)
+	row, err := s.db.StaffRole.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -57,10 +53,7 @@ func (s *Server) AdminCreateRole(ctx context.Context, req *api.RoleInput) (api.A
 }
 
 func (s *Server) AdminUpdateRole(ctx context.Context, req *api.RoleInput, params api.AdminUpdateRoleParams) (api.AdminUpdateRoleRes, error) {
-	upd := s.db.StaffRole.UpdateOneID(int(params.ID)).SetName(req.Name)
-	applyNil(req.Description.Null, req.Description.Value, upd.SetDescription, upd.ClearDescription)
-
-	row, err := upd.Save(ctx)
+	row, err := s.db.StaffRole.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -94,32 +87,20 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 	}
 
 	for _, p := range req.Permissions {
-		resource := string(p.Resource)
 		existing, err := s.db.StaffRolePermission.Query().
 			Where(
 				staffrolepermission.RoleID(roleID),
-				staffrolepermission.Resource(resource),
+				staffrolepermission.Resource(string(p.Resource)),
 			).
 			Only(ctx)
 		switch {
 		case ent.IsNotFound(err):
-			_, err = s.db.StaffRolePermission.Create().
-				SetRoleID(roleID).
-				SetResource(resource).
-				SetCanIndex(p.CanIndex).
-				SetCanCreate(p.CanCreate).
-				SetCanUpdate(p.CanUpdate).
-				SetCanDestroy(p.CanDestroy).
-				Save(ctx)
+			_, err = s.db.StaffRolePermission.Create().SetRoleID(roleID).SetInput(&p).Save(ctx)
 		case err != nil:
 			return nil, err
 		default:
-			_, err = existing.Update().
-				SetCanIndex(p.CanIndex).
-				SetCanCreate(p.CanCreate).
-				SetCanUpdate(p.CanUpdate).
-				SetCanDestroy(p.CanDestroy).
-				Save(ctx)
+			// SetInput re-sets resource to its own lookup value, a no-op.
+			_, err = existing.Update().SetInput(&p).Save(ctx)
 		}
 		if err != nil {
 			return nil, err

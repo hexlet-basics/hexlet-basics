@@ -35,8 +35,7 @@ func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.Admin
 func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (api.AdminCreateCategoryQnaItemRes, error) {
 	row, err := s.db.CategoryQnaItem.Create().
 		SetLanguageCategoryID(int(params.CategoryId)).
-		SetQuestion(req.Question).
-		SetAnswer(req.Answer).
+		SetInput(req).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -58,7 +57,7 @@ func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 		return nil, err
 	}
 
-	updated, err := row.Update().SetQuestion(req.Question).SetAnswer(req.Answer).Save(ctx)
+	updated, err := row.Update().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +101,7 @@ func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.Ad
 func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (api.AdminCreateLandingPageQnaItemRes, error) {
 	row, err := s.db.LandingPageQnaItem.Create().
 		SetLanguageLandingPageID(int(params.LandingPageId)).
-		SetQuestion(req.Question).
-		SetAnswer(req.Answer).
+		SetInput(req).
 		Save(ctx)
 	if err != nil {
 		return nil, err
@@ -123,7 +121,7 @@ func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.Qna
 		return nil, err
 	}
 
-	updated, err := row.Update().SetQuestion(req.Question).SetAnswer(req.Answer).Save(ctx)
+	updated, err := row.Update().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -15,6 +15,11 @@ package schema
 type AdminInput struct {
 	// Type overrides the api input type name; empty means "<Schema>Input".
 	Type string `json:"Type"`
+	// Explicit flips the default from opt-out to opt-in: only fields carrying
+	// an AdminInputField annotation are mapped. Use it on wide schemas (User,
+	// Course) where the contract input covers a small slice of the columns,
+	// so a new column never leaks into SetInput by omission.
+	Explicit bool `json:"Explicit"`
 }
 
 // Name implements schema.Annotation.
@@ -22,8 +27,10 @@ func (AdminInput) Name() string { return "AdminInput" }
 
 // AdminInputField overrides how a single field of an AdminInput-annotated
 // schema maps onto the contract input. The zero value keeps the defaults
-// derived from the ent field (see AdminInput). created_at/updated_at are
-// always skipped — they are ent-owned, never part of a contract input.
+// derived from the ent field (see AdminInput) — under Explicit it acts as the
+// opt-in marker. created_at/updated_at are always skipped — they are
+// ent-owned, never part of a contract input. SetOnly wins over Required, so a
+// NOT NULL FK column can still take the "apply only when non-null" semantics.
 type AdminInputField struct {
 	// Skip excludes the field from SetInput entirely (the contract input has
 	// no such field, e.g. legacy columns the admin UI never edits).

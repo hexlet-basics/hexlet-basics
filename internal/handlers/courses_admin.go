@@ -7,7 +7,6 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/inputconv"
 	"hexletbasics/internal/localization"
 )
 
@@ -47,12 +46,7 @@ func (s *Server) getAdminCourse(ctx context.Context, id int32) (*api.Course, err
 }
 
 func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (api.AdminCreateCourseRes, error) {
-	row, err := s.db.Course.Create().
-		SetNillableSlug(inputconv.Ptr(req.Slug)).
-		SetNillableLearnAs(inputconv.StringPtr(req.LearnAs)).
-		SetNillableProgress(inputconv.StringPtr(req.Progress)).
-		SetNillableHexletProgramLandingPage(inputconv.Ptr(req.HexletProgramLandingPage)).
-		Save(ctx)
+	row, err := s.db.Course.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -60,13 +54,7 @@ func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (a
 }
 
 func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (api.AdminUpdateCourseRes, error) {
-	upd := s.db.Course.UpdateOneID(int(params.ID))
-	applyNil(req.Slug.Null, req.Slug.Value, upd.SetSlug, upd.ClearSlug)
-	applyNil(req.LearnAs.Null, string(req.LearnAs.Value), upd.SetLearnAs, upd.ClearLearnAs)
-	applyNil(req.Progress.Null, string(req.Progress.Value), upd.SetProgress, upd.ClearProgress)
-	applyNil(req.HexletProgramLandingPage.Null, req.HexletProgramLandingPage.Value, upd.SetHexletProgramLandingPage, upd.ClearHexletProgramLandingPage)
-
-	row, err := upd.Save(ctx)
+	row, err := s.db.Course.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

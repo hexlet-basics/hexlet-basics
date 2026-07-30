@@ -30,12 +30,7 @@ func (s *Server) AdminGetManagementUser(ctx context.Context, params api.AdminGet
 // is enforced by the baseline unique index (409 via the central handler); a
 // null nullable field clears the column.
 func (s *Server) AdminUpdateManagementUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateManagementUserParams) (api.AdminUpdateManagementUserRes, error) {
-	upd := s.db.User.UpdateOneID(int(params.ID)).SetEmail(req.Email)
-	applyNil(req.FirstName.Null, req.FirstName.Value, upd.SetFirstName, upd.ClearFirstName)
-	applyNil(req.LastName.Null, req.LastName.Value, upd.SetLastName, upd.ClearLastName)
-	applyNil(req.Admin.Null, req.Admin.Value, upd.SetAdmin, upd.ClearAdmin)
-
-	row, err := upd.Save(ctx)
+	row, err := s.db.User.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

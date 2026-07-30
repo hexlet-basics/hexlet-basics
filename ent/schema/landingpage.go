@@ -21,16 +21,22 @@ type LandingPage struct {
 func (LandingPage) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "language_landing_pages"},
+		// The input's outcomesImageAttachmentId maps to nothing — the asset
+		// is deferred until the Attachments uploader lands; `locale` is not
+		// part of the admin input.
+		AdminInput{Type: "CourseLandingPageInput"},
 	}
 }
 
 func (LandingPage) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_id"),
+		field.Int("language_id").
+			Annotations(AdminInputField{Rename: "CourseId"}),
 		field.String("slug").Optional().Nillable(),
 		field.String("header").Optional().Nillable(),
 		field.String("name").Optional().Nillable(),
-		field.String("locale").Optional().Nillable(),
+		field.String("locale").Optional().Nillable().
+			Annotations(AdminInputField{Skip: true}),
 		field.Bool("listed").Optional().Nillable(),
 		field.Bool("main").Optional().Nillable(),
 		field.String("state").Optional().Nillable(),
@@ -45,7 +51,8 @@ func (LandingPage) Fields() []ent.Field {
 		field.String("outcomes_description").Optional().Nillable(),
 		field.Bool("footer").Optional().Nillable(),
 		field.String("footer_name").Optional().Nillable(),
-		field.Int("landing_page_to_redirect_id").Optional().Nillable(),
+		field.Int("landing_page_to_redirect_id").Optional().Nillable().
+			Annotations(AdminInputField{Rename: "LandingPageToRedirectId"}),
 	}
 }
 

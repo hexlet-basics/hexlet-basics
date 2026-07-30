@@ -1,8 +1,18 @@
 {{/*
 adminput generates SetInput methods on the Create and UpdateOne builders of
 every schema annotated with schema.AdminInput, mapping the contract input
-type (api.<Schema>Input) onto builder setters. Per-field behavior is driven
-by schema.AdminInputField — see ent/schema/annotations.go for the rules.
+type (api.<Schema>Input by default) onto builder setters. Per-field behavior
+is driven by schema.AdminInputField — see ent/schema/annotations.go for the
+rules. Field kinds:
+
+  - setOnly:  `if !i.X.Null { Set }` — never clears (FK semantics)
+  - required: plain value, set unconditionally
+  - nullable: SetNillable on create; null clears the column on update
+
+Value casts: string-kind fields cast through string() (covers ogen enums),
+int fields through int() (contract int32), custom Go types (e.g.
+pq.StringArray) through their own type with the package imported; time.Time
+needs no cast because the ogen wrapper already carries one.
 */}}
 
 {{ define "adminput" }}
@@ -10,17 +20,22 @@ by schema.AdminInputField — see ent/schema/annotations.go for the rules.
 {{ $pkg := base $.Config.Package }}
 {{ template "header" $ }}
 
-{{/* Pre-pass: decide whether anything is generated at all, and whether the
-     create-side SetNillable path (the only inputconv user) is ever taken,
-     so the import block never carries an unused import. */}}
+{{/* Pre-pass over all annotated nodes: decide whether anything is generated
+     at all, whether the create-side SetNillable path (the only inputconv
+     user) is ever taken, and which custom-type packages the casts pull in —
+     so the import block matches exactly what the bodies reference. */}}
 {{- $hasInput := false }}
 {{- $needConv := false }}
+{{- $extraImports := "" }}
 {{- range $n := $.Nodes }}
-	{{- if $n.Annotations.AdminInput }}
+	{{- $ann := $n.Annotations.AdminInput }}
+	{{- if $ann }}
 		{{- $hasInput = true }}
+		{{- $explicit := false }}
+		{{- if $ann.Explicit }}{{ $explicit = true }}{{ end }}
 		{{- range $f := $n.Fields }}
 			{{- $fa := $f.Annotations.AdminInputField }}
-			{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") }}
+			{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") (and $explicit (not $fa)) }}
 			{{- $required := not $f.Nillable }}
 			{{- $setOnly := false }}
 			{{- if $fa }}
@@ -28,7 +43,16 @@ by schema.AdminInputField — see ent/schema/annotations.go for the rules.
 				{{- if $fa.Required }}{{ $required = true }}{{ end }}
 				{{- if $fa.SetOnly }}{{ $setOnly = true }}{{ end }}
 			{{- end }}
-			{{- if and (not $skip) (not $required) (not $setOnly) }}{{ $needConv = true }}{{ end }}
+			{{- if not $skip }}
+				{{- if and (not $required) (not $setOnly) }}{{ $needConv = true }}{{ end }}
+				{{- $t := $f.Type.String }}
+				{{- if and $f.Type.PkgPath (ne $t "string") (ne $t "int") (ne $t "time.Time") }}
+					{{- $line := printf "\t%q\n" $f.Type.PkgPath }}
+					{{- $dup := false }}
+					{{- range split $extraImports "\n" }}{{ if eq (printf "%s\n" .) $line }}{{ $dup = true }}{{ end }}{{ end }}
+					{{- if not $dup }}{{ $extraImports = printf "%s%s" $extraImports $line }}{{ end }}
+				{{- end }}
+			{{- end }}
 		{{- end }}
 	{{- end }}
 {{- end }}
@@ -39,6 +63,10 @@ import (
 {{- if $needConv }}
 	"hexletbasics/internal/inputconv"
 {{- end }}
+{{- with $extraImports }}
+
+{{ . }}
+{{- end }}
 )
 {{ end }}
 
@@ -47,14 +75,16 @@ import (
 {{- if $ann }}
 {{- $input := printf "%sInput" $n.Name }}
 {{- with $ann.Type }}{{ $input = . }}{{ end }}
+{{- $explicit := false }}
+{{- if $ann.Explicit }}{{ $explicit = true }}{{ end }}
 
 // SetInput applies the contract {{ $input }} to the create builder: required
 // contract fields are set directly, nullable ones go through SetNillable so a
-// null leaves the column unset.
+// null leaves the column unset, set-only ones apply only when non-null.
 func (c *{{ $n.Name }}Create) SetInput(i *api.{{ $input }}) *{{ $n.Name }}Create {
 {{- range $f := $n.Fields }}
 {{- $fa := $f.Annotations.AdminInputField }}
-{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") }}
+{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") (and $explicit (not $fa)) }}
 {{- $required := not $f.Nillable }}
 {{- $setOnly := false }}
 {{- $apiField := $f.StructField }}
@@ -66,12 +96,19 @@ func (c *{{ $n.Name }}Create) SetInput(i *api.{{ $input }}) *{{ $n.Name }}Create
 {{- end }}
 {{- if not $skip }}
 {{- $t := $f.Type.String }}
-{{- if $required }}
-	c.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}){{ else if eq $t "int" }}int(i.{{ $apiField }}){{ else }}i.{{ $apiField }}{{ end }})
-{{- else if $setOnly }}
+{{- $cast := "" }}
+{{- if eq $t "string" }}{{ $cast = "string" }}
+{{- else if eq $t "int" }}{{ $cast = "int" }}
+{{- else if and $f.Type.PkgPath (ne $t "time.Time") }}{{ $cast = $t }}{{ end }}
+{{- $plain := printf "i.%s" $apiField }}
+{{- $value := printf "i.%s.Value" $apiField }}
+{{- if $cast }}{{ $plain = printf "%s(%s)" $cast $plain }}{{ $value = printf "%s(%s)" $cast $value }}{{ end }}
+{{- if $setOnly }}
 	if !i.{{ $apiField }}.Null {
-		c.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}.Value){{ else if eq $t "int" }}int(i.{{ $apiField }}.Value){{ else }}i.{{ $apiField }}.Value{{ end }})
+		c.Set{{ $f.StructField }}({{ $value }})
 	}
+{{- else if $required }}
+	c.Set{{ $f.StructField }}({{ $plain }})
 {{- else }}
 	c.SetNillable{{ $f.StructField }}({{ if eq $t "string" }}inputconv.StringPtr{{ else if eq $t "int" }}inputconv.IntPtr{{ else }}inputconv.Ptr{{ end }}(i.{{ $apiField }}))
 {{- end }}
@@ -82,11 +119,12 @@ func (c *{{ $n.Name }}Create) SetInput(i *api.{{ $input }}) *{{ $n.Name }}Create
 
 // SetInput applies the contract {{ $input }} to the update builder: required
 // contract fields are set directly, a null nullable field clears the column
-// (the legacy assign_attributes semantics), a value sets it.
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
 func (u *{{ $n.Name }}UpdateOne) SetInput(i *api.{{ $input }}) *{{ $n.Name }}UpdateOne {
 {{- range $f := $n.Fields }}
 {{- $fa := $f.Annotations.AdminInputField }}
-{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") }}
+{{- $skip := or (eq $f.Name "created_at") (eq $f.Name "updated_at") (and $explicit (not $fa)) }}
 {{- $required := not $f.Nillable }}
 {{- $setOnly := false }}
 {{- $apiField := $f.StructField }}
@@ -98,17 +136,24 @@ func (u *{{ $n.Name }}UpdateOne) SetInput(i *api.{{ $input }}) *{{ $n.Name }}Upd
 {{- end }}
 {{- if not $skip }}
 {{- $t := $f.Type.String }}
-{{- if $required }}
-	u.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}){{ else if eq $t "int" }}int(i.{{ $apiField }}){{ else }}i.{{ $apiField }}{{ end }})
-{{- else if $setOnly }}
+{{- $cast := "" }}
+{{- if eq $t "string" }}{{ $cast = "string" }}
+{{- else if eq $t "int" }}{{ $cast = "int" }}
+{{- else if and $f.Type.PkgPath (ne $t "time.Time") }}{{ $cast = $t }}{{ end }}
+{{- $plain := printf "i.%s" $apiField }}
+{{- $value := printf "i.%s.Value" $apiField }}
+{{- if $cast }}{{ $plain = printf "%s(%s)" $cast $plain }}{{ $value = printf "%s(%s)" $cast $value }}{{ end }}
+{{- if $setOnly }}
 	if !i.{{ $apiField }}.Null {
-		u.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}.Value){{ else if eq $t "int" }}int(i.{{ $apiField }}.Value){{ else }}i.{{ $apiField }}.Value{{ end }})
+		u.Set{{ $f.StructField }}({{ $value }})
 	}
+{{- else if $required }}
+	u.Set{{ $f.StructField }}({{ $plain }})
 {{- else }}
 	if i.{{ $apiField }}.Null {
 		u.Clear{{ $f.StructField }}()
 	} else {
-		u.Set{{ $f.StructField }}({{ if eq $t "string" }}string(i.{{ $apiField }}.Value){{ else if eq $t "int" }}int(i.{{ $apiField }}.Value){{ else }}i.{{ $apiField }}.Value{{ end }})
+		u.Set{{ $f.StructField }}({{ $value }})
 	}
 {{- end }}
 {{- end }}

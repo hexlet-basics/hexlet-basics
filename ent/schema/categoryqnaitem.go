@@ -19,14 +19,21 @@ type CategoryQnaItem struct {
 func (CategoryQnaItem) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "language_category_qna_items"},
+		// Shares QnaItemInput with LandingPageQnaItem. The parent FK comes
+		// from the URL (nested resource), so it is skipped; question/answer
+		// are nullable legacy columns but required in the contract.
+		AdminInput{Type: "QnaItemInput"},
 	}
 }
 
 func (CategoryQnaItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_category_id"),
-		field.String("question").Optional().Nillable(),
-		field.String("answer").Optional().Nillable(),
+		field.Int("language_category_id").
+			Annotations(AdminInputField{Skip: true}),
+		field.String("question").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
+		field.String("answer").Optional().Nillable().
+			Annotations(AdminInputField{Required: true}),
 	}
 }
 

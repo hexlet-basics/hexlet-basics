@@ -5,11 +5,13 @@ package ent
 import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/inputconv"
+
+	"github.com/lib/pq"
 )
 
 // SetInput applies the contract BannerInput to the create builder: required
 // contract fields are set directly, nullable ones go through SetNillable so a
-// null leaves the column unset.
+// null leaves the column unset, set-only ones apply only when non-null.
 func (c *BannerCreate) SetInput(i *api.BannerInput) *BannerCreate {
 	c.SetBackground(string(i.Background))
 	c.SetBody(string(i.Body))
@@ -23,7 +25,8 @@ func (c *BannerCreate) SetInput(i *api.BannerInput) *BannerCreate {
 
 // SetInput applies the contract BannerInput to the update builder: required
 // contract fields are set directly, a null nullable field clears the column
-// (the legacy assign_attributes semantics), a value sets it.
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
 func (u *BannerUpdateOne) SetInput(i *api.BannerInput) *BannerUpdateOne {
 	u.SetBackground(string(i.Background))
 	u.SetBody(string(i.Body))
@@ -47,9 +50,67 @@ func (u *BannerUpdateOne) SetInput(i *api.BannerInput) *BannerUpdateOne {
 	return u
 }
 
+// SetInput applies the contract QnaItemInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *CategoryQnaItemCreate) SetInput(i *api.QnaItemInput) *CategoryQnaItemCreate {
+	c.SetQuestion(string(i.Question))
+	c.SetAnswer(string(i.Answer))
+	return c
+}
+
+// SetInput applies the contract QnaItemInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *CategoryQnaItemUpdateOne) SetInput(i *api.QnaItemInput) *CategoryQnaItemUpdateOne {
+	u.SetQuestion(string(i.Question))
+	u.SetAnswer(string(i.Answer))
+	return u
+}
+
+// SetInput applies the contract CourseInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *CourseCreate) SetInput(i *api.CourseInput) *CourseCreate {
+	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
+	c.SetNillableLearnAs(inputconv.StringPtr(i.LearnAs))
+	c.SetNillableProgress(inputconv.StringPtr(i.Progress))
+	c.SetNillableHexletProgramLandingPage(inputconv.StringPtr(i.HexletProgramLandingPage))
+	return c
+}
+
+// SetInput applies the contract CourseInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *CourseUpdateOne) SetInput(i *api.CourseInput) *CourseUpdateOne {
+	if i.Slug.Null {
+		u.ClearSlug()
+	} else {
+		u.SetSlug(string(i.Slug.Value))
+	}
+	if i.LearnAs.Null {
+		u.ClearLearnAs()
+	} else {
+		u.SetLearnAs(string(i.LearnAs.Value))
+	}
+	if i.Progress.Null {
+		u.ClearProgress()
+	} else {
+		u.SetProgress(string(i.Progress.Value))
+	}
+	if i.HexletProgramLandingPage.Null {
+		u.ClearHexletProgramLandingPage()
+	} else {
+		u.SetHexletProgramLandingPage(string(i.HexletProgramLandingPage.Value))
+	}
+	return u
+}
+
 // SetInput applies the contract CourseCategoryInput to the create builder: required
 // contract fields are set directly, nullable ones go through SetNillable so a
-// null leaves the column unset.
+// null leaves the column unset, set-only ones apply only when non-null.
 func (c *CourseCategoryCreate) SetInput(i *api.CourseCategoryInput) *CourseCategoryCreate {
 	c.SetSlug(string(i.Slug))
 	c.SetName(string(i.Name))
@@ -60,7 +121,8 @@ func (c *CourseCategoryCreate) SetInput(i *api.CourseCategoryInput) *CourseCateg
 
 // SetInput applies the contract CourseCategoryInput to the update builder: required
 // contract fields are set directly, a null nullable field clears the column
-// (the legacy assign_attributes semantics), a value sets it.
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
 func (u *CourseCategoryUpdateOne) SetInput(i *api.CourseCategoryInput) *CourseCategoryUpdateOne {
 	u.SetSlug(string(i.Slug))
 	u.SetName(string(i.Name))
@@ -69,6 +131,305 @@ func (u *CourseCategoryUpdateOne) SetInput(i *api.CourseCategoryInput) *CourseCa
 		u.ClearDescription()
 	} else {
 		u.SetDescription(string(i.Description.Value))
+	}
+	return u
+}
+
+// SetInput applies the contract CourseLandingPageInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *LandingPageCreate) SetInput(i *api.CourseLandingPageInput) *LandingPageCreate {
+	c.SetLanguageID(int(i.CourseId))
+	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
+	c.SetNillableHeader(inputconv.StringPtr(i.Header))
+	c.SetNillableName(inputconv.StringPtr(i.Name))
+	c.SetNillableListed(inputconv.Ptr(i.Listed))
+	c.SetNillableMain(inputconv.Ptr(i.Main))
+	c.SetNillableState(inputconv.StringPtr(i.State))
+	c.SetNillableOrder(inputconv.StringPtr(i.Order))
+	c.SetNillableMetaTitle(inputconv.StringPtr(i.MetaTitle))
+	c.SetNillableMetaDescription(inputconv.StringPtr(i.MetaDescription))
+	c.SetNillableDescription(inputconv.StringPtr(i.Description))
+	c.SetNillableUsedInHeader(inputconv.StringPtr(i.UsedInHeader))
+	c.SetNillableUsedInDescription(inputconv.StringPtr(i.UsedInDescription))
+	c.SetNillableOutcomesHeader(inputconv.StringPtr(i.OutcomesHeader))
+	c.SetNillableOutcomesDescription(inputconv.StringPtr(i.OutcomesDescription))
+	c.SetNillableFooter(inputconv.Ptr(i.Footer))
+	c.SetNillableFooterName(inputconv.StringPtr(i.FooterName))
+	c.SetNillableLandingPageToRedirectID(inputconv.IntPtr(i.LandingPageToRedirectId))
+	return c
+}
+
+// SetInput applies the contract CourseLandingPageInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *LandingPageUpdateOne) SetInput(i *api.CourseLandingPageInput) *LandingPageUpdateOne {
+	u.SetLanguageID(int(i.CourseId))
+	if i.Slug.Null {
+		u.ClearSlug()
+	} else {
+		u.SetSlug(string(i.Slug.Value))
+	}
+	if i.Header.Null {
+		u.ClearHeader()
+	} else {
+		u.SetHeader(string(i.Header.Value))
+	}
+	if i.Name.Null {
+		u.ClearName()
+	} else {
+		u.SetName(string(i.Name.Value))
+	}
+	if i.Listed.Null {
+		u.ClearListed()
+	} else {
+		u.SetListed(i.Listed.Value)
+	}
+	if i.Main.Null {
+		u.ClearMain()
+	} else {
+		u.SetMain(i.Main.Value)
+	}
+	if i.State.Null {
+		u.ClearState()
+	} else {
+		u.SetState(string(i.State.Value))
+	}
+	if i.Order.Null {
+		u.ClearOrder()
+	} else {
+		u.SetOrder(string(i.Order.Value))
+	}
+	if i.MetaTitle.Null {
+		u.ClearMetaTitle()
+	} else {
+		u.SetMetaTitle(string(i.MetaTitle.Value))
+	}
+	if i.MetaDescription.Null {
+		u.ClearMetaDescription()
+	} else {
+		u.SetMetaDescription(string(i.MetaDescription.Value))
+	}
+	if i.Description.Null {
+		u.ClearDescription()
+	} else {
+		u.SetDescription(string(i.Description.Value))
+	}
+	if i.UsedInHeader.Null {
+		u.ClearUsedInHeader()
+	} else {
+		u.SetUsedInHeader(string(i.UsedInHeader.Value))
+	}
+	if i.UsedInDescription.Null {
+		u.ClearUsedInDescription()
+	} else {
+		u.SetUsedInDescription(string(i.UsedInDescription.Value))
+	}
+	if i.OutcomesHeader.Null {
+		u.ClearOutcomesHeader()
+	} else {
+		u.SetOutcomesHeader(string(i.OutcomesHeader.Value))
+	}
+	if i.OutcomesDescription.Null {
+		u.ClearOutcomesDescription()
+	} else {
+		u.SetOutcomesDescription(string(i.OutcomesDescription.Value))
+	}
+	if i.Footer.Null {
+		u.ClearFooter()
+	} else {
+		u.SetFooter(i.Footer.Value)
+	}
+	if i.FooterName.Null {
+		u.ClearFooterName()
+	} else {
+		u.SetFooterName(string(i.FooterName.Value))
+	}
+	if i.LandingPageToRedirectId.Null {
+		u.ClearLandingPageToRedirectID()
+	} else {
+		u.SetLandingPageToRedirectID(int(i.LandingPageToRedirectId.Value))
+	}
+	return u
+}
+
+// SetInput applies the contract QnaItemInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *LandingPageQnaItemCreate) SetInput(i *api.QnaItemInput) *LandingPageQnaItemCreate {
+	c.SetQuestion(string(i.Question))
+	c.SetAnswer(string(i.Answer))
+	return c
+}
+
+// SetInput applies the contract QnaItemInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *LandingPageQnaItemUpdateOne) SetInput(i *api.QnaItemInput) *LandingPageQnaItemUpdateOne {
+	u.SetQuestion(string(i.Question))
+	u.SetAnswer(string(i.Answer))
+	return u
+}
+
+// SetInput applies the contract ReviewInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *ReviewCreate) SetInput(i *api.ReviewInput) *ReviewCreate {
+	if !i.CourseId.Null {
+		c.SetLanguageID(int(i.CourseId.Value))
+	}
+	if !i.UserId.Null {
+		c.SetUserID(int(i.UserId.Value))
+	}
+	c.SetNillableBody(inputconv.StringPtr(i.Body))
+	c.SetNillableFirstName(inputconv.StringPtr(i.FirstName))
+	c.SetNillableLastName(inputconv.StringPtr(i.LastName))
+	c.SetNillableState(inputconv.StringPtr(i.State))
+	c.SetNillablePinned(inputconv.Ptr(i.Pinned))
+	return c
+}
+
+// SetInput applies the contract ReviewInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *ReviewUpdateOne) SetInput(i *api.ReviewInput) *ReviewUpdateOne {
+	if !i.CourseId.Null {
+		u.SetLanguageID(int(i.CourseId.Value))
+	}
+	if !i.UserId.Null {
+		u.SetUserID(int(i.UserId.Value))
+	}
+	if i.Body.Null {
+		u.ClearBody()
+	} else {
+		u.SetBody(string(i.Body.Value))
+	}
+	if i.FirstName.Null {
+		u.ClearFirstName()
+	} else {
+		u.SetFirstName(string(i.FirstName.Value))
+	}
+	if i.LastName.Null {
+		u.ClearLastName()
+	} else {
+		u.SetLastName(string(i.LastName.Value))
+	}
+	if i.State.Null {
+		u.ClearState()
+	} else {
+		u.SetState(string(i.State.Value))
+	}
+	if i.Pinned.Null {
+		u.ClearPinned()
+	} else {
+		u.SetPinned(i.Pinned.Value)
+	}
+	return u
+}
+
+// SetInput applies the contract StaffMemberInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *StaffMemberCreate) SetInput(i *api.StaffMemberInput) *StaffMemberCreate {
+	c.SetUserID(int(i.UserId))
+	c.SetRoleID(int(i.RoleId))
+	c.SetAllowedLocales(pq.StringArray(i.AllowedLocales))
+	return c
+}
+
+// SetInput applies the contract StaffMemberInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *StaffMemberUpdateOne) SetInput(i *api.StaffMemberInput) *StaffMemberUpdateOne {
+	u.SetUserID(int(i.UserId))
+	u.SetRoleID(int(i.RoleId))
+	u.SetAllowedLocales(pq.StringArray(i.AllowedLocales))
+	return u
+}
+
+// SetInput applies the contract RoleInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *StaffRoleCreate) SetInput(i *api.RoleInput) *StaffRoleCreate {
+	c.SetName(string(i.Name))
+	c.SetNillableDescription(inputconv.StringPtr(i.Description))
+	return c
+}
+
+// SetInput applies the contract RoleInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *StaffRoleUpdateOne) SetInput(i *api.RoleInput) *StaffRoleUpdateOne {
+	u.SetName(string(i.Name))
+	if i.Description.Null {
+		u.ClearDescription()
+	} else {
+		u.SetDescription(string(i.Description.Value))
+	}
+	return u
+}
+
+// SetInput applies the contract RolePermissionInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *StaffRolePermissionCreate) SetInput(i *api.RolePermissionInput) *StaffRolePermissionCreate {
+	c.SetResource(string(i.Resource))
+	c.SetCanIndex(i.CanIndex)
+	c.SetCanCreate(i.CanCreate)
+	c.SetCanUpdate(i.CanUpdate)
+	c.SetCanDestroy(i.CanDestroy)
+	return c
+}
+
+// SetInput applies the contract RolePermissionInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *StaffRolePermissionUpdateOne) SetInput(i *api.RolePermissionInput) *StaffRolePermissionUpdateOne {
+	u.SetResource(string(i.Resource))
+	u.SetCanIndex(i.CanIndex)
+	u.SetCanCreate(i.CanCreate)
+	u.SetCanUpdate(i.CanUpdate)
+	u.SetCanDestroy(i.CanDestroy)
+	return u
+}
+
+// SetInput applies the contract UserInput to the create builder: required
+// contract fields are set directly, nullable ones go through SetNillable so a
+// null leaves the column unset, set-only ones apply only when non-null.
+func (c *UserCreate) SetInput(i *api.UserInput) *UserCreate {
+	c.SetEmail(string(i.Email))
+	c.SetNillableFirstName(inputconv.StringPtr(i.FirstName))
+	c.SetNillableLastName(inputconv.StringPtr(i.LastName))
+	c.SetNillableAdmin(inputconv.Ptr(i.Admin))
+	return c
+}
+
+// SetInput applies the contract UserInput to the update builder: required
+// contract fields are set directly, a null nullable field clears the column
+// (the legacy assign_attributes semantics), a null set-only field leaves the
+// column untouched.
+func (u *UserUpdateOne) SetInput(i *api.UserInput) *UserUpdateOne {
+	u.SetEmail(string(i.Email))
+	if i.FirstName.Null {
+		u.ClearFirstName()
+	} else {
+		u.SetFirstName(string(i.FirstName.Value))
+	}
+	if i.LastName.Null {
+		u.ClearLastName()
+	} else {
+		u.SetLastName(string(i.LastName.Value))
+	}
+	if i.Admin.Null {
+		u.ClearAdmin()
+	} else {
+		u.SetAdmin(i.Admin.Value)
 	}
 	return u
 }

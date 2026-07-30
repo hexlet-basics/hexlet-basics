@@ -20,6 +20,9 @@ type StaffRole struct {
 func (StaffRole) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "staff_member_roles"},
+		// The contract input is RoleInput, not StaffRoleInput; the default
+		// mapping (name required, description nullable) fits as-is.
+		AdminInput{Type: "RoleInput"},
 	}
 }
 

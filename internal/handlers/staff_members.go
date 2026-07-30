@@ -3,8 +3,6 @@ package handlers
 import (
 	"context"
 
-	"github.com/lib/pq"
-
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/internal/api"
@@ -46,11 +44,7 @@ func (s *Server) getAdminStaffMember(ctx context.Context, id int32) (*api.StaffM
 // AdminCreateStaffMember grants a user a role. user_id is unique (one staff
 // record per user), so a duplicate surfaces as 409 via the central handler.
 func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (api.AdminCreateStaffMemberRes, error) {
-	row, err := s.db.StaffMember.Create().
-		SetUserID(int(req.UserId)).
-		SetRoleID(int(req.RoleId)).
-		SetAllowedLocales(pq.StringArray(req.AllowedLocales)).
-		Save(ctx)
+	row, err := s.db.StaffMember.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -58,11 +52,7 @@ func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMembe
 }
 
 func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (api.AdminUpdateStaffMemberRes, error) {
-	row, err := s.db.StaffMember.UpdateOneID(int(params.ID)).
-		SetUserID(int(req.UserId)).
-		SetRoleID(int(req.RoleId)).
-		SetAllowedLocales(pq.StringArray(req.AllowedLocales)).
-		Save(ctx)
+	row, err := s.db.StaffMember.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

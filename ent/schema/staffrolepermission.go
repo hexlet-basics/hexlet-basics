@@ -19,12 +19,16 @@ type StaffRolePermission struct {
 func (StaffRolePermission) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "staff_member_role_permissions"},
+		// One matrix row of RolePermissionsInput; role_id is skipped because
+		// the parent role comes from the URL, not the input.
+		AdminInput{Type: "RolePermissionInput"},
 	}
 }
 
 func (StaffRolePermission) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("role_id"),
+		field.Int("role_id").
+			Annotations(AdminInputField{Skip: true}),
 		field.String("resource"),
 		field.Bool("can_index").Default(false),
 		field.Bool("can_create").Default(false),

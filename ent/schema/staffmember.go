@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/lib/pq"
@@ -21,10 +22,20 @@ type StaffMember struct {
 	ent.Schema
 }
 
+// Annotations opts the schema into the generated SetInput builders. Rename
+// bridges ent's ID-initialism struct fields (UserID/RoleID) to the contract's
+// UserId/RoleId; allowed_locales maps by default, with the generated cast
+// through pq.StringArray.
+func (StaffMember) Annotations() []schema.Annotation {
+	return []schema.Annotation{AdminInput{}}
+}
+
 func (StaffMember) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("user_id"),
-		field.Int("role_id"),
+		field.Int("user_id").
+			Annotations(AdminInputField{Rename: "UserId"}),
+		field.Int("role_id").
+			Annotations(AdminInputField{Rename: "RoleId"}),
 		field.Other("allowed_locales", pq.StringArray{}).
 			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
 	}

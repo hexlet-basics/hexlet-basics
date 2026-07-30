@@ -6,7 +6,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/inputconv"
 )
 
 // searchUsersLimit mirrors the legacy typeahead cap (`.limit(20)`).
@@ -60,12 +59,7 @@ func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams
 // Email uniqueness is enforced by the baseline unique index, not a pre-check: a
 // violation returns ent's constraint error, mapped to 409 centrally (race-free).
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
-	row, err := s.db.User.Create().
-		SetEmail(req.Email).
-		SetNillableFirstName(inputconv.Ptr(req.FirstName)).
-		SetNillableLastName(inputconv.Ptr(req.LastName)).
-		SetNillableAdmin(inputconv.Ptr(req.Admin)).
-		Save(ctx)
+	row, err := s.db.User.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -75,17 +69,10 @@ func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.A
 }
 
 // AdminUpdateUser updates a user. A missing id returns ent's not-found error
-// (mapped to 404 centrally). A null nullable field clears the column, matching
-// the legacy assign_attributes semantics.
+// (mapped to 404 centrally). The generated SetInput clears a column on null,
+// matching the legacy assign_attributes semantics.
 func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (api.AdminUpdateUserRes, error) {
-	upd := s.db.User.UpdateOneID(int(params.ID)).
-		SetEmail(req.Email)
-
-	applyNil(req.FirstName.Null, req.FirstName.Value, upd.SetFirstName, upd.ClearFirstName)
-	applyNil(req.LastName.Null, req.LastName.Value, upd.SetLastName, upd.ClearLastName)
-	applyNil(req.Admin.Null, req.Admin.Value, upd.SetAdmin, upd.ClearAdmin)
-
-	row, err := upd.Save(ctx)
+	row, err := s.db.User.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

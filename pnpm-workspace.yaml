@@ -5,6 +5,10 @@ minimumReleaseAgeExclude:
   - framer-motion@12.43.0
   - motion-dom@12.43.0
   - motion@12.43.0
+  - '@tanstack/react-start-rsc@0.1.32'
+  - '@tanstack/react-start@1.168.33'
+  - '@vitejs/plugin-react@6.0.5'
+  - axios@1.19.0
 onlyBuiltDependencies:
   - lefthook
   - msw
