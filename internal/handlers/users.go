@@ -81,21 +81,9 @@ func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params
 	upd := s.db.User.UpdateOneID(int(params.ID)).
 		SetEmail(req.Email)
 
-	if req.FirstName.Null {
-		upd.ClearFirstName()
-	} else {
-		upd.SetFirstName(req.FirstName.Value)
-	}
-	if req.LastName.Null {
-		upd.ClearLastName()
-	} else {
-		upd.SetLastName(req.LastName.Value)
-	}
-	if req.Admin.Null {
-		upd.ClearAdmin()
-	} else {
-		upd.SetAdmin(req.Admin.Value)
-	}
+	applyNil(req.FirstName.Null, req.FirstName.Value, upd.SetFirstName, upd.ClearFirstName)
+	applyNil(req.LastName.Null, req.LastName.Value, upd.SetLastName, upd.ClearLastName)
+	applyNil(req.Admin.Null, req.Admin.Value, upd.SetAdmin, upd.ClearAdmin)
 
 	row, err := upd.Save(ctx)
 	if err != nil {

@@ -75,31 +75,11 @@ func (s *Server) AdminCreateReview(ctx context.Context, req *api.ReviewInput) (a
 func (s *Server) AdminUpdateReview(ctx context.Context, req *api.ReviewInput, params api.AdminUpdateReviewParams) (api.AdminUpdateReviewRes, error) {
 	upd := s.db.Review.UpdateOneID(int(params.ID))
 
-	if req.Body.Null {
-		upd.ClearBody()
-	} else {
-		upd.SetBody(req.Body.Value)
-	}
-	if req.FirstName.Null {
-		upd.ClearFirstName()
-	} else {
-		upd.SetFirstName(req.FirstName.Value)
-	}
-	if req.LastName.Null {
-		upd.ClearLastName()
-	} else {
-		upd.SetLastName(req.LastName.Value)
-	}
-	if req.Pinned.Null {
-		upd.ClearPinned()
-	} else {
-		upd.SetPinned(req.Pinned.Value)
-	}
-	if req.State.Null {
-		upd.ClearState()
-	} else {
-		upd.SetState(string(req.State.Value))
-	}
+	applyNil(req.Body.Null, req.Body.Value, upd.SetBody, upd.ClearBody)
+	applyNil(req.FirstName.Null, req.FirstName.Value, upd.SetFirstName, upd.ClearFirstName)
+	applyNil(req.LastName.Null, req.LastName.Value, upd.SetLastName, upd.ClearLastName)
+	applyNil(req.Pinned.Null, req.Pinned.Value, upd.SetPinned, upd.ClearPinned)
+	applyNil(req.State.Null, string(req.State.Value), upd.SetState, upd.ClearState)
 	if !req.CourseId.Null {
 		upd.SetLanguageID(int(req.CourseId.Value))
 	}

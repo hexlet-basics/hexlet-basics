@@ -58,13 +58,7 @@ func (s *Server) AdminUpdateCourseCategory(ctx context.Context, req *api.CourseC
 		SetName(req.Name).
 		SetHeader(req.Header).
 		SetSlug(req.Slug)
-	// A null description clears the column (matches the legacy assign_attributes
-	// semantics); a value sets it. SetNillable would instead skip a null.
-	if req.Description.Null {
-		upd.ClearDescription()
-	} else {
-		upd.SetDescription(req.Description.Value)
-	}
+	applyNil(req.Description.Null, req.Description.Value, upd.SetDescription, upd.ClearDescription)
 	row, err := upd.Save(ctx)
 	if err != nil {
 		return nil, err

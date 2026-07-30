@@ -59,21 +59,9 @@ func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, pa
 		SetLocale(string(req.Locale)).
 		SetBody(req.Body)
 
-	if req.URL.Null {
-		upd.ClearURL()
-	} else {
-		upd.SetURL(req.URL.Value)
-	}
-	if req.StartsAt.Null {
-		upd.ClearStartsAt()
-	} else {
-		upd.SetStartsAt(req.StartsAt.Value)
-	}
-	if req.FinishesAt.Null {
-		upd.ClearFinishesAt()
-	} else {
-		upd.SetFinishesAt(req.FinishesAt.Value)
-	}
+	applyNil(req.URL.Null, req.URL.Value, upd.SetURL, upd.ClearURL)
+	applyNil(req.StartsAt.Null, req.StartsAt.Value, upd.SetStartsAt, upd.ClearStartsAt)
+	applyNil(req.FinishesAt.Null, req.FinishesAt.Value, upd.SetFinishesAt, upd.ClearFinishesAt)
 
 	row, err := upd.Save(ctx)
 	if err != nil {
