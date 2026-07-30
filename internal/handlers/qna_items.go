@@ -17,17 +17,22 @@ import (
 
 // --- Course category QnA items ---------------------------------------------
 
-func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.AdminListCategoryQnaItemsParams) ([]api.QnaItem, error) {
-	return listAll(ctx,
+func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.AdminListCategoryQnaItemsParams) (api.AdminListCategoryQnaItemsRes, error) {
+	items, err := listAll(ctx,
 		s.db.CategoryQnaItem.Query().
 			Where(categoryqnaitem.LanguageCategoryID(int(params.CategoryId))).
 			Order(ent.Asc(categoryqnaitem.FieldID)).
 			All,
 		s.conv.ToCategoryQnaItems,
 	)
+	if err != nil {
+		return nil, err
+	}
+	result := api.AdminListCategoryQnaItemsOKApplicationJSON(items)
+	return &result, nil
 }
 
-func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (*api.QnaItem, error) {
+func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (api.AdminCreateCategoryQnaItemRes, error) {
 	row, err := s.db.CategoryQnaItem.Create().
 		SetLanguageCategoryID(int(params.CategoryId)).
 		SetQuestion(req.Question).
@@ -40,7 +45,7 @@ func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	return &item, nil
 }
 
-func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateCategoryQnaItemParams) (*api.QnaItem, error) {
+func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateCategoryQnaItemParams) (api.AdminUpdateCategoryQnaItemRes, error) {
 	// Scoped lookup first: a missing id, or one under a different category,
 	// returns ent's not-found error (404) before any write.
 	row, err := s.db.CategoryQnaItem.Query().
@@ -61,7 +66,7 @@ func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	return &item, nil
 }
 
-func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.AdminDeleteCategoryQnaItemParams) error {
+func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.AdminDeleteCategoryQnaItemParams) (api.AdminDeleteCategoryQnaItemRes, error) {
 	row, err := s.db.CategoryQnaItem.Query().
 		Where(
 			categoryqnaitem.ID(int(params.ID)),
@@ -69,24 +74,32 @@ func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.Admi
 		).
 		Only(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return s.db.CategoryQnaItem.DeleteOne(row).Exec(ctx)
+	if err := s.db.CategoryQnaItem.DeleteOne(row).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteCategoryQnaItemNoContent{}, nil
 }
 
 // --- Course landing page QnA items -----------------------------------------
 
-func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.AdminListLandingPageQnaItemsParams) ([]api.QnaItem, error) {
-	return listAll(ctx,
+func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.AdminListLandingPageQnaItemsParams) (api.AdminListLandingPageQnaItemsRes, error) {
+	items, err := listAll(ctx,
 		s.db.LandingPageQnaItem.Query().
 			Where(landingpageqnaitem.LanguageLandingPageID(int(params.LandingPageId))).
 			Order(ent.Asc(landingpageqnaitem.FieldID)).
 			All,
 		s.conv.ToLandingPageQnaItems,
 	)
+	if err != nil {
+		return nil, err
+	}
+	result := api.AdminListLandingPageQnaItemsOKApplicationJSON(items)
+	return &result, nil
 }
 
-func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (*api.QnaItem, error) {
+func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (api.AdminCreateLandingPageQnaItemRes, error) {
 	row, err := s.db.LandingPageQnaItem.Create().
 		SetLanguageLandingPageID(int(params.LandingPageId)).
 		SetQuestion(req.Question).
@@ -99,7 +112,7 @@ func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	return &item, nil
 }
 
-func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams) (*api.QnaItem, error) {
+func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminUpdateLandingPageQnaItemParams) (api.AdminUpdateLandingPageQnaItemRes, error) {
 	row, err := s.db.LandingPageQnaItem.Query().
 		Where(
 			landingpageqnaitem.ID(int(params.ID)),
@@ -118,7 +131,7 @@ func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	return &item, nil
 }
 
-func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.AdminDeleteLandingPageQnaItemParams) error {
+func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.AdminDeleteLandingPageQnaItemParams) (api.AdminDeleteLandingPageQnaItemRes, error) {
 	row, err := s.db.LandingPageQnaItem.Query().
 		Where(
 			landingpageqnaitem.ID(int(params.ID)),
@@ -126,7 +139,10 @@ func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.A
 		).
 		Only(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return s.db.LandingPageQnaItem.DeleteOne(row).Exec(ctx)
+	if err := s.db.LandingPageQnaItem.DeleteOne(row).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteLandingPageQnaItemNoContent{}, nil
 }

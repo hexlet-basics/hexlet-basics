@@ -124,8 +124,9 @@ interface Session {
 
   /** Log out; clears the JWT cookie. */
   @delete
+  @useAuth([UserSession, XsrfToken])
   @operationId("deleteSession")
-  delete(): SessionDeleted | ApiError;
+  delete(): SessionDeleted | UnauthorizedError | ApiError;
 }
 
 @route("/me")
@@ -139,6 +140,7 @@ interface Me {
 
 @route("/my")
 @tag("User Area")
+@useAuth(UserSession)
 interface My {
   /** The signed-in user's course dashboard. */
   @get
@@ -231,6 +233,7 @@ interface PasskeySession {
 
 @route("/account/passkeys")
 @tag("User Area")
+@useAuth(UserSession)
 interface AccountPasskeys {
   /** List the current user's passkeys. */
   @get
@@ -245,23 +248,26 @@ interface AccountPasskeys {
 
   /** Register a new passkey for the current user. */
   @post
+  @useAuth([UserSession, XsrfToken])
   @operationId("createPasskey")
   create(@body body: PasskeyRegistrationInput): {
     @statusCode statusCode: 201;
     @body credential: UserCredential;
-  } | ValidationError | ApiError;
+  } | ValidationError | UnauthorizedError | ApiError;
 
   /** Remove a passkey. */
   @delete
+  @useAuth([UserSession, XsrfToken])
   @route("/{id}")
   @operationId("deletePasskey")
-  delete(@path id: int32): NoContent | NotFoundError | ApiError;
+  delete(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ApiError;
 }
 
 // ---- Account profile ------------------------------------------------------
 
 @route("/account/profile")
 @tag("User Area")
+@useAuth(UserSession)
 interface AccountProfile {
   /** The editable profile of the current user. */
   @get
@@ -271,11 +277,13 @@ interface AccountProfile {
 
   /** Update the current user's profile. */
   @patch
+  @useAuth([UserSession, XsrfToken])
   @operationId("updateProfile")
-  update(@body body: ProfileInput): User | ValidationError | ApiError;
+  update(@body body: ProfileInput): User | ValidationError | UnauthorizedError | ApiError;
 
   /** Delete the current user's account. */
   @delete
+  @useAuth([UserSession, XsrfToken])
   @operationId("deleteAccount")
   delete(): NoContent | UnauthorizedError | ApiError;
 }

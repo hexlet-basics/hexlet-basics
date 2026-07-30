@@ -20,7 +20,7 @@ func withLandingCourse(q *ent.LandingPageQuery) *ent.LandingPageQuery {
 // input's `outcomesImageAttachmentId` is ignored until the Attachments uploader
 // lands — same deferral as the course cover.
 
-func (s *Server) AdminListCourseLandingPages(ctx context.Context, params api.AdminListCourseLandingPagesParams) (*api.CourseLandingPagePage, error) {
+func (s *Server) AdminListCourseLandingPages(ctx context.Context, params api.AdminListCourseLandingPagesParams) (api.AdminListCourseLandingPagesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.LandingPageQuery {
 			return withLandingCourse(s.db.LandingPage.Query()).Order(ent.Desc(landingpage.FieldID))
@@ -32,8 +32,12 @@ func (s *Server) AdminListCourseLandingPages(ctx context.Context, params api.Adm
 	)
 }
 
-func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.AdminGetCourseLandingPageParams) (*api.CourseLandingPage, error) {
-	return getOne(ctx, int(params.ID),
+func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.AdminGetCourseLandingPageParams) (api.AdminGetCourseLandingPageRes, error) {
+	return s.getAdminCourseLandingPage(ctx, params.ID)
+}
+
+func (s *Server) getAdminCourseLandingPage(ctx context.Context, id int32) (*api.CourseLandingPage, error) {
+	return getOne(ctx, int(id),
 		func(ctx context.Context, id int) (*ent.LandingPage, error) {
 			return withLandingCourse(s.db.LandingPage.Query().Where(landingpage.ID(id))).Only(ctx)
 		},
@@ -41,7 +45,7 @@ func (s *Server) AdminGetCourseLandingPage(ctx context.Context, params api.Admin
 	)
 }
 
-func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput) (*api.CourseLandingPage, error) {
+func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput) (api.AdminCreateCourseLandingPageRes, error) {
 	row, err := s.db.LandingPage.Create().
 		SetLanguageID(int(req.CourseId)).
 		SetNillableSlug(inputconv.Ptr(req.Slug)).
@@ -65,10 +69,10 @@ func (s *Server) AdminCreateCourseLandingPage(ctx context.Context, req *api.Cour
 	if err != nil {
 		return nil, err
 	}
-	return s.AdminGetCourseLandingPage(ctx, api.AdminGetCourseLandingPageParams{ID: int32(row.ID)})
+	return s.getAdminCourseLandingPage(ctx, int32(row.ID))
 }
 
-func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput, params api.AdminUpdateCourseLandingPageParams) (*api.CourseLandingPage, error) {
+func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.CourseLandingPageInput, params api.AdminUpdateCourseLandingPageParams) (api.AdminUpdateCourseLandingPageRes, error) {
 	upd := s.db.LandingPage.UpdateOneID(int(params.ID)).SetLanguageID(int(req.CourseId))
 
 	applyNil(req.Slug.Null, req.Slug.Value, upd.SetSlug, upd.ClearSlug)
@@ -94,9 +98,12 @@ func (s *Server) AdminUpdateCourseLandingPage(ctx context.Context, req *api.Cour
 	if err != nil {
 		return nil, err
 	}
-	return s.AdminGetCourseLandingPage(ctx, api.AdminGetCourseLandingPageParams{ID: int32(row.ID)})
+	return s.getAdminCourseLandingPage(ctx, int32(row.ID))
 }
 
-func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.AdminDeleteCourseLandingPageParams) error {
-	return s.db.LandingPage.DeleteOneID(int(params.ID)).Exec(ctx)
+func (s *Server) AdminDeleteCourseLandingPage(ctx context.Context, params api.AdminDeleteCourseLandingPageParams) (api.AdminDeleteCourseLandingPageRes, error) {
+	if err := s.db.LandingPage.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteCourseLandingPageNoContent{}, nil
 }

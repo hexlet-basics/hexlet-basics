@@ -306,13 +306,6 @@ export const zEmailInput = z.object({
 });
 
 /**
- * The caller is authenticated but lacks permission for this resource.
- */
-export const zForbiddenError = z.object({
-  message: z.string()
-});
-
-/**
  * Publication state shared by landing pages.
  */
 export const zLandingPageState = z.enum([
@@ -821,13 +814,6 @@ export const zStaffRoleDetail = z.object({
   name: z.string(),
   description: z.string().nullable(),
   permissions: z.array(zStaffRolePermission)
-});
-
-/**
- * The request is not authenticated (no/invalid session cookie).
- */
-export const zUnauthorizedError = z.object({
-  message: z.string()
 });
 
 /**

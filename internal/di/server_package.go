@@ -166,6 +166,7 @@ var serverPackage = do.Package(
 		// typed DTOs.
 		return api.NewServer(
 			handler,
+			handler.AuthHandler(),
 			api.WithErrorHandler(errorHandler.Write),
 			api.WithTracerProvider(otelSDK.TracerProvider()),
 			api.WithNotFound(handlers.NewNotFoundHandler(translator)),

@@ -58,9 +58,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -73,6 +73,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
+      security:
+        - UserSession: []
     post:
       operationId: createPasskey
       description: Register a new passkey for the current user.
@@ -84,6 +86,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCredential'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -111,6 +119,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PasskeyRegistrationInput'
+      security:
+        - UserSession: []
+          XsrfToken: []
   /account/passkeys/new:
     get:
       operationId: newPasskey
@@ -126,9 +137,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -141,6 +152,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
+      security:
+        - UserSession: []
   /account/passkeys/{id}:
     delete:
       operationId: deletePasskey
@@ -155,6 +168,12 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: A resource was not found.
           content:
@@ -173,6 +192,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
+      security:
+        - UserSession: []
+          XsrfToken: []
   /account/profile:
     patch:
       operationId: updateProfile
@@ -185,6 +207,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -212,6 +240,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProfileInput'
+      security:
+        - UserSession: []
+          XsrfToken: []
     delete:
       operationId: deleteAccount
       description: Delete the current user's account.
@@ -222,9 +253,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -237,6 +268,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
+      security:
+        - UserSession: []
+          XsrfToken: []
   /account/profile/edit:
     get:
       operationId: getProfile
@@ -252,9 +286,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -267,6 +301,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
+      security:
+        - UserSession: []
   /admin/api/users:
     get:
       operationId: adminListUsers
@@ -282,6 +318,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrudPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -294,6 +342,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateUser
       description: |-
@@ -307,6 +357,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -325,6 +387,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/api/users/search:
     get:
       operationId: adminSearchUsers
@@ -345,6 +410,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserCrud'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -357,6 +434,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
+      security:
+        - AdminSession: []
   /admin/api/users/{id}:
     get:
       operationId: adminGetUser
@@ -377,6 +456,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -389,6 +480,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateUser
       description: |-
@@ -408,6 +501,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -426,6 +531,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteUser
       parameters:
@@ -438,6 +546,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -450,6 +570,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/attachments:
     post:
       operationId: adminUploadAttachment
@@ -462,6 +585,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Attachment'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -492,6 +627,9 @@ paths:
             encoding:
               file:
                 contentType: '*/*'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/banners:
     get:
       operationId: adminListBanners
@@ -508,6 +646,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BannerPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -520,6 +670,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateBanner
       description: |-
@@ -534,6 +686,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -552,6 +716,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BannerInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/banners/{id}:
     get:
       operationId: adminGetBanner
@@ -572,6 +739,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -584,6 +763,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateBanner
       description: Update a banner. A missing id surfaces as 404 via the central handler.
@@ -601,6 +782,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Banner'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -619,6 +812,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BannerInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteBanner
       description: Delete a banner.
@@ -632,6 +828,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -644,6 +852,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Banners'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/blog_posts:
     get:
       operationId: adminListBlogPosts
@@ -659,6 +870,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPostPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -671,6 +894,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateBlogPost
       parameters: []
@@ -681,6 +906,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -708,6 +945,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BlogPostInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/blog_posts/{id}:
     get:
       operationId: adminGetBlogPost
@@ -725,6 +965,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -737,6 +989,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateBlogPost
       parameters:
@@ -753,6 +1007,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -780,6 +1046,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BlogPostInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteBlogPost
       parameters:
@@ -792,6 +1061,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -804,6 +1085,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Blog Posts'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/blog_posts/{id}/related_courses:
     post:
       operationId: adminSetBlogPostRelatedCourses
@@ -822,6 +1106,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -849,6 +1145,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BlogPostRelatedCoursesInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_categories:
     get:
       operationId: adminListCourseCategories
@@ -865,6 +1164,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategoryPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -877,6 +1188,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateCourseCategory
       description: |-
@@ -890,6 +1203,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -908,6 +1233,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseCategoryInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_categories/{categoryId}/qna_items:
     get:
       operationId: adminListCategoryQnaItems
@@ -927,6 +1255,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/QnaItem'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -939,6 +1279,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateCategoryQnaItem
       parameters:
@@ -955,6 +1297,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -973,6 +1327,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/QnaItemInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_categories/{categoryId}/qna_items/{id}:
     put:
       operationId: adminUpdateCategoryQnaItem
@@ -999,6 +1356,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1017,6 +1386,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/QnaItemInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteCategoryQnaItem
       parameters:
@@ -1035,6 +1407,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1047,6 +1431,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_categories/{id}:
     get:
       operationId: adminGetCourseCategory
@@ -1067,6 +1454,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1079,6 +1478,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateCourseCategory
       description: |-
@@ -1098,6 +1499,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseCategory'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1116,6 +1529,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseCategoryInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteCourseCategory
       description: Delete a course category.
@@ -1129,6 +1545,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1141,6 +1569,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Categories'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_landing_pages:
     get:
       operationId: adminListCourseLandingPages
@@ -1156,6 +1587,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPagePage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1168,6 +1611,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateCourseLandingPage
       parameters: []
@@ -1178,6 +1623,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1196,6 +1653,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseLandingPageInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_landing_pages/{id}:
     get:
       operationId: adminGetCourseLandingPage
@@ -1216,6 +1676,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1228,6 +1700,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateCourseLandingPage
       description: |-
@@ -1247,6 +1721,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLandingPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1265,6 +1751,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseLandingPageInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteCourseLandingPage
       parameters:
@@ -1277,6 +1766,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1289,6 +1790,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_landing_pages/{landingPageId}/qna_items:
     get:
       operationId: adminListLandingPageQnaItems
@@ -1308,6 +1812,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/QnaItem'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1320,6 +1836,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateLandingPageQnaItem
       parameters:
@@ -1336,6 +1854,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1354,6 +1884,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/QnaItemInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_landing_pages/{landingPageId}/qna_items/{id}:
     put:
       operationId: adminUpdateLandingPageQnaItem
@@ -1380,6 +1913,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QnaItem'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1398,6 +1943,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/QnaItemInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteLandingPageQnaItem
       parameters:
@@ -1416,6 +1964,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1428,6 +1988,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Landing Pages'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/language_lesson_members:
     get:
       operationId: adminListCourseLessonMembers
@@ -1443,6 +2006,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonMemberPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1455,6 +2030,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lesson Members'
+      security:
+        - AdminSession: []
   /admin/language_lesson_reviews:
     get:
       operationId: adminListCourseLessonReviews
@@ -1470,6 +2047,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonReviewPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1482,6 +2071,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lesson Reviews'
+      security:
+        - AdminSession: []
   /admin/language_lessons:
     get:
       operationId: adminListCourseLessons
@@ -1497,6 +2088,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseLessonListItemPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1509,6 +2112,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lessons'
+      security:
+        - AdminSession: []
   /admin/language_lessons/{id}/review:
     post:
       operationId: adminReviewCourseLesson
@@ -1523,6 +2128,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: A resource was not found.
           content:
@@ -1541,6 +2158,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Course Lessons'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/languages:
     get:
       operationId: adminListCourses
@@ -1556,6 +2176,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CoursePage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1568,6 +2200,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateCourse
       parameters: []
@@ -1578,6 +2212,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1596,6 +2242,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/languages/{id}:
     get:
       operationId: adminGetCourse
@@ -1616,6 +2265,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1628,6 +2289,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateCourse
       parameters:
@@ -1644,6 +2307,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1662,6 +2337,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourseInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/languages/{id}/review:
     post:
       operationId: adminReviewCourse
@@ -1676,6 +2354,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: A resource was not found.
           content:
@@ -1694,6 +2384,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/languages/{id}/versions:
     post:
       operationId: adminCreateCourseVersion
@@ -1712,6 +2405,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CourseVersion'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: A resource was not found.
           content:
@@ -1730,6 +2435,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Courses'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/leads:
     get:
       operationId: adminListLeads
@@ -1745,6 +2453,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LeadPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1757,6 +2477,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Leads'
+      security:
+        - AdminSession: []
   /admin/management/role_permissions/{roleId}:
     get:
       operationId: adminGetRolePermissions
@@ -1775,6 +2497,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1787,6 +2521,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateRolePermissions
       description: Replace the permission matrix for a role.
@@ -1804,6 +2540,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1822,6 +2570,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RolePermissionsInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/management/roles:
     get:
       operationId: adminListRoles
@@ -1837,6 +2588,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRolePage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1849,6 +2612,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateRole
       description: |-
@@ -1862,6 +2627,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1880,6 +2657,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RoleInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/management/roles/{id}:
     get:
       operationId: adminGetRole
@@ -1900,6 +2680,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1912,6 +2704,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateRole
       parameters:
@@ -1928,6 +2722,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffRoleDetail'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1946,6 +2752,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RoleInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteRole
       parameters:
@@ -1958,6 +2767,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1970,6 +2791,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Roles'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/management/staff_members:
     get:
       operationId: adminListStaffMembers
@@ -1985,6 +2809,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMemberPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -1997,6 +2833,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateStaffMember
       parameters: []
@@ -2007,6 +2845,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2025,6 +2875,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/StaffMemberInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/management/staff_members/{id}:
     get:
       operationId: adminGetStaffMember
@@ -2042,6 +2895,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2054,6 +2919,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateStaffMember
       parameters:
@@ -2070,6 +2937,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StaffMember'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2088,6 +2967,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/StaffMemberInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteStaffMember
       parameters:
@@ -2100,6 +2982,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2112,6 +3006,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Staff Members'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/management/users:
     get:
       operationId: adminListManagementUsers
@@ -2127,6 +3024,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrudPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2139,6 +3048,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
+      security:
+        - AdminSession: []
   /admin/management/users/{id}:
     get:
       operationId: adminGetManagementUser
@@ -2159,6 +3070,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2171,6 +3094,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Users'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateManagementUser
       parameters:
@@ -2187,6 +3112,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCrud'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2205,6 +3142,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/messages:
     get:
       operationId: adminListMessages
@@ -2220,6 +3160,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonAssistantMessagePage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2232,6 +3184,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Messages'
+      security:
+        - AdminSession: []
   /admin/reviews:
     get:
       operationId: adminListReviews
@@ -2247,6 +3201,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReviewPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2259,6 +3225,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
+      security:
+        - AdminSession: []
     post:
       operationId: adminCreateReview
       parameters: []
@@ -2269,6 +3237,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2287,6 +3267,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReviewInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /admin/reviews/{id}:
     get:
       operationId: adminGetReview
@@ -2307,6 +3290,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2319,6 +3314,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
+      security:
+        - AdminSession: []
     put:
       operationId: adminUpdateReview
       description: |-
@@ -2338,6 +3335,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2356,6 +3365,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReviewInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
     delete:
       operationId: adminDeleteReview
       parameters:
@@ -2368,6 +3380,18 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2380,6 +3404,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Reviews'
+      security:
+        - AdminSession: []
+          XsrfToken: []
   /ai/lessons/{lessonId}/messages:
     get:
       operationId: listAssistantMessages
@@ -2403,9 +3430,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2418,6 +3445,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Lesson Player
+      security:
+        - UserSession: []
     post:
       operationId: createAssistantMessage
       description: |-
@@ -2436,9 +3465,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -2457,6 +3486,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AssistantMessageInput'
+      security:
+        - UserSession: []
+          XsrfToken: []
   /blog_posts:
     get:
       operationId: listBlogPosts
@@ -2503,6 +3535,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlogPost'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: A resource was not found.
           content:
@@ -2521,6 +3559,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
+      security:
+        - UserSession: []
+          XsrfToken: []
   /blog_posts/{id}/next:
     get:
       operationId: getNextBlogPost
@@ -2600,6 +3641,12 @@ paths:
       responses:
         '204':
           description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -2627,6 +3674,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BookRequestInput'
+      security:
+        - UserSession: []
+          XsrfToken: []
   /language_categories:
     get:
       operationId: listPublicCourseCategories
@@ -2801,6 +3851,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Lead'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -2828,6 +3884,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LeadInput'
+      security:
+        - UserSession: []
+          XsrfToken: []
   /lessons/{id}/check:
     post:
       operationId: checkLesson
@@ -3039,9 +4098,9 @@ paths:
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3054,6 +4113,8 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - User Area
+      security:
+        - UserSession: []
   /pages/{slug}:
     get:
       operationId: getPage
@@ -3422,6 +4483,12 @@ paths:
                 type: array
                 items:
                   type: string
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3434,6 +4501,9 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
+      security:
+        - UserSession: []
+          XsrfToken: []
   /users:
     post:
       operationId: createUser
@@ -4695,14 +5765,6 @@ components:
         email:
           type: string
           format: email
-    ForbiddenError:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-      description: The caller is authenticated but lacks permission for this resource.
     LandingPageState:
       type: string
       enum:
@@ -5558,14 +6620,6 @@ components:
         canDestroy:
           type: boolean
       description: "One resource's permission bits for a role (legacy: `StaffRolePermission`)."
-    UnauthorizedError:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-      description: The request is not authenticated (no/invalid session cookie).
     User:
       type: object
       required:
@@ -5721,3 +6775,16 @@ components:
         Field-level validation errors, keyed by field name (each value is the list
         of messages for that field). Returned when a write fails validation —
         including constraints the schema cannot express, like uniqueness.
+  securitySchemes:
+    UserSession:
+      type: apiKey
+      in: cookie
+      name: JWT
+    XsrfToken:
+      type: apiKey
+      in: header
+      name: X-XSRF-TOKEN
+    AdminSession:
+      type: apiKey
+      in: cookie
+      name: JWT

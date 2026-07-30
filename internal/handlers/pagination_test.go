@@ -40,6 +40,7 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 	require.NoError(t, err)
 	server, err := api.NewServer(
 		handler,
+		nil,
 		api.WithErrorHandler(NewAPIErrorHandler(
 			translator,
 			slog.New(slog.NewTextHandler(io.Discard, nil)),

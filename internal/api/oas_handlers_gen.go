@@ -110,6 +110,70 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 			ID:   "adminCreateBanner",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateBannerRequest(r)
@@ -128,7 +192,7 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response *Banner
+	var response AdminCreateBannerRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -144,7 +208,7 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *BannerInput
 			Params   = struct{}
-			Response = *Banner
+			Response = AdminCreateBannerRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -262,6 +326,70 @@ func (s *Server) handleAdminCreateBlogPostRequest(args [0]string, argsEscaped bo
 			ID:   "adminCreateBlogPost",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateBlogPostRequest(r)
@@ -414,6 +542,70 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 			ID:   "adminCreateCategoryQnaItem",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateCategoryQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateCategoryQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminCreateCategoryQnaItemParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -442,7 +634,7 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 		}
 	}()
 
-	var response *QnaItem
+	var response AdminCreateCategoryQnaItemRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -463,7 +655,7 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminCreateCategoryQnaItemParams
-			Response = *QnaItem
+			Response = AdminCreateCategoryQnaItemRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -581,6 +773,70 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 			ID:   "adminCreateCourse",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateCourseRequest(r)
@@ -599,7 +855,7 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response *Course
+	var response AdminCreateCourseRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -615,7 +871,7 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *CourseInput
 			Params   = struct{}
-			Response = *Course
+			Response = AdminCreateCourseRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -736,6 +992,70 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 			ID:   "adminCreateCourseCategory",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateCourseCategoryRequest(r)
@@ -754,7 +1074,7 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 		}
 	}()
 
-	var response *CourseCategory
+	var response AdminCreateCourseCategoryRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -770,7 +1090,7 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 		type (
 			Request  = *CourseCategoryInput
 			Params   = struct{}
-			Response = *CourseCategory
+			Response = AdminCreateCourseCategoryRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -888,6 +1208,70 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 			ID:   "adminCreateCourseLandingPage",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateCourseLandingPageRequest(r)
@@ -906,7 +1290,7 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 		}
 	}()
 
-	var response *CourseLandingPage
+	var response AdminCreateCourseLandingPageRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -922,7 +1306,7 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 		type (
 			Request  = *CourseLandingPageInput
 			Params   = struct{}
-			Response = *CourseLandingPage
+			Response = AdminCreateCourseLandingPageRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1042,6 +1426,70 @@ func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscap
 			ID:   "adminCreateCourseVersion",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateCourseVersionOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateCourseVersionOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminCreateCourseVersionParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -1194,6 +1642,70 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 			ID:   "adminCreateLandingPageQnaItem",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateLandingPageQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateLandingPageQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminCreateLandingPageQnaItemParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -1222,7 +1734,7 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 		}
 	}()
 
-	var response *QnaItem
+	var response AdminCreateLandingPageQnaItemRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1243,7 +1755,7 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminCreateLandingPageQnaItemParams
-			Response = *QnaItem
+			Response = AdminCreateLandingPageQnaItemRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1361,6 +1873,70 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 			ID:   "adminCreateReview",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateReviewRequest(r)
@@ -1379,7 +1955,7 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 		}
 	}()
 
-	var response *Review
+	var response AdminCreateReviewRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1395,7 +1971,7 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = *ReviewInput
 			Params   = struct{}
-			Response = *Review
+			Response = AdminCreateReviewRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1516,6 +2092,70 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 			ID:   "adminCreateRole",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateRoleRequest(r)
@@ -1534,7 +2174,7 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response *StaffRoleDetail
+	var response AdminCreateRoleRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1550,7 +2190,7 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *RoleInput
 			Params   = struct{}
-			Response = *StaffRoleDetail
+			Response = AdminCreateRoleRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1668,6 +2308,70 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 			ID:   "adminCreateStaffMember",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateStaffMemberRequest(r)
@@ -1686,7 +2390,7 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 		}
 	}()
 
-	var response *StaffMember
+	var response AdminCreateStaffMemberRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1702,7 +2406,7 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 		type (
 			Request  = *StaffMemberInput
 			Params   = struct{}
-			Response = *StaffMember
+			Response = AdminCreateStaffMemberRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1823,6 +2527,70 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 			ID:   "adminCreateUser",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminCreateUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminCreateUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeAdminCreateUserRequest(r)
@@ -1841,7 +2609,7 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 		}
 	}()
 
-	var response *UserCrud
+	var response AdminCreateUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -1857,7 +2625,7 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 		type (
 			Request  = *UserInput
 			Params   = struct{}
-			Response = *UserCrud
+			Response = AdminCreateUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -1977,6 +2745,70 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 			ID:   "adminDeleteBanner",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteBannerParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -1990,7 +2822,7 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response *AdminDeleteBannerNoContent
+	var response AdminDeleteBannerRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2011,7 +2843,7 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteBannerParams
-			Response = *AdminDeleteBannerNoContent
+			Response = AdminDeleteBannerRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2022,12 +2854,12 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 			mreq,
 			unpackAdminDeleteBannerParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteBanner(ctx, params)
+				response, err = s.h.AdminDeleteBanner(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteBanner(ctx, params)
+		response, err = s.h.AdminDeleteBanner(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -2129,6 +2961,70 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 			ID:   "adminDeleteBlogPost",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteBlogPostParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -2142,7 +3038,7 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 
 	var rawBody []byte
 
-	var response *AdminDeleteBlogPostNoContent
+	var response AdminDeleteBlogPostRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2163,7 +3059,7 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteBlogPostParams
-			Response = *AdminDeleteBlogPostNoContent
+			Response = AdminDeleteBlogPostRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2174,12 +3070,12 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 			mreq,
 			unpackAdminDeleteBlogPostParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteBlogPost(ctx, params)
+				response, err = s.h.AdminDeleteBlogPost(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteBlogPost(ctx, params)
+		response, err = s.h.AdminDeleteBlogPost(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -2281,6 +3177,70 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 			ID:   "adminDeleteCategoryQnaItem",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteCategoryQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteCategoryQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteCategoryQnaItemParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -2294,7 +3254,7 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 
 	var rawBody []byte
 
-	var response *AdminDeleteCategoryQnaItemNoContent
+	var response AdminDeleteCategoryQnaItemRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2319,7 +3279,7 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteCategoryQnaItemParams
-			Response = *AdminDeleteCategoryQnaItemNoContent
+			Response = AdminDeleteCategoryQnaItemRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2330,12 +3290,12 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 			mreq,
 			unpackAdminDeleteCategoryQnaItemParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
+				response, err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
+		response, err = s.h.AdminDeleteCategoryQnaItem(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -2439,6 +3399,70 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 			ID:   "adminDeleteCourseCategory",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteCourseCategoryParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -2452,7 +3476,7 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response *AdminDeleteCourseCategoryNoContent
+	var response AdminDeleteCourseCategoryRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2473,7 +3497,7 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteCourseCategoryParams
-			Response = *AdminDeleteCourseCategoryNoContent
+			Response = AdminDeleteCourseCategoryRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2484,12 +3508,12 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 			mreq,
 			unpackAdminDeleteCourseCategoryParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteCourseCategory(ctx, params)
+				response, err = s.h.AdminDeleteCourseCategory(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteCourseCategory(ctx, params)
+		response, err = s.h.AdminDeleteCourseCategory(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -2591,6 +3615,70 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 			ID:   "adminDeleteCourseLandingPage",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteCourseLandingPageParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -2604,7 +3692,7 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 
 	var rawBody []byte
 
-	var response *AdminDeleteCourseLandingPageNoContent
+	var response AdminDeleteCourseLandingPageRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2625,7 +3713,7 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteCourseLandingPageParams
-			Response = *AdminDeleteCourseLandingPageNoContent
+			Response = AdminDeleteCourseLandingPageRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2636,12 +3724,12 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 			mreq,
 			unpackAdminDeleteCourseLandingPageParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteCourseLandingPage(ctx, params)
+				response, err = s.h.AdminDeleteCourseLandingPage(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteCourseLandingPage(ctx, params)
+		response, err = s.h.AdminDeleteCourseLandingPage(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -2743,6 +3831,70 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 			ID:   "adminDeleteLandingPageQnaItem",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteLandingPageQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteLandingPageQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteLandingPageQnaItemParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -2756,7 +3908,7 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 
 	var rawBody []byte
 
-	var response *AdminDeleteLandingPageQnaItemNoContent
+	var response AdminDeleteLandingPageQnaItemRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2781,7 +3933,7 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteLandingPageQnaItemParams
-			Response = *AdminDeleteLandingPageQnaItemNoContent
+			Response = AdminDeleteLandingPageQnaItemRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2792,12 +3944,12 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 			mreq,
 			unpackAdminDeleteLandingPageQnaItemParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
+				response, err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
+		response, err = s.h.AdminDeleteLandingPageQnaItem(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -2899,6 +4051,70 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 			ID:   "adminDeleteReview",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteReviewParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -2912,7 +4128,7 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response *AdminDeleteReviewNoContent
+	var response AdminDeleteReviewRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -2933,7 +4149,7 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteReviewParams
-			Response = *AdminDeleteReviewNoContent
+			Response = AdminDeleteReviewRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -2944,12 +4160,12 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 			mreq,
 			unpackAdminDeleteReviewParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteReview(ctx, params)
+				response, err = s.h.AdminDeleteReview(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteReview(ctx, params)
+		response, err = s.h.AdminDeleteReview(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3051,6 +4267,70 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 			ID:   "adminDeleteRole",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteRoleParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3064,7 +4344,7 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response *AdminDeleteRoleNoContent
+	var response AdminDeleteRoleRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3085,7 +4365,7 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteRoleParams
-			Response = *AdminDeleteRoleNoContent
+			Response = AdminDeleteRoleRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3096,12 +4376,12 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 			mreq,
 			unpackAdminDeleteRoleParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteRole(ctx, params)
+				response, err = s.h.AdminDeleteRole(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteRole(ctx, params)
+		response, err = s.h.AdminDeleteRole(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3203,6 +4483,70 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 			ID:   "adminDeleteStaffMember",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteStaffMemberParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3216,7 +4560,7 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response *AdminDeleteStaffMemberNoContent
+	var response AdminDeleteStaffMemberRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3237,7 +4581,7 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteStaffMemberParams
-			Response = *AdminDeleteStaffMemberNoContent
+			Response = AdminDeleteStaffMemberRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3248,12 +4592,12 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 			mreq,
 			unpackAdminDeleteStaffMemberParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteStaffMember(ctx, params)
+				response, err = s.h.AdminDeleteStaffMember(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteStaffMember(ctx, params)
+		response, err = s.h.AdminDeleteStaffMember(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3355,6 +4699,70 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 			ID:   "adminDeleteUser",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminDeleteUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminDeleteUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminDeleteUserParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3368,7 +4776,7 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 
 	var rawBody []byte
 
-	var response *AdminDeleteUserNoContent
+	var response AdminDeleteUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3389,7 +4797,7 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = struct{}
 			Params   = AdminDeleteUserParams
-			Response = *AdminDeleteUserNoContent
+			Response = AdminDeleteUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3400,12 +4808,12 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 			mreq,
 			unpackAdminDeleteUserParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.AdminDeleteUser(ctx, params)
+				response, err = s.h.AdminDeleteUser(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.AdminDeleteUser(ctx, params)
+		response, err = s.h.AdminDeleteUser(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -3510,6 +4918,52 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 			ID:   "adminGetBanner",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetBannerParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3523,7 +4977,7 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response *Banner
+	var response AdminGetBannerRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3544,7 +4998,7 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetBannerParams
-			Response = *Banner
+			Response = AdminGetBannerRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3662,6 +5116,52 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 			ID:   "adminGetBlogPost",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetBlogPostParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3675,7 +5175,7 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response *BlogPost
+	var response AdminGetBlogPostRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3696,7 +5196,7 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminGetBlogPostParams
-			Response = *BlogPost
+			Response = AdminGetBlogPostRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3816,6 +5316,52 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 			ID:   "adminGetCourse",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetCourseParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3829,7 +5375,7 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response *Course
+	var response AdminGetCourseRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -3850,7 +5396,7 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseParams
-			Response = *Course
+			Response = AdminGetCourseRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -3971,6 +5517,52 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 			ID:   "adminGetCourseCategory",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetCourseCategoryParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -3984,7 +5576,7 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response *CourseCategory
+	var response AdminGetCourseCategoryRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4005,7 +5597,7 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseCategoryParams
-			Response = *CourseCategory
+			Response = AdminGetCourseCategoryRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4126,6 +5718,52 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 			ID:   "adminGetCourseLandingPage",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetCourseLandingPageParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -4139,7 +5777,7 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response *CourseLandingPage
+	var response AdminGetCourseLandingPageRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4160,7 +5798,7 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminGetCourseLandingPageParams
-			Response = *CourseLandingPage
+			Response = AdminGetCourseLandingPageRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4280,6 +5918,52 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 			ID:   "adminGetManagementUser",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetManagementUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetManagementUserParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -4293,7 +5977,7 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 
 	var rawBody []byte
 
-	var response *UserCrud
+	var response AdminGetManagementUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4314,7 +5998,7 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminGetManagementUserParams
-			Response = *UserCrud
+			Response = AdminGetManagementUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4435,6 +6119,52 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 			ID:   "adminGetReview",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetReviewParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -4448,7 +6178,7 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response *Review
+	var response AdminGetReviewRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4469,7 +6199,7 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminGetReviewParams
-			Response = *Review
+			Response = AdminGetReviewRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4590,6 +6320,52 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 			ID:   "adminGetRole",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetRoleParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -4603,7 +6379,7 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response *StaffRoleDetail
+	var response AdminGetRoleRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4624,7 +6400,7 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = AdminGetRoleParams
-			Response = *StaffRoleDetail
+			Response = AdminGetRoleRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4744,6 +6520,52 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 			ID:   "adminGetRolePermissions",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetRolePermissionsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetRolePermissionsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -4757,7 +6579,7 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 
 	var rawBody []byte
 
-	var response *StaffRoleDetail
+	var response AdminGetRolePermissionsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4778,7 +6600,7 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 		type (
 			Request  = struct{}
 			Params   = AdminGetRolePermissionsParams
-			Response = *StaffRoleDetail
+			Response = AdminGetRolePermissionsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -4896,6 +6718,52 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 			ID:   "adminGetStaffMember",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetStaffMemberParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -4909,7 +6777,7 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 
 	var rawBody []byte
 
-	var response *StaffMember
+	var response AdminGetStaffMemberRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -4930,7 +6798,7 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 		type (
 			Request  = struct{}
 			Params   = AdminGetStaffMemberParams
-			Response = *StaffMember
+			Response = AdminGetStaffMemberRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5051,6 +6919,52 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 			ID:   "adminGetUser",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminGetUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminGetUserParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -5064,7 +6978,7 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 
 	var rawBody []byte
 
-	var response *UserCrud
+	var response AdminGetUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5085,7 +6999,7 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 		type (
 			Request  = struct{}
 			Params   = AdminGetUserParams
-			Response = *UserCrud
+			Response = AdminGetUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5205,6 +7119,52 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 			ID:   "adminListBanners",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListBannersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListBannersParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -5218,7 +7178,7 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response *BannerPage
+	var response AdminListBannersRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5251,7 +7211,7 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminListBannersParams
-			Response = *BannerPage
+			Response = AdminListBannersRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5369,6 +7329,52 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 			ID:   "adminListBlogPosts",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListBlogPostsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListBlogPostsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -5382,7 +7388,7 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 
 	var rawBody []byte
 
-	var response *BlogPostPage
+	var response AdminListBlogPostsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5415,7 +7421,7 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 		type (
 			Request  = struct{}
 			Params   = AdminListBlogPostsParams
-			Response = *BlogPostPage
+			Response = AdminListBlogPostsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5533,6 +7539,52 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 			ID:   "adminListCategoryQnaItems",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCategoryQnaItemsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCategoryQnaItemsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -5546,7 +7598,7 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 
 	var rawBody []byte
 
-	var response []QnaItem
+	var response AdminListCategoryQnaItemsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5567,7 +7619,7 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminListCategoryQnaItemsParams
-			Response = []QnaItem
+			Response = AdminListCategoryQnaItemsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5687,6 +7739,52 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 			ID:   "adminListCourseCategories",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCourseCategoriesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCourseCategoriesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -5700,7 +7798,7 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 
 	var rawBody []byte
 
-	var response *CourseCategoryPage
+	var response AdminListCourseCategoriesRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5733,7 +7831,7 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseCategoriesParams
-			Response = *CourseCategoryPage
+			Response = AdminListCourseCategoriesRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -5851,6 +7949,52 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 			ID:   "adminListCourseLandingPages",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCourseLandingPagesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCourseLandingPagesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -5864,7 +8008,7 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 
 	var rawBody []byte
 
-	var response *CourseLandingPagePage
+	var response AdminListCourseLandingPagesRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -5897,7 +8041,7 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLandingPagesParams
-			Response = *CourseLandingPagePage
+			Response = AdminListCourseLandingPagesRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6015,6 +8159,52 @@ func (s *Server) handleAdminListCourseLessonMembersRequest(args [0]string, argsE
 			ID:   "adminListCourseLessonMembers",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCourseLessonMembersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCourseLessonMembersParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -6028,7 +8218,7 @@ func (s *Server) handleAdminListCourseLessonMembersRequest(args [0]string, argsE
 
 	var rawBody []byte
 
-	var response *CourseLessonMemberPage
+	var response AdminListCourseLessonMembersRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6061,7 +8251,7 @@ func (s *Server) handleAdminListCourseLessonMembersRequest(args [0]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLessonMembersParams
-			Response = *CourseLessonMemberPage
+			Response = AdminListCourseLessonMembersRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6179,6 +8369,52 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 			ID:   "adminListCourseLessonReviews",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCourseLessonReviewsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCourseLessonReviewsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -6192,7 +8428,7 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 
 	var rawBody []byte
 
-	var response *CourseLessonReviewPage
+	var response AdminListCourseLessonReviewsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6225,7 +8461,7 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLessonReviewsParams
-			Response = *CourseLessonReviewPage
+			Response = AdminListCourseLessonReviewsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6343,6 +8579,52 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 			ID:   "adminListCourseLessons",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCourseLessonsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCourseLessonsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -6356,7 +8638,7 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 
 	var rawBody []byte
 
-	var response *CourseLessonListItemPage
+	var response AdminListCourseLessonsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6389,7 +8671,7 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 		type (
 			Request  = struct{}
 			Params   = AdminListCourseLessonsParams
-			Response = *CourseLessonListItemPage
+			Response = AdminListCourseLessonsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6507,6 +8789,52 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 			ID:   "adminListCourses",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListCoursesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListCoursesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -6520,7 +8848,7 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response *CoursePage
+	var response AdminListCoursesRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6553,7 +8881,7 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminListCoursesParams
-			Response = *CoursePage
+			Response = AdminListCoursesRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6671,6 +8999,52 @@ func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsE
 			ID:   "adminListLandingPageQnaItems",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListLandingPageQnaItemsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListLandingPageQnaItemsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -6684,7 +9058,7 @@ func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsE
 
 	var rawBody []byte
 
-	var response []QnaItem
+	var response AdminListLandingPageQnaItemsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6705,7 +9079,7 @@ func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsE
 		type (
 			Request  = struct{}
 			Params   = AdminListLandingPageQnaItemsParams
-			Response = []QnaItem
+			Response = AdminListLandingPageQnaItemsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6823,6 +9197,52 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 			ID:   "adminListLeads",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListLeadsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListLeadsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -6836,7 +9256,7 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response *LeadPage
+	var response AdminListLeadsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -6869,7 +9289,7 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminListLeadsParams
-			Response = *LeadPage
+			Response = AdminListLeadsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -6987,6 +9407,52 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 			ID:   "adminListManagementUsers",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListManagementUsersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListManagementUsersParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -7000,7 +9466,7 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 
 	var rawBody []byte
 
-	var response *UserCrudPage
+	var response AdminListManagementUsersRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7033,7 +9499,7 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 		type (
 			Request  = struct{}
 			Params   = AdminListManagementUsersParams
-			Response = *UserCrudPage
+			Response = AdminListManagementUsersRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7151,6 +9617,52 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 			ID:   "adminListMessages",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListMessagesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListMessagesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -7164,7 +9676,7 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 
 	var rawBody []byte
 
-	var response *LessonAssistantMessagePage
+	var response AdminListMessagesRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7197,7 +9709,7 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 		type (
 			Request  = struct{}
 			Params   = AdminListMessagesParams
-			Response = *LessonAssistantMessagePage
+			Response = AdminListMessagesRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7315,6 +9827,52 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 			ID:   "adminListReviews",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListReviewsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListReviewsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -7328,7 +9886,7 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response *ReviewPage
+	var response AdminListReviewsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7361,7 +9919,7 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminListReviewsParams
-			Response = *ReviewPage
+			Response = AdminListReviewsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7479,6 +10037,52 @@ func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w
 			ID:   "adminListRoles",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListRolesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListRolesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -7492,7 +10096,7 @@ func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response *StaffRolePage
+	var response AdminListRolesRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7525,7 +10129,7 @@ func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminListRolesParams
-			Response = *StaffRolePage
+			Response = AdminListRolesRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7643,6 +10247,52 @@ func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped 
 			ID:   "adminListStaffMembers",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListStaffMembersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListStaffMembersParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -7656,7 +10306,7 @@ func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped 
 
 	var rawBody []byte
 
-	var response *StaffMemberPage
+	var response AdminListStaffMembersRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7689,7 +10339,7 @@ func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped 
 		type (
 			Request  = struct{}
 			Params   = AdminListStaffMembersParams
-			Response = *StaffMemberPage
+			Response = AdminListStaffMembersRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7807,6 +10457,52 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 			ID:   "adminListUsers",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminListUsersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminListUsersParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -7820,7 +10516,7 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 
 	var rawBody []byte
 
-	var response *UserCrudPage
+	var response AdminListUsersRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -7853,7 +10549,7 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = AdminListUsersParams
-			Response = *UserCrudPage
+			Response = AdminListUsersRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -7973,6 +10669,70 @@ func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool
 			ID:   "adminReviewCourse",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminReviewCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminReviewCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminReviewCourseParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8127,6 +10887,70 @@ func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscape
 			ID:   "adminReviewCourseLesson",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminReviewCourseLessonOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminReviewCourseLessonOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminReviewCourseLessonParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8281,6 +11105,52 @@ func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool,
 			ID:   "adminSearchUsers",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminSearchUsersOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminSearchUsersParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8294,7 +11164,7 @@ func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool,
 
 	var rawBody []byte
 
-	var response []UserCrud
+	var response AdminSearchUsersRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8315,7 +11185,7 @@ func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool,
 		type (
 			Request  = struct{}
 			Params   = AdminSearchUsersParams
-			Response = []UserCrud
+			Response = AdminSearchUsersRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8435,6 +11305,70 @@ func (s *Server) handleAdminSetBlogPostRelatedCoursesRequest(args [1]string, arg
 			ID:   "adminSetBlogPostRelatedCourses",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminSetBlogPostRelatedCoursesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminSetBlogPostRelatedCoursesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminSetBlogPostRelatedCoursesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8604,6 +11538,70 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 			ID:   "adminUpdateBanner",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateBannerOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateBannerParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8632,7 +11630,7 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response *Banner
+	var response AdminUpdateBannerRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8653,7 +11651,7 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *BannerInput
 			Params   = AdminUpdateBannerParams
-			Response = *Banner
+			Response = AdminUpdateBannerRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -8771,6 +11769,70 @@ func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bo
 			ID:   "adminUpdateBlogPost",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateBlogPostParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8941,6 +12003,70 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 			ID:   "adminUpdateCategoryQnaItem",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateCategoryQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateCategoryQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateCategoryQnaItemParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -8969,7 +12095,7 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 		}
 	}()
 
-	var response *QnaItem
+	var response AdminUpdateCategoryQnaItemRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -8994,7 +12120,7 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminUpdateCategoryQnaItemParams
-			Response = *QnaItem
+			Response = AdminUpdateCategoryQnaItemRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9112,6 +12238,70 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 			ID:   "adminUpdateCourse",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateCourseOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateCourseParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -9140,7 +12330,7 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response *Course
+	var response AdminUpdateCourseRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9161,7 +12351,7 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *CourseInput
 			Params   = AdminUpdateCourseParams
-			Response = *Course
+			Response = AdminUpdateCourseRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9282,6 +12472,70 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 			ID:   "adminUpdateCourseCategory",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateCourseCategoryOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateCourseCategoryParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -9310,7 +12564,7 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 		}
 	}()
 
-	var response *CourseCategory
+	var response AdminUpdateCourseCategoryRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9331,7 +12585,7 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 		type (
 			Request  = *CourseCategoryInput
 			Params   = AdminUpdateCourseCategoryParams
-			Response = *CourseCategory
+			Response = AdminUpdateCourseCategoryRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9451,6 +12705,70 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 			ID:   "adminUpdateCourseLandingPage",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateCourseLandingPageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateCourseLandingPageParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -9479,7 +12797,7 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 		}
 	}()
 
-	var response *CourseLandingPage
+	var response AdminUpdateCourseLandingPageRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9500,7 +12818,7 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 		type (
 			Request  = *CourseLandingPageInput
 			Params   = AdminUpdateCourseLandingPageParams
-			Response = *CourseLandingPage
+			Response = AdminUpdateCourseLandingPageRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9621,6 +12939,70 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 			ID:   "adminUpdateLandingPageQnaItem",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateLandingPageQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateLandingPageQnaItemOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateLandingPageQnaItemParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -9649,7 +13031,7 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 		}
 	}()
 
-	var response *QnaItem
+	var response AdminUpdateLandingPageQnaItemRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9674,7 +13056,7 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 		type (
 			Request  = *QnaItemInput
 			Params   = AdminUpdateLandingPageQnaItemParams
-			Response = *QnaItem
+			Response = AdminUpdateLandingPageQnaItemRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9792,6 +13174,70 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 			ID:   "adminUpdateManagementUser",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateManagementUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateManagementUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateManagementUserParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -9820,7 +13266,7 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 		}
 	}()
 
-	var response *UserCrud
+	var response AdminUpdateManagementUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -9841,7 +13287,7 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 		type (
 			Request  = *UserInput
 			Params   = AdminUpdateManagementUserParams
-			Response = *UserCrud
+			Response = AdminUpdateManagementUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -9961,6 +13407,70 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 			ID:   "adminUpdateReview",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateReviewOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateReviewParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -9989,7 +13499,7 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 		}
 	}()
 
-	var response *Review
+	var response AdminUpdateReviewRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10010,7 +13520,7 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 		type (
 			Request  = *ReviewInput
 			Params   = AdminUpdateReviewParams
-			Response = *Review
+			Response = AdminUpdateReviewRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10128,6 +13638,70 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 			ID:   "adminUpdateRole",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateRoleOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateRoleParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -10156,7 +13730,7 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 		}
 	}()
 
-	var response *StaffRoleDetail
+	var response AdminUpdateRoleRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10177,7 +13751,7 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = *RoleInput
 			Params   = AdminUpdateRoleParams
-			Response = *StaffRoleDetail
+			Response = AdminUpdateRoleRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10297,6 +13871,70 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 			ID:   "adminUpdateRolePermissions",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateRolePermissionsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateRolePermissionsOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateRolePermissionsParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -10325,7 +13963,7 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 		}
 	}()
 
-	var response *StaffRoleDetail
+	var response AdminUpdateRolePermissionsRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10346,7 +13984,7 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 		type (
 			Request  = *RolePermissionsInput
 			Params   = AdminUpdateRolePermissionsParams
-			Response = *StaffRoleDetail
+			Response = AdminUpdateRolePermissionsRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10464,6 +14102,70 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 			ID:   "adminUpdateStaffMember",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateStaffMemberOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateStaffMemberParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -10492,7 +14194,7 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 		}
 	}()
 
-	var response *StaffMember
+	var response AdminUpdateStaffMemberRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10513,7 +14215,7 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 		type (
 			Request  = *StaffMemberInput
 			Params   = AdminUpdateStaffMemberParams
-			Response = *StaffMember
+			Response = AdminUpdateStaffMemberRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -10634,6 +14336,70 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 			ID:   "adminUpdateUser",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityAdminSession(ctx, AdminUpdateUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "AdminSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:AdminSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, AdminUpdateUserOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeAdminUpdateUserParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -10662,7 +14428,7 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 		}
 	}()
 
-	var response *UserCrud
+	var response AdminUpdateUserRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -10683,7 +14449,7 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 		type (
 			Request  = *UserInput
 			Params   = AdminUpdateUserParams
-			Response = *UserCrud
+			Response = AdminUpdateUserRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -11436,6 +15202,70 @@ func (s *Server) handleCreateAssistantMessageRequest(args [1]string, argsEscaped
 			ID:   "createAssistantMessage",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, CreateAssistantMessageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, CreateAssistantMessageOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeCreateAssistantMessageParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -11605,6 +15435,70 @@ func (s *Server) handleCreateBookRequestRequest(args [0]string, argsEscaped bool
 			ID:   "createBookRequest",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, CreateBookRequestOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, CreateBookRequestOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeCreateBookRequestRequest(r)
@@ -11759,6 +15653,70 @@ func (s *Server) handleCreateLeadRequest(args [0]string, argsEscaped bool, w htt
 			ID:   "createLead",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, CreateLeadOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, CreateLeadOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeCreateLeadRequest(r)
@@ -12067,6 +16025,70 @@ func (s *Server) handleCreatePasskeyRequest(args [0]string, argsEscaped bool, w 
 			ID:   "createPasskey",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, CreatePasskeyOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, CreatePasskeyOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeCreatePasskeyRequest(r)
@@ -12985,8 +17007,76 @@ func (s *Server) handleDeleteAccountRequest(args [0]string, argsEscaped bool, w 
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: DeleteAccountOperation,
+			ID:   "deleteAccount",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, DeleteAccountOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, DeleteAccountOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 
@@ -13126,6 +17216,70 @@ func (s *Server) handleDeletePasskeyRequest(args [1]string, argsEscaped bool, w 
 			ID:   "deletePasskey",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, DeletePasskeyOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, DeletePasskeyOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeDeletePasskeyParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -13274,12 +17428,80 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: DeleteSessionOperation,
+			ID:   "deleteSession",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, DeleteSessionOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, DeleteSessionOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 
-	var response *DeleteSessionNoContent
+	var response DeleteSessionRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -13295,7 +17517,7 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = *DeleteSessionNoContent
+			Response = DeleteSessionRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -14029,8 +18251,58 @@ func (s *Server) handleGetMyDashboardRequest(args [0]string, argsEscaped bool, w
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetMyDashboardOperation,
+			ID:   "getMyDashboard",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, GetMyDashboardOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 
@@ -14472,8 +18744,58 @@ func (s *Server) handleGetProfileRequest(args [0]string, argsEscaped bool, w htt
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: GetProfileOperation,
+			ID:   "getProfile",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, GetProfileOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 
@@ -14902,6 +19224,70 @@ func (s *Server) handleLikeBlogPostRequest(args [1]string, argsEscaped bool, w h
 			ID:   "likeBlogPost",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, LikeBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, LikeBlogPostOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeLikeBlogPostParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -15056,6 +19442,52 @@ func (s *Server) handleListAssistantMessagesRequest(args [1]string, argsEscaped 
 			ID:   "listAssistantMessages",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, ListAssistantMessagesOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 	params, err := decodeListAssistantMessagesParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
@@ -15505,8 +19937,58 @@ func (s *Server) handleListPasskeysRequest(args [0]string, argsEscaped bool, w h
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: ListPasskeysOperation,
+			ID:   "listPasskeys",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, ListPasskeysOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 
@@ -15941,8 +20423,58 @@ func (s *Server) handleNewPasskeyRequest(args [0]string, argsEscaped bool, w htt
 
 			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
 		}
-		err error
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: NewPasskeyOperation,
+			ID:   "newPasskey",
+		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, NewPasskeyOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 
@@ -16540,6 +21072,70 @@ func (s *Server) handleUpdateProfileRequest(args [0]string, argsEscaped bool, w 
 			ID:   "updateProfile",
 		}
 	)
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			sctx, ok, err := s.securityUserSession(ctx, UpdateProfileOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "UserSession",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:UserSession", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 0
+				ctx = sctx
+			}
+		}
+		{
+			sctx, ok, err := s.securityXsrfToken(ctx, UpdateProfileOperation, r)
+			if err != nil {
+				err = &ogenerrors.SecurityError{
+					OperationContext: opErrContext,
+					Security:         "XsrfToken",
+					Err:              err,
+				}
+				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+					defer recordError("Security:XsrfToken", err)
+				}
+				return
+			}
+			if ok {
+				satisfied[0] |= 1 << 1
+				ctx = sctx
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			err = &ogenerrors.SecurityError{
+				OperationContext: opErrContext,
+				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
+			}
+			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
+				defer recordError("Security", err)
+			}
+			return
+		}
+	}
 
 	var rawBody []byte
 	request, rawBody, close, err := s.decodeUpdateProfileRequest(r)

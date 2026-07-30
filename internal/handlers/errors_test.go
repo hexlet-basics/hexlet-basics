@@ -133,10 +133,11 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 	)
 	server, err := api.NewServer(
 		&failingCoursesHandler{errorHandler: errorHandler},
+		nil,
 		api.WithErrorHandler(errorHandler.Write),
 	)
 	require.NoError(t, err)
-	client, err := api.NewClient("http://test", api.WithClient(&http.Client{
+	client, err := api.NewClient("http://test", nil, api.WithClient(&http.Client{
 		Transport: roundTripFunc(func(request *http.Request) (*http.Response, error) {
 			recorder := httptest.NewRecorder()
 			telemetry.NewSentryHTTPHandler(sentryClient, server).ServeHTTP(recorder, request)

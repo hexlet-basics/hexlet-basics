@@ -18,7 +18,7 @@ func withStaffMemberEdges(q *ent.StaffMemberQuery) *ent.StaffMemberQuery {
 		WithRole(func(rq *ent.StaffRoleQuery) { rq.WithPermissions() })
 }
 
-func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (*api.StaffMemberPage, error) {
+func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (api.AdminListStaffMembersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.StaffMemberQuery {
 			return withStaffMemberEdges(s.db.StaffMember.Query()).Order(ent.Desc(staffmember.FieldID))
@@ -30,8 +30,12 @@ func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminList
 	)
 }
 
-func (s *Server) AdminGetStaffMember(ctx context.Context, params api.AdminGetStaffMemberParams) (*api.StaffMember, error) {
-	return getOne(ctx, int(params.ID),
+func (s *Server) AdminGetStaffMember(ctx context.Context, params api.AdminGetStaffMemberParams) (api.AdminGetStaffMemberRes, error) {
+	return s.getAdminStaffMember(ctx, params.ID)
+}
+
+func (s *Server) getAdminStaffMember(ctx context.Context, id int32) (*api.StaffMember, error) {
+	return getOne(ctx, int(id),
 		func(ctx context.Context, id int) (*ent.StaffMember, error) {
 			return withStaffMemberEdges(s.db.StaffMember.Query().Where(staffmember.ID(id))).Only(ctx)
 		},
@@ -41,7 +45,7 @@ func (s *Server) AdminGetStaffMember(ctx context.Context, params api.AdminGetSta
 
 // AdminCreateStaffMember grants a user a role. user_id is unique (one staff
 // record per user), so a duplicate surfaces as 409 via the central handler.
-func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (*api.StaffMember, error) {
+func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMemberInput) (api.AdminCreateStaffMemberRes, error) {
 	row, err := s.db.StaffMember.Create().
 		SetUserID(int(req.UserId)).
 		SetRoleID(int(req.RoleId)).
@@ -50,10 +54,10 @@ func (s *Server) AdminCreateStaffMember(ctx context.Context, req *api.StaffMembe
 	if err != nil {
 		return nil, err
 	}
-	return s.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: int32(row.ID)})
+	return s.getAdminStaffMember(ctx, int32(row.ID))
 }
 
-func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (*api.StaffMember, error) {
+func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMemberInput, params api.AdminUpdateStaffMemberParams) (api.AdminUpdateStaffMemberRes, error) {
 	row, err := s.db.StaffMember.UpdateOneID(int(params.ID)).
 		SetUserID(int(req.UserId)).
 		SetRoleID(int(req.RoleId)).
@@ -62,9 +66,12 @@ func (s *Server) AdminUpdateStaffMember(ctx context.Context, req *api.StaffMembe
 	if err != nil {
 		return nil, err
 	}
-	return s.AdminGetStaffMember(ctx, api.AdminGetStaffMemberParams{ID: int32(row.ID)})
+	return s.getAdminStaffMember(ctx, int32(row.ID))
 }
 
-func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDeleteStaffMemberParams) error {
-	return s.db.StaffMember.DeleteOneID(int(params.ID)).Exec(ctx)
+func (s *Server) AdminDeleteStaffMember(ctx context.Context, params api.AdminDeleteStaffMemberParams) (api.AdminDeleteStaffMemberRes, error) {
+	if err := s.db.StaffMember.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteStaffMemberNoContent{}, nil
 }

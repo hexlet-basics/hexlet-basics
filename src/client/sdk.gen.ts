@@ -23,6 +23,12 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  */
 export const listPasskeys = <ThrowOnError extends boolean = false>(options?: Options<ListPasskeysData, ThrowOnError>): RequestResult<ListPasskeysResponses, ListPasskeysErrors, ThrowOnError> => (options?.client ?? client).get<ListPasskeysResponses, ListPasskeysErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/account/passkeys',
   ...options
 });
@@ -32,6 +38,12 @@ export const listPasskeys = <ThrowOnError extends boolean = false>(options?: Opt
  */
 export const createPasskey = <ThrowOnError extends boolean = false>(options: Options<CreatePasskeyData, ThrowOnError>): RequestResult<CreatePasskeyResponses, CreatePasskeyErrors, ThrowOnError> => (options.client ?? client).post<CreatePasskeyResponses, CreatePasskeyErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/account/passkeys',
   ...options,
   headers: {
@@ -45,6 +57,12 @@ export const createPasskey = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const newPasskey = <ThrowOnError extends boolean = false>(options?: Options<NewPasskeyData, ThrowOnError>): RequestResult<NewPasskeyResponses, NewPasskeyErrors, ThrowOnError> => (options?.client ?? client).get<NewPasskeyResponses, NewPasskeyErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/account/passkeys/new',
   ...options
 });
@@ -52,18 +70,42 @@ export const newPasskey = <ThrowOnError extends boolean = false>(options?: Optio
 /**
  * Remove a passkey.
  */
-export const deletePasskey = <ThrowOnError extends boolean = false>(options: Options<DeletePasskeyData, ThrowOnError>): RequestResult<DeletePasskeyResponses, DeletePasskeyErrors, ThrowOnError> => (options.client ?? client).delete<DeletePasskeyResponses, DeletePasskeyErrors, ThrowOnError>({ url: '/account/passkeys/{id}', ...options });
+export const deletePasskey = <ThrowOnError extends boolean = false>(options: Options<DeletePasskeyData, ThrowOnError>): RequestResult<DeletePasskeyResponses, DeletePasskeyErrors, ThrowOnError> => (options.client ?? client).delete<DeletePasskeyResponses, DeletePasskeyErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/account/passkeys/{id}',
+  ...options
+});
 
 /**
  * Delete the current user's account.
  */
-export const deleteAccount = <ThrowOnError extends boolean = false>(options?: Options<DeleteAccountData, ThrowOnError>): RequestResult<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError> => (options?.client ?? client).delete<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError>({ url: '/account/profile', ...options });
+export const deleteAccount = <ThrowOnError extends boolean = false>(options?: Options<DeleteAccountData, ThrowOnError>): RequestResult<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError> => (options?.client ?? client).delete<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/account/profile',
+  ...options
+});
 
 /**
  * Update the current user's profile.
  */
 export const updateProfile = <ThrowOnError extends boolean = false>(options: Options<UpdateProfileData, ThrowOnError>): RequestResult<UpdateProfileResponses, UpdateProfileErrors, ThrowOnError> => (options.client ?? client).patch<UpdateProfileResponses, UpdateProfileErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/account/profile',
   ...options,
   headers: {
@@ -77,12 +119,24 @@ export const updateProfile = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const getProfile = <ThrowOnError extends boolean = false>(options?: Options<GetProfileData, ThrowOnError>): RequestResult<GetProfileResponses, GetProfileErrors, ThrowOnError> => (options?.client ?? client).get<GetProfileResponses, GetProfileErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/account/profile/edit',
   ...options
 });
 
 export const adminListUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListUsersData, ThrowOnError>): RequestResult<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListUsersResponses, AdminListUsersErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/api/users',
   ...options
 });
@@ -93,6 +147,12 @@ export const adminListUsers = <ThrowOnError extends boolean = false>(options?: O
  */
 export const adminCreateUser = <ThrowOnError extends boolean = false>(options: Options<AdminCreateUserData, ThrowOnError>): RequestResult<AdminCreateUserResponses, AdminCreateUserErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateUserResponses, AdminCreateUserErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/api/users',
   ...options,
   headers: {
@@ -106,11 +166,26 @@ export const adminCreateUser = <ThrowOnError extends boolean = false>(options: O
  */
 export const adminSearchUsers = <ThrowOnError extends boolean = false>(options: Options<AdminSearchUsersData, ThrowOnError>): RequestResult<AdminSearchUsersResponses, AdminSearchUsersErrors, ThrowOnError> => (options.client ?? client).get<AdminSearchUsersResponses, AdminSearchUsersErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/api/users/search',
   ...options
 });
 
-export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteUserData, ThrowOnError>): RequestResult<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError>({ url: '/admin/api/users/{id}', ...options });
+export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteUserData, ThrowOnError>): RequestResult<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteUserResponses, AdminDeleteUserErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/api/users/{id}',
+  ...options
+});
 
 /**
  * Get a single user. A missing id surfaces as 404 via the central ent-error
@@ -118,6 +193,12 @@ export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: O
  */
 export const adminGetUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetUserData, ThrowOnError>): RequestResult<AdminGetUserResponses, AdminGetUserErrors, ThrowOnError> => (options.client ?? client).get<AdminGetUserResponses, AdminGetUserErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/api/users/{id}',
   ...options
 });
@@ -128,6 +209,12 @@ export const adminGetUser = <ThrowOnError extends boolean = false>(options: Opti
  */
 export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateUserData, ThrowOnError>): RequestResult<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateUserResponses, AdminUpdateUserErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/api/users/{id}',
   ...options,
   headers: {
@@ -142,6 +229,12 @@ export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: O
 export const adminUploadAttachment = <ThrowOnError extends boolean = false>(options: Options<AdminUploadAttachmentData, ThrowOnError>): RequestResult<AdminUploadAttachmentResponses, AdminUploadAttachmentErrors, ThrowOnError> => (options.client ?? client).post<AdminUploadAttachmentResponses, AdminUploadAttachmentErrors, ThrowOnError>({
   ...formDataBodySerializer,
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/attachments',
   ...options,
   headers: {
@@ -155,6 +248,12 @@ export const adminUploadAttachment = <ThrowOnError extends boolean = false>(opti
  */
 export const adminListBanners = <ThrowOnError extends boolean = false>(options?: Options<AdminListBannersData, ThrowOnError>): RequestResult<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBannersResponses, AdminListBannersErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/banners',
   ...options
 });
@@ -166,6 +265,12 @@ export const adminListBanners = <ThrowOnError extends boolean = false>(options?:
  */
 export const adminCreateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBannerData, ThrowOnError>): RequestResult<AdminCreateBannerResponses, AdminCreateBannerErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateBannerResponses, AdminCreateBannerErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/banners',
   ...options,
   headers: {
@@ -177,7 +282,16 @@ export const adminCreateBanner = <ThrowOnError extends boolean = false>(options:
 /**
  * Delete a banner.
  */
-export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBannerData, ThrowOnError>): RequestResult<AdminDeleteBannerResponses, AdminDeleteBannerErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBannerResponses, AdminDeleteBannerErrors, ThrowOnError>({ url: '/admin/banners/{id}', ...options });
+export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBannerData, ThrowOnError>): RequestResult<AdminDeleteBannerResponses, AdminDeleteBannerErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBannerResponses, AdminDeleteBannerErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/banners/{id}',
+  ...options
+});
 
 /**
  * Get a single banner. A missing id surfaces as 404 via the central
@@ -185,6 +299,12 @@ export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options:
  */
 export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Options<AdminGetBannerData, ThrowOnError>): RequestResult<AdminGetBannerResponses, AdminGetBannerErrors, ThrowOnError> => (options.client ?? client).get<AdminGetBannerResponses, AdminGetBannerErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/banners/{id}',
   ...options
 });
@@ -194,6 +314,12 @@ export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Op
  */
 export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBannerData, ThrowOnError>): RequestResult<AdminUpdateBannerResponses, AdminUpdateBannerErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateBannerResponses, AdminUpdateBannerErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/banners/{id}',
   ...options,
   headers: {
@@ -204,12 +330,24 @@ export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options:
 
 export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<AdminListBlogPostsData, ThrowOnError>): RequestResult<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListBlogPostsResponses, AdminListBlogPostsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/blog_posts',
   ...options
 });
 
 export const adminCreateBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminCreateBlogPostData, ThrowOnError>): RequestResult<AdminCreateBlogPostResponses, AdminCreateBlogPostErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateBlogPostResponses, AdminCreateBlogPostErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/blog_posts',
   ...options,
   headers: {
@@ -218,16 +356,37 @@ export const adminCreateBlogPost = <ThrowOnError extends boolean = false>(option
   }
 });
 
-export const adminDeleteBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBlogPostData, ThrowOnError>): RequestResult<AdminDeleteBlogPostResponses, AdminDeleteBlogPostErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBlogPostResponses, AdminDeleteBlogPostErrors, ThrowOnError>({ url: '/admin/blog_posts/{id}', ...options });
+export const adminDeleteBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteBlogPostData, ThrowOnError>): RequestResult<AdminDeleteBlogPostResponses, AdminDeleteBlogPostErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteBlogPostResponses, AdminDeleteBlogPostErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/blog_posts/{id}',
+  ...options
+});
 
 export const adminGetBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminGetBlogPostData, ThrowOnError>): RequestResult<AdminGetBlogPostResponses, AdminGetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<AdminGetBlogPostResponses, AdminGetBlogPostErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/blog_posts/{id}',
   ...options
 });
 
 export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateBlogPostData, ThrowOnError>): RequestResult<AdminUpdateBlogPostResponses, AdminUpdateBlogPostErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateBlogPostResponses, AdminUpdateBlogPostErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/blog_posts/{id}',
   ...options,
   headers: {
@@ -241,6 +400,12 @@ export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(option
  */
 export const adminSetBlogPostRelatedCourses = <ThrowOnError extends boolean = false>(options: Options<AdminSetBlogPostRelatedCoursesData, ThrowOnError>): RequestResult<AdminSetBlogPostRelatedCoursesResponses, AdminSetBlogPostRelatedCoursesErrors, ThrowOnError> => (options.client ?? client).post<AdminSetBlogPostRelatedCoursesResponses, AdminSetBlogPostRelatedCoursesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/blog_posts/{id}/related_courses',
   ...options,
   headers: {
@@ -254,6 +419,12 @@ export const adminSetBlogPostRelatedCourses = <ThrowOnError extends boolean = fa
  */
 export const adminListCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseCategoriesData, ThrowOnError>): RequestResult<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseCategoriesResponses, AdminListCourseCategoriesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_categories',
   ...options
 });
@@ -264,6 +435,12 @@ export const adminListCourseCategories = <ThrowOnError extends boolean = false>(
  */
 export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseCategoryData, ThrowOnError>): RequestResult<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseCategoryResponses, AdminCreateCourseCategoryErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_categories',
   ...options,
   headers: {
@@ -274,12 +451,24 @@ export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(
 
 export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListCategoryQnaItemsData, ThrowOnError>): RequestResult<AdminListCategoryQnaItemsResponses, AdminListCategoryQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListCategoryQnaItemsResponses, AdminListCategoryQnaItemsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_categories/{categoryId}/qna_items',
   ...options
 });
 
 export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminCreateCategoryQnaItemResponses, AdminCreateCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCategoryQnaItemResponses, AdminCreateCategoryQnaItemErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_categories/{categoryId}/qna_items',
   ...options,
   headers: {
@@ -288,7 +477,16 @@ export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>
   }
 });
 
-export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCategoryQnaItemData, ThrowOnError>): RequestResult<AdminDeleteCategoryQnaItemResponses, AdminDeleteCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCategoryQnaItemResponses, AdminDeleteCategoryQnaItemErrors, ThrowOnError>({ url: '/admin/language_categories/{categoryId}/qna_items/{id}', ...options });
+export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCategoryQnaItemData, ThrowOnError>): RequestResult<AdminDeleteCategoryQnaItemResponses, AdminDeleteCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCategoryQnaItemResponses, AdminDeleteCategoryQnaItemErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/language_categories/{categoryId}/qna_items/{id}',
+  ...options
+});
 
 /**
  * Update a QnA item. A missing id (or one under a different parent) surfaces
@@ -296,6 +494,12 @@ export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>
  */
 export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCategoryQnaItemData, ThrowOnError>): RequestResult<AdminUpdateCategoryQnaItemResponses, AdminUpdateCategoryQnaItemErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCategoryQnaItemResponses, AdminUpdateCategoryQnaItemErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_categories/{categoryId}/qna_items/{id}',
   ...options,
   headers: {
@@ -307,7 +511,16 @@ export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>
 /**
  * Delete a course category.
  */
-export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseCategoryData, ThrowOnError>): RequestResult<AdminDeleteCourseCategoryResponses, AdminDeleteCourseCategoryErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseCategoryResponses, AdminDeleteCourseCategoryErrors, ThrowOnError>({ url: '/admin/language_categories/{id}', ...options });
+export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseCategoryData, ThrowOnError>): RequestResult<AdminDeleteCourseCategoryResponses, AdminDeleteCourseCategoryErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseCategoryResponses, AdminDeleteCourseCategoryErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/language_categories/{id}',
+  ...options
+});
 
 /**
  * Get a single course category. A missing id surfaces as 404 via the
@@ -315,6 +528,12 @@ export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(
  */
 export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseCategoryData, ThrowOnError>): RequestResult<AdminGetCourseCategoryResponses, AdminGetCourseCategoryErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseCategoryResponses, AdminGetCourseCategoryErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_categories/{id}',
   ...options
 });
@@ -325,6 +544,12 @@ export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(opt
  */
 export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseCategoryData, ThrowOnError>): RequestResult<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseCategoryResponses, AdminUpdateCourseCategoryErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_categories/{id}',
   ...options,
   headers: {
@@ -335,12 +560,24 @@ export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(
 
 export const adminListCourseLandingPages = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLandingPagesData, ThrowOnError>): RequestResult<AdminListCourseLandingPagesResponses, AdminListCourseLandingPagesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLandingPagesResponses, AdminListCourseLandingPagesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_landing_pages',
   ...options
 });
 
 export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseLandingPageData, ThrowOnError>): RequestResult<AdminCreateCourseLandingPageResponses, AdminCreateCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseLandingPageResponses, AdminCreateCourseLandingPageErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_landing_pages',
   ...options,
   headers: {
@@ -349,7 +586,16 @@ export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = fals
   }
 });
 
-export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseLandingPageData, ThrowOnError>): RequestResult<AdminDeleteCourseLandingPageResponses, AdminDeleteCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseLandingPageResponses, AdminDeleteCourseLandingPageErrors, ThrowOnError>({ url: '/admin/language_landing_pages/{id}', ...options });
+export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteCourseLandingPageData, ThrowOnError>): RequestResult<AdminDeleteCourseLandingPageResponses, AdminDeleteCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteCourseLandingPageResponses, AdminDeleteCourseLandingPageErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/language_landing_pages/{id}',
+  ...options
+});
 
 /**
  * Get a single landing page. A missing id surfaces as 404 via the central
@@ -357,6 +603,12 @@ export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = fals
  */
 export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseLandingPageData, ThrowOnError>): RequestResult<AdminGetCourseLandingPageResponses, AdminGetCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseLandingPageResponses, AdminGetCourseLandingPageErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_landing_pages/{id}',
   ...options
 });
@@ -367,6 +619,12 @@ export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(
  */
 export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseLandingPageData, ThrowOnError>): RequestResult<AdminUpdateCourseLandingPageResponses, AdminUpdateCourseLandingPageErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseLandingPageResponses, AdminUpdateCourseLandingPageErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_landing_pages/{id}',
   ...options,
   headers: {
@@ -377,12 +635,24 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
 
 export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = false>(options: Options<AdminListLandingPageQnaItemsData, ThrowOnError>): RequestResult<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError> => (options.client ?? client).get<AdminListLandingPageQnaItemsResponses, AdminListLandingPageQnaItemsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_landing_pages/{landingPageId}/qna_items',
   ...options
 });
 
 export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminCreateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminCreateLandingPageQnaItemResponses, AdminCreateLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateLandingPageQnaItemResponses, AdminCreateLandingPageQnaItemErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_landing_pages/{landingPageId}/qna_items',
   ...options,
   headers: {
@@ -391,7 +661,16 @@ export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = fal
   }
 });
 
-export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminDeleteLandingPageQnaItemResponses, AdminDeleteLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteLandingPageQnaItemResponses, AdminDeleteLandingPageQnaItemErrors, ThrowOnError>({ url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}', ...options });
+export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminDeleteLandingPageQnaItemResponses, AdminDeleteLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteLandingPageQnaItemResponses, AdminDeleteLandingPageQnaItemErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}',
+  ...options
+});
 
 /**
  * Update a QnA item. A missing id (or one under a different parent) surfaces
@@ -399,6 +678,12 @@ export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = fal
  */
 export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateLandingPageQnaItemData, ThrowOnError>): RequestResult<AdminUpdateLandingPageQnaItemResponses, AdminUpdateLandingPageQnaItemErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateLandingPageQnaItemResponses, AdminUpdateLandingPageQnaItemErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}',
   ...options,
   headers: {
@@ -409,18 +694,36 @@ export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = fal
 
 export const adminListCourseLessonMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonMembersData, ThrowOnError>): RequestResult<AdminListCourseLessonMembersResponses, AdminListCourseLessonMembersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonMembersResponses, AdminListCourseLessonMembersErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_lesson_members',
   ...options
 });
 
 export const adminListCourseLessonReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonReviewsData, ThrowOnError>): RequestResult<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_lesson_reviews',
   ...options
 });
 
 export const adminListCourseLessons = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonsData, ThrowOnError>): RequestResult<AdminListCourseLessonsResponses, AdminListCourseLessonsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonsResponses, AdminListCourseLessonsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/language_lessons',
   ...options
 });
@@ -428,16 +731,37 @@ export const adminListCourseLessons = <ThrowOnError extends boolean = false>(opt
 /**
  * Enqueue AI review for a single lesson.
  */
-export const adminReviewCourseLesson = <ThrowOnError extends boolean = false>(options: Options<AdminReviewCourseLessonData, ThrowOnError>): RequestResult<AdminReviewCourseLessonResponses, AdminReviewCourseLessonErrors, ThrowOnError> => (options.client ?? client).post<AdminReviewCourseLessonResponses, AdminReviewCourseLessonErrors, ThrowOnError>({ url: '/admin/language_lessons/{id}/review', ...options });
+export const adminReviewCourseLesson = <ThrowOnError extends boolean = false>(options: Options<AdminReviewCourseLessonData, ThrowOnError>): RequestResult<AdminReviewCourseLessonResponses, AdminReviewCourseLessonErrors, ThrowOnError> => (options.client ?? client).post<AdminReviewCourseLessonResponses, AdminReviewCourseLessonErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/language_lessons/{id}/review',
+  ...options
+});
 
 export const adminListCourses = <ThrowOnError extends boolean = false>(options?: Options<AdminListCoursesData, ThrowOnError>): RequestResult<AdminListCoursesResponses, AdminListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCoursesResponses, AdminListCoursesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/languages',
   ...options
 });
 
 export const adminCreateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseData, ThrowOnError>): RequestResult<AdminCreateCourseResponses, AdminCreateCourseErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseResponses, AdminCreateCourseErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/languages',
   ...options,
   headers: {
@@ -452,12 +776,24 @@ export const adminCreateCourse = <ThrowOnError extends boolean = false>(options:
  */
 export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Options<AdminGetCourseData, ThrowOnError>): RequestResult<AdminGetCourseResponses, AdminGetCourseErrors, ThrowOnError> => (options.client ?? client).get<AdminGetCourseResponses, AdminGetCourseErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/languages/{id}',
   ...options
 });
 
 export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateCourseData, ThrowOnError>): RequestResult<AdminUpdateCourseResponses, AdminUpdateCourseErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateCourseResponses, AdminUpdateCourseErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/languages/{id}',
   ...options,
   headers: {
@@ -469,19 +805,40 @@ export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options:
 /**
  * Enqueue AI re-review of every current lesson version.
  */
-export const adminReviewCourse = <ThrowOnError extends boolean = false>(options: Options<AdminReviewCourseData, ThrowOnError>): RequestResult<AdminReviewCourseResponses, AdminReviewCourseErrors, ThrowOnError> => (options.client ?? client).post<AdminReviewCourseResponses, AdminReviewCourseErrors, ThrowOnError>({ url: '/admin/languages/{id}/review', ...options });
+export const adminReviewCourse = <ThrowOnError extends boolean = false>(options: Options<AdminReviewCourseData, ThrowOnError>): RequestResult<AdminReviewCourseResponses, AdminReviewCourseErrors, ThrowOnError> => (options.client ?? client).post<AdminReviewCourseResponses, AdminReviewCourseErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/languages/{id}/review',
+  ...options
+});
 
 /**
  * Build a new version of the course exercises.
  */
 export const adminCreateCourseVersion = <ThrowOnError extends boolean = false>(options: Options<AdminCreateCourseVersionData, ThrowOnError>): RequestResult<AdminCreateCourseVersionResponses, AdminCreateCourseVersionErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateCourseVersionResponses, AdminCreateCourseVersionErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/languages/{id}/versions',
   ...options
 });
 
 export const adminListLeads = <ThrowOnError extends boolean = false>(options?: Options<AdminListLeadsData, ThrowOnError>): RequestResult<AdminListLeadsResponses, AdminListLeadsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListLeadsResponses, AdminListLeadsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/leads',
   ...options
 });
@@ -491,6 +848,12 @@ export const adminListLeads = <ThrowOnError extends boolean = false>(options?: O
  */
 export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminGetRolePermissionsData, ThrowOnError>): RequestResult<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRolePermissionsResponses, AdminGetRolePermissionsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/role_permissions/{roleId}',
   ...options
 });
@@ -500,6 +863,12 @@ export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(op
  */
 export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRolePermissionsData, ThrowOnError>): RequestResult<AdminUpdateRolePermissionsResponses, AdminUpdateRolePermissionsErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateRolePermissionsResponses, AdminUpdateRolePermissionsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/management/role_permissions/{roleId}',
   ...options,
   headers: {
@@ -510,6 +879,12 @@ export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>
 
 export const adminListRoles = <ThrowOnError extends boolean = false>(options?: Options<AdminListRolesData, ThrowOnError>): RequestResult<AdminListRolesResponses, AdminListRolesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListRolesResponses, AdminListRolesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/roles',
   ...options
 });
@@ -520,6 +895,12 @@ export const adminListRoles = <ThrowOnError extends boolean = false>(options?: O
  */
 export const adminCreateRole = <ThrowOnError extends boolean = false>(options: Options<AdminCreateRoleData, ThrowOnError>): RequestResult<AdminCreateRoleResponses, AdminCreateRoleErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateRoleResponses, AdminCreateRoleErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/management/roles',
   ...options,
   headers: {
@@ -528,7 +909,16 @@ export const adminCreateRole = <ThrowOnError extends boolean = false>(options: O
   }
 });
 
-export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteRoleData, ThrowOnError>): RequestResult<AdminDeleteRoleResponses, AdminDeleteRoleErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteRoleResponses, AdminDeleteRoleErrors, ThrowOnError>({ url: '/admin/management/roles/{id}', ...options });
+export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteRoleData, ThrowOnError>): RequestResult<AdminDeleteRoleResponses, AdminDeleteRoleErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteRoleResponses, AdminDeleteRoleErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/management/roles/{id}',
+  ...options
+});
 
 /**
  * Get a role with its permission matrix. A missing id surfaces as 404 via
@@ -536,12 +926,24 @@ export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: O
  */
 export const adminGetRole = <ThrowOnError extends boolean = false>(options: Options<AdminGetRoleData, ThrowOnError>): RequestResult<AdminGetRoleResponses, AdminGetRoleErrors, ThrowOnError> => (options.client ?? client).get<AdminGetRoleResponses, AdminGetRoleErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/roles/{id}',
   ...options
 });
 
 export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateRoleData, ThrowOnError>): RequestResult<AdminUpdateRoleResponses, AdminUpdateRoleErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateRoleResponses, AdminUpdateRoleErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/management/roles/{id}',
   ...options,
   headers: {
@@ -552,12 +954,24 @@ export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: O
 
 export const adminListStaffMembers = <ThrowOnError extends boolean = false>(options?: Options<AdminListStaffMembersData, ThrowOnError>): RequestResult<AdminListStaffMembersResponses, AdminListStaffMembersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListStaffMembersResponses, AdminListStaffMembersErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/staff_members',
   ...options
 });
 
 export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminCreateStaffMemberData, ThrowOnError>): RequestResult<AdminCreateStaffMemberResponses, AdminCreateStaffMemberErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateStaffMemberResponses, AdminCreateStaffMemberErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/management/staff_members',
   ...options,
   headers: {
@@ -566,16 +980,37 @@ export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(opt
   }
 });
 
-export const adminDeleteStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteStaffMemberData, ThrowOnError>): RequestResult<AdminDeleteStaffMemberResponses, AdminDeleteStaffMemberErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteStaffMemberResponses, AdminDeleteStaffMemberErrors, ThrowOnError>({ url: '/admin/management/staff_members/{id}', ...options });
+export const adminDeleteStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteStaffMemberData, ThrowOnError>): RequestResult<AdminDeleteStaffMemberResponses, AdminDeleteStaffMemberErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteStaffMemberResponses, AdminDeleteStaffMemberErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/management/staff_members/{id}',
+  ...options
+});
 
 export const adminGetStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminGetStaffMemberData, ThrowOnError>): RequestResult<AdminGetStaffMemberResponses, AdminGetStaffMemberErrors, ThrowOnError> => (options.client ?? client).get<AdminGetStaffMemberResponses, AdminGetStaffMemberErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/staff_members/{id}',
   ...options
 });
 
 export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateStaffMemberData, ThrowOnError>): RequestResult<AdminUpdateStaffMemberResponses, AdminUpdateStaffMemberErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateStaffMemberResponses, AdminUpdateStaffMemberErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/management/staff_members/{id}',
   ...options,
   headers: {
@@ -586,6 +1021,12 @@ export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(opt
 
 export const adminListManagementUsers = <ThrowOnError extends boolean = false>(options?: Options<AdminListManagementUsersData, ThrowOnError>): RequestResult<AdminListManagementUsersResponses, AdminListManagementUsersErrors, ThrowOnError> => (options?.client ?? client).get<AdminListManagementUsersResponses, AdminListManagementUsersErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/users',
   ...options
 });
@@ -596,12 +1037,24 @@ export const adminListManagementUsers = <ThrowOnError extends boolean = false>(o
  */
 export const adminGetManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminGetManagementUserData, ThrowOnError>): RequestResult<AdminGetManagementUserResponses, AdminGetManagementUserErrors, ThrowOnError> => (options.client ?? client).get<AdminGetManagementUserResponses, AdminGetManagementUserErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/management/users/{id}',
   ...options
 });
 
 export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateManagementUserData, ThrowOnError>): RequestResult<AdminUpdateManagementUserResponses, AdminUpdateManagementUserErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateManagementUserResponses, AdminUpdateManagementUserErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/management/users/{id}',
   ...options,
   headers: {
@@ -612,18 +1065,36 @@ export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(
 
 export const adminListMessages = <ThrowOnError extends boolean = false>(options?: Options<AdminListMessagesData, ThrowOnError>): RequestResult<AdminListMessagesResponses, AdminListMessagesErrors, ThrowOnError> => (options?.client ?? client).get<AdminListMessagesResponses, AdminListMessagesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/messages',
   ...options
 });
 
 export const adminListReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListReviewsData, ThrowOnError>): RequestResult<AdminListReviewsResponses, AdminListReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListReviewsResponses, AdminListReviewsErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/reviews',
   ...options
 });
 
 export const adminCreateReview = <ThrowOnError extends boolean = false>(options: Options<AdminCreateReviewData, ThrowOnError>): RequestResult<AdminCreateReviewResponses, AdminCreateReviewErrors, ThrowOnError> => (options.client ?? client).post<AdminCreateReviewResponses, AdminCreateReviewErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/reviews',
   ...options,
   headers: {
@@ -632,7 +1103,16 @@ export const adminCreateReview = <ThrowOnError extends boolean = false>(options:
   }
 });
 
-export const adminDeleteReview = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteReviewData, ThrowOnError>): RequestResult<AdminDeleteReviewResponses, AdminDeleteReviewErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteReviewResponses, AdminDeleteReviewErrors, ThrowOnError>({ url: '/admin/reviews/{id}', ...options });
+export const adminDeleteReview = <ThrowOnError extends boolean = false>(options: Options<AdminDeleteReviewData, ThrowOnError>): RequestResult<AdminDeleteReviewResponses, AdminDeleteReviewErrors, ThrowOnError> => (options.client ?? client).delete<AdminDeleteReviewResponses, AdminDeleteReviewErrors, ThrowOnError>({
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/admin/reviews/{id}',
+  ...options
+});
 
 /**
  * Get a single review. A missing id surfaces as 404 via the central
@@ -640,6 +1120,12 @@ export const adminDeleteReview = <ThrowOnError extends boolean = false>(options:
  */
 export const adminGetReview = <ThrowOnError extends boolean = false>(options: Options<AdminGetReviewData, ThrowOnError>): RequestResult<AdminGetReviewResponses, AdminGetReviewErrors, ThrowOnError> => (options.client ?? client).get<AdminGetReviewResponses, AdminGetReviewErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/admin/reviews/{id}',
   ...options
 });
@@ -650,6 +1136,12 @@ export const adminGetReview = <ThrowOnError extends boolean = false>(options: Op
  */
 export const adminUpdateReview = <ThrowOnError extends boolean = false>(options: Options<AdminUpdateReviewData, ThrowOnError>): RequestResult<AdminUpdateReviewResponses, AdminUpdateReviewErrors, ThrowOnError> => (options.client ?? client).put<AdminUpdateReviewResponses, AdminUpdateReviewErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/admin/reviews/{id}',
   ...options,
   headers: {
@@ -663,6 +1155,12 @@ export const adminUpdateReview = <ThrowOnError extends boolean = false>(options:
  */
 export const listAssistantMessages = <ThrowOnError extends boolean = false>(options: Options<ListAssistantMessagesData, ThrowOnError>): RequestResult<ListAssistantMessagesResponses, ListAssistantMessagesErrors, ThrowOnError> => (options.client ?? client).get<ListAssistantMessagesResponses, ListAssistantMessagesErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/ai/lessons/{lessonId}/messages',
   ...options
 });
@@ -672,6 +1170,12 @@ export const listAssistantMessages = <ThrowOnError extends boolean = false>(opti
  * out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
  */
 export const createAssistantMessage = <ThrowOnError extends boolean = false>(options: Options<CreateAssistantMessageData, ThrowOnError>): RequestResult<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError> => (options.client ?? client).post<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/ai/lessons/{lessonId}/messages',
   ...options,
   headers: {
@@ -694,6 +1198,12 @@ export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Op
  */
 export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Options<LikeBlogPostData, ThrowOnError>): RequestResult<LikeBlogPostResponses, LikeBlogPostErrors, ThrowOnError> => (options.client ?? client).post<LikeBlogPostResponses, LikeBlogPostErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/blog_posts/{id}/likes',
   ...options
 });
@@ -720,6 +1230,12 @@ export const getBlogPost = <ThrowOnError extends boolean = false>(options: Optio
  * Request the book download link by email.
  */
 export const createBookRequest = <ThrowOnError extends boolean = false>(options: Options<CreateBookRequestData, ThrowOnError>): RequestResult<CreateBookRequestResponses, CreateBookRequestErrors, ThrowOnError> => (options.client ?? client).post<CreateBookRequestResponses, CreateBookRequestErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/book/create_request',
   ...options,
   headers: {
@@ -778,6 +1294,12 @@ export const getCourse = <ThrowOnError extends boolean = false>(options: Options
  */
 export const createLead = <ThrowOnError extends boolean = false>(options: Options<CreateLeadData, ThrowOnError>): RequestResult<CreateLeadResponses, CreateLeadErrors, ThrowOnError> => (options.client ?? client).post<CreateLeadResponses, CreateLeadErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
   url: '/leads',
   ...options,
   headers: {
@@ -849,6 +1371,12 @@ export const getCurrentUser = <ThrowOnError extends boolean = false>(options?: O
  */
 export const getMyDashboard = <ThrowOnError extends boolean = false>(options?: Options<GetMyDashboardData, ThrowOnError>): RequestResult<GetMyDashboardResponses, GetMyDashboardErrors, ThrowOnError> => (options?.client ?? client).get<GetMyDashboardResponses, GetMyDashboardErrors, ThrowOnError>({
   responseType: 'json',
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
   url: '/my',
   ...options
 });
@@ -950,7 +1478,16 @@ export const listPublicReviews = <ThrowOnError extends boolean = false>(options?
 /**
  * Log out; clears the JWT cookie.
  */
-export const deleteSession = <ThrowOnError extends boolean = false>(options?: Options<DeleteSessionData, ThrowOnError>): RequestResult<DeleteSessionResponses, DeleteSessionErrors, ThrowOnError> => (options?.client ?? client).delete<DeleteSessionResponses, DeleteSessionErrors, ThrowOnError>({ url: '/session', ...options });
+export const deleteSession = <ThrowOnError extends boolean = false>(options?: Options<DeleteSessionData, ThrowOnError>): RequestResult<DeleteSessionResponses, DeleteSessionErrors, ThrowOnError> => (options?.client ?? client).delete<DeleteSessionResponses, DeleteSessionErrors, ThrowOnError>({
+  security: [{
+      key: 'UserSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  url: '/session',
+  ...options
+});
 
 /**
  * Log in with email + password; sets the JWT cookie.

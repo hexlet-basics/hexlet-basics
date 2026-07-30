@@ -78,6 +78,7 @@ model AssistantMessageInput {
 
 @route("/ai/lessons/{lessonId}/messages")
 @tag("Lesson Player")
+@useAuth(UserSession)
 interface LessonAssistant {
   /** The assistant chat history for the current user in this lesson. */
   @get
@@ -89,6 +90,7 @@ interface LessonAssistant {
    * out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
    */
   @post
+  @useAuth([UserSession, XsrfToken])
   @operationId("createAssistantMessage")
   create(@path lessonId: int32, @body body: AssistantMessageInput): {
     @statusCode statusCode: 202;

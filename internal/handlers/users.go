@@ -13,7 +13,7 @@ import (
 const searchUsersLimit = 20
 
 // AdminListUsers returns a page of users, newest first.
-func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (*api.UserCrudPage, error) {
+func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersParams) (api.AdminListUsersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.UserQuery { return s.db.User.Query().Order(ent.Desc(user.FieldID)) },
 		s.conv.ToUserCruds,
@@ -26,9 +26,10 @@ func (s *Server) AdminListUsers(ctx context.Context, params api.AdminListUsersPa
 // AdminSearchUsers is the admin typeahead: a case-insensitive substring match on
 // first name, last name, or email (legacy `first_name_or_last_name_or_email_cont`),
 // capped at 20 rows. A blank term returns an empty list rather than every user.
-func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUsersParams) ([]api.UserCrud, error) {
+func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUsersParams) (api.AdminSearchUsersRes, error) {
 	if params.Q == "" {
-		return []api.UserCrud{}, nil
+		items := api.AdminSearchUsersOKApplicationJSON{}
+		return &items, nil
 	}
 
 	rows, err := s.db.User.Query().
@@ -44,12 +45,13 @@ func (s *Server) AdminSearchUsers(ctx context.Context, params api.AdminSearchUse
 		return nil, err
 	}
 
-	return s.conv.ToUserCruds(rows), nil
+	items := api.AdminSearchUsersOKApplicationJSON(s.conv.ToUserCruds(rows))
+	return &items, nil
 }
 
 // AdminGetUser returns a single user by id. A missing id returns ent's not-found
 // error, which the central ErrorHandler maps to 404.
-func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams) (*api.UserCrud, error) {
+func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams) (api.AdminGetUserRes, error) {
 	return getOne(ctx, int(params.ID), s.db.User.Get, s.conv.ToUserCrud)
 }
 
@@ -57,7 +59,7 @@ func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams
 //
 // Email uniqueness is enforced by the baseline unique index, not a pre-check: a
 // violation returns ent's constraint error, mapped to 409 centrally (race-free).
-func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (*api.UserCrud, error) {
+func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
 	row, err := s.db.User.Create().
 		SetEmail(req.Email).
 		SetNillableFirstName(inputconv.Ptr(req.FirstName)).
@@ -75,7 +77,7 @@ func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (*api.
 // AdminUpdateUser updates a user. A missing id returns ent's not-found error
 // (mapped to 404 centrally). A null nullable field clears the column, matching
 // the legacy assign_attributes semantics.
-func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (*api.UserCrud, error) {
+func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (api.AdminUpdateUserRes, error) {
 	upd := s.db.User.UpdateOneID(int(params.ID)).
 		SetEmail(req.Email)
 
@@ -106,6 +108,9 @@ func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params
 
 // AdminDeleteUser removes a user by id. A missing id returns ent's not-found
 // error (mapped to 404 centrally).
-func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) error {
-	return s.db.User.DeleteOneID(int(params.ID)).Exec(ctx)
+func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) (api.AdminDeleteUserRes, error) {
+	if err := s.db.User.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteUserNoContent{}, nil
 }

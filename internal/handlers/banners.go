@@ -10,7 +10,7 @@ import (
 )
 
 // AdminListBanners returns a page of banners, newest first.
-func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (*api.BannerPage, error) {
+func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBannersParams) (api.AdminListBannersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.BannerQuery { return s.db.Banner.Query().Order(ent.Desc(banner.FieldID)) },
 		s.conv.ToBanners,
@@ -22,7 +22,7 @@ func (s *Server) AdminListBanners(ctx context.Context, params api.AdminListBanne
 
 // AdminGetBanner returns a single banner by id. A missing id returns ent's
 // not-found error, which the central ErrorHandler maps to 404.
-func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (*api.Banner, error) {
+func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerParams) (api.AdminGetBannerRes, error) {
 	return getOne(ctx, int(params.ID), s.db.Banner.Get, s.conv.ToBanner)
 }
 
@@ -31,7 +31,7 @@ func (s *Server) AdminGetBanner(ctx context.Context, params api.AdminGetBannerPa
 // Banners carry no uniqueness constraint, so there is no 409 path (unlike the
 // course-category resource). An empty `body` is rejected by the contract's
 // minLength at decode time, surfaced as 400 by the central ErrorHandler.
-func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (*api.Banner, error) {
+func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (api.AdminCreateBannerRes, error) {
 	row, err := s.db.Banner.Create().
 		SetState(string(req.State)).
 		SetBackground(string(req.Background)).
@@ -52,7 +52,7 @@ func (s *Server) AdminCreateBanner(ctx context.Context, req *api.BannerInput) (*
 // AdminUpdateBanner updates a banner. A missing id returns ent's not-found error
 // (mapped to 404 centrally). A null nullable field clears the column, matching
 // the legacy assign_attributes semantics; a value sets it.
-func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, params api.AdminUpdateBannerParams) (*api.Banner, error) {
+func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, params api.AdminUpdateBannerParams) (api.AdminUpdateBannerRes, error) {
 	upd := s.db.Banner.UpdateOneID(int(params.ID)).
 		SetState(string(req.State)).
 		SetBackground(string(req.Background)).
@@ -86,6 +86,9 @@ func (s *Server) AdminUpdateBanner(ctx context.Context, req *api.BannerInput, pa
 
 // AdminDeleteBanner removes a banner by id. A missing id returns ent's not-found
 // error (mapped to 404 centrally).
-func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBannerParams) error {
-	return s.db.Banner.DeleteOneID(int(params.ID)).Exec(ctx)
+func (s *Server) AdminDeleteBanner(ctx context.Context, params api.AdminDeleteBannerParams) (api.AdminDeleteBannerRes, error) {
+	if err := s.db.Banner.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteBannerNoContent{}, nil
 }

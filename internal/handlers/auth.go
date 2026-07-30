@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"crypto/subtle"
 	"errors"
 	"fmt"
 	"net/http"
@@ -36,7 +37,18 @@ const (
 	xsrfCookie    = "XSRF-TOKEN"
 )
 
-var errInvalidCredentials = errors.New("invalid credentials")
+var (
+	errInvalidCredentials = errors.New("invalid credentials")
+	errUnauthenticated    = errors.New("request is not authenticated")
+	errAdminRequired      = errors.New("administrator access is required")
+)
+
+type authenticatedUserContext struct {
+	user *ent.User
+	jti  string
+}
+
+type authenticatedUserContextKey struct{}
 
 // AuthHandler keeps credential verification and go-pkgz/auth JWT handling
 // behind the generated ogen interface. Cookie headers are returned through the
@@ -50,6 +62,7 @@ type AuthHandler struct {
 	i18n   *localization.Translator
 	users  accounts.UserRegistrar
 	events events.StandalonePublisher
+	errors *APIErrorHandler
 }
 
 // NewAuthHandler builds the auth implementation used by the ogen handlers.
@@ -94,6 +107,7 @@ func NewAuthHandler(
 		i18n:   translator,
 		users:  registrar,
 		events: eventPublisher,
+		errors: errorHandler,
 	}
 }
 
@@ -102,14 +116,134 @@ func (h *AuthHandler) Trace(next http.Handler) http.Handler {
 	return h.auth.Trace(next)
 }
 
-// Auth applies go-pkgz/auth's required authentication and XSRF middleware.
-func (h *AuthHandler) Auth(next http.Handler) http.Handler {
-	return h.auth.Auth(next)
+// AuthenticatedUser returns the database user loaded by the generated security
+// handler. Protected application handlers use this context seam instead of
+// reparsing JWT claims or issuing a second user query.
+func AuthenticatedUser(ctx context.Context) (*ent.User, bool) {
+	value, ok := ctx.Value(authenticatedUserContextKey{}).(*authenticatedUserContext)
+	if !ok || value.user == nil {
+		return nil, false
+	}
+	return value.user, true
 }
 
-// Admin applies go-pkgz/auth's required authentication and admin authorization.
-func (h *AuthHandler) Admin(next http.Handler) http.Handler {
-	return h.auth.AdminOnly(next)
+// HandleUserSession implements ogen's generated user-session security seam.
+func (h *AuthHandler) HandleUserSession(
+	ctx context.Context,
+	_ api.OperationName,
+	session api.UserSession,
+) (context.Context, error) {
+	return h.loadAuthenticatedUser(ctx, session.APIKey)
+}
+
+// HandleAdminSession implements ogen's generated admin-session security seam.
+// The JWT's historical admin claim is intentionally ignored: authorization
+// always reads the current database value so revocation takes effect at once.
+func (h *AuthHandler) HandleAdminSession(
+	ctx context.Context,
+	_ api.OperationName,
+	session api.AdminSession,
+) (context.Context, error) {
+	ctx, err := h.loadAuthenticatedUser(ctx, session.APIKey)
+	if err != nil {
+		return ctx, err
+	}
+	u, ok := AuthenticatedUser(ctx)
+	if !ok {
+		return ctx, errUnauthenticated
+	}
+	if u.Admin == nil || !*u.Admin {
+		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
+	}
+	return ctx, nil
+}
+
+// HandleXsrfToken completes the contract's AND security group. The session
+// handler stores the verified JWT id in context before ogen invokes this method.
+func (h *AuthHandler) HandleXsrfToken(
+	ctx context.Context,
+	_ api.OperationName,
+	xsrf api.XsrfToken,
+) (context.Context, error) {
+	authenticated, ok := ctx.Value(authenticatedUserContextKey{}).(*authenticatedUserContext)
+	if !ok || authenticated.jti == "" {
+		return ctx, errUnauthenticated
+	}
+	if subtle.ConstantTimeCompare([]byte(authenticated.jti), []byte(xsrf.APIKey)) != 1 {
+		return ctx, errUnauthenticated
+	}
+	return ctx, nil
+}
+
+// RequireAdmin protects the temporary multipart adapter that ogen cannot
+// generate yet. The exact route uses the same auth implementation as generated
+// operations; no URL-family policy lives in the router.
+func (h *AuthHandler) RequireAdmin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie(authCookie)
+		if err != nil {
+			h.errors.Write(r.Context(), w, r, withHTTPStatus(http.StatusUnauthorized, errUnauthenticated))
+			return
+		}
+
+		ctx, err := h.loadAuthenticatedUser(r.Context(), cookie.Value)
+		if errors.Is(err, errUnauthenticated) {
+			err = withHTTPStatus(http.StatusUnauthorized, err)
+		}
+		if err == nil {
+			var u *ent.User
+			u, _ = AuthenticatedUser(ctx)
+			if u == nil {
+				err = withHTTPStatus(http.StatusUnauthorized, errUnauthenticated)
+			} else if u.Admin == nil || !*u.Admin {
+				err = withHTTPStatus(http.StatusForbidden, errAdminRequired)
+			}
+		}
+		if err == nil {
+			authenticated := ctx.Value(authenticatedUserContextKey{}).(*authenticatedUserContext)
+			if subtle.ConstantTimeCompare(
+				[]byte(authenticated.jti),
+				[]byte(r.Header.Get("X-XSRF-TOKEN")),
+			) != 1 {
+				err = withHTTPStatus(http.StatusUnauthorized, errUnauthenticated)
+			}
+		}
+		if err != nil {
+			h.errors.Write(ctx, w, r, err)
+			return
+		}
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func (h *AuthHandler) loadAuthenticatedUser(ctx context.Context, rawJWT string) (context.Context, error) {
+	claims, err := h.jwt.Parse(rawJWT)
+	if err != nil || claims.Handshake != nil || claims.User == nil {
+		return ctx, errUnauthenticated
+	}
+
+	traced, err := token.GetUserInfo(httptest.NewRequest(http.MethodGet, "/", nil).WithContext(ctx))
+	if err != nil || traced.ID != claims.User.ID {
+		return ctx, errUnauthenticated
+	}
+
+	userID, err := strconv.Atoi(claims.User.ID)
+	if err != nil {
+		return ctx, errUnauthenticated
+	}
+	u, err := h.db.User.Get(ctx, userID)
+	if ent.IsNotFound(err) {
+		return ctx, errUnauthenticated
+	}
+	if err != nil {
+		return ctx, withHTTPStatus(http.StatusInternalServerError, fmt.Errorf("load authenticated user: %w", err))
+	}
+
+	return context.WithValue(ctx, authenticatedUserContextKey{}, &authenticatedUserContext{
+		user: u,
+		jti:  claims.ID,
+	}), nil
 }
 
 // CreateSession authenticates once and reuses the loaded user for both the JWT
@@ -171,7 +305,7 @@ func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api
 }
 
 // DeleteSession returns go-pkgz/auth's expired session cookies.
-func (h *AuthHandler) DeleteSession(context.Context) (*api.DeleteSessionNoContent, error) {
+func (h *AuthHandler) DeleteSession(context.Context) (api.DeleteSessionRes, error) {
 	rec := httptest.NewRecorder()
 	h.jwt.Reset(rec)
 	cookies, err := responseCookies(rec, authCookie, xsrfCookie)
@@ -226,7 +360,6 @@ func (h *AuthHandler) authenticate(ctx context.Context, email, password string) 
 func (h *AuthHandler) issueCookies(u *ent.User) ([]string, error) {
 	rec := httptest.NewRecorder()
 	authUser := &token.User{ID: strconv.Itoa(u.ID), Name: *u.Email}
-	authUser.SetAdmin(u.Admin != nil && *u.Admin)
 	_, err := h.jwt.Set(rec, token.Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ID:       ids.New(),
@@ -283,7 +416,7 @@ func (s *Server) CreateUser(ctx context.Context, req *api.SignUpInput) (api.Crea
 	return s.auth.CreateUser(ctx, req)
 }
 
-func (s *Server) DeleteSession(ctx context.Context) (*api.DeleteSessionNoContent, error) {
+func (s *Server) DeleteSession(ctx context.Context) (api.DeleteSessionRes, error) {
 	return s.auth.DeleteSession(ctx)
 }
 

@@ -12,94 +12,120 @@ import (
 
 var (
 	rn82AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
+	}
+	rn92AllowedHeaders = map[string]string{
+		"DELETE": "X-Xsrf-Token",
 	}
 	rn90AllowedHeaders = map[string]string{
-		"PATCH": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PATCH":  "Content-Type,X-Xsrf-Token",
 	}
 	rn23AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn39AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn1AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn25AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn3AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn27AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn62AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn10AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn6AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn7AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn29AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn12AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn17AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn18AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn31AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
+	}
+	rn60AllowedHeaders = map[string]string{
+		"POST": "X-Xsrf-Token",
 	}
 	rn9AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn14AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"PUT": "Content-Type,X-Xsrf-Token",
+	}
+	rn57AllowedHeaders = map[string]string{
+		"POST": "X-Xsrf-Token",
+	}
+	rn15AllowedHeaders = map[string]string{
+		"POST": "X-Xsrf-Token",
 	}
 	rn44AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"PUT": "Content-Type,X-Xsrf-Token",
 	}
 	rn20AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn35AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn22AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn37AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn41AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"PUT": "Content-Type,X-Xsrf-Token",
 	}
 	rn19AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn33AllowedHeaders = map[string]string{
-		"PUT": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
 	rn77AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
+	}
+	rn115AllowedHeaders = map[string]string{
+		"POST": "X-Xsrf-Token",
 	}
 	rn78AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn80AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn66AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
@@ -126,7 +152,8 @@ var (
 		"POST": "Content-Type",
 	}
 	rn87AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+		"DELETE": "X-Xsrf-Token",
+		"POST":   "Content-Type",
 	}
 	rn88AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
@@ -292,7 +319,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								default:
 									s.notAllowed(w, r, notAllowedParams{
 										allowedMethods: "DELETE",
-										allowedHeaders: nil,
+										allowedHeaders: rn92AllowedHeaders,
 										acceptPost:     "",
 										acceptPatch:    "",
 									})
@@ -1140,7 +1167,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 														default:
 															s.notAllowed(w, r, notAllowedParams{
 																allowedMethods: "POST",
-																allowedHeaders: nil,
+																allowedHeaders: rn60AllowedHeaders,
 																acceptPost:     "",
 																acceptPatch:    "",
 															})
@@ -1254,7 +1281,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 												default:
 													s.notAllowed(w, r, notAllowedParams{
 														allowedMethods: "POST",
-														allowedHeaders: nil,
+														allowedHeaders: rn57AllowedHeaders,
 														acceptPost:     "",
 														acceptPatch:    "",
 													})
@@ -1281,7 +1308,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 												default:
 													s.notAllowed(w, r, notAllowedParams{
 														allowedMethods: "POST",
-														allowedHeaders: nil,
+														allowedHeaders: rn15AllowedHeaders,
 														acceptPost:     "",
 														acceptPatch:    "",
 													})
@@ -1873,7 +1900,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: nil,
+											allowedHeaders: rn115AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})

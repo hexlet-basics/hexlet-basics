@@ -7,6 +7,34 @@ using OpenAPI;
 namespace HexletBasics;
 
 // ---------------------------------------------------------------------------
+// Authentication schemes.
+//
+// UserSession and AdminSession deliberately read the same JWT cookie. Distinct
+// scheme names give ogen two generated SecurityHandler methods, so the
+// contract — rather than Go operation-name lists — selects whether a current
+// database admin check is required. Unsafe operations additionally require the
+// double-submit XSRF header as an AND security group.
+// ---------------------------------------------------------------------------
+
+model UserSession {
+  type: AuthType.apiKey;
+  in: ApiKeyLocation.cookie;
+  name: "JWT";
+}
+
+model AdminSession {
+  type: AuthType.apiKey;
+  in: ApiKeyLocation.cookie;
+  name: "JWT";
+}
+
+model XsrfToken {
+  type: AuthType.apiKey;
+  in: ApiKeyLocation.header;
+  name: "X-XSRF-TOKEN";
+}
+
+// ---------------------------------------------------------------------------
 // Shared primitives, envelopes and errors.
 //
 // Naming rule (see main.tsp): the domain concept is `Course`. The legacy Rails
@@ -82,14 +110,16 @@ model NotFoundError {
 @error
 model UnauthorizedError {
   @statusCode statusCode: 401;
-  message: string;
+  @header contentType: "application/problem+json";
+  @body body: ProblemDetails;
 }
 
 /** The caller is authenticated but lacks permission for this resource. */
 @error
 model ForbiddenError {
   @statusCode statusCode: 403;
-  message: string;
+  @header contentType: "application/problem+json";
+  @body body: ProblemDetails;
 }
 
 /**

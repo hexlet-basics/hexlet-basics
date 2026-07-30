@@ -133,14 +133,14 @@ func errorStatus(err error) int {
 	var ogenErr ogenerrors.Error
 	var statusErr interface{ HTTPStatus() int }
 	switch {
-	case ent.IsNotFound(err):
-		return http.StatusNotFound
-	case ent.IsConstraintError(err):
-		return http.StatusConflict
 	case errors.As(err, &statusErr):
 		return statusErr.HTTPStatus()
 	case errors.As(err, &ogenErr):
 		return ogenErr.Code()
+	case ent.IsNotFound(err):
+		return http.StatusNotFound
+	case ent.IsConstraintError(err):
+		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError
 	}

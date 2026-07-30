@@ -12,7 +12,7 @@ import (
 // over the same users table as AdminUsers: list + get + update, no create or
 // delete. It reuses the User schema and UserCrud converter.
 
-func (s *Server) AdminListManagementUsers(ctx context.Context, params api.AdminListManagementUsersParams) (*api.UserCrudPage, error) {
+func (s *Server) AdminListManagementUsers(ctx context.Context, params api.AdminListManagementUsersParams) (api.AdminListManagementUsersRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.UserQuery { return s.db.User.Query().Order(ent.Desc(user.FieldID)) },
 		s.conv.ToUserCruds,
@@ -22,14 +22,14 @@ func (s *Server) AdminListManagementUsers(ctx context.Context, params api.AdminL
 	)
 }
 
-func (s *Server) AdminGetManagementUser(ctx context.Context, params api.AdminGetManagementUserParams) (*api.UserCrud, error) {
+func (s *Server) AdminGetManagementUser(ctx context.Context, params api.AdminGetManagementUserParams) (api.AdminGetManagementUserRes, error) {
 	return getOne(ctx, int(params.ID), s.db.User.Get, s.conv.ToUserCrud)
 }
 
 // AdminUpdateManagementUser updates a user's editable fields. Email uniqueness
 // is enforced by the baseline unique index (409 via the central handler); a
 // null nullable field clears the column.
-func (s *Server) AdminUpdateManagementUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateManagementUserParams) (*api.UserCrud, error) {
+func (s *Server) AdminUpdateManagementUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateManagementUserParams) (api.AdminUpdateManagementUserRes, error) {
 	upd := s.db.User.UpdateOneID(int(params.ID)).SetEmail(req.Email)
 	applyNil(req.FirstName.Null, req.FirstName.Value, upd.SetFirstName, upd.ClearFirstName)
 	applyNil(req.LastName.Null, req.LastName.Value, upd.SetLastName, upd.ClearLastName)

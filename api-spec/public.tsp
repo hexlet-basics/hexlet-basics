@@ -101,12 +101,13 @@ interface Blog {
 
   /** Like a post (idempotent per visitor). */
   @post
+  @useAuth([UserSession, XsrfToken])
   @route("/{id}/likes")
   @operationId("likeBlogPost")
   like(@path id: int32): {
     @statusCode statusCode: 201;
     @body body: BlogPost;
-  } | NotFoundError | ApiError;
+  } | NotFoundError | UnauthorizedError | ApiError;
 }
 
 @route("/reviews")
@@ -139,6 +140,7 @@ model LeadInput {
 
 @route("/leads")
 @tag("Leads")
+@useAuth([UserSession, XsrfToken])
 interface PublicLeads {
   /** Submit a contact request. */
   @post
@@ -146,7 +148,7 @@ interface PublicLeads {
   create(@body body: LeadInput): {
     @statusCode statusCode: 201;
     @body lead: Lead;
-  } | ValidationError | ApiError;
+  } | ValidationError | UnauthorizedError | ApiError;
 }
 
 /** A request to download the free book (ru marketing funnel). */
@@ -157,12 +159,13 @@ model BookRequestInput {
 
 @route("/book")
 @tag("Marketing")
+@useAuth([UserSession, XsrfToken])
 interface Book {
   /** Request the book download link by email. */
   @post
   @route("/create_request")
   @operationId("createBookRequest")
-  createRequest(@body body: BookRequestInput): NoContent | ValidationError | ApiError;
+  createRequest(@body body: BookRequestInput): NoContent | ValidationError | UnauthorizedError | ApiError;
 }
 
 // ---- Sitemap --------------------------------------------------------------

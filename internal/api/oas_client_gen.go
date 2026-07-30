@@ -12,6 +12,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
+	"github.com/ogen-go/ogen/ogenerrors"
 	"github.com/ogen-go/ogen/otelogen"
 	"github.com/ogen-go/ogen/uri"
 	"go.opentelemetry.io/otel/attribute"
@@ -34,7 +35,7 @@ type Invoker interface {
 	// handler; banners carry no uniqueness constraint, so there is no 409 path.
 	//
 	// POST /admin/banners
-	AdminCreateBanner(ctx context.Context, request *BannerInput) (*Banner, error)
+	AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error)
 	// AdminCreateBlogPost invokes adminCreateBlogPost operation.
 	//
 	// POST /admin/blog_posts
@@ -42,22 +43,22 @@ type Invoker interface {
 	// AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 	//
 	// POST /admin/language_categories/{categoryId}/qna_items
-	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error)
+	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
 	// AdminCreateCourse invokes adminCreateCourse operation.
 	//
 	// POST /admin/languages
-	AdminCreateCourse(ctx context.Context, request *CourseInput) (*Course, error)
+	AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 	// 409 by the central ent-error handler.
 	//
 	// POST /admin/language_categories
-	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (*CourseCategory, error)
+	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
 	// AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 	//
 	// POST /admin/language_landing_pages
-	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (*CourseLandingPage, error)
+	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
 	// AdminCreateCourseVersion invokes adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
@@ -67,213 +68,213 @@ type Invoker interface {
 	// AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 	//
 	// POST /admin/language_landing_pages/{landingPageId}/qna_items
-	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error)
+	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
 	// AdminCreateReview invokes adminCreateReview operation.
 	//
 	// POST /admin/reviews
-	AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error)
+	AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error)
 	// AdminCreateRole invokes adminCreateRole operation.
 	//
 	// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
 	// POST /admin/management/roles
-	AdminCreateRole(ctx context.Context, request *RoleInput) (*StaffRoleDetail, error)
+	AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error)
 	// AdminCreateStaffMember invokes adminCreateStaffMember operation.
 	//
 	// POST /admin/management/staff_members
-	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (*StaffMember, error)
+	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error)
 	// AdminCreateUser invokes adminCreateUser operation.
 	//
 	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
 	// POST /admin/api/users
-	AdminCreateUser(ctx context.Context, request *UserInput) (*UserCrud, error)
+	AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error)
 	// AdminDeleteBanner invokes adminDeleteBanner operation.
 	//
 	// Delete a banner.
 	//
 	// DELETE /admin/banners/{id}
-	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error
+	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error)
 	// AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
 	//
 	// DELETE /admin/blog_posts/{id}
-	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error
+	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error)
 	// AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 	//
 	// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
-	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error
+	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error)
 	// AdminDeleteCourseCategory invokes adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
 	// DELETE /admin/language_categories/{id}
-	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error
+	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error)
 	// AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 	//
 	// DELETE /admin/language_landing_pages/{id}
-	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error
+	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error)
 	// AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 	//
 	// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error
+	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error)
 	// AdminDeleteReview invokes adminDeleteReview operation.
 	//
 	// DELETE /admin/reviews/{id}
-	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error
+	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error)
 	// AdminDeleteRole invokes adminDeleteRole operation.
 	//
 	// DELETE /admin/management/roles/{id}
-	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error
+	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error)
 	// AdminDeleteStaffMember invokes adminDeleteStaffMember operation.
 	//
 	// DELETE /admin/management/staff_members/{id}
-	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error
+	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error)
 	// AdminDeleteUser invokes adminDeleteUser operation.
 	//
 	// DELETE /admin/api/users/{id}
-	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error
+	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
 	// AdminGetBanner invokes adminGetBanner operation.
 	//
 	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
 	// GET /admin/banners/{id}
-	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error)
+	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
 	// AdminGetBlogPost invokes adminGetBlogPost operation.
 	//
 	// GET /admin/blog_posts/{id}
-	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error)
+	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
 	// AdminGetCourse invokes adminGetCourse operation.
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// GET /admin/languages/{id}
-	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error)
+	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory invokes adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
 	// GET /admin/language_categories/{id}
-	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error)
+	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
 	// AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 	//
 	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
 	// GET /admin/language_landing_pages/{id}
-	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error)
+	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
 	// AdminGetManagementUser invokes adminGetManagementUser operation.
 	//
 	// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// GET /admin/management/users/{id}
-	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error)
+	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
 	// AdminGetReview invokes adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
 	// GET /admin/reviews/{id}
-	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error)
+	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
 	// AdminGetRole invokes adminGetRole operation.
 	//
 	// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
 	// handler.
 	//
 	// GET /admin/management/roles/{id}
-	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error)
+	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
 	// AdminGetRolePermissions invokes adminGetRolePermissions operation.
 	//
 	// The permission matrix for a role.
 	//
 	// GET /admin/management/role_permissions/{roleId}
-	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error)
+	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
 	// AdminGetStaffMember invokes adminGetStaffMember operation.
 	//
 	// GET /admin/management/staff_members/{id}
-	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error)
+	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
 	// AdminGetUser invokes adminGetUser operation.
 	//
 	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
 	// member.
 	//
 	// GET /admin/api/users/{id}
-	AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error)
+	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
 	// AdminListBanners invokes adminListBanners operation.
 	//
 	// List banners (paginated).
 	//
 	// GET /admin/banners
-	AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error)
+	AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error)
 	// AdminListBlogPosts invokes adminListBlogPosts operation.
 	//
 	// GET /admin/blog_posts
-	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (*BlogPostPage, error)
+	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error)
 	// AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 	//
 	// GET /admin/language_categories/{categoryId}/qna_items
-	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) ([]QnaItem, error)
+	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error)
 	// AdminListCourseCategories invokes adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
 	// GET /admin/language_categories
-	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error)
+	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error)
 	// AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 	//
 	// GET /admin/language_landing_pages
-	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (*CourseLandingPagePage, error)
+	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
 	// AdminListCourseLessonMembers invokes adminListCourseLessonMembers operation.
 	//
 	// GET /admin/language_lesson_members
-	AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (*CourseLessonMemberPage, error)
+	AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (AdminListCourseLessonMembersRes, error)
 	// AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 	//
 	// GET /admin/language_lesson_reviews
-	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (*CourseLessonReviewPage, error)
+	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error)
 	// AdminListCourseLessons invokes adminListCourseLessons operation.
 	//
 	// GET /admin/language_lessons
-	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (*CourseLessonListItemPage, error)
+	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
 	// AdminListCourses invokes adminListCourses operation.
 	//
 	// GET /admin/languages
-	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (*CoursePage, error)
+	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error)
 	// AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 	//
 	// GET /admin/language_landing_pages/{landingPageId}/qna_items
-	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) ([]QnaItem, error)
+	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error)
 	// AdminListLeads invokes adminListLeads operation.
 	//
 	// GET /admin/leads
-	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (*LeadPage, error)
+	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
 	// AdminListManagementUsers invokes adminListManagementUsers operation.
 	//
 	// GET /admin/management/users
-	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (*UserCrudPage, error)
+	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error)
 	// AdminListMessages invokes adminListMessages operation.
 	//
 	// GET /admin/messages
-	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (*LessonAssistantMessagePage, error)
+	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error)
 	// AdminListReviews invokes adminListReviews operation.
 	//
 	// GET /admin/reviews
-	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (*ReviewPage, error)
+	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error)
 	// AdminListRoles invokes adminListRoles operation.
 	//
 	// GET /admin/management/roles
-	AdminListRoles(ctx context.Context, params AdminListRolesParams) (*StaffRolePage, error)
+	AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error)
 	// AdminListStaffMembers invokes adminListStaffMembers operation.
 	//
 	// GET /admin/management/staff_members
-	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (*StaffMemberPage, error)
+	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error)
 	// AdminListUsers invokes adminListUsers operation.
 	//
 	// GET /admin/api/users
-	AdminListUsers(ctx context.Context, params AdminListUsersParams) (*UserCrudPage, error)
+	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
 	// AdminReviewCourse invokes adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
@@ -291,7 +292,7 @@ type Invoker interface {
 	// Typeahead search by name/email.
 	//
 	// GET /admin/api/users/search
-	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) ([]UserCrud, error)
+	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error)
 	// AdminSetBlogPostRelatedCourses invokes adminSetBlogPostRelatedCourses operation.
 	//
 	// Set the related/promoted courses for a post.
@@ -303,7 +304,7 @@ type Invoker interface {
 	// Update a banner. A missing id surfaces as 404 via the central handler.
 	//
 	// PUT /admin/banners/{id}
-	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (*Banner, error)
+	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
 	// AdminUpdateBlogPost invokes adminUpdateBlogPost operation.
 	//
 	// PUT /admin/blog_posts/{id}
@@ -314,62 +315,62 @@ type Invoker interface {
 	// ent-error handler.
 	//
 	// PUT /admin/language_categories/{categoryId}/qna_items/{id}
-	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error)
+	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
 	// AdminUpdateCourse invokes adminUpdateCourse operation.
 	//
 	// PUT /admin/languages/{id}
-	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (*Course, error)
+	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 	// handler.
 	//
 	// PUT /admin/language_categories/{id}
-	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error)
+	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
 	// AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 	//
 	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// PUT /admin/language_landing_pages/{id}
-	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error)
+	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
 	// AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
 	// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error)
+	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
 	// AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 	//
 	// PUT /admin/management/users/{id}
-	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error)
+	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
 	// AdminUpdateReview invokes adminUpdateReview operation.
 	//
 	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
 	//
 	// PUT /admin/reviews/{id}
-	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (*Review, error)
+	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
 	// AdminUpdateRole invokes adminUpdateRole operation.
 	//
 	// PUT /admin/management/roles/{id}
-	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error)
+	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
 	// AdminUpdateRolePermissions invokes adminUpdateRolePermissions operation.
 	//
 	// Replace the permission matrix for a role.
 	//
 	// PUT /admin/management/role_permissions/{roleId}
-	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error)
+	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
 	// AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 	//
 	// PUT /admin/management/staff_members/{id}
-	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error)
+	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
 	// AdminUpdateUser invokes adminUpdateUser operation.
 	//
 	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
 	// handler.
 	//
 	// PUT /admin/api/users/{id}
-	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (*UserCrud, error)
+	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
 	// CheckLesson invokes checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
@@ -473,7 +474,7 @@ type Invoker interface {
 	// Log out; clears the JWT cookie.
 	//
 	// DELETE /session
-	DeleteSession(ctx context.Context) (*DeleteSessionNoContent, error)
+	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
 	// GetBlogPost invokes getBlogPost operation.
 	//
 	// A single blog post by slug.
@@ -611,11 +612,12 @@ type Invoker interface {
 // Client implements OAS client.
 type Client struct {
 	serverURL *url.URL
+	sec       SecuritySource
 	baseClient
 }
 
 // NewClient initializes new Client defined by OAS.
-func NewClient(serverURL string, opts ...ClientOption) (*Client, error) {
+func NewClient(serverURL string, sec SecuritySource, opts ...ClientOption) (*Client, error) {
 	u, err := url.Parse(serverURL)
 	if err != nil {
 		return nil, err
@@ -628,6 +630,7 @@ func NewClient(serverURL string, opts ...ClientOption) (*Client, error) {
 	}
 	return &Client{
 		serverURL:  u,
+		sec:        sec,
 		baseClient: c,
 	}, nil
 }
@@ -653,12 +656,12 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // handler; banners carry no uniqueness constraint, so there is no 409 path.
 //
 // POST /admin/banners
-func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (*Banner, error) {
+func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error) {
 	res, err := c.sendAdminCreateBanner(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput) (res *Banner, err error) {
+func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput) (res AdminCreateBannerRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -706,6 +709,50 @@ func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput
 	}
 	if err := encodeAdminCreateBannerRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -789,6 +836,50 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -815,12 +906,12 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 // AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 //
 // POST /admin/language_categories/{categoryId}/qna_items
-func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (*QnaItem, error) {
+func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error) {
 	res, err := c.sendAdminCreateCategoryQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (res *QnaItem, err error) {
+func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (res AdminCreateCategoryQnaItemRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -889,6 +980,50 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateCategoryQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateCategoryQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -915,12 +1050,12 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 // AdminCreateCourse invokes adminCreateCourse operation.
 //
 // POST /admin/languages
-func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (*Course, error) {
+func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error) {
 	res, err := c.sendAdminCreateCourse(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput) (res *Course, err error) {
+func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput) (res AdminCreateCourseRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -970,6 +1105,50 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -999,12 +1178,12 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 // 409 by the central ent-error handler.
 //
 // POST /admin/language_categories
-func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (*CourseCategory, error) {
+func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error) {
 	res, err := c.sendAdminCreateCourseCategory(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (res *CourseCategory, err error) {
+func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (res AdminCreateCourseCategoryRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1054,6 +1233,50 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1080,12 +1303,12 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 // AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 //
 // POST /admin/language_landing_pages
-func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (*CourseLandingPage, error) {
+func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error) {
 	res, err := c.sendAdminCreateCourseLandingPage(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (res *CourseLandingPage, err error) {
+func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (res AdminCreateCourseLandingPageRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1133,6 +1356,50 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 	}
 	if err := encodeAdminCreateCourseLandingPageRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -1234,6 +1501,50 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateCourseVersionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateCourseVersionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1260,12 +1571,12 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 // AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 //
 // POST /admin/language_landing_pages/{landingPageId}/qna_items
-func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (*QnaItem, error) {
+func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminCreateLandingPageQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (res *QnaItem, err error) {
+func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (res AdminCreateLandingPageQnaItemRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1334,6 +1645,50 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateLandingPageQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateLandingPageQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1360,12 +1715,12 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 // AdminCreateReview invokes adminCreateReview operation.
 //
 // POST /admin/reviews
-func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (*Review, error) {
+func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error) {
 	res, err := c.sendAdminCreateReview(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput) (res *Review, err error) {
+func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput) (res AdminCreateReviewRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1415,6 +1770,50 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1444,12 +1843,12 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 // handler.
 //
 // POST /admin/management/roles
-func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (*StaffRoleDetail, error) {
+func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error) {
 	res, err := c.sendAdminCreateRole(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (res *StaffRoleDetail, err error) {
+func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (res AdminCreateRoleRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateRole"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1499,6 +1898,50 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1525,12 +1968,12 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 // AdminCreateStaffMember invokes adminCreateStaffMember operation.
 //
 // POST /admin/management/staff_members
-func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (*StaffMember, error) {
+func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error) {
 	res, err := c.sendAdminCreateStaffMember(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (res *StaffMember, err error) {
+func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (res AdminCreateStaffMemberRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1580,6 +2023,50 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1609,12 +2096,12 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 // handler.
 //
 // POST /admin/api/users
-func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (*UserCrud, error) {
+func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error) {
 	res, err := c.sendAdminCreateUser(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (res *UserCrud, err error) {
+func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (res AdminCreateUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -1664,6 +2151,50 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminCreateUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminCreateUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1692,12 +2223,12 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 // Delete a banner.
 //
 // DELETE /admin/banners/{id}
-func (c *Client) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error {
-	_, err := c.sendAdminDeleteBanner(ctx, params)
-	return err
+func (c *Client) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error) {
+	res, err := c.sendAdminDeleteBanner(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (res *AdminDeleteBannerNoContent, err error) {
+func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (res AdminDeleteBannerRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBanner"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -1762,6 +2293,50 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1788,12 +2363,12 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 // AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
 //
 // DELETE /admin/blog_posts/{id}
-func (c *Client) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error {
-	_, err := c.sendAdminDeleteBlogPost(ctx, params)
-	return err
+func (c *Client) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error) {
+	res, err := c.sendAdminDeleteBlogPost(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (res *AdminDeleteBlogPostNoContent, err error) {
+func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (res AdminDeleteBlogPostRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBlogPost"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -1858,6 +2433,50 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -1884,12 +2503,12 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 // AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 //
 // DELETE /admin/language_categories/{categoryId}/qna_items/{id}
-func (c *Client) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error {
-	_, err := c.sendAdminDeleteCategoryQnaItem(ctx, params)
-	return err
+func (c *Client) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error) {
+	res, err := c.sendAdminDeleteCategoryQnaItem(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (res *AdminDeleteCategoryQnaItemNoContent, err error) {
+func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (res AdminDeleteCategoryQnaItemRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -1973,6 +2592,50 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteCategoryQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteCategoryQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2001,12 +2664,12 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 // Delete a course category.
 //
 // DELETE /admin/language_categories/{id}
-func (c *Client) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error {
-	_, err := c.sendAdminDeleteCourseCategory(ctx, params)
-	return err
+func (c *Client) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error) {
+	res, err := c.sendAdminDeleteCourseCategory(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (res *AdminDeleteCourseCategoryNoContent, err error) {
+func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (res AdminDeleteCourseCategoryRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2071,6 +2734,50 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2097,12 +2804,12 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 // AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 //
 // DELETE /admin/language_landing_pages/{id}
-func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error {
-	_, err := c.sendAdminDeleteCourseLandingPage(ctx, params)
-	return err
+func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error) {
+	res, err := c.sendAdminDeleteCourseLandingPage(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (res *AdminDeleteCourseLandingPageNoContent, err error) {
+func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (res AdminDeleteCourseLandingPageRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2167,6 +2874,50 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2193,12 +2944,12 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 // AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 //
 // DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error {
-	_, err := c.sendAdminDeleteLandingPageQnaItem(ctx, params)
-	return err
+func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error) {
+	res, err := c.sendAdminDeleteLandingPageQnaItem(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (res *AdminDeleteLandingPageQnaItemNoContent, err error) {
+func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (res AdminDeleteLandingPageQnaItemRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2282,6 +3033,50 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteLandingPageQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteLandingPageQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2308,12 +3103,12 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 // AdminDeleteReview invokes adminDeleteReview operation.
 //
 // DELETE /admin/reviews/{id}
-func (c *Client) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error {
-	_, err := c.sendAdminDeleteReview(ctx, params)
-	return err
+func (c *Client) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error) {
+	res, err := c.sendAdminDeleteReview(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (res *AdminDeleteReviewNoContent, err error) {
+func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (res AdminDeleteReviewRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteReview"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2378,6 +3173,50 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2404,12 +3243,12 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 // AdminDeleteRole invokes adminDeleteRole operation.
 //
 // DELETE /admin/management/roles/{id}
-func (c *Client) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error {
-	_, err := c.sendAdminDeleteRole(ctx, params)
-	return err
+func (c *Client) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error) {
+	res, err := c.sendAdminDeleteRole(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (res *AdminDeleteRoleNoContent, err error) {
+func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (res AdminDeleteRoleRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteRole"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2474,6 +3313,50 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2500,12 +3383,12 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 // AdminDeleteStaffMember invokes adminDeleteStaffMember operation.
 //
 // DELETE /admin/management/staff_members/{id}
-func (c *Client) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error {
-	_, err := c.sendAdminDeleteStaffMember(ctx, params)
-	return err
+func (c *Client) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error) {
+	res, err := c.sendAdminDeleteStaffMember(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (res *AdminDeleteStaffMemberNoContent, err error) {
+func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (res AdminDeleteStaffMemberRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteStaffMember"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2570,6 +3453,50 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2596,12 +3523,12 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 // AdminDeleteUser invokes adminDeleteUser operation.
 //
 // DELETE /admin/api/users/{id}
-func (c *Client) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error {
-	_, err := c.sendAdminDeleteUser(ctx, params)
-	return err
+func (c *Client) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error) {
+	res, err := c.sendAdminDeleteUser(ctx, params)
+	return res, err
 }
 
-func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (res *AdminDeleteUserNoContent, err error) {
+func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (res AdminDeleteUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteUser"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -2666,6 +3593,50 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminDeleteUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminDeleteUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2695,12 +3666,12 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 // union member.
 //
 // GET /admin/banners/{id}
-func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (*Banner, error) {
+func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error) {
 	res, err := c.sendAdminGetBanner(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerParams) (res *Banner, err error) {
+func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerParams) (res AdminGetBannerRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBanner"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -2765,6 +3736,39 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2791,12 +3795,12 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 // AdminGetBlogPost invokes adminGetBlogPost operation.
 //
 // GET /admin/blog_posts/{id}
-func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (*BlogPost, error) {
+func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error) {
 	res, err := c.sendAdminGetBlogPost(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (res *BlogPost, err error) {
+func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (res AdminGetBlogPostRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -2861,6 +3865,39 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2889,12 +3926,12 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
 // GET /admin/languages/{id}
-func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (*Course, error) {
+func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error) {
 	res, err := c.sendAdminGetCourse(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCourseParams) (res *Course, err error) {
+func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCourseParams) (res AdminGetCourseRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -2959,6 +3996,39 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -2988,12 +4058,12 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 // typed union member.
 //
 // GET /admin/language_categories/{id}
-func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (*CourseCategory, error) {
+func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error) {
 	res, err := c.sendAdminGetCourseCategory(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (res *CourseCategory, err error) {
+func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (res AdminGetCourseCategoryRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3058,6 +4128,39 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3087,12 +4190,12 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 // typed union member.
 //
 // GET /admin/language_landing_pages/{id}
-func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (*CourseLandingPage, error) {
+func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error) {
 	res, err := c.sendAdminGetCourseLandingPage(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (res *CourseLandingPage, err error) {
+func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (res AdminGetCourseLandingPageRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3157,6 +4260,39 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3185,12 +4321,12 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 // Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 //
 // GET /admin/management/users/{id}
-func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (*UserCrud, error) {
+func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error) {
 	res, err := c.sendAdminGetManagementUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (res *UserCrud, err error) {
+func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (res AdminGetManagementUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetManagementUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3255,6 +4391,39 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetManagementUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3284,12 +4453,12 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 // union member.
 //
 // GET /admin/reviews/{id}
-func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (*Review, error) {
+func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error) {
 	res, err := c.sendAdminGetReview(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewParams) (res *Review, err error) {
+func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewParams) (res AdminGetReviewRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetReview"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3354,6 +4523,39 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3383,12 +4585,12 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 // handler.
 //
 // GET /admin/management/roles/{id}
-func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (*StaffRoleDetail, error) {
+func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error) {
 	res, err := c.sendAdminGetRole(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams) (res *StaffRoleDetail, err error) {
+func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams) (res AdminGetRoleRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRole"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3453,6 +4655,39 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3481,12 +4716,12 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 // The permission matrix for a role.
 //
 // GET /admin/management/role_permissions/{roleId}
-func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (*StaffRoleDetail, error) {
+func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error) {
 	res, err := c.sendAdminGetRolePermissions(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (res *StaffRoleDetail, err error) {
+func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (res AdminGetRolePermissionsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3551,6 +4786,39 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetRolePermissionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3577,12 +4845,12 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 // AdminGetStaffMember invokes adminGetStaffMember operation.
 //
 // GET /admin/management/staff_members/{id}
-func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (*StaffMember, error) {
+func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error) {
 	res, err := c.sendAdminGetStaffMember(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (res *StaffMember, err error) {
+func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (res AdminGetStaffMemberRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetStaffMember"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3647,6 +4915,39 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3676,12 +4977,12 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 // member.
 //
 // GET /admin/api/users/{id}
-func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (*UserCrud, error) {
+func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error) {
 	res, err := c.sendAdminGetUser(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams) (res *UserCrud, err error) {
+func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams) (res AdminGetUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3746,6 +5047,39 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminGetUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3774,12 +5108,12 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 // List banners (paginated).
 //
 // GET /admin/banners
-func (c *Client) AdminListBanners(ctx context.Context, params AdminListBannersParams) (*BannerPage, error) {
+func (c *Client) AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error) {
 	res, err := c.sendAdminListBanners(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBannersParams) (res *BannerPage, err error) {
+func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBannersParams) (res AdminListBannersRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBanners"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -3898,6 +5232,39 @@ func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBanne
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListBannersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -3924,12 +5291,12 @@ func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBanne
 // AdminListBlogPosts invokes adminListBlogPosts operation.
 //
 // GET /admin/blog_posts
-func (c *Client) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (*BlogPostPage, error) {
+func (c *Client) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error) {
 	res, err := c.sendAdminListBlogPosts(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (res *BlogPostPage, err error) {
+func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (res AdminListBlogPostsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBlogPosts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4048,6 +5415,39 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListBlogPostsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4074,12 +5474,12 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 // AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 //
 // GET /admin/language_categories/{categoryId}/qna_items
-func (c *Client) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) ([]QnaItem, error) {
+func (c *Client) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error) {
 	res, err := c.sendAdminListCategoryQnaItems(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (res []QnaItem, err error) {
+func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (res AdminListCategoryQnaItemsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCategoryQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4145,6 +5545,39 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCategoryQnaItemsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4173,12 +5606,12 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 // List course categories (paginated).
 //
 // GET /admin/language_categories
-func (c *Client) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (*CourseCategoryPage, error) {
+func (c *Client) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error) {
 	res, err := c.sendAdminListCourseCategories(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (res *CourseCategoryPage, err error) {
+func (c *Client) sendAdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (res AdminListCourseCategoriesRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4297,6 +5730,39 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCourseCategoriesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4323,12 +5789,12 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 // AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 //
 // GET /admin/language_landing_pages
-func (c *Client) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (*CourseLandingPagePage, error) {
+func (c *Client) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error) {
 	res, err := c.sendAdminListCourseLandingPages(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (res *CourseLandingPagePage, err error) {
+func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (res AdminListCourseLandingPagesRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLandingPages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4447,6 +5913,39 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCourseLandingPagesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4473,12 +5972,12 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 // AdminListCourseLessonMembers invokes adminListCourseLessonMembers operation.
 //
 // GET /admin/language_lesson_members
-func (c *Client) AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (*CourseLessonMemberPage, error) {
+func (c *Client) AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (AdminListCourseLessonMembersRes, error) {
 	res, err := c.sendAdminListCourseLessonMembers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (res *CourseLessonMemberPage, err error) {
+func (c *Client) sendAdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (res AdminListCourseLessonMembersRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonMembers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4597,6 +6096,39 @@ func (c *Client) sendAdminListCourseLessonMembers(ctx context.Context, params Ad
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCourseLessonMembersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4623,12 +6155,12 @@ func (c *Client) sendAdminListCourseLessonMembers(ctx context.Context, params Ad
 // AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 //
 // GET /admin/language_lesson_reviews
-func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (*CourseLessonReviewPage, error) {
+func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error) {
 	res, err := c.sendAdminListCourseLessonReviews(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (res *CourseLessonReviewPage, err error) {
+func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (res AdminListCourseLessonReviewsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4747,6 +6279,39 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCourseLessonReviewsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4773,12 +6338,12 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 // AdminListCourseLessons invokes adminListCourseLessons operation.
 //
 // GET /admin/language_lessons
-func (c *Client) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (*CourseLessonListItemPage, error) {
+func (c *Client) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error) {
 	res, err := c.sendAdminListCourseLessons(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (res *CourseLessonListItemPage, err error) {
+func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (res AdminListCourseLessonsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessons"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -4897,6 +6462,39 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCourseLessonsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -4923,12 +6521,12 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 // AdminListCourses invokes adminListCourses operation.
 //
 // GET /admin/languages
-func (c *Client) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (*CoursePage, error) {
+func (c *Client) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error) {
 	res, err := c.sendAdminListCourses(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCoursesParams) (res *CoursePage, err error) {
+func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCoursesParams) (res AdminListCoursesRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5047,6 +6645,39 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListCoursesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5073,12 +6704,12 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 // AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 //
 // GET /admin/language_landing_pages/{landingPageId}/qna_items
-func (c *Client) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) ([]QnaItem, error) {
+func (c *Client) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error) {
 	res, err := c.sendAdminListLandingPageQnaItems(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (res []QnaItem, err error) {
+func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (res AdminListLandingPageQnaItemsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLandingPageQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5144,6 +6775,39 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListLandingPageQnaItemsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5170,12 +6834,12 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 // AdminListLeads invokes adminListLeads operation.
 //
 // GET /admin/leads
-func (c *Client) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (*LeadPage, error) {
+func (c *Client) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error) {
 	res, err := c.sendAdminListLeads(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsParams) (res *LeadPage, err error) {
+func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsParams) (res AdminListLeadsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLeads"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5294,6 +6958,39 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListLeadsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5320,12 +7017,12 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 // AdminListManagementUsers invokes adminListManagementUsers operation.
 //
 // GET /admin/management/users
-func (c *Client) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (*UserCrudPage, error) {
+func (c *Client) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error) {
 	res, err := c.sendAdminListManagementUsers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (res *UserCrudPage, err error) {
+func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (res AdminListManagementUsersRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListManagementUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5444,6 +7141,39 @@ func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminL
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListManagementUsersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5470,12 +7200,12 @@ func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminL
 // AdminListMessages invokes adminListMessages operation.
 //
 // GET /admin/messages
-func (c *Client) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (*LessonAssistantMessagePage, error) {
+func (c *Client) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error) {
 	res, err := c.sendAdminListMessages(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMessagesParams) (res *LessonAssistantMessagePage, err error) {
+func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMessagesParams) (res AdminListMessagesRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5594,6 +7324,39 @@ func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMess
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListMessagesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5620,12 +7383,12 @@ func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMess
 // AdminListReviews invokes adminListReviews operation.
 //
 // GET /admin/reviews
-func (c *Client) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (*ReviewPage, error) {
+func (c *Client) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error) {
 	res, err := c.sendAdminListReviews(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListReviewsParams) (res *ReviewPage, err error) {
+func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListReviewsParams) (res AdminListReviewsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5744,6 +7507,39 @@ func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListRevie
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListReviewsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5770,12 +7566,12 @@ func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListRevie
 // AdminListRoles invokes adminListRoles operation.
 //
 // GET /admin/management/roles
-func (c *Client) AdminListRoles(ctx context.Context, params AdminListRolesParams) (*StaffRolePage, error) {
+func (c *Client) AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error) {
 	res, err := c.sendAdminListRoles(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesParams) (res *StaffRolePage, err error) {
+func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesParams) (res AdminListRolesRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListRoles"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -5894,6 +7690,39 @@ func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesPa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListRolesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -5920,12 +7749,12 @@ func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesPa
 // AdminListStaffMembers invokes adminListStaffMembers operation.
 //
 // GET /admin/management/staff_members
-func (c *Client) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (*StaffMemberPage, error) {
+func (c *Client) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error) {
 	res, err := c.sendAdminListStaffMembers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (res *StaffMemberPage, err error) {
+func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (res AdminListStaffMembersRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListStaffMembers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6044,6 +7873,39 @@ func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminList
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListStaffMembersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -6070,12 +7932,12 @@ func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminList
 // AdminListUsers invokes adminListUsers operation.
 //
 // GET /admin/api/users
-func (c *Client) AdminListUsers(ctx context.Context, params AdminListUsersParams) (*UserCrudPage, error) {
+func (c *Client) AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error) {
 	res, err := c.sendAdminListUsers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersParams) (res *UserCrudPage, err error) {
+func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersParams) (res AdminListUsersRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6194,6 +8056,39 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminListUsersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -6291,6 +8186,50 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 	r, err := ht.NewRequest(ctx, "POST", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminReviewCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminReviewCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -6392,6 +8331,50 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminReviewCourseLessonOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminReviewCourseLessonOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -6420,12 +8403,12 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 // Typeahead search by name/email.
 //
 // GET /admin/api/users/search
-func (c *Client) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) ([]UserCrud, error) {
+func (c *Client) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error) {
 	res, err := c.sendAdminSearchUsers(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (res []UserCrud, err error) {
+func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (res AdminSearchUsersRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSearchUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
@@ -6488,6 +8471,39 @@ func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUse
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminSearchUsersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -6592,6 +8608,50 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminSetBlogPostRelatedCoursesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminSetBlogPostRelatedCoursesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -6620,12 +8680,12 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 // Update a banner. A missing id surfaces as 404 via the central handler.
 //
 // PUT /admin/banners/{id}
-func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (*Banner, error) {
+func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error) {
 	res, err := c.sendAdminUpdateBanner(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (res *Banner, err error) {
+func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (res AdminUpdateBannerRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBanner"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -6691,6 +8751,50 @@ func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput
 	}
 	if err := encodeAdminUpdateBannerRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateBannerOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -6792,6 +8896,50 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -6821,12 +8969,12 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 // ent-error handler.
 //
 // PUT /admin/language_categories/{categoryId}/qna_items/{id}
-func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (*QnaItem, error) {
+func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error) {
 	res, err := c.sendAdminUpdateCategoryQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (res *QnaItem, err error) {
+func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (res AdminUpdateCategoryQnaItemRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -6913,6 +9061,50 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateCategoryQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateCategoryQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -6939,12 +9131,12 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 // AdminUpdateCourse invokes adminUpdateCourse operation.
 //
 // PUT /admin/languages/{id}
-func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (*Course, error) {
+func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error) {
 	res, err := c.sendAdminUpdateCourse(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (res *Course, err error) {
+func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (res AdminUpdateCourseRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7012,6 +9204,50 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateCourseOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7041,12 +9277,12 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 // handler.
 //
 // PUT /admin/language_categories/{id}
-func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (*CourseCategory, error) {
+func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error) {
 	res, err := c.sendAdminUpdateCourseCategory(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (res *CourseCategory, err error) {
+func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (res AdminUpdateCourseCategoryRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7114,6 +9350,50 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateCourseCategoryOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7142,12 +9422,12 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
 // PUT /admin/language_landing_pages/{id}
-func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (*CourseLandingPage, error) {
+func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error) {
 	res, err := c.sendAdminUpdateCourseLandingPage(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (res *CourseLandingPage, err error) {
+func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (res AdminUpdateCourseLandingPageRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7215,6 +9495,50 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateCourseLandingPageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7244,12 +9568,12 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 // ent-error handler.
 //
 // PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (*QnaItem, error) {
+func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminUpdateLandingPageQnaItem(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (res *QnaItem, err error) {
+func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (res AdminUpdateLandingPageQnaItemRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7336,6 +9660,50 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateLandingPageQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateLandingPageQnaItemOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7362,12 +9730,12 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 // AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 //
 // PUT /admin/management/users/{id}
-func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (*UserCrud, error) {
+func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error) {
 	res, err := c.sendAdminUpdateManagementUser(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (res *UserCrud, err error) {
+func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (res AdminUpdateManagementUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateManagementUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7435,6 +9803,50 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateManagementUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateManagementUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7463,12 +9875,12 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 // Update a review. A missing id surfaces as 404 via the central ent-error handler.
 //
 // PUT /admin/reviews/{id}
-func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (*Review, error) {
+func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error) {
 	res, err := c.sendAdminUpdateReview(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (res *Review, err error) {
+func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (res AdminUpdateReviewRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateReview"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7536,6 +9948,50 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateReviewOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7562,12 +10018,12 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 // AdminUpdateRole invokes adminUpdateRole operation.
 //
 // PUT /admin/management/roles/{id}
-func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (*StaffRoleDetail, error) {
+func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error) {
 	res, err := c.sendAdminUpdateRole(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (res *StaffRoleDetail, err error) {
+func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (res AdminUpdateRoleRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRole"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7635,6 +10091,50 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7663,12 +10163,12 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 // Replace the permission matrix for a role.
 //
 // PUT /admin/management/role_permissions/{roleId}
-func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (*StaffRoleDetail, error) {
+func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error) {
 	res, err := c.sendAdminUpdateRolePermissions(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (res *StaffRoleDetail, err error) {
+func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (res AdminUpdateRolePermissionsRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7736,6 +10236,50 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateRolePermissionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateRolePermissionsOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7762,12 +10306,12 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 // AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 //
 // PUT /admin/management/staff_members/{id}
-func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (*StaffMember, error) {
+func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error) {
 	res, err := c.sendAdminUpdateStaffMember(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (res *StaffMember, err error) {
+func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (res AdminUpdateStaffMemberRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7835,6 +10379,50 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateStaffMemberOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -7864,12 +10452,12 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 // handler.
 //
 // PUT /admin/api/users/{id}
-func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (*UserCrud, error) {
+func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error) {
 	res, err := c.sendAdminUpdateUser(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (res *UserCrud, err error) {
+func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (res AdminUpdateUserRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
@@ -7935,6 +10523,50 @@ func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, pa
 	}
 	if err := encodeAdminUpdateUserRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminUpdateUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminUpdateUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -8423,6 +11055,50 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, CreateAssistantMessageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, CreateAssistantMessageOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -8506,6 +11182,50 @@ func (c *Client) sendCreateBookRequest(ctx context.Context, request *BookRequest
 		return res, errors.Wrap(err, "encode request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, CreateBookRequestOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, CreateBookRequestOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -8587,6 +11307,50 @@ func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res Cr
 	}
 	if err := encodeCreateLeadRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, CreateLeadOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, CreateLeadOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -8753,6 +11517,50 @@ func (c *Client) sendCreatePasskey(ctx context.Context, request *PasskeyRegistra
 	}
 	if err := encodeCreatePasskeyRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, CreatePasskeyOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, CreatePasskeyOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -9250,6 +12058,50 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, DeleteAccountOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, DeleteAccountOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -9348,6 +12200,50 @@ func (c *Client) sendDeletePasskey(ctx context.Context, params DeletePasskeyPara
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, DeletePasskeyOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, DeletePasskeyOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -9376,12 +12272,12 @@ func (c *Client) sendDeletePasskey(ctx context.Context, params DeletePasskeyPara
 // Log out; clears the JWT cookie.
 //
 // DELETE /session
-func (c *Client) DeleteSession(ctx context.Context) (*DeleteSessionNoContent, error) {
+func (c *Client) DeleteSession(ctx context.Context) (DeleteSessionRes, error) {
 	res, err := c.sendDeleteSession(ctx)
 	return res, err
 }
 
-func (c *Client) sendDeleteSession(ctx context.Context) (res *DeleteSessionNoContent, err error) {
+func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteSession"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
@@ -9426,6 +12322,50 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res *DeleteSessionNoCon
 	r, err := ht.NewRequest(ctx, "DELETE", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, DeleteSessionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, DeleteSessionOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -9918,6 +12858,39 @@ func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes,
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, GetMyDashboardOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -10193,6 +13166,39 @@ func (c *Client) sendGetProfile(ctx context.Context) (res GetProfileRes, err err
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, GetProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -10472,6 +13478,50 @@ func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, LikeBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, LikeBlogPostOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -10569,6 +13619,39 @@ func (c *Client) sendListAssistantMessages(ctx context.Context, params ListAssis
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, ListAssistantMessagesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -10883,6 +13966,39 @@ func (c *Client) sendListPasskeys(ctx context.Context) (res ListPasskeysRes, err
 		return res, errors.Wrap(err, "create request")
 	}
 
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, ListPasskeysOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
 	stage = "SendRequest"
 	resp, err := c.cfg.Client.Do(r)
 	if err != nil {
@@ -11193,6 +14309,39 @@ func (c *Client) sendNewPasskey(ctx context.Context) (res NewPasskeyRes, err err
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, NewPasskeyOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"
@@ -11555,6 +14704,50 @@ func (c *Client) sendUpdateProfile(ctx context.Context, request *ProfileInput) (
 	}
 	if err := encodeUpdateProfileRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, UpdateProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, UpdateProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
 	}
 
 	stage = "SendRequest"

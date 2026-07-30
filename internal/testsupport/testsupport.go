@@ -13,21 +13,26 @@ package testsupport
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/go-pkgz/auth/v2/token"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/riverqueue/river"
 	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/ids"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/store"
@@ -39,6 +44,7 @@ import (
 var testConfig = &config.Config{
 	AppHost:   "code-basics.com",
 	PublicURL: "http://localhost:3001",
+	JWTSecret: "test-secret",
 }
 
 // NewClient opens an ent client bound to a fresh sql.Tx that is rolled back when
@@ -104,7 +110,7 @@ func NewAPIErrorHandler(t testing.TB, translator *localization.Translator) *hand
 // a test-harness artifact, not a behavioural one.
 type Harness struct {
 	// Client issues typed calls (URLs and bodies are generated, never hand-written).
-	Client *api.Client
+	Client *Client
 	// DB queries the same transaction the handlers wrote through, for assertions.
 	DB *ent.Client
 	// Enqueuer records background jobs the handlers scheduled, so a test can
@@ -135,8 +141,10 @@ func NewHarness(t *testing.T) *Harness {
 	eventPublisher := &RecordingEventPublisher{}
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
+	handler := handlers.NewServer(db, testConfig, enqueuer, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
-		handlers.NewServer(db, testConfig, enqueuer, registrar, eventPublisher, translator, errorHandler),
+		handler,
+		handler.AuthHandler(),
 		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
@@ -145,16 +153,72 @@ func NewHarness(t *testing.T) *Harness {
 		t.Fatalf("new api server: %v", err)
 	}
 
-	doer := &inProcessDoer{server: translator.Middleware(srv)}
-	client, err := api.NewClient("http://test", api.WithClient(doer))
+	doer := &inProcessDoer{server: translator.Middleware(handler.AuthHandler().Trace(srv))}
+	security := newHarnessSecurity(t, db)
+	client, err := api.NewClient("http://test", security, api.WithClient(doer))
 	if err != nil {
 		t.Fatalf("new api client: %v", err)
 	}
 
 	return &Harness{
-		Client: client, DB: db, doer: doer,
+		Client: &Client{Client: client}, DB: db, doer: doer,
 		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
 	}
+}
+
+type harnessSecurity struct {
+	jwt  string
+	xsrf string
+}
+
+func newHarnessSecurity(t *testing.T, db *ent.Client) *harnessSecurity {
+	t.Helper()
+
+	u, err := db.User.Query().Where(user.AdminEQ(true)).First(t.Context())
+	if err != nil {
+		t.Fatalf("load harness admin: %v", err)
+	}
+
+	jti := ids.New()
+	rec := httptest.NewRecorder()
+	_, err = token.NewService(token.Opts{
+		SecretReader: token.SecretFunc(func(string) (string, error) {
+			return testConfig.JWTSecret, nil
+		}),
+	}).Set(rec, token.Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ID:       jti,
+			Audience: jwt.ClaimStrings{"hexlet-basics"},
+		},
+		User: &token.User{
+			ID:   fmt.Sprintf("%d", u.ID),
+			Name: *u.Email,
+		},
+		AuthProvider: &token.AuthProvider{Name: "password"},
+	})
+	if err != nil {
+		t.Fatalf("create harness JWT: %v", err)
+	}
+
+	for _, cookie := range rec.Result().Cookies() {
+		if cookie.Name == "JWT" {
+			return &harnessSecurity{jwt: cookie.Value, xsrf: jti}
+		}
+	}
+	t.Fatal("JWT cookie was not issued")
+	return nil
+}
+
+func (s *harnessSecurity) AdminSession(context.Context, api.OperationName) (api.AdminSession, error) {
+	return api.AdminSession{APIKey: s.jwt}, nil
+}
+
+func (s *harnessSecurity) UserSession(context.Context, api.OperationName) (api.UserSession, error) {
+	return api.UserSession{APIKey: s.jwt}, nil
+}
+
+func (s *harnessSecurity) XsrfToken(context.Context, api.OperationName) (api.XsrfToken, error) {
+	return api.XsrfToken{APIKey: s.xsrf}, nil
 }
 
 // RecordingEventPublisher captures standalone domain facts in handler tests.

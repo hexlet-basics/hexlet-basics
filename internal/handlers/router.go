@@ -11,10 +11,13 @@ import "net/http"
 // patterns for the attachment routes are strictly more specific, so Go's
 // ServeMux routes them first and only unmatched requests fall through to ogen.
 //
-// The inner mux owns transport dispatch. The outer mux applies go-pkgz/auth's
-// required middleware to authenticated route families and its optional Trace
-// middleware to the public surface. Keeping the generated API and custom
-// attachment route behind the same branch prevents uploads from bypassing auth.
+// TypeSpec security requirements and ogen's generated SecurityHandler protect
+// generated operations. Trace wraps the complete transport only to preserve
+// go-pkgz/auth's optional identity extraction and sliding JWT refresh.
+//
+// The multipart upload remains an exact-route exception while ogen cannot
+// generate it; RequireAdmin reuses the same database-backed auth module without
+// reintroducing URL-family policy.
 func NewRouter(
 	apiHandler http.Handler,
 	att *AttachmentHandler,
@@ -22,23 +25,11 @@ func NewRouter(
 	auth *AuthHandler,
 ) http.Handler {
 	transport := http.NewServeMux()
-	transport.HandleFunc("POST /admin/attachments", att.Upload)
+	transport.Handle("POST /admin/attachments", auth.RequireAdmin(http.HandlerFunc(att.Upload)))
 	transport.HandleFunc("GET /storage/{key}", att.Download)
 	// GitHub webhook: verifies its own HMAC signature, so it is safe outside any
 	// auth middleware — but it must stay a build TRIGGER only.
 	transport.HandleFunc("POST /webhooks/github", gh.Handle)
 	transport.Handle("/", apiHandler)
-
-	required := auth.Auth(transport)
-	admin := auth.Admin(transport)
-	optional := auth.Trace(transport)
-
-	router := http.NewServeMux()
-	router.Handle("/admin/", admin)
-	router.Handle("/account/", required)
-	router.Handle("/ai/lessons/", required)
-	router.Handle("/my", required)
-	router.Handle("DELETE /session", required)
-	router.Handle("/", optional)
-	return router
+	return auth.Trace(transport)
 }

@@ -28,7 +28,7 @@ const defaultAdminLocale = "en"
 // per lesson for the current locale, drawn from the current version's info
 // (legacy `Language::Lesson::Version::Info.current.with_locale`). name and
 // description come from the info row; the slug is joined from the lesson.
-func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminListCourseLessonsParams) (*api.CourseLessonListItemPage, error) {
+func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminListCourseLessonsParams) (api.AdminListCourseLessonsRes, error) {
 	page := newPagination(params.Page, params.PerPage)
 
 	// One base builder reused for count and page so both carry the same filter;
@@ -72,7 +72,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 // AdminListCourseLessonMembers lists per-lesson memberships, newest first
 // (legacy `admin/language_lesson_members`). The course slug, lesson slug, and
 // lesson name are enriched from the member's language/lesson.
-func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.AdminListCourseLessonMembersParams) (*api.CourseLessonMemberPage, error) {
+func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.AdminListCourseLessonMembersParams) (api.AdminListCourseLessonMembersRes, error) {
 	page := newPagination(params.Page, params.PerPage)
 
 	total, err := s.db.LanguageLessonMember.Query().Count(ctx)
@@ -108,7 +108,7 @@ func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.Ad
 // that actually have a summary, newest first (legacy
 // `admin/language_lesson_reviews`, `where(locale:).with_summary`). The lesson
 // slug/natural-order and course slug are enriched by id.
-func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (*api.CourseLessonReviewPage, error) {
+func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (api.AdminListCourseLessonReviewsRes, error) {
 	page := newPagination(params.Page, params.PerPage)
 
 	// Same filter on count and page: an empty-summary review (legacy skips these,

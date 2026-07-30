@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/user"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
@@ -40,15 +41,13 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 	)
 	server, err := api.NewServer(
 		handler,
+		handler.AuthHandler(),
 		api.WithErrorHandler(errorHandler.Write),
 		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
 	require.NoError(t, err)
-	router := http.NewServeMux()
-	router.Handle("DELETE /session", handler.AuthHandler().Auth(server))
-	router.Handle("/", handler.AuthHandler().Trace(server))
-	return translator.Middleware(router)
+	return translator.Middleware(handler.AuthHandler().Trace(server))
 }
 
 // jwtCookie returns the JWT auth cookie from a response, or nil if absent.
@@ -257,6 +256,46 @@ func TestAuthLogoutClearsCookie(t *testing.T) {
 	require.NotNil(t, xsrf)
 	assert.True(t, xsrf.MaxAge < 0 || xsrf.Value == "",
 		"logout must expire or empty the XSRF cookie")
+}
+
+func TestContractSecurityProtectsParityRoutesAndKeepsLessonCheckPublic(t *testing.T) {
+	router := newAuthRouter(t)
+
+	resp := do(t, router, http.MethodPost, "/leads",
+		`{"contactMethod":"phone","contactValue":"+10000000000","ymClientId":null}`, nil)
+	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
+
+	resp = do(t, router, http.MethodPost, "/lessons/1/check",
+		`{"code":"puts 1","versionId":1}`, nil)
+	assert.NotEqual(t, http.StatusUnauthorized, resp.StatusCode)
+}
+
+func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
+	db := testsupport.NewClient(t)
+	router := newAuthRouterWithDB(t, db)
+	const email = "admin-revocation@example.com"
+
+	resp := do(t, router, http.MethodPost, "/users",
+		`{"firstName":"Ada","email":"`+email+`","password":"s3cret-pass"}`, nil)
+	require.Equal(t, http.StatusCreated, resp.StatusCode)
+	jwt := jwtCookie(resp)
+	require.NotNil(t, jwt)
+
+	u, err := db.User.Query().Where(user.Email(email)).Only(t.Context())
+	require.NoError(t, err)
+
+	resp = do(t, router, http.MethodGet, "/admin/language_categories", "", jwt)
+	require.Equal(t, http.StatusForbidden, resp.StatusCode)
+
+	_, err = db.User.UpdateOneID(u.ID).SetAdmin(true).Save(t.Context())
+	require.NoError(t, err)
+	resp = do(t, router, http.MethodGet, "/admin/language_categories", "", jwt)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	_, err = db.User.UpdateOneID(u.ID).SetAdmin(false).Save(t.Context())
+	require.NoError(t, err)
+	resp = do(t, router, http.MethodGet, "/admin/language_categories", "", jwt)
+	require.Equal(t, http.StatusForbidden, resp.StatusCode)
 }
 
 func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {

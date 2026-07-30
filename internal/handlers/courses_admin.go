@@ -23,7 +23,7 @@ func withCourseVersion(q *ent.CourseQuery) *ent.CourseQuery {
 	return q.WithCurrentVersion()
 }
 
-func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (*api.CoursePage, error) {
+func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCoursesParams) (api.AdminListCoursesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.CourseQuery { return withCourseVersion(s.db.Course.Query()).Order(ent.Desc(course.FieldID)) },
 		s.conv.ToCourses,
@@ -33,8 +33,12 @@ func (s *Server) AdminListCourses(ctx context.Context, params api.AdminListCours
 	)
 }
 
-func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (*api.Course, error) {
-	return getOne(ctx, int(params.ID),
+func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCourseParams) (api.AdminGetCourseRes, error) {
+	return s.getAdminCourse(ctx, params.ID)
+}
+
+func (s *Server) getAdminCourse(ctx context.Context, id int32) (*api.Course, error) {
+	return getOne(ctx, int(id),
 		func(ctx context.Context, id int) (*ent.Course, error) {
 			return withCourseVersion(s.db.Course.Query().Where(course.ID(id))).Only(ctx)
 		},
@@ -42,7 +46,7 @@ func (s *Server) AdminGetCourse(ctx context.Context, params api.AdminGetCoursePa
 	)
 }
 
-func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (*api.Course, error) {
+func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (api.AdminCreateCourseRes, error) {
 	row, err := s.db.Course.Create().
 		SetNillableSlug(inputconv.Ptr(req.Slug)).
 		SetNillableLearnAs(inputconv.StringPtr(req.LearnAs)).
@@ -52,10 +56,10 @@ func (s *Server) AdminCreateCourse(ctx context.Context, req *api.CourseInput) (*
 	if err != nil {
 		return nil, err
 	}
-	return s.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: int32(row.ID)})
+	return s.getAdminCourse(ctx, int32(row.ID))
 }
 
-func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (*api.Course, error) {
+func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, params api.AdminUpdateCourseParams) (api.AdminUpdateCourseRes, error) {
 	upd := s.db.Course.UpdateOneID(int(params.ID))
 	applyNil(req.Slug.Null, req.Slug.Value, upd.SetSlug, upd.ClearSlug)
 	applyNil(req.LearnAs.Null, string(req.LearnAs.Value), upd.SetLearnAs, upd.ClearLearnAs)
@@ -66,7 +70,7 @@ func (s *Server) AdminUpdateCourse(ctx context.Context, req *api.CourseInput, pa
 	if err != nil {
 		return nil, err
 	}
-	return s.AdminGetCourse(ctx, api.AdminGetCourseParams{ID: int32(row.ID)})
+	return s.getAdminCourse(ctx, int32(row.ID))
 }
 
 // AdminCreateCourseVersion starts a build of a new course version: it creates the

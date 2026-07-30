@@ -26,7 +26,7 @@ func (s *Server) roleDetail(ctx context.Context, id int) (*api.StaffRoleDetail, 
 
 // AdminListRoles returns roles ordered by name (legacy `order(:name)`), each
 // with its permission count.
-func (s *Server) AdminListRoles(ctx context.Context, params api.AdminListRolesParams) (*api.StaffRolePage, error) {
+func (s *Server) AdminListRoles(ctx context.Context, params api.AdminListRolesParams) (api.AdminListRolesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.StaffRoleQuery {
 			return s.db.StaffRole.Query().WithPermissions().Order(ent.Asc(staffrole.FieldName))
@@ -38,14 +38,14 @@ func (s *Server) AdminListRoles(ctx context.Context, params api.AdminListRolesPa
 	)
 }
 
-func (s *Server) AdminGetRole(ctx context.Context, params api.AdminGetRoleParams) (*api.StaffRoleDetail, error) {
+func (s *Server) AdminGetRole(ctx context.Context, params api.AdminGetRoleParams) (api.AdminGetRoleRes, error) {
 	return s.roleDetail(ctx, int(params.ID))
 }
 
 // AdminCreateRole creates a role (name + description); permissions start empty
 // and are set via the role-permissions endpoint. A duplicate name violates the
 // unique index and surfaces as 409 centrally.
-func (s *Server) AdminCreateRole(ctx context.Context, req *api.RoleInput) (*api.StaffRoleDetail, error) {
+func (s *Server) AdminCreateRole(ctx context.Context, req *api.RoleInput) (api.AdminCreateRoleRes, error) {
 	row, err := s.db.StaffRole.Create().
 		SetName(req.Name).
 		SetNillableDescription(inputconv.Ptr(req.Description)).
@@ -56,7 +56,7 @@ func (s *Server) AdminCreateRole(ctx context.Context, req *api.RoleInput) (*api.
 	return s.roleDetail(ctx, row.ID)
 }
 
-func (s *Server) AdminUpdateRole(ctx context.Context, req *api.RoleInput, params api.AdminUpdateRoleParams) (*api.StaffRoleDetail, error) {
+func (s *Server) AdminUpdateRole(ctx context.Context, req *api.RoleInput, params api.AdminUpdateRoleParams) (api.AdminUpdateRoleRes, error) {
 	upd := s.db.StaffRole.UpdateOneID(int(params.ID)).SetName(req.Name)
 	applyNil(req.Description.Null, req.Description.Value, upd.SetDescription, upd.ClearDescription)
 
@@ -67,13 +67,16 @@ func (s *Server) AdminUpdateRole(ctx context.Context, req *api.RoleInput, params
 	return s.roleDetail(ctx, row.ID)
 }
 
-func (s *Server) AdminDeleteRole(ctx context.Context, params api.AdminDeleteRoleParams) error {
-	return s.db.StaffRole.DeleteOneID(int(params.ID)).Exec(ctx)
+func (s *Server) AdminDeleteRole(ctx context.Context, params api.AdminDeleteRoleParams) (api.AdminDeleteRoleRes, error) {
+	if err := s.db.StaffRole.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
+		return nil, err
+	}
+	return &api.AdminDeleteRoleNoContent{}, nil
 }
 
 // --- Role permissions -------------------------------------------------------
 
-func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGetRolePermissionsParams) (*api.StaffRoleDetail, error) {
+func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGetRolePermissionsParams) (api.AdminGetRolePermissionsRes, error) {
 	return s.roleDetail(ctx, int(params.RoleId))
 }
 
@@ -82,7 +85,7 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 // (find_or_initialize_by(resource).update!), so unlisted resources are left
 // untouched. ent's upsert feature is not enabled, so this is a per-row
 // find-or-create.
-func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (*api.StaffRoleDetail, error) {
+func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
 	// Ensure the role exists first (404 for a missing id, before any write).

@@ -9,6 +9,30 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+func (s AdminListCategoryQnaItemsOKApplicationJSON) Validate() error {
+	alias := ([]QnaItem)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s AdminListLandingPageQnaItemsOKApplicationJSON) Validate() error {
+	alias := ([]QnaItem)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
+func (s AdminSearchUsersOKApplicationJSON) Validate() error {
+	alias := ([]UserCrud)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s *AssistantMessageInput) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer

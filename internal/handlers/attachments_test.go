@@ -55,7 +55,7 @@ func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 // newAttachmentRouter builds the real router over an in-memory blob bucket and a
 // transaction-bound ent client. The api side is a stub — these tests exercise the
 // temporary upload adapter and blob read route outside the generated server.
-func newAttachmentRouter(t *testing.T) http.Handler {
+func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.Cookie, string) {
 	t.Helper()
 	db := testsupport.NewClient(t)
 	bucket := memblob.OpenBucket(nil)
@@ -85,9 +85,13 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 
 	jti := ids.New()
 	rec := httptest.NewRecorder()
-	authUser := &token.User{ID: "password_1", Name: "test"}
-	authUser.SetAdmin(true)
-	_, err := token.NewService(token.Opts{
+	u, err := db.User.Create().
+		SetEmail("attachment-user-" + ids.New() + "@example.com").
+		SetAdmin(admin).
+		Save(t.Context())
+	require.NoError(t, err)
+	authUser := &token.User{ID: strconv.Itoa(u.ID), Name: "attachment-admin@example.com"}
+	_, err = token.NewService(token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
 			return cfg.JWTSecret, nil
 		}),
@@ -96,15 +100,18 @@ func newAttachmentRouter(t *testing.T) http.Handler {
 			ID:       jti,
 			Audience: jwt.ClaimStrings{"hexlet-basics"},
 		},
-		User: authUser,
+		User:         authUser,
+		AuthProvider: &token.AuthProvider{Name: "password"},
 	})
 	require.NoError(t, err)
 
-	return authenticatedHandler{
-		next:    router,
-		cookies: rec.Result().Cookies(),
-		xsrf:    jti,
-	}
+	return router, rec.Result().Cookies(), jti
+}
+
+func newAttachmentRouter(t *testing.T) http.Handler {
+	t.Helper()
+	router, cookies, xsrf := newAttachmentRouterStack(t, true)
+	return authenticatedHandler{next: router, cookies: cookies, xsrf: xsrf}
 }
 
 // uploadRequest builds a multipart POST with one file part whose declared
@@ -185,6 +192,38 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	got, err := io.ReadAll(dl.Body)
 	require.NoError(t, err)
 	assert.Equal(t, tinyPNG, got)
+}
+
+func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
+	t.Run("missing session", func(t *testing.T) {
+		router, _, _ := newAttachmentRouterStack(t, true)
+		rec := httptest.NewRecorder()
+
+		router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+		assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))
+	})
+
+	t.Run("current database user is not admin", func(t *testing.T) {
+		router, cookies, xsrf := newAttachmentRouterStack(t, false)
+		rec := httptest.NewRecorder()
+
+		authenticatedHandler{next: router, cookies: cookies, xsrf: xsrf}.
+			ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+
+		assert.Equal(t, http.StatusForbidden, rec.Code)
+	})
+
+	t.Run("missing xsrf header", func(t *testing.T) {
+		router, cookies, _ := newAttachmentRouterStack(t, true)
+		rec := httptest.NewRecorder()
+
+		authenticatedHandler{next: router, cookies: cookies}.
+			ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
+
+		assert.Equal(t, http.StatusUnauthorized, rec.Code)
+	})
 }
 
 func TestDownloadAttachmentHTTPFeatures(t *testing.T) {

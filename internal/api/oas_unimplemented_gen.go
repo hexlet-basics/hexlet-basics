@@ -19,7 +19,7 @@ var _ Handler = UnimplementedHandler{}
 // handler; banners carry no uniqueness constraint, so there is no 409 path.
 //
 // POST /admin/banners
-func (UnimplementedHandler) AdminCreateBanner(ctx context.Context, req *BannerInput) (r *Banner, _ error) {
+func (UnimplementedHandler) AdminCreateBanner(ctx context.Context, req *BannerInput) (r AdminCreateBannerRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -33,14 +33,14 @@ func (UnimplementedHandler) AdminCreateBlogPost(ctx context.Context, req *BlogPo
 // AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
 //
 // POST /admin/language_categories/{categoryId}/qna_items
-func (UnimplementedHandler) AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (r *QnaItem, _ error) {
+func (UnimplementedHandler) AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (r AdminCreateCategoryQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateCourse implements adminCreateCourse operation.
 //
 // POST /admin/languages
-func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseInput) (r *Course, _ error) {
+func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseInput) (r AdminCreateCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -50,14 +50,14 @@ func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseIn
 // 409 by the central ent-error handler.
 //
 // POST /admin/language_categories
-func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (r *CourseCategory, _ error) {
+func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (r AdminCreateCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 //
 // POST /admin/language_landing_pages
-func (UnimplementedHandler) AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (r *CourseLandingPage, _ error) {
+func (UnimplementedHandler) AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (r AdminCreateCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -73,14 +73,14 @@ func (UnimplementedHandler) AdminCreateCourseVersion(ctx context.Context, params
 // AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
 //
 // POST /admin/language_landing_pages/{landingPageId}/qna_items
-func (UnimplementedHandler) AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (r *QnaItem, _ error) {
+func (UnimplementedHandler) AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (r AdminCreateLandingPageQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateReview implements adminCreateReview operation.
 //
 // POST /admin/reviews
-func (UnimplementedHandler) AdminCreateReview(ctx context.Context, req *ReviewInput) (r *Review, _ error) {
+func (UnimplementedHandler) AdminCreateReview(ctx context.Context, req *ReviewInput) (r AdminCreateReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -90,14 +90,14 @@ func (UnimplementedHandler) AdminCreateReview(ctx context.Context, req *ReviewIn
 // handler.
 //
 // POST /admin/management/roles
-func (UnimplementedHandler) AdminCreateRole(ctx context.Context, req *RoleInput) (r *StaffRoleDetail, _ error) {
+func (UnimplementedHandler) AdminCreateRole(ctx context.Context, req *RoleInput) (r AdminCreateRoleRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateStaffMember implements adminCreateStaffMember operation.
 //
 // POST /admin/management/staff_members
-func (UnimplementedHandler) AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (r *StaffMember, _ error) {
+func (UnimplementedHandler) AdminCreateStaffMember(ctx context.Context, req *StaffMemberInput) (r AdminCreateStaffMemberRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -107,7 +107,7 @@ func (UnimplementedHandler) AdminCreateStaffMember(ctx context.Context, req *Sta
 // handler.
 //
 // POST /admin/api/users
-func (UnimplementedHandler) AdminCreateUser(ctx context.Context, req *UserInput) (r *UserCrud, _ error) {
+func (UnimplementedHandler) AdminCreateUser(ctx context.Context, req *UserInput) (r AdminCreateUserRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -116,22 +116,22 @@ func (UnimplementedHandler) AdminCreateUser(ctx context.Context, req *UserInput)
 // Delete a banner.
 //
 // DELETE /admin/banners/{id}
-func (UnimplementedHandler) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (r AdminDeleteBannerRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteBlogPost implements adminDeleteBlogPost operation.
 //
 // DELETE /admin/blog_posts/{id}
-func (UnimplementedHandler) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (r AdminDeleteBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteCategoryQnaItem implements adminDeleteCategoryQnaItem operation.
 //
 // DELETE /admin/language_categories/{categoryId}/qna_items/{id}
-func (UnimplementedHandler) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (r AdminDeleteCategoryQnaItemRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteCourseCategory implements adminDeleteCourseCategory operation.
@@ -139,50 +139,50 @@ func (UnimplementedHandler) AdminDeleteCategoryQnaItem(ctx context.Context, para
 // Delete a course category.
 //
 // DELETE /admin/language_categories/{id}
-func (UnimplementedHandler) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (r AdminDeleteCourseCategoryRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteCourseLandingPage implements adminDeleteCourseLandingPage operation.
 //
 // DELETE /admin/language_landing_pages/{id}
-func (UnimplementedHandler) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (r AdminDeleteCourseLandingPageRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteLandingPageQnaItem implements adminDeleteLandingPageQnaItem operation.
 //
 // DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-func (UnimplementedHandler) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (r AdminDeleteLandingPageQnaItemRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteReview implements adminDeleteReview operation.
 //
 // DELETE /admin/reviews/{id}
-func (UnimplementedHandler) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (r AdminDeleteReviewRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteRole implements adminDeleteRole operation.
 //
 // DELETE /admin/management/roles/{id}
-func (UnimplementedHandler) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (r AdminDeleteRoleRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteStaffMember implements adminDeleteStaffMember operation.
 //
 // DELETE /admin/management/staff_members/{id}
-func (UnimplementedHandler) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (r AdminDeleteStaffMemberRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteUser implements adminDeleteUser operation.
 //
 // DELETE /admin/api/users/{id}
-func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) error {
-	return ht.ErrNotImplemented
+func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (r AdminDeleteUserRes, _ error) {
+	return r, ht.ErrNotImplemented
 }
 
 // AdminGetBanner implements adminGetBanner operation.
@@ -191,14 +191,14 @@ func (UnimplementedHandler) AdminDeleteUser(ctx context.Context, params AdminDel
 // union member.
 //
 // GET /admin/banners/{id}
-func (UnimplementedHandler) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (r *Banner, _ error) {
+func (UnimplementedHandler) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (r AdminGetBannerRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminGetBlogPost implements adminGetBlogPost operation.
 //
 // GET /admin/blog_posts/{id}
-func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (r *BlogPost, _ error) {
+func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (r AdminGetBlogPostRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -207,7 +207,7 @@ func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGe
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
 // GET /admin/languages/{id}
-func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (r *Course, _ error) {
+func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (r AdminGetCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -217,7 +217,7 @@ func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetC
 // typed union member.
 //
 // GET /admin/language_categories/{id}
-func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (r *CourseCategory, _ error) {
+func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (r AdminGetCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -227,7 +227,7 @@ func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params A
 // typed union member.
 //
 // GET /admin/language_landing_pages/{id}
-func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (r *CourseLandingPage, _ error) {
+func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (r AdminGetCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -236,7 +236,7 @@ func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, param
 // Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 //
 // GET /admin/management/users/{id}
-func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (r *UserCrud, _ error) {
+func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (r AdminGetManagementUserRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -246,7 +246,7 @@ func (UnimplementedHandler) AdminGetManagementUser(ctx context.Context, params A
 // union member.
 //
 // GET /admin/reviews/{id}
-func (UnimplementedHandler) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (r *Review, _ error) {
+func (UnimplementedHandler) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (r AdminGetReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -256,7 +256,7 @@ func (UnimplementedHandler) AdminGetReview(ctx context.Context, params AdminGetR
 // handler.
 //
 // GET /admin/management/roles/{id}
-func (UnimplementedHandler) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (r *StaffRoleDetail, _ error) {
+func (UnimplementedHandler) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (r AdminGetRoleRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -265,14 +265,14 @@ func (UnimplementedHandler) AdminGetRole(ctx context.Context, params AdminGetRol
 // The permission matrix for a role.
 //
 // GET /admin/management/role_permissions/{roleId}
-func (UnimplementedHandler) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (r *StaffRoleDetail, _ error) {
+func (UnimplementedHandler) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (r AdminGetRolePermissionsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminGetStaffMember implements adminGetStaffMember operation.
 //
 // GET /admin/management/staff_members/{id}
-func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (r *StaffMember, _ error) {
+func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (r AdminGetStaffMemberRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -282,7 +282,7 @@ func (UnimplementedHandler) AdminGetStaffMember(ctx context.Context, params Admi
 // member.
 //
 // GET /admin/api/users/{id}
-func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUserParams) (r *UserCrud, _ error) {
+func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUserParams) (r AdminGetUserRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -291,21 +291,21 @@ func (UnimplementedHandler) AdminGetUser(ctx context.Context, params AdminGetUse
 // List banners (paginated).
 //
 // GET /admin/banners
-func (UnimplementedHandler) AdminListBanners(ctx context.Context, params AdminListBannersParams) (r *BannerPage, _ error) {
+func (UnimplementedHandler) AdminListBanners(ctx context.Context, params AdminListBannersParams) (r AdminListBannersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListBlogPosts implements adminListBlogPosts operation.
 //
 // GET /admin/blog_posts
-func (UnimplementedHandler) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (r *BlogPostPage, _ error) {
+func (UnimplementedHandler) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (r AdminListBlogPostsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCategoryQnaItems implements adminListCategoryQnaItems operation.
 //
 // GET /admin/language_categories/{categoryId}/qna_items
-func (UnimplementedHandler) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (r []QnaItem, _ error) {
+func (UnimplementedHandler) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (r AdminListCategoryQnaItemsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -314,98 +314,98 @@ func (UnimplementedHandler) AdminListCategoryQnaItems(ctx context.Context, param
 // List course categories (paginated).
 //
 // GET /admin/language_categories
-func (UnimplementedHandler) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (r *CourseCategoryPage, _ error) {
+func (UnimplementedHandler) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (r AdminListCourseCategoriesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLandingPages implements adminListCourseLandingPages operation.
 //
 // GET /admin/language_landing_pages
-func (UnimplementedHandler) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (r *CourseLandingPagePage, _ error) {
+func (UnimplementedHandler) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (r AdminListCourseLandingPagesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLessonMembers implements adminListCourseLessonMembers operation.
 //
 // GET /admin/language_lesson_members
-func (UnimplementedHandler) AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (r *CourseLessonMemberPage, _ error) {
+func (UnimplementedHandler) AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (r AdminListCourseLessonMembersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
 //
 // GET /admin/language_lesson_reviews
-func (UnimplementedHandler) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (r *CourseLessonReviewPage, _ error) {
+func (UnimplementedHandler) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (r AdminListCourseLessonReviewsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLessons implements adminListCourseLessons operation.
 //
 // GET /admin/language_lessons
-func (UnimplementedHandler) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (r *CourseLessonListItemPage, _ error) {
+func (UnimplementedHandler) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (r AdminListCourseLessonsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourses implements adminListCourses operation.
 //
 // GET /admin/languages
-func (UnimplementedHandler) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (r *CoursePage, _ error) {
+func (UnimplementedHandler) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (r AdminListCoursesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListLandingPageQnaItems implements adminListLandingPageQnaItems operation.
 //
 // GET /admin/language_landing_pages/{landingPageId}/qna_items
-func (UnimplementedHandler) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (r []QnaItem, _ error) {
+func (UnimplementedHandler) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (r AdminListLandingPageQnaItemsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListLeads implements adminListLeads operation.
 //
 // GET /admin/leads
-func (UnimplementedHandler) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (r *LeadPage, _ error) {
+func (UnimplementedHandler) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (r AdminListLeadsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListManagementUsers implements adminListManagementUsers operation.
 //
 // GET /admin/management/users
-func (UnimplementedHandler) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (r *UserCrudPage, _ error) {
+func (UnimplementedHandler) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (r AdminListManagementUsersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListMessages implements adminListMessages operation.
 //
 // GET /admin/messages
-func (UnimplementedHandler) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (r *LessonAssistantMessagePage, _ error) {
+func (UnimplementedHandler) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (r AdminListMessagesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListReviews implements adminListReviews operation.
 //
 // GET /admin/reviews
-func (UnimplementedHandler) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (r *ReviewPage, _ error) {
+func (UnimplementedHandler) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (r AdminListReviewsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListRoles implements adminListRoles operation.
 //
 // GET /admin/management/roles
-func (UnimplementedHandler) AdminListRoles(ctx context.Context, params AdminListRolesParams) (r *StaffRolePage, _ error) {
+func (UnimplementedHandler) AdminListRoles(ctx context.Context, params AdminListRolesParams) (r AdminListRolesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListStaffMembers implements adminListStaffMembers operation.
 //
 // GET /admin/management/staff_members
-func (UnimplementedHandler) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (r *StaffMemberPage, _ error) {
+func (UnimplementedHandler) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (r AdminListStaffMembersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListUsers implements adminListUsers operation.
 //
 // GET /admin/api/users
-func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminListUsersParams) (r *UserCrudPage, _ error) {
+func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminListUsersParams) (r AdminListUsersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -432,7 +432,7 @@ func (UnimplementedHandler) AdminReviewCourseLesson(ctx context.Context, params 
 // Typeahead search by name/email.
 //
 // GET /admin/api/users/search
-func (UnimplementedHandler) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (r []UserCrud, _ error) {
+func (UnimplementedHandler) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (r AdminSearchUsersRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -450,7 +450,7 @@ func (UnimplementedHandler) AdminSetBlogPostRelatedCourses(ctx context.Context, 
 // Update a banner. A missing id surfaces as 404 via the central handler.
 //
 // PUT /admin/banners/{id}
-func (UnimplementedHandler) AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (r *Banner, _ error) {
+func (UnimplementedHandler) AdminUpdateBanner(ctx context.Context, req *BannerInput, params AdminUpdateBannerParams) (r AdminUpdateBannerRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -467,14 +467,14 @@ func (UnimplementedHandler) AdminUpdateBlogPost(ctx context.Context, req *BlogPo
 // ent-error handler.
 //
 // PUT /admin/language_categories/{categoryId}/qna_items/{id}
-func (UnimplementedHandler) AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (r *QnaItem, _ error) {
+func (UnimplementedHandler) AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (r AdminUpdateCategoryQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminUpdateCourse implements adminUpdateCourse operation.
 //
 // PUT /admin/languages/{id}
-func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (r *Course, _ error) {
+func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (r AdminUpdateCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -484,7 +484,7 @@ func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseIn
 // handler.
 //
 // PUT /admin/language_categories/{id}
-func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (r *CourseCategory, _ error) {
+func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (r AdminUpdateCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -493,7 +493,7 @@ func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
 // PUT /admin/language_landing_pages/{id}
-func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (r *CourseLandingPage, _ error) {
+func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (r AdminUpdateCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -503,14 +503,14 @@ func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, re
 // ent-error handler.
 //
 // PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
-func (UnimplementedHandler) AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (r *QnaItem, _ error) {
+func (UnimplementedHandler) AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (r AdminUpdateLandingPageQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminUpdateManagementUser implements adminUpdateManagementUser operation.
 //
 // PUT /admin/management/users/{id}
-func (UnimplementedHandler) AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (r *UserCrud, _ error) {
+func (UnimplementedHandler) AdminUpdateManagementUser(ctx context.Context, req *UserInput, params AdminUpdateManagementUserParams) (r AdminUpdateManagementUserRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -519,14 +519,14 @@ func (UnimplementedHandler) AdminUpdateManagementUser(ctx context.Context, req *
 // Update a review. A missing id surfaces as 404 via the central ent-error handler.
 //
 // PUT /admin/reviews/{id}
-func (UnimplementedHandler) AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (r *Review, _ error) {
+func (UnimplementedHandler) AdminUpdateReview(ctx context.Context, req *ReviewInput, params AdminUpdateReviewParams) (r AdminUpdateReviewRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminUpdateRole implements adminUpdateRole operation.
 //
 // PUT /admin/management/roles/{id}
-func (UnimplementedHandler) AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (r *StaffRoleDetail, _ error) {
+func (UnimplementedHandler) AdminUpdateRole(ctx context.Context, req *RoleInput, params AdminUpdateRoleParams) (r AdminUpdateRoleRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -535,14 +535,14 @@ func (UnimplementedHandler) AdminUpdateRole(ctx context.Context, req *RoleInput,
 // Replace the permission matrix for a role.
 //
 // PUT /admin/management/role_permissions/{roleId}
-func (UnimplementedHandler) AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (r *StaffRoleDetail, _ error) {
+func (UnimplementedHandler) AdminUpdateRolePermissions(ctx context.Context, req *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (r AdminUpdateRolePermissionsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminUpdateStaffMember implements adminUpdateStaffMember operation.
 //
 // PUT /admin/management/staff_members/{id}
-func (UnimplementedHandler) AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (r *StaffMember, _ error) {
+func (UnimplementedHandler) AdminUpdateStaffMember(ctx context.Context, req *StaffMemberInput, params AdminUpdateStaffMemberParams) (r AdminUpdateStaffMemberRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -552,7 +552,7 @@ func (UnimplementedHandler) AdminUpdateStaffMember(ctx context.Context, req *Sta
 // handler.
 //
 // PUT /admin/api/users/{id}
-func (UnimplementedHandler) AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (r *UserCrud, _ error) {
+func (UnimplementedHandler) AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (r AdminUpdateUserRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -707,7 +707,7 @@ func (UnimplementedHandler) DeletePasskey(ctx context.Context, params DeletePass
 // Log out; clears the JWT cookie.
 //
 // DELETE /session
-func (UnimplementedHandler) DeleteSession(ctx context.Context) (r *DeleteSessionNoContent, _ error) {
+func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
