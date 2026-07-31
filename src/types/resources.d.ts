@@ -136,6 +136,9 @@ export default interface Resources {
         lead: {
           contact_method: "Способ связи";
           contact_value: "Телефон / Имя пользователя";
+          phone: "Телефон";
+          telegram: "Telegram";
+          whatsapp: "WhatsApp";
         };
         qna_item: {
           answer: "Ответ";
@@ -242,6 +245,7 @@ export default interface Resources {
         new: "Создать";
         save: "Сохранить";
         saveError: "Не удалось сохранить запись";
+        search: "Поиск…";
         updated: "Запись обновлена";
       };
       home: {
@@ -383,6 +387,16 @@ export default interface Resources {
       resources: {
         banners: "Баннеры";
         courseCategories: "Категории курсов";
+        landingPages: "Лендинги";
+        leads: "Лиды";
+        lessonMembers: "Прохождения уроков";
+        lessonReviews: "Ревью уроков";
+        managementUsers: "Управление: пользователи";
+        messages: "Сообщения ассистенту";
+        reviews: "Отзывы";
+        roles: "Роли";
+        staffMembers: "Сотрудники";
+        users: "Пользователи";
       };
       reviews: {
         edit: {
@@ -1270,6 +1284,12 @@ export default interface Resources {
     };
     models: {
       attributes: {
+        assistant_message: {
+          content: "Сообщение";
+          course: "Курс";
+          lesson: "Урок";
+          role: "Роль";
+        };
         banner: {
           background: "Фон";
           "background/values": {
@@ -1367,6 +1387,22 @@ export default interface Resources {
         lead: {
           contact_method: "Способ связи";
           contact_value: "Телефон / Имя пользователя";
+          phone: "Телефон";
+          telegram: "Telegram";
+          whatsapp: "WhatsApp";
+        };
+        lesson_member: {
+          course: "Курс";
+          lesson: "Урок";
+          messages_count: "Сообщений";
+          state: "Статус";
+          user_id: "Пользователь";
+        };
+        lesson_review: {
+          course: "Курс";
+          lesson: "Урок";
+          locale: "Локаль";
+          summary: "Суммаризация";
         };
         qna_item: {
           answer: "Ответ";
@@ -1395,6 +1431,14 @@ export default interface Resources {
             published: "Опубликован";
           };
           user_id: "Пользователь";
+        };
+        staff_member: {
+          allowed_locales: "Доступные локали";
+          role_id: "Роль";
+          user_id: "Пользователь";
+        };
+        staff_role: {
+          permissions_count: "Права";
         };
         survey: {
           run_always: "Запускать всегда";

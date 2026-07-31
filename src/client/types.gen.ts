@@ -302,6 +302,13 @@ export type CourseLandingPage = {
    * Free-form ordering key (legacy stores it as a string).
    */
   order: string | null;
+  /**
+   * Footer visibility + link caption. Part of the read model so the admin
+   *       edit form can round-trip the fields it writes.
+   */
+  footer: boolean | null;
+  footerName: string | null;
+  landingPageToRedirectId: number | null;
   metaTitle: string;
   metaDescription: string;
   header: string;
@@ -824,6 +831,11 @@ export type Review = {
   fullName: string | null;
   state: ReviewState | null;
   locale: ReviewLocale | null;
+  /**
+   * Pinned reviews sort to the top of the public list. Part of the read model
+   *       so the admin edit form can round-trip the flag it writes.
+   */
+  pinned: boolean | null;
   createdAt: string;
 };
 

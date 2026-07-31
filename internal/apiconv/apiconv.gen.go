@@ -145,6 +145,9 @@ func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseL
 		apiCourseLandingPage.Listed = NilBoolFromPtr((*source).Listed)
 		apiCourseLandingPage.State = NilLandingPageStateFromPtr((*source).State)
 		apiCourseLandingPage.Order = NilStringFromPtr((*source).Order)
+		apiCourseLandingPage.Footer = NilBoolFromPtr((*source).Footer)
+		apiCourseLandingPage.FooterName = NilStringFromPtr((*source).FooterName)
+		apiCourseLandingPage.LandingPageToRedirectId = NilInt32FromPtr((*source).LandingPageToRedirectID)
 		apiCourseLandingPage.MetaTitle = StringFromPtr((*source).MetaTitle)
 		apiCourseLandingPage.MetaDescription = StringFromPtr((*source).MetaDescription)
 		apiCourseLandingPage.Header = StringFromPtr((*source).Header)
@@ -369,6 +372,7 @@ func (c *ConverterImpl) ToReview(source *ent.Review) api.Review {
 		apiReview.FullName = reviewFullName(source)
 		apiReview.State = NilReviewStateFromPtr((*source).State)
 		apiReview.Locale = NilReviewLocaleFromPtr((*source).Locale)
+		apiReview.Pinned = NilBoolFromPtr((*source).Pinned)
 		apiReview.CreatedAt = TimeIdentity((*source).CreatedAt)
 	}
 	return apiReview

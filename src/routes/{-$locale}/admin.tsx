@@ -14,7 +14,9 @@ export const Route = createFileRoute("/{-$locale}/admin")({
 });
 
 // Nav entries. Each new CRUD resource adds one line here; the screens themselves
-// are driven by the shared engine (CrudList/CrudForm).
+// are driven by the shared engine (CrudList/CrudForm). Ordered content-first,
+// then community/marketing, then management — mirrors how the legacy back
+// office grouped its menu.
 const NAV = [
   {
     to: "/{-$locale}/admin/language_categories",
@@ -23,9 +25,59 @@ const NAV = [
     key: "courseCategories",
   },
   {
+    to: "/{-$locale}/admin/language_landing_pages",
+    match: "/admin/language_landing_pages",
+    key: "landingPages",
+  },
+  {
+    to: "/{-$locale}/admin/language_lesson_reviews",
+    match: "/admin/language_lesson_reviews",
+    key: "lessonReviews",
+  },
+  {
+    to: "/{-$locale}/admin/language_lesson_members",
+    match: "/admin/language_lesson_members",
+    key: "lessonMembers",
+  },
+  {
     to: "/{-$locale}/admin/banners",
     match: "/admin/banners",
     key: "banners",
+  },
+  {
+    to: "/{-$locale}/admin/reviews",
+    match: "/admin/reviews",
+    key: "reviews",
+  },
+  {
+    to: "/{-$locale}/admin/messages",
+    match: "/admin/messages",
+    key: "messages",
+  },
+  {
+    to: "/{-$locale}/admin/leads",
+    match: "/admin/leads",
+    key: "leads",
+  },
+  {
+    to: "/{-$locale}/admin/users",
+    match: "/admin/users",
+    key: "users",
+  },
+  {
+    to: "/{-$locale}/admin/management/roles",
+    match: "/admin/management/roles",
+    key: "roles",
+  },
+  {
+    to: "/{-$locale}/admin/management/staff_members",
+    match: "/admin/management/staff_members",
+    key: "staffMembers",
+  },
+  {
+    to: "/{-$locale}/admin/management/users",
+    match: "/admin/management/users",
+    key: "managementUsers",
   },
 ] as const;
 

@@ -1,4 +1,10 @@
 import {
+  Checkbox,
+  type CheckboxProps,
+  MultiSelect,
+  type MultiSelectProps,
+  NumberInput,
+  type NumberInputProps,
   Select,
   type SelectProps,
   Textarea,
@@ -104,8 +110,62 @@ function DateTimeField(props: DateTimePickerProps) {
   );
 }
 
+// Numeric fields (ids, counters). The generated inputs type these as
+// `number | null`, and Mantine reports a cleared input as ""  — map that back
+// to null so a blank field submits the contract's null, not zero.
+function NumberField(props: NumberInputProps) {
+  const field = useFieldContext<number | null>();
+  return (
+    <NumberInput
+      {...props}
+      value={field.state.value ?? ""}
+      onChange={(value) => field.handleChange(typeof value === "number" ? value : null)}
+      onBlur={field.handleBlur}
+      error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
+    />
+  );
+}
+
+// Boolean flags. Nullable contract booleans render as unchecked; toggling
+// always submits a real boolean (legacy forms never sent null for checkboxes).
+function CheckboxField(props: CheckboxProps) {
+  const field = useFieldContext<boolean | null>();
+  return (
+    <Checkbox
+      {...props}
+      checked={field.state.value ?? false}
+      onChange={(event) => field.handleChange(event.currentTarget.checked)}
+      onBlur={field.handleBlur}
+      error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
+    />
+  );
+}
+
+// String-array fields (e.g. a staff member's allowed locales). The value IS the
+// contract's string[]; callers pass Mantine's `data` option list.
+function MultiSelectField(props: MultiSelectProps) {
+  const field = useFieldContext<string[]>();
+  return (
+    <MultiSelect
+      {...props}
+      value={field.state.value ?? []}
+      onChange={(value) => field.handleChange(value)}
+      onBlur={field.handleBlur}
+      error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
+    />
+  );
+}
+
 export const { useAppForm } = createFormHook({
-  fieldComponents: { TextField, TextareaField, SelectField, DateTimeField },
+  fieldComponents: {
+    TextField,
+    TextareaField,
+    SelectField,
+    DateTimeField,
+    NumberField,
+    CheckboxField,
+    MultiSelectField,
+  },
   formComponents: {},
   fieldContext,
   formContext,

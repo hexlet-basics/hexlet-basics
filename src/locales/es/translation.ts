@@ -135,6 +135,9 @@ export default {
         lead: {
           contact_method: "Способ связи",
           contact_value: "Телефон / Имя пользователя",
+          phone: "Teléfono",
+          telegram: "Telegram",
+          whatsapp: "WhatsApp",
         },
         qna_item: {
           answer: "Ответ",
@@ -204,6 +207,16 @@ export default {
       resources: {
         banners: "Banners",
         courseCategories: "Categorías de cursos",
+        landingPages: "Páginas de aterrizaje",
+        leads: "Leads",
+        lessonMembers: "Progreso de lecciones",
+        lessonReviews: "Revisiones de lecciones",
+        managementUsers: "Gestión: usuarios",
+        messages: "Mensajes del asistente",
+        reviews: "Reseñas",
+        roles: "Roles",
+        staffMembers: "Personal",
+        users: "Usuarios",
       },
       crud: {
         cancel: "Cancelar",
@@ -218,6 +231,7 @@ export default {
         new: "Nuevo",
         save: "Guardar",
         saveError: "No se pudo guardar el registro",
+        search: "Buscar…",
         updated: "Registro actualizado",
       },
       banners: {
@@ -1348,6 +1362,33 @@ export default {
     },
     models: {
       attributes: {
+        assistant_message: {
+          content: "Mensaje",
+          course: "Curso",
+          lesson: "Lección",
+          role: "Rol",
+        },
+        lesson_member: {
+          course: "Curso",
+          lesson: "Lección",
+          messages_count: "Mensajes",
+          state: "Estado",
+          user_id: "Usuario",
+        },
+        lesson_review: {
+          course: "Curso",
+          lesson: "Lección",
+          locale: "Idioma",
+          summary: "Resumen",
+        },
+        staff_member: {
+          allowed_locales: "Idiomas permitidos",
+          role_id: "Rol",
+          user_id: "Usuario",
+        },
+        staff_role: {
+          permissions_count: "Permisos",
+        },
         banner: {
           background: "Fondo",
           "background/values": {
@@ -1445,6 +1486,9 @@ export default {
         lead: {
           contact_method: "Способ связи",
           contact_value: "Телефон / Имя пользователя",
+          phone: "Teléfono",
+          telegram: "Telegram",
+          whatsapp: "WhatsApp",
         },
         qna_item: {
           answer: "Ответ",

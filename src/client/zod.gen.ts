@@ -328,6 +328,9 @@ export const zCourseLandingPage = z.object({
   listed: z.boolean().nullable(),
   state: zLandingPageState.nullable(),
   order: z.string().nullable(),
+  footer: z.boolean().nullable(),
+  footerName: z.string().nullable(),
+  landingPageToRedirectId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
   metaTitle: z.string(),
   metaDescription: z.string(),
   header: z.string(),
@@ -888,6 +891,7 @@ export const zReview = z.object({
   fullName: z.string().nullable(),
   state: zReviewState.nullable(),
   locale: zReviewLocale.nullable(),
+  pinned: z.boolean().nullable(),
   createdAt: z.iso.datetime()
 });
 

@@ -8508,6 +8508,18 @@ func (s *CourseLandingPage) encodeFields(e *jx.Encoder) {
 		s.Order.Encode(e)
 	}
 	{
+		e.FieldStart("footer")
+		s.Footer.Encode(e)
+	}
+	{
+		e.FieldStart("footerName")
+		s.FooterName.Encode(e)
+	}
+	{
+		e.FieldStart("landingPageToRedirectId")
+		s.LandingPageToRedirectId.Encode(e)
+	}
+	{
 		e.FieldStart("metaTitle")
 		e.Str(s.MetaTitle)
 	}
@@ -8553,7 +8565,7 @@ func (s *CourseLandingPage) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCourseLandingPage = [21]string{
+var jsonFieldsNameOfCourseLandingPage = [24]string{
 	0:  "id",
 	1:  "courseId",
 	2:  "courseSlug",
@@ -8564,17 +8576,20 @@ var jsonFieldsNameOfCourseLandingPage = [21]string{
 	7:  "listed",
 	8:  "state",
 	9:  "order",
-	10: "metaTitle",
-	11: "metaDescription",
-	12: "header",
-	13: "description",
-	14: "usedInHeader",
-	15: "usedInDescription",
-	16: "outcomesHeader",
-	17: "outcomesDescription",
-	18: "outcomesImage",
-	19: "duration",
-	20: "membersCount",
+	10: "footer",
+	11: "footerName",
+	12: "landingPageToRedirectId",
+	13: "metaTitle",
+	14: "metaDescription",
+	15: "header",
+	16: "description",
+	17: "usedInHeader",
+	18: "usedInDescription",
+	19: "outcomesHeader",
+	20: "outcomesDescription",
+	21: "outcomesImage",
+	22: "duration",
+	23: "membersCount",
 }
 
 // Decode decodes CourseLandingPage from json.
@@ -8698,8 +8713,38 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"order\"")
 			}
-		case "metaTitle":
+		case "footer":
 			requiredBitSet[1] |= 1 << 2
+			if err := func() error {
+				if err := s.Footer.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"footer\"")
+			}
+		case "footerName":
+			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				if err := s.FooterName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"footerName\"")
+			}
+		case "landingPageToRedirectId":
+			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				if err := s.LandingPageToRedirectId.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"landingPageToRedirectId\"")
+			}
+		case "metaTitle":
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				v, err := d.Str()
 				s.MetaTitle = string(v)
@@ -8711,7 +8756,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"metaTitle\"")
 			}
 		case "metaDescription":
-			requiredBitSet[1] |= 1 << 3
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				v, err := d.Str()
 				s.MetaDescription = string(v)
@@ -8723,7 +8768,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"metaDescription\"")
 			}
 		case "header":
-			requiredBitSet[1] |= 1 << 4
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				v, err := d.Str()
 				s.Header = string(v)
@@ -8735,7 +8780,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"header\"")
 			}
 		case "description":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				v, err := d.Str()
 				s.Description = string(v)
@@ -8747,7 +8792,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"description\"")
 			}
 		case "usedInHeader":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[2] |= 1 << 1
 			if err := func() error {
 				if err := s.UsedInHeader.Decode(d); err != nil {
 					return err
@@ -8757,7 +8802,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"usedInHeader\"")
 			}
 		case "usedInDescription":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				if err := s.UsedInDescription.Decode(d); err != nil {
 					return err
@@ -8767,7 +8812,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"usedInDescription\"")
 			}
 		case "outcomesHeader":
-			requiredBitSet[2] |= 1 << 0
+			requiredBitSet[2] |= 1 << 3
 			if err := func() error {
 				if err := s.OutcomesHeader.Decode(d); err != nil {
 					return err
@@ -8777,7 +8822,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"outcomesHeader\"")
 			}
 		case "outcomesDescription":
-			requiredBitSet[2] |= 1 << 1
+			requiredBitSet[2] |= 1 << 4
 			if err := func() error {
 				if err := s.OutcomesDescription.Decode(d); err != nil {
 					return err
@@ -8787,7 +8832,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"outcomesDescription\"")
 			}
 		case "outcomesImage":
-			requiredBitSet[2] |= 1 << 2
+			requiredBitSet[2] |= 1 << 5
 			if err := func() error {
 				if err := s.OutcomesImage.Decode(d); err != nil {
 					return err
@@ -8797,7 +8842,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"outcomesImage\"")
 			}
 		case "duration":
-			requiredBitSet[2] |= 1 << 3
+			requiredBitSet[2] |= 1 << 6
 			if err := func() error {
 				v, err := d.Int32()
 				s.Duration = int32(v)
@@ -8809,7 +8854,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"duration\"")
 			}
 		case "membersCount":
-			requiredBitSet[2] |= 1 << 4
+			requiredBitSet[2] |= 1 << 7
 			if err := func() error {
 				v, err := d.Int32()
 				s.MembersCount = int32(v)
@@ -8832,7 +8877,7 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 	for i, mask := range [3]uint8{
 		0b11111111,
 		0b11111111,
-		0b00011111,
+		0b11111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -15684,12 +15729,16 @@ func (s *Review) encodeFields(e *jx.Encoder) {
 		s.Locale.Encode(e)
 	}
 	{
+		e.FieldStart("pinned")
+		s.Pinned.Encode(e)
+	}
+	{
 		e.FieldStart("createdAt")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 }
 
-var jsonFieldsNameOfReview = [12]string{
+var jsonFieldsNameOfReview = [13]string{
 	0:  "id",
 	1:  "user",
 	2:  "course",
@@ -15701,7 +15750,8 @@ var jsonFieldsNameOfReview = [12]string{
 	8:  "fullName",
 	9:  "state",
 	10: "locale",
-	11: "createdAt",
+	11: "pinned",
+	12: "createdAt",
 }
 
 // Decode decodes Review from json.
@@ -15829,8 +15879,18 @@ func (s *Review) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"locale\"")
 			}
-		case "createdAt":
+		case "pinned":
 			requiredBitSet[1] |= 1 << 3
+			if err := func() error {
+				if err := s.Pinned.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"pinned\"")
+			}
+		case "createdAt":
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -15852,7 +15912,7 @@ func (s *Review) Decode(d *jx.Decoder) error {
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
 		0b11111111,
-		0b00001111,
+		0b00011111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

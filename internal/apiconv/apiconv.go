@@ -127,6 +127,7 @@ type Converter interface {
 	// deferral as the course cover). Required-string fields resolve from nullable
 	// columns via StringFromPtr.
 	// goverter:map LanguageID CourseId
+	// goverter:map LandingPageToRedirectID LandingPageToRedirectId
 	// goverter:map Edges.Course.Slug CourseSlug
 	// goverter:map Edges.Course.MembersCount MembersCount
 	// goverter:map Edges.Course Duration | courseDuration

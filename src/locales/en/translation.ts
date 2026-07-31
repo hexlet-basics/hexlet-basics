@@ -135,6 +135,9 @@ export default {
         lead: {
           contact_method: "Способ связи",
           contact_value: "Телефон / Имя пользователя",
+          phone: "Phone",
+          telegram: "Telegram",
+          whatsapp: "WhatsApp",
         },
         qna_item: {
           answer: "Ответ",
@@ -204,6 +207,16 @@ export default {
       resources: {
         banners: "Banners",
         courseCategories: "Course Categories",
+        landingPages: "Landing Pages",
+        leads: "Leads",
+        lessonMembers: "Lesson Members",
+        lessonReviews: "Lesson Reviews",
+        managementUsers: "Management: Users",
+        messages: "Assistant Messages",
+        reviews: "Reviews",
+        roles: "Roles",
+        staffMembers: "Staff Members",
+        users: "Users",
       },
       crud: {
         cancel: "Cancel",
@@ -218,6 +231,7 @@ export default {
         new: "New",
         save: "Save",
         saveError: "Failed to save the record",
+        search: "Search…",
         updated: "Record updated",
       },
       banners: {
@@ -1348,6 +1362,33 @@ export default {
     },
     models: {
       attributes: {
+        assistant_message: {
+          content: "Message",
+          course: "Course",
+          lesson: "Lesson",
+          role: "Role",
+        },
+        lesson_member: {
+          course: "Course",
+          lesson: "Lesson",
+          messages_count: "Messages",
+          state: "State",
+          user_id: "User",
+        },
+        lesson_review: {
+          course: "Course",
+          lesson: "Lesson",
+          locale: "Locale",
+          summary: "Summary",
+        },
+        staff_member: {
+          allowed_locales: "Allowed locales",
+          role_id: "Role",
+          user_id: "User",
+        },
+        staff_role: {
+          permissions_count: "Permissions",
+        },
         banner: {
           background: "Background",
           "background/values": {
@@ -1445,6 +1486,9 @@ export default {
         lead: {
           contact_method: "Способ связи",
           contact_value: "Телефон / Имя пользователя",
+          phone: "Phone",
+          telegram: "Telegram",
+          whatsapp: "WhatsApp",
         },
         qna_item: {
           answer: "Ответ",

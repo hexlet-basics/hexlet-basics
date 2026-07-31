@@ -2120,16 +2120,21 @@ type CourseLandingPage struct {
 	Listed     NilBool             `json:"listed"`
 	State      NilLandingPageState `json:"state"`
 	// Free-form ordering key (legacy stores it as a string).
-	Order               NilString `json:"order"`
-	MetaTitle           string    `json:"metaTitle"`
-	MetaDescription     string    `json:"metaDescription"`
-	Header              string    `json:"header"`
-	Description         string    `json:"description"`
-	UsedInHeader        NilString `json:"usedInHeader"`
-	UsedInDescription   NilString `json:"usedInDescription"`
-	OutcomesHeader      NilString `json:"outcomesHeader"`
-	OutcomesDescription NilString `json:"outcomesDescription"`
-	OutcomesImage       NilString `json:"outcomesImage"`
+	Order NilString `json:"order"`
+	// Footer visibility + link caption. Part of the read model so the admin edit form can round-trip the
+	// fields it writes.
+	Footer                  NilBool   `json:"footer"`
+	FooterName              NilString `json:"footerName"`
+	LandingPageToRedirectId NilInt32  `json:"landingPageToRedirectId"`
+	MetaTitle               string    `json:"metaTitle"`
+	MetaDescription         string    `json:"metaDescription"`
+	Header                  string    `json:"header"`
+	Description             string    `json:"description"`
+	UsedInHeader            NilString `json:"usedInHeader"`
+	UsedInDescription       NilString `json:"usedInDescription"`
+	OutcomesHeader          NilString `json:"outcomesHeader"`
+	OutcomesDescription     NilString `json:"outcomesDescription"`
+	OutcomesImage           NilString `json:"outcomesImage"`
 	// Estimated duration in hours.
 	Duration     int32 `json:"duration"`
 	MembersCount int32 `json:"membersCount"`
@@ -2183,6 +2188,21 @@ func (s *CourseLandingPage) GetState() NilLandingPageState {
 // GetOrder returns the value of Order.
 func (s *CourseLandingPage) GetOrder() NilString {
 	return s.Order
+}
+
+// GetFooter returns the value of Footer.
+func (s *CourseLandingPage) GetFooter() NilBool {
+	return s.Footer
+}
+
+// GetFooterName returns the value of FooterName.
+func (s *CourseLandingPage) GetFooterName() NilString {
+	return s.FooterName
+}
+
+// GetLandingPageToRedirectId returns the value of LandingPageToRedirectId.
+func (s *CourseLandingPage) GetLandingPageToRedirectId() NilInt32 {
+	return s.LandingPageToRedirectId
 }
 
 // GetMetaTitle returns the value of MetaTitle.
@@ -2288,6 +2308,21 @@ func (s *CourseLandingPage) SetState(val NilLandingPageState) {
 // SetOrder sets the value of Order.
 func (s *CourseLandingPage) SetOrder(val NilString) {
 	s.Order = val
+}
+
+// SetFooter sets the value of Footer.
+func (s *CourseLandingPage) SetFooter(val NilBool) {
+	s.Footer = val
+}
+
+// SetFooterName sets the value of FooterName.
+func (s *CourseLandingPage) SetFooterName(val NilString) {
+	s.FooterName = val
+}
+
+// SetLandingPageToRedirectId sets the value of LandingPageToRedirectId.
+func (s *CourseLandingPage) SetLandingPageToRedirectId(val NilInt32) {
+	s.LandingPageToRedirectId = val
 }
 
 // SetMetaTitle sets the value of MetaTitle.
@@ -5833,7 +5868,10 @@ type Review struct {
 	FullName  NilString       `json:"fullName"`
 	State     NilReviewState  `json:"state"`
 	Locale    NilReviewLocale `json:"locale"`
-	CreatedAt time.Time       `json:"createdAt"`
+	// Pinned reviews sort to the top of the public list. Part of the read model so the admin edit form can
+	// round-trip the flag it writes.
+	Pinned    NilBool   `json:"pinned"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // GetID returns the value of ID.
@@ -5889,6 +5927,11 @@ func (s *Review) GetState() NilReviewState {
 // GetLocale returns the value of Locale.
 func (s *Review) GetLocale() NilReviewLocale {
 	return s.Locale
+}
+
+// GetPinned returns the value of Pinned.
+func (s *Review) GetPinned() NilBool {
+	return s.Pinned
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -5949,6 +5992,11 @@ func (s *Review) SetState(val NilReviewState) {
 // SetLocale sets the value of Locale.
 func (s *Review) SetLocale(val NilReviewLocale) {
 	s.Locale = val
+}
+
+// SetPinned sets the value of Pinned.
+func (s *Review) SetPinned(val NilBool) {
+	s.Pinned = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.

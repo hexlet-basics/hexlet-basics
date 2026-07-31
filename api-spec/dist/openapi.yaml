@@ -5187,6 +5187,9 @@ components:
         - listed
         - state
         - order
+        - footer
+        - footerName
+        - landingPageToRedirectId
         - metaTitle
         - metaDescription
         - header
@@ -5228,6 +5231,19 @@ components:
           type: string
           nullable: true
           description: Free-form ordering key (legacy stores it as a string).
+        footer:
+          type: boolean
+          nullable: true
+          description: |-
+            Footer visibility + link caption. Part of the read model so the admin
+                  edit form can round-trip the fields it writes.
+        footerName:
+          type: string
+          nullable: true
+        landingPageToRedirectId:
+          type: integer
+          format: int32
+          nullable: true
         metaTitle:
           type: string
         metaDescription:
@@ -6176,6 +6192,7 @@ components:
         - fullName
         - state
         - locale
+        - pinned
         - createdAt
       properties:
         id:
@@ -6211,6 +6228,12 @@ components:
           allOf:
             - $ref: '#/components/schemas/ReviewLocale'
           nullable: true
+        pinned:
+          type: boolean
+          nullable: true
+          description: |-
+            Pinned reviews sort to the top of the public list. Part of the read model
+                  so the admin edit form can round-trip the flag it writes.
         createdAt:
           type: string
           format: date-time
