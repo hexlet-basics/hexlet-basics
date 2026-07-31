@@ -6127,6 +6127,14 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 		e.Int32(s.RelatedCourseItemsCount)
 	}
 	{
+		e.FieldStart("relatedCourseIds")
+		e.ArrStart()
+		for _, elem := range s.RelatedCourseIds {
+			e.Int32(elem)
+		}
+		e.ArrEnd()
+	}
+	{
 		e.FieldStart("coverThumbVariant")
 		s.CoverThumbVariant.Encode(e)
 	}
@@ -6144,7 +6152,7 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfBlogPost = [16]string{
+var jsonFieldsNameOfBlogPost = [17]string{
 	0:  "id",
 	1:  "creator",
 	2:  "name",
@@ -6157,10 +6165,11 @@ var jsonFieldsNameOfBlogPost = [16]string{
 	9:  "readingTime",
 	10: "likesCount",
 	11: "relatedCourseItemsCount",
-	12: "coverThumbVariant",
-	13: "coverListVariant",
-	14: "coverMainVariant",
-	15: "createdAt",
+	12: "relatedCourseIds",
+	13: "coverThumbVariant",
+	14: "coverListVariant",
+	15: "coverMainVariant",
+	16: "createdAt",
 }
 
 // Decode decodes BlogPost from json.
@@ -6168,7 +6177,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode BlogPost to nil")
 	}
-	var requiredBitSet [2]uint8
+	var requiredBitSet [3]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -6304,8 +6313,28 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"relatedCourseItemsCount\"")
 			}
-		case "coverThumbVariant":
+		case "relatedCourseIds":
 			requiredBitSet[1] |= 1 << 4
+			if err := func() error {
+				s.RelatedCourseIds = make([]int32, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem int32
+					v, err := d.Int32()
+					elem = int32(v)
+					if err != nil {
+						return err
+					}
+					s.RelatedCourseIds = append(s.RelatedCourseIds, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"relatedCourseIds\"")
+			}
+		case "coverThumbVariant":
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				if err := s.CoverThumbVariant.Decode(d); err != nil {
 					return err
@@ -6315,7 +6344,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"coverThumbVariant\"")
 			}
 		case "coverListVariant":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				if err := s.CoverListVariant.Decode(d); err != nil {
 					return err
@@ -6325,7 +6354,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"coverListVariant\"")
 			}
 		case "coverMainVariant":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				if err := s.CoverMainVariant.Decode(d); err != nil {
 					return err
@@ -6335,7 +6364,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"coverMainVariant\"")
 			}
 		case "createdAt":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[2] |= 1 << 0
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -6355,9 +6384,10 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [2]uint8{
+	for i, mask := range [3]uint8{
 		0b11111111,
 		0b11111111,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

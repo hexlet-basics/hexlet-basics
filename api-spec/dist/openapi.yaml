@@ -4770,6 +4770,7 @@ components:
         - readingTime
         - likesCount
         - relatedCourseItemsCount
+        - relatedCourseIds
         - coverThumbVariant
         - coverListVariant
         - coverMainVariant
@@ -4809,6 +4810,14 @@ components:
         relatedCourseItemsCount:
           type: integer
           format: int32
+        relatedCourseIds:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: |-
+            Promoted-course ids in display order, so the admin related-courses
+                  editor can round-trip the set it writes.
         coverThumbVariant:
           type: string
           nullable: true

@@ -8,6 +8,7 @@
 // - MSW worker lifecycle: start once, reset handlers between tests, stop at end.
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/tiptap/styles.css";
 import "@mantine/notifications/styles.css";
 import { afterAll, afterEach, beforeAll } from "vitest";
 import { client } from "@/client/client.gen";

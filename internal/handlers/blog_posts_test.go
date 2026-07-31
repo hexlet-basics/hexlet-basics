@@ -83,6 +83,8 @@ func TestAdminGetBlogPost(t *testing.T) {
 	assert.Equal(t, "hello-world", post.Slug.Value)
 	assert.Equal(t, int32(2), post.LikesCount)
 	assert.Equal(t, "http://localhost:3001/storage/blogcoverkey001", post.CoverMainVariant.Value)
+	// Promoted-course ids surface in display order (fixture order 0,1,2).
+	assert.Equal(t, []int32{82481401, 207281424, 617920698}, post.RelatedCourseIds)
 }
 
 func TestAdminGetBlogPostReturnsTrustedHTMLUnchanged(t *testing.T) {

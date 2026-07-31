@@ -62,15 +62,15 @@ export default {
     activerecord: {
       attributes: {
         base: {
-          _destroy: "Удалить",
-          answer: "Ответ",
-          created_at: "Создание",
-          description: "Описание",
-          header: "Заголовок",
-          name: "Имя",
-          question: "Вопрос",
-          slug: "Слаг",
-          updated_at: "Обновление",
+          _destroy: "Delete",
+          answer: "Answer",
+          created_at: "Created",
+          description: "Description",
+          header: "Header",
+          name: "Name",
+          question: "Question",
+          slug: "Slug",
+          updated_at: "Updated",
         },
         blog_post: {
           body: "Content",
@@ -90,7 +90,16 @@ export default {
           cover: "Cover",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
           learn_as: "Learn as",
+          "learn_as/values": {
+            first_language: "First language",
+            second_language: "Second language",
+          },
           progress: "Progress",
+          "progress/values": {
+            completed: "Completed",
+            draft: "Draft",
+            in_development: "In development",
+          },
           slug: "Slug",
         },
         language_category: {
@@ -206,7 +215,9 @@ export default {
     admin: {
       resources: {
         banners: "Banners",
+        blogPosts: "Blog Posts",
         courseCategories: "Course Categories",
+        courses: "Courses",
         landingPages: "Landing Pages",
         leads: "Leads",
         lessonMembers: "Lesson Members",
@@ -233,6 +244,29 @@ export default {
         saveError: "Failed to save the record",
         search: "Search…",
         updated: "Record updated",
+      },
+      blogPosts: {
+        likes: "Likes",
+        relatedCourses: "Related courses",
+      },
+      courses: {
+        createVersion: "Build version",
+        currentVersion: "Current version",
+        lessonsCount: "Lessons",
+        review: "AI review",
+        reviewQueued: "Review jobs enqueued",
+        versionQueued: "Version build started",
+      },
+      permissions: {
+        canCreate: "Create",
+        canDestroy: "Delete",
+        canIndex: "View",
+        canUpdate: "Update",
+        title: "Permissions",
+      },
+      qna: {
+        add: "Add question",
+        title: "FAQ",
       },
       banners: {
         edit: {
@@ -1413,15 +1447,15 @@ export default {
           url: "Link (URL)",
         },
         base: {
-          _destroy: "Удалить",
-          answer: "Ответ",
-          created_at: "Создание",
-          description: "Описание",
-          header: "Заголовок",
-          name: "Имя",
-          question: "Вопрос",
-          slug: "Слаг",
-          updated_at: "Обновление",
+          _destroy: "Delete",
+          answer: "Answer",
+          created_at: "Created",
+          description: "Description",
+          header: "Header",
+          name: "Name",
+          question: "Question",
+          slug: "Slug",
+          updated_at: "Updated",
         },
         blog_post: {
           cover: "Image",
@@ -1441,7 +1475,16 @@ export default {
           cover: "Cover",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
           learn_as: "Learn as",
+          "learn_as/values": {
+            first_language: "First language",
+            second_language: "Second language",
+          },
           progress: "Progress",
+          "progress/values": {
+            completed: "Completed",
+            draft: "Draft",
+            in_development: "In development",
+          },
           slug: "Slug",
         },
         language_category: {

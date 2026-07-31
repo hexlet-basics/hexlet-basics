@@ -1,6 +1,7 @@
 import {
   Checkbox,
   type CheckboxProps,
+  Input,
   MultiSelect,
   type MultiSelectProps,
   NumberInput,
@@ -13,6 +14,9 @@ import {
   type TextInputProps,
 } from "@mantine/core";
 import { DateTimePicker, type DateTimePickerProps } from "@mantine/dates";
+import { Link, RichTextEditor } from "@mantine/tiptap";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
@@ -156,6 +160,54 @@ function MultiSelectField(props: MultiSelectProps) {
   );
 }
 
+// Trusted-HTML fields (the blog post body). The field value IS the stored
+// HTML: tiptap parses it on mount and hands back `getHTML()` on every change,
+// so the form round-trips exactly what the API stores. `immediatelyRender:
+// false` keeps the editor SSR-safe under TanStack Start.
+function RichTextField({ label }: { label: string }) {
+  const field = useFieldContext<string>();
+  const editor = useEditor({
+    extensions: [StarterKit, Link],
+    content: field.state.value ?? "",
+    immediatelyRender: false,
+    onUpdate: ({ editor: current }) => field.handleChange(current.getHTML()),
+    onBlur: field.handleBlur,
+  });
+
+  return (
+    <Input.Wrapper
+      label={label}
+      error={fieldError(field.state.meta.errors, field.state.meta.isTouched)}
+    >
+      <RichTextEditor editor={editor}>
+        <RichTextEditor.Toolbar sticky>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Bold />
+            <RichTextEditor.Italic />
+            <RichTextEditor.Code />
+            <RichTextEditor.ClearFormatting />
+          </RichTextEditor.ControlsGroup>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.H2 />
+            <RichTextEditor.H3 />
+            <RichTextEditor.Blockquote />
+            <RichTextEditor.CodeBlock />
+          </RichTextEditor.ControlsGroup>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.BulletList />
+            <RichTextEditor.OrderedList />
+          </RichTextEditor.ControlsGroup>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Link />
+            <RichTextEditor.Unlink />
+          </RichTextEditor.ControlsGroup>
+        </RichTextEditor.Toolbar>
+        <RichTextEditor.Content />
+      </RichTextEditor>
+    </Input.Wrapper>
+  );
+}
+
 export const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,
@@ -165,6 +217,7 @@ export const { useAppForm } = createFormHook({
     NumberField,
     CheckboxField,
     MultiSelectField,
+    RichTextField,
   },
   formComponents: {},
   fieldContext,

@@ -104,6 +104,11 @@ export type BlogPost = {
   readingTime: number;
   likesCount: number;
   relatedCourseItemsCount: number;
+  /**
+   * Promoted-course ids in display order, so the admin related-courses
+   *       editor can round-trip the set it writes.
+   */
+  relatedCourseIds: Array<number>;
   coverThumbVariant: string | null;
   coverListVariant: string | null;
   coverMainVariant: string | null;

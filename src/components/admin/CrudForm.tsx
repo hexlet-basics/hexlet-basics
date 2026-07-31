@@ -9,7 +9,15 @@ import { useAppForm } from "@/lib/form";
 export interface CrudFieldSpec<T> {
   name: keyof T & string;
   label: string;
-  type?: "text" | "textarea" | "select" | "datetime" | "number" | "checkbox" | "multiselect";
+  type?:
+    | "text"
+    | "textarea"
+    | "select"
+    | "datetime"
+    | "number"
+    | "checkbox"
+    | "multiselect"
+    | "richtext";
   // Options for `type: "select"` / `"multiselect"`. Ignored otherwise.
   options?: { value: string; label: string }[];
   required?: boolean;
@@ -95,6 +103,8 @@ export function CrudForm<T extends Record<string, unknown>>({
                       required={spec.required}
                     />
                   );
+                case "richtext":
+                  return <field.RichTextField label={spec.label} />;
                 default:
                   return <field.TextField label={spec.label} required={spec.required} />;
               }

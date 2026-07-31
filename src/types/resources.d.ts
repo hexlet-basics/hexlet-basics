@@ -91,7 +91,16 @@ export default interface Resources {
           cover: "Обложка";
           hexlet_program_landing_page: "Hexlet Program Landing Page";
           learn_as: "Учить как";
+          "learn_as/values": {
+            first_language: "Первый язык";
+            second_language: "Второй язык";
+          };
           progress: "Прогресс";
+          "progress/values": {
+            completed: "Завершённый";
+            draft: "Черновик";
+            in_development: "В разработке";
+          };
           slug: "Slug";
         };
         language_category: {
@@ -220,6 +229,10 @@ export default interface Resources {
           header: "Новый баннер";
         };
       };
+      blogPosts: {
+        likes: "Лайки";
+        relatedCourses: "Связанные курсы";
+      };
       blog_posts: {
         edit: {
           header: "Редактирование {{id}}";
@@ -231,6 +244,14 @@ export default interface Resources {
         new: {
           header: "Новый пост";
         };
+      };
+      courses: {
+        createVersion: "Собрать версию";
+        currentVersion: "Текущая версия";
+        lessonsCount: "Уроков";
+        review: "AI-ревью";
+        reviewQueued: "Задачи на ревью поставлены";
+        versionQueued: "Сборка версии запущена";
       };
       crud: {
         cancel: "Отмена";
@@ -384,9 +405,22 @@ export default interface Resources {
           header: "Разговоры с AI";
         };
       };
+      permissions: {
+        canCreate: "Создание";
+        canDestroy: "Удаление";
+        canIndex: "Просмотр";
+        canUpdate: "Изменение";
+        title: "Права";
+      };
+      qna: {
+        add: "Добавить вопрос";
+        title: "FAQ";
+      };
       resources: {
         banners: "Баннеры";
+        blogPosts: "Посты блога";
         courseCategories: "Категории курсов";
+        courses: "Курсы";
         landingPages: "Лендинги";
         leads: "Лиды";
         lessonMembers: "Прохождения уроков";
@@ -1342,7 +1376,16 @@ export default interface Resources {
           cover: "Обложка";
           hexlet_program_landing_page: "Hexlet Program Landing Page";
           learn_as: "Учить как";
+          "learn_as/values": {
+            first_language: "Первый язык";
+            second_language: "Второй язык";
+          };
           progress: "Прогресс";
+          "progress/values": {
+            completed: "Завершённый";
+            draft: "Черновик";
+            in_development: "В разработке";
+          };
           slug: "Slug";
         };
         language_category: {

@@ -1086,10 +1086,13 @@ type BlogPost struct {
 	ReadingTime             int32            `json:"readingTime"`
 	LikesCount              int32            `json:"likesCount"`
 	RelatedCourseItemsCount int32            `json:"relatedCourseItemsCount"`
-	CoverThumbVariant       NilString        `json:"coverThumbVariant"`
-	CoverListVariant        NilString        `json:"coverListVariant"`
-	CoverMainVariant        NilString        `json:"coverMainVariant"`
-	CreatedAt               time.Time        `json:"createdAt"`
+	// Promoted-course ids in display order, so the admin related-courses editor can round-trip the set it
+	// writes.
+	RelatedCourseIds  []int32   `json:"relatedCourseIds"`
+	CoverThumbVariant NilString `json:"coverThumbVariant"`
+	CoverListVariant  NilString `json:"coverListVariant"`
+	CoverMainVariant  NilString `json:"coverMainVariant"`
+	CreatedAt         time.Time `json:"createdAt"`
 }
 
 // GetID returns the value of ID.
@@ -1150,6 +1153,11 @@ func (s *BlogPost) GetLikesCount() int32 {
 // GetRelatedCourseItemsCount returns the value of RelatedCourseItemsCount.
 func (s *BlogPost) GetRelatedCourseItemsCount() int32 {
 	return s.RelatedCourseItemsCount
+}
+
+// GetRelatedCourseIds returns the value of RelatedCourseIds.
+func (s *BlogPost) GetRelatedCourseIds() []int32 {
+	return s.RelatedCourseIds
 }
 
 // GetCoverThumbVariant returns the value of CoverThumbVariant.
@@ -1230,6 +1238,11 @@ func (s *BlogPost) SetLikesCount(val int32) {
 // SetRelatedCourseItemsCount sets the value of RelatedCourseItemsCount.
 func (s *BlogPost) SetRelatedCourseItemsCount(val int32) {
 	s.RelatedCourseItemsCount = val
+}
+
+// SetRelatedCourseIds sets the value of RelatedCourseIds.
+func (s *BlogPost) SetRelatedCourseIds(val []int32) {
+	s.RelatedCourseIds = val
 }
 
 // SetCoverThumbVariant sets the value of CoverThumbVariant.

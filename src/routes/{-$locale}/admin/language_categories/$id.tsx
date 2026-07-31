@@ -3,13 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
+  adminCreateCategoryQnaItemMutation,
+  adminDeleteCategoryQnaItemMutation,
   adminGetCourseCategoryOptions,
   adminGetCourseCategoryQueryKey,
+  adminListCategoryQnaItemsOptions,
+  adminListCategoryQnaItemsQueryKey,
   adminListCourseCategoriesQueryKey,
+  adminUpdateCategoryQnaItemMutation,
   adminUpdateCourseCategoryMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zCourseCategoryInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
+import { QnaPanel } from "@/components/admin/QnaPanel";
 import {
   courseCategoryToForm,
   useCourseCategoryFields,
@@ -42,6 +48,29 @@ function EditCourseCategory() {
     onDone: backToList,
   });
 
+  // Nested FAQ (legacy `admin/language_categories/:id/qna_items`).
+  const qnaPath = { path: { categoryId } };
+  const qna = useQuery(adminListCategoryQnaItemsOptions(qnaPath));
+  const qnaInvalidate = [adminListCategoryQnaItemsQueryKey(qnaPath)];
+  const createQna = useResourceMutation({
+    mutation: adminCreateCategoryQnaItemMutation(),
+    invalidate: qnaInvalidate,
+    successMessage: t(($) => $.admin.crud.created),
+    errorMessage: t(($) => $.admin.crud.saveError),
+  });
+  const updateQna = useResourceMutation({
+    mutation: adminUpdateCategoryQnaItemMutation(),
+    invalidate: qnaInvalidate,
+    successMessage: t(($) => $.admin.crud.updated),
+    errorMessage: t(($) => $.admin.crud.saveError),
+  });
+  const deleteQna = useResourceMutation({
+    mutation: adminDeleteCategoryQnaItemMutation(),
+    invalidate: qnaInvalidate,
+    successMessage: t(($) => $.admin.crud.deleted),
+    errorMessage: t(($) => $.admin.crud.deleteError),
+  });
+
   return (
     <Stack>
       <Title order={2}>{t(($) => $.admin.crud.edit)}</Title>
@@ -50,18 +79,29 @@ function EditCourseCategory() {
           <Loader />
         </Center>
       ) : (
-        <CrudForm
-          // Remount per row so the form re-seeds its default values from the
-          // loaded category instead of keeping a stale initial snapshot.
-          key={data.id}
-          fields={fields}
-          schema={zCourseCategoryInput}
-          defaultValues={courseCategoryToForm(data)}
-          onSubmit={(values) => mutation.mutate({ path: { id: categoryId }, body: values })}
-          submitLabel={t(($) => $.admin.crud.save)}
-          onCancel={backToList}
-          isPending={mutation.isPending}
-        />
+        <>
+          <CrudForm
+            // Remount per row so the form re-seeds its default values from the
+            // loaded category instead of keeping a stale initial snapshot.
+            key={data.id}
+            fields={fields}
+            schema={zCourseCategoryInput}
+            defaultValues={courseCategoryToForm(data)}
+            onSubmit={(values) => mutation.mutate({ path: { id: categoryId }, body: values })}
+            submitLabel={t(($) => $.admin.crud.save)}
+            onCancel={backToList}
+            isPending={mutation.isPending}
+          />
+          <QnaPanel
+            items={qna.data ?? []}
+            onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}
+            onUpdate={(itemId, input) =>
+              updateQna.mutate({ path: { categoryId, id: itemId }, body: input })
+            }
+            onDelete={(itemId) => deleteQna.mutate({ path: { categoryId, id: itemId } })}
+            isPending={createQna.isPending || updateQna.isPending || deleteQna.isPending}
+          />
+        </>
       )}
     </Stack>
   );

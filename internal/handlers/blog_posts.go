@@ -204,6 +204,10 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 	if err != nil {
 		return nil, err
 	}
+	relatedByPost, err := s.blogRelatedCourseIDs(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
 
 	items := make([]api.BlogPost, len(posts))
 	for i, p := range posts {
@@ -220,6 +224,7 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 			ReadingTime:             readingTime(p.RichBody),
 			LikesCount:              int32(likesByPost[p.ID]),
 			RelatedCourseItemsCount: int32(p.RelatedLanguageItemsCount),
+			RelatedCourseIds:        relatedByPost[p.ID],
 			CoverThumbVariant:       s.coverVariant(coverKeyByPost[p.ID]),
 			CoverListVariant:        s.coverVariant(coverKeyByPost[p.ID]),
 			CoverMainVariant:        s.coverVariant(coverKeyByPost[p.ID]),
@@ -248,6 +253,31 @@ func (s *Server) blogCoverKeys(ctx context.Context, ids []int) (map[int]string, 
 		if r.Edges.Blob != nil {
 			out[r.RecordID] = r.Edges.Blob.Key
 		}
+	}
+	return out, nil
+}
+
+// blogRelatedCourseIDs returns each post's promoted-course ids in display
+// order (the `order` column filled by the related-courses action, id as the
+// tie-breaker for legacy rows without it). Posts without items map to an empty
+// slice via the make below, so the API field is always an array, never null.
+func (s *Server) blogRelatedCourseIDs(ctx context.Context, ids []int) (map[int][]int32, error) {
+	rows, err := s.db.BlogPostRelatedLanguageItem.Query().
+		Where(blogpostrelatedlanguageitem.BlogPostIDIn(ids...)).
+		Order(
+			ent.Asc(blogpostrelatedlanguageitem.FieldOrder),
+			ent.Asc(blogpostrelatedlanguageitem.FieldID),
+		).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[int][]int32, len(ids))
+	for _, id := range ids {
+		out[id] = []int32{}
+	}
+	for _, r := range rows {
+		out[r.BlogPostID] = append(out[r.BlogPostID], int32(r.LanguageID))
 	}
 	return out, nil
 }

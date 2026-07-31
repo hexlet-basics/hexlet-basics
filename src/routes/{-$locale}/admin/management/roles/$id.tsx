@@ -11,6 +11,7 @@ import {
 import { zRoleInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { staffRoleToForm, useStaffRoleFields } from "@/components/admin/resources/staffRole";
+import { RolePermissionsMatrix } from "@/components/admin/RolePermissionsMatrix";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
 export const Route = createFileRoute("/{-$locale}/admin/management/roles/$id")({
@@ -44,16 +45,19 @@ function EditRole() {
           <Loader />
         </Center>
       ) : (
-        <CrudForm
-          key={data.id}
-          fields={fields}
-          schema={zRoleInput}
-          defaultValues={staffRoleToForm(data)}
-          onSubmit={(values) => mutation.mutate({ path: { id: roleId }, body: values })}
-          submitLabel={t(($) => $.admin.crud.save)}
-          onCancel={backToList}
-          isPending={mutation.isPending}
-        />
+        <>
+          <CrudForm
+            key={data.id}
+            fields={fields}
+            schema={zRoleInput}
+            defaultValues={staffRoleToForm(data)}
+            onSubmit={(values) => mutation.mutate({ path: { id: roleId }, body: values })}
+            submitLabel={t(($) => $.admin.crud.save)}
+            onCancel={backToList}
+            isPending={mutation.isPending}
+          />
+          <RolePermissionsMatrix roleId={roleId} />
+        </>
       )}
     </Stack>
   );

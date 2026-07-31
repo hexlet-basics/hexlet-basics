@@ -90,7 +90,16 @@ export default {
           cover: "Обложка",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
           learn_as: "Учить как",
+          "learn_as/values": {
+            first_language: "Первый язык",
+            second_language: "Второй язык",
+          },
           progress: "Прогресс",
+          "progress/values": {
+            completed: "Завершённый",
+            draft: "Черновик",
+            in_development: "В разработке",
+          },
           slug: "Slug",
         },
         language_category: {
@@ -206,7 +215,9 @@ export default {
     admin: {
       resources: {
         banners: "Баннеры",
+        blogPosts: "Посты блога",
         courseCategories: "Категории курсов",
+        courses: "Курсы",
         landingPages: "Лендинги",
         leads: "Лиды",
         lessonMembers: "Прохождения уроков",
@@ -233,6 +244,29 @@ export default {
         saveError: "Не удалось сохранить запись",
         search: "Поиск…",
         updated: "Запись обновлена",
+      },
+      blogPosts: {
+        likes: "Лайки",
+        relatedCourses: "Связанные курсы",
+      },
+      courses: {
+        createVersion: "Собрать версию",
+        currentVersion: "Текущая версия",
+        lessonsCount: "Уроков",
+        review: "AI-ревью",
+        reviewQueued: "Задачи на ревью поставлены",
+        versionQueued: "Сборка версии запущена",
+      },
+      permissions: {
+        canCreate: "Создание",
+        canDestroy: "Удаление",
+        canIndex: "Просмотр",
+        canUpdate: "Изменение",
+        title: "Права",
+      },
+      qna: {
+        add: "Добавить вопрос",
+        title: "FAQ",
       },
       banners: {
         edit: {
@@ -1445,7 +1479,16 @@ export default {
           cover: "Обложка",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
           learn_as: "Учить как",
+          "learn_as/values": {
+            first_language: "Первый язык",
+            second_language: "Второй язык",
+          },
           progress: "Прогресс",
+          "progress/values": {
+            completed: "Завершённый",
+            draft: "Черновик",
+            in_development: "В разработке",
+          },
           slug: "Slug",
         },
         language_category: {

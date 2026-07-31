@@ -90,7 +90,16 @@ export default {
           cover: "Cover",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
           learn_as: "Learn as",
+          "learn_as/values": {
+            first_language: "Primer lenguaje",
+            second_language: "Segundo lenguaje",
+          },
           progress: "Progress",
+          "progress/values": {
+            completed: "Completado",
+            draft: "Borrador",
+            in_development: "En desarrollo",
+          },
           slug: "Slug",
         },
         language_category: {
@@ -206,7 +215,9 @@ export default {
     admin: {
       resources: {
         banners: "Banners",
+        blogPosts: "Publicaciones del blog",
         courseCategories: "Categorías de cursos",
+        courses: "Cursos",
         landingPages: "Páginas de aterrizaje",
         leads: "Leads",
         lessonMembers: "Progreso de lecciones",
@@ -233,6 +244,29 @@ export default {
         saveError: "No se pudo guardar el registro",
         search: "Buscar…",
         updated: "Registro actualizado",
+      },
+      blogPosts: {
+        likes: "Me gusta",
+        relatedCourses: "Cursos relacionados",
+      },
+      courses: {
+        createVersion: "Compilar versión",
+        currentVersion: "Versión actual",
+        lessonsCount: "Lecciones",
+        review: "Revisión IA",
+        reviewQueued: "Tareas de revisión encoladas",
+        versionQueued: "Compilación de versión iniciada",
+      },
+      permissions: {
+        canCreate: "Crear",
+        canDestroy: "Eliminar",
+        canIndex: "Ver",
+        canUpdate: "Actualizar",
+        title: "Permisos",
+      },
+      qna: {
+        add: "Agregar pregunta",
+        title: "FAQ",
       },
       banners: {
         edit: {
@@ -1441,7 +1475,16 @@ export default {
           cover: "Cover",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
           learn_as: "Learn as",
+          "learn_as/values": {
+            first_language: "Primer lenguaje",
+            second_language: "Segundo lenguaje",
+          },
           progress: "Progress",
+          "progress/values": {
+            completed: "Completado",
+            draft: "Borrador",
+            in_development: "En desarrollo",
+          },
           slug: "Slug",
         },
         language_category: {
