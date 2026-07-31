@@ -24,6 +24,34 @@ type LanguageLessonReviewCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LanguageLessonReviewCreate) SetCreatedAt(v time.Time) *LanguageLessonReviewCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LanguageLessonReviewCreate) SetNillableCreatedAt(v *time.Time) *LanguageLessonReviewCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LanguageLessonReviewCreate) SetUpdatedAt(v time.Time) *LanguageLessonReviewCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LanguageLessonReviewCreate) SetNillableUpdatedAt(v *time.Time) *LanguageLessonReviewCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetLocale sets the "locale" field.
 func (_c *LanguageLessonReviewCreate) SetLocale(v string) *LanguageLessonReviewCreate {
 	_c.mutation.SetLocale(v)
@@ -60,12 +88,6 @@ func (_c *LanguageLessonReviewCreate) SetLanguageLessonVersionInfoID(v int) *Lan
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *LanguageLessonReviewCreate) SetCreatedAt(v time.Time) *LanguageLessonReviewCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
 // SetCourseID sets the "course" edge to the Course entity by ID.
 func (_c *LanguageLessonReviewCreate) SetCourseID(id int) *LanguageLessonReviewCreate {
 	_c.mutation.SetCourseID(id)
@@ -95,6 +117,7 @@ func (_c *LanguageLessonReviewCreate) Mutation() *LanguageLessonReviewMutation {
 
 // Save creates the LanguageLessonReview in the database.
 func (_c *LanguageLessonReviewCreate) Save(ctx context.Context) (*LanguageLessonReview, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -120,8 +143,26 @@ func (_c *LanguageLessonReviewCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *LanguageLessonReviewCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := languagelessonreview.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := languagelessonreview.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *LanguageLessonReviewCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LanguageLessonReview.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LanguageLessonReview.updated_at"`)}
+	}
 	if _, ok := _c.mutation.Locale(); !ok {
 		return &ValidationError{Name: "locale", err: errors.New(`ent: missing required field "LanguageLessonReview.locale"`)}
 	}
@@ -139,9 +180,6 @@ func (_c *LanguageLessonReviewCreate) check() error {
 	}
 	if _, ok := _c.mutation.LanguageLessonVersionInfoID(); !ok {
 		return &ValidationError{Name: "language_lesson_version_info_id", err: errors.New(`ent: missing required field "LanguageLessonReview.language_lesson_version_info_id"`)}
-	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LanguageLessonReview.created_at"`)}
 	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "LanguageLessonReview.course"`)}
@@ -176,6 +214,14 @@ func (_c *LanguageLessonReviewCreate) createSpec() (*LanguageLessonReview, *sqlg
 		_spec = sqlgraph.NewCreateSpec(languagelessonreview.Table, sqlgraph.NewFieldSpec(languagelessonreview.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(languagelessonreview.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonreview.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.Locale(); ok {
 		_spec.SetField(languagelessonreview.FieldLocale, field.TypeString, value)
 		_node.Locale = value
@@ -191,10 +237,6 @@ func (_c *LanguageLessonReviewCreate) createSpec() (*LanguageLessonReview, *sqlg
 	if value, ok := _c.mutation.LanguageLessonVersionInfoID(); ok {
 		_spec.SetField(languagelessonreview.FieldLanguageLessonVersionInfoID, field.TypeInt, value)
 		_node.LanguageLessonVersionInfoID = value
-	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(languagelessonreview.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
 	}
 	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -237,7 +279,7 @@ func (_c *LanguageLessonReviewCreate) createSpec() (*LanguageLessonReview, *sqlg
 // of the `INSERT` statement. For example:
 //
 //	client.LanguageLessonReview.Create().
-//		SetLocale(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -246,7 +288,7 @@ func (_c *LanguageLessonReviewCreate) createSpec() (*LanguageLessonReview, *sqlg
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LanguageLessonReviewUpsert) {
-//			SetLocale(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LanguageLessonReviewCreate) OnConflict(opts ...sql.ConflictOption) *LanguageLessonReviewUpsertOne {
@@ -281,6 +323,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonReviewUpsert) SetUpdatedAt(v time.Time) *LanguageLessonReviewUpsert {
+	u.Set(languagelessonreview.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsert) UpdateUpdatedAt() *LanguageLessonReviewUpsert {
+	u.SetExcluded(languagelessonreview.FieldUpdatedAt)
+	return u
+}
 
 // SetLocale sets the "locale" field.
 func (u *LanguageLessonReviewUpsert) SetLocale(v string) *LanguageLessonReviewUpsert {
@@ -409,6 +463,20 @@ func (u *LanguageLessonReviewUpsertOne) Update(set func(*LanguageLessonReviewUps
 		set(&LanguageLessonReviewUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonReviewUpsertOne) SetUpdatedAt(v time.Time) *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertOne) UpdateUpdatedAt() *LanguageLessonReviewUpsertOne {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLocale sets the "locale" field.
@@ -561,6 +629,7 @@ func (_c *LanguageLessonReviewCreateBulk) Save(ctx context.Context) ([]*Language
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*LanguageLessonReviewMutation)
 				if !ok {
@@ -643,7 +712,7 @@ func (_c *LanguageLessonReviewCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LanguageLessonReviewUpsert) {
-//			SetLocale(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LanguageLessonReviewCreateBulk) OnConflict(opts ...sql.ConflictOption) *LanguageLessonReviewUpsertBulk {
@@ -717,6 +786,20 @@ func (u *LanguageLessonReviewUpsertBulk) Update(set func(*LanguageLessonReviewUp
 		set(&LanguageLessonReviewUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LanguageLessonReviewUpsertBulk) SetUpdatedAt(v time.Time) *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LanguageLessonReviewUpsertBulk) UpdateUpdatedAt() *LanguageLessonReviewUpsertBulk {
+	return u.Update(func(s *LanguageLessonReviewUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetLocale sets the "locale" field.

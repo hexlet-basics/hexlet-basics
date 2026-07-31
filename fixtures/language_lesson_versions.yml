@@ -1,0 +1,21 @@
+# Fixtures for `language_lesson_versions`, HAND-CURATED. The review worker
+# writes `language_lesson_reviews.language_lesson_version_id` from each info's
+# `version_id`, and that column carries a real FK — so the lesson-version rows
+# the infos point at (see language_lesson_version_infos.yml) must exist. Ids
+# deliberately equal the corresponding course-version ids the info fixtures
+# reuse. testfixtures disables FKs during load, so module_version_id parents
+# need not exist.
+- id: 965227298
+  language_id: 82481401
+  language_version_id: 965227298
+  lesson_id: 1001
+  module_version_id: 1
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 545350298
+  language_id: 82481401
+  language_version_id: 545350298
+  lesson_id: 1001
+  module_version_id: 1
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

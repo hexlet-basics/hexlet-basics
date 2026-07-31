@@ -16,6 +16,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/languagelesson"
+	"hexletbasics/ent/languagelessonreview"
 	"hexletbasics/ent/languagelessonversion"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/ent/languagemodule"
@@ -248,6 +249,21 @@ func init() {
 	languagelesson.DefaultUpdatedAt = languagelessonDescUpdatedAt.Default.(func() time.Time)
 	// languagelesson.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	languagelesson.UpdateDefaultUpdatedAt = languagelessonDescUpdatedAt.UpdateDefault.(func() time.Time)
+	languagelessonreviewMixin := schema.LanguageLessonReview{}.Mixin()
+	languagelessonreviewMixinFields0 := languagelessonreviewMixin[0].Fields()
+	_ = languagelessonreviewMixinFields0
+	languagelessonreviewFields := schema.LanguageLessonReview{}.Fields()
+	_ = languagelessonreviewFields
+	// languagelessonreviewDescCreatedAt is the schema descriptor for created_at field.
+	languagelessonreviewDescCreatedAt := languagelessonreviewMixinFields0[0].Descriptor()
+	// languagelessonreview.DefaultCreatedAt holds the default value on creation for the created_at field.
+	languagelessonreview.DefaultCreatedAt = languagelessonreviewDescCreatedAt.Default.(func() time.Time)
+	// languagelessonreviewDescUpdatedAt is the schema descriptor for updated_at field.
+	languagelessonreviewDescUpdatedAt := languagelessonreviewMixinFields0[1].Descriptor()
+	// languagelessonreview.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	languagelessonreview.DefaultUpdatedAt = languagelessonreviewDescUpdatedAt.Default.(func() time.Time)
+	// languagelessonreview.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	languagelessonreview.UpdateDefaultUpdatedAt = languagelessonreviewDescUpdatedAt.UpdateDefault.(func() time.Time)
 	languagelessonversionMixin := schema.LanguageLessonVersion{}.Mixin()
 	languagelessonversionMixinFields0 := languagelessonversionMixin[0].Fields()
 	_ = languagelessonversionMixinFields0

@@ -138,6 +138,14 @@ func (c *Client) AdminListCourseLessonMembers(ctx context.Context, params api.Ad
 	return success[api.CourseLessonMemberPage](c.Client.AdminListCourseLessonMembers(ctx, params))
 }
 
+func (c *Client) AdminReviewCourse(ctx context.Context, params api.AdminReviewCourseParams) error {
+	return noContent[api.AdminReviewCourseNoContent](c.Client.AdminReviewCourse(ctx, params))
+}
+
+func (c *Client) AdminReviewCourseLesson(ctx context.Context, params api.AdminReviewCourseLessonParams) error {
+	return noContent[api.AdminReviewCourseLessonNoContent](c.Client.AdminReviewCourseLesson(ctx, params))
+}
+
 func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (*api.CourseLessonReviewPage, error) {
 	return success[api.CourseLessonReviewPage](c.Client.AdminListCourseLessonReviews(ctx, params))
 }

@@ -3,6 +3,7 @@
   "auth.password_processing_failed": { "other": "No se pudo procesar la contraseña" },
   "auth.email_taken": { "other": "Este correo electrónico ya está en uso" },
   "courses.not_found": { "other": "Curso no encontrado" },
+  "lessons.not_found": { "other": "Lección no encontrada" },
   "attachments.file_too_large": { "other": "El archivo es demasiado grande" },
   "attachments.file_required": { "other": "Se requiere un archivo" },
   "attachments.unsupported_file_type": { "other": "Tipo de archivo no compatible" },

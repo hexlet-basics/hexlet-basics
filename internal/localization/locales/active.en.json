@@ -18,6 +18,7 @@
   "http.unauthorized": "Unauthorized",
   "http.unprocessable_entity": "Unprocessable Entity",
   "http.unsupported_media_type": "Unsupported Media Type",
+  "lessons.not_found": "lesson not found",
   "webhooks.invalid_payload": "invalid payload",
   "webhooks.invalid_signature": "invalid signature",
   "webhooks.read_body_failed": "failed to read body",

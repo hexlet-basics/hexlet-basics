@@ -42,6 +42,11 @@ type Config struct {
 	AmoCRMBaseURL   string `env:"AMOCRM_BASE_URL"`
 	AmoCRMAuthToken string `env:"AMOCRM_AUTH_TOKEN"`
 	YMCounter       string `env:"YM_COUNTER"`
+	// OpenAI powers the AI features (lesson-review summaries, the in-lesson
+	// assistant). The env name matches the legacy Rails deployment so the
+	// secret carries over unchanged; an empty token disables the AI workers.
+	OpenAIAccessToken string `env:"OPENAI_ACCESS_TOKEN"`
+	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-4o-mini"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
 	SentryDSN         string `env:"SENTRY_DSN"`

@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/languagelesson"
 	"hexletbasics/ent/languagelessonreview"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -26,6 +27,12 @@ type LanguageLessonReviewUpdate struct {
 // Where appends a list predicates to the LanguageLessonReviewUpdate builder.
 func (_u *LanguageLessonReviewUpdate) Where(ps ...predicate.LanguageLessonReview) *LanguageLessonReviewUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonReviewUpdate) SetUpdatedAt(v time.Time) *LanguageLessonReviewUpdate {
+	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -168,6 +175,7 @@ func (_u *LanguageLessonReviewUpdate) ClearLesson() *LanguageLessonReviewUpdate 
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *LanguageLessonReviewUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -193,6 +201,14 @@ func (_u *LanguageLessonReviewUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *LanguageLessonReviewUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := languagelessonreview.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_u *LanguageLessonReviewUpdate) check() error {
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
@@ -215,6 +231,9 @@ func (_u *LanguageLessonReviewUpdate) sqlSave(ctx context.Context) (_node int, e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonreview.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Locale(); ok {
 		_spec.SetField(languagelessonreview.FieldLocale, field.TypeString, value)
@@ -310,6 +329,12 @@ type LanguageLessonReviewUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LanguageLessonReviewMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LanguageLessonReviewUpdateOne) SetUpdatedAt(v time.Time) *LanguageLessonReviewUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetLocale sets the "locale" field.
@@ -464,6 +489,7 @@ func (_u *LanguageLessonReviewUpdateOne) Select(field string, fields ...string) 
 
 // Save executes the query and returns the updated LanguageLessonReview entity.
 func (_u *LanguageLessonReviewUpdateOne) Save(ctx context.Context) (*LanguageLessonReview, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -486,6 +512,14 @@ func (_u *LanguageLessonReviewUpdateOne) Exec(ctx context.Context) error {
 func (_u *LanguageLessonReviewUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LanguageLessonReviewUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := languagelessonreview.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -528,6 +562,9 @@ func (_u *LanguageLessonReviewUpdateOne) sqlSave(ctx context.Context) (_node *La
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(languagelessonreview.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Locale(); ok {
 		_spec.SetField(languagelessonreview.FieldLocale, field.TypeString, value)

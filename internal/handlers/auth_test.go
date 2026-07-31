@@ -30,10 +30,12 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
+	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
 	handler := handlers.NewServer(
 		db,
 		&config.Config{JWTSecret: "test-secret"},
-		&testsupport.RecordingEnqueuer{DB: db},
+		enqueuer,
+		enqueuer,
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
 		translator,

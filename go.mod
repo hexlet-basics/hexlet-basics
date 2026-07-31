@@ -33,6 +33,7 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	github.com/ogen-go/ogen v1.23.0
 	github.com/oklog/ulid/v2 v2.1.2
+	github.com/openai/openai-go v1.12.0
 	github.com/riverqueue/river v0.41.1
 	github.com/riverqueue/river/riverdriver/riverdatabasesql v0.41.1
 	github.com/riverqueue/river/rivertype v0.41.1

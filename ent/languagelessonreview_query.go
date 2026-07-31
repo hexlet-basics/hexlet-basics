@@ -334,12 +334,12 @@ func (_q *LanguageLessonReviewQuery) WithLesson(opts ...func(*LanguageLessonQuer
 // Example:
 //
 //	var v []struct {
-//		Locale string `json:"locale,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.LanguageLessonReview.Query().
-//		GroupBy(languagelessonreview.FieldLocale).
+//		GroupBy(languagelessonreview.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *LanguageLessonReviewQuery) GroupBy(field string, fields ...string) *LanguageLessonReviewGroupBy {
@@ -357,11 +357,11 @@ func (_q *LanguageLessonReviewQuery) GroupBy(field string, fields ...string) *La
 // Example:
 //
 //	var v []struct {
-//		Locale string `json:"locale,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.LanguageLessonReview.Query().
-//		Select(languagelessonreview.FieldLocale).
+//		Select(languagelessonreview.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *LanguageLessonReviewQuery) Select(fields ...string) *LanguageLessonReviewSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

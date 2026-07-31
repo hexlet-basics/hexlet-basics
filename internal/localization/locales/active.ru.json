@@ -3,6 +3,7 @@
   "auth.password_processing_failed": { "other": "Не удалось обработать пароль" },
   "auth.email_taken": { "other": "Этот адрес электронной почты уже занят" },
   "courses.not_found": { "other": "Курс не найден" },
+  "lessons.not_found": { "other": "Урок не найден" },
   "attachments.file_too_large": { "other": "Файл слишком большой" },
   "attachments.file_required": { "other": "Необходимо приложить файл" },
   "attachments.unsupported_file_type": { "other": "Неподдерживаемый тип файла" },

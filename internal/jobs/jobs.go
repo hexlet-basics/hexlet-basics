@@ -45,7 +45,9 @@ func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { retur
 // Workers builds the worker registry. The exercise loader is registered when a
 // loader is supplied; a nil loader (insert-only clients that never Start) skips
 // it, since only the worker process needs the loader's db/blob dependencies.
-func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer) *river.Workers {
+// The lesson reviewer is likewise nil-skipped when no LLM credentials are
+// configured — its jobs then wait in the queue for a configured worker.
+func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer, reviewer LessonReviewer) *river.Workers {
 	w := river.NewWorkers()
 	river.AddWorker(w, &pingWorker{})
 	if loader != nil {
@@ -53,6 +55,9 @@ func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer) *river.Workers 
 	}
 	if leadSyncer != nil {
 		river.AddWorker(w, &amoCRMLeadWorker{syncer: leadSyncer})
+	}
+	if reviewer != nil {
+		river.AddWorker(w, &reviewLessonWorker{reviewer: reviewer})
 	}
 	return w
 }
@@ -80,6 +85,7 @@ func NewWorkerClient(
 	db *sql.DB,
 	loader *courseloader.Loader,
 	leadSyncer LeadSyncer,
+	reviewer LessonReviewer,
 	logger *slog.Logger,
 	errorHandler *ErrorHandler,
 	tracerProvider trace.TracerProvider,
@@ -92,7 +98,7 @@ func NewWorkerClient(
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
-		Workers: Workers(loader, leadSyncer),
+		Workers: Workers(loader, leadSyncer, reviewer),
 	})
 }
 

@@ -35,6 +35,12 @@ var (
 			Other: "course not found",
 		},
 	}
+	LessonNotFound = Message{
+		value: i18n.Message{
+			ID:    "lessons.not_found",
+			Other: "lesson not found",
+		},
+	}
 	FileTooLarge = Message{
 		value: i18n.Message{
 			ID:    "attachments.file_too_large",

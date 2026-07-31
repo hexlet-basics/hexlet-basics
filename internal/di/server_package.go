@@ -20,6 +20,7 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
@@ -105,6 +106,13 @@ var serverPackage = do.Package(
 		}
 		return versionbuilds.NewStarter(db, riverClient), nil
 	}),
+	do.Lazy[*lessonreviews.Enqueuer](func(i do.Injector) (*lessonreviews.Enqueuer, error) {
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+		return lessonreviews.NewEnqueuer(riverClient), nil
+	}),
 	do.Lazy[*handlers.Server](func(i do.Injector) (*handlers.Server, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -115,6 +123,10 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		starter, err := do.Invoke[*versionbuilds.Starter](i)
+		if err != nil {
+			return nil, err
+		}
+		reviews, err := do.Invoke[*lessonreviews.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
@@ -138,6 +150,7 @@ var serverPackage = do.Package(
 			db,
 			cfg,
 			starter,
+			reviews,
 			registrar,
 			publisher,
 			translator,

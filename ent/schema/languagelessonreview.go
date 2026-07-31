@@ -8,11 +8,12 @@ import (
 
 // LanguageLessonReview maps the legacy `language_lesson_reviews` table: an
 // AI-generated summary of student questions for one lesson version, per locale.
-// The admin surface is read-only (a list filtered to the current locale and to
-// non-empty summaries — legacy `where(locale:).with_summary`). All columns the
-// serializer reads are NOT NULL in the baseline, so they are plain value fields.
-// No @Table annotation: the struct name's snake-plural already matches the
-// table.
+// The admin list filters to the current locale and to non-empty summaries
+// (legacy `where(locale:).with_summary`); the review worker upserts rows by
+// (course, lesson, locale), so the Rails-owned timestamps come from
+// TimestampsMixin. All columns the serializer reads are NOT NULL in the
+// baseline, so they are plain value fields. No @Table annotation: the struct
+// name's snake-plural already matches the table.
 type LanguageLessonReview struct {
 	ent.Schema
 }
@@ -25,8 +26,11 @@ func (LanguageLessonReview) Fields() []ent.Field {
 		field.Int("language_lesson_id"),
 		field.Int("language_lesson_version_id"),
 		field.Int("language_lesson_version_info_id"),
-		field.Time("created_at").Immutable(),
 	}
+}
+
+func (LanguageLessonReview) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }
 
 func (LanguageLessonReview) Edges() []ent.Edge {

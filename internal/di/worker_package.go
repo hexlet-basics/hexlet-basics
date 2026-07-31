@@ -12,11 +12,13 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/internal/amocrm"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/eventhandlers"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/store"
 )
 
@@ -83,10 +85,28 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		entClient, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		// Without OpenAI credentials the reviewer stays unregistered: enqueued
+		// review jobs wait in the queue instead of failing against a dead client.
+		var reviewer jobs.LessonReviewer
+		if cfg.OpenAIAccessToken != "" {
+			reviewer = lessonreviews.NewReviewer(
+				entClient,
+				assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel),
+			)
+		}
 		return jobs.NewWorkerClient(
 			db,
 			loader,
 			amoCRMClient,
+			reviewer,
 			logger,
 			jobs.NewErrorHandler(sentryClient),
 			otelSDK.TracerProvider(),

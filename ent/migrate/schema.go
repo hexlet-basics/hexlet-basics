@@ -397,11 +397,12 @@ var (
 	// LanguageLessonReviewsColumns holds the columns for the "language_lesson_reviews" table.
 	LanguageLessonReviewsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "locale", Type: field.TypeString},
 		{Name: "summary", Type: field.TypeString},
 		{Name: "language_lesson_version_id", Type: field.TypeInt},
 		{Name: "language_lesson_version_info_id", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
 		{Name: "language_id", Type: field.TypeInt},
 		{Name: "language_lesson_id", Type: field.TypeInt},
 	}
@@ -413,13 +414,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "language_lesson_reviews_languages_course",
-				Columns:    []*schema.Column{LanguageLessonReviewsColumns[6]},
+				Columns:    []*schema.Column{LanguageLessonReviewsColumns[7]},
 				RefColumns: []*schema.Column{LanguagesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "language_lesson_reviews_language_lessons_lesson",
-				Columns:    []*schema.Column{LanguageLessonReviewsColumns[7]},
+				Columns:    []*schema.Column{LanguageLessonReviewsColumns[8]},
 				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

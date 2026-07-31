@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/languagelessonreview"
 	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/localization"
 )
 
 // These three admin lists (legacy `admin/language_lessons`,
@@ -142,4 +143,30 @@ func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.Ad
 		Page:    page.Page,
 		PerPage: page.PerPage,
 	}, nil
+}
+
+// AdminReviewCourseLesson enqueues an AI review job for every info of one
+// lesson — all locales AND all versions, so historical summaries refresh too
+// (legacy `lesson.infos.find_each { ReviewLessonJob.perform_later }`).
+func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminReviewCourseLessonParams) (api.AdminReviewCourseLessonRes, error) {
+	lesson, err := s.db.LanguageLesson.Get(ctx, int(params.ID))
+	if ent.IsNotFound(err) {
+		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.LessonNotFound)}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	infoIDs, err := s.db.LanguageLessonVersionInfo.Query().
+		Where(languagelessonversioninfo.LanguageLessonID(lesson.ID)).
+		Order(ent.Asc(languagelessonversioninfo.FieldID)).
+		IDs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.reviews.EnqueueLessonReviews(ctx, infoIDs); err != nil {
+		return nil, err
+	}
+	return &api.AdminReviewCourseLessonNoContent{}, nil
 }

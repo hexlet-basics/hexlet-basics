@@ -5,6 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/languagelessonversioninfo"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/localization"
@@ -14,9 +15,7 @@ import (
 // current version, so reads load it. The cover image (coverAttachmentId) and
 // the derived repositoryUrl are not written here — the cover is deferred until
 // the Attachments uploader lands, and repositoryUrl is computed from the slug on
-// read. There is no delete (parity with legacy). The review (AI re-review) and
-// createVersion (exercise build) actions are left to the job subsystem and stay
-// unimplemented for now.
+// read. There is no delete (parity with legacy).
 
 func withCourseVersion(q *ent.CourseQuery) *ent.CourseQuery {
 	return q.WithCurrentVersion()
@@ -83,4 +82,34 @@ func (s *Server) AdminCreateCourseVersion(ctx context.Context, params api.AdminC
 
 	body := apiconv.CourseVersionFromEnt(version)
 	return &body, nil
+}
+
+// AdminReviewCourse enqueues an AI review job for every lesson info of the
+// course's current version, all locales included — legacy
+// `language.current_lesson_infos.find_each { ReviewLessonJob.perform_later }`.
+// A course without a current version simply enqueues nothing.
+func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCourseParams) (api.AdminReviewCourseRes, error) {
+	c, err := s.db.Course.Get(ctx, int(params.ID))
+	if ent.IsNotFound(err) {
+		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.CourseNotFound)}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var infoIDs []int
+	if c.CurrentVersionID != nil {
+		infoIDs, err = s.db.LanguageLessonVersionInfo.Query().
+			Where(languagelessonversioninfo.LanguageVersionID(*c.CurrentVersionID)).
+			Order(ent.Asc(languagelessonversioninfo.FieldID)).
+			IDs(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if err := s.reviews.EnqueueLessonReviews(ctx, infoIDs); err != nil {
+		return nil, err
+	}
+	return &api.AdminReviewCourseNoContent{}, nil
 }

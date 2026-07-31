@@ -31,6 +31,7 @@ type Server struct {
 	conv    apiconv.Converter
 	cfg     *config.Config
 	starter VersionBuildStarter
+	reviews LessonReviewEnqueuer
 	auth    *AuthHandler
 	i18n    *localization.Translator
 	errors  *APIErrorHandler
@@ -41,6 +42,7 @@ func NewServer(
 	db *ent.Client,
 	cfg *config.Config,
 	starter VersionBuildStarter,
+	reviews LessonReviewEnqueuer,
 	registrar accounts.UserRegistrar,
 	eventPublisher events.StandalonePublisher,
 	translator *localization.Translator,
@@ -51,6 +53,7 @@ func NewServer(
 		conv:    &apiconv.ConverterImpl{},
 		cfg:     cfg,
 		starter: starter,
+		reviews: reviews,
 		auth:    NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher),
 		i18n:    translator,
 		errors:  errorHandler,

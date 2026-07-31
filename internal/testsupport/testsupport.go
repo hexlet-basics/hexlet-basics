@@ -141,7 +141,7 @@ func NewHarness(t *testing.T) *Harness {
 	eventPublisher := &RecordingEventPublisher{}
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
-	handler := handlers.NewServer(db, testConfig, enqueuer, registrar, eventPublisher, translator, errorHandler)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
@@ -273,12 +273,21 @@ func (r *RecordingRegistrar) Register(
 	return u, nil
 }
 
-// RecordingEnqueuer is a test adapter for handlers.VersionBuildStarter. It
-// creates the version through the harness's rollback-only ent client and records
-// the job args without touching River.
+// RecordingEnqueuer is a test adapter for the handlers' job seams
+// (VersionBuildStarter, LessonReviewEnqueuer). It performs the visible DB
+// writes through the harness's rollback-only ent client and records the job
+// args without touching River.
 type RecordingEnqueuer struct {
 	DB       *ent.Client
 	Inserted []river.JobArgs
+}
+
+// EnqueueLessonReviews records one review job per lesson info.
+func (e *RecordingEnqueuer) EnqueueLessonReviews(_ context.Context, lessonInfoIDs []int) error {
+	for _, id := range lessonInfoIDs {
+		e.Inserted = append(e.Inserted, jobs.ReviewLessonArgs{LessonInfoID: id})
+	}
+	return nil
 }
 
 // Start mirrors the production operation's visible result.

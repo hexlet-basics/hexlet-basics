@@ -12,3 +12,10 @@ import (
 type VersionBuildStarter interface {
 	Start(ctx context.Context, courseID int) (*ent.CourseVersion, error)
 }
+
+// LessonReviewEnqueuer schedules the AI review jobs behind the admin review
+// actions — one job per lesson version info (lessonreviews.Enqueuer in
+// production, a recording adapter in tests).
+type LessonReviewEnqueuer interface {
+	EnqueueLessonReviews(ctx context.Context, lessonInfoIDs []int) error
+}

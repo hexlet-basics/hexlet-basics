@@ -55,6 +55,16 @@ func IDLTE(id int) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldLTE(FieldID, id))
 }
 
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
+func UpdatedAt(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
 // Locale applies equality check predicate on the "locale" field. It's identical to LocaleEQ.
 func Locale(v string) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldEQ(FieldLocale, v))
@@ -85,9 +95,84 @@ func LanguageLessonVersionInfoID(v int) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldEQ(FieldLanguageLessonVersionInfoID, v))
 }
 
-// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
-func CreatedAt(v time.Time) predicate.LanguageLessonReview {
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
+func UpdatedAtEQ(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtNEQ applies the NEQ predicate on the "updated_at" field.
+func UpdatedAtNEQ(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldNEQ(FieldUpdatedAt, v))
+}
+
+// UpdatedAtIn applies the In predicate on the "updated_at" field.
+func UpdatedAtIn(vs ...time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtNotIn applies the NotIn predicate on the "updated_at" field.
+func UpdatedAtNotIn(vs ...time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldNotIn(FieldUpdatedAt, vs...))
+}
+
+// UpdatedAtGT applies the GT predicate on the "updated_at" field.
+func UpdatedAtGT(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldGT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtGTE applies the GTE predicate on the "updated_at" field.
+func UpdatedAtGTE(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldGTE(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLT applies the LT predicate on the "updated_at" field.
+func UpdatedAtLT(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldLT(FieldUpdatedAt, v))
+}
+
+// UpdatedAtLTE applies the LTE predicate on the "updated_at" field.
+func UpdatedAtLTE(v time.Time) predicate.LanguageLessonReview {
+	return predicate.LanguageLessonReview(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
 // LocaleEQ applies the EQ predicate on the "locale" field.
@@ -338,46 +423,6 @@ func LanguageLessonVersionInfoIDLT(v int) predicate.LanguageLessonReview {
 // LanguageLessonVersionInfoIDLTE applies the LTE predicate on the "language_lesson_version_info_id" field.
 func LanguageLessonVersionInfoIDLTE(v int) predicate.LanguageLessonReview {
 	return predicate.LanguageLessonReview(sql.FieldLTE(FieldLanguageLessonVersionInfoID, v))
-}
-
-// CreatedAtEQ applies the EQ predicate on the "created_at" field.
-func CreatedAtEQ(v time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
-func CreatedAtNEQ(v time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldNEQ(FieldCreatedAt, v))
-}
-
-// CreatedAtIn applies the In predicate on the "created_at" field.
-func CreatedAtIn(vs ...time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldIn(FieldCreatedAt, vs...))
-}
-
-// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
-func CreatedAtNotIn(vs ...time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldNotIn(FieldCreatedAt, vs...))
-}
-
-// CreatedAtGT applies the GT predicate on the "created_at" field.
-func CreatedAtGT(v time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldGT(FieldCreatedAt, v))
-}
-
-// CreatedAtGTE applies the GTE predicate on the "created_at" field.
-func CreatedAtGTE(v time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldGTE(FieldCreatedAt, v))
-}
-
-// CreatedAtLT applies the LT predicate on the "created_at" field.
-func CreatedAtLT(v time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldLT(FieldCreatedAt, v))
-}
-
-// CreatedAtLTE applies the LTE predicate on the "created_at" field.
-func CreatedAtLTE(v time.Time) predicate.LanguageLessonReview {
-	return predicate.LanguageLessonReview(sql.FieldLTE(FieldCreatedAt, v))
 }
 
 // HasCourse applies the HasEdge predicate on the "course" edge.
