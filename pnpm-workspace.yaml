@@ -22,6 +22,13 @@ minimumReleaseAgeExclude:
   - playwright-core@1.62.1
   - playwright@1.62.1
   - vite@8.2.0
+  - '@mantine/core@9.5.1'
+  - '@mantine/dates@9.5.1'
+  - '@mantine/hooks@9.5.1'
+  - '@mantine/modals@9.5.1'
+  - '@mantine/notifications@9.5.1'
+  - '@mantine/store@9.5.1'
+  - '@mantine/tiptap@9.5.1'
 onlyBuiltDependencies:
   - '@swc/core'
   - lefthook
