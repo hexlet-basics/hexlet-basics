@@ -1,12 +1,12 @@
 import { Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { adminListLeadsOptions } from "@/client/@tanstack/react-query.gen";
 import type { Lead } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 
 // Sales leads (legacy `/admin/leads`) — read-only list.
 export const Route = createFileRoute("/{-$locale}/admin/leads/")({
@@ -28,7 +28,7 @@ function LeadsList() {
     }),
   );
 
-  const columns: ColumnDef<Lead>[] = [
+  const columns: CrudColumnDef<Lead>[] = [
     {
       accessorKey: "email",
       header: t(($) => $.models.attributes.user.email),

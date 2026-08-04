@@ -1,7 +1,7 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,7 +10,7 @@ import {
   adminListCourseCategoriesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
 import type { CourseCategory } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/{-$locale}/admin/language_categories/")({
   component: CourseCategoriesList,
 });
 
-function CourseCategoriesList() {
+export function CourseCategoriesList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
@@ -47,7 +47,7 @@ function CourseCategoriesList() {
     errorMessage: t(($) => $.admin.crud.deleteError),
   });
 
-  const columns: ColumnDef<CourseCategory>[] = [
+  const columns: CrudColumnDef<CourseCategory>[] = [
     {
       accessorKey: "name",
       header: t(($) => $.models.attributes.language_category.name),

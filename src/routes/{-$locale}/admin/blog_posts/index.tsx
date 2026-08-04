@@ -1,7 +1,7 @@
 import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,7 +10,7 @@ import {
   adminListBlogPostsQueryKey,
 } from "@/client/@tanstack/react-query.gen";
 import type { BlogPost } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -42,7 +42,7 @@ function BlogPostsList() {
     errorMessage: t(($) => $.admin.crud.deleteError),
   });
 
-  const columns: ColumnDef<BlogPost>[] = [
+  const columns: CrudColumnDef<BlogPost>[] = [
     {
       accessorKey: "name",
       header: t(($) => $.models.attributes.base.name),

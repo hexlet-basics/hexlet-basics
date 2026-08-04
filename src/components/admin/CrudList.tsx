@@ -2,13 +2,33 @@ import { Center, Group, Loader, Pagination, Stack, Table, Text } from "@mantine/
 import {
   type ColumnDef,
   flexRender,
-  getCoreRowModel,
   type OnChangeFn,
   type PaginationState,
+  type RowData,
+  rowPaginationFeature,
+  rowSortingFeature,
   type SortingState,
-  useReactTable,
+  tableFeatures,
+  useTable,
 } from "@tanstack/react-table";
 import { useTranslation } from "react-i18next";
+
+// Table v9 no longer bundles every feature — each one is registered here, and an
+// unregistered feature simply has no API. The admin lists sort and paginate and
+// nothing else, so those two are all we take. Deliberately absent are the
+// `sortedRowModel` / `paginatedRowModel` slots: the server already returns one
+// ordered page, so a client-side row model would re-sort and re-slice that page
+// (wrong results, not just wasted work). The core row model is automatic in v9.
+const features = tableFeatures({ rowSortingFeature, rowPaginationFeature });
+
+// v9 threads the feature set through every table type, so the column type is
+// exported pre-applied: a resource declares `CrudColumnDef<Course>[]` and stays
+// unaware of which features the shared engine registers.
+//
+// The `TValue` generic is left at its `unknown` default, which is what plain
+// literal columns (accessorKey + a custom cell / display columns) produce — no
+// `any` needed since our cells read `row.original`, never a typed `getValue()`.
+export type CrudColumnDef<T extends RowData> = ColumnDef<typeof features, T>;
 
 // Generic admin list, the read half of the CRUD engine (Wave 1). It is purely
 // presentational over TanStack Table in *manual* mode: the owning route runs the
@@ -16,11 +36,8 @@ import { useTranslation } from "react-i18next";
 // in, so filtering/ordering stay in SQL (never client-side over one page). Per
 // resource you supply only `columns` (including an optional actions column) —
 // everything below is shared.
-export interface CrudListProps<T> {
-  // `ColumnDef<T>` defaults the cell-value type to `unknown`, which is what plain
-  // literal columns (accessorKey + a custom cell / display columns) produce — no
-  // `any` needed since our cells read `row.original`, never a typed `getValue()`.
-  columns: ColumnDef<T>[];
+export interface CrudListProps<T extends RowData> {
+  columns: CrudColumnDef<T>[];
   data: T[];
   // Total rows across all pages (from the `XxxPage` envelope), used to derive the
   // page count for the pager — the table itself only ever holds one page.
@@ -32,7 +49,7 @@ export interface CrudListProps<T> {
   isLoading?: boolean;
 }
 
-export function CrudList<T>({
+export function CrudList<T extends RowData>({
   columns,
   data,
   total,
@@ -45,7 +62,8 @@ export function CrudList<T>({
   const { t } = useTranslation();
   const pageCount = Math.max(1, Math.ceil(total / pagination.pageSize));
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data,
     columns,
     state: { pagination, sorting },
@@ -54,7 +72,6 @@ export function CrudList<T>({
     pageCount,
     onPaginationChange,
     onSortingChange,
-    getCoreRowModel: getCoreRowModel(),
   });
 
   return (
@@ -104,7 +121,10 @@ export function CrudList<T>({
             ) : (
               table.getRowModel().rows.map((row) => (
                 <Table.Tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {/* `getAllCells` and not `getVisibleCells`: the latter belongs to
+                      `columnVisibilityFeature`, and no admin list hides columns —
+                      taking the core accessor keeps that feature unregistered. */}
+                  {row.getAllCells().map((cell) => (
                     <Table.Td key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </Table.Td>

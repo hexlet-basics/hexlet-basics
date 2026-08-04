@@ -1,12 +1,12 @@
 import { Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { adminListCourseLessonReviewsOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonReview } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 
 // AI lesson-review summaries (legacy `/admin/language_lesson_reviews`) —
 // read-only; new summaries are produced by the course/lesson review actions.
@@ -29,7 +29,7 @@ function LessonReviewsList() {
     }),
   );
 
-  const columns: ColumnDef<CourseLessonReview>[] = [
+  const columns: CrudColumnDef<CourseLessonReview>[] = [
     {
       accessorKey: "courseSlug",
       header: t(($) => $.models.attributes.lesson_review.course),

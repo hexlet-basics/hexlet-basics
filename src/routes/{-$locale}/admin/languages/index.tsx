@@ -1,7 +1,7 @@
 import { Button, Group, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,7 +11,7 @@ import {
   adminReviewCourseMutation,
 } from "@/client/@tanstack/react-query.gen";
 import type { Course } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
@@ -52,7 +52,7 @@ function CoursesList() {
     errorMessage: t(($) => $.admin.crud.saveError),
   });
 
-  const columns: ColumnDef<Course>[] = [
+  const columns: CrudColumnDef<Course>[] = [
     {
       accessorKey: "slug",
       header: t(($) => $.models.attributes.language.slug),

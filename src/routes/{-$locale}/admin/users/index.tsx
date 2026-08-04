@@ -2,7 +2,7 @@ import { ActionIcon, Group, Stack, TextInput, Title, Tooltip } from "@mantine/co
 import { useDebouncedValue } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -12,7 +12,7 @@ import {
   adminSearchUsersOptions,
 } from "@/client/@tanstack/react-query.gen";
 import type { UserCrud } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
@@ -58,7 +58,7 @@ function UsersList() {
     errorMessage: t(($) => $.admin.crud.deleteError),
   });
 
-  const columns: ColumnDef<UserCrud>[] = [
+  const columns: CrudColumnDef<UserCrud>[] = [
     {
       accessorKey: "email",
       header: t(($) => $.models.attributes.user.email),

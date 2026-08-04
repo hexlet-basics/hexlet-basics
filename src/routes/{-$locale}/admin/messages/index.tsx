@@ -1,12 +1,12 @@
 import { Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { adminListMessagesOptions } from "@/client/@tanstack/react-query.gen";
 import type { LessonAssistantMessage } from "@/client/types.gen";
-import { CrudList } from "@/components/admin/CrudList";
+import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 
 // In-lesson assistant messages (legacy `/admin/messages`) — read-only list for
 // mining student questions; the per-lesson summaries live under lesson reviews.
@@ -29,7 +29,7 @@ function MessagesList() {
     }),
   );
 
-  const columns: ColumnDef<LessonAssistantMessage>[] = [
+  const columns: CrudColumnDef<LessonAssistantMessage>[] = [
     {
       accessorKey: "role",
       header: t(($) => $.models.attributes.assistant_message.role),
