@@ -49,7 +49,10 @@ The state of a Course or Lesson Membership from creation until it is finished.
 **Finished**:
 The state of a Lesson Membership whose exercise the learner has passed, and of a
 Course Membership all of whose current Lessons are finished. A membership never
-returns to Started.
+returns to Started. Merging Guest progress is the one case where a Lesson
+Membership is created Finished without the learner having passed that Lesson
+individually: sequential progression means the whole prefix up to their furthest
+Lesson was passed, so the rule implies the rest.
 _Avoid_: completed, done, passed
 
 **Current Lessons**:
@@ -78,9 +81,9 @@ Lessons finished under a retired Version do not count towards it.
 
 **Next Lesson**:
 The first Lesson, in course order, among a Course's Current Lessons that the
-learner has not finished — where they resume. Distinct from the Available
-Lesson: for a learner with a gap the Next Lesson is the gap, while the Available
-Lesson is one past their furthest finished one.
+learner has not finished — where they resume. It is not the gate: for a learner
+with a gap, the Next Lesson is the gap, while their Available Lessons run all
+the way to one past their furthest finished one.
 
 **Guest progress**:
 Lessons a visitor passed before having an account. It is one Lesson per Course —

@@ -19,7 +19,7 @@ Memberships across it and publish a `lessonStarted` event for each — inflating
 the very funnel those events feed.
 
 **There is no server session to put guest progress in.** Authentication is a
-stateless JWT in an httpOnly cookie (ADR-0011); the Go stack keeps no
+stateless JWT in an httpOnly cookie (ADR-0003); the Go stack keeps no
 server-side session store, and introducing one for this alone would add a
 stateful dependency to an otherwise stateless HTTP tier.
 
@@ -85,7 +85,8 @@ there are no other finished Lessons to fall back to — so that Course's guest
 position resets to the beginning.
 
 The state is carried in a **signed, httpOnly cookie**, using the same secret as
-the existing authentication tokens (ADR-0011). Signing is not optional: this
+the token service already signs authentication cookies with (ADR-0003).
+Signing is not optional: this
 state is later converted into database rows and domain events, so an unsigned
 cookie would let a visitor mint fabricated completions. The cookie is not
 readable by the client — the server derives progress from it and returns it in
@@ -94,6 +95,13 @@ branch. It is written by the server through a `Set-Cookie` on the check
 response; the contract already models response cookies for the session
 endpoints. Lifetime is one year, and if the cookie approaches its size limit the
 least recently touched Courses are evicted.
+
+The check therefore stays an unsafe operation that declares no session, which is
+the one standing exception to ADR-0011's pairing of unsafe operations with a
+session and an XSRF token. The contract already declares it that way — guests
+must be able to submit — and this record makes the exception deliberate rather
+than incidental: the signature on the cookie is what stands in for the missing
+session, which is why it cannot be dropped.
 
 Guests get no dashboard. The dashboard stays authenticated-only; it is where the
 incentive to create an account lives.
@@ -125,10 +133,12 @@ reports:
 
 Further consequences:
 
-- Handlers never evaluate positions. The gate, the transitions, the read model
-  and the guest merge live in one progress module with a single interface and
-  two storage implementations behind it — database-backed for authenticated
-  learners, cookie-backed for guests. Nothing outside learns which one answered.
+- Handlers never evaluate positions, and nothing outside learns whether a
+  learner's state came from the database or from a cookie. How that is packaged
+  is an ordinary design choice and is deliberately not decided here.
+- Both departures from the legacy behaviour are intentional. ADR-0002 keeps the
+  cutover compatible on bcrypt passwords and public URLs; it does not promise
+  behavioural parity, and these two decisions spend some.
 - The public Course and Lesson reads become personalized: they accept the
   request cookie and return progress. Anonymous visitors with no cookie get the
   responses they get today, and CDN caching of those reads stays off — the
