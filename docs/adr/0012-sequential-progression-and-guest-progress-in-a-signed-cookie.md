@@ -96,12 +96,10 @@ response; the contract already models response cookies for the session
 endpoints. Lifetime is one year, and if the cookie approaches its size limit the
 least recently touched Courses are evicted.
 
-The check therefore stays an unsafe operation that declares no session, which is
-the one standing exception to ADR-0011's pairing of unsafe operations with a
-session and an XSRF token. The contract already declares it that way — guests
-must be able to submit — and this record makes the exception deliberate rather
-than incidental: the signature on the cookie is what stands in for the missing
-session, which is why it cannot be dropped.
+The check therefore stays a public operation that writes progress. The contract
+already declares it without a session, because guests must be able to submit,
+and the cookie's signature is what stands in for the session it cannot have —
+which is why the signature cannot be dropped.
 
 Guests get no dashboard. The dashboard stays authenticated-only; it is where the
 incentive to create an account lives.
