@@ -46,10 +46,17 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   interface. Until you implement it, the embedded `api.UnimplementedHandler`
   keeps it compiling as "not implemented" — so the build never breaks on a
   contract addition; you fill in the handler after.
-- ogen 1.23 generates multipart uploads, but not OpenAPI `requestBody.encoding`.
+- ogen 1.24 generates multipart uploads, but not OpenAPI `requestBody.encoding`.
   TypeSpec currently emits `encoding.file.contentType: "*/*"` for
   `HttpPart<File>`, so that upload operation is skipped in `ogen.yml` and
   temporarily handled outside the generated layer.
+- **`@hey-api/openapi-ts` must stay on the `next` channel** while `typescript`
+  is 7.x: the stable releases call the TypeScript compiler API (`ts.SyntaxKind`),
+  which the native TS 7 package no longer exposes, so `gen-client` dies with
+  `Cannot read properties of undefined`. The next-channel builds dropped that
+  peer dependency. A "latest" bump therefore breaks codegen — the pin lives in
+  both `package.json` and the `minimumReleaseAgeExclude` list in
+  `pnpm-workspace.yaml`, and both must move together.
 
 ## Architecture: Handlers, DI, and Data
 
