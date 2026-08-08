@@ -1,12 +1,22 @@
 name: check
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+  # Deliberately NOT `push: main`. Everything that reaches main either arrived
+  # through a PR (already checked here) or was pushed directly by a maintainer,
+  # whose pre-push hook runs `make lint` locally. Re-running on the merge commit
+  # would only duplicate the PR's run.
+  #
+  # The release-please branch is the exception: its PR is opened by
+  # github-actions[bot], whose pull_request runs sit unapproved, so the branch
+  # is checked on push instead. Required status checks are evaluated per head
+  # SHA regardless of which event produced them, so these runs still gate the
+  # release PR.
+  push:
+    branches:
+      - 'release-please--**'
 
 # Cancel superseded runs on the same ref (e.g. rapid pushes to a PR).
 concurrency:
