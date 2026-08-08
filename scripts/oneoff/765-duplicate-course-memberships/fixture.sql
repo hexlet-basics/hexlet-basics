@@ -1,36 +1,32 @@
--- Verification for scripts/count_duplicate_enrollments.sql — see issue #765.
+-- Fixture for count.sql in this directory — see issue #765.
 --
 -- Running the counting queries against an empty or duplicate-free database proves
--- nothing: every result is zero whether the SQL is right or wrong. This harness
+-- nothing: every result is zero whether the SQL is right or wrong. This file
 -- shadows both tables with temp tables holding a fixture small enough to check by
 -- hand, so the expected output is known in advance. Temp tables take search_path
--- precedence over the real ones, so the counting script picks these up unchanged.
+-- precedence over the real ones, so the counting script picks these up unchanged
+-- and is itself the thing under test — no query is duplicated here.
+--
+-- Named a fixture rather than a verification because it does not assert: it builds
+-- known input and prints the expected output next to the real output for a human to
+-- compare. Making it assert would mean restating the counting queries, and a
+-- restatement can drift from the script that actually runs against production.
 --
 -- Run both files in one session, this one first:
 --
---   psql "$DATABASE_URL" --single-transaction \
---     -f scripts/count_duplicate_enrollments_verify.sql \
---     -f scripts/count_duplicate_enrollments.sql
+--   psql "$DATABASE_URL" --single-transaction -f fixture.sql -f count.sql
 --
--- Fixture — (user, course) -> enrollment ids:
+-- Fixture — (user, Course) -> Course Membership ids:
 --
---   (1, 10) -> 100            single enrollment; must NOT count as a duplicate
+--   (1, 10) -> 100            single Membership; must NOT count as a duplicate
 --   (1, 20) -> 200, 201       multiplicity 2, winner 200 (older created_at)
 --   (2, 10) -> 300, 301, 302  multiplicity 3, winner 300
 --   (3, 10) -> 400, 401       multiplicity 2 with IDENTICAL created_at, so the
 --                             winner is 400 only because of the `id` tie-break.
 --                             Drop `id` from the ORDER BY and this pair's winner
---                             becomes arbitrary — this row is why it is there.
---
--- Expected output:
---   duplicate_pairs     3        (the three multi-enrollment pairs)
---   worst_multiplicity  3        (pair (2, 10))
---   rows_to_delete      4        (1 + 2 + 1 losers)
---   total_enrollments   8
---   distribution        1 -> 1 pair, 2 -> 2 pairs, 3 -> 1 pair
---   losing_enrollments  4        (201, 301, 302, 401)
---   participations_to_repoint     3   (on 201, 302, 401 — NOT the 2 on winner 200)
---   participations_disagreeing    1   (row 6, planted below)
+--                             becomes arbitrary — this row is why it is there, and
+--                             it is what makes the fixture discriminating rather
+--                             than merely non-zero.
 
 CREATE TEMP TABLE language_members (
   id bigint PRIMARY KEY,
@@ -74,5 +70,18 @@ INSERT INTO language_lesson_members
   (3, '2024-01-01', '2024-01-01', 20, 201, 3, 1),
   (4, '2024-01-01', '2024-01-01', 10, 302, 4, 2),
   (5, '2024-01-01', '2024-01-01', 10, 401, 5, 3),
-  -- disagrees with enrollment 100, which belongs to user 1: query 4 must catch it
+  -- disagrees with Membership 100, which belongs to user 1: query 4 must catch it
   (6, '2024-01-01', '2024-01-01', 10, 100, 6, 99);
+
+-- Expected output, printed immediately above the real output so the comparison is
+-- side by side rather than a scroll back to a comment block.
+SELECT * FROM (VALUES
+  ('duplicate_pairs',                '3',      'the three multi-Membership pairs'),
+  ('worst_multiplicity',             '3',      'pair (2, 10)'),
+  ('rows_to_delete',                 '4',      '1 + 2 + 1 losers'),
+  ('total_memberships',              '8',      NULL),
+  ('memberships_per_pair',           '1->1, 2->2, 3->1', 'distribution'),
+  ('losing_memberships',             '4',      '201, 301, 302, 401; must equal rows_to_delete'),
+  ('lesson_memberships_to_repoint',  '3',      'on 201, 302, 401 — not the 2 on winner 200'),
+  ('mismatched_lesson_memberships',  '1',      'row 6, planted above')
+) AS t(expected_metric, expected_value, note);
