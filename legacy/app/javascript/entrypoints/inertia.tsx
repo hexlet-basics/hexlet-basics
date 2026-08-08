@@ -9,11 +9,24 @@ import I18nAppProvider from "@/lib/I18nAppProvider.tsx";
 // dsn is only set on production builds (VITE_SENTRY_DSN build secret); without
 // it Sentry.init is a no-op, so dev/SSR are unaffected. Source maps are uploaded
 // by sentryVitePlugin (vite.config.ts) with debug ids under the same release.
+// thirdPartyErrorFilterIntegration drops the noise from code that isn't ours —
+// browser extensions, Metrika/CarrotQuest and other injected scripts. It works
+// off the module metadata that sentryVitePlugin stamps onto our bundle under
+// `applicationKey: VITE_APP_HOST`, so filterKeys must be that exact same value
+// (both come from the build env, see Dockerfile/release.yml). "exclusively"
+// keeps errors whose stack has at least one of our frames: extensions patch
+// globals, so a real bug can surface through a third-party frame.
 if (!import.meta.env.SSR && import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
     release: import.meta.env.VITE_RELEASE_VERSION,
     environment: import.meta.env.VITE_NODE_ENV,
+    integrations: [
+      Sentry.thirdPartyErrorFilterIntegration({
+        filterKeys: [import.meta.env.VITE_APP_HOST],
+        behaviour: "drop-error-if-exclusively-contains-third-party-frames",
+      }),
+    ],
   });
 }
 
