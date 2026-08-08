@@ -12,8 +12,10 @@ sign-ups.
 ### Learning
 
 **Course Membership**:
-A learner's relationship with one Course, created the first time they open any
-of its Lessons and never created twice for the same pair.
+A learner's record of where they are in one Course, created the first time they
+open any of its Lessons and never created twice for the same pair. It grants
+nothing: every Course is readable without one, and without an account. A
+Membership remembers progress, it does not permit access.
 _Avoid_: Language Member, enrollment, subscription
 
 **Lesson Membership**:
