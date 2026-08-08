@@ -206,10 +206,6 @@ type Handler interface {
 	//
 	// GET /admin/language_landing_pages
 	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
-	// AdminListCourseLessonMembers implements adminListCourseLessonMembers operation.
-	//
-	// GET /admin/language_lesson_members
-	AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (AdminListCourseLessonMembersRes, error)
 	// AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
 	//
 	// GET /admin/language_lesson_reviews
@@ -230,6 +226,10 @@ type Handler interface {
 	//
 	// GET /admin/leads
 	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
+	// AdminListLessonProgress implements adminListLessonProgress operation.
+	//
+	// GET /admin/language_lesson_members
+	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error)
 	// AdminListManagementUsers implements adminListManagementUsers operation.
 	//
 	// GET /admin/management/users

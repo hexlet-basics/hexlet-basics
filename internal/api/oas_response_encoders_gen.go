@@ -1602,49 +1602,6 @@ func encodeAdminListCourseLandingPagesResponse(response AdminListCourseLandingPa
 	}
 }
 
-func encodeAdminListCourseLessonMembersResponse(response AdminListCourseLessonMembersRes, w http.ResponseWriter, span trace.Span) error {
-	switch response := response.(type) {
-	case *CourseLessonMemberPage:
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(200)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLessonMembersUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	case *AdminListCourseLessonMembersForbidden:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(403)
-
-		e := new(jx.Encoder)
-		response.Encode(e)
-		if _, err := e.WriteTo(w); err != nil {
-			return errors.Wrap(err, "write")
-		}
-
-		return nil
-
-	default:
-		return errors.Errorf("unexpected response type: %T", response)
-	}
-}
-
 func encodeAdminListCourseLessonReviewsResponse(response AdminListCourseLessonReviewsRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *CourseLessonReviewPage:
@@ -1844,6 +1801,49 @@ func encodeAdminListLeadsResponse(response AdminListLeadsRes, w http.ResponseWri
 		return nil
 
 	case *AdminListLeadsForbidden:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(403)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeAdminListLessonProgressResponse(response AdminListLessonProgressRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *LessonProgressPage:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminListLessonProgressUnauthorized:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(401)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminListLessonProgressForbidden:
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(403)
 

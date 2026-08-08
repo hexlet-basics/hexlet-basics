@@ -23,14 +23,14 @@ enum CourseLearnAs {
 }
 
 /** Publication/readiness state of a course. */
-enum CourseProgress {
+enum CourseReadiness {
   completed: "completed",
   inDevelopment: "in_development",
   draft: "draft",
 }
 
-/** Course-membership lifecycle (legacy `MemberState`). */
-enum MemberState {
+/** Enrollment and lesson-progress lifecycle (legacy `MemberState`). */
+enum EnrollmentState {
   started: "started",
   finished: "finished",
 }
@@ -92,7 +92,7 @@ enum PermissionResource {
   courseCategories: "language_categories",
   courseLessons: "language_lessons",
   courseLessonReviews: "language_lesson_reviews",
-  courseLessonMembers: "language_lesson_members",
+  lessonProgress: "language_lesson_members",
   courses: "languages",
   courseLandingPages: "language_landing_pages",
 }
@@ -116,7 +116,7 @@ model Course {
   slug: string;
   name: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseProgress | null;
+  progress: CourseReadiness | null;
   categoryId: int32 | null;
   currentVersionId: int32 | null;
   currentVersion: CourseVersion | null;
@@ -152,12 +152,13 @@ model CourseCatalogItem {
   course: Course;
 }
 
-/** A member's enrollment/progress in a course (legacy `LanguageMember`). */
-model CourseMember {
+/** A learner's enrollment in a course (legacy `LanguageMember`, table
+`language_members`). */
+model Enrollment {
   id: int32;
   userId: int32;
   courseId: int32;
-  state: MemberState | null;
+  state: EnrollmentState | null;
 
   /** Completion percentage (0–100). */
   progress: int32;
@@ -260,11 +261,12 @@ model CourseLessonListItem {
   slug: string;
 }
 
-/** A user's participation in a lesson (legacy: `LanguageLessonMember`). */
-model CourseLessonMember {
+/** A learner's progress through one lesson (legacy: `LanguageLessonMember`,
+table `language_lesson_members`). */
+model LessonProgress {
   id: int32;
   userId: int32;
-  state: MemberState;
+  state: EnrollmentState;
   messagesCount: int32 | null;
   createdAt: utcDateTime;
   courseSlug: string;

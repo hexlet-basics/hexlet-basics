@@ -70,10 +70,10 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 	}, nil
 }
 
-// AdminListCourseLessonMembers lists per-lesson memberships, newest first
-// (legacy `admin/language_lesson_members`). The course slug, lesson slug, and
-// lesson name are enriched from the member's language/lesson.
-func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.AdminListCourseLessonMembersParams) (api.AdminListCourseLessonMembersRes, error) {
+// AdminListLessonProgress lists per-lesson progress rows, newest first (legacy
+// `admin/language_lesson_members`, still the route). The course slug, lesson
+// slug, and lesson name are enriched from the row's course/lesson.
+func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminListLessonProgressParams) (api.AdminListLessonProgressRes, error) {
 	page := newPagination(params.Page, params.PerPage)
 
 	total, err := s.db.LessonProgress.Query().Count(ctx)
@@ -81,7 +81,7 @@ func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.Ad
 		return nil, err
 	}
 
-	members, err := s.db.LessonProgress.Query().
+	progress, err := s.db.LessonProgress.Query().
 		WithCourse().
 		WithLesson(func(q *ent.CourseLessonQuery) {
 			q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
@@ -97,8 +97,8 @@ func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.Ad
 		return nil, err
 	}
 
-	return &api.CourseLessonMemberPage{
-		Items:   s.conv.ToCourseLessonMembers(members),
+	return &api.LessonProgressPage{
+		Items:   s.conv.ToLessonProgressList(progress),
 		Total:   int32(total),
 		Page:    page.Page,
 		PerPage: page.PerPage,

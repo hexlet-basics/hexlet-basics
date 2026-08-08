@@ -1064,7 +1064,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 													// Leaf node.
 													switch r.Method {
 													case "GET":
-														s.handleAdminListCourseLessonMembersRequest([0]string{}, elemIsEscaped, w, r)
+														s.handleAdminListLessonProgressRequest([0]string{}, elemIsEscaped, w, r)
 													default:
 														s.notAllowed(w, r, notAllowedParams{
 															allowedMethods: "GET",
@@ -3844,9 +3844,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													// Leaf node.
 													switch method {
 													case "GET":
-														r.name = AdminListCourseLessonMembersOperation
+														r.name = AdminListLessonProgressOperation
 														r.summary = ""
-														r.operationID = "adminListCourseLessonMembers"
+														r.operationID = "adminListLessonProgress"
 														r.operationGroup = ""
 														r.pathPattern = "/admin/language_lesson_members"
 														r.args = args

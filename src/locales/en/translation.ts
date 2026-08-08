@@ -220,7 +220,7 @@ export default {
         courses: "Courses",
         landingPages: "Landing Pages",
         leads: "Leads",
-        lessonMembers: "Lesson Members",
+        lessonProgress: "Lesson Progress",
         lessonReviews: "Lesson Reviews",
         managementUsers: "Management: Users",
         messages: "Assistant Messages",
@@ -1402,7 +1402,7 @@ export default {
           lesson: "Lesson",
           role: "Role",
         },
-        lesson_member: {
+        lesson_progress: {
           course: "Course",
           lesson: "Lesson",
           messages_count: "Messages",

@@ -134,8 +134,8 @@ func (c *Client) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 	return success[api.CourseLessonListItemPage](c.Client.AdminListCourseLessons(ctx, params))
 }
 
-func (c *Client) AdminListCourseLessonMembers(ctx context.Context, params api.AdminListCourseLessonMembersParams) (*api.CourseLessonMemberPage, error) {
-	return success[api.CourseLessonMemberPage](c.Client.AdminListCourseLessonMembers(ctx, params))
+func (c *Client) AdminListLessonProgress(ctx context.Context, params api.AdminListLessonProgressParams) (*api.LessonProgressPage, error) {
+	return success[api.LessonProgressPage](c.Client.AdminListLessonProgress(ctx, params))
 }
 
 func (c *Client) AdminReviewCourse(ctx context.Context, params api.AdminReviewCourseParams) error {

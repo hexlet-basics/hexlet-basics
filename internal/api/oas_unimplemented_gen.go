@@ -325,13 +325,6 @@ func (UnimplementedHandler) AdminListCourseLandingPages(ctx context.Context, par
 	return r, ht.ErrNotImplemented
 }
 
-// AdminListCourseLessonMembers implements adminListCourseLessonMembers operation.
-//
-// GET /admin/language_lesson_members
-func (UnimplementedHandler) AdminListCourseLessonMembers(ctx context.Context, params AdminListCourseLessonMembersParams) (r AdminListCourseLessonMembersRes, _ error) {
-	return r, ht.ErrNotImplemented
-}
-
 // AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
 //
 // GET /admin/language_lesson_reviews
@@ -364,6 +357,13 @@ func (UnimplementedHandler) AdminListLandingPageQnaItems(ctx context.Context, pa
 //
 // GET /admin/leads
 func (UnimplementedHandler) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (r AdminListLeadsRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminListLessonProgress implements adminListLessonProgress operation.
+//
+// GET /admin/language_lesson_members
+func (UnimplementedHandler) AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (r AdminListLessonProgressRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

@@ -241,7 +241,7 @@ interface AdminReviews {
 model CourseInput {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseProgress | null;
+  progress: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
 
@@ -386,10 +386,10 @@ interface AdminCourseLessons {
 }
 
 @route("/admin/language_lesson_members")
-@tag("Admin: Course Lesson Members")
+@tag("Admin: Lesson Progress")
 @useAuth(AdminSession)
-interface AdminCourseLessonMembers {
-  @get @operationId("adminListCourseLessonMembers") list(...ListQuery): Page<CourseLessonMember> | UnauthorizedError | ForbiddenError | ApiError;
+interface AdminLessonProgress {
+  @get @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 @route("/admin/language_lesson_reviews")

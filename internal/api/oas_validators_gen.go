@@ -939,69 +939,6 @@ func (s *CourseLessonListItemPage) Validate() error {
 	return nil
 }
 
-func (s *CourseLessonMember) Validate() error {
-	if s == nil {
-		return validate.ErrNilPointer
-	}
-
-	var failures []validate.FieldError
-	if err := func() error {
-		if err := s.State.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "state",
-			Error: err,
-		})
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
-func (s *CourseLessonMemberPage) Validate() error {
-	if s == nil {
-		return validate.ErrNilPointer
-	}
-
-	var failures []validate.FieldError
-	if err := func() error {
-		if s.Items == nil {
-			return errors.New("nil is invalid value")
-		}
-		var failures []validate.FieldError
-		for i, elem := range s.Items {
-			if err := func() error {
-				if err := elem.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				failures = append(failures, validate.FieldError{
-					Name:  fmt.Sprintf("[%d]", i),
-					Error: err,
-				})
-			}
-		}
-		if len(failures) > 0 {
-			return &validate.Error{Fields: failures}
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "items",
-			Error: err,
-		})
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
 func (s *CourseLessonReviewPage) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -1016,36 +953,6 @@ func (s *CourseLessonReviewPage) Validate() error {
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
 			Name:  "items",
-			Error: err,
-		})
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
-func (s *CourseMember) Validate() error {
-	if s == nil {
-		return validate.ErrNilPointer
-	}
-
-	var failures []validate.FieldError
-	if err := func() error {
-		if value, ok := s.State.Get(); ok {
-			if err := func() error {
-				if err := value.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "state",
 			Error: err,
 		})
 	}
@@ -1095,7 +1002,7 @@ func (s *CoursePage) Validate() error {
 	return nil
 }
 
-func (s CourseProgress) Validate() error {
+func (s CourseReadiness) Validate() error {
 	switch s {
 	case "completed":
 		return nil
@@ -1155,7 +1062,7 @@ func (s *CourseView) Validate() error {
 		})
 	}
 	if err := func() error {
-		if value, ok := s.Member.Get(); ok {
+		if value, ok := s.Enrollment.Get(); ok {
 			if err := func() error {
 				if err := value.Validate(); err != nil {
 					return err
@@ -1168,7 +1075,7 @@ func (s *CourseView) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "member",
+			Name:  "enrollment",
 			Error: err,
 		})
 	}
@@ -1264,6 +1171,47 @@ func (s *EmailInput) Validate() error {
 		return &validate.Error{Fields: failures}
 	}
 	return nil
+}
+
+func (s *Enrollment) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.State.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "state",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s EnrollmentState) Validate() error {
+	switch s {
+	case "started":
+		return nil
+	case "finished":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
 }
 
 func (s LandingPageState) Validate() error {
@@ -1420,6 +1368,69 @@ func (s LessonCheckingResponseResult) Validate() error {
 	}
 }
 
+func (s *LessonProgress) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if err := s.State.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "state",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
+func (s *LessonProgressPage) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Items == nil {
+			return errors.New("nil is invalid value")
+		}
+		var failures []validate.FieldError
+		for i, elem := range s.Items {
+			if err := func() error {
+				if err := elem.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				failures = append(failures, validate.FieldError{
+					Name:  fmt.Sprintf("[%d]", i),
+					Error: err,
+				})
+			}
+		}
+		if len(failures) > 0 {
+			return &validate.Error{Fields: failures}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "items",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s ListAssistantMessagesOKApplicationJSON) Validate() error {
 	alias := ([]LessonAssistantMessage)(s)
 	if alias == nil {
@@ -1460,17 +1471,6 @@ func (s Locale) Validate() error {
 	}
 }
 
-func (s MemberState) Validate() error {
-	switch s {
-	case "started":
-		return nil
-	case "finished":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
-	}
-}
-
 func (s *MyDashboard) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -1478,11 +1478,11 @@ func (s *MyDashboard) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
-		if s.StartedCourseMembers == nil {
+		if s.StartedEnrollments == nil {
 			return errors.New("nil is invalid value")
 		}
 		var failures []validate.FieldError
-		for i, elem := range s.StartedCourseMembers {
+		for i, elem := range s.StartedEnrollments {
 			if err := func() error {
 				if err := elem.Validate(); err != nil {
 					return err
@@ -1501,16 +1501,16 @@ func (s *MyDashboard) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "startedCourseMembers",
+			Name:  "startedEnrollments",
 			Error: err,
 		})
 	}
 	if err := func() error {
-		if s.FinishedCourseMembers == nil {
+		if s.FinishedEnrollments == nil {
 			return errors.New("nil is invalid value")
 		}
 		var failures []validate.FieldError
-		for i, elem := range s.FinishedCourseMembers {
+		for i, elem := range s.FinishedEnrollments {
 			if err := func() error {
 				if err := elem.Validate(); err != nil {
 					return err
@@ -1529,7 +1529,7 @@ func (s *MyDashboard) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "finishedCourseMembers",
+			Name:  "finishedEnrollments",
 			Error: err,
 		})
 	}

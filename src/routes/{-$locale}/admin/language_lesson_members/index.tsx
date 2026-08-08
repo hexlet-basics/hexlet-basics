@@ -4,16 +4,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { adminListCourseLessonMembersOptions } from "@/client/@tanstack/react-query.gen";
-import type { CourseLessonMember } from "@/client/types.gen";
+import { adminListLessonProgressOptions } from "@/client/@tanstack/react-query.gen";
+import type { LessonProgress } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 
-// Per-lesson memberships (legacy `/admin/language_lesson_members`) — read-only.
+// Per-lesson progress (route keeps the legacy table name) — read-only.
 export const Route = createFileRoute("/{-$locale}/admin/language_lesson_members/")({
-  component: LessonMembersList,
+  component: LessonProgressList,
 });
 
-function LessonMembersList() {
+function LessonProgressList() {
   const { t } = useTranslation();
 
   const [pagination, setPagination] = useState<PaginationState>({
@@ -23,35 +23,35 @@ function LessonMembersList() {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const { data, isLoading } = useQuery(
-    adminListCourseLessonMembersOptions({
+    adminListLessonProgressOptions({
       query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
     }),
   );
 
-  const columns: CrudColumnDef<CourseLessonMember>[] = [
+  const columns: CrudColumnDef<LessonProgress>[] = [
     {
       accessorKey: "userId",
-      header: t(($) => $.models.attributes.lesson_member.user_id),
+      header: t(($) => $.models.attributes.lesson_progress.user_id),
       enableSorting: false,
     },
     {
       accessorKey: "courseSlug",
-      header: t(($) => $.models.attributes.lesson_member.course),
+      header: t(($) => $.models.attributes.lesson_progress.course),
       enableSorting: false,
     },
     {
       accessorKey: "courseLessonName",
-      header: t(($) => $.models.attributes.lesson_member.lesson),
+      header: t(($) => $.models.attributes.lesson_progress.lesson),
       enableSorting: false,
     },
     {
       accessorKey: "state",
-      header: t(($) => $.models.attributes.lesson_member.state),
+      header: t(($) => $.models.attributes.lesson_progress.state),
       enableSorting: false,
     },
     {
       accessorKey: "messagesCount",
-      header: t(($) => $.models.attributes.lesson_member.messages_count),
+      header: t(($) => $.models.attributes.lesson_progress.messages_count),
       enableSorting: false,
     },
     {
@@ -64,7 +64,7 @@ function LessonMembersList() {
 
   return (
     <Stack>
-      <Title order={2}>{t(($) => $.admin.resources.lessonMembers)}</Title>
+      <Title order={2}>{t(($) => $.admin.resources.lessonProgress)}</Title>
 
       <CrudList
         columns={columns}

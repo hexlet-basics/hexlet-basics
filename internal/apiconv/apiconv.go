@@ -39,7 +39,7 @@ import (
 // goverter:extend LocalesFromPq
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
-// goverter:extend MemberStateFromPtr
+// goverter:extend EnrollmentStateFromPtr
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
 
@@ -175,9 +175,9 @@ type Converter interface {
 	// goverter:map Edges.Course.Slug CourseSlug
 	// goverter:map Edges.Lesson.Slug CourseLessonSlug
 	// goverter:map . CourseLessonName | courseLessonMemberName
-	ToCourseLessonMember(source *ent.LessonProgress) api.CourseLessonMember
+	ToLessonProgress(source *ent.LessonProgress) api.LessonProgress
 
-	ToCourseLessonMembers(source []*ent.LessonProgress) []api.CourseLessonMember
+	ToLessonProgressList(source []*ent.LessonProgress) []api.LessonProgress
 
 	// Assistant messages are the admin read model over `ai_messages` (legacy
 	// AiMessageResource). Course/lesson identity travels through
@@ -217,12 +217,12 @@ func Int32FromPtr(v *int) int32 { return int32(lo.FromPtr(v)) }
 // StringFromPtr resolves a nullable ent column to a required string field.
 func StringFromPtr(v *string) string { return lo.FromPtr(v) }
 
-// MemberStateFromPtr mirrors AASM's initial state for nullable legacy rows.
-func MemberStateFromPtr(v *string) api.MemberState {
+// EnrollmentStateFromPtr mirrors AASM's initial state for nullable legacy rows.
+func EnrollmentStateFromPtr(v *string) api.EnrollmentState {
 	if v == nil || *v == "" {
-		return api.MemberStateStarted
+		return api.EnrollmentStateStarted
 	}
-	return api.MemberState(*v)
+	return api.EnrollmentState(*v)
 }
 
 // courseLessonMemberName reads the first eager-loaded localized info. The
@@ -285,12 +285,12 @@ func NilLearnAsFromPtr(v *string) api.NilCourseLearnAs {
 	return api.NewNilCourseLearnAs(api.CourseLearnAs(*v))
 }
 
-// NilProgressFromPtr bridges a nullable ent string to ogen's NilCourseProgress.
-func NilProgressFromPtr(v *string) api.NilCourseProgress {
+// NilProgressFromPtr bridges a nullable ent string to ogen's NilCourseReadiness.
+func NilProgressFromPtr(v *string) api.NilCourseReadiness {
 	if v == nil {
-		return api.NilCourseProgress{Null: true}
+		return api.NilCourseReadiness{Null: true}
 	}
-	return api.NewNilCourseProgress(api.CourseProgress(*v))
+	return api.NewNilCourseReadiness(api.CourseReadiness(*v))
 }
 
 // coverURLNull keeps CoverUrl null until course cover assets are re-uploaded.

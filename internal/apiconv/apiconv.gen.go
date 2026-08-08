@@ -200,38 +200,6 @@ func (c *ConverterImpl) ToCourseLessonListItems(source []*ent.CourseLessonTransl
 	}
 	return apiCourseLessonListItemList
 }
-func (c *ConverterImpl) ToCourseLessonMember(source *ent.LessonProgress) api.CourseLessonMember {
-	var apiCourseLessonMember api.CourseLessonMember
-	if source != nil {
-		apiCourseLessonMember.ID = Int32FromInt((*source).ID)
-		apiCourseLessonMember.UserId = Int32FromInt((*source).UserID)
-		apiCourseLessonMember.State = MemberStateFromPtr((*source).State)
-		apiCourseLessonMember.MessagesCount = NilInt32FromPtr((*source).MessagesCount)
-		apiCourseLessonMember.CreatedAt = TimeIdentity((*source).CreatedAt)
-		var pString *string
-		if (*source).Edges.Course != nil {
-			pString = (*source).Edges.Course.Slug
-		}
-		apiCourseLessonMember.CourseSlug = StringFromPtr(pString)
-		var pString2 *string
-		if (*source).Edges.Lesson != nil {
-			pString2 = (*source).Edges.Lesson.Slug
-		}
-		apiCourseLessonMember.CourseLessonSlug = StringFromPtr(pString2)
-		apiCourseLessonMember.CourseLessonName = courseLessonMemberName(source)
-	}
-	return apiCourseLessonMember
-}
-func (c *ConverterImpl) ToCourseLessonMembers(source []*ent.LessonProgress) []api.CourseLessonMember {
-	var apiCourseLessonMemberList []api.CourseLessonMember
-	if source != nil {
-		apiCourseLessonMemberList = make([]api.CourseLessonMember, len(source))
-		for i := 0; i < len(source); i++ {
-			apiCourseLessonMemberList[i] = c.ToCourseLessonMember(source[i])
-		}
-	}
-	return apiCourseLessonMemberList
-}
 func (c *ConverterImpl) ToCourseLessonReview(source *ent.CourseLessonReview) api.CourseLessonReview {
 	var apiCourseLessonReview api.CourseLessonReview
 	if source != nil {
@@ -357,6 +325,38 @@ func (c *ConverterImpl) ToLessonAssistantMessages(source []*ent.AiMessage) []api
 		}
 	}
 	return apiLessonAssistantMessageList
+}
+func (c *ConverterImpl) ToLessonProgress(source *ent.LessonProgress) api.LessonProgress {
+	var apiLessonProgress api.LessonProgress
+	if source != nil {
+		apiLessonProgress.ID = Int32FromInt((*source).ID)
+		apiLessonProgress.UserId = Int32FromInt((*source).UserID)
+		apiLessonProgress.State = EnrollmentStateFromPtr((*source).State)
+		apiLessonProgress.MessagesCount = NilInt32FromPtr((*source).MessagesCount)
+		apiLessonProgress.CreatedAt = TimeIdentity((*source).CreatedAt)
+		var pString *string
+		if (*source).Edges.Course != nil {
+			pString = (*source).Edges.Course.Slug
+		}
+		apiLessonProgress.CourseSlug = StringFromPtr(pString)
+		var pString2 *string
+		if (*source).Edges.Lesson != nil {
+			pString2 = (*source).Edges.Lesson.Slug
+		}
+		apiLessonProgress.CourseLessonSlug = StringFromPtr(pString2)
+		apiLessonProgress.CourseLessonName = courseLessonMemberName(source)
+	}
+	return apiLessonProgress
+}
+func (c *ConverterImpl) ToLessonProgressList(source []*ent.LessonProgress) []api.LessonProgress {
+	var apiLessonProgressList []api.LessonProgress
+	if source != nil {
+		apiLessonProgressList = make([]api.LessonProgress, len(source))
+		for i := 0; i < len(source); i++ {
+			apiLessonProgressList[i] = c.ToLessonProgress(source[i])
+		}
+	}
+	return apiLessonProgressList
 }
 func (c *ConverterImpl) ToReview(source *ent.Review) api.Review {
 	var apiReview api.Review

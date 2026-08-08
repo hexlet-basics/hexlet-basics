@@ -5,18 +5,18 @@
 ## Context
 
 The legacy application let a learner take a Course's Lessons in any order, and
-created the Course Membership as a side effect of *viewing* a Lesson page. A
-visitor without an account progressed through the same Lessons, with their
-passed Lessons kept in the Rails server session and claimed on sign-up.
+created the Enrollment as a side effect of *viewing* a Lesson page. A visitor
+without an account progressed through the same Lessons, with their passed
+Lessons kept in the Rails server session and claimed on sign-up.
 
 Neither behaviour survives the move to the Go stack, for reasons that are
 structural rather than matters of taste.
 
 **Enrollment on view is unsafe in the new frontend.** TanStack Router preloads
-routes on hover, so a route loader runs for Lessons the learner never opened. If
-viewing enrolled, pointing at a Course's Lesson list would create Lesson
-Memberships across it and publish a `lessonStarted` event for each — inflating
-the very funnel those events feed.
+routes on hover, so a route loader runs for Lessons the learner never opened.
+If viewing enrolled, pointing at a Course's Lesson list would create Lesson
+Progress rows across it and publish a `lessonStarted` event for each —
+inflating the very funnel those events feed.
 
 **There is no server session to put guest progress in.** Authentication is a
 stateless JWT in an httpOnly cookie (ADR-0003); the Go stack keeps no
@@ -42,21 +42,21 @@ push a learner backwards. A gap does not block progress, but a Course is
 finished only when every one of its Current Lessons is finished, so a gap keeps
 the Course open until the learner closes it.
 
-**Position is only defined relative to a Version.** A Lesson Membership records
-a Lesson, while the ordering key lives on the Lesson Version, so positions are
-resolved by joining the learner's finished Lessons to the current Version's
-Lesson Versions. A finished Lesson absent from the current Version contributes
-no position: it neither raises the gate nor counts toward completion. This is
-what makes a shrinking Course behave sanely — dropping a Lesson lowers the total
-without stranding the learner, and dropping the learner's furthest Lesson moves
-the gate back to their furthest surviving one.
+**Position is only defined relative to a Version.** A Lesson Progress row
+records a Lesson, while the ordering key lives on the Lesson Version, so
+positions are resolved by joining the learner's finished Lessons to the current
+Version's Lesson Versions. A finished Lesson absent from the current Version
+contributes no position: it neither raises the gate nor counts toward
+completion. This is what makes a shrinking Course behave sanely — dropping a
+Lesson lowers the total without stranding the learner, and dropping the
+learner's furthest Lesson moves the gate back to their furthest surviving one.
 
 Progress advances only through deliberate actions — starting a Lesson, or
 submitting a solution — never by loading a page. Starting is an explicit
 contract operation and is idempotent. A check does not require an existing
-Lesson Membership: its precondition is the gate, and it creates the Course and
-Lesson Memberships lazily when they are missing, so arriving by deep link and
-submitting still records progress.
+Lesson Progress row: its precondition is the gate, and it creates the
+Enrollment and the Lesson Progress lazily when they are missing, so arriving by
+deep link and submitting still records progress.
 
 The gate is enforced server-side on both the start command and the check. The
 client renders from server-provided state and implements no rule of its own: the
@@ -85,16 +85,15 @@ there are no other finished Lessons to fall back to — so that Course's guest
 position resets to the beginning.
 
 The state is carried in a **signed, httpOnly cookie**, using the same secret as
-the token service already signs authentication cookies with (ADR-0003).
-Signing is not optional: this
-state is later converted into database rows and domain events, so an unsigned
-cookie would let a visitor mint fabricated completions. The cookie is not
-readable by the client — the server derives progress from it and returns it in
-the response body, which is what keeps the client free of any guest/member
-branch. It is written by the server through a `Set-Cookie` on the check
-response; the contract already models response cookies for the session
-endpoints. Lifetime is one year, and if the cookie approaches its size limit the
-least recently touched Courses are evicted.
+the token service already signs authentication cookies with (ADR-0003). Signing
+is not optional: this state is later converted into database rows and domain
+events, so an unsigned cookie would let a visitor mint fabricated completions.
+The cookie is not readable by the client — the server derives progress from it
+and returns it in the response body, which is what keeps the client free of any
+guest/member branch. It is written by the server through a `Set-Cookie` on the
+check response; the contract already models response cookies for the session
+endpoints. Lifetime is one year, and if the cookie approaches its size limit
+the least recently touched Courses are evicted.
 
 The check therefore stays a public operation that writes progress. The contract
 already declares it without a session, because guests must be able to submit,
@@ -121,10 +120,10 @@ selection.
 Two of these are hard to reverse, and both change numbers the marketing funnel
 reports:
 
-- **Enrollment now requires a deliberate action.** Course and Lesson Membership
-  counts, and the `courseStarted` / `lessonStarted` events, stop counting page
-  views and start counting intent. Volumes drop against the legacy baseline
-  without anything being broken.
+- **Enrollment now requires a deliberate action.** Enrollment and Lesson
+  Progress counts, and the `courseStarted` / `lessonStarted` events, stop
+  counting page views and start counting intent. Volumes drop against the
+  legacy baseline without anything being broken.
 - **Guests can no longer complete Lessons out of order.** Pre-signup activity is
   a prefix of the Course, so the shape of what a guest transfers on sign-up
   changes.
@@ -142,7 +141,7 @@ Further consequences:
   responses they get today, and CDN caching of those reads stays off — the
   legacy application never cached them either.
 - Completion percentage is computed by counting finished Current Lessons, not
-  from the denormalized counter on the Course Membership. That counter includes
+  from the denormalized counter on the Enrollment. That counter includes
   Lessons dropped by later Versions, which is why the legacy serializer had to
   clamp it at 100%. The public member count on Courses stays denormalized; it is
   a marketing figure on cached catalogue pages, not a progress figure.

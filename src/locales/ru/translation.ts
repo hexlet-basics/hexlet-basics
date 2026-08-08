@@ -220,7 +220,7 @@ export default {
         courses: "Курсы",
         landingPages: "Лендинги",
         leads: "Лиды",
-        lessonMembers: "Прохождения уроков",
+        lessonProgress: "Прохождения уроков",
         lessonReviews: "Ревью уроков",
         managementUsers: "Управление: пользователи",
         messages: "Сообщения ассистенту",
@@ -1406,7 +1406,7 @@ export default {
           lesson: "Урок",
           role: "Роль",
         },
-        lesson_member: {
+        lesson_progress: {
           course: "Курс",
           lesson: "Урок",
           messages_count: "Сообщений",

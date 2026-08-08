@@ -153,10 +153,6 @@ type AdminListCourseLandingPagesRes interface {
 	adminListCourseLandingPagesRes()
 }
 
-type AdminListCourseLessonMembersRes interface {
-	adminListCourseLessonMembersRes()
-}
-
 type AdminListCourseLessonReviewsRes interface {
 	adminListCourseLessonReviewsRes()
 }
@@ -175,6 +171,10 @@ type AdminListLandingPageQnaItemsRes interface {
 
 type AdminListLeadsRes interface {
 	adminListLeadsRes()
+}
+
+type AdminListLessonProgressRes interface {
+	adminListLessonProgressRes()
 }
 
 type AdminListManagementUsersRes interface {

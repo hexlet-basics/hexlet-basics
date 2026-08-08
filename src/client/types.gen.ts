@@ -190,7 +190,7 @@ export type Course = {
   slug: string;
   name: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseProgress | null;
+  progress: CourseReadiness | null;
   categoryId: number | null;
   currentVersionId: number | null;
   currentVersion: CourseVersion | null;
@@ -281,7 +281,7 @@ export type CourseCategoryView = {
 export type CourseInput = {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseProgress | null;
+  progress: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
   /**
@@ -435,40 +435,6 @@ export type CourseLessonListItemPage = {
 };
 
 /**
- * A user's participation in a lesson (legacy: `LanguageLessonMember`).
- */
-export type CourseLessonMember = {
-  id: number;
-  userId: number;
-  state: MemberState;
-  messagesCount: number | null;
-  createdAt: string;
-  courseSlug: string;
-  courseLessonSlug: string;
-  courseLessonName: string;
-};
-
-/**
- * A page of results. Generic envelope reused by every admin list so the CRUD
- * engine (TanStack Table) can read pagination uniformly.
- */
-export type CourseLessonMemberPage = {
-  items: Array<CourseLessonMember>;
-  /**
-   * Total rows across all pages (before pagination).
-   */
-  total: number;
-  /**
-   * 1-based page number this response represents.
-   */
-  page: number;
-  /**
-   * Page size used for this response.
-   */
-  perPage: number;
-};
-
-/**
  * An AI-generated lesson review record (legacy: `LanguageLessonReview`).
  */
 export type CourseLessonReview = {
@@ -506,21 +472,6 @@ export type CourseLessonReviewPage = {
 };
 
 /**
- * A member's enrollment/progress in a course (legacy `LanguageMember`).
- */
-export type CourseMember = {
-  id: number;
-  userId: number;
-  courseId: number;
-  state: MemberState | null;
-  /**
-   * Completion percentage (0–100).
-   */
-  progress: number;
-  nextLessonName: string | null;
-};
-
-/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -543,7 +494,7 @@ export type CoursePage = {
 /**
  * Publication/readiness state of a course.
  */
-export type CourseProgress = 'completed' | 'in_development' | 'draft';
+export type CourseReadiness = 'completed' | 'in_development' | 'draft';
 
 /**
  * A build/version of a course's exercises (legacy `LanguageVersion`).
@@ -563,9 +514,9 @@ export type CourseView = {
   landingPage: CourseLandingPage | null;
   lessons: Array<CourseLessonListItem>;
   /**
-   * The current user's membership, when signed in.
+   * The current user's enrollment, when signed in.
    */
-  member: CourseMember | null;
+  enrollment: Enrollment | null;
 };
 
 /**
@@ -578,6 +529,27 @@ export type CurrentUser = {
 export type EmailInput = {
   email: string;
 };
+
+/**
+ * A learner's enrollment in a course (legacy `LanguageMember`, table
+ * `language_members`).
+ */
+export type Enrollment = {
+  id: number;
+  userId: number;
+  courseId: number;
+  state: EnrollmentState | null;
+  /**
+   * Completion percentage (0–100).
+   */
+  progress: number;
+  nextLessonName: string | null;
+};
+
+/**
+ * Enrollment and lesson-progress lifecycle (legacy `MemberState`).
+ */
+export type EnrollmentState = 'started' | 'finished';
 
 /**
  * Publication state shared by landing pages.
@@ -684,23 +656,53 @@ export type LessonDefinition = {
 };
 
 /**
+ * A learner's progress through one lesson (legacy: `LanguageLessonMember`,
+ * table `language_lesson_members`).
+ */
+export type LessonProgress = {
+  id: number;
+  userId: number;
+  state: EnrollmentState;
+  messagesCount: number | null;
+  createdAt: string;
+  courseSlug: string;
+  courseLessonSlug: string;
+  courseLessonName: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type LessonProgressPage = {
+  items: Array<LessonProgress>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
  * UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
  */
 export type Locale = 'ru' | 'en' | 'es';
 
 /**
- * Course-membership lifecycle (legacy `MemberState`).
- */
-export type MemberState = 'started' | 'finished';
-
-/**
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export type MyDashboard = {
-  startedCourseMembers: Array<CourseMember>;
-  finishedCourseMembers: Array<CourseMember>;
+  startedEnrollments: Array<Enrollment>;
+  finishedEnrollments: Array<Enrollment>;
   /**
-   * Landing page (catalog item) keyed by course id, for each membership.
+   * Landing page (catalog item) keyed by course id, for each enrollment.
    */
   landingPagesByCourseId: {
     [key: string]: CourseCatalogItem;
@@ -2818,7 +2820,7 @@ export type AdminUpdateLandingPageQnaItemResponses = {
 
 export type AdminUpdateLandingPageQnaItemResponse = AdminUpdateLandingPageQnaItemResponses[keyof AdminUpdateLandingPageQnaItemResponses];
 
-export type AdminListCourseLessonMembersData = {
+export type AdminListLessonProgressData = {
   body?: never;
   path?: never;
   query?: {
@@ -2836,7 +2838,7 @@ export type AdminListCourseLessonMembersData = {
   url: '/admin/language_lesson_members';
 };
 
-export type AdminListCourseLessonMembersErrors = {
+export type AdminListLessonProgressErrors = {
   /**
    * The request is not authenticated (no/invalid session cookie).
    */
@@ -2854,16 +2856,16 @@ export type AdminListCourseLessonMembersErrors = {
   default: ProblemDetails;
 };
 
-export type AdminListCourseLessonMembersError = AdminListCourseLessonMembersErrors[keyof AdminListCourseLessonMembersErrors];
+export type AdminListLessonProgressError = AdminListLessonProgressErrors[keyof AdminListLessonProgressErrors];
 
-export type AdminListCourseLessonMembersResponses = {
+export type AdminListLessonProgressResponses = {
   /**
    * The request has succeeded.
    */
-  200: CourseLessonMemberPage;
+  200: LessonProgressPage;
 };
 
-export type AdminListCourseLessonMembersResponse = AdminListCourseLessonMembersResponses[keyof AdminListCourseLessonMembersResponses];
+export type AdminListLessonProgressResponse = AdminListLessonProgressResponses[keyof AdminListLessonProgressResponses];
 
 export type AdminListCourseLessonReviewsData = {
   body?: never;

@@ -32,7 +32,7 @@ tags:
   - name: 'Admin: Courses'
   - name: 'Admin: Course Landing Pages'
   - name: 'Admin: Course Lessons'
-  - name: 'Admin: Course Lesson Members'
+  - name: 'Admin: Lesson Progress'
   - name: 'Admin: Course Lesson Reviews'
   - name: 'Admin: Leads'
   - name: 'Admin: Messages'
@@ -1993,7 +1993,7 @@ paths:
           XsrfToken: []
   /admin/language_lesson_members:
     get:
-      operationId: adminListCourseLessonMembers
+      operationId: adminListLessonProgress
       parameters:
         - $ref: '#/components/parameters/ListQuery.page'
         - $ref: '#/components/parameters/ListQuery.perPage'
@@ -2005,7 +2005,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourseLessonMemberPage'
+                $ref: '#/components/schemas/LessonProgressPage'
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
@@ -2029,7 +2029,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
-        - 'Admin: Course Lesson Members'
+        - 'Admin: Lesson Progress'
       security:
         - AdminSession: []
   /admin/language_lesson_reviews:
@@ -4969,7 +4969,7 @@ components:
           nullable: true
         progress:
           allOf:
-            - $ref: '#/components/schemas/CourseProgress'
+            - $ref: '#/components/schemas/CourseReadiness'
           nullable: true
         categoryId:
           type: integer
@@ -5170,7 +5170,7 @@ components:
           nullable: true
         progress:
           allOf:
-            - $ref: '#/components/schemas/CourseProgress'
+            - $ref: '#/components/schemas/CourseReadiness'
           nullable: true
         hexletProgramLandingPage:
           type: string
@@ -5526,67 +5526,6 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
-    CourseLessonMember:
-      type: object
-      required:
-        - id
-        - userId
-        - state
-        - messagesCount
-        - createdAt
-        - courseSlug
-        - courseLessonSlug
-        - courseLessonName
-      properties:
-        id:
-          type: integer
-          format: int32
-        userId:
-          type: integer
-          format: int32
-        state:
-          $ref: '#/components/schemas/MemberState'
-        messagesCount:
-          type: integer
-          format: int32
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        courseSlug:
-          type: string
-        courseLessonSlug:
-          type: string
-        courseLessonName:
-          type: string
-      description: "A user's participation in a lesson (legacy: `LanguageLessonMember`)."
-    CourseLessonMemberPage:
-      type: object
-      required:
-        - items
-        - total
-        - page
-        - perPage
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CourseLessonMember'
-        total:
-          type: integer
-          format: int32
-          description: Total rows across all pages (before pagination).
-        page:
-          type: integer
-          format: int32
-          description: 1-based page number this response represents.
-        perPage:
-          type: integer
-          format: int32
-          description: Page size used for this response.
-      description: |-
-        A page of results. Generic envelope reused by every admin list so the CRUD
-        engine (TanStack Table) can read pagination uniformly.
     CourseLessonReview:
       type: object
       required:
@@ -5659,37 +5598,6 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
-    CourseMember:
-      type: object
-      required:
-        - id
-        - userId
-        - courseId
-        - state
-        - progress
-        - nextLessonName
-      properties:
-        id:
-          type: integer
-          format: int32
-        userId:
-          type: integer
-          format: int32
-        courseId:
-          type: integer
-          format: int32
-        state:
-          allOf:
-            - $ref: '#/components/schemas/MemberState'
-          nullable: true
-        progress:
-          type: integer
-          format: int32
-          description: Completion percentage (0–100).
-        nextLessonName:
-          type: string
-          nullable: true
-      description: A member's enrollment/progress in a course (legacy `LanguageMember`).
     CoursePage:
       type: object
       required:
@@ -5717,7 +5625,7 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
-    CourseProgress:
+    CourseReadiness:
       type: string
       enum:
         - completed
@@ -5751,7 +5659,7 @@ components:
         - course
         - landingPage
         - lessons
-        - member
+        - enrollment
       properties:
         course:
           $ref: '#/components/schemas/Course'
@@ -5764,12 +5672,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CourseLessonListItem'
-        member:
+        enrollment:
           type: object
           allOf:
-            - $ref: '#/components/schemas/CourseMember'
+            - $ref: '#/components/schemas/Enrollment'
           nullable: true
-          description: The current user's membership, when signed in.
+          description: The current user's enrollment, when signed in.
       description: Everything the public course landing needs in one payload.
     CurrentUser:
       type: object
@@ -5790,6 +5698,45 @@ components:
         email:
           type: string
           format: email
+    Enrollment:
+      type: object
+      required:
+        - id
+        - userId
+        - courseId
+        - state
+        - progress
+        - nextLessonName
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        courseId:
+          type: integer
+          format: int32
+        state:
+          allOf:
+            - $ref: '#/components/schemas/EnrollmentState'
+          nullable: true
+        progress:
+          type: integer
+          format: int32
+          description: Completion percentage (0–100).
+        nextLessonName:
+          type: string
+          nullable: true
+      description: |-
+        A learner's enrollment in a course (legacy `LanguageMember`, table
+        `language_members`).
+    EnrollmentState:
+      type: string
+      enum:
+        - started
+        - finished
+      description: Enrollment and lesson-progress lifecycle (legacy `MemberState`).
     LandingPageState:
       type: string
       enum:
@@ -5988,6 +5935,69 @@ components:
         description:
           type: string
       description: A lesson definition entry (name + description pair).
+    LessonProgress:
+      type: object
+      required:
+        - id
+        - userId
+        - state
+        - messagesCount
+        - createdAt
+        - courseSlug
+        - courseLessonSlug
+        - courseLessonName
+      properties:
+        id:
+          type: integer
+          format: int32
+        userId:
+          type: integer
+          format: int32
+        state:
+          $ref: '#/components/schemas/EnrollmentState'
+        messagesCount:
+          type: integer
+          format: int32
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        courseSlug:
+          type: string
+        courseLessonSlug:
+          type: string
+        courseLessonName:
+          type: string
+      description: |-
+        A learner's progress through one lesson (legacy: `LanguageLessonMember`,
+        table `language_lesson_members`).
+    LessonProgressPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonProgress'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
     Locale:
       type: string
       enum:
@@ -5995,32 +6005,26 @@ components:
         - en
         - es
       description: UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
-    MemberState:
-      type: string
-      enum:
-        - started
-        - finished
-      description: Course-membership lifecycle (legacy `MemberState`).
     MyDashboard:
       type: object
       required:
-        - startedCourseMembers
-        - finishedCourseMembers
+        - startedEnrollments
+        - finishedEnrollments
         - landingPagesByCourseId
       properties:
-        startedCourseMembers:
+        startedEnrollments:
           type: array
           items:
-            $ref: '#/components/schemas/CourseMember'
-        finishedCourseMembers:
+            $ref: '#/components/schemas/Enrollment'
+        finishedEnrollments:
           type: array
           items:
-            $ref: '#/components/schemas/CourseMember'
+            $ref: '#/components/schemas/Enrollment'
         landingPagesByCourseId:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/CourseCatalogItem'
-          description: Landing page (catalog item) keyed by course id, for each membership.
+          description: Landing page (catalog item) keyed by course id, for each enrollment.
       description: "The signed-in user's dashboard (legacy: `MyController#show`)."
     NotFoundError:
       type: object

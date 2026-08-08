@@ -22,8 +22,8 @@ model CourseView {
   landingPage: CourseLandingPage | null;
   lessons: CourseLessonListItem[];
 
-  /** The current user's membership, when signed in. */
-  member: CourseMember | null;
+  /** The current user's enrollment, when signed in. */
+  enrollment: Enrollment | null;
 }
 
 /** A category page with the courses it groups. */

@@ -105,10 +105,10 @@ model UserCreated {
 
 /** The signed-in user's dashboard (legacy: `MyController#show`). */
 model MyDashboard {
-  startedCourseMembers: CourseMember[];
-  finishedCourseMembers: CourseMember[];
+  startedEnrollments: Enrollment[];
+  finishedEnrollments: Enrollment[];
 
-  /** Landing page (catalog item) keyed by course id, for each membership. */
+  /** Landing page (catalog item) keyed by course id, for each enrollment. */
   landingPagesByCourseId: Record<CourseCatalogItem>;
 }
 

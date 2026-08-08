@@ -423,7 +423,7 @@ export default interface Resources {
         courses: "Курсы";
         landingPages: "Лендинги";
         leads: "Лиды";
-        lessonMembers: "Прохождения уроков";
+        lessonProgress: "Прохождения уроков";
         lessonReviews: "Ревью уроков";
         managementUsers: "Управление: пользователи";
         messages: "Сообщения ассистенту";
@@ -1434,7 +1434,7 @@ export default interface Resources {
           telegram: "Telegram";
           whatsapp: "WhatsApp";
         };
-        lesson_member: {
+        lesson_progress: {
           course: "Курс";
           lesson: "Урок";
           messages_count: "Сообщений";

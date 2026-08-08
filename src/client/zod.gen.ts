@@ -217,7 +217,7 @@ export const zCourseLessonReviewPage = z.object({
 /**
  * Publication/readiness state of a course.
  */
-export const zCourseProgress = z.enum([
+export const zCourseReadiness = z.enum([
   'completed',
   'in_development',
   'draft'
@@ -226,7 +226,7 @@ export const zCourseProgress = z.enum([
 export const zCourseInput = z.object({
   slug: z.string().nullable(),
   learnAs: zCourseLearnAs.nullable(),
-  progress: zCourseProgress.nullable(),
+  progress: zCourseReadiness.nullable(),
   hexletProgramLandingPage: z.string().nullable(),
   repositoryUrl: z.string().nullable(),
   coverAttachmentId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable()
@@ -251,7 +251,7 @@ export const zCourse = z.object({
   slug: z.string(),
   name: z.string().nullable(),
   learnAs: zCourseLearnAs.nullable(),
-  progress: zCourseProgress.nullable(),
+  progress: zCourseReadiness.nullable(),
   categoryId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
   currentVersionId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
   currentVersion: zCourseVersion.nullable(),
@@ -303,6 +303,24 @@ export const zCoursePage = z.object({
 
 export const zEmailInput = z.object({
   email: z.email()
+});
+
+/**
+ * Enrollment and lesson-progress lifecycle (legacy `MemberState`).
+ */
+export const zEnrollmentState = z.enum(['started', 'finished']);
+
+/**
+ * A learner's enrollment in a course (legacy `LanguageMember`, table
+ * `language_members`).
+ */
+export const zEnrollment = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  state: zEnrollmentState.nullable(),
+  progress: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  nextLessonName: z.string().nullable()
 });
 
 /**
@@ -375,6 +393,16 @@ export const zCourseLandingPagePage = z.object({
   total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * Everything the public course landing needs in one payload.
+ */
+export const zCourseView = z.object({
+  course: zCourse,
+  landingPage: zCourseLandingPage.nullable(),
+  lessons: z.array(zCourseLessonListItem),
+  enrollment: zEnrollment.nullable()
 });
 
 /**
@@ -491,26 +519,13 @@ export const zCourseLesson = z.object({
 });
 
 /**
- * UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+ * A learner's progress through one lesson (legacy: `LanguageLessonMember`,
+ * table `language_lesson_members`).
  */
-export const zLocale = z.enum([
-  'ru',
-  'en',
-  'es'
-]);
-
-/**
- * Course-membership lifecycle (legacy `MemberState`).
- */
-export const zMemberState = z.enum(['started', 'finished']);
-
-/**
- * A user's participation in a lesson (legacy: `LanguageLessonMember`).
- */
-export const zCourseLessonMember = z.object({
+export const zLessonProgress = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  state: zMemberState,
+  state: zEnrollmentState,
   messagesCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
   createdAt: z.iso.datetime(),
   courseSlug: z.string(),
@@ -522,41 +537,28 @@ export const zCourseLessonMember = z.object({
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
-export const zCourseLessonMemberPage = z.object({
-  items: z.array(zCourseLessonMember),
+export const zLessonProgressPage = z.object({
+  items: z.array(zLessonProgress),
   total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**
- * A member's enrollment/progress in a course (legacy `LanguageMember`).
+ * UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
  */
-export const zCourseMember = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  state: zMemberState.nullable(),
-  progress: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nextLessonName: z.string().nullable()
-});
-
-/**
- * Everything the public course landing needs in one payload.
- */
-export const zCourseView = z.object({
-  course: zCourse,
-  landingPage: zCourseLandingPage.nullable(),
-  lessons: z.array(zCourseLessonListItem),
-  member: zCourseMember.nullable()
-});
+export const zLocale = z.enum([
+  'ru',
+  'en',
+  'es'
+]);
 
 /**
  * The signed-in user's dashboard (legacy: `MyController#show`).
  */
 export const zMyDashboard = z.object({
-  startedCourseMembers: z.array(zCourseMember),
-  finishedCourseMembers: z.array(zCourseMember),
+  startedEnrollments: z.array(zEnrollment),
+  finishedEnrollments: z.array(zEnrollment),
   landingPagesByCourseId: z.record(z.string(), zCourseCatalogItem)
 });
 
@@ -1385,7 +1387,7 @@ export const zAdminUpdateLandingPageQnaItemPath = z.object({
  */
 export const zAdminUpdateLandingPageQnaItemResponse = zQnaItem;
 
-export const zAdminListCourseLessonMembersQuery = z.object({
+export const zAdminListLessonProgressQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
   perPage: z.int().gte(1).lte(100).optional(),
   sortField: z.string().optional(),
@@ -1395,7 +1397,7 @@ export const zAdminListCourseLessonMembersQuery = z.object({
 /**
  * The request has succeeded.
  */
-export const zAdminListCourseLessonMembersResponse = zCourseLessonMemberPage;
+export const zAdminListLessonProgressResponse = zLessonProgressPage;
 
 export const zAdminListCourseLessonReviewsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),

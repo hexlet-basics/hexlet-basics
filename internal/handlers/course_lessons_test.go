@@ -43,33 +43,33 @@ func TestAdminListCourseLessons(t *testing.T) {
 	assert.Equal(t, "hello-world", page.Items[1].Slug)
 }
 
-// TestAdminListCourseLessonMembers: newest first, with course/lesson slugs and
-// the lesson name enriched from the en info.
-func TestAdminListCourseLessonMembers(t *testing.T) {
+// TestAdminListLessonProgress: newest first, with course/lesson slugs and the
+// lesson name enriched from the en info.
+func TestAdminListLessonProgress(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
-	page, err := h.Client.AdminListCourseLessonMembers(ctx, api.AdminListCourseLessonMembersParams{})
+	page, err := h.Client.AdminListLessonProgress(ctx, api.AdminListLessonProgressParams{})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	assert.Equal(t, int32(2), page.Total)
 	require.Len(t, page.Items, 2)
 
-	// id DESC: member 3002 first, then 3001.
+	// id DESC: row 3002 first, then 3001.
 	assert.Equal(t, int32(3002), page.Items[0].ID)
 	assert.Equal(t, int32(3001), page.Items[1].ID)
 
 	first := page.Items[0] // 3002: started, no messages, lesson "variables"
 	assert.Equal(t, int32(502), first.UserId)
-	assert.Equal(t, api.MemberStateStarted, first.State)
+	assert.Equal(t, api.EnrollmentStateStarted, first.State)
 	assert.True(t, first.MessagesCount.Null, "blank messages_count should be null")
 	assert.Equal(t, "javascript", first.CourseSlug)
 	assert.Equal(t, "variables", first.CourseLessonSlug)
 	assert.Equal(t, "Variables", first.CourseLessonName)
 
 	second := page.Items[1] // 3001: finished, 5 messages, lesson "hello-world"
-	assert.Equal(t, api.MemberStateFinished, second.State)
+	assert.Equal(t, api.EnrollmentStateFinished, second.State)
 	assert.Equal(t, int32(5), second.MessagesCount.Value)
 	assert.Equal(t, "hello-world", second.CourseLessonSlug)
 	assert.Equal(t, "Hello, World!", second.CourseLessonName)

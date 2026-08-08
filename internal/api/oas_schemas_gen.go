@@ -371,14 +371,6 @@ type AdminListCourseLandingPagesUnauthorized ProblemDetails
 
 func (*AdminListCourseLandingPagesUnauthorized) adminListCourseLandingPagesRes() {}
 
-type AdminListCourseLessonMembersForbidden ProblemDetails
-
-func (*AdminListCourseLessonMembersForbidden) adminListCourseLessonMembersRes() {}
-
-type AdminListCourseLessonMembersUnauthorized ProblemDetails
-
-func (*AdminListCourseLessonMembersUnauthorized) adminListCourseLessonMembersRes() {}
-
 type AdminListCourseLessonReviewsForbidden ProblemDetails
 
 func (*AdminListCourseLessonReviewsForbidden) adminListCourseLessonReviewsRes() {}
@@ -422,6 +414,14 @@ func (*AdminListLeadsForbidden) adminListLeadsRes() {}
 type AdminListLeadsUnauthorized ProblemDetails
 
 func (*AdminListLeadsUnauthorized) adminListLeadsRes() {}
+
+type AdminListLessonProgressForbidden ProblemDetails
+
+func (*AdminListLessonProgressForbidden) adminListLessonProgressRes() {}
+
+type AdminListLessonProgressUnauthorized ProblemDetails
+
+func (*AdminListLessonProgressUnauthorized) adminListLessonProgressRes() {}
 
 type AdminListManagementUsersForbidden ProblemDetails
 
@@ -1530,23 +1530,23 @@ func (*CheckPasswordResetTokenNoContent) checkPasswordResetTokenRes() {}
 // screens read the full shape.
 // Ref: #/components/schemas/Course
 type Course struct {
-	ID                       int32             `json:"id"`
-	Slug                     string            `json:"slug"`
-	Name                     NilString         `json:"name"`
-	LearnAs                  NilCourseLearnAs  `json:"learnAs"`
-	Progress                 NilCourseProgress `json:"progress"`
-	CategoryId               NilInt32          `json:"categoryId"`
-	CurrentVersionId         NilInt32          `json:"currentVersionId"`
-	CurrentVersion           NilCourseVersion  `json:"currentVersion"`
-	CreatedAt                time.Time         `json:"createdAt"`
-	MembersCount             int32             `json:"membersCount"`
-	LessonsCount             int32             `json:"lessonsCount"`
-	RatingCount              int32             `json:"ratingCount"`
-	RatingValue              float64           `json:"ratingValue"`
-	RepositoryUrl            NilString         `json:"repositoryUrl"`
-	HexletProgramLandingPage NilString         `json:"hexletProgramLandingPage"`
-	CoverListVariant         NilString         `json:"coverListVariant"`
-	CoverThumbVariant        NilString         `json:"coverThumbVariant"`
+	ID                       int32              `json:"id"`
+	Slug                     string             `json:"slug"`
+	Name                     NilString          `json:"name"`
+	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
+	Progress                 NilCourseReadiness `json:"progress"`
+	CategoryId               NilInt32           `json:"categoryId"`
+	CurrentVersionId         NilInt32           `json:"currentVersionId"`
+	CurrentVersion           NilCourseVersion   `json:"currentVersion"`
+	CreatedAt                time.Time          `json:"createdAt"`
+	MembersCount             int32              `json:"membersCount"`
+	LessonsCount             int32              `json:"lessonsCount"`
+	RatingCount              int32              `json:"ratingCount"`
+	RatingValue              float64            `json:"ratingValue"`
+	RepositoryUrl            NilString          `json:"repositoryUrl"`
+	HexletProgramLandingPage NilString          `json:"hexletProgramLandingPage"`
+	CoverListVariant         NilString          `json:"coverListVariant"`
+	CoverThumbVariant        NilString          `json:"coverThumbVariant"`
 }
 
 // GetID returns the value of ID.
@@ -1570,7 +1570,7 @@ func (s *Course) GetLearnAs() NilCourseLearnAs {
 }
 
 // GetProgress returns the value of Progress.
-func (s *Course) GetProgress() NilCourseProgress {
+func (s *Course) GetProgress() NilCourseReadiness {
 	return s.Progress
 }
 
@@ -1655,7 +1655,7 @@ func (s *Course) SetLearnAs(val NilCourseLearnAs) {
 }
 
 // SetProgress sets the value of Progress.
-func (s *Course) SetProgress(val NilCourseProgress) {
+func (s *Course) SetProgress(val NilCourseReadiness) {
 	s.Progress = val
 }
 
@@ -2051,11 +2051,11 @@ func (*CourseCategoryView) getPublicCourseCategoryRes() {}
 
 // Ref: #/components/schemas/CourseInput
 type CourseInput struct {
-	Slug                     NilString         `json:"slug"`
-	LearnAs                  NilCourseLearnAs  `json:"learnAs"`
-	Progress                 NilCourseProgress `json:"progress"`
-	HexletProgramLandingPage NilString         `json:"hexletProgramLandingPage"`
-	RepositoryUrl            NilString         `json:"repositoryUrl"`
+	Slug                     NilString          `json:"slug"`
+	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
+	Progress                 NilCourseReadiness `json:"progress"`
+	HexletProgramLandingPage NilString          `json:"hexletProgramLandingPage"`
+	RepositoryUrl            NilString          `json:"repositoryUrl"`
 	// Attachment id from `POST /admin/attachments`, or null.
 	CoverAttachmentId NilInt32 `json:"coverAttachmentId"`
 }
@@ -2071,7 +2071,7 @@ func (s *CourseInput) GetLearnAs() NilCourseLearnAs {
 }
 
 // GetProgress returns the value of Progress.
-func (s *CourseInput) GetProgress() NilCourseProgress {
+func (s *CourseInput) GetProgress() NilCourseReadiness {
 	return s.Progress
 }
 
@@ -2101,7 +2101,7 @@ func (s *CourseInput) SetLearnAs(val NilCourseLearnAs) {
 }
 
 // SetProgress sets the value of Progress.
-func (s *CourseInput) SetProgress(val NilCourseProgress) {
+func (s *CourseInput) SetProgress(val NilCourseReadiness) {
 	s.Progress = val
 }
 
@@ -3018,154 +3018,6 @@ func (s *CourseLessonListItemPage) SetPerPage(val int32) {
 
 func (*CourseLessonListItemPage) adminListCourseLessonsRes() {}
 
-// A user's participation in a lesson (legacy: `LanguageLessonMember`).
-// Ref: #/components/schemas/CourseLessonMember
-type CourseLessonMember struct {
-	ID               int32       `json:"id"`
-	UserId           int32       `json:"userId"`
-	State            MemberState `json:"state"`
-	MessagesCount    NilInt32    `json:"messagesCount"`
-	CreatedAt        time.Time   `json:"createdAt"`
-	CourseSlug       string      `json:"courseSlug"`
-	CourseLessonSlug string      `json:"courseLessonSlug"`
-	CourseLessonName string      `json:"courseLessonName"`
-}
-
-// GetID returns the value of ID.
-func (s *CourseLessonMember) GetID() int32 {
-	return s.ID
-}
-
-// GetUserId returns the value of UserId.
-func (s *CourseLessonMember) GetUserId() int32 {
-	return s.UserId
-}
-
-// GetState returns the value of State.
-func (s *CourseLessonMember) GetState() MemberState {
-	return s.State
-}
-
-// GetMessagesCount returns the value of MessagesCount.
-func (s *CourseLessonMember) GetMessagesCount() NilInt32 {
-	return s.MessagesCount
-}
-
-// GetCreatedAt returns the value of CreatedAt.
-func (s *CourseLessonMember) GetCreatedAt() time.Time {
-	return s.CreatedAt
-}
-
-// GetCourseSlug returns the value of CourseSlug.
-func (s *CourseLessonMember) GetCourseSlug() string {
-	return s.CourseSlug
-}
-
-// GetCourseLessonSlug returns the value of CourseLessonSlug.
-func (s *CourseLessonMember) GetCourseLessonSlug() string {
-	return s.CourseLessonSlug
-}
-
-// GetCourseLessonName returns the value of CourseLessonName.
-func (s *CourseLessonMember) GetCourseLessonName() string {
-	return s.CourseLessonName
-}
-
-// SetID sets the value of ID.
-func (s *CourseLessonMember) SetID(val int32) {
-	s.ID = val
-}
-
-// SetUserId sets the value of UserId.
-func (s *CourseLessonMember) SetUserId(val int32) {
-	s.UserId = val
-}
-
-// SetState sets the value of State.
-func (s *CourseLessonMember) SetState(val MemberState) {
-	s.State = val
-}
-
-// SetMessagesCount sets the value of MessagesCount.
-func (s *CourseLessonMember) SetMessagesCount(val NilInt32) {
-	s.MessagesCount = val
-}
-
-// SetCreatedAt sets the value of CreatedAt.
-func (s *CourseLessonMember) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
-}
-
-// SetCourseSlug sets the value of CourseSlug.
-func (s *CourseLessonMember) SetCourseSlug(val string) {
-	s.CourseSlug = val
-}
-
-// SetCourseLessonSlug sets the value of CourseLessonSlug.
-func (s *CourseLessonMember) SetCourseLessonSlug(val string) {
-	s.CourseLessonSlug = val
-}
-
-// SetCourseLessonName sets the value of CourseLessonName.
-func (s *CourseLessonMember) SetCourseLessonName(val string) {
-	s.CourseLessonName = val
-}
-
-// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
-// can read pagination uniformly.
-// Ref: #/components/schemas/CourseLessonMemberPage
-type CourseLessonMemberPage struct {
-	Items []CourseLessonMember `json:"items"`
-	// Total rows across all pages (before pagination).
-	Total int32 `json:"total"`
-	// 1-based page number this response represents.
-	Page int32 `json:"page"`
-	// Page size used for this response.
-	PerPage int32 `json:"perPage"`
-}
-
-// GetItems returns the value of Items.
-func (s *CourseLessonMemberPage) GetItems() []CourseLessonMember {
-	return s.Items
-}
-
-// GetTotal returns the value of Total.
-func (s *CourseLessonMemberPage) GetTotal() int32 {
-	return s.Total
-}
-
-// GetPage returns the value of Page.
-func (s *CourseLessonMemberPage) GetPage() int32 {
-	return s.Page
-}
-
-// GetPerPage returns the value of PerPage.
-func (s *CourseLessonMemberPage) GetPerPage() int32 {
-	return s.PerPage
-}
-
-// SetItems sets the value of Items.
-func (s *CourseLessonMemberPage) SetItems(val []CourseLessonMember) {
-	s.Items = val
-}
-
-// SetTotal sets the value of Total.
-func (s *CourseLessonMemberPage) SetTotal(val int32) {
-	s.Total = val
-}
-
-// SetPage sets the value of Page.
-func (s *CourseLessonMemberPage) SetPage(val int32) {
-	s.Page = val
-}
-
-// SetPerPage sets the value of PerPage.
-func (s *CourseLessonMemberPage) SetPerPage(val int32) {
-	s.PerPage = val
-}
-
-func (*CourseLessonMemberPage) adminListCourseLessonMembersRes() {}
-
 // An AI-generated lesson review record (legacy: `LanguageLessonReview`).
 // Ref: #/components/schemas/CourseLessonReview
 type CourseLessonReview struct {
@@ -3347,78 +3199,6 @@ func (s *CourseLessonReviewPage) SetPerPage(val int32) {
 
 func (*CourseLessonReviewPage) adminListCourseLessonReviewsRes() {}
 
-// A member's enrollment/progress in a course (legacy `LanguageMember`).
-// Ref: #/components/schemas/CourseMember
-type CourseMember struct {
-	ID       int32          `json:"id"`
-	UserId   int32          `json:"userId"`
-	CourseId int32          `json:"courseId"`
-	State    NilMemberState `json:"state"`
-	// Completion percentage (0–100).
-	Progress       int32     `json:"progress"`
-	NextLessonName NilString `json:"nextLessonName"`
-}
-
-// GetID returns the value of ID.
-func (s *CourseMember) GetID() int32 {
-	return s.ID
-}
-
-// GetUserId returns the value of UserId.
-func (s *CourseMember) GetUserId() int32 {
-	return s.UserId
-}
-
-// GetCourseId returns the value of CourseId.
-func (s *CourseMember) GetCourseId() int32 {
-	return s.CourseId
-}
-
-// GetState returns the value of State.
-func (s *CourseMember) GetState() NilMemberState {
-	return s.State
-}
-
-// GetProgress returns the value of Progress.
-func (s *CourseMember) GetProgress() int32 {
-	return s.Progress
-}
-
-// GetNextLessonName returns the value of NextLessonName.
-func (s *CourseMember) GetNextLessonName() NilString {
-	return s.NextLessonName
-}
-
-// SetID sets the value of ID.
-func (s *CourseMember) SetID(val int32) {
-	s.ID = val
-}
-
-// SetUserId sets the value of UserId.
-func (s *CourseMember) SetUserId(val int32) {
-	s.UserId = val
-}
-
-// SetCourseId sets the value of CourseId.
-func (s *CourseMember) SetCourseId(val int32) {
-	s.CourseId = val
-}
-
-// SetState sets the value of State.
-func (s *CourseMember) SetState(val NilMemberState) {
-	s.State = val
-}
-
-// SetProgress sets the value of Progress.
-func (s *CourseMember) SetProgress(val int32) {
-	s.Progress = val
-}
-
-// SetNextLessonName sets the value of NextLessonName.
-func (s *CourseMember) SetNextLessonName(val NilString) {
-	s.NextLessonName = val
-}
-
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
 // Ref: #/components/schemas/CoursePage
@@ -3475,32 +3255,32 @@ func (s *CoursePage) SetPerPage(val int32) {
 func (*CoursePage) adminListCoursesRes() {}
 
 // Publication/readiness state of a course.
-// Ref: #/components/schemas/CourseProgress
-type CourseProgress string
+// Ref: #/components/schemas/CourseReadiness
+type CourseReadiness string
 
 const (
-	CourseProgressCompleted     CourseProgress = "completed"
-	CourseProgressInDevelopment CourseProgress = "in_development"
-	CourseProgressDraft         CourseProgress = "draft"
+	CourseReadinessCompleted     CourseReadiness = "completed"
+	CourseReadinessInDevelopment CourseReadiness = "in_development"
+	CourseReadinessDraft         CourseReadiness = "draft"
 )
 
-// AllValues returns all CourseProgress values.
-func (CourseProgress) AllValues() []CourseProgress {
-	return []CourseProgress{
-		CourseProgressCompleted,
-		CourseProgressInDevelopment,
-		CourseProgressDraft,
+// AllValues returns all CourseReadiness values.
+func (CourseReadiness) AllValues() []CourseReadiness {
+	return []CourseReadiness{
+		CourseReadinessCompleted,
+		CourseReadinessInDevelopment,
+		CourseReadinessDraft,
 	}
 }
 
 // MarshalText implements encoding.TextMarshaler.
-func (s CourseProgress) MarshalText() ([]byte, error) {
+func (s CourseReadiness) MarshalText() ([]byte, error) {
 	switch s {
-	case CourseProgressCompleted:
+	case CourseReadinessCompleted:
 		return []byte(s), nil
-	case CourseProgressInDevelopment:
+	case CourseReadinessInDevelopment:
 		return []byte(s), nil
-	case CourseProgressDraft:
+	case CourseReadinessDraft:
 		return []byte(s), nil
 	default:
 		return nil, errors.Errorf("invalid value: %q", s)
@@ -3508,16 +3288,16 @@ func (s CourseProgress) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler.
-func (s *CourseProgress) UnmarshalText(data []byte) error {
-	switch CourseProgress(data) {
-	case CourseProgressCompleted:
-		*s = CourseProgressCompleted
+func (s *CourseReadiness) UnmarshalText(data []byte) error {
+	switch CourseReadiness(data) {
+	case CourseReadinessCompleted:
+		*s = CourseReadinessCompleted
 		return nil
-	case CourseProgressInDevelopment:
-		*s = CourseProgressInDevelopment
+	case CourseReadinessInDevelopment:
+		*s = CourseReadinessInDevelopment
 		return nil
-	case CourseProgressDraft:
-		*s = CourseProgressDraft
+	case CourseReadinessDraft:
+		*s = CourseReadinessDraft
 		return nil
 	default:
 		return errors.Errorf("invalid value: %q", data)
@@ -3581,8 +3361,8 @@ type CourseView struct {
 	Course      Course                 `json:"course"`
 	LandingPage NilCourseLandingPage   `json:"landingPage"`
 	Lessons     []CourseLessonListItem `json:"lessons"`
-	// The current user's membership, when signed in.
-	Member NilCourseMember `json:"member"`
+	// The current user's enrollment, when signed in.
+	Enrollment NilEnrollment `json:"enrollment"`
 }
 
 // GetCourse returns the value of Course.
@@ -3600,9 +3380,9 @@ func (s *CourseView) GetLessons() []CourseLessonListItem {
 	return s.Lessons
 }
 
-// GetMember returns the value of Member.
-func (s *CourseView) GetMember() NilCourseMember {
-	return s.Member
+// GetEnrollment returns the value of Enrollment.
+func (s *CourseView) GetEnrollment() NilEnrollment {
+	return s.Enrollment
 }
 
 // SetCourse sets the value of Course.
@@ -3620,9 +3400,9 @@ func (s *CourseView) SetLessons(val []CourseLessonListItem) {
 	s.Lessons = val
 }
 
-// SetMember sets the value of Member.
-func (s *CourseView) SetMember(val NilCourseMember) {
-	s.Member = val
+// SetEnrollment sets the value of Enrollment.
+func (s *CourseView) SetEnrollment(val NilEnrollment) {
+	s.Enrollment = val
 }
 
 func (*CourseView) getCourseRes() {}
@@ -3708,6 +3488,121 @@ func (s *EmailInput) GetEmail() string {
 // SetEmail sets the value of Email.
 func (s *EmailInput) SetEmail(val string) {
 	s.Email = val
+}
+
+// A learner's enrollment in a course (legacy `LanguageMember`, table `language_members`).
+// Ref: #/components/schemas/Enrollment
+type Enrollment struct {
+	ID       int32              `json:"id"`
+	UserId   int32              `json:"userId"`
+	CourseId int32              `json:"courseId"`
+	State    NilEnrollmentState `json:"state"`
+	// Completion percentage (0–100).
+	Progress       int32     `json:"progress"`
+	NextLessonName NilString `json:"nextLessonName"`
+}
+
+// GetID returns the value of ID.
+func (s *Enrollment) GetID() int32 {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *Enrollment) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetCourseId returns the value of CourseId.
+func (s *Enrollment) GetCourseId() int32 {
+	return s.CourseId
+}
+
+// GetState returns the value of State.
+func (s *Enrollment) GetState() NilEnrollmentState {
+	return s.State
+}
+
+// GetProgress returns the value of Progress.
+func (s *Enrollment) GetProgress() int32 {
+	return s.Progress
+}
+
+// GetNextLessonName returns the value of NextLessonName.
+func (s *Enrollment) GetNextLessonName() NilString {
+	return s.NextLessonName
+}
+
+// SetID sets the value of ID.
+func (s *Enrollment) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *Enrollment) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetCourseId sets the value of CourseId.
+func (s *Enrollment) SetCourseId(val int32) {
+	s.CourseId = val
+}
+
+// SetState sets the value of State.
+func (s *Enrollment) SetState(val NilEnrollmentState) {
+	s.State = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *Enrollment) SetProgress(val int32) {
+	s.Progress = val
+}
+
+// SetNextLessonName sets the value of NextLessonName.
+func (s *Enrollment) SetNextLessonName(val NilString) {
+	s.NextLessonName = val
+}
+
+// Enrollment and lesson-progress lifecycle (legacy `MemberState`).
+// Ref: #/components/schemas/EnrollmentState
+type EnrollmentState string
+
+const (
+	EnrollmentStateStarted  EnrollmentState = "started"
+	EnrollmentStateFinished EnrollmentState = "finished"
+)
+
+// AllValues returns all EnrollmentState values.
+func (EnrollmentState) AllValues() []EnrollmentState {
+	return []EnrollmentState{
+		EnrollmentStateStarted,
+		EnrollmentStateFinished,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s EnrollmentState) MarshalText() ([]byte, error) {
+	switch s {
+	case EnrollmentStateStarted:
+		return []byte(s), nil
+	case EnrollmentStateFinished:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *EnrollmentState) UnmarshalText(data []byte) error {
+	switch EnrollmentState(data) {
+	case EnrollmentStateStarted:
+		*s = EnrollmentStateStarted
+		return nil
+	case EnrollmentStateFinished:
+		*s = EnrollmentStateFinished
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Publication state shared by landing pages.
@@ -4314,6 +4209,155 @@ func (s *LessonDefinition) SetDescription(val string) {
 	s.Description = val
 }
 
+// A learner's progress through one lesson (legacy: `LanguageLessonMember`, table
+// `language_lesson_members`).
+// Ref: #/components/schemas/LessonProgress
+type LessonProgress struct {
+	ID               int32           `json:"id"`
+	UserId           int32           `json:"userId"`
+	State            EnrollmentState `json:"state"`
+	MessagesCount    NilInt32        `json:"messagesCount"`
+	CreatedAt        time.Time       `json:"createdAt"`
+	CourseSlug       string          `json:"courseSlug"`
+	CourseLessonSlug string          `json:"courseLessonSlug"`
+	CourseLessonName string          `json:"courseLessonName"`
+}
+
+// GetID returns the value of ID.
+func (s *LessonProgress) GetID() int32 {
+	return s.ID
+}
+
+// GetUserId returns the value of UserId.
+func (s *LessonProgress) GetUserId() int32 {
+	return s.UserId
+}
+
+// GetState returns the value of State.
+func (s *LessonProgress) GetState() EnrollmentState {
+	return s.State
+}
+
+// GetMessagesCount returns the value of MessagesCount.
+func (s *LessonProgress) GetMessagesCount() NilInt32 {
+	return s.MessagesCount
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *LessonProgress) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetCourseSlug returns the value of CourseSlug.
+func (s *LessonProgress) GetCourseSlug() string {
+	return s.CourseSlug
+}
+
+// GetCourseLessonSlug returns the value of CourseLessonSlug.
+func (s *LessonProgress) GetCourseLessonSlug() string {
+	return s.CourseLessonSlug
+}
+
+// GetCourseLessonName returns the value of CourseLessonName.
+func (s *LessonProgress) GetCourseLessonName() string {
+	return s.CourseLessonName
+}
+
+// SetID sets the value of ID.
+func (s *LessonProgress) SetID(val int32) {
+	s.ID = val
+}
+
+// SetUserId sets the value of UserId.
+func (s *LessonProgress) SetUserId(val int32) {
+	s.UserId = val
+}
+
+// SetState sets the value of State.
+func (s *LessonProgress) SetState(val EnrollmentState) {
+	s.State = val
+}
+
+// SetMessagesCount sets the value of MessagesCount.
+func (s *LessonProgress) SetMessagesCount(val NilInt32) {
+	s.MessagesCount = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *LessonProgress) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetCourseSlug sets the value of CourseSlug.
+func (s *LessonProgress) SetCourseSlug(val string) {
+	s.CourseSlug = val
+}
+
+// SetCourseLessonSlug sets the value of CourseLessonSlug.
+func (s *LessonProgress) SetCourseLessonSlug(val string) {
+	s.CourseLessonSlug = val
+}
+
+// SetCourseLessonName sets the value of CourseLessonName.
+func (s *LessonProgress) SetCourseLessonName(val string) {
+	s.CourseLessonName = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/LessonProgressPage
+type LessonProgressPage struct {
+	Items []LessonProgress `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *LessonProgressPage) GetItems() []LessonProgress {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *LessonProgressPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *LessonProgressPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *LessonProgressPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *LessonProgressPage) SetItems(val []LessonProgress) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *LessonProgressPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *LessonProgressPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *LessonProgressPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+func (*LessonProgressPage) adminListLessonProgressRes() {}
+
 type ListAssistantMessagesOKApplicationJSON []LessonAssistantMessage
 
 func (*ListAssistantMessagesOKApplicationJSON) listAssistantMessagesRes() {}
@@ -4413,66 +4457,23 @@ func (s *Locale) UnmarshalText(data []byte) error {
 	}
 }
 
-// Course-membership lifecycle (legacy `MemberState`).
-// Ref: #/components/schemas/MemberState
-type MemberState string
-
-const (
-	MemberStateStarted  MemberState = "started"
-	MemberStateFinished MemberState = "finished"
-)
-
-// AllValues returns all MemberState values.
-func (MemberState) AllValues() []MemberState {
-	return []MemberState{
-		MemberStateStarted,
-		MemberStateFinished,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s MemberState) MarshalText() ([]byte, error) {
-	switch s {
-	case MemberStateStarted:
-		return []byte(s), nil
-	case MemberStateFinished:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *MemberState) UnmarshalText(data []byte) error {
-	switch MemberState(data) {
-	case MemberStateStarted:
-		*s = MemberStateStarted
-		return nil
-	case MemberStateFinished:
-		*s = MemberStateFinished
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
 // The signed-in user's dashboard (legacy: `MyController#show`).
 // Ref: #/components/schemas/MyDashboard
 type MyDashboard struct {
-	StartedCourseMembers  []CourseMember `json:"startedCourseMembers"`
-	FinishedCourseMembers []CourseMember `json:"finishedCourseMembers"`
-	// Landing page (catalog item) keyed by course id, for each membership.
+	StartedEnrollments  []Enrollment `json:"startedEnrollments"`
+	FinishedEnrollments []Enrollment `json:"finishedEnrollments"`
+	// Landing page (catalog item) keyed by course id, for each enrollment.
 	LandingPagesByCourseId MyDashboardLandingPagesByCourseId `json:"landingPagesByCourseId"`
 }
 
-// GetStartedCourseMembers returns the value of StartedCourseMembers.
-func (s *MyDashboard) GetStartedCourseMembers() []CourseMember {
-	return s.StartedCourseMembers
+// GetStartedEnrollments returns the value of StartedEnrollments.
+func (s *MyDashboard) GetStartedEnrollments() []Enrollment {
+	return s.StartedEnrollments
 }
 
-// GetFinishedCourseMembers returns the value of FinishedCourseMembers.
-func (s *MyDashboard) GetFinishedCourseMembers() []CourseMember {
-	return s.FinishedCourseMembers
+// GetFinishedEnrollments returns the value of FinishedEnrollments.
+func (s *MyDashboard) GetFinishedEnrollments() []Enrollment {
+	return s.FinishedEnrollments
 }
 
 // GetLandingPagesByCourseId returns the value of LandingPagesByCourseId.
@@ -4480,14 +4481,14 @@ func (s *MyDashboard) GetLandingPagesByCourseId() MyDashboardLandingPagesByCours
 	return s.LandingPagesByCourseId
 }
 
-// SetStartedCourseMembers sets the value of StartedCourseMembers.
-func (s *MyDashboard) SetStartedCourseMembers(val []CourseMember) {
-	s.StartedCourseMembers = val
+// SetStartedEnrollments sets the value of StartedEnrollments.
+func (s *MyDashboard) SetStartedEnrollments(val []Enrollment) {
+	s.StartedEnrollments = val
 }
 
-// SetFinishedCourseMembers sets the value of FinishedCourseMembers.
-func (s *MyDashboard) SetFinishedCourseMembers(val []CourseMember) {
-	s.FinishedCourseMembers = val
+// SetFinishedEnrollments sets the value of FinishedEnrollments.
+func (s *MyDashboard) SetFinishedEnrollments(val []Enrollment) {
+	s.FinishedEnrollments = val
 }
 
 // SetLandingPagesByCourseId sets the value of LandingPagesByCourseId.
@@ -4497,7 +4498,7 @@ func (s *MyDashboard) SetLandingPagesByCourseId(val MyDashboardLandingPagesByCou
 
 func (*MyDashboard) getMyDashboardRes() {}
 
-// Landing page (catalog item) keyed by course id, for each membership.
+// Landing page (catalog item) keyed by course id, for each enrollment.
 type MyDashboardLandingPagesByCourseId map[string]CourseCatalogItem
 
 func (s *MyDashboardLandingPagesByCourseId) init() MyDashboardLandingPagesByCourseId {
@@ -4689,37 +4690,37 @@ func (o NilCourseLearnAs) Or(d CourseLearnAs) CourseLearnAs {
 	return d
 }
 
-// NewNilCourseMember returns new NilCourseMember with value set to v.
-func NewNilCourseMember(v CourseMember) NilCourseMember {
-	return NilCourseMember{
+// NewNilCourseReadiness returns new NilCourseReadiness with value set to v.
+func NewNilCourseReadiness(v CourseReadiness) NilCourseReadiness {
+	return NilCourseReadiness{
 		Value: v,
 	}
 }
 
-// NilCourseMember is nullable CourseMember.
-type NilCourseMember struct {
-	Value CourseMember
+// NilCourseReadiness is nullable CourseReadiness.
+type NilCourseReadiness struct {
+	Value CourseReadiness
 	Null  bool
 }
 
 // SetTo sets value to v.
-func (o *NilCourseMember) SetTo(v CourseMember) {
+func (o *NilCourseReadiness) SetTo(v CourseReadiness) {
 	o.Null = false
 	o.Value = v
 }
 
 // IsNull returns true if value is Null.
-func (o NilCourseMember) IsNull() bool { return o.Null }
+func (o NilCourseReadiness) IsNull() bool { return o.Null }
 
 // SetToNull sets value to null.
-func (o *NilCourseMember) SetToNull() {
+func (o *NilCourseReadiness) SetToNull() {
 	o.Null = true
-	var v CourseMember
+	var v CourseReadiness
 	o.Value = v
 }
 
 // Get returns value and boolean that denotes whether value was set.
-func (o NilCourseMember) Get() (v CourseMember, ok bool) {
+func (o NilCourseReadiness) Get() (v CourseReadiness, ok bool) {
 	if o.Null {
 		return v, false
 	}
@@ -4727,52 +4728,7 @@ func (o NilCourseMember) Get() (v CourseMember, ok bool) {
 }
 
 // Or returns value if set, or given parameter if does not.
-func (o NilCourseMember) Or(d CourseMember) CourseMember {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewNilCourseProgress returns new NilCourseProgress with value set to v.
-func NewNilCourseProgress(v CourseProgress) NilCourseProgress {
-	return NilCourseProgress{
-		Value: v,
-	}
-}
-
-// NilCourseProgress is nullable CourseProgress.
-type NilCourseProgress struct {
-	Value CourseProgress
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilCourseProgress) SetTo(v CourseProgress) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilCourseProgress) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilCourseProgress) SetToNull() {
-	o.Null = true
-	var v CourseProgress
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilCourseProgress) Get() (v CourseProgress, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilCourseProgress) Or(d CourseProgress) CourseProgress {
+func (o NilCourseReadiness) Or(d CourseReadiness) CourseReadiness {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -4863,6 +4819,96 @@ func (o NilDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilEnrollment returns new NilEnrollment with value set to v.
+func NewNilEnrollment(v Enrollment) NilEnrollment {
+	return NilEnrollment{
+		Value: v,
+	}
+}
+
+// NilEnrollment is nullable Enrollment.
+type NilEnrollment struct {
+	Value Enrollment
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilEnrollment) SetTo(v Enrollment) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilEnrollment) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilEnrollment) SetToNull() {
+	o.Null = true
+	var v Enrollment
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilEnrollment) Get() (v Enrollment, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilEnrollment) Or(d Enrollment) Enrollment {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewNilEnrollmentState returns new NilEnrollmentState with value set to v.
+func NewNilEnrollmentState(v EnrollmentState) NilEnrollmentState {
+	return NilEnrollmentState{
+		Value: v,
+	}
+}
+
+// NilEnrollmentState is nullable EnrollmentState.
+type NilEnrollmentState struct {
+	Value EnrollmentState
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilEnrollmentState) SetTo(v EnrollmentState) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilEnrollmentState) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilEnrollmentState) SetToNull() {
+	o.Null = true
+	var v EnrollmentState
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilEnrollmentState) Get() (v EnrollmentState, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilEnrollmentState) Or(d EnrollmentState) EnrollmentState {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -4998,51 +5044,6 @@ func (o NilLandingPageState) Get() (v LandingPageState, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilLandingPageState) Or(d LandingPageState) LandingPageState {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewNilMemberState returns new NilMemberState with value set to v.
-func NewNilMemberState(v MemberState) NilMemberState {
-	return NilMemberState{
-		Value: v,
-	}
-}
-
-// NilMemberState is nullable MemberState.
-type NilMemberState struct {
-	Value MemberState
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilMemberState) SetTo(v MemberState) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilMemberState) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilMemberState) SetToNull() {
-	o.Null = true
-	var v MemberState
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilMemberState) Get() (v MemberState, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilMemberState) Or(d MemberState) MemberState {
 	if v, ok := o.Get(); ok {
 		return v
 	}

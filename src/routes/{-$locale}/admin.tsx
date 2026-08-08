@@ -42,7 +42,7 @@ const NAV = [
   {
     to: "/{-$locale}/admin/language_lesson_members",
     match: "/admin/language_lesson_members",
-    key: "lessonMembers",
+    key: "lessonProgress",
   },
   {
     to: "/{-$locale}/admin/blog_posts",
