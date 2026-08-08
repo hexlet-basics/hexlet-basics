@@ -200,6 +200,23 @@ Change the source, run the generator, commit the output. Never hand-edit or
   Features, Bug Fixes, Performance Improvements, Reverts, Miscellaneous
   (`chore`), Build System (`build`).
 
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on `hexlet-basics/hexlet-basics`, driven by the `gh`
+CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles, each label string equal to its name. See
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See
+`docs/agents/domain.md`.
+
 ## High-Value Agent Workflow
 
 - Confirm you're working at the root (Go) vs `legacy/` (Rails) and follow the
