@@ -90,7 +90,7 @@ is not optional: this state is later converted into database rows and domain
 events, so an unsigned cookie would let a visitor mint fabricated completions.
 The cookie is not readable by the client — the server derives progress from it
 and returns it in the response body, which is what keeps the client free of any
-guest/member branch. It is written by the server through a `Set-Cookie` on the
+guest/learner branch. It is written by the server through a `Set-Cookie` on the
 check response; the contract already models response cookies for the session
 endpoints. Lifetime is one year, and if the cookie approaches its size limit
 the least recently touched Courses are evicted.
@@ -143,11 +143,12 @@ Further consequences:
 - Completion percentage is computed by counting finished Current Lessons, not
   from the denormalized counter on the Enrollment. That counter includes
   Lessons dropped by later Versions, which is why the legacy serializer had to
-  clamp it at 100%. The public member count on Courses stays denormalized; it is
-  a marketing figure on cached catalogue pages, not a progress figure.
+  clamp it at 100%. The public enrollment count on Courses stays denormalized
+  (`membersCount`, after its column); it is a marketing figure on cached
+  catalogue pages, not a progress figure.
 - Course completion is re-evaluated when a new Course Version is promoted,
   driven by the course-loading module. The legacy nightly sweep over started
-  memberships is not ported: it existed because completion was only ever
+  enrollments is not ported: it existed because completion was only ever
   evaluated during a check, and there is now an explicit event for the moment a
   Course's Lesson set changes.
 - Sign-in and sign-up redirect an already-authenticated visitor to the

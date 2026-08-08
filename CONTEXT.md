@@ -14,9 +14,11 @@ sign-ups.
 **Member**:
 Reserved for **Staff Member**, an employee carrying roles and permissions
 (`StaffMember`, table `staff_members`). It used to do two more jobs, which are
-now **Enrollment** and **Lesson Progress**. The tables still say `member`
-(`language_members`, `language_lesson_members`) because storage names were kept
-across the rename; nothing else should.
+now **Enrollment** and **Lesson Progress**. Storage keeps the old word, and
+contract fields mirroring a column keep it with them: the tables
+`language_members` and `language_lesson_members`, the column `members_count`
+and the `membersCount` field reading it. Anywhere the name is ours to choose,
+say Enrollment or Lesson Progress.
 
 **Enrollment**:
 A learner's record of where they are in one Course, and never created twice for
