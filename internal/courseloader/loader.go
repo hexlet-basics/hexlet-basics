@@ -17,9 +17,9 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/coursemodule"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/ent/languagelesson"
-	"hexletbasics/ent/languagemodule"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/store"
 )
@@ -172,7 +172,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 			return err
 		}
 
-		mv, err := tx.LanguageModuleVersion.Create().
+		mv, err := tx.CourseModuleVersion.Create().
 			SetLanguageID(languageID).
 			SetLanguageVersionID(versionID).
 			SetModuleID(moduleID).
@@ -183,7 +183,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 		}
 
 		for _, info := range m.Infos {
-			if _, err := tx.LanguageModuleVersionInfo.Create().
+			if _, err := tx.CourseModuleTranslation.Create().
 				SetLanguageID(languageID).
 				SetLanguageVersionID(versionID).
 				SetVersionID(mv.ID).
@@ -201,7 +201,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 				return err
 			}
 
-			lv, err := tx.LanguageLessonVersion.Create().
+			lv, err := tx.CourseLessonVersion.Create().
 				SetLanguageID(languageID).
 				SetLanguageVersionID(versionID).
 				SetLessonID(lessonID).
@@ -249,7 +249,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 // info.Theory is used as-is here. tips/definitions are serialized as YAML arrays
 // for Rails `serialize type: Array` compatibility.
 func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
-	create := tx.LanguageLessonVersionInfo.Create().
+	create := tx.CourseLessonTranslation.Create().
 		SetLanguageID(languageID).
 		SetLanguageVersionID(versionID).
 		SetLanguageLessonID(lessonID).
@@ -287,10 +287,10 @@ func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageI
 // slug). Identity is kept across rebuilds so downstream references survive; the
 // per-build ordering lives on the module version, not here.
 func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug string) (int, error) {
-	id, err := tx.LanguageModule.Create().
+	id, err := tx.CourseModule.Create().
 		SetLanguageID(languageID).
 		SetSlug(slug).
-		OnConflictColumns(languagemodule.FieldLanguageID, languagemodule.FieldSlug).
+		OnConflictColumns(coursemodule.FieldLanguageID, coursemodule.FieldSlug).
 		UpdateNewValues().
 		ID(ctx)
 	if err != nil {
@@ -304,13 +304,13 @@ func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug stri
 // modules across rebuilds. Learner progress FKs this stable id, so it must NOT be
 // recreated.
 func upsertLesson(ctx context.Context, tx *ent.Client, languageID, moduleID int, slug string) (int, error) {
-	id, err := tx.LanguageLesson.Create().
+	id, err := tx.CourseLesson.Create().
 		SetLanguageID(languageID).
 		SetModuleID(moduleID).
 		SetSlug(slug).
 		SetState(lessonStateCreated).
-		OnConflictColumns(languagelesson.FieldLanguageID, languagelesson.FieldSlug).
-		Update(func(update *ent.LanguageLessonUpsert) {
+		OnConflictColumns(courselesson.FieldLanguageID, courselesson.FieldSlug).
+		Update(func(update *ent.CourseLessonUpsert) {
 			update.SetModuleID(moduleID)
 		}).
 		ID(ctx)

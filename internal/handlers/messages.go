@@ -5,7 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/aimessage"
-	"hexletbasics/ent/languagelessonversioninfo"
+	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/internal/api"
 )
 
@@ -20,11 +20,11 @@ func (s *Server) AdminListMessages(ctx context.Context, params api.AdminListMess
 		func() *ent.AiMessageQuery {
 			return s.db.AiMessage.Query().
 				WithChat(func(q *ent.AiChatQuery) {
-					q.WithMember(func(q *ent.LanguageLessonMemberQuery) {
-						q.WithCourse().WithLesson(func(q *ent.LanguageLessonQuery) {
-							q.WithInfos(func(q *ent.LanguageLessonVersionInfoQuery) {
-								q.Where(languagelessonversioninfo.LocaleEQ(defaultAdminLocale)).
-									Order(ent.Asc(languagelessonversioninfo.FieldID))
+					q.WithMember(func(q *ent.LessonProgressQuery) {
+						q.WithCourse().WithLesson(func(q *ent.CourseLessonQuery) {
+							q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
+								q.Where(courselessontranslation.LocaleEQ(defaultAdminLocale)).
+									Order(ent.Asc(courselessontranslation.FieldID))
 							})
 						})
 					})

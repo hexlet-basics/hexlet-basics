@@ -207,7 +207,7 @@ func HasMember() predicate.AiChat {
 }
 
 // HasMemberWith applies the HasEdge predicate on the "member" edge with a given conditions (other predicates).
-func HasMemberWith(preds ...predicate.LanguageLessonMember) predicate.AiChat {
+func HasMemberWith(preds ...predicate.LessonProgress) predicate.AiChat {
 	return predicate.AiChat(func(s *sql.Selector) {
 		step := newMemberStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

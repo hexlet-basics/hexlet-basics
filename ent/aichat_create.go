@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/aichat"
-	"hexletbasics/ent/languagelessonmember"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/user"
 	"time"
 
@@ -64,14 +64,14 @@ func (_c *AiChatCreate) SetLanguageLessonMemberID(v int) *AiChatCreate {
 	return _c
 }
 
-// SetMemberID sets the "member" edge to the LanguageLessonMember entity by ID.
+// SetMemberID sets the "member" edge to the LessonProgress entity by ID.
 func (_c *AiChatCreate) SetMemberID(id int) *AiChatCreate {
 	_c.mutation.SetMemberID(id)
 	return _c
 }
 
-// SetMember sets the "member" edge to the LanguageLessonMember entity.
-func (_c *AiChatCreate) SetMember(v *LanguageLessonMember) *AiChatCreate {
+// SetMember sets the "member" edge to the LessonProgress entity.
+func (_c *AiChatCreate) SetMember(v *LessonProgress) *AiChatCreate {
 	return _c.SetMemberID(v.ID)
 }
 
@@ -188,7 +188,7 @@ func (_c *AiChatCreate) createSpec() (*AiChat, *sqlgraph.CreateSpec) {
 			Columns: []string{aichat.MemberColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

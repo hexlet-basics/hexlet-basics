@@ -14,22 +14,22 @@ import (
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
-	"hexletbasics/ent/blogpostrelatedlanguageitem"
+	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/courselessonreview"
+	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courselessonversion"
+	"hexletbasics/ent/coursemodule"
+	"hexletbasics/ent/coursemoduletranslation"
+	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
-	"hexletbasics/ent/languagelesson"
-	"hexletbasics/ent/languagelessonmember"
-	"hexletbasics/ent/languagelessonreview"
-	"hexletbasics/ent/languagelessonversion"
-	"hexletbasics/ent/languagelessonversioninfo"
-	"hexletbasics/ent/languagemodule"
-	"hexletbasics/ent/languagemoduleversion"
-	"hexletbasics/ent/languagemoduleversioninfo"
 	"hexletbasics/ent/lead"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
@@ -101,35 +101,35 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			activestorageattachment.Table:     activestorageattachment.ValidColumn,
-			activestorageblob.Table:           activestorageblob.ValidColumn,
-			aichat.Table:                      aichat.ValidColumn,
-			aimessage.Table:                   aimessage.ValidColumn,
-			attachment.Table:                  attachment.ValidColumn,
-			banner.Table:                      banner.ValidColumn,
-			blogpost.Table:                    blogpost.ValidColumn,
-			blogpostlike.Table:                blogpostlike.ValidColumn,
-			blogpostrelatedlanguageitem.Table: blogpostrelatedlanguageitem.ValidColumn,
-			categoryqnaitem.Table:             categoryqnaitem.ValidColumn,
-			course.Table:                      course.ValidColumn,
-			coursecategory.Table:              coursecategory.ValidColumn,
-			courseversion.Table:               courseversion.ValidColumn,
-			landingpage.Table:                 landingpage.ValidColumn,
-			landingpageqnaitem.Table:          landingpageqnaitem.ValidColumn,
-			languagelesson.Table:              languagelesson.ValidColumn,
-			languagelessonmember.Table:        languagelessonmember.ValidColumn,
-			languagelessonreview.Table:        languagelessonreview.ValidColumn,
-			languagelessonversion.Table:       languagelessonversion.ValidColumn,
-			languagelessonversioninfo.Table:   languagelessonversioninfo.ValidColumn,
-			languagemodule.Table:              languagemodule.ValidColumn,
-			languagemoduleversion.Table:       languagemoduleversion.ValidColumn,
-			languagemoduleversioninfo.Table:   languagemoduleversioninfo.ValidColumn,
-			lead.Table:                        lead.ValidColumn,
-			review.Table:                      review.ValidColumn,
-			staffmember.Table:                 staffmember.ValidColumn,
-			staffrole.Table:                   staffrole.ValidColumn,
-			staffrolepermission.Table:         staffrolepermission.ValidColumn,
-			user.Table:                        user.ValidColumn,
+			activestorageattachment.Table:   activestorageattachment.ValidColumn,
+			activestorageblob.Table:         activestorageblob.ValidColumn,
+			aichat.Table:                    aichat.ValidColumn,
+			aimessage.Table:                 aimessage.ValidColumn,
+			attachment.Table:                attachment.ValidColumn,
+			banner.Table:                    banner.ValidColumn,
+			blogpost.Table:                  blogpost.ValidColumn,
+			blogpostlike.Table:              blogpostlike.ValidColumn,
+			blogpostrelatedcourseitem.Table: blogpostrelatedcourseitem.ValidColumn,
+			categoryqnaitem.Table:           categoryqnaitem.ValidColumn,
+			course.Table:                    course.ValidColumn,
+			coursecategory.Table:            coursecategory.ValidColumn,
+			courselesson.Table:              courselesson.ValidColumn,
+			courselessonreview.Table:        courselessonreview.ValidColumn,
+			courselessontranslation.Table:   courselessontranslation.ValidColumn,
+			courselessonversion.Table:       courselessonversion.ValidColumn,
+			coursemodule.Table:              coursemodule.ValidColumn,
+			coursemoduletranslation.Table:   coursemoduletranslation.ValidColumn,
+			coursemoduleversion.Table:       coursemoduleversion.ValidColumn,
+			courseversion.Table:             courseversion.ValidColumn,
+			landingpage.Table:               landingpage.ValidColumn,
+			landingpageqnaitem.Table:        landingpageqnaitem.ValidColumn,
+			lead.Table:                      lead.ValidColumn,
+			lessonprogress.Table:            lessonprogress.ValidColumn,
+			review.Table:                    review.ValidColumn,
+			staffmember.Table:               staffmember.ValidColumn,
+			staffrole.Table:                 staffrole.ValidColumn,
+			staffrolepermission.Table:       staffrolepermission.ValidColumn,
+			user.Table:                      user.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

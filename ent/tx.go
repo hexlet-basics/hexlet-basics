@@ -28,38 +28,38 @@ type Tx struct {
 	BlogPost *BlogPostClient
 	// BlogPostLike is the client for interacting with the BlogPostLike builders.
 	BlogPostLike *BlogPostLikeClient
-	// BlogPostRelatedLanguageItem is the client for interacting with the BlogPostRelatedLanguageItem builders.
-	BlogPostRelatedLanguageItem *BlogPostRelatedLanguageItemClient
+	// BlogPostRelatedCourseItem is the client for interacting with the BlogPostRelatedCourseItem builders.
+	BlogPostRelatedCourseItem *BlogPostRelatedCourseItemClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseLesson is the client for interacting with the CourseLesson builders.
+	CourseLesson *CourseLessonClient
+	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
+	CourseLessonReview *CourseLessonReviewClient
+	// CourseLessonTranslation is the client for interacting with the CourseLessonTranslation builders.
+	CourseLessonTranslation *CourseLessonTranslationClient
+	// CourseLessonVersion is the client for interacting with the CourseLessonVersion builders.
+	CourseLessonVersion *CourseLessonVersionClient
+	// CourseModule is the client for interacting with the CourseModule builders.
+	CourseModule *CourseModuleClient
+	// CourseModuleTranslation is the client for interacting with the CourseModuleTranslation builders.
+	CourseModuleTranslation *CourseModuleTranslationClient
+	// CourseModuleVersion is the client for interacting with the CourseModuleVersion builders.
+	CourseModuleVersion *CourseModuleVersionClient
 	// CourseVersion is the client for interacting with the CourseVersion builders.
 	CourseVersion *CourseVersionClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
 	LandingPageQnaItem *LandingPageQnaItemClient
-	// LanguageLesson is the client for interacting with the LanguageLesson builders.
-	LanguageLesson *LanguageLessonClient
-	// LanguageLessonMember is the client for interacting with the LanguageLessonMember builders.
-	LanguageLessonMember *LanguageLessonMemberClient
-	// LanguageLessonReview is the client for interacting with the LanguageLessonReview builders.
-	LanguageLessonReview *LanguageLessonReviewClient
-	// LanguageLessonVersion is the client for interacting with the LanguageLessonVersion builders.
-	LanguageLessonVersion *LanguageLessonVersionClient
-	// LanguageLessonVersionInfo is the client for interacting with the LanguageLessonVersionInfo builders.
-	LanguageLessonVersionInfo *LanguageLessonVersionInfoClient
-	// LanguageModule is the client for interacting with the LanguageModule builders.
-	LanguageModule *LanguageModuleClient
-	// LanguageModuleVersion is the client for interacting with the LanguageModuleVersion builders.
-	LanguageModuleVersion *LanguageModuleVersionClient
-	// LanguageModuleVersionInfo is the client for interacting with the LanguageModuleVersionInfo builders.
-	LanguageModuleVersionInfo *LanguageModuleVersionInfoClient
 	// Lead is the client for interacting with the Lead builders.
 	Lead *LeadClient
+	// LessonProgress is the client for interacting with the LessonProgress builders.
+	LessonProgress *LessonProgressClient
 	// Review is the client for interacting with the Review builders.
 	Review *ReviewClient
 	// StaffMember is the client for interacting with the StaffMember builders.
@@ -209,22 +209,22 @@ func (tx *Tx) init() {
 	tx.Banner = NewBannerClient(tx.config)
 	tx.BlogPost = NewBlogPostClient(tx.config)
 	tx.BlogPostLike = NewBlogPostLikeClient(tx.config)
-	tx.BlogPostRelatedLanguageItem = NewBlogPostRelatedLanguageItemClient(tx.config)
+	tx.BlogPostRelatedCourseItem = NewBlogPostRelatedCourseItemClient(tx.config)
 	tx.CategoryQnaItem = NewCategoryQnaItemClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
+	tx.CourseLesson = NewCourseLessonClient(tx.config)
+	tx.CourseLessonReview = NewCourseLessonReviewClient(tx.config)
+	tx.CourseLessonTranslation = NewCourseLessonTranslationClient(tx.config)
+	tx.CourseLessonVersion = NewCourseLessonVersionClient(tx.config)
+	tx.CourseModule = NewCourseModuleClient(tx.config)
+	tx.CourseModuleTranslation = NewCourseModuleTranslationClient(tx.config)
+	tx.CourseModuleVersion = NewCourseModuleVersionClient(tx.config)
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
-	tx.LanguageLesson = NewLanguageLessonClient(tx.config)
-	tx.LanguageLessonMember = NewLanguageLessonMemberClient(tx.config)
-	tx.LanguageLessonReview = NewLanguageLessonReviewClient(tx.config)
-	tx.LanguageLessonVersion = NewLanguageLessonVersionClient(tx.config)
-	tx.LanguageLessonVersionInfo = NewLanguageLessonVersionInfoClient(tx.config)
-	tx.LanguageModule = NewLanguageModuleClient(tx.config)
-	tx.LanguageModuleVersion = NewLanguageModuleVersionClient(tx.config)
-	tx.LanguageModuleVersionInfo = NewLanguageModuleVersionInfoClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
+	tx.LessonProgress = NewLessonProgressClient(tx.config)
 	tx.Review = NewReviewClient(tx.config)
 	tx.StaffMember = NewStaffMemberClient(tx.config)
 	tx.StaffRole = NewStaffRoleClient(tx.config)

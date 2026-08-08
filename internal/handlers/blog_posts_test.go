@@ -11,7 +11,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
-	"hexletbasics/ent/blogpostrelatedlanguageitem"
+	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -193,8 +193,8 @@ func TestAdminDeleteBlogPost(t *testing.T) {
 	require.NoError(t, err)
 	assert.Zero(t, likes, "likes should be deleted with the post")
 
-	items, err := h.DB.BlogPostRelatedLanguageItem.Query().
-		Where(blogpostrelatedlanguageitem.BlogPostIDEQ(6001)).Count(ctx)
+	items, err := h.DB.BlogPostRelatedCourseItem.Query().
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(6001)).Count(ctx)
 	require.NoError(t, err)
 	assert.Zero(t, items, "related-course items should be deleted with the post")
 }
@@ -220,9 +220,9 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, int32(2), post.RelatedCourseItemsCount)
 
-	items, err := h.DB.BlogPostRelatedLanguageItem.Query().
-		Where(blogpostrelatedlanguageitem.BlogPostIDEQ(6001)).
-		Order(ent.Asc(blogpostrelatedlanguageitem.FieldOrder)).
+	items, err := h.DB.BlogPostRelatedCourseItem.Query().
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(6001)).
+		Order(ent.Asc(blogpostrelatedcourseitem.FieldOrder)).
 		All(ctx)
 	require.NoError(t, err)
 	require.Len(t, items, 2)

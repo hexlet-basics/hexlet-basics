@@ -5,10 +5,10 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselessonreview"
+	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/ent/languagelessonmember"
-	"hexletbasics/ent/languagelessonreview"
-	"hexletbasics/ent/languagelessonversioninfo"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/localization"
 )
@@ -34,12 +34,12 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 
 	// One base builder reused for count and page so both carry the same filter;
 	// a bare Count would over-report (it would ignore locale/version scoping).
-	base := func() *ent.LanguageLessonVersionInfoQuery {
-		return s.db.LanguageLessonVersionInfo.Query().Where(
-			languagelessonversioninfo.LocaleEQ(defaultAdminLocale),
+	base := func() *ent.CourseLessonTranslationQuery {
+		return s.db.CourseLessonTranslation.Query().Where(
+			courselessontranslation.LocaleEQ(defaultAdminLocale),
 			// Legacy `.current`: the info's course version must be selected as
 			// current by a completed course.
-			languagelessonversioninfo.HasCourseVersionWith(
+			courselessontranslation.HasCourseVersionWith(
 				courseversion.HasCurrentCoursesWith(course.ProgressEQ("completed")),
 			),
 		)
@@ -54,7 +54,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 	// this row reports as its `id`, so we order on the info's field explicitly.
 	infos, err := base().
 		WithLesson().
-		Order(ent.Desc(languagelessonversioninfo.FieldID)).
+		Order(ent.Desc(courselessontranslation.FieldID)).
 		Offset(page.Offset()).
 		Limit(page.Limit()).
 		All(ctx)
@@ -76,20 +76,20 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 func (s *Server) AdminListCourseLessonMembers(ctx context.Context, params api.AdminListCourseLessonMembersParams) (api.AdminListCourseLessonMembersRes, error) {
 	page := newPagination(params.Page, params.PerPage)
 
-	total, err := s.db.LanguageLessonMember.Query().Count(ctx)
+	total, err := s.db.LessonProgress.Query().Count(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	members, err := s.db.LanguageLessonMember.Query().
+	members, err := s.db.LessonProgress.Query().
 		WithCourse().
-		WithLesson(func(q *ent.LanguageLessonQuery) {
-			q.WithInfos(func(q *ent.LanguageLessonVersionInfoQuery) {
-				q.Where(languagelessonversioninfo.LocaleEQ(defaultAdminLocale)).
-					Order(ent.Asc(languagelessonversioninfo.FieldID))
+		WithLesson(func(q *ent.CourseLessonQuery) {
+			q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
+				q.Where(courselessontranslation.LocaleEQ(defaultAdminLocale)).
+					Order(ent.Asc(courselessontranslation.FieldID))
 			})
 		}).
-		Order(ent.Desc(languagelessonmember.FieldID)).
+		Order(ent.Desc(lessonprogress.FieldID)).
 		Offset(page.Offset()).
 		Limit(page.Limit()).
 		All(ctx)
@@ -114,10 +114,10 @@ func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.Ad
 
 	// Same filter on count and page: an empty-summary review (legacy skips these,
 	// they mark lessons with no student questions) must not inflate the total.
-	base := func() *ent.LanguageLessonReviewQuery {
-		return s.db.LanguageLessonReview.Query().Where(
-			languagelessonreview.LocaleEQ(defaultAdminLocale),
-			languagelessonreview.SummaryNEQ(""),
+	base := func() *ent.CourseLessonReviewQuery {
+		return s.db.CourseLessonReview.Query().Where(
+			courselessonreview.LocaleEQ(defaultAdminLocale),
+			courselessonreview.SummaryNEQ(""),
 		)
 	}
 
@@ -129,7 +129,7 @@ func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.Ad
 	reviews, err := base().
 		WithCourse().
 		WithLesson().
-		Order(ent.Desc(languagelessonreview.FieldID)).
+		Order(ent.Desc(courselessonreview.FieldID)).
 		Offset(page.Offset()).
 		Limit(page.Limit()).
 		All(ctx)
@@ -149,7 +149,7 @@ func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.Ad
 // lesson — all locales AND all versions, so historical summaries refresh too
 // (legacy `lesson.infos.find_each { ReviewLessonJob.perform_later }`).
 func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminReviewCourseLessonParams) (api.AdminReviewCourseLessonRes, error) {
-	lesson, err := s.db.LanguageLesson.Get(ctx, int(params.ID))
+	lesson, err := s.db.CourseLesson.Get(ctx, int(params.ID))
 	if ent.IsNotFound(err) {
 		return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.LessonNotFound)}, nil
 	}
@@ -157,9 +157,9 @@ func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminRe
 		return nil, err
 	}
 
-	infoIDs, err := s.db.LanguageLessonVersionInfo.Query().
-		Where(languagelessonversioninfo.LanguageLessonID(lesson.ID)).
-		Order(ent.Asc(languagelessonversioninfo.FieldID)).
+	infoIDs, err := s.db.CourseLessonTranslation.Query().
+		Where(courselessontranslation.LanguageLessonID(lesson.ID)).
+		Order(ent.Asc(courselessontranslation.FieldID)).
 		IDs(ctx)
 	if err != nil {
 		return nil, err

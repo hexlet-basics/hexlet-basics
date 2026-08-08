@@ -176,7 +176,7 @@ func (c *ConverterImpl) ToCourseLandingPages(source []*ent.LandingPage) []api.Co
 	}
 	return apiCourseLandingPageList
 }
-func (c *ConverterImpl) ToCourseLessonListItem(source *ent.LanguageLessonVersionInfo) api.CourseLessonListItem {
+func (c *ConverterImpl) ToCourseLessonListItem(source *ent.CourseLessonTranslation) api.CourseLessonListItem {
 	var apiCourseLessonListItem api.CourseLessonListItem
 	if source != nil {
 		apiCourseLessonListItem.ID = Int32FromInt((*source).LanguageLessonID)
@@ -190,7 +190,7 @@ func (c *ConverterImpl) ToCourseLessonListItem(source *ent.LanguageLessonVersion
 	}
 	return apiCourseLessonListItem
 }
-func (c *ConverterImpl) ToCourseLessonListItems(source []*ent.LanguageLessonVersionInfo) []api.CourseLessonListItem {
+func (c *ConverterImpl) ToCourseLessonListItems(source []*ent.CourseLessonTranslation) []api.CourseLessonListItem {
 	var apiCourseLessonListItemList []api.CourseLessonListItem
 	if source != nil {
 		apiCourseLessonListItemList = make([]api.CourseLessonListItem, len(source))
@@ -200,7 +200,7 @@ func (c *ConverterImpl) ToCourseLessonListItems(source []*ent.LanguageLessonVers
 	}
 	return apiCourseLessonListItemList
 }
-func (c *ConverterImpl) ToCourseLessonMember(source *ent.LanguageLessonMember) api.CourseLessonMember {
+func (c *ConverterImpl) ToCourseLessonMember(source *ent.LessonProgress) api.CourseLessonMember {
 	var apiCourseLessonMember api.CourseLessonMember
 	if source != nil {
 		apiCourseLessonMember.ID = Int32FromInt((*source).ID)
@@ -222,7 +222,7 @@ func (c *ConverterImpl) ToCourseLessonMember(source *ent.LanguageLessonMember) a
 	}
 	return apiCourseLessonMember
 }
-func (c *ConverterImpl) ToCourseLessonMembers(source []*ent.LanguageLessonMember) []api.CourseLessonMember {
+func (c *ConverterImpl) ToCourseLessonMembers(source []*ent.LessonProgress) []api.CourseLessonMember {
 	var apiCourseLessonMemberList []api.CourseLessonMember
 	if source != nil {
 		apiCourseLessonMemberList = make([]api.CourseLessonMember, len(source))
@@ -232,7 +232,7 @@ func (c *ConverterImpl) ToCourseLessonMembers(source []*ent.LanguageLessonMember
 	}
 	return apiCourseLessonMemberList
 }
-func (c *ConverterImpl) ToCourseLessonReview(source *ent.LanguageLessonReview) api.CourseLessonReview {
+func (c *ConverterImpl) ToCourseLessonReview(source *ent.CourseLessonReview) api.CourseLessonReview {
 	var apiCourseLessonReview api.CourseLessonReview
 	if source != nil {
 		apiCourseLessonReview.ID = Int32FromInt((*source).ID)
@@ -261,7 +261,7 @@ func (c *ConverterImpl) ToCourseLessonReview(source *ent.LanguageLessonReview) a
 	}
 	return apiCourseLessonReview
 }
-func (c *ConverterImpl) ToCourseLessonReviews(source []*ent.LanguageLessonReview) []api.CourseLessonReview {
+func (c *ConverterImpl) ToCourseLessonReviews(source []*ent.CourseLessonReview) []api.CourseLessonReview {
 	var apiCourseLessonReviewList []api.CourseLessonReview
 	if source != nil {
 		apiCourseLessonReviewList = make([]api.CourseLessonReview, len(source))

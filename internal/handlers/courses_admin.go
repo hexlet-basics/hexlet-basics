@@ -5,7 +5,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/languagelessonversioninfo"
+	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/localization"
@@ -99,9 +99,9 @@ func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCo
 
 	var infoIDs []int
 	if c.CurrentVersionID != nil {
-		infoIDs, err = s.db.LanguageLessonVersionInfo.Query().
-			Where(languagelessonversioninfo.LanguageVersionID(*c.CurrentVersionID)).
-			Order(ent.Asc(languagelessonversioninfo.FieldID)).
+		infoIDs, err = s.db.CourseLessonTranslation.Query().
+			Where(courselessontranslation.LanguageVersionID(*c.CurrentVersionID)).
+			Order(ent.Asc(courselessontranslation.FieldID)).
 			IDs(ctx)
 		if err != nil {
 			return nil, err

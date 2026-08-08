@@ -30,8 +30,8 @@ type BlogPost func(*sql.Selector)
 // BlogPostLike is the predicate function for blogpostlike builders.
 type BlogPostLike func(*sql.Selector)
 
-// BlogPostRelatedLanguageItem is the predicate function for blogpostrelatedlanguageitem builders.
-type BlogPostRelatedLanguageItem func(*sql.Selector)
+// BlogPostRelatedCourseItem is the predicate function for blogpostrelatedcourseitem builders.
+type BlogPostRelatedCourseItem func(*sql.Selector)
 
 // CategoryQnaItem is the predicate function for categoryqnaitem builders.
 type CategoryQnaItem func(*sql.Selector)
@@ -42,6 +42,27 @@ type Course func(*sql.Selector)
 // CourseCategory is the predicate function for coursecategory builders.
 type CourseCategory func(*sql.Selector)
 
+// CourseLesson is the predicate function for courselesson builders.
+type CourseLesson func(*sql.Selector)
+
+// CourseLessonReview is the predicate function for courselessonreview builders.
+type CourseLessonReview func(*sql.Selector)
+
+// CourseLessonTranslation is the predicate function for courselessontranslation builders.
+type CourseLessonTranslation func(*sql.Selector)
+
+// CourseLessonVersion is the predicate function for courselessonversion builders.
+type CourseLessonVersion func(*sql.Selector)
+
+// CourseModule is the predicate function for coursemodule builders.
+type CourseModule func(*sql.Selector)
+
+// CourseModuleTranslation is the predicate function for coursemoduletranslation builders.
+type CourseModuleTranslation func(*sql.Selector)
+
+// CourseModuleVersion is the predicate function for coursemoduleversion builders.
+type CourseModuleVersion func(*sql.Selector)
+
 // CourseVersion is the predicate function for courseversion builders.
 type CourseVersion func(*sql.Selector)
 
@@ -51,32 +72,11 @@ type LandingPage func(*sql.Selector)
 // LandingPageQnaItem is the predicate function for landingpageqnaitem builders.
 type LandingPageQnaItem func(*sql.Selector)
 
-// LanguageLesson is the predicate function for languagelesson builders.
-type LanguageLesson func(*sql.Selector)
-
-// LanguageLessonMember is the predicate function for languagelessonmember builders.
-type LanguageLessonMember func(*sql.Selector)
-
-// LanguageLessonReview is the predicate function for languagelessonreview builders.
-type LanguageLessonReview func(*sql.Selector)
-
-// LanguageLessonVersion is the predicate function for languagelessonversion builders.
-type LanguageLessonVersion func(*sql.Selector)
-
-// LanguageLessonVersionInfo is the predicate function for languagelessonversioninfo builders.
-type LanguageLessonVersionInfo func(*sql.Selector)
-
-// LanguageModule is the predicate function for languagemodule builders.
-type LanguageModule func(*sql.Selector)
-
-// LanguageModuleVersion is the predicate function for languagemoduleversion builders.
-type LanguageModuleVersion func(*sql.Selector)
-
-// LanguageModuleVersionInfo is the predicate function for languagemoduleversioninfo builders.
-type LanguageModuleVersionInfo func(*sql.Selector)
-
 // Lead is the predicate function for lead builders.
 type Lead func(*sql.Selector)
+
+// LessonProgress is the predicate function for lessonprogress builders.
+type LessonProgress func(*sql.Selector)
 
 // Review is the predicate function for review builders.
 type Review func(*sql.Selector)

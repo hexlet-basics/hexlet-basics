@@ -165,9 +165,9 @@ type Converter interface {
 	// through WithLesson.
 	// goverter:map LanguageLessonID ID
 	// goverter:map Edges.Lesson.Slug Slug
-	ToCourseLessonListItem(source *ent.LanguageLessonVersionInfo) api.CourseLessonListItem
+	ToCourseLessonListItem(source *ent.CourseLessonTranslation) api.CourseLessonListItem
 
-	ToCourseLessonListItems(source []*ent.LanguageLessonVersionInfo) []api.CourseLessonListItem
+	ToCourseLessonListItems(source []*ent.CourseLessonTranslation) []api.CourseLessonListItem
 
 	// Member projections require WithCourse and WithLesson; the lesson query
 	// additionally eager-loads locale-filtered infos in ascending id order.
@@ -175,9 +175,9 @@ type Converter interface {
 	// goverter:map Edges.Course.Slug CourseSlug
 	// goverter:map Edges.Lesson.Slug CourseLessonSlug
 	// goverter:map . CourseLessonName | courseLessonMemberName
-	ToCourseLessonMember(source *ent.LanguageLessonMember) api.CourseLessonMember
+	ToCourseLessonMember(source *ent.LessonProgress) api.CourseLessonMember
 
-	ToCourseLessonMembers(source []*ent.LanguageLessonMember) []api.CourseLessonMember
+	ToCourseLessonMembers(source []*ent.LessonProgress) []api.CourseLessonMember
 
 	// Assistant messages are the admin read model over `ai_messages` (legacy
 	// AiMessageResource). Course/lesson identity travels through
@@ -199,9 +199,9 @@ type Converter interface {
 	// goverter:map Edges.Lesson.Slug Slug
 	// goverter:map Edges.Lesson.NaturalOrder LessonNaturalOrder
 	// goverter:map Edges.Course.Slug CourseSlug
-	ToCourseLessonReview(source *ent.LanguageLessonReview) api.CourseLessonReview
+	ToCourseLessonReview(source *ent.CourseLessonReview) api.CourseLessonReview
 
-	ToCourseLessonReviews(source []*ent.LanguageLessonReview) []api.CourseLessonReview
+	ToCourseLessonReviews(source []*ent.CourseLessonReview) []api.CourseLessonReview
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar
@@ -228,7 +228,7 @@ func MemberStateFromPtr(v *string) api.MemberState {
 // courseLessonMemberName reads the first eager-loaded localized info. The
 // handler orders the edge by id so "first" is deterministic and matches the
 // legacy Lesson#localed_info convention.
-func courseLessonMemberName(source *ent.LanguageLessonMember) string {
+func courseLessonMemberName(source *ent.LessonProgress) string {
 	if source == nil || source.Edges.Lesson == nil || len(source.Edges.Lesson.Edges.Infos) == 0 {
 		return ""
 	}

@@ -11,7 +11,7 @@ import (
 	"hexletbasics/ent/activestorageattachment"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
-	"hexletbasics/ent/blogpostrelatedlanguageitem"
+	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 )
@@ -129,8 +129,8 @@ func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDelete
 		return nil, err
 	}
 
-	if _, err := s.db.BlogPostRelatedLanguageItem.Delete().
-		Where(blogpostrelatedlanguageitem.BlogPostID(id)).Exec(ctx); err != nil {
+	if _, err := s.db.BlogPostRelatedCourseItem.Delete().
+		Where(blogpostrelatedcourseitem.BlogPostID(id)).Exec(ctx); err != nil {
 		return nil, err
 	}
 	if _, err := s.db.BlogPostLike.Delete().
@@ -156,20 +156,20 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 		return nil, err
 	}
 
-	if _, err := s.db.BlogPostRelatedLanguageItem.Delete().
-		Where(blogpostrelatedlanguageitem.BlogPostID(id)).Exec(ctx); err != nil {
+	if _, err := s.db.BlogPostRelatedCourseItem.Delete().
+		Where(blogpostrelatedcourseitem.BlogPostID(id)).Exec(ctx); err != nil {
 		return nil, err
 	}
 
 	courseIDs := lo.Uniq(req.CourseIds)
-	builders := make([]*ent.BlogPostRelatedLanguageItemCreate, len(courseIDs))
+	builders := make([]*ent.BlogPostRelatedCourseItemCreate, len(courseIDs))
 	for i, courseID := range courseIDs {
-		builders[i] = s.db.BlogPostRelatedLanguageItem.Create().
+		builders[i] = s.db.BlogPostRelatedCourseItem.Create().
 			SetBlogPostID(id).
 			SetLanguageID(int(courseID)).
 			SetOrder(i)
 	}
-	if _, err := s.db.BlogPostRelatedLanguageItem.CreateBulk(builders...).Save(ctx); err != nil {
+	if _, err := s.db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
 		return nil, err
 	}
 
@@ -262,11 +262,11 @@ func (s *Server) blogCoverKeys(ctx context.Context, ids []int) (map[int]string, 
 // tie-breaker for legacy rows without it). Posts without items map to an empty
 // slice via the make below, so the API field is always an array, never null.
 func (s *Server) blogRelatedCourseIDs(ctx context.Context, ids []int) (map[int][]int32, error) {
-	rows, err := s.db.BlogPostRelatedLanguageItem.Query().
-		Where(blogpostrelatedlanguageitem.BlogPostIDIn(ids...)).
+	rows, err := s.db.BlogPostRelatedCourseItem.Query().
+		Where(blogpostrelatedcourseitem.BlogPostIDIn(ids...)).
 		Order(
-			ent.Asc(blogpostrelatedlanguageitem.FieldOrder),
-			ent.Asc(blogpostrelatedlanguageitem.FieldID),
+			ent.Asc(blogpostrelatedcourseitem.FieldOrder),
+			ent.Asc(blogpostrelatedcourseitem.FieldID),
 		).
 		All(ctx)
 	if err != nil {

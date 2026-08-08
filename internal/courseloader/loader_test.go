@@ -11,11 +11,11 @@ import (
 	"gocloud.dev/blob/memblob"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/languagelesson"
-	"hexletbasics/ent/languagelessonversion"
-	"hexletbasics/ent/languagelessonversioninfo"
-	"hexletbasics/ent/languagemodule"
-	"hexletbasics/ent/languagemoduleversion"
+	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courselessonversion"
+	"hexletbasics/ent/coursemodule"
+	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
 	"hexletbasics/internal/store"
@@ -81,22 +81,22 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	assert.Equal(t, 1, course.LessonsCount)
 
 	// One module "basics" with 3 locale infos on this version.
-	mods := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).AllX(ctx)
+	mods := db.CourseModule.Query().Where(coursemodule.LanguageID(course.ID)).AllX(ctx)
 	require.Len(t, mods, 1)
 	assert.Equal(t, "basics", derefStr(mods[0].Slug))
-	mvs := db.LanguageModuleVersion.Query().Where(languagemoduleversion.LanguageVersionID(version.ID)).AllX(ctx)
+	mvs := db.CourseModuleVersion.Query().Where(coursemoduleversion.LanguageVersionID(version.ID)).AllX(ctx)
 	require.Len(t, mvs, 1)
 	assert.Equal(t, 10, *mvs[0].Order)
 
 	// One lesson version, first in the course, with prepared/original code.
-	lvs := db.LanguageLessonVersion.Query().Where(languagelessonversion.LanguageVersionID(version.ID)).AllX(ctx)
+	lvs := db.CourseLessonVersion.Query().Where(courselessonversion.LanguageVersionID(version.ID)).AllX(ctx)
 	require.Len(t, lvs, 1)
 	assert.Equal(t, 1, *lvs[0].NaturalOrder)
 	assert.Equal(t, "/exercises-loader-test-lang/modules/10-basics/10-hello-world", derefStr(lvs[0].PathToCode))
 	assert.Contains(t, derefStr(lvs[0].OriginalCode), "Hello, World!")
 
 	// Three lesson infos (en/es/ru); theory images rewritten to /storage URLs.
-	infos := db.LanguageLessonVersionInfo.Query().Where(languagelessonversioninfo.LanguageVersionID(version.ID)).AllX(ctx)
+	infos := db.CourseLessonTranslation.Query().Where(courselessontranslation.LanguageVersionID(version.ID)).AllX(ctx)
 	require.Len(t, infos, 3)
 	en := lessonInfoByLocale(t, infos, "en")
 	assert.Equal(t, "Hello, World!", derefStr(en.Name))
@@ -123,7 +123,7 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 	assert.Equal(t, "built", derefStr(version.State)) // unchanged
 	assert.Equal(t, "Success", derefStr(version.Result))
 	// No module rows were written for this course.
-	n := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).CountX(ctx)
+	n := db.CourseModule.Query().Where(coursemodule.LanguageID(course.ID)).CountX(ctx)
 	assert.Equal(t, 0, n)
 }
 
@@ -137,18 +137,18 @@ func TestLoaderUpsertsStableLessonAcrossRebuilds(t *testing.T) {
 	// First build.
 	v1 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, v1.ID))
-	module1 := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).OnlyX(ctx)
-	lesson1 := db.LanguageLesson.Query().Where(languagelesson.LanguageID(course.ID)).OnlyX(ctx)
+	module1 := db.CourseModule.Query().Where(coursemodule.LanguageID(course.ID)).OnlyX(ctx)
+	lesson1 := db.CourseLesson.Query().Where(courselesson.LanguageID(course.ID)).OnlyX(ctx)
 
 	// Second build reuses the SAME lesson identity (learner progress FKs it).
 	v2 := db.CourseVersion.Create().SetLanguageID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, v2.ID))
 
-	modules := db.LanguageModule.Query().Where(languagemodule.LanguageID(course.ID)).AllX(ctx)
+	modules := db.CourseModule.Query().Where(coursemodule.LanguageID(course.ID)).AllX(ctx)
 	require.Len(t, modules, 1)
 	assert.Equal(t, module1.ID, modules[0].ID)
 
-	lessons := db.LanguageLesson.Query().Where(languagelesson.LanguageID(course.ID)).AllX(ctx)
+	lessons := db.CourseLesson.Query().Where(courselesson.LanguageID(course.ID)).AllX(ctx)
 	require.Len(t, lessons, 1)
 	assert.Equal(t, lesson1.ID, lessons[0].ID)
 
@@ -249,7 +249,7 @@ func derefStr(s *string) string {
 	return *s
 }
 
-func lessonInfoByLocale(t *testing.T, infos []*ent.LanguageLessonVersionInfo, locale string) *ent.LanguageLessonVersionInfo {
+func lessonInfoByLocale(t *testing.T, infos []*ent.CourseLessonTranslation, locale string) *ent.CourseLessonTranslation {
 	t.Helper()
 	for _, in := range infos {
 		if in.Locale != nil && *in.Locale == locale {

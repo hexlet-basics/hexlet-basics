@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"hexletbasics/ent/aichat"
-	"hexletbasics/ent/languagelessonmember"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
 	"math"
@@ -24,7 +24,7 @@ type AiChatQuery struct {
 	order      []aichat.OrderOption
 	inters     []Interceptor
 	predicates []predicate.AiChat
-	withMember *LanguageLessonMemberQuery
+	withMember *LessonProgressQuery
 	withUser   *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -63,8 +63,8 @@ func (_q *AiChatQuery) Order(o ...aichat.OrderOption) *AiChatQuery {
 }
 
 // QueryMember chains the current query on the "member" edge.
-func (_q *AiChatQuery) QueryMember() *LanguageLessonMemberQuery {
-	query := (&LanguageLessonMemberClient{config: _q.config}).Query()
+func (_q *AiChatQuery) QueryMember() *LessonProgressQuery {
+	query := (&LessonProgressClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -75,7 +75,7 @@ func (_q *AiChatQuery) QueryMember() *LanguageLessonMemberQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(aichat.Table, aichat.FieldID, selector),
-			sqlgraph.To(languagelessonmember.Table, languagelessonmember.FieldID),
+			sqlgraph.To(lessonprogress.Table, lessonprogress.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, aichat.MemberTable, aichat.MemberColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
@@ -308,8 +308,8 @@ func (_q *AiChatQuery) Clone() *AiChatQuery {
 
 // WithMember tells the query-builder to eager-load the nodes that are connected to
 // the "member" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *AiChatQuery) WithMember(opts ...func(*LanguageLessonMemberQuery)) *AiChatQuery {
-	query := (&LanguageLessonMemberClient{config: _q.config}).Query()
+func (_q *AiChatQuery) WithMember(opts ...func(*LessonProgressQuery)) *AiChatQuery {
+	query := (&LessonProgressClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -431,7 +431,7 @@ func (_q *AiChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AiCha
 	}
 	if query := _q.withMember; query != nil {
 		if err := _q.loadMember(ctx, query, nodes, nil,
-			func(n *AiChat, e *LanguageLessonMember) { n.Edges.Member = e }); err != nil {
+			func(n *AiChat, e *LessonProgress) { n.Edges.Member = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -444,7 +444,7 @@ func (_q *AiChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AiCha
 	return nodes, nil
 }
 
-func (_q *AiChatQuery) loadMember(ctx context.Context, query *LanguageLessonMemberQuery, nodes []*AiChat, init func(*AiChat), assign func(*AiChat, *LanguageLessonMember)) error {
+func (_q *AiChatQuery) loadMember(ctx context.Context, query *LessonProgressQuery, nodes []*AiChat, init func(*AiChat), assign func(*AiChat, *LessonProgress)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AiChat)
 	for i := range nodes {
@@ -457,7 +457,7 @@ func (_q *AiChatQuery) loadMember(ctx context.Context, query *LanguageLessonMemb
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(languagelessonmember.IDIn(ids...))
+	query.Where(lessonprogress.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err

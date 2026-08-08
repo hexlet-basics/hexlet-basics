@@ -28,7 +28,7 @@ func (AiChat) Edges() []ent.Edge {
 	return []ent.Edge{
 		// belongs-to edges own their NOT NULL FK columns; the member carries the
 		// course/lesson identity the admin read models enrich through.
-		edge.To("member", LanguageLessonMember.Type).
+		edge.To("member", LessonProgress.Type).
 			Field("language_lesson_member_id").
 			Unique().
 			Required(),

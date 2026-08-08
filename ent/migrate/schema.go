@@ -263,6 +263,178 @@ var (
 		Columns:    LanguageCategoriesColumns,
 		PrimaryKey: []*schema.Column{LanguageCategoriesColumns[0]},
 	}
+	// LanguageLessonsColumns holds the columns for the "language_lessons" table.
+	LanguageLessonsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "slug", Type: field.TypeString, Nullable: true},
+		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt, Nullable: true},
+		{Name: "module_id", Type: field.TypeInt, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+	}
+	// LanguageLessonsTable holds the schema information for the "language_lessons" table.
+	LanguageLessonsTable = &schema.Table{
+		Name:       "language_lessons",
+		Columns:    LanguageLessonsColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "courselesson_language_id_slug",
+				Unique:  true,
+				Columns: []*schema.Column{LanguageLessonsColumns[5], LanguageLessonsColumns[3]},
+			},
+		},
+	}
+	// LanguageLessonReviewsColumns holds the columns for the "language_lesson_reviews" table.
+	LanguageLessonReviewsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "locale", Type: field.TypeString},
+		{Name: "summary", Type: field.TypeString},
+		{Name: "language_lesson_version_id", Type: field.TypeInt},
+		{Name: "language_lesson_version_info_id", Type: field.TypeInt},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_lesson_id", Type: field.TypeInt},
+	}
+	// LanguageLessonReviewsTable holds the schema information for the "language_lesson_reviews" table.
+	LanguageLessonReviewsTable = &schema.Table{
+		Name:       "language_lesson_reviews",
+		Columns:    LanguageLessonReviewsColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonReviewsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_lesson_reviews_languages_course",
+				Columns:    []*schema.Column{LanguageLessonReviewsColumns[7]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_reviews_language_lessons_lesson",
+				Columns:    []*schema.Column{LanguageLessonReviewsColumns[8]},
+				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// LanguageLessonVersionInfosColumns holds the columns for the "language_lesson_version_infos" table.
+	LanguageLessonVersionInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "theory", Type: field.TypeString, Nullable: true},
+		{Name: "instructions", Type: field.TypeString, Nullable: true},
+		{Name: "tips", Type: field.TypeString, Nullable: true},
+		{Name: "definitions", Type: field.TypeString, Nullable: true},
+		{Name: "version_id", Type: field.TypeInt},
+		{Name: "language_lesson_id", Type: field.TypeInt},
+		{Name: "language_version_id", Type: field.TypeInt},
+	}
+	// LanguageLessonVersionInfosTable holds the schema information for the "language_lesson_version_infos" table.
+	LanguageLessonVersionInfosTable = &schema.Table{
+		Name:       "language_lesson_version_infos",
+		Columns:    LanguageLessonVersionInfosColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonVersionInfosColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_lesson_version_infos_language_lessons_lesson",
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[12]},
+				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_version_infos_language_versions_course_version",
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[13]},
+				RefColumns: []*schema.Column{LanguageVersionsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// LanguageLessonVersionsColumns holds the columns for the "language_lesson_versions" table.
+	LanguageLessonVersionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
+		{Name: "order", Type: field.TypeInt, Nullable: true},
+		{Name: "original_code", Type: field.TypeString, Nullable: true},
+		{Name: "prepared_code", Type: field.TypeString, Nullable: true},
+		{Name: "test_code", Type: field.TypeString, Nullable: true},
+		{Name: "path_to_code", Type: field.TypeString, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_version_id", Type: field.TypeInt},
+		{Name: "lesson_id", Type: field.TypeInt},
+		{Name: "module_version_id", Type: field.TypeInt},
+	}
+	// LanguageLessonVersionsTable holds the schema information for the "language_lesson_versions" table.
+	LanguageLessonVersionsTable = &schema.Table{
+		Name:       "language_lesson_versions",
+		Columns:    LanguageLessonVersionsColumns,
+		PrimaryKey: []*schema.Column{LanguageLessonVersionsColumns[0]},
+	}
+	// LanguageModulesColumns holds the columns for the "language_modules" table.
+	LanguageModulesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "slug", Type: field.TypeString, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt, Nullable: true},
+		{Name: "order", Type: field.TypeInt, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+	}
+	// LanguageModulesTable holds the schema information for the "language_modules" table.
+	LanguageModulesTable = &schema.Table{
+		Name:       "language_modules",
+		Columns:    LanguageModulesColumns,
+		PrimaryKey: []*schema.Column{LanguageModulesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "coursemodule_language_id_slug",
+				Unique:  true,
+				Columns: []*schema.Column{LanguageModulesColumns[4], LanguageModulesColumns[3]},
+			},
+		},
+	}
+	// LanguageModuleVersionInfosColumns holds the columns for the "language_module_version_infos" table.
+	LanguageModuleVersionInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_version_id", Type: field.TypeInt},
+		{Name: "version_id", Type: field.TypeInt},
+	}
+	// LanguageModuleVersionInfosTable holds the schema information for the "language_module_version_infos" table.
+	LanguageModuleVersionInfosTable = &schema.Table{
+		Name:       "language_module_version_infos",
+		Columns:    LanguageModuleVersionInfosColumns,
+		PrimaryKey: []*schema.Column{LanguageModuleVersionInfosColumns[0]},
+	}
+	// LanguageModuleVersionsColumns holds the columns for the "language_module_versions" table.
+	LanguageModuleVersionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "order", Type: field.TypeInt, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_version_id", Type: field.TypeInt},
+		{Name: "module_id", Type: field.TypeInt},
+	}
+	// LanguageModuleVersionsTable holds the schema information for the "language_module_versions" table.
+	LanguageModuleVersionsTable = &schema.Table{
+		Name:       "language_module_versions",
+		Columns:    LanguageModuleVersionsColumns,
+		PrimaryKey: []*schema.Column{LanguageModuleVersionsColumns[0]},
+	}
 	// LanguageVersionsColumns holds the columns for the "language_versions" table.
 	LanguageVersionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -340,29 +512,23 @@ var (
 		Columns:    LanguageLandingPageQnaItemsColumns,
 		PrimaryKey: []*schema.Column{LanguageLandingPageQnaItemsColumns[0]},
 	}
-	// LanguageLessonsColumns holds the columns for the "language_lessons" table.
-	LanguageLessonsColumns = []*schema.Column{
+	// LeadsColumns holds the columns for the "leads" table.
+	LeadsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "email", Type: field.TypeString, Nullable: true},
+		{Name: "phone", Type: field.TypeString, Nullable: true},
+		{Name: "whatsapp", Type: field.TypeString, Nullable: true},
+		{Name: "telegram", Type: field.TypeString, Nullable: true},
+		{Name: "survey_answers_data", Type: field.TypeString, Nullable: true},
+		{Name: "courses_data", Type: field.TypeString, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "slug", Type: field.TypeString, Nullable: true},
-		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt, Nullable: true},
-		{Name: "module_id", Type: field.TypeInt, Nullable: true},
-		{Name: "state", Type: field.TypeString, Nullable: true},
 	}
-	// LanguageLessonsTable holds the schema information for the "language_lessons" table.
-	LanguageLessonsTable = &schema.Table{
-		Name:       "language_lessons",
-		Columns:    LanguageLessonsColumns,
-		PrimaryKey: []*schema.Column{LanguageLessonsColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "languagelesson_language_id_slug",
-				Unique:  true,
-				Columns: []*schema.Column{LanguageLessonsColumns[5], LanguageLessonsColumns[3]},
-			},
-		},
+	// LeadsTable holds the schema information for the "leads" table.
+	LeadsTable = &schema.Table{
+		Name:       "leads",
+		Columns:    LeadsColumns,
+		PrimaryKey: []*schema.Column{LeadsColumns[0]},
 	}
 	// LanguageLessonMembersColumns holds the columns for the "language_lesson_members" table.
 	LanguageLessonMembersColumns = []*schema.Column{
@@ -393,172 +559,6 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 		},
-	}
-	// LanguageLessonReviewsColumns holds the columns for the "language_lesson_reviews" table.
-	LanguageLessonReviewsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "locale", Type: field.TypeString},
-		{Name: "summary", Type: field.TypeString},
-		{Name: "language_lesson_version_id", Type: field.TypeInt},
-		{Name: "language_lesson_version_info_id", Type: field.TypeInt},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "language_lesson_id", Type: field.TypeInt},
-	}
-	// LanguageLessonReviewsTable holds the schema information for the "language_lesson_reviews" table.
-	LanguageLessonReviewsTable = &schema.Table{
-		Name:       "language_lesson_reviews",
-		Columns:    LanguageLessonReviewsColumns,
-		PrimaryKey: []*schema.Column{LanguageLessonReviewsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "language_lesson_reviews_languages_course",
-				Columns:    []*schema.Column{LanguageLessonReviewsColumns[7]},
-				RefColumns: []*schema.Column{LanguagesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "language_lesson_reviews_language_lessons_lesson",
-				Columns:    []*schema.Column{LanguageLessonReviewsColumns[8]},
-				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// LanguageLessonVersionsColumns holds the columns for the "language_lesson_versions" table.
-	LanguageLessonVersionsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "natural_order", Type: field.TypeInt, Nullable: true},
-		{Name: "order", Type: field.TypeInt, Nullable: true},
-		{Name: "original_code", Type: field.TypeString, Nullable: true},
-		{Name: "prepared_code", Type: field.TypeString, Nullable: true},
-		{Name: "test_code", Type: field.TypeString, Nullable: true},
-		{Name: "path_to_code", Type: field.TypeString, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "language_version_id", Type: field.TypeInt},
-		{Name: "lesson_id", Type: field.TypeInt},
-		{Name: "module_version_id", Type: field.TypeInt},
-	}
-	// LanguageLessonVersionsTable holds the schema information for the "language_lesson_versions" table.
-	LanguageLessonVersionsTable = &schema.Table{
-		Name:       "language_lesson_versions",
-		Columns:    LanguageLessonVersionsColumns,
-		PrimaryKey: []*schema.Column{LanguageLessonVersionsColumns[0]},
-	}
-	// LanguageLessonVersionInfosColumns holds the columns for the "language_lesson_version_infos" table.
-	LanguageLessonVersionInfosColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "description", Type: field.TypeString, Nullable: true},
-		{Name: "locale", Type: field.TypeString, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "theory", Type: field.TypeString, Nullable: true},
-		{Name: "instructions", Type: field.TypeString, Nullable: true},
-		{Name: "tips", Type: field.TypeString, Nullable: true},
-		{Name: "definitions", Type: field.TypeString, Nullable: true},
-		{Name: "version_id", Type: field.TypeInt},
-		{Name: "language_lesson_id", Type: field.TypeInt},
-		{Name: "language_version_id", Type: field.TypeInt},
-	}
-	// LanguageLessonVersionInfosTable holds the schema information for the "language_lesson_version_infos" table.
-	LanguageLessonVersionInfosTable = &schema.Table{
-		Name:       "language_lesson_version_infos",
-		Columns:    LanguageLessonVersionInfosColumns,
-		PrimaryKey: []*schema.Column{LanguageLessonVersionInfosColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "language_lesson_version_infos_language_lessons_lesson",
-				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[12]},
-				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "language_lesson_version_infos_language_versions_course_version",
-				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[13]},
-				RefColumns: []*schema.Column{LanguageVersionsColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// LanguageModulesColumns holds the columns for the "language_modules" table.
-	LanguageModulesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "slug", Type: field.TypeString, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt, Nullable: true},
-		{Name: "order", Type: field.TypeInt, Nullable: true},
-		{Name: "state", Type: field.TypeString, Nullable: true},
-	}
-	// LanguageModulesTable holds the schema information for the "language_modules" table.
-	LanguageModulesTable = &schema.Table{
-		Name:       "language_modules",
-		Columns:    LanguageModulesColumns,
-		PrimaryKey: []*schema.Column{LanguageModulesColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "languagemodule_language_id_slug",
-				Unique:  true,
-				Columns: []*schema.Column{LanguageModulesColumns[4], LanguageModulesColumns[3]},
-			},
-		},
-	}
-	// LanguageModuleVersionsColumns holds the columns for the "language_module_versions" table.
-	LanguageModuleVersionsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "order", Type: field.TypeInt, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "language_version_id", Type: field.TypeInt},
-		{Name: "module_id", Type: field.TypeInt},
-	}
-	// LanguageModuleVersionsTable holds the schema information for the "language_module_versions" table.
-	LanguageModuleVersionsTable = &schema.Table{
-		Name:       "language_module_versions",
-		Columns:    LanguageModuleVersionsColumns,
-		PrimaryKey: []*schema.Column{LanguageModuleVersionsColumns[0]},
-	}
-	// LanguageModuleVersionInfosColumns holds the columns for the "language_module_version_infos" table.
-	LanguageModuleVersionInfosColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "description", Type: field.TypeString, Nullable: true},
-		{Name: "locale", Type: field.TypeString, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt},
-		{Name: "language_version_id", Type: field.TypeInt},
-		{Name: "version_id", Type: field.TypeInt},
-	}
-	// LanguageModuleVersionInfosTable holds the schema information for the "language_module_version_infos" table.
-	LanguageModuleVersionInfosTable = &schema.Table{
-		Name:       "language_module_version_infos",
-		Columns:    LanguageModuleVersionInfosColumns,
-		PrimaryKey: []*schema.Column{LanguageModuleVersionInfosColumns[0]},
-	}
-	// LeadsColumns holds the columns for the "leads" table.
-	LeadsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeInt},
-		{Name: "email", Type: field.TypeString, Nullable: true},
-		{Name: "phone", Type: field.TypeString, Nullable: true},
-		{Name: "whatsapp", Type: field.TypeString, Nullable: true},
-		{Name: "telegram", Type: field.TypeString, Nullable: true},
-		{Name: "survey_answers_data", Type: field.TypeString, Nullable: true},
-		{Name: "courses_data", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-	}
-	// LeadsTable holds the schema information for the "leads" table.
-	LeadsTable = &schema.Table{
-		Name:       "leads",
-		Columns:    LeadsColumns,
-		PrimaryKey: []*schema.Column{LeadsColumns[0]},
 	}
 	// ReviewsColumns holds the columns for the "reviews" table.
 	ReviewsColumns = []*schema.Column{
@@ -695,18 +695,18 @@ var (
 		LanguageCategoryQnaItemsTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
+		LanguageLessonsTable,
+		LanguageLessonReviewsTable,
+		LanguageLessonVersionInfosTable,
+		LanguageLessonVersionsTable,
+		LanguageModulesTable,
+		LanguageModuleVersionInfosTable,
+		LanguageModuleVersionsTable,
 		LanguageVersionsTable,
 		LanguageLandingPagesTable,
 		LanguageLandingPageQnaItemsTable,
-		LanguageLessonsTable,
-		LanguageLessonMembersTable,
-		LanguageLessonReviewsTable,
-		LanguageLessonVersionsTable,
-		LanguageLessonVersionInfosTable,
-		LanguageModulesTable,
-		LanguageModuleVersionsTable,
-		LanguageModuleVersionInfosTable,
 		LeadsTable,
+		LanguageLessonMembersTable,
 		ReviewsTable,
 		StaffMembersTable,
 		StaffMemberRolesTable,
@@ -729,6 +729,9 @@ func init() {
 	BlogPostsTable.ForeignKeys[0].RefTable = UsersTable
 	BlogPostRelatedLanguageItemsTable.ForeignKeys[0].RefTable = BlogPostsTable
 	BlogPostRelatedLanguageItemsTable.ForeignKeys[1].RefTable = LanguagesTable
+	BlogPostRelatedLanguageItemsTable.Annotation = &entsql.Annotation{
+		Table: "blog_post_related_language_items",
+	}
 	LanguageCategoryQnaItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_category_qna_items",
 	}
@@ -738,6 +741,31 @@ func init() {
 	}
 	LanguageCategoriesTable.Annotation = &entsql.Annotation{
 		Table: "language_categories",
+	}
+	LanguageLessonsTable.Annotation = &entsql.Annotation{
+		Table: "language_lessons",
+	}
+	LanguageLessonReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
+	LanguageLessonReviewsTable.ForeignKeys[1].RefTable = LanguageLessonsTable
+	LanguageLessonReviewsTable.Annotation = &entsql.Annotation{
+		Table: "language_lesson_reviews",
+	}
+	LanguageLessonVersionInfosTable.ForeignKeys[0].RefTable = LanguageLessonsTable
+	LanguageLessonVersionInfosTable.ForeignKeys[1].RefTable = LanguageVersionsTable
+	LanguageLessonVersionInfosTable.Annotation = &entsql.Annotation{
+		Table: "language_lesson_version_infos",
+	}
+	LanguageLessonVersionsTable.Annotation = &entsql.Annotation{
+		Table: "language_lesson_versions",
+	}
+	LanguageModulesTable.Annotation = &entsql.Annotation{
+		Table: "language_modules",
+	}
+	LanguageModuleVersionInfosTable.Annotation = &entsql.Annotation{
+		Table: "language_module_version_infos",
+	}
+	LanguageModuleVersionsTable.Annotation = &entsql.Annotation{
+		Table: "language_module_versions",
 	}
 	LanguageVersionsTable.Annotation = &entsql.Annotation{
 		Table: "language_versions",
@@ -751,10 +779,9 @@ func init() {
 	}
 	LanguageLessonMembersTable.ForeignKeys[0].RefTable = LanguagesTable
 	LanguageLessonMembersTable.ForeignKeys[1].RefTable = LanguageLessonsTable
-	LanguageLessonReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
-	LanguageLessonReviewsTable.ForeignKeys[1].RefTable = LanguageLessonsTable
-	LanguageLessonVersionInfosTable.ForeignKeys[0].RefTable = LanguageLessonsTable
-	LanguageLessonVersionInfosTable.ForeignKeys[1].RefTable = LanguageVersionsTable
+	LanguageLessonMembersTable.Annotation = &entsql.Annotation{
+		Table: "language_lesson_members",
+	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
 	StaffMembersTable.ForeignKeys[0].RefTable = UsersTable

@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/aichat"
-	"hexletbasics/ent/languagelessonmember"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/user"
 	"time"
@@ -64,14 +64,14 @@ func (_u *AiChatUpdate) SetNillableLanguageLessonMemberID(v *int) *AiChatUpdate 
 	return _u
 }
 
-// SetMemberID sets the "member" edge to the LanguageLessonMember entity by ID.
+// SetMemberID sets the "member" edge to the LessonProgress entity by ID.
 func (_u *AiChatUpdate) SetMemberID(id int) *AiChatUpdate {
 	_u.mutation.SetMemberID(id)
 	return _u
 }
 
-// SetMember sets the "member" edge to the LanguageLessonMember entity.
-func (_u *AiChatUpdate) SetMember(v *LanguageLessonMember) *AiChatUpdate {
+// SetMember sets the "member" edge to the LessonProgress entity.
+func (_u *AiChatUpdate) SetMember(v *LessonProgress) *AiChatUpdate {
 	return _u.SetMemberID(v.ID)
 }
 
@@ -85,7 +85,7 @@ func (_u *AiChatUpdate) Mutation() *AiChatMutation {
 	return _u.mutation
 }
 
-// ClearMember clears the "member" edge to the LanguageLessonMember entity.
+// ClearMember clears the "member" edge to the LessonProgress entity.
 func (_u *AiChatUpdate) ClearMember() *AiChatUpdate {
 	_u.mutation.ClearMember()
 	return _u
@@ -167,7 +167,7 @@ func (_u *AiChatUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Columns: []string{aichat.MemberColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -180,7 +180,7 @@ func (_u *AiChatUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Columns: []string{aichat.MemberColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -271,14 +271,14 @@ func (_u *AiChatUpdateOne) SetNillableLanguageLessonMemberID(v *int) *AiChatUpda
 	return _u
 }
 
-// SetMemberID sets the "member" edge to the LanguageLessonMember entity by ID.
+// SetMemberID sets the "member" edge to the LessonProgress entity by ID.
 func (_u *AiChatUpdateOne) SetMemberID(id int) *AiChatUpdateOne {
 	_u.mutation.SetMemberID(id)
 	return _u
 }
 
-// SetMember sets the "member" edge to the LanguageLessonMember entity.
-func (_u *AiChatUpdateOne) SetMember(v *LanguageLessonMember) *AiChatUpdateOne {
+// SetMember sets the "member" edge to the LessonProgress entity.
+func (_u *AiChatUpdateOne) SetMember(v *LessonProgress) *AiChatUpdateOne {
 	return _u.SetMemberID(v.ID)
 }
 
@@ -292,7 +292,7 @@ func (_u *AiChatUpdateOne) Mutation() *AiChatMutation {
 	return _u.mutation
 }
 
-// ClearMember clears the "member" edge to the LanguageLessonMember entity.
+// ClearMember clears the "member" edge to the LessonProgress entity.
 func (_u *AiChatUpdateOne) ClearMember() *AiChatUpdateOne {
 	_u.mutation.ClearMember()
 	return _u
@@ -404,7 +404,7 @@ func (_u *AiChatUpdateOne) sqlSave(ctx context.Context) (_node *AiChat, err erro
 			Columns: []string{aichat.MemberColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -417,7 +417,7 @@ func (_u *AiChatUpdateOne) sqlSave(ctx context.Context) (_node *AiChat, err erro
 			Columns: []string{aichat.MemberColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(languagelessonmember.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

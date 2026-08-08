@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent/languagelessonreview"
+	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/testsupport"
 )
@@ -42,11 +42,11 @@ func TestReviewLessonUpdatesExistingReview(t *testing.T) {
 	assert.Contains(t, llm.instructions, "Проанализируй вопросы")
 	assert.Contains(t, llm.prompt, "How do I print a string?", "the student question feeds the prompt")
 
-	review := db.LanguageLessonReview.Query().
+	review := db.CourseLessonReview.Query().
 		Where(
-			languagelessonreview.LanguageID(82481401),
-			languagelessonreview.LanguageLessonID(1001),
-			languagelessonreview.LocaleEQ("en"),
+			courselessonreview.LanguageID(82481401),
+			courselessonreview.LanguageLessonID(1001),
+			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "AI summary", review.Summary)
@@ -67,11 +67,11 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 
 	assert.Zero(t, llm.calls, "no questions -> no LLM call")
 
-	review := db.LanguageLessonReview.Query().
+	review := db.CourseLessonReview.Query().
 		Where(
-			languagelessonreview.LanguageID(82481401),
-			languagelessonreview.LanguageLessonID(1003),
-			languagelessonreview.LocaleEQ("en"),
+			courselessonreview.LanguageID(82481401),
+			courselessonreview.LanguageLessonID(1003),
+			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "", review.Summary)
@@ -85,11 +85,11 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 	db := testsupport.NewClient(t)
 	ctx := context.Background()
 
-	_, err := db.LanguageLessonReview.Delete().
+	_, err := db.CourseLessonReview.Delete().
 		Where(
-			languagelessonreview.LanguageID(82481401),
-			languagelessonreview.LanguageLessonID(1002),
-			languagelessonreview.LocaleEQ("en"),
+			courselessonreview.LanguageID(82481401),
+			courselessonreview.LanguageLessonID(1002),
+			courselessonreview.LocaleEQ("en"),
 		).
 		Exec(ctx)
 	require.NoError(t, err)
@@ -102,11 +102,11 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 	assert.Equal(t, 1, llm.calls)
 	assert.Contains(t, llm.prompt, "What is a variable?")
 
-	review := db.LanguageLessonReview.Query().
+	review := db.CourseLessonReview.Query().
 		Where(
-			languagelessonreview.LanguageID(82481401),
-			languagelessonreview.LanguageLessonID(1002),
-			languagelessonreview.LocaleEQ("en"),
+			courselessonreview.LanguageID(82481401),
+			courselessonreview.LanguageLessonID(1002),
+			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "AI summary", review.Summary)

@@ -30,8 +30,8 @@ const (
 	Table = "ai_chats"
 	// MemberTable is the table that holds the member relation/edge.
 	MemberTable = "ai_chats"
-	// MemberInverseTable is the table name for the LanguageLessonMember entity.
-	// It exists in this package in order to avoid circular dependency with the "languagelessonmember" package.
+	// MemberInverseTable is the table name for the LessonProgress entity.
+	// It exists in this package in order to avoid circular dependency with the "lessonprogress" package.
 	MemberInverseTable = "language_lesson_members"
 	// MemberColumn is the table column denoting the member relation/edge.
 	MemberColumn = "language_lesson_member_id"

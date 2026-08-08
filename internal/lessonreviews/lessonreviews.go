@@ -16,8 +16,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
-	"hexletbasics/ent/languagelessonmember"
-	"hexletbasics/ent/languagelessonreview"
+	"hexletbasics/ent/courselessonreview"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/jobs"
 )
 
@@ -81,7 +81,7 @@ func NewReviewer(db *ent.Client, llm Completer) *Reviewer {
 // an empty summary without an LLM call — the admin list hides those rows, but
 // the write still marks the lesson as reviewed.
 func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
-	info, err := r.db.LanguageLessonVersionInfo.Get(ctx, lessonInfoID)
+	info, err := r.db.CourseLessonTranslation.Get(ctx, lessonInfoID)
 	if err != nil {
 		return oops.Wrapf(err, "load lesson info %d", lessonInfoID)
 	}
@@ -92,7 +92,7 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 		Where(
 			aimessage.RoleEQ("user"),
 			aimessage.HasChatWith(aichat.HasMemberWith(
-				languagelessonmember.LessonID(info.LanguageLessonID),
+				lessonprogress.LessonID(info.LanguageLessonID),
 			)),
 		).
 		Order(ent.Desc(aimessage.FieldID)).
@@ -115,7 +115,7 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 
 // reviewPrompt assembles the legacy user prompt: the lesson content followed by
 // the raw question feed.
-func reviewPrompt(info *ent.LanguageLessonVersionInfo, questions []*ent.AiMessage) string {
+func reviewPrompt(info *ent.CourseLessonTranslation, questions []*ent.AiMessage) string {
 	contents := make([]string, len(questions))
 	for i, q := range questions {
 		contents[i] = lo.FromPtr(q.Content)
@@ -128,17 +128,17 @@ func reviewPrompt(info *ent.LanguageLessonVersionInfo, questions []*ent.AiMessag
 
 // upsertReview writes the summary keyed by (course, lesson, locale) — the
 // legacy find_or_initialize_by — pointing the row at the reviewed version/info.
-func (r *Reviewer) upsertReview(ctx context.Context, info *ent.LanguageLessonVersionInfo, summary string) error {
-	existing, err := r.db.LanguageLessonReview.Query().
+func (r *Reviewer) upsertReview(ctx context.Context, info *ent.CourseLessonTranslation, summary string) error {
+	existing, err := r.db.CourseLessonReview.Query().
 		Where(
-			languagelessonreview.LanguageID(info.LanguageID),
-			languagelessonreview.LanguageLessonID(info.LanguageLessonID),
-			languagelessonreview.LocaleEQ(lo.FromPtr(info.Locale)),
+			courselessonreview.LanguageID(info.LanguageID),
+			courselessonreview.LanguageLessonID(info.LanguageLessonID),
+			courselessonreview.LocaleEQ(lo.FromPtr(info.Locale)),
 		).
 		Only(ctx)
 	switch {
 	case ent.IsNotFound(err):
-		_, err = r.db.LanguageLessonReview.Create().
+		_, err = r.db.CourseLessonReview.Create().
 			SetLanguageID(info.LanguageID).
 			SetLanguageLessonID(info.LanguageLessonID).
 			SetLocale(lo.FromPtr(info.Locale)).

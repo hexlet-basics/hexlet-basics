@@ -5,7 +5,7 @@ package ent
 import (
 	"fmt"
 	"hexletbasics/ent/aichat"
-	"hexletbasics/ent/languagelessonmember"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/user"
 	"strings"
 	"time"
@@ -36,7 +36,7 @@ type AiChat struct {
 // AiChatEdges holds the relations/edges for other nodes in the graph.
 type AiChatEdges struct {
 	// Member holds the value of the member edge.
-	Member *LanguageLessonMember `json:"member,omitempty"`
+	Member *LessonProgress `json:"member,omitempty"`
 	// User holds the value of the user edge.
 	User *User `json:"user,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -46,11 +46,11 @@ type AiChatEdges struct {
 
 // MemberOrErr returns the Member value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AiChatEdges) MemberOrErr() (*LanguageLessonMember, error) {
+func (e AiChatEdges) MemberOrErr() (*LessonProgress, error) {
 	if e.Member != nil {
 		return e.Member, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: languagelessonmember.Label}
+		return nil, &NotFoundError{label: lessonprogress.Label}
 	}
 	return nil, &NotLoadedError{edge: "member"}
 }
@@ -134,7 +134,7 @@ func (_m *AiChat) Value(name string) (ent.Value, error) {
 }
 
 // QueryMember queries the "member" edge of the AiChat entity.
-func (_m *AiChat) QueryMember() *LanguageLessonMemberQuery {
+func (_m *AiChat) QueryMember() *LessonProgressQuery {
 	return NewAiChatClient(_m.config).QueryMember(_m)
 }
 
