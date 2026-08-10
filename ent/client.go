@@ -834,15 +834,15 @@ func (c *AiChatClient) GetX(ctx context.Context, id int) *AiChat {
 	return obj
 }
 
-// QueryMember queries the member edge of a AiChat.
-func (c *AiChatClient) QueryMember(_m *AiChat) *LessonProgressQuery {
+// QueryLessonProgress queries the lesson_progress edge of a AiChat.
+func (c *AiChatClient) QueryLessonProgress(_m *AiChat) *LessonProgressQuery {
 	query := (&LessonProgressClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(aichat.Table, aichat.FieldID, id),
 			sqlgraph.To(lessonprogress.Table, lessonprogress.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, aichat.MemberTable, aichat.MemberColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, aichat.LessonProgressTable, aichat.LessonProgressColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil

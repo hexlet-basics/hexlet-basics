@@ -1,4 +1,4 @@
-# Count duplicate Course Memberships (#765)
+# Count duplicate Enrollments (#765)
 
 **One-off. Delete this whole directory once #765 is closed.** It is deliberately
 not wired into the `Makefile` — nothing here belongs to the permanent toolchain,
@@ -7,10 +7,10 @@ targets that outlive it.
 
 ## Why
 
-`language_members` (a Course Membership) has only two non-unique indexes, on
+`language_members` (the Enrollment table) has only two non-unique indexes, on
 `user_id` and on `language_id`. There is no unique index on the pair, and the
-legacy find-or-create was racy, so two concurrent requests could each insert a
-Membership for the same learner and Course.
+legacy find-or-create was racy, so two concurrent requests could each insert an
+Enrollment for the same learner and Course.
 
 The migration in #755 that adds `UNIQUE (user_id, language_id)` cannot be written
 until the size of the existing mess is known: a handful of duplicates collapse
@@ -43,16 +43,18 @@ itself the thing under test — no query is restated, which is what stops the ch
 from drifting away from the script that actually runs against production.
 
 The fixture discriminates rather than merely being non-zero: one pair has an
-identical `created_at`, so `lesson_memberships_to_repoint = 3` only holds if the
+identical `created_at`, so `lesson_progress_to_repoint = 3` only holds if the
 `id` tie-break elects the right winner. Drop `id` from the `ORDER BY` and the
 expected answer changes.
 
 ## Vocabulary
 
-`CONTEXT.md` names the concept **Course Membership** and lists `enrollment` on its
-`_Avoid_` line, so these files say Membership throughout even though #765's own
-title reaches for the avoided word. The per-Lesson record is a **Lesson
-Membership**.
+`CONTEXT.md` names the concept **Enrollment**, and the per-Lesson record
+**Lesson Progress**; Course Membership and Lesson Membership are on their
+`_Avoid_` lines. These files said Membership until #766 flipped the glossary the
+other way round — the words changed, none of the SQL did, because table and
+column names (`language_members`, `language_lesson_members`,
+`language_member_id`) keep the legacy vocabulary by design.
 
 ## What to do with the output
 

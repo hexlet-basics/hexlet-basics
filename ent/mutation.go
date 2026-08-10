@@ -1121,19 +1121,19 @@ func (m *ActiveStorageBlobMutation) ResetEdge(name string) error {
 // AiChatMutation represents an operation that mutates the AiChat nodes in the graph.
 type AiChatMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	created_at    *time.Time
-	updated_at    *time.Time
-	clearedFields map[string]struct{}
-	member        *int
-	clearedmember bool
-	user          *int
-	cleareduser   bool
-	done          bool
-	oldValue      func(context.Context) (*AiChat, error)
-	predicates    []predicate.AiChat
+	op                     Op
+	typ                    string
+	id                     *int
+	created_at             *time.Time
+	updated_at             *time.Time
+	clearedFields          map[string]struct{}
+	lesson_progress        *int
+	clearedlesson_progress bool
+	user                   *int
+	cleareduser            bool
+	done                   bool
+	oldValue               func(context.Context) (*AiChat, error)
+	predicates             []predicate.AiChat
 }
 
 var _ ent.Mutation = (*AiChatMutation)(nil)
@@ -1344,12 +1344,12 @@ func (m *AiChatMutation) ResetUserID() {
 
 // SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
 func (m *AiChatMutation) SetLanguageLessonMemberID(i int) {
-	m.member = &i
+	m.lesson_progress = &i
 }
 
 // LanguageLessonMemberID returns the value of the "language_lesson_member_id" field in the mutation.
 func (m *AiChatMutation) LanguageLessonMemberID() (r int, exists bool) {
-	v := m.member
+	v := m.lesson_progress
 	if v == nil {
 		return
 	}
@@ -1375,47 +1375,47 @@ func (m *AiChatMutation) OldLanguageLessonMemberID(ctx context.Context) (v int, 
 
 // ResetLanguageLessonMemberID resets all changes to the "language_lesson_member_id" field.
 func (m *AiChatMutation) ResetLanguageLessonMemberID() {
-	m.member = nil
+	m.lesson_progress = nil
 }
 
-// SetMemberID sets the "member" edge to the LessonProgress entity by id.
-func (m *AiChatMutation) SetMemberID(id int) {
-	m.member = &id
+// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by id.
+func (m *AiChatMutation) SetLessonProgressID(id int) {
+	m.lesson_progress = &id
 }
 
-// ClearMember clears the "member" edge to the LessonProgress entity.
-func (m *AiChatMutation) ClearMember() {
-	m.clearedmember = true
+// ClearLessonProgress clears the "lesson_progress" edge to the LessonProgress entity.
+func (m *AiChatMutation) ClearLessonProgress() {
+	m.clearedlesson_progress = true
 	m.clearedFields[aichat.FieldLanguageLessonMemberID] = struct{}{}
 }
 
-// MemberCleared reports if the "member" edge to the LessonProgress entity was cleared.
-func (m *AiChatMutation) MemberCleared() bool {
-	return m.clearedmember
+// LessonProgressCleared reports if the "lesson_progress" edge to the LessonProgress entity was cleared.
+func (m *AiChatMutation) LessonProgressCleared() bool {
+	return m.clearedlesson_progress
 }
 
-// MemberID returns the "member" edge ID in the mutation.
-func (m *AiChatMutation) MemberID() (id int, exists bool) {
-	if m.member != nil {
-		return *m.member, true
+// LessonProgressID returns the "lesson_progress" edge ID in the mutation.
+func (m *AiChatMutation) LessonProgressID() (id int, exists bool) {
+	if m.lesson_progress != nil {
+		return *m.lesson_progress, true
 	}
 	return
 }
 
-// MemberIDs returns the "member" edge IDs in the mutation.
+// LessonProgressIDs returns the "lesson_progress" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// MemberID instead. It exists only for internal usage by the builders.
-func (m *AiChatMutation) MemberIDs() (ids []int) {
-	if id := m.member; id != nil {
+// LessonProgressID instead. It exists only for internal usage by the builders.
+func (m *AiChatMutation) LessonProgressIDs() (ids []int) {
+	if id := m.lesson_progress; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetMember resets all changes to the "member" edge.
-func (m *AiChatMutation) ResetMember() {
-	m.member = nil
-	m.clearedmember = false
+// ResetLessonProgress resets all changes to the "lesson_progress" edge.
+func (m *AiChatMutation) ResetLessonProgress() {
+	m.lesson_progress = nil
+	m.clearedlesson_progress = false
 }
 
 // ClearUser clears the "user" edge to the User entity.
@@ -1489,7 +1489,7 @@ func (m *AiChatMutation) Fields() []string {
 	if m.user != nil {
 		fields = append(fields, aichat.FieldUserID)
 	}
-	if m.member != nil {
+	if m.lesson_progress != nil {
 		fields = append(fields, aichat.FieldLanguageLessonMemberID)
 	}
 	return fields
@@ -1633,8 +1633,8 @@ func (m *AiChatMutation) ResetField(name string) error {
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AiChatMutation) AddedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.member != nil {
-		edges = append(edges, aichat.EdgeMember)
+	if m.lesson_progress != nil {
+		edges = append(edges, aichat.EdgeLessonProgress)
 	}
 	if m.user != nil {
 		edges = append(edges, aichat.EdgeUser)
@@ -1646,8 +1646,8 @@ func (m *AiChatMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AiChatMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case aichat.EdgeMember:
-		if id := m.member; id != nil {
+	case aichat.EdgeLessonProgress:
+		if id := m.lesson_progress; id != nil {
 			return []ent.Value{*id}
 		}
 	case aichat.EdgeUser:
@@ -1673,8 +1673,8 @@ func (m *AiChatMutation) RemovedIDs(name string) []ent.Value {
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AiChatMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.clearedmember {
-		edges = append(edges, aichat.EdgeMember)
+	if m.clearedlesson_progress {
+		edges = append(edges, aichat.EdgeLessonProgress)
 	}
 	if m.cleareduser {
 		edges = append(edges, aichat.EdgeUser)
@@ -1686,8 +1686,8 @@ func (m *AiChatMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AiChatMutation) EdgeCleared(name string) bool {
 	switch name {
-	case aichat.EdgeMember:
-		return m.clearedmember
+	case aichat.EdgeLessonProgress:
+		return m.clearedlesson_progress
 	case aichat.EdgeUser:
 		return m.cleareduser
 	}
@@ -1698,8 +1698,8 @@ func (m *AiChatMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *AiChatMutation) ClearEdge(name string) error {
 	switch name {
-	case aichat.EdgeMember:
-		m.ClearMember()
+	case aichat.EdgeLessonProgress:
+		m.ClearLessonProgress()
 		return nil
 	case aichat.EdgeUser:
 		m.ClearUser()
@@ -1712,8 +1712,8 @@ func (m *AiChatMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AiChatMutation) ResetEdge(name string) error {
 	switch name {
-	case aichat.EdgeMember:
-		m.ResetMember()
+	case aichat.EdgeLessonProgress:
+		m.ResetLessonProgress()
 		return nil
 	case aichat.EdgeUser:
 		m.ResetUser()

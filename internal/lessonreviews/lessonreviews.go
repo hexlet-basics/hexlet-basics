@@ -86,12 +86,12 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 		return oops.Wrapf(err, "load lesson info %d", lessonInfoID)
 	}
 
-	// The question pool is per LESSON (chats hang off lesson members), shared
-	// by every locale's summary — same as legacy `info.lesson.ai_messages`.
+	// The question pool is per LESSON (chats hang off lesson progress rows),
+	// shared by every locale's summary — same as legacy `info.lesson.ai_messages`.
 	questions, err := r.db.AiMessage.Query().
 		Where(
 			aimessage.RoleEQ("user"),
-			aimessage.HasChatWith(aichat.HasMemberWith(
+			aimessage.HasChatWith(aichat.HasLessonProgressWith(
 				lessonprogress.LessonID(info.LanguageLessonID),
 			)),
 		).

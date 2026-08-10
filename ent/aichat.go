@@ -35,8 +35,8 @@ type AiChat struct {
 
 // AiChatEdges holds the relations/edges for other nodes in the graph.
 type AiChatEdges struct {
-	// Member holds the value of the member edge.
-	Member *LessonProgress `json:"member,omitempty"`
+	// LessonProgress holds the value of the lesson_progress edge.
+	LessonProgress *LessonProgress `json:"lesson_progress,omitempty"`
 	// User holds the value of the user edge.
 	User *User `json:"user,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -44,15 +44,15 @@ type AiChatEdges struct {
 	loadedTypes [2]bool
 }
 
-// MemberOrErr returns the Member value or an error if the edge
+// LessonProgressOrErr returns the LessonProgress value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AiChatEdges) MemberOrErr() (*LessonProgress, error) {
-	if e.Member != nil {
-		return e.Member, nil
+func (e AiChatEdges) LessonProgressOrErr() (*LessonProgress, error) {
+	if e.LessonProgress != nil {
+		return e.LessonProgress, nil
 	} else if e.loadedTypes[0] {
 		return nil, &NotFoundError{label: lessonprogress.Label}
 	}
-	return nil, &NotLoadedError{edge: "member"}
+	return nil, &NotLoadedError{edge: "lesson_progress"}
 }
 
 // UserOrErr returns the User value or an error if the edge
@@ -133,9 +133,9 @@ func (_m *AiChat) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryMember queries the "member" edge of the AiChat entity.
-func (_m *AiChat) QueryMember() *LessonProgressQuery {
-	return NewAiChatClient(_m.config).QueryMember(_m)
+// QueryLessonProgress queries the "lesson_progress" edge of the AiChat entity.
+func (_m *AiChat) QueryLessonProgress() *LessonProgressQuery {
+	return NewAiChatClient(_m.config).QueryLessonProgress(_m)
 }
 
 // QueryUser queries the "user" edge of the AiChat entity.

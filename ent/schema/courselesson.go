@@ -10,9 +10,9 @@ import (
 )
 
 // CourseLesson maps the legacy `language_lessons` table (a single lesson in a
-// course). The admin surface reads it to enrich other lists (a review's or
-// member's lesson slug and natural order); the exercise loader also WRITES it,
-// upserting one stable row per (language, slug) so learner progress
+// course). The admin surface reads it to enrich other lists (a review's or a
+// lesson progress' lesson slug and natural order); the exercise loader also
+// WRITES it, upserting one stable row per (language, slug) so learner progress
 // (language_lesson_members, keyed to the lesson id) survives rebuilds — the
 // per-build code/order lives on CourseLessonVersion, not here.
 //

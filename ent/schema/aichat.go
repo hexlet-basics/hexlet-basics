@@ -7,7 +7,7 @@ import (
 )
 
 // AiChat maps the legacy `ai_chats` table: one in-lesson assistant conversation
-// per (user, lesson member). Only the product columns are declared — the
+// per (user, lesson progress). Only the product columns are declared — the
 // RubyLLM bookkeeping column (`ai_model_id`) stays in the table but out of the
 // Go domain: which model serves a chat is configuration, not a row attribute
 // (see the assistant port design). The assistant will write this table, so the
@@ -26,9 +26,11 @@ func (AiChat) Fields() []ent.Field {
 
 func (AiChat) Edges() []ent.Edge {
 	return []ent.Edge{
-		// belongs-to edges own their NOT NULL FK columns; the member carries the
-		// course/lesson identity the admin read models enrich through.
-		edge.To("member", LessonProgress.Type).
+		// belongs-to edges own their NOT NULL FK columns; the lesson progress
+		// carries the course/lesson identity the admin read models enrich
+		// through. The edge name is ours to choose — the pinned Field keeps the
+		// legacy column, so renaming it moves no storage identifier.
+		edge.To("lesson_progress", LessonProgress.Type).
 			Field("language_lesson_member_id").
 			Unique().
 			Required(),

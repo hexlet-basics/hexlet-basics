@@ -4,6 +4,10 @@ Snapshot of what the legacy Rails app (`legacy/`) still does that the Go stack
 at the root does not. The plan of record is a hard cutover at parity
 (ADR-0002), so everything below is cutover-blocking unless marked *dropped*.
 
+Concepts are named in the `CONTEXT.md` vocabulary (Enrollment, Lesson Progress,
+Completion); table, column and legacy job names are quoted as they are, because
+storage keeps the old words.
+
 Method: `operationId`s in `api-spec/dist/openapi.yaml` (107) diffed against
 handler methods in `internal/`, plus `legacy/config/routes.rb` diffed against
 `api-spec/*.tsp` and `src/routes/`, plus `legacy/db/schema.rb` tables diffed
@@ -22,10 +26,10 @@ against `ent/schema/`.
 | User area (`/my`, profile) | done | none | none |
 | Cases, book download, feeds, error pages | **absent** | none | none |
 
-73 of 107 contract operations have handlers. The 34 without one are listed
+72 of 107 contract operations have handlers. The 35 without one are listed
 per blocker below (`adminUploadAttachment` is the exception — it is
 implemented outside the generated layer in `internal/handlers/attachments.go`
-because ogen cannot generate multipart, so the real count is 33).
+because ogen cannot generate multipart, so the real count is 34).
 
 ## Blockers, not tickets
 
@@ -33,14 +37,14 @@ The unimplemented operations cluster under a handful of missing foundations.
 Each foundation unlocks its whole group; sequencing should follow this graph,
 not the operation list.
 
-### 1. No course membership (`language_members`) — biggest one
+### 1. No Enrollment (`language_members`) — biggest one
 
-`CourseMember` exists **only** in the contract: no `ent/schema`, no
+`Enrollment` exists **only** in the contract: no `ent/schema`, no
 `apiconv` mapping, no table access. This sits under the entire learner spine:
 
 - `getMyDashboard` (`/my`)
-- `CourseView.member` — the signed-in state of the course landing page
-- lesson progress, course start/finish
+- `CourseView.enrollment` — the signed-in state of the course landing page
+- Lesson Progress, course start/finish
 - the `courseStarted` / `courseFinished` / `lessonStarted` / `lessonFinished`
   events, which are *defined* in `internal/events` but have no publisher
 - `finish_language_members_job` (unported)
@@ -101,7 +105,10 @@ rewrite is an open decision.
 
 Straight ports, only unwritten: `getCourse`, `listBlogPosts`, `getBlogPost`,
 `getNextBlogPost`, `likeBlogPost`, `listPublicReviews`, `getSitemap`,
-`getProfile`, `updateProfile`, `deleteAccount`, `switchLocale`.
+`getProfile`, `updateProfile`, `deleteAccount`, `switchLocale`, `createLead`
+(the public lead form — everything downstream of it exists: the admin list, the
+`leadCreated` consumer, the river job and the amoCRM client. Only the write
+endpoint that publishes the event is missing).
 
 ## Legacy routes with no contract operation at all
 
@@ -152,8 +159,8 @@ Classified so the raw count does not mislead:
 
 ## Suggested order
 
-1. `language_members` + progress events (unlocks `/my`, course landing
-   signed-in state, lesson progress).
+1. Enrollment (`language_members`) + progress events (unlocks `/my`, course
+   landing signed-in state, Lesson Progress).
 2. Decide the lesson-check contract, then build the runner (the product's core
    loop and the only surface with an unsettled API design).
 3. Mailer, then the four email-based auth flows.

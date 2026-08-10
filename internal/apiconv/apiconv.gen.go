@@ -302,13 +302,13 @@ func (c *ConverterImpl) ToLessonAssistantMessage(source *ent.AiMessage) api.Less
 		apiLessonAssistantMessage.UserId = NilInt32FromPtr((*source).UserID)
 		apiLessonAssistantMessage.Content = StringFromPtr((*source).Content)
 		var pString *string
-		if (*source).Edges.Chat != nil && (*source).Edges.Chat.Edges.Member != nil && (*source).Edges.Chat.Edges.Member.Edges.Course != nil {
-			pString = (*source).Edges.Chat.Edges.Member.Edges.Course.Slug
+		if (*source).Edges.Chat != nil && (*source).Edges.Chat.Edges.LessonProgress != nil && (*source).Edges.Chat.Edges.LessonProgress.Edges.Course != nil {
+			pString = (*source).Edges.Chat.Edges.LessonProgress.Edges.Course.Slug
 		}
 		apiLessonAssistantMessage.CourseSlug = StringFromPtr(pString)
 		var pString2 *string
-		if (*source).Edges.Chat != nil && (*source).Edges.Chat.Edges.Member != nil && (*source).Edges.Chat.Edges.Member.Edges.Lesson != nil {
-			pString2 = (*source).Edges.Chat.Edges.Member.Edges.Lesson.Slug
+		if (*source).Edges.Chat != nil && (*source).Edges.Chat.Edges.LessonProgress != nil && (*source).Edges.Chat.Edges.LessonProgress.Edges.Lesson != nil {
+			pString2 = (*source).Edges.Chat.Edges.LessonProgress.Edges.Lesson.Slug
 		}
 		apiLessonAssistantMessage.CourseLessonSlug = StringFromPtr(pString2)
 		apiLessonAssistantMessage.CourseLessonName = assistantMessageLessonName(source)
@@ -344,7 +344,7 @@ func (c *ConverterImpl) ToLessonProgress(source *ent.LessonProgress) api.LessonP
 			pString2 = (*source).Edges.Lesson.Slug
 		}
 		apiLessonProgress.CourseLessonSlug = StringFromPtr(pString2)
-		apiLessonProgress.CourseLessonName = courseLessonMemberName(source)
+		apiLessonProgress.CourseLessonName = lessonProgressLessonName(source)
 	}
 	return apiLessonProgress
 }

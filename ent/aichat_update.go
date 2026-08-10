@@ -64,15 +64,15 @@ func (_u *AiChatUpdate) SetNillableLanguageLessonMemberID(v *int) *AiChatUpdate 
 	return _u
 }
 
-// SetMemberID sets the "member" edge to the LessonProgress entity by ID.
-func (_u *AiChatUpdate) SetMemberID(id int) *AiChatUpdate {
-	_u.mutation.SetMemberID(id)
+// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by ID.
+func (_u *AiChatUpdate) SetLessonProgressID(id int) *AiChatUpdate {
+	_u.mutation.SetLessonProgressID(id)
 	return _u
 }
 
-// SetMember sets the "member" edge to the LessonProgress entity.
-func (_u *AiChatUpdate) SetMember(v *LessonProgress) *AiChatUpdate {
-	return _u.SetMemberID(v.ID)
+// SetLessonProgress sets the "lesson_progress" edge to the LessonProgress entity.
+func (_u *AiChatUpdate) SetLessonProgress(v *LessonProgress) *AiChatUpdate {
+	return _u.SetLessonProgressID(v.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -85,9 +85,9 @@ func (_u *AiChatUpdate) Mutation() *AiChatMutation {
 	return _u.mutation
 }
 
-// ClearMember clears the "member" edge to the LessonProgress entity.
-func (_u *AiChatUpdate) ClearMember() *AiChatUpdate {
-	_u.mutation.ClearMember()
+// ClearLessonProgress clears the "lesson_progress" edge to the LessonProgress entity.
+func (_u *AiChatUpdate) ClearLessonProgress() *AiChatUpdate {
+	_u.mutation.ClearLessonProgress()
 	return _u
 }
 
@@ -135,8 +135,8 @@ func (_u *AiChatUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AiChatUpdate) check() error {
-	if _u.mutation.MemberCleared() && len(_u.mutation.MemberIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "AiChat.member"`)
+	if _u.mutation.LessonProgressCleared() && len(_u.mutation.LessonProgressIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AiChat.lesson_progress"`)
 	}
 	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AiChat.user"`)
@@ -159,12 +159,12 @@ func (_u *AiChatUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(aichat.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.MemberCleared() {
+	if _u.mutation.LessonProgressCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   aichat.MemberTable,
-			Columns: []string{aichat.MemberColumn},
+			Table:   aichat.LessonProgressTable,
+			Columns: []string{aichat.LessonProgressColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
@@ -172,12 +172,12 @@ func (_u *AiChatUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.MemberIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.LessonProgressIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   aichat.MemberTable,
-			Columns: []string{aichat.MemberColumn},
+			Table:   aichat.LessonProgressTable,
+			Columns: []string{aichat.LessonProgressColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
@@ -271,15 +271,15 @@ func (_u *AiChatUpdateOne) SetNillableLanguageLessonMemberID(v *int) *AiChatUpda
 	return _u
 }
 
-// SetMemberID sets the "member" edge to the LessonProgress entity by ID.
-func (_u *AiChatUpdateOne) SetMemberID(id int) *AiChatUpdateOne {
-	_u.mutation.SetMemberID(id)
+// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by ID.
+func (_u *AiChatUpdateOne) SetLessonProgressID(id int) *AiChatUpdateOne {
+	_u.mutation.SetLessonProgressID(id)
 	return _u
 }
 
-// SetMember sets the "member" edge to the LessonProgress entity.
-func (_u *AiChatUpdateOne) SetMember(v *LessonProgress) *AiChatUpdateOne {
-	return _u.SetMemberID(v.ID)
+// SetLessonProgress sets the "lesson_progress" edge to the LessonProgress entity.
+func (_u *AiChatUpdateOne) SetLessonProgress(v *LessonProgress) *AiChatUpdateOne {
+	return _u.SetLessonProgressID(v.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -292,9 +292,9 @@ func (_u *AiChatUpdateOne) Mutation() *AiChatMutation {
 	return _u.mutation
 }
 
-// ClearMember clears the "member" edge to the LessonProgress entity.
-func (_u *AiChatUpdateOne) ClearMember() *AiChatUpdateOne {
-	_u.mutation.ClearMember()
+// ClearLessonProgress clears the "lesson_progress" edge to the LessonProgress entity.
+func (_u *AiChatUpdateOne) ClearLessonProgress() *AiChatUpdateOne {
+	_u.mutation.ClearLessonProgress()
 	return _u
 }
 
@@ -355,8 +355,8 @@ func (_u *AiChatUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AiChatUpdateOne) check() error {
-	if _u.mutation.MemberCleared() && len(_u.mutation.MemberIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "AiChat.member"`)
+	if _u.mutation.LessonProgressCleared() && len(_u.mutation.LessonProgressIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AiChat.lesson_progress"`)
 	}
 	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AiChat.user"`)
@@ -396,12 +396,12 @@ func (_u *AiChatUpdateOne) sqlSave(ctx context.Context) (_node *AiChat, err erro
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(aichat.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if _u.mutation.MemberCleared() {
+	if _u.mutation.LessonProgressCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   aichat.MemberTable,
-			Columns: []string{aichat.MemberColumn},
+			Table:   aichat.LessonProgressTable,
+			Columns: []string{aichat.LessonProgressColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),
@@ -409,12 +409,12 @@ func (_u *AiChatUpdateOne) sqlSave(ctx context.Context) (_node *AiChat, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.MemberIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.LessonProgressIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   aichat.MemberTable,
-			Columns: []string{aichat.MemberColumn},
+			Table:   aichat.LessonProgressTable,
+			Columns: []string{aichat.LessonProgressColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),

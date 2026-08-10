@@ -169,23 +169,24 @@ type Converter interface {
 
 	ToCourseLessonListItems(source []*ent.CourseLessonTranslation) []api.CourseLessonListItem
 
-	// Member projections require WithCourse and WithLesson; the lesson query
-	// additionally eager-loads locale-filtered infos in ascending id order.
+	// Lesson progress projections require WithCourse and WithLesson; the lesson
+	// query additionally eager-loads locale-filtered infos in ascending id order.
 	// goverter:map UserID UserId
 	// goverter:map Edges.Course.Slug CourseSlug
 	// goverter:map Edges.Lesson.Slug CourseLessonSlug
-	// goverter:map . CourseLessonName | courseLessonMemberName
+	// goverter:map . CourseLessonName | lessonProgressLessonName
 	ToLessonProgress(source *ent.LessonProgress) api.LessonProgress
 
 	ToLessonProgressList(source []*ent.LessonProgress) []api.LessonProgress
 
 	// Assistant messages are the admin read model over `ai_messages` (legacy
 	// AiMessageResource). Course/lesson identity travels through
-	// chat → member → course/lesson; the handler eager-loads the lesson's
-	// locale-filtered infos so the name resolves like the member list.
+	// chat → lesson progress → course/lesson; the handler eager-loads the
+	// lesson's locale-filtered infos so the name resolves like the lesson
+	// progress list.
 	// goverter:map UserID UserId
-	// goverter:map Edges.Chat.Edges.Member.Edges.Course.Slug CourseSlug
-	// goverter:map Edges.Chat.Edges.Member.Edges.Lesson.Slug CourseLessonSlug
+	// goverter:map Edges.Chat.Edges.LessonProgress.Edges.Course.Slug CourseSlug
+	// goverter:map Edges.Chat.Edges.LessonProgress.Edges.Lesson.Slug CourseLessonSlug
 	// goverter:map . CourseLessonName | assistantMessageLessonName
 	ToLessonAssistantMessage(source *ent.AiMessage) api.LessonAssistantMessage
 
@@ -225,10 +226,10 @@ func EnrollmentStateFromPtr(v *string) api.EnrollmentState {
 	return api.EnrollmentState(*v)
 }
 
-// courseLessonMemberName reads the first eager-loaded localized info. The
+// lessonProgressLessonName reads the first eager-loaded localized info. The
 // handler orders the edge by id so "first" is deterministic and matches the
 // legacy Lesson#localed_info convention.
-func courseLessonMemberName(source *ent.LessonProgress) string {
+func lessonProgressLessonName(source *ent.LessonProgress) string {
 	if source == nil || source.Edges.Lesson == nil || len(source.Edges.Lesson.Edges.Infos) == 0 {
 		return ""
 	}
@@ -236,13 +237,13 @@ func courseLessonMemberName(source *ent.LessonProgress) string {
 }
 
 // assistantMessageLessonName resolves the lesson display name through
-// chat → member → lesson → first eager-loaded localized info (the same
-// convention as courseLessonMemberName, which it reuses).
+// chat → lesson progress → lesson → first eager-loaded localized info (the same
+// convention as lessonProgressLessonName, which it reuses).
 func assistantMessageLessonName(source *ent.AiMessage) string {
-	if source == nil || source.Edges.Chat == nil || source.Edges.Chat.Edges.Member == nil {
+	if source == nil || source.Edges.Chat == nil || source.Edges.Chat.Edges.LessonProgress == nil {
 		return ""
 	}
-	return courseLessonMemberName(source.Edges.Chat.Edges.Member)
+	return lessonProgressLessonName(source.Edges.Chat.Edges.LessonProgress)
 }
 
 // NilStringFromPtr bridges a nullable ent column to ogen's NilString.

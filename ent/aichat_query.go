@@ -20,12 +20,12 @@ import (
 // AiChatQuery is the builder for querying AiChat entities.
 type AiChatQuery struct {
 	config
-	ctx        *QueryContext
-	order      []aichat.OrderOption
-	inters     []Interceptor
-	predicates []predicate.AiChat
-	withMember *LessonProgressQuery
-	withUser   *UserQuery
+	ctx                *QueryContext
+	order              []aichat.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.AiChat
+	withLessonProgress *LessonProgressQuery
+	withUser           *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,8 +62,8 @@ func (_q *AiChatQuery) Order(o ...aichat.OrderOption) *AiChatQuery {
 	return _q
 }
 
-// QueryMember chains the current query on the "member" edge.
-func (_q *AiChatQuery) QueryMember() *LessonProgressQuery {
+// QueryLessonProgress chains the current query on the "lesson_progress" edge.
+func (_q *AiChatQuery) QueryLessonProgress() *LessonProgressQuery {
 	query := (&LessonProgressClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
@@ -76,7 +76,7 @@ func (_q *AiChatQuery) QueryMember() *LessonProgressQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(aichat.Table, aichat.FieldID, selector),
 			sqlgraph.To(lessonprogress.Table, lessonprogress.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, aichat.MemberTable, aichat.MemberColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, aichat.LessonProgressTable, aichat.LessonProgressColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -293,27 +293,27 @@ func (_q *AiChatQuery) Clone() *AiChatQuery {
 		return nil
 	}
 	return &AiChatQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]aichat.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.AiChat{}, _q.predicates...),
-		withMember: _q.withMember.Clone(),
-		withUser:   _q.withUser.Clone(),
+		config:             _q.config,
+		ctx:                _q.ctx.Clone(),
+		order:              append([]aichat.OrderOption{}, _q.order...),
+		inters:             append([]Interceptor{}, _q.inters...),
+		predicates:         append([]predicate.AiChat{}, _q.predicates...),
+		withLessonProgress: _q.withLessonProgress.Clone(),
+		withUser:           _q.withUser.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithMember tells the query-builder to eager-load the nodes that are connected to
-// the "member" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *AiChatQuery) WithMember(opts ...func(*LessonProgressQuery)) *AiChatQuery {
+// WithLessonProgress tells the query-builder to eager-load the nodes that are connected to
+// the "lesson_progress" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *AiChatQuery) WithLessonProgress(opts ...func(*LessonProgressQuery)) *AiChatQuery {
 	query := (&LessonProgressClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withMember = query
+	_q.withLessonProgress = query
 	return _q
 }
 
@@ -407,7 +407,7 @@ func (_q *AiChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AiCha
 		nodes       = []*AiChat{}
 		_spec       = _q.querySpec()
 		loadedTypes = [2]bool{
-			_q.withMember != nil,
+			_q.withLessonProgress != nil,
 			_q.withUser != nil,
 		}
 	)
@@ -429,9 +429,9 @@ func (_q *AiChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AiCha
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withMember; query != nil {
-		if err := _q.loadMember(ctx, query, nodes, nil,
-			func(n *AiChat, e *LessonProgress) { n.Edges.Member = e }); err != nil {
+	if query := _q.withLessonProgress; query != nil {
+		if err := _q.loadLessonProgress(ctx, query, nodes, nil,
+			func(n *AiChat, e *LessonProgress) { n.Edges.LessonProgress = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -444,7 +444,7 @@ func (_q *AiChatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AiCha
 	return nodes, nil
 }
 
-func (_q *AiChatQuery) loadMember(ctx context.Context, query *LessonProgressQuery, nodes []*AiChat, init func(*AiChat), assign func(*AiChat, *LessonProgress)) error {
+func (_q *AiChatQuery) loadLessonProgress(ctx context.Context, query *LessonProgressQuery, nodes []*AiChat, init func(*AiChat), assign func(*AiChat, *LessonProgress)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AiChat)
 	for i := range nodes {
@@ -528,7 +528,7 @@ func (_q *AiChatQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if _q.withMember != nil {
+		if _q.withLessonProgress != nil {
 			_spec.Node.AddColumnOnce(aichat.FieldLanguageLessonMemberID)
 		}
 		if _q.withUser != nil {

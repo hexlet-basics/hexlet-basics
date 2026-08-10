@@ -64,15 +64,15 @@ func (_c *AiChatCreate) SetLanguageLessonMemberID(v int) *AiChatCreate {
 	return _c
 }
 
-// SetMemberID sets the "member" edge to the LessonProgress entity by ID.
-func (_c *AiChatCreate) SetMemberID(id int) *AiChatCreate {
-	_c.mutation.SetMemberID(id)
+// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by ID.
+func (_c *AiChatCreate) SetLessonProgressID(id int) *AiChatCreate {
+	_c.mutation.SetLessonProgressID(id)
 	return _c
 }
 
-// SetMember sets the "member" edge to the LessonProgress entity.
-func (_c *AiChatCreate) SetMember(v *LessonProgress) *AiChatCreate {
-	return _c.SetMemberID(v.ID)
+// SetLessonProgress sets the "lesson_progress" edge to the LessonProgress entity.
+func (_c *AiChatCreate) SetLessonProgress(v *LessonProgress) *AiChatCreate {
+	return _c.SetLessonProgressID(v.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -139,8 +139,8 @@ func (_c *AiChatCreate) check() error {
 	if _, ok := _c.mutation.LanguageLessonMemberID(); !ok {
 		return &ValidationError{Name: "language_lesson_member_id", err: errors.New(`ent: missing required field "AiChat.language_lesson_member_id"`)}
 	}
-	if len(_c.mutation.MemberIDs()) == 0 {
-		return &ValidationError{Name: "member", err: errors.New(`ent: missing required edge "AiChat.member"`)}
+	if len(_c.mutation.LessonProgressIDs()) == 0 {
+		return &ValidationError{Name: "lesson_progress", err: errors.New(`ent: missing required edge "AiChat.lesson_progress"`)}
 	}
 	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "AiChat.user"`)}
@@ -180,12 +180,12 @@ func (_c *AiChatCreate) createSpec() (*AiChat, *sqlgraph.CreateSpec) {
 		_spec.SetField(aichat.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if nodes := _c.mutation.MemberIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.LessonProgressIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
-			Table:   aichat.MemberTable,
-			Columns: []string{aichat.MemberColumn},
+			Table:   aichat.LessonProgressTable,
+			Columns: []string{aichat.LessonProgressColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt),

@@ -22,19 +22,19 @@ const (
 	FieldUserID = "user_id"
 	// FieldLanguageLessonMemberID holds the string denoting the language_lesson_member_id field in the database.
 	FieldLanguageLessonMemberID = "language_lesson_member_id"
-	// EdgeMember holds the string denoting the member edge name in mutations.
-	EdgeMember = "member"
+	// EdgeLessonProgress holds the string denoting the lesson_progress edge name in mutations.
+	EdgeLessonProgress = "lesson_progress"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
 	// Table holds the table name of the aichat in the database.
 	Table = "ai_chats"
-	// MemberTable is the table that holds the member relation/edge.
-	MemberTable = "ai_chats"
-	// MemberInverseTable is the table name for the LessonProgress entity.
+	// LessonProgressTable is the table that holds the lesson_progress relation/edge.
+	LessonProgressTable = "ai_chats"
+	// LessonProgressInverseTable is the table name for the LessonProgress entity.
 	// It exists in this package in order to avoid circular dependency with the "lessonprogress" package.
-	MemberInverseTable = "language_lesson_members"
-	// MemberColumn is the table column denoting the member relation/edge.
-	MemberColumn = "language_lesson_member_id"
+	LessonProgressInverseTable = "language_lesson_members"
+	// LessonProgressColumn is the table column denoting the lesson_progress relation/edge.
+	LessonProgressColumn = "language_lesson_member_id"
 	// UserTable is the table that holds the user relation/edge.
 	UserTable = "ai_chats"
 	// UserInverseTable is the table name for the User entity.
@@ -100,10 +100,10 @@ func ByLanguageLessonMemberID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLanguageLessonMemberID, opts...).ToFunc()
 }
 
-// ByMemberField orders the results by member field.
-func ByMemberField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByLessonProgressField orders the results by lesson_progress field.
+func ByLessonProgressField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMemberStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newLessonProgressStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -113,11 +113,11 @@ func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newMemberStep() *sqlgraph.Step {
+func newLessonProgressStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(MemberInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, MemberTable, MemberColumn),
+		sqlgraph.To(LessonProgressInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, LessonProgressTable, LessonProgressColumn),
 	)
 }
 func newUserStep() *sqlgraph.Step {

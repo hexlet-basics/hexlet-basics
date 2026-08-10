@@ -195,21 +195,21 @@ func LanguageLessonMemberIDNotIn(vs ...int) predicate.AiChat {
 	return predicate.AiChat(sql.FieldNotIn(FieldLanguageLessonMemberID, vs...))
 }
 
-// HasMember applies the HasEdge predicate on the "member" edge.
-func HasMember() predicate.AiChat {
+// HasLessonProgress applies the HasEdge predicate on the "lesson_progress" edge.
+func HasLessonProgress() predicate.AiChat {
 	return predicate.AiChat(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, MemberTable, MemberColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, LessonProgressTable, LessonProgressColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasMemberWith applies the HasEdge predicate on the "member" edge with a given conditions (other predicates).
-func HasMemberWith(preds ...predicate.LessonProgress) predicate.AiChat {
+// HasLessonProgressWith applies the HasEdge predicate on the "lesson_progress" edge with a given conditions (other predicates).
+func HasLessonProgressWith(preds ...predicate.LessonProgress) predicate.AiChat {
 	return predicate.AiChat(func(s *sql.Selector) {
-		step := newMemberStep()
+		step := newLessonProgressStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

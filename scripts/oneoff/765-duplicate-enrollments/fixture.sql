@@ -16,9 +16,9 @@
 --
 --   psql "$DATABASE_URL" --single-transaction -f fixture.sql -f count.sql
 --
--- Fixture — (user, Course) -> Course Membership ids:
+-- Fixture — (user, Course) -> Enrollment ids:
 --
---   (1, 10) -> 100            single Membership; must NOT count as a duplicate
+--   (1, 10) -> 100            single Enrollment; must NOT count as a duplicate
 --   (1, 20) -> 200, 201       multiplicity 2, winner 200 (older created_at)
 --   (2, 10) -> 300, 301, 302  multiplicity 3, winner 300
 --   (3, 10) -> 400, 401       multiplicity 2 with IDENTICAL created_at, so the
@@ -70,18 +70,18 @@ INSERT INTO language_lesson_members
   (3, '2024-01-01', '2024-01-01', 20, 201, 3, 1),
   (4, '2024-01-01', '2024-01-01', 10, 302, 4, 2),
   (5, '2024-01-01', '2024-01-01', 10, 401, 5, 3),
-  -- disagrees with Membership 100, which belongs to user 1: query 4 must catch it
+  -- disagrees with Enrollment 100, which belongs to user 1: query 4 must catch it
   (6, '2024-01-01', '2024-01-01', 10, 100, 6, 99);
 
 -- Expected output, printed immediately above the real output so the comparison is
 -- side by side rather than a scroll back to a comment block.
 SELECT * FROM (VALUES
-  ('duplicate_pairs',                '3',      'the three multi-Membership pairs'),
-  ('worst_multiplicity',             '3',      'pair (2, 10)'),
-  ('rows_to_delete',                 '4',      '1 + 2 + 1 losers'),
-  ('total_memberships',              '8',      NULL),
-  ('memberships_per_pair',           '1->1, 2->2, 3->1', 'distribution'),
-  ('losing_memberships',             '4',      '201, 301, 302, 401; must equal rows_to_delete'),
-  ('lesson_memberships_to_repoint',  '3',      'on 201, 302, 401 — not the 2 on winner 200'),
-  ('mismatched_lesson_memberships',  '1',      'row 6, planted above')
+  ('duplicate_pairs',                  '3',      'the three multi-Enrollment pairs'),
+  ('worst_multiplicity',               '3',      'pair (2, 10)'),
+  ('rows_to_delete',                   '4',      '1 + 2 + 1 losers'),
+  ('total_enrollments',                '8',      NULL),
+  ('enrollments_per_pair',             '1->1, 2->2, 3->1', 'distribution'),
+  ('losing_enrollments',               '4',      '201, 301, 302, 401; must equal rows_to_delete'),
+  ('lesson_progress_to_repoint',       '3',      'on 201, 302, 401 — not the 2 on winner 200'),
+  ('mismatched_lesson_progress',       '1',      'row 6, planted above')
 ) AS t(expected_metric, expected_value, note);

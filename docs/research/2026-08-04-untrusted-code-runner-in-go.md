@@ -460,7 +460,7 @@ works in production.
 - **Guest checks.** Legacy `check` is `allow_unauthenticated_access` and tracks
   `session[:finished_as_guest]` (`legacy/app/controllers/api/lessons_controller.rb`).
   `checkLesson` in TypeSpec declares no auth, so guests can call it — but
-  progress recording depends on the missing `language_members` work
+  progress recording depends on the missing Enrollment work
   (`docs/PARITY.md` §1). Sequence them together.
 - **Output wire format.** Keep legacy's base64+escape, or send scrubbed UTF-8?
   `LessonCheckingResponse.output` is a plain `string` today.

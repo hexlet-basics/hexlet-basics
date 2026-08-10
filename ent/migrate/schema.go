@@ -59,7 +59,7 @@ var (
 		PrimaryKey: []*schema.Column{AiChatsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "ai_chats_language_lesson_members_member",
+				Symbol:     "ai_chats_language_lesson_members_lesson_progress",
 				Columns:    []*schema.Column{AiChatsColumns[3]},
 				RefColumns: []*schema.Column{LanguageLessonMembersColumns[0]},
 				OnDelete:   schema.NoAction,
