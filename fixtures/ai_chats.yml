@@ -1,6 +1,6 @@
 # Fixtures for `ai_chats`, HAND-CURATED (the legacy Rails fixture set has no
-# assistant data). One chat per lesson member: 7001 hangs off member 3001
-# (lesson hello-world), 7002 off member 3002 (lesson variables) — see
+# assistant data). One chat per lesson progress row: 7001 hangs off row 3001
+# (lesson hello-world), 7002 off row 3002 (lesson variables) — see
 # language_lesson_members.yml. testfixtures disables FKs during load, so
 # user_id parents need not exist. The RubyLLM-era `ai_model_id` column stays
 # NULL: it is not part of the Go domain.
