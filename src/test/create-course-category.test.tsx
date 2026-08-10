@@ -5,7 +5,7 @@ import type { CourseCategoryInput } from "@/client/types.gen";
 // Route components live under the `{-$locale}` directory, whose braces break
 // Vitest's transform when a *test* lives there — so the flow tests sit in
 // src/test/ and import the page components across the alias.
-import { NewCourseCategory } from "@/routes/{-$locale}/admin/language_categories/new";
+import { NewCourseCategory } from "@/routes/{-$locale}/admin/course_categories/new";
 import { worker } from "@/test/msw";
 import { renderWithRouter } from "@/test/renderWithRouter";
 
@@ -14,7 +14,7 @@ import { renderWithRouter } from "@/test/renderWithRouter";
 test("creates a course category", async () => {
   let received: CourseCategoryInput | undefined;
   worker.use(
-    http.post("*/admin/language_categories", async ({ request }) => {
+    http.post("*/admin/course_categories", async ({ request }) => {
       received = (await request.json()) as CourseCategoryInput;
       return HttpResponse.json({
         id: 1,
@@ -42,6 +42,6 @@ test("creates a course category", async () => {
     slug: "frontend",
   });
   expect(navigate).toHaveBeenCalledWith(
-    expect.objectContaining({ to: "/{-$locale}/admin/language_categories" }),
+    expect.objectContaining({ to: "/{-$locale}/admin/course_categories" }),
   );
 });

@@ -11,7 +11,7 @@ import (
 	"hexletbasics/internal/localization"
 )
 
-// Admin course endpoints (legacy `/admin/languages`). The API embeds the
+// Admin course endpoints. The API embeds the
 // current version, so reads load it. The cover image (coverAttachmentId) and
 // the derived repositoryUrl are not written here — the cover is deferred until
 // the Attachments uploader lands, and repositoryUrl is computed from the slug on

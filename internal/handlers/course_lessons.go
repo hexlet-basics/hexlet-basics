@@ -13,8 +13,8 @@ import (
 	"hexletbasics/internal/localization"
 )
 
-// These three admin lists (legacy `admin/language_lessons`,
-// `admin/language_lesson_members`, `admin/language_lesson_reviews`) all read the
+// These three admin lists (legacy `admin/course_lessons`,
+// `admin/lesson_progress`, `admin/course_lesson_reviews`) all read the
 // lesson/version-info graph and are READ-ONLY (index only). Their ent queries
 // eager-load the graph needed by the API read models; apiconv owns the mapping
 // from that graph to generated API types.
@@ -71,7 +71,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 }
 
 // AdminListLessonProgress lists per-lesson progress rows, newest first (legacy
-// `admin/language_lesson_members`, still the route). The course slug, lesson
+// `admin/lesson_progress`). The course slug, lesson
 // slug, and lesson name are enriched from the row's course/lesson.
 func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminListLessonProgressParams) (api.AdminListLessonProgressRes, error) {
 	page := newPagination(params.Page, params.PerPage)
@@ -107,7 +107,7 @@ func (s *Server) AdminListLessonProgress(ctx context.Context, params api.AdminLi
 
 // AdminListCourseLessonReviews lists AI lesson reviews for the current locale
 // that actually have a summary, newest first (legacy
-// `admin/language_lesson_reviews`, `where(locale:).with_summary`). The lesson
+// `admin/course_lesson_reviews`, `where(locale:).with_summary`). The lesson
 // slug/natural-order and course slug are enriched by id.
 func (s *Server) AdminListCourseLessonReviews(ctx context.Context, params api.AdminListCourseLessonReviewsParams) (api.AdminListCourseLessonReviewsRes, error) {
 	page := newPagination(params.Page, params.PerPage)

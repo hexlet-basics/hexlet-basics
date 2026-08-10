@@ -8,9 +8,9 @@ import { adminListCourseLessonReviewsOptions } from "@/client/@tanstack/react-qu
 import type { CourseLessonReview } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 
-// AI lesson-review summaries (legacy `/admin/language_lesson_reviews`) —
+// AI lesson-review summaries (legacy `/admin/course_lesson_reviews`) —
 // read-only; new summaries are produced by the course/lesson review actions.
-export const Route = createFileRoute("/{-$locale}/admin/language_lesson_reviews/")({
+export const Route = createFileRoute("/{-$locale}/admin/course_lesson_reviews/")({
   component: LessonReviewsList,
 });
 

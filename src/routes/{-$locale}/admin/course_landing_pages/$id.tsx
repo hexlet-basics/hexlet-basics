@@ -3,69 +3,69 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
-  adminCreateCategoryQnaItemMutation,
-  adminDeleteCategoryQnaItemMutation,
-  adminGetCourseCategoryOptions,
-  adminGetCourseCategoryQueryKey,
-  adminListCategoryQnaItemsOptions,
-  adminListCategoryQnaItemsQueryKey,
-  adminListCourseCategoriesQueryKey,
-  adminUpdateCategoryQnaItemMutation,
-  adminUpdateCourseCategoryMutation,
+  adminCreateLandingPageQnaItemMutation,
+  adminDeleteLandingPageQnaItemMutation,
+  adminGetCourseLandingPageOptions,
+  adminGetCourseLandingPageQueryKey,
+  adminListCourseLandingPagesQueryKey,
+  adminListLandingPageQnaItemsOptions,
+  adminListLandingPageQnaItemsQueryKey,
+  adminUpdateCourseLandingPageMutation,
+  adminUpdateLandingPageQnaItemMutation,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseCategoryInput } from "@/client/zod.gen";
+import { zCourseLandingPageInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
 import { QnaPanel } from "@/components/admin/QnaPanel";
 import {
-  courseCategoryToForm,
-  useCourseCategoryFields,
-} from "@/components/admin/resources/courseCategory";
+  courseLandingPageToForm,
+  useCourseLandingPageFields,
+} from "@/components/admin/resources/courseLandingPage";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-export const Route = createFileRoute("/{-$locale}/admin/language_categories/$id")({
-  component: EditCourseCategory,
+export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/$id")({
+  component: EditCourseLandingPage,
 });
 
-function EditCourseCategory() {
+function EditCourseLandingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseCategoryFields();
+  const fields = useCourseLandingPageFields();
   const { id } = Route.useParams();
-  const categoryId = Number(id);
+  const pageId = Number(id);
 
-  const { data, isLoading } = useQuery(adminGetCourseCategoryOptions({ path: { id: categoryId } }));
+  const { data, isLoading } = useQuery(adminGetCourseLandingPageOptions({ path: { id: pageId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/language_categories" });
+  const backToList = () => navigate({ to: "/{-$locale}/admin/course_landing_pages" });
 
   const mutation = useResourceMutation({
-    mutation: adminUpdateCourseCategoryMutation(),
+    mutation: adminUpdateCourseLandingPageMutation(),
     invalidate: [
-      adminListCourseCategoriesQueryKey(),
-      adminGetCourseCategoryQueryKey({ path: { id: categoryId } }),
+      adminListCourseLandingPagesQueryKey(),
+      adminGetCourseLandingPageQueryKey({ path: { id: pageId } }),
     ],
     successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
     onDone: backToList,
   });
 
-  // Nested FAQ (legacy `admin/language_categories/:id/qna_items`).
-  const qnaPath = { path: { categoryId } };
-  const qna = useQuery(adminListCategoryQnaItemsOptions(qnaPath));
-  const qnaInvalidate = [adminListCategoryQnaItemsQueryKey(qnaPath)];
+  // Nested FAQ (legacy `admin/course_landing_pages/:id/qna_items`).
+  const qnaPath = { path: { landingPageId: pageId } };
+  const qna = useQuery(adminListLandingPageQnaItemsOptions(qnaPath));
+  const qnaInvalidate = [adminListLandingPageQnaItemsQueryKey(qnaPath)];
   const createQna = useResourceMutation({
-    mutation: adminCreateCategoryQnaItemMutation(),
+    mutation: adminCreateLandingPageQnaItemMutation(),
     invalidate: qnaInvalidate,
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
   });
   const updateQna = useResourceMutation({
-    mutation: adminUpdateCategoryQnaItemMutation(),
+    mutation: adminUpdateLandingPageQnaItemMutation(),
     invalidate: qnaInvalidate,
     successMessage: t(($) => $.admin.crud.updated),
     errorMessage: t(($) => $.admin.crud.saveError),
   });
   const deleteQna = useResourceMutation({
-    mutation: adminDeleteCategoryQnaItemMutation(),
+    mutation: adminDeleteLandingPageQnaItemMutation(),
     invalidate: qnaInvalidate,
     successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
@@ -81,13 +81,11 @@ function EditCourseCategory() {
       ) : (
         <>
           <CrudForm
-            // Remount per row so the form re-seeds its default values from the
-            // loaded category instead of keeping a stale initial snapshot.
             key={data.id}
             fields={fields}
-            schema={zCourseCategoryInput}
-            defaultValues={courseCategoryToForm(data)}
-            onSubmit={(values) => mutation.mutate({ path: { id: categoryId }, body: values })}
+            schema={zCourseLandingPageInput}
+            defaultValues={courseLandingPageToForm(data)}
+            onSubmit={(values) => mutation.mutate({ path: { id: pageId }, body: values })}
             submitLabel={t(($) => $.admin.crud.save)}
             onCancel={backToList}
             isPending={mutation.isPending}
@@ -96,9 +94,9 @@ function EditCourseCategory() {
             items={qna.data ?? []}
             onCreate={(input) => createQna.mutate({ ...qnaPath, body: input })}
             onUpdate={(itemId, input) =>
-              updateQna.mutate({ path: { categoryId, id: itemId }, body: input })
+              updateQna.mutate({ path: { landingPageId: pageId, id: itemId }, body: input })
             }
-            onDelete={(itemId) => deleteQna.mutate({ path: { categoryId, id: itemId } })}
+            onDelete={(itemId) => deleteQna.mutate({ path: { landingPageId: pageId, id: itemId } })}
             isPending={createQna.isPending || updateQna.isPending || deleteQna.isPending}
           />
         </>

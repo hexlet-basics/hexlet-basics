@@ -2133,7 +2133,7 @@ export type AdminListCourseCategoriesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/language_categories';
+  url: '/admin/course_categories';
 };
 
 export type AdminListCourseCategoriesErrors = {
@@ -2169,7 +2169,7 @@ export type AdminCreateCourseCategoryData = {
   body: CourseCategoryInput;
   path?: never;
   query?: never;
-  url: '/admin/language_categories';
+  url: '/admin/course_categories';
 };
 
 export type AdminCreateCourseCategoryErrors = {
@@ -2207,7 +2207,7 @@ export type AdminListCategoryQnaItemsData = {
     categoryId: number;
   };
   query?: never;
-  url: '/admin/language_categories/{categoryId}/qna_items';
+  url: '/admin/course_categories/{categoryId}/qna_items';
 };
 
 export type AdminListCategoryQnaItemsErrors = {
@@ -2245,7 +2245,7 @@ export type AdminCreateCategoryQnaItemData = {
     categoryId: number;
   };
   query?: never;
-  url: '/admin/language_categories/{categoryId}/qna_items';
+  url: '/admin/course_categories/{categoryId}/qna_items';
 };
 
 export type AdminCreateCategoryQnaItemErrors = {
@@ -2284,7 +2284,7 @@ export type AdminDeleteCategoryQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_categories/{categoryId}/qna_items/{id}';
+  url: '/admin/course_categories/{categoryId}/qna_items/{id}';
 };
 
 export type AdminDeleteCategoryQnaItemErrors = {
@@ -2323,7 +2323,7 @@ export type AdminUpdateCategoryQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_categories/{categoryId}/qna_items/{id}';
+  url: '/admin/course_categories/{categoryId}/qna_items/{id}';
 };
 
 export type AdminUpdateCategoryQnaItemErrors = {
@@ -2361,7 +2361,7 @@ export type AdminDeleteCourseCategoryData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_categories/{id}';
+  url: '/admin/course_categories/{id}';
 };
 
 export type AdminDeleteCourseCategoryErrors = {
@@ -2399,7 +2399,7 @@ export type AdminGetCourseCategoryData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_categories/{id}';
+  url: '/admin/course_categories/{id}';
 };
 
 export type AdminGetCourseCategoryErrors = {
@@ -2437,7 +2437,7 @@ export type AdminUpdateCourseCategoryData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_categories/{id}';
+  url: '/admin/course_categories/{id}';
 };
 
 export type AdminUpdateCourseCategoryErrors = {
@@ -2484,7 +2484,7 @@ export type AdminListCourseLandingPagesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/language_landing_pages';
+  url: '/admin/course_landing_pages';
 };
 
 export type AdminListCourseLandingPagesErrors = {
@@ -2520,7 +2520,7 @@ export type AdminCreateCourseLandingPageData = {
   body: CourseLandingPageInput;
   path?: never;
   query?: never;
-  url: '/admin/language_landing_pages';
+  url: '/admin/course_landing_pages';
 };
 
 export type AdminCreateCourseLandingPageErrors = {
@@ -2558,7 +2558,7 @@ export type AdminDeleteCourseLandingPageData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{id}';
+  url: '/admin/course_landing_pages/{id}';
 };
 
 export type AdminDeleteCourseLandingPageErrors = {
@@ -2596,7 +2596,7 @@ export type AdminGetCourseLandingPageData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{id}';
+  url: '/admin/course_landing_pages/{id}';
 };
 
 export type AdminGetCourseLandingPageErrors = {
@@ -2634,7 +2634,7 @@ export type AdminUpdateCourseLandingPageData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{id}';
+  url: '/admin/course_landing_pages/{id}';
 };
 
 export type AdminUpdateCourseLandingPageErrors = {
@@ -2672,7 +2672,7 @@ export type AdminListLandingPageQnaItemsData = {
     landingPageId: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items';
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items';
 };
 
 export type AdminListLandingPageQnaItemsErrors = {
@@ -2710,7 +2710,7 @@ export type AdminCreateLandingPageQnaItemData = {
     landingPageId: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items';
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items';
 };
 
 export type AdminCreateLandingPageQnaItemErrors = {
@@ -2749,7 +2749,7 @@ export type AdminDeleteLandingPageQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}';
 };
 
 export type AdminDeleteLandingPageQnaItemErrors = {
@@ -2788,7 +2788,7 @@ export type AdminUpdateLandingPageQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}';
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}';
 };
 
 export type AdminUpdateLandingPageQnaItemErrors = {
@@ -2820,53 +2820,6 @@ export type AdminUpdateLandingPageQnaItemResponses = {
 
 export type AdminUpdateLandingPageQnaItemResponse = AdminUpdateLandingPageQnaItemResponses[keyof AdminUpdateLandingPageQnaItemResponses];
 
-export type AdminListLessonProgressData = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    perPage?: number;
-    /**
-     * Sort field (ransack `sf`).
-     */
-    sortField?: string;
-    /**
-     * Sort order (ransack `so`).
-     */
-    sortOrder?: 'asc' | 'desc';
-  };
-  url: '/admin/language_lesson_members';
-};
-
-export type AdminListLessonProgressErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * The caller is authenticated but lacks permission for this resource.
-   */
-  403: ProblemDetails;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type AdminListLessonProgressError = AdminListLessonProgressErrors[keyof AdminListLessonProgressErrors];
-
-export type AdminListLessonProgressResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: LessonProgressPage;
-};
-
-export type AdminListLessonProgressResponse = AdminListLessonProgressResponses[keyof AdminListLessonProgressResponses];
-
 export type AdminListCourseLessonReviewsData = {
   body?: never;
   path?: never;
@@ -2882,7 +2835,7 @@ export type AdminListCourseLessonReviewsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/language_lesson_reviews';
+  url: '/admin/course_lesson_reviews';
 };
 
 export type AdminListCourseLessonReviewsErrors = {
@@ -2929,7 +2882,7 @@ export type AdminListCourseLessonsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/language_lessons';
+  url: '/admin/course_lessons';
 };
 
 export type AdminListCourseLessonsErrors = {
@@ -2967,7 +2920,7 @@ export type AdminReviewCourseLessonData = {
     id: number;
   };
   query?: never;
-  url: '/admin/language_lessons/{id}/review';
+  url: '/admin/course_lessons/{id}/review';
 };
 
 export type AdminReviewCourseLessonErrors = {
@@ -3018,7 +2971,7 @@ export type AdminListCoursesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/languages';
+  url: '/admin/courses';
 };
 
 export type AdminListCoursesErrors = {
@@ -3054,7 +3007,7 @@ export type AdminCreateCourseData = {
   body: CourseInput;
   path?: never;
   query?: never;
-  url: '/admin/languages';
+  url: '/admin/courses';
 };
 
 export type AdminCreateCourseErrors = {
@@ -3092,7 +3045,7 @@ export type AdminGetCourseData = {
     id: number;
   };
   query?: never;
-  url: '/admin/languages/{id}';
+  url: '/admin/courses/{id}';
 };
 
 export type AdminGetCourseErrors = {
@@ -3130,7 +3083,7 @@ export type AdminUpdateCourseData = {
     id: number;
   };
   query?: never;
-  url: '/admin/languages/{id}';
+  url: '/admin/courses/{id}';
 };
 
 export type AdminUpdateCourseErrors = {
@@ -3168,7 +3121,7 @@ export type AdminReviewCourseData = {
     id: number;
   };
   query?: never;
-  url: '/admin/languages/{id}/review';
+  url: '/admin/courses/{id}/review';
 };
 
 export type AdminReviewCourseErrors = {
@@ -3210,7 +3163,7 @@ export type AdminCreateCourseVersionData = {
     id: number;
   };
   query?: never;
-  url: '/admin/languages/{id}/versions';
+  url: '/admin/courses/{id}/versions';
 };
 
 export type AdminCreateCourseVersionErrors = {
@@ -3292,6 +3245,53 @@ export type AdminListLeadsResponses = {
 };
 
 export type AdminListLeadsResponse = AdminListLeadsResponses[keyof AdminListLeadsResponses];
+
+export type AdminListLessonProgressData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    /**
+     * Sort field (ransack `sf`).
+     */
+    sortField?: string;
+    /**
+     * Sort order (ransack `so`).
+     */
+    sortOrder?: 'asc' | 'desc';
+  };
+  url: '/admin/lesson_progress';
+};
+
+export type AdminListLessonProgressErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListLessonProgressError = AdminListLessonProgressErrors[keyof AdminListLessonProgressErrors];
+
+export type AdminListLessonProgressResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: LessonProgressPage;
+};
+
+export type AdminListLessonProgressResponse = AdminListLessonProgressResponses[keyof AdminListLessonProgressResponses];
 
 export type AdminGetRolePermissionsData = {
   body?: never;

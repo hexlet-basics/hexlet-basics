@@ -21,32 +21,32 @@ type Handler interface {
 	AdminCreateBlogPost(ctx context.Context, req *BlogPostInput) (AdminCreateBlogPostRes, error)
 	// AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
 	//
-	// POST /admin/language_categories/{categoryId}/qna_items
+	// POST /admin/course_categories/{categoryId}/qna_items
 	AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
 	// AdminCreateCourse implements adminCreateCourse operation.
 	//
-	// POST /admin/languages
+	// POST /admin/courses
 	AdminCreateCourse(ctx context.Context, req *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory implements adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 	// 409 by the central ent-error handler.
 	//
-	// POST /admin/language_categories
+	// POST /admin/course_categories
 	AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
 	// AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 	//
-	// POST /admin/language_landing_pages
+	// POST /admin/course_landing_pages
 	AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
 	// AdminCreateCourseVersion implements adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
 	//
-	// POST /admin/languages/{id}/versions
+	// POST /admin/courses/{id}/versions
 	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error)
 	// AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
 	//
-	// POST /admin/language_landing_pages/{landingPageId}/qna_items
+	// POST /admin/course_landing_pages/{landingPageId}/qna_items
 	AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
 	// AdminCreateReview implements adminCreateReview operation.
 	//
@@ -82,21 +82,21 @@ type Handler interface {
 	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error)
 	// AdminDeleteCategoryQnaItem implements adminDeleteCategoryQnaItem operation.
 	//
-	// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
+	// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
 	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error)
 	// AdminDeleteCourseCategory implements adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
-	// DELETE /admin/language_categories/{id}
+	// DELETE /admin/course_categories/{id}
 	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error)
 	// AdminDeleteCourseLandingPage implements adminDeleteCourseLandingPage operation.
 	//
-	// DELETE /admin/language_landing_pages/{id}
+	// DELETE /admin/course_landing_pages/{id}
 	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error)
 	// AdminDeleteLandingPageQnaItem implements adminDeleteLandingPageQnaItem operation.
 	//
-	// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+	// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error)
 	// AdminDeleteReview implements adminDeleteReview operation.
 	//
@@ -129,21 +129,21 @@ type Handler interface {
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// GET /admin/languages/{id}
+	// GET /admin/courses/{id}
 	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory implements adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
-	// GET /admin/language_categories/{id}
+	// GET /admin/course_categories/{id}
 	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
 	// AdminGetCourseLandingPage implements adminGetCourseLandingPage operation.
 	//
 	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
-	// GET /admin/language_landing_pages/{id}
+	// GET /admin/course_landing_pages/{id}
 	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
 	// AdminGetManagementUser implements adminGetManagementUser operation.
 	//
@@ -194,33 +194,33 @@ type Handler interface {
 	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error)
 	// AdminListCategoryQnaItems implements adminListCategoryQnaItems operation.
 	//
-	// GET /admin/language_categories/{categoryId}/qna_items
+	// GET /admin/course_categories/{categoryId}/qna_items
 	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error)
 	// AdminListCourseCategories implements adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
-	// GET /admin/language_categories
+	// GET /admin/course_categories
 	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error)
 	// AdminListCourseLandingPages implements adminListCourseLandingPages operation.
 	//
-	// GET /admin/language_landing_pages
+	// GET /admin/course_landing_pages
 	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
 	// AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
 	//
-	// GET /admin/language_lesson_reviews
+	// GET /admin/course_lesson_reviews
 	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error)
 	// AdminListCourseLessons implements adminListCourseLessons operation.
 	//
-	// GET /admin/language_lessons
+	// GET /admin/course_lessons
 	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
 	// AdminListCourses implements adminListCourses operation.
 	//
-	// GET /admin/languages
+	// GET /admin/courses
 	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error)
 	// AdminListLandingPageQnaItems implements adminListLandingPageQnaItems operation.
 	//
-	// GET /admin/language_landing_pages/{landingPageId}/qna_items
+	// GET /admin/course_landing_pages/{landingPageId}/qna_items
 	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error)
 	// AdminListLeads implements adminListLeads operation.
 	//
@@ -228,7 +228,7 @@ type Handler interface {
 	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
 	// AdminListLessonProgress implements adminListLessonProgress operation.
 	//
-	// GET /admin/language_lesson_members
+	// GET /admin/lesson_progress
 	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error)
 	// AdminListManagementUsers implements adminListManagementUsers operation.
 	//
@@ -258,13 +258,13 @@ type Handler interface {
 	//
 	// Enqueue AI re-review of every current lesson version.
 	//
-	// POST /admin/languages/{id}/review
+	// POST /admin/courses/{id}/review
 	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error)
 	// AdminReviewCourseLesson implements adminReviewCourseLesson operation.
 	//
 	// Enqueue AI review for a single lesson.
 	//
-	// POST /admin/language_lessons/{id}/review
+	// POST /admin/course_lessons/{id}/review
 	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
 	// AdminSearchUsers implements adminSearchUsers operation.
 	//
@@ -293,31 +293,31 @@ type Handler interface {
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
-	// PUT /admin/language_categories/{categoryId}/qna_items/{id}
+	// PUT /admin/course_categories/{categoryId}/qna_items/{id}
 	AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
 	// AdminUpdateCourse implements adminUpdateCourse operation.
 	//
-	// PUT /admin/languages/{id}
+	// PUT /admin/courses/{id}
 	AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory implements adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 	// handler.
 	//
-	// PUT /admin/language_categories/{id}
+	// PUT /admin/course_categories/{id}
 	AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
 	// AdminUpdateCourseLandingPage implements adminUpdateCourseLandingPage operation.
 	//
 	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// PUT /admin/language_landing_pages/{id}
+	// PUT /admin/course_landing_pages/{id}
 	AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
 	// AdminUpdateLandingPageQnaItem implements adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
-	// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+	// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 	AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
 	// AdminUpdateManagementUser implements adminUpdateManagementUser operation.
 	//

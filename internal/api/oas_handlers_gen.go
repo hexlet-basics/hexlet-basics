@@ -470,14 +470,14 @@ func (s *Server) handleAdminCreateBlogPostRequest(args [0]string, argsEscaped bo
 
 // handleAdminCreateCategoryQnaItemRequest handles adminCreateCategoryQnaItem operation.
 //
-// POST /admin/language_categories/{categoryId}/qna_items
+// POST /admin/course_categories/{categoryId}/qna_items
 func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{categoryId}/qna_items"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -701,14 +701,14 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 
 // handleAdminCreateCourseRequest handles adminCreateCourse operation.
 //
-// POST /admin/languages
+// POST /admin/courses
 func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/languages"),
+		semconv.HTTPRouteKey.String("/admin/courses"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -920,14 +920,14 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 // Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 // 409 by the central ent-error handler.
 //
-// POST /admin/language_categories
+// POST /admin/course_categories
 func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/language_categories"),
+		semconv.HTTPRouteKey.String("/admin/course_categories"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1136,14 +1136,14 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 
 // handleAdminCreateCourseLandingPageRequest handles adminCreateCourseLandingPage operation.
 //
-// POST /admin/language_landing_pages
+// POST /admin/course_landing_pages
 func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1354,14 +1354,14 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 //
 // Build a new version of the course exercises.
 //
-// POST /admin/languages/{id}/versions
+// POST /admin/courses/{id}/versions
 func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseVersion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/languages/{id}/versions"),
+		semconv.HTTPRouteKey.String("/admin/courses/{id}/versions"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1570,14 +1570,14 @@ func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscap
 
 // handleAdminCreateLandingPageQnaItemRequest handles adminCreateLandingPageQnaItem operation.
 //
-// POST /admin/language_landing_pages/{landingPageId}/qna_items
+// POST /admin/course_landing_pages/{landingPageId}/qna_items
 func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{landingPageId}/qna_items"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3105,14 +3105,14 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 
 // handleAdminDeleteCategoryQnaItemRequest handles adminDeleteCategoryQnaItem operation.
 //
-// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
+// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
 func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{categoryId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3327,14 +3327,14 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 //
 // Delete a course category.
 //
-// DELETE /admin/language_categories/{id}
+// DELETE /admin/course_categories/{id}
 func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3543,14 +3543,14 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 
 // handleAdminDeleteCourseLandingPageRequest handles adminDeleteCourseLandingPage operation.
 //
-// DELETE /admin/language_landing_pages/{id}
+// DELETE /admin/course_landing_pages/{id}
 func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3759,14 +3759,14 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 
 // handleAdminDeleteLandingPageQnaItemRequest handles adminDeleteLandingPageQnaItem operation.
 //
-// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5244,14 +5244,14 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 //
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/languages/{id}
+// GET /admin/courses/{id}
 func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/languages/{id}"),
+		semconv.HTTPRouteKey.String("/admin/courses/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5445,14 +5445,14 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 // Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/language_categories/{id}
+// GET /admin/course_categories/{id}
 func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5646,14 +5646,14 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 // Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/language_landing_pages/{id}
+// GET /admin/course_landing_pages/{id}
 func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7467,14 +7467,14 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 
 // handleAdminListCategoryQnaItemsRequest handles adminListCategoryQnaItems operation.
 //
-// GET /admin/language_categories/{categoryId}/qna_items
+// GET /admin/course_categories/{categoryId}/qna_items
 func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCategoryQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{categoryId}/qna_items"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7667,14 +7667,14 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 //
 // List course categories (paginated).
 //
-// GET /admin/language_categories
+// GET /admin/course_categories
 func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_categories"),
+		semconv.HTTPRouteKey.String("/admin/course_categories"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7877,14 +7877,14 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 
 // handleAdminListCourseLandingPagesRequest handles adminListCourseLandingPages operation.
 //
-// GET /admin/language_landing_pages
+// GET /admin/course_landing_pages
 func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLandingPages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8087,14 +8087,14 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 
 // handleAdminListCourseLessonReviewsRequest handles adminListCourseLessonReviews operation.
 //
-// GET /admin/language_lesson_reviews
+// GET /admin/course_lesson_reviews
 func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_lesson_reviews"),
+		semconv.HTTPRouteKey.String("/admin/course_lesson_reviews"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8297,14 +8297,14 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 
 // handleAdminListCourseLessonsRequest handles adminListCourseLessons operation.
 //
-// GET /admin/language_lessons
+// GET /admin/course_lessons
 func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessons"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_lessons"),
+		semconv.HTTPRouteKey.String("/admin/course_lessons"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8507,14 +8507,14 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 
 // handleAdminListCoursesRequest handles adminListCourses operation.
 //
-// GET /admin/languages
+// GET /admin/courses
 func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/languages"),
+		semconv.HTTPRouteKey.String("/admin/courses"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8717,14 +8717,14 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 
 // handleAdminListLandingPageQnaItemsRequest handles adminListLandingPageQnaItems operation.
 //
-// GET /admin/language_landing_pages/{landingPageId}/qna_items
+// GET /admin/course_landing_pages/{landingPageId}/qna_items
 func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLandingPageQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{landingPageId}/qna_items"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -9125,14 +9125,14 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 
 // handleAdminListLessonProgressRequest handles adminListLessonProgress operation.
 //
-// GET /admin/language_lesson_members
+// GET /admin/lesson_progress
 func (s *Server) handleAdminListLessonProgressRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLessonProgress"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/language_lesson_members"),
+		semconv.HTTPRouteKey.String("/admin/lesson_progress"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -10597,14 +10597,14 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 //
 // Enqueue AI re-review of every current lesson version.
 //
-// POST /admin/languages/{id}/review
+// POST /admin/courses/{id}/review
 func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/languages/{id}/review"),
+		semconv.HTTPRouteKey.String("/admin/courses/{id}/review"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -10815,14 +10815,14 @@ func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool
 //
 // Enqueue AI review for a single lesson.
 //
-// POST /admin/language_lessons/{id}/review
+// POST /admin/course_lessons/{id}/review
 func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/language_lessons/{id}/review"),
+		semconv.HTTPRouteKey.String("/admin/course_lessons/{id}/review"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -11931,14 +11931,14 @@ func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bo
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/language_categories/{categoryId}/qna_items/{id}
+// PUT /admin/course_categories/{categoryId}/qna_items/{id}
 func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{categoryId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12166,14 +12166,14 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 
 // handleAdminUpdateCourseRequest handles adminUpdateCourse operation.
 //
-// PUT /admin/languages/{id}
+// PUT /admin/courses/{id}
 func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/languages/{id}"),
+		semconv.HTTPRouteKey.String("/admin/courses/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12400,14 +12400,14 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 // Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/language_categories/{id}
+// PUT /admin/course_categories/{id}
 func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/language_categories/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_categories/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12633,14 +12633,14 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 //
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/language_landing_pages/{id}
+// PUT /admin/course_landing_pages/{id}
 func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12867,14 +12867,14 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/language_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)

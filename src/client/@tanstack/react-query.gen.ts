@@ -922,48 +922,6 @@ export const adminUpdateLandingPageQnaItemMutation = (options?: Partial<Options<
   return mutationOptions;
 };
 
-export const adminListLessonProgressQueryKey = (options?: Options<AdminListLessonProgressData>) => createQueryKey('adminListLessonProgress', options);
-
-export const adminListLessonProgressOptions = (options?: Options<AdminListLessonProgressData>) => queryOptions<AdminListLessonProgressResponse, AxiosError<AdminListLessonProgressError>, AdminListLessonProgressResponse, ReturnType<typeof adminListLessonProgressQueryKey>>({
-  queryFn: async ({ queryKey, signal }) => {
-    const { data } = await adminListLessonProgress({
-      ...options,
-      ...queryKey[0],
-      signal,
-      throwOnError: true
-    });
-    return data;
-  },
-  queryKey: adminListLessonProgressQueryKey(options)
-});
-
-export const adminListLessonProgressInfiniteQueryKey = (options?: Options<AdminListLessonProgressData>): QueryKey<Options<AdminListLessonProgressData>> => createQueryKey('adminListLessonProgress', options, true);
-
-export const adminListLessonProgressInfiniteOptions = (options?: Options<AdminListLessonProgressData>) => {
-  const opts = infiniteQueryOptions<AdminListLessonProgressResponse, AxiosError<AdminListLessonProgressError>, InfiniteData<AdminListLessonProgressResponse>, QueryKey<Options<AdminListLessonProgressData>>, number | Pick<QueryKey<Options<AdminListLessonProgressData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-  // @ts-ignore
-  {
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-      // @ts-ignore
-      const page: Pick<QueryKey<Options<AdminListLessonProgressData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-        query: {
-          page: pageParam
-        }
-      };
-      const params = createInfiniteParams(queryKey, page);
-      const { data } = await adminListLessonProgress({
-        ...options,
-        ...params,
-        signal,
-        throwOnError: true
-      });
-      return data;
-    },
-    queryKey: adminListLessonProgressInfiniteQueryKey(options)
-  });
-  return opts as Omit<typeof opts, 'initialData'>;
-};
-
 export const adminListCourseLessonReviewsQueryKey = (options?: Options<AdminListCourseLessonReviewsData>) => createQueryKey('adminListCourseLessonReviews', options);
 
 export const adminListCourseLessonReviewsOptions = (options?: Options<AdminListCourseLessonReviewsData>) => queryOptions<AdminListCourseLessonReviewsResponse, AxiosError<AdminListCourseLessonReviewsError>, AdminListCourseLessonReviewsResponse, ReturnType<typeof adminListCourseLessonReviewsQueryKey>>({
@@ -1226,6 +1184,48 @@ export const adminListLeadsInfiniteOptions = (options?: Options<AdminListLeadsDa
       return data;
     },
     queryKey: adminListLeadsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const adminListLessonProgressQueryKey = (options?: Options<AdminListLessonProgressData>) => createQueryKey('adminListLessonProgress', options);
+
+export const adminListLessonProgressOptions = (options?: Options<AdminListLessonProgressData>) => queryOptions<AdminListLessonProgressResponse, AxiosError<AdminListLessonProgressError>, AdminListLessonProgressResponse, ReturnType<typeof adminListLessonProgressQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListLessonProgress({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListLessonProgressQueryKey(options)
+});
+
+export const adminListLessonProgressInfiniteQueryKey = (options?: Options<AdminListLessonProgressData>): QueryKey<Options<AdminListLessonProgressData>> => createQueryKey('adminListLessonProgress', options, true);
+
+export const adminListLessonProgressInfiniteOptions = (options?: Options<AdminListLessonProgressData>) => {
+  const opts = infiniteQueryOptions<AdminListLessonProgressResponse, AxiosError<AdminListLessonProgressError>, InfiniteData<AdminListLessonProgressResponse>, QueryKey<Options<AdminListLessonProgressData>>, number | Pick<QueryKey<Options<AdminListLessonProgressData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListLessonProgressData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListLessonProgress({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListLessonProgressInfiniteQueryKey(options)
   });
   return opts as Omit<typeof opts, 'initialData'>;
 };

@@ -32,14 +32,14 @@ func (UnimplementedHandler) AdminCreateBlogPost(ctx context.Context, req *BlogPo
 
 // AdminCreateCategoryQnaItem implements adminCreateCategoryQnaItem operation.
 //
-// POST /admin/language_categories/{categoryId}/qna_items
+// POST /admin/course_categories/{categoryId}/qna_items
 func (UnimplementedHandler) AdminCreateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateCategoryQnaItemParams) (r AdminCreateCategoryQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateCourse implements adminCreateCourse operation.
 //
-// POST /admin/languages
+// POST /admin/courses
 func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseInput) (r AdminCreateCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -49,14 +49,14 @@ func (UnimplementedHandler) AdminCreateCourse(ctx context.Context, req *CourseIn
 // Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 // 409 by the central ent-error handler.
 //
-// POST /admin/language_categories
+// POST /admin/course_categories
 func (UnimplementedHandler) AdminCreateCourseCategory(ctx context.Context, req *CourseCategoryInput) (r AdminCreateCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateCourseLandingPage implements adminCreateCourseLandingPage operation.
 //
-// POST /admin/language_landing_pages
+// POST /admin/course_landing_pages
 func (UnimplementedHandler) AdminCreateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput) (r AdminCreateCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -65,14 +65,14 @@ func (UnimplementedHandler) AdminCreateCourseLandingPage(ctx context.Context, re
 //
 // Build a new version of the course exercises.
 //
-// POST /admin/languages/{id}/versions
+// POST /admin/courses/{id}/versions
 func (UnimplementedHandler) AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (r AdminCreateCourseVersionRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminCreateLandingPageQnaItem implements adminCreateLandingPageQnaItem operation.
 //
-// POST /admin/language_landing_pages/{landingPageId}/qna_items
+// POST /admin/course_landing_pages/{landingPageId}/qna_items
 func (UnimplementedHandler) AdminCreateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (r AdminCreateLandingPageQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -129,7 +129,7 @@ func (UnimplementedHandler) AdminDeleteBlogPost(ctx context.Context, params Admi
 
 // AdminDeleteCategoryQnaItem implements adminDeleteCategoryQnaItem operation.
 //
-// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
+// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
 func (UnimplementedHandler) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (r AdminDeleteCategoryQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -138,21 +138,21 @@ func (UnimplementedHandler) AdminDeleteCategoryQnaItem(ctx context.Context, para
 //
 // Delete a course category.
 //
-// DELETE /admin/language_categories/{id}
+// DELETE /admin/course_categories/{id}
 func (UnimplementedHandler) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (r AdminDeleteCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteCourseLandingPage implements adminDeleteCourseLandingPage operation.
 //
-// DELETE /admin/language_landing_pages/{id}
+// DELETE /admin/course_landing_pages/{id}
 func (UnimplementedHandler) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (r AdminDeleteCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminDeleteLandingPageQnaItem implements adminDeleteLandingPageQnaItem operation.
 //
-// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (UnimplementedHandler) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (r AdminDeleteLandingPageQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -206,7 +206,7 @@ func (UnimplementedHandler) AdminGetBlogPost(ctx context.Context, params AdminGe
 //
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/languages/{id}
+// GET /admin/courses/{id}
 func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (r AdminGetCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -216,7 +216,7 @@ func (UnimplementedHandler) AdminGetCourse(ctx context.Context, params AdminGetC
 // Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/language_categories/{id}
+// GET /admin/course_categories/{id}
 func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (r AdminGetCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -226,7 +226,7 @@ func (UnimplementedHandler) AdminGetCourseCategory(ctx context.Context, params A
 // Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/language_landing_pages/{id}
+// GET /admin/course_landing_pages/{id}
 func (UnimplementedHandler) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (r AdminGetCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -304,7 +304,7 @@ func (UnimplementedHandler) AdminListBlogPosts(ctx context.Context, params Admin
 
 // AdminListCategoryQnaItems implements adminListCategoryQnaItems operation.
 //
-// GET /admin/language_categories/{categoryId}/qna_items
+// GET /admin/course_categories/{categoryId}/qna_items
 func (UnimplementedHandler) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (r AdminListCategoryQnaItemsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -313,42 +313,42 @@ func (UnimplementedHandler) AdminListCategoryQnaItems(ctx context.Context, param
 //
 // List course categories (paginated).
 //
-// GET /admin/language_categories
+// GET /admin/course_categories
 func (UnimplementedHandler) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (r AdminListCourseCategoriesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLandingPages implements adminListCourseLandingPages operation.
 //
-// GET /admin/language_landing_pages
+// GET /admin/course_landing_pages
 func (UnimplementedHandler) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (r AdminListCourseLandingPagesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLessonReviews implements adminListCourseLessonReviews operation.
 //
-// GET /admin/language_lesson_reviews
+// GET /admin/course_lesson_reviews
 func (UnimplementedHandler) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (r AdminListCourseLessonReviewsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourseLessons implements adminListCourseLessons operation.
 //
-// GET /admin/language_lessons
+// GET /admin/course_lessons
 func (UnimplementedHandler) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (r AdminListCourseLessonsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListCourses implements adminListCourses operation.
 //
-// GET /admin/languages
+// GET /admin/courses
 func (UnimplementedHandler) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (r AdminListCoursesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminListLandingPageQnaItems implements adminListLandingPageQnaItems operation.
 //
-// GET /admin/language_landing_pages/{landingPageId}/qna_items
+// GET /admin/course_landing_pages/{landingPageId}/qna_items
 func (UnimplementedHandler) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (r AdminListLandingPageQnaItemsRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -362,7 +362,7 @@ func (UnimplementedHandler) AdminListLeads(ctx context.Context, params AdminList
 
 // AdminListLessonProgress implements adminListLessonProgress operation.
 //
-// GET /admin/language_lesson_members
+// GET /admin/lesson_progress
 func (UnimplementedHandler) AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (r AdminListLessonProgressRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -413,7 +413,7 @@ func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminList
 //
 // Enqueue AI re-review of every current lesson version.
 //
-// POST /admin/languages/{id}/review
+// POST /admin/courses/{id}/review
 func (UnimplementedHandler) AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (r AdminReviewCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -422,7 +422,7 @@ func (UnimplementedHandler) AdminReviewCourse(ctx context.Context, params AdminR
 //
 // Enqueue AI review for a single lesson.
 //
-// POST /admin/language_lessons/{id}/review
+// POST /admin/course_lessons/{id}/review
 func (UnimplementedHandler) AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (r AdminReviewCourseLessonRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -466,14 +466,14 @@ func (UnimplementedHandler) AdminUpdateBlogPost(ctx context.Context, req *BlogPo
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/language_categories/{categoryId}/qna_items/{id}
+// PUT /admin/course_categories/{categoryId}/qna_items/{id}
 func (UnimplementedHandler) AdminUpdateCategoryQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (r AdminUpdateCategoryQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
 // AdminUpdateCourse implements adminUpdateCourse operation.
 //
-// PUT /admin/languages/{id}
+// PUT /admin/courses/{id}
 func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseInput, params AdminUpdateCourseParams) (r AdminUpdateCourseRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -483,7 +483,7 @@ func (UnimplementedHandler) AdminUpdateCourse(ctx context.Context, req *CourseIn
 // Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/language_categories/{id}
+// PUT /admin/course_categories/{id}
 func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (r AdminUpdateCourseCategoryRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -492,7 +492,7 @@ func (UnimplementedHandler) AdminUpdateCourseCategory(ctx context.Context, req *
 //
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/language_landing_pages/{id}
+// PUT /admin/course_landing_pages/{id}
 func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, req *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (r AdminUpdateCourseLandingPageRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
@@ -502,7 +502,7 @@ func (UnimplementedHandler) AdminUpdateCourseLandingPage(ctx context.Context, re
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (UnimplementedHandler) AdminUpdateLandingPageQnaItem(ctx context.Context, req *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (r AdminUpdateLandingPageQnaItemRes, _ error) {
 	return r, ht.ErrNotImplemented
 }

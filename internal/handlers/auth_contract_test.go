@@ -57,11 +57,11 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"AdminSession": {}}},
-		spec.Paths["/admin/language_categories"].Get.Security,
+		spec.Paths["/admin/course_categories"].Get.Security,
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"AdminSession": {}, "XsrfToken": {}}},
-		spec.Paths["/admin/language_categories"].Post.Security,
+		spec.Paths["/admin/course_categories"].Post.Security,
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"AdminSession": {}, "XsrfToken": {}}},
@@ -69,6 +69,6 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	)
 
 	assert.Contains(t, spec.Paths["/my"].Get.Responses, "401")
-	assert.Contains(t, spec.Paths["/admin/language_categories"].Get.Responses, "401")
-	assert.Contains(t, spec.Paths["/admin/language_categories"].Get.Responses, "403")
+	assert.Contains(t, spec.Paths["/admin/course_categories"].Get.Responses, "401")
+	assert.Contains(t, spec.Paths["/admin/course_categories"].Get.Responses, "403")
 }

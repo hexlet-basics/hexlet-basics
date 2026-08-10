@@ -6,7 +6,7 @@ describe("localeFromPathname", () => {
     ["/", "en"],
     ["/languages/javascript", "en"],
     ["/ru", "ru"],
-    ["/ru/admin/languages", "ru"],
+    ["/ru/admin/courses", "ru"],
     ["/es/", "es"],
     ["/es/session/new", "es"],
     ["/ruby", "en"],

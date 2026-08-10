@@ -286,17 +286,17 @@ func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
 	u, err := db.User.Query().Where(user.Email(email)).Only(t.Context())
 	require.NoError(t, err)
 
-	resp = do(t, router, http.MethodGet, "/admin/language_categories", "", jwt)
+	resp = do(t, router, http.MethodGet, "/admin/course_categories", "", jwt)
 	require.Equal(t, http.StatusForbidden, resp.StatusCode)
 
 	_, err = db.User.UpdateOneID(u.ID).SetAdmin(true).Save(t.Context())
 	require.NoError(t, err)
-	resp = do(t, router, http.MethodGet, "/admin/language_categories", "", jwt)
+	resp = do(t, router, http.MethodGet, "/admin/course_categories", "", jwt)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
 	_, err = db.User.UpdateOneID(u.ID).SetAdmin(false).Save(t.Context())
 	require.NoError(t, err)
-	resp = do(t, router, http.MethodGet, "/admin/language_categories", "", jwt)
+	resp = do(t, router, http.MethodGet, "/admin/course_categories", "", jwt)
 	require.Equal(t, http.StatusForbidden, resp.StatusCode)
 }
 

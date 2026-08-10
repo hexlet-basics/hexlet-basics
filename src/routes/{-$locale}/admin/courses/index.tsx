@@ -15,11 +15,11 @@ import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-// Courses admin (legacy `/admin/languages`; the domain concept is Course).
+// Courses admin (legacy `/admin/courses`; the domain concept is Course).
 // No delete, parity with legacy. Each row carries the two lifecycle actions:
 // build a new exercise version (river job, auto-promoted on success) and
 // enqueue AI review of every current lesson.
-export const Route = createFileRoute("/{-$locale}/admin/languages/")({
+export const Route = createFileRoute("/{-$locale}/admin/courses/")({
   component: CoursesList,
 });
 
@@ -85,7 +85,7 @@ function CoursesList() {
       cell: ({ row }) => (
         <Group gap="xs" justify="flex-end" wrap="nowrap">
           <ButtonLink
-            to="/{-$locale}/admin/languages/$id"
+            to="/{-$locale}/admin/courses/$id"
             params={{ id: String(row.original.id) }}
             size="xs"
             variant="light"
@@ -122,7 +122,7 @@ function CoursesList() {
     <Stack>
       <Group justify="space-between">
         <Title order={2}>{t(($) => $.admin.resources.courses)}</Title>
-        <ButtonLink to="/{-$locale}/admin/languages/new">{t(($) => $.admin.crud.new)}</ButtonLink>
+        <ButtonLink to="/{-$locale}/admin/courses/new">{t(($) => $.admin.crud.new)}</ButtonLink>
       </Group>
 
       <CrudList

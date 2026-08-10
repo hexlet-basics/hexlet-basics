@@ -5,24 +5,21 @@ import type { PaginationState, SortingState } from "@tanstack/react-table";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  adminDeleteCourseCategoryMutation,
-  adminListCourseCategoriesOptions,
-  adminListCourseCategoriesQueryKey,
+  adminDeleteCourseLandingPageMutation,
+  adminListCourseLandingPagesOptions,
+  adminListCourseLandingPagesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import type { CourseCategory } from "@/client/types.gen";
+import type { CourseLandingPage } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 import { ButtonLink } from "@/components/RouterLink";
 import { useDeleteConfirmation } from "@/hooks/useDeleteConfirmation";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-// Course categories admin list — the first resource wired through the CRUD engine
-// (Wave 1). Adding another resource is this file plus new.tsx / $id.tsx, each a
-// thin binding of the generated hooks to the shared CrudList/CrudForm.
-export const Route = createFileRoute("/{-$locale}/admin/language_categories/")({
-  component: CourseCategoriesList,
+export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/")({
+  component: CourseLandingPagesList,
 });
 
-export function CourseCategoriesList() {
+function CourseLandingPagesList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 
@@ -30,37 +27,46 @@ export function CourseCategoriesList() {
     pageIndex: 0,
     pageSize: 25,
   });
-  // Sorting state is held for the engine, but this resource's columns keep it off
-  // until the generic `listPage` honors sortField/sortOrder server-side.
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const { data, isLoading } = useQuery(
-    adminListCourseCategoriesOptions({
+    adminListCourseLandingPagesOptions({
       query: { page: pagination.pageIndex + 1, perPage: pagination.pageSize },
     }),
   );
 
   const deleteMutation = useResourceMutation({
-    mutation: adminDeleteCourseCategoryMutation(),
-    invalidate: [adminListCourseCategoriesQueryKey()],
+    mutation: adminDeleteCourseLandingPageMutation(),
+    invalidate: [adminListCourseLandingPagesQueryKey()],
     successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
   });
 
-  const columns: CrudColumnDef<CourseCategory>[] = [
+  const columns: CrudColumnDef<CourseLandingPage>[] = [
     {
       accessorKey: "name",
-      header: t(($) => $.models.attributes.language_category.name),
+      header: t(($) => $.models.attributes.language_landing_page.name),
       enableSorting: false,
     },
     {
       accessorKey: "slug",
-      header: t(($) => $.models.attributes.language_category.slug),
+      header: t(($) => $.models.attributes.language_landing_page.slug),
       enableSorting: false,
     },
     {
-      accessorKey: "locale",
-      header: t(($) => $.models.attributes.language_category.locale),
+      accessorKey: "courseSlug",
+      header: t(($) => $.models.attributes.language_landing_page.language_id),
+      enableSorting: false,
+    },
+    {
+      accessorKey: "state",
+      header: t(($) => $.models.attributes.language_landing_page.state),
+      enableSorting: false,
+    },
+    {
+      id: "main",
+      header: t(($) => $.models.attributes.language_landing_page.main),
+      cell: ({ row }) => (row.original.main ? "✓" : ""),
       enableSorting: false,
     },
     {
@@ -69,7 +75,7 @@ export function CourseCategoriesList() {
       cell: ({ row }) => (
         <Group gap="xs" justify="flex-end" wrap="nowrap">
           <ButtonLink
-            to="/{-$locale}/admin/language_categories/$id"
+            to="/{-$locale}/admin/course_landing_pages/$id"
             params={{ id: String(row.original.id) }}
             size="xs"
             variant="light"
@@ -83,7 +89,7 @@ export function CourseCategoriesList() {
               aria-label={t(($) => $.admin.crud.delete)}
               onClick={() =>
                 confirmDelete({
-                  description: row.original.name ?? String(row.original.id),
+                  description: row.original.name,
                   onConfirm: () => deleteMutation.mutate({ path: { id: row.original.id } }),
                 })
               }
@@ -99,8 +105,8 @@ export function CourseCategoriesList() {
   return (
     <Stack>
       <Group justify="space-between">
-        <Title order={2}>{t(($) => $.admin.resources.courseCategories)}</Title>
-        <ButtonLink to="/{-$locale}/admin/language_categories/new">
+        <Title order={2}>{t(($) => $.admin.resources.landingPages)}</Title>
+        <ButtonLink to="/{-$locale}/admin/course_landing_pages/new">
           {t(($) => $.admin.crud.new)}
         </ButtonLink>
       </Group>

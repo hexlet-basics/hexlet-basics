@@ -23,18 +23,18 @@ import { Route as Char123LocaleChar125AdminBannersNewRouteImport } from './route
 import { Route as Char123LocaleChar125AdminBlog_postsIndexRouteImport } from './routes/{-$locale}/admin/blog_posts/index'
 import { Route as Char123LocaleChar125AdminBlog_postsIdRouteImport } from './routes/{-$locale}/admin/blog_posts/$id'
 import { Route as Char123LocaleChar125AdminBlog_postsNewRouteImport } from './routes/{-$locale}/admin/blog_posts/new'
-import { Route as Char123LocaleChar125AdminLanguage_categoriesIndexRouteImport } from './routes/{-$locale}/admin/language_categories/index'
-import { Route as Char123LocaleChar125AdminLanguage_categoriesIdRouteImport } from './routes/{-$locale}/admin/language_categories/$id'
-import { Route as Char123LocaleChar125AdminLanguage_categoriesNewRouteImport } from './routes/{-$locale}/admin/language_categories/new'
-import { Route as Char123LocaleChar125AdminLanguage_landing_pagesIndexRouteImport } from './routes/{-$locale}/admin/language_landing_pages/index'
-import { Route as Char123LocaleChar125AdminLanguage_landing_pagesIdRouteImport } from './routes/{-$locale}/admin/language_landing_pages/$id'
-import { Route as Char123LocaleChar125AdminLanguage_landing_pagesNewRouteImport } from './routes/{-$locale}/admin/language_landing_pages/new'
-import { Route as Char123LocaleChar125AdminLanguage_lesson_membersIndexRouteImport } from './routes/{-$locale}/admin/language_lesson_members/index'
-import { Route as Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRouteImport } from './routes/{-$locale}/admin/language_lesson_reviews/index'
-import { Route as Char123LocaleChar125AdminLanguagesIndexRouteImport } from './routes/{-$locale}/admin/languages/index'
-import { Route as Char123LocaleChar125AdminLanguagesIdRouteImport } from './routes/{-$locale}/admin/languages/$id'
-import { Route as Char123LocaleChar125AdminLanguagesNewRouteImport } from './routes/{-$locale}/admin/languages/new'
+import { Route as Char123LocaleChar125AdminCourse_categoriesIndexRouteImport } from './routes/{-$locale}/admin/course_categories/index'
+import { Route as Char123LocaleChar125AdminCourse_categoriesIdRouteImport } from './routes/{-$locale}/admin/course_categories/$id'
+import { Route as Char123LocaleChar125AdminCourse_categoriesNewRouteImport } from './routes/{-$locale}/admin/course_categories/new'
+import { Route as Char123LocaleChar125AdminCourse_landing_pagesIndexRouteImport } from './routes/{-$locale}/admin/course_landing_pages/index'
+import { Route as Char123LocaleChar125AdminCourse_landing_pagesIdRouteImport } from './routes/{-$locale}/admin/course_landing_pages/$id'
+import { Route as Char123LocaleChar125AdminCourse_landing_pagesNewRouteImport } from './routes/{-$locale}/admin/course_landing_pages/new'
+import { Route as Char123LocaleChar125AdminCourse_lesson_reviewsIndexRouteImport } from './routes/{-$locale}/admin/course_lesson_reviews/index'
+import { Route as Char123LocaleChar125AdminCoursesIndexRouteImport } from './routes/{-$locale}/admin/courses/index'
+import { Route as Char123LocaleChar125AdminCoursesIdRouteImport } from './routes/{-$locale}/admin/courses/$id'
+import { Route as Char123LocaleChar125AdminCoursesNewRouteImport } from './routes/{-$locale}/admin/courses/new'
 import { Route as Char123LocaleChar125AdminLeadsIndexRouteImport } from './routes/{-$locale}/admin/leads/index'
+import { Route as Char123LocaleChar125AdminLesson_progressIndexRouteImport } from './routes/{-$locale}/admin/lesson_progress/index'
 import { Route as Char123LocaleChar125AdminMessagesIndexRouteImport } from './routes/{-$locale}/admin/messages/index'
 import { Route as Char123LocaleChar125AdminReviewsIndexRouteImport } from './routes/{-$locale}/admin/reviews/index'
 import { Route as Char123LocaleChar125AdminReviewsIdRouteImport } from './routes/{-$locale}/admin/reviews/$id'
@@ -134,76 +134,76 @@ const Char123LocaleChar125AdminBlog_postsNewRoute =
     path: '/blog_posts/new',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_categoriesIndexRoute =
-  Char123LocaleChar125AdminLanguage_categoriesIndexRouteImport.update({
-    id: '/language_categories/',
-    path: '/language_categories/',
+const Char123LocaleChar125AdminCourse_categoriesIndexRoute =
+  Char123LocaleChar125AdminCourse_categoriesIndexRouteImport.update({
+    id: '/course_categories/',
+    path: '/course_categories/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_categoriesIdRoute =
-  Char123LocaleChar125AdminLanguage_categoriesIdRouteImport.update({
-    id: '/language_categories/$id',
-    path: '/language_categories/$id',
+const Char123LocaleChar125AdminCourse_categoriesIdRoute =
+  Char123LocaleChar125AdminCourse_categoriesIdRouteImport.update({
+    id: '/course_categories/$id',
+    path: '/course_categories/$id',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_categoriesNewRoute =
-  Char123LocaleChar125AdminLanguage_categoriesNewRouteImport.update({
-    id: '/language_categories/new',
-    path: '/language_categories/new',
+const Char123LocaleChar125AdminCourse_categoriesNewRoute =
+  Char123LocaleChar125AdminCourse_categoriesNewRouteImport.update({
+    id: '/course_categories/new',
+    path: '/course_categories/new',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute =
-  Char123LocaleChar125AdminLanguage_landing_pagesIndexRouteImport.update({
-    id: '/language_landing_pages/',
-    path: '/language_landing_pages/',
+const Char123LocaleChar125AdminCourse_landing_pagesIndexRoute =
+  Char123LocaleChar125AdminCourse_landing_pagesIndexRouteImport.update({
+    id: '/course_landing_pages/',
+    path: '/course_landing_pages/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_landing_pagesIdRoute =
-  Char123LocaleChar125AdminLanguage_landing_pagesIdRouteImport.update({
-    id: '/language_landing_pages/$id',
-    path: '/language_landing_pages/$id',
+const Char123LocaleChar125AdminCourse_landing_pagesIdRoute =
+  Char123LocaleChar125AdminCourse_landing_pagesIdRouteImport.update({
+    id: '/course_landing_pages/$id',
+    path: '/course_landing_pages/$id',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_landing_pagesNewRoute =
-  Char123LocaleChar125AdminLanguage_landing_pagesNewRouteImport.update({
-    id: '/language_landing_pages/new',
-    path: '/language_landing_pages/new',
+const Char123LocaleChar125AdminCourse_landing_pagesNewRoute =
+  Char123LocaleChar125AdminCourse_landing_pagesNewRouteImport.update({
+    id: '/course_landing_pages/new',
+    path: '/course_landing_pages/new',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute =
-  Char123LocaleChar125AdminLanguage_lesson_membersIndexRouteImport.update({
-    id: '/language_lesson_members/',
-    path: '/language_lesson_members/',
+const Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute =
+  Char123LocaleChar125AdminCourse_lesson_reviewsIndexRouteImport.update({
+    id: '/course_lesson_reviews/',
+    path: '/course_lesson_reviews/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute =
-  Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRouteImport.update({
-    id: '/language_lesson_reviews/',
-    path: '/language_lesson_reviews/',
+const Char123LocaleChar125AdminCoursesIndexRoute =
+  Char123LocaleChar125AdminCoursesIndexRouteImport.update({
+    id: '/courses/',
+    path: '/courses/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguagesIndexRoute =
-  Char123LocaleChar125AdminLanguagesIndexRouteImport.update({
-    id: '/languages/',
-    path: '/languages/',
+const Char123LocaleChar125AdminCoursesIdRoute =
+  Char123LocaleChar125AdminCoursesIdRouteImport.update({
+    id: '/courses/$id',
+    path: '/courses/$id',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AdminLanguagesIdRoute =
-  Char123LocaleChar125AdminLanguagesIdRouteImport.update({
-    id: '/languages/$id',
-    path: '/languages/$id',
-    getParentRoute: () => Char123LocaleChar125AdminRoute,
-  } as any)
-const Char123LocaleChar125AdminLanguagesNewRoute =
-  Char123LocaleChar125AdminLanguagesNewRouteImport.update({
-    id: '/languages/new',
-    path: '/languages/new',
+const Char123LocaleChar125AdminCoursesNewRoute =
+  Char123LocaleChar125AdminCoursesNewRouteImport.update({
+    id: '/courses/new',
+    path: '/courses/new',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminLeadsIndexRoute =
   Char123LocaleChar125AdminLeadsIndexRouteImport.update({
     id: '/leads/',
     path: '/leads/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminLesson_progressIndexRoute =
+  Char123LocaleChar125AdminLesson_progressIndexRouteImport.update({
+    id: '/lesson_progress/',
+    path: '/lesson_progress/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminMessagesIndexRoute =
@@ -310,24 +310,24 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/banners/new': typeof Char123LocaleChar125AdminBannersNewRoute
   '/{-$locale}/admin/blog_posts/$id': typeof Char123LocaleChar125AdminBlog_postsIdRoute
   '/{-$locale}/admin/blog_posts/new': typeof Char123LocaleChar125AdminBlog_postsNewRoute
-  '/{-$locale}/admin/language_categories/$id': typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
-  '/{-$locale}/admin/language_categories/new': typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
-  '/{-$locale}/admin/language_landing_pages/$id': typeof Char123LocaleChar125AdminLanguage_landing_pagesIdRoute
-  '/{-$locale}/admin/language_landing_pages/new': typeof Char123LocaleChar125AdminLanguage_landing_pagesNewRoute
-  '/{-$locale}/admin/languages/$id': typeof Char123LocaleChar125AdminLanguagesIdRoute
-  '/{-$locale}/admin/languages/new': typeof Char123LocaleChar125AdminLanguagesNewRoute
+  '/{-$locale}/admin/course_categories/$id': typeof Char123LocaleChar125AdminCourse_categoriesIdRoute
+  '/{-$locale}/admin/course_categories/new': typeof Char123LocaleChar125AdminCourse_categoriesNewRoute
+  '/{-$locale}/admin/course_landing_pages/$id': typeof Char123LocaleChar125AdminCourse_landing_pagesIdRoute
+  '/{-$locale}/admin/course_landing_pages/new': typeof Char123LocaleChar125AdminCourse_landing_pagesNewRoute
+  '/{-$locale}/admin/courses/$id': typeof Char123LocaleChar125AdminCoursesIdRoute
+  '/{-$locale}/admin/courses/new': typeof Char123LocaleChar125AdminCoursesNewRoute
   '/{-$locale}/admin/reviews/$id': typeof Char123LocaleChar125AdminReviewsIdRoute
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
-  '/{-$locale}/admin/language_categories/': typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
-  '/{-$locale}/admin/language_landing_pages/': typeof Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute
-  '/{-$locale}/admin/language_lesson_members/': typeof Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute
-  '/{-$locale}/admin/language_lesson_reviews/': typeof Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute
-  '/{-$locale}/admin/languages/': typeof Char123LocaleChar125AdminLanguagesIndexRoute
+  '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
+  '/{-$locale}/admin/course_landing_pages/': typeof Char123LocaleChar125AdminCourse_landing_pagesIndexRoute
+  '/{-$locale}/admin/course_lesson_reviews/': typeof Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute
+  '/{-$locale}/admin/courses/': typeof Char123LocaleChar125AdminCoursesIndexRoute
   '/{-$locale}/admin/leads/': typeof Char123LocaleChar125AdminLeadsIndexRoute
+  '/{-$locale}/admin/lesson_progress/': typeof Char123LocaleChar125AdminLesson_progressIndexRoute
   '/{-$locale}/admin/messages/': typeof Char123LocaleChar125AdminMessagesIndexRoute
   '/{-$locale}/admin/reviews/': typeof Char123LocaleChar125AdminReviewsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
@@ -351,24 +351,24 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/banners/new': typeof Char123LocaleChar125AdminBannersNewRoute
   '/{-$locale}/admin/blog_posts/$id': typeof Char123LocaleChar125AdminBlog_postsIdRoute
   '/{-$locale}/admin/blog_posts/new': typeof Char123LocaleChar125AdminBlog_postsNewRoute
-  '/{-$locale}/admin/language_categories/$id': typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
-  '/{-$locale}/admin/language_categories/new': typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
-  '/{-$locale}/admin/language_landing_pages/$id': typeof Char123LocaleChar125AdminLanguage_landing_pagesIdRoute
-  '/{-$locale}/admin/language_landing_pages/new': typeof Char123LocaleChar125AdminLanguage_landing_pagesNewRoute
-  '/{-$locale}/admin/languages/$id': typeof Char123LocaleChar125AdminLanguagesIdRoute
-  '/{-$locale}/admin/languages/new': typeof Char123LocaleChar125AdminLanguagesNewRoute
+  '/{-$locale}/admin/course_categories/$id': typeof Char123LocaleChar125AdminCourse_categoriesIdRoute
+  '/{-$locale}/admin/course_categories/new': typeof Char123LocaleChar125AdminCourse_categoriesNewRoute
+  '/{-$locale}/admin/course_landing_pages/$id': typeof Char123LocaleChar125AdminCourse_landing_pagesIdRoute
+  '/{-$locale}/admin/course_landing_pages/new': typeof Char123LocaleChar125AdminCourse_landing_pagesNewRoute
+  '/{-$locale}/admin/courses/$id': typeof Char123LocaleChar125AdminCoursesIdRoute
+  '/{-$locale}/admin/courses/new': typeof Char123LocaleChar125AdminCoursesNewRoute
   '/{-$locale}/admin/reviews/$id': typeof Char123LocaleChar125AdminReviewsIdRoute
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/admin/banners': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
-  '/{-$locale}/admin/language_categories': typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
-  '/{-$locale}/admin/language_landing_pages': typeof Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute
-  '/{-$locale}/admin/language_lesson_members': typeof Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute
-  '/{-$locale}/admin/language_lesson_reviews': typeof Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute
-  '/{-$locale}/admin/languages': typeof Char123LocaleChar125AdminLanguagesIndexRoute
+  '/{-$locale}/admin/course_categories': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
+  '/{-$locale}/admin/course_landing_pages': typeof Char123LocaleChar125AdminCourse_landing_pagesIndexRoute
+  '/{-$locale}/admin/course_lesson_reviews': typeof Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute
+  '/{-$locale}/admin/courses': typeof Char123LocaleChar125AdminCoursesIndexRoute
   '/{-$locale}/admin/leads': typeof Char123LocaleChar125AdminLeadsIndexRoute
+  '/{-$locale}/admin/lesson_progress': typeof Char123LocaleChar125AdminLesson_progressIndexRoute
   '/{-$locale}/admin/messages': typeof Char123LocaleChar125AdminMessagesIndexRoute
   '/{-$locale}/admin/reviews': typeof Char123LocaleChar125AdminReviewsIndexRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersIndexRoute
@@ -395,24 +395,24 @@ export interface FileRoutesById {
   '/{-$locale}/admin/banners/new': typeof Char123LocaleChar125AdminBannersNewRoute
   '/{-$locale}/admin/blog_posts/$id': typeof Char123LocaleChar125AdminBlog_postsIdRoute
   '/{-$locale}/admin/blog_posts/new': typeof Char123LocaleChar125AdminBlog_postsNewRoute
-  '/{-$locale}/admin/language_categories/$id': typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
-  '/{-$locale}/admin/language_categories/new': typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
-  '/{-$locale}/admin/language_landing_pages/$id': typeof Char123LocaleChar125AdminLanguage_landing_pagesIdRoute
-  '/{-$locale}/admin/language_landing_pages/new': typeof Char123LocaleChar125AdminLanguage_landing_pagesNewRoute
-  '/{-$locale}/admin/languages/$id': typeof Char123LocaleChar125AdminLanguagesIdRoute
-  '/{-$locale}/admin/languages/new': typeof Char123LocaleChar125AdminLanguagesNewRoute
+  '/{-$locale}/admin/course_categories/$id': typeof Char123LocaleChar125AdminCourse_categoriesIdRoute
+  '/{-$locale}/admin/course_categories/new': typeof Char123LocaleChar125AdminCourse_categoriesNewRoute
+  '/{-$locale}/admin/course_landing_pages/$id': typeof Char123LocaleChar125AdminCourse_landing_pagesIdRoute
+  '/{-$locale}/admin/course_landing_pages/new': typeof Char123LocaleChar125AdminCourse_landing_pagesNewRoute
+  '/{-$locale}/admin/courses/$id': typeof Char123LocaleChar125AdminCoursesIdRoute
+  '/{-$locale}/admin/courses/new': typeof Char123LocaleChar125AdminCoursesNewRoute
   '/{-$locale}/admin/reviews/$id': typeof Char123LocaleChar125AdminReviewsIdRoute
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
-  '/{-$locale}/admin/language_categories/': typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
-  '/{-$locale}/admin/language_landing_pages/': typeof Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute
-  '/{-$locale}/admin/language_lesson_members/': typeof Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute
-  '/{-$locale}/admin/language_lesson_reviews/': typeof Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute
-  '/{-$locale}/admin/languages/': typeof Char123LocaleChar125AdminLanguagesIndexRoute
+  '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
+  '/{-$locale}/admin/course_landing_pages/': typeof Char123LocaleChar125AdminCourse_landing_pagesIndexRoute
+  '/{-$locale}/admin/course_lesson_reviews/': typeof Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute
+  '/{-$locale}/admin/courses/': typeof Char123LocaleChar125AdminCoursesIndexRoute
   '/{-$locale}/admin/leads/': typeof Char123LocaleChar125AdminLeadsIndexRoute
+  '/{-$locale}/admin/lesson_progress/': typeof Char123LocaleChar125AdminLesson_progressIndexRoute
   '/{-$locale}/admin/messages/': typeof Char123LocaleChar125AdminMessagesIndexRoute
   '/{-$locale}/admin/reviews/': typeof Char123LocaleChar125AdminReviewsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
@@ -440,24 +440,24 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/banners/new'
     | '/{-$locale}/admin/blog_posts/$id'
     | '/{-$locale}/admin/blog_posts/new'
-    | '/{-$locale}/admin/language_categories/$id'
-    | '/{-$locale}/admin/language_categories/new'
-    | '/{-$locale}/admin/language_landing_pages/$id'
-    | '/{-$locale}/admin/language_landing_pages/new'
-    | '/{-$locale}/admin/languages/$id'
-    | '/{-$locale}/admin/languages/new'
+    | '/{-$locale}/admin/course_categories/$id'
+    | '/{-$locale}/admin/course_categories/new'
+    | '/{-$locale}/admin/course_landing_pages/$id'
+    | '/{-$locale}/admin/course_landing_pages/new'
+    | '/{-$locale}/admin/courses/$id'
+    | '/{-$locale}/admin/courses/new'
     | '/{-$locale}/admin/reviews/$id'
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
-    | '/{-$locale}/admin/language_categories/'
-    | '/{-$locale}/admin/language_landing_pages/'
-    | '/{-$locale}/admin/language_lesson_members/'
-    | '/{-$locale}/admin/language_lesson_reviews/'
-    | '/{-$locale}/admin/languages/'
+    | '/{-$locale}/admin/course_categories/'
+    | '/{-$locale}/admin/course_landing_pages/'
+    | '/{-$locale}/admin/course_lesson_reviews/'
+    | '/{-$locale}/admin/courses/'
     | '/{-$locale}/admin/leads/'
+    | '/{-$locale}/admin/lesson_progress/'
     | '/{-$locale}/admin/messages/'
     | '/{-$locale}/admin/reviews/'
     | '/{-$locale}/admin/users/'
@@ -481,24 +481,24 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/banners/new'
     | '/{-$locale}/admin/blog_posts/$id'
     | '/{-$locale}/admin/blog_posts/new'
-    | '/{-$locale}/admin/language_categories/$id'
-    | '/{-$locale}/admin/language_categories/new'
-    | '/{-$locale}/admin/language_landing_pages/$id'
-    | '/{-$locale}/admin/language_landing_pages/new'
-    | '/{-$locale}/admin/languages/$id'
-    | '/{-$locale}/admin/languages/new'
+    | '/{-$locale}/admin/course_categories/$id'
+    | '/{-$locale}/admin/course_categories/new'
+    | '/{-$locale}/admin/course_landing_pages/$id'
+    | '/{-$locale}/admin/course_landing_pages/new'
+    | '/{-$locale}/admin/courses/$id'
+    | '/{-$locale}/admin/courses/new'
     | '/{-$locale}/admin/reviews/$id'
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/admin/banners'
     | '/{-$locale}/admin/blog_posts'
-    | '/{-$locale}/admin/language_categories'
-    | '/{-$locale}/admin/language_landing_pages'
-    | '/{-$locale}/admin/language_lesson_members'
-    | '/{-$locale}/admin/language_lesson_reviews'
-    | '/{-$locale}/admin/languages'
+    | '/{-$locale}/admin/course_categories'
+    | '/{-$locale}/admin/course_landing_pages'
+    | '/{-$locale}/admin/course_lesson_reviews'
+    | '/{-$locale}/admin/courses'
     | '/{-$locale}/admin/leads'
+    | '/{-$locale}/admin/lesson_progress'
     | '/{-$locale}/admin/messages'
     | '/{-$locale}/admin/reviews'
     | '/{-$locale}/admin/users'
@@ -524,24 +524,24 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/banners/new'
     | '/{-$locale}/admin/blog_posts/$id'
     | '/{-$locale}/admin/blog_posts/new'
-    | '/{-$locale}/admin/language_categories/$id'
-    | '/{-$locale}/admin/language_categories/new'
-    | '/{-$locale}/admin/language_landing_pages/$id'
-    | '/{-$locale}/admin/language_landing_pages/new'
-    | '/{-$locale}/admin/languages/$id'
-    | '/{-$locale}/admin/languages/new'
+    | '/{-$locale}/admin/course_categories/$id'
+    | '/{-$locale}/admin/course_categories/new'
+    | '/{-$locale}/admin/course_landing_pages/$id'
+    | '/{-$locale}/admin/course_landing_pages/new'
+    | '/{-$locale}/admin/courses/$id'
+    | '/{-$locale}/admin/courses/new'
     | '/{-$locale}/admin/reviews/$id'
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
-    | '/{-$locale}/admin/language_categories/'
-    | '/{-$locale}/admin/language_landing_pages/'
-    | '/{-$locale}/admin/language_lesson_members/'
-    | '/{-$locale}/admin/language_lesson_reviews/'
-    | '/{-$locale}/admin/languages/'
+    | '/{-$locale}/admin/course_categories/'
+    | '/{-$locale}/admin/course_landing_pages/'
+    | '/{-$locale}/admin/course_lesson_reviews/'
+    | '/{-$locale}/admin/courses/'
     | '/{-$locale}/admin/leads/'
+    | '/{-$locale}/admin/lesson_progress/'
     | '/{-$locale}/admin/messages/'
     | '/{-$locale}/admin/reviews/'
     | '/{-$locale}/admin/users/'
@@ -659,81 +659,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminBlog_postsNewRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_categories/': {
-      id: '/{-$locale}/admin/language_categories/'
-      path: '/language_categories'
-      fullPath: '/{-$locale}/admin/language_categories/'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIndexRouteImport
+    '/{-$locale}/admin/course_categories/': {
+      id: '/{-$locale}/admin/course_categories/'
+      path: '/course_categories'
+      fullPath: '/{-$locale}/admin/course_categories/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_categoriesIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_categories/$id': {
-      id: '/{-$locale}/admin/language_categories/$id'
-      path: '/language_categories/$id'
-      fullPath: '/{-$locale}/admin/language_categories/$id'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIdRouteImport
+    '/{-$locale}/admin/course_categories/$id': {
+      id: '/{-$locale}/admin/course_categories/$id'
+      path: '/course_categories/$id'
+      fullPath: '/{-$locale}/admin/course_categories/$id'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_categoriesIdRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_categories/new': {
-      id: '/{-$locale}/admin/language_categories/new'
-      path: '/language_categories/new'
-      fullPath: '/{-$locale}/admin/language_categories/new'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_categoriesNewRouteImport
+    '/{-$locale}/admin/course_categories/new': {
+      id: '/{-$locale}/admin/course_categories/new'
+      path: '/course_categories/new'
+      fullPath: '/{-$locale}/admin/course_categories/new'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_categoriesNewRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_landing_pages/': {
-      id: '/{-$locale}/admin/language_landing_pages/'
-      path: '/language_landing_pages'
-      fullPath: '/{-$locale}/admin/language_landing_pages/'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_landing_pagesIndexRouteImport
+    '/{-$locale}/admin/course_landing_pages/': {
+      id: '/{-$locale}/admin/course_landing_pages/'
+      path: '/course_landing_pages'
+      fullPath: '/{-$locale}/admin/course_landing_pages/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_landing_pagesIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_landing_pages/$id': {
-      id: '/{-$locale}/admin/language_landing_pages/$id'
-      path: '/language_landing_pages/$id'
-      fullPath: '/{-$locale}/admin/language_landing_pages/$id'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_landing_pagesIdRouteImport
+    '/{-$locale}/admin/course_landing_pages/$id': {
+      id: '/{-$locale}/admin/course_landing_pages/$id'
+      path: '/course_landing_pages/$id'
+      fullPath: '/{-$locale}/admin/course_landing_pages/$id'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_landing_pagesIdRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_landing_pages/new': {
-      id: '/{-$locale}/admin/language_landing_pages/new'
-      path: '/language_landing_pages/new'
-      fullPath: '/{-$locale}/admin/language_landing_pages/new'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_landing_pagesNewRouteImport
+    '/{-$locale}/admin/course_landing_pages/new': {
+      id: '/{-$locale}/admin/course_landing_pages/new'
+      path: '/course_landing_pages/new'
+      fullPath: '/{-$locale}/admin/course_landing_pages/new'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_landing_pagesNewRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_lesson_members/': {
-      id: '/{-$locale}/admin/language_lesson_members/'
-      path: '/language_lesson_members'
-      fullPath: '/{-$locale}/admin/language_lesson_members/'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_lesson_membersIndexRouteImport
+    '/{-$locale}/admin/course_lesson_reviews/': {
+      id: '/{-$locale}/admin/course_lesson_reviews/'
+      path: '/course_lesson_reviews'
+      fullPath: '/{-$locale}/admin/course_lesson_reviews/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCourse_lesson_reviewsIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/language_lesson_reviews/': {
-      id: '/{-$locale}/admin/language_lesson_reviews/'
-      path: '/language_lesson_reviews'
-      fullPath: '/{-$locale}/admin/language_lesson_reviews/'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRouteImport
+    '/{-$locale}/admin/courses/': {
+      id: '/{-$locale}/admin/courses/'
+      path: '/courses'
+      fullPath: '/{-$locale}/admin/courses/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCoursesIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/languages/': {
-      id: '/{-$locale}/admin/languages/'
-      path: '/languages'
-      fullPath: '/{-$locale}/admin/languages/'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguagesIndexRouteImport
+    '/{-$locale}/admin/courses/$id': {
+      id: '/{-$locale}/admin/courses/$id'
+      path: '/courses/$id'
+      fullPath: '/{-$locale}/admin/courses/$id'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCoursesIdRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/admin/languages/$id': {
-      id: '/{-$locale}/admin/languages/$id'
-      path: '/languages/$id'
-      fullPath: '/{-$locale}/admin/languages/$id'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguagesIdRouteImport
-      parentRoute: typeof Char123LocaleChar125AdminRoute
-    }
-    '/{-$locale}/admin/languages/new': {
-      id: '/{-$locale}/admin/languages/new'
-      path: '/languages/new'
-      fullPath: '/{-$locale}/admin/languages/new'
-      preLoaderRoute: typeof Char123LocaleChar125AdminLanguagesNewRouteImport
+    '/{-$locale}/admin/courses/new': {
+      id: '/{-$locale}/admin/courses/new'
+      path: '/courses/new'
+      fullPath: '/{-$locale}/admin/courses/new'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCoursesNewRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/leads/': {
@@ -741,6 +734,13 @@ declare module '@tanstack/react-router' {
       path: '/leads'
       fullPath: '/{-$locale}/admin/leads/'
       preLoaderRoute: typeof Char123LocaleChar125AdminLeadsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/lesson_progress/': {
+      id: '/{-$locale}/admin/lesson_progress/'
+      path: '/lesson_progress'
+      fullPath: '/{-$locale}/admin/lesson_progress/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminLesson_progressIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/messages/': {
@@ -857,24 +857,24 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminBannersNewRoute: typeof Char123LocaleChar125AdminBannersNewRoute
   Char123LocaleChar125AdminBlog_postsIdRoute: typeof Char123LocaleChar125AdminBlog_postsIdRoute
   Char123LocaleChar125AdminBlog_postsNewRoute: typeof Char123LocaleChar125AdminBlog_postsNewRoute
-  Char123LocaleChar125AdminLanguage_categoriesIdRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIdRoute
-  Char123LocaleChar125AdminLanguage_categoriesNewRoute: typeof Char123LocaleChar125AdminLanguage_categoriesNewRoute
-  Char123LocaleChar125AdminLanguage_landing_pagesIdRoute: typeof Char123LocaleChar125AdminLanguage_landing_pagesIdRoute
-  Char123LocaleChar125AdminLanguage_landing_pagesNewRoute: typeof Char123LocaleChar125AdminLanguage_landing_pagesNewRoute
-  Char123LocaleChar125AdminLanguagesIdRoute: typeof Char123LocaleChar125AdminLanguagesIdRoute
-  Char123LocaleChar125AdminLanguagesNewRoute: typeof Char123LocaleChar125AdminLanguagesNewRoute
+  Char123LocaleChar125AdminCourse_categoriesIdRoute: typeof Char123LocaleChar125AdminCourse_categoriesIdRoute
+  Char123LocaleChar125AdminCourse_categoriesNewRoute: typeof Char123LocaleChar125AdminCourse_categoriesNewRoute
+  Char123LocaleChar125AdminCourse_landing_pagesIdRoute: typeof Char123LocaleChar125AdminCourse_landing_pagesIdRoute
+  Char123LocaleChar125AdminCourse_landing_pagesNewRoute: typeof Char123LocaleChar125AdminCourse_landing_pagesNewRoute
+  Char123LocaleChar125AdminCoursesIdRoute: typeof Char123LocaleChar125AdminCoursesIdRoute
+  Char123LocaleChar125AdminCoursesNewRoute: typeof Char123LocaleChar125AdminCoursesNewRoute
   Char123LocaleChar125AdminReviewsIdRoute: typeof Char123LocaleChar125AdminReviewsIdRoute
   Char123LocaleChar125AdminReviewsNewRoute: typeof Char123LocaleChar125AdminReviewsNewRoute
   Char123LocaleChar125AdminUsersIdRoute: typeof Char123LocaleChar125AdminUsersIdRoute
   Char123LocaleChar125AdminUsersNewRoute: typeof Char123LocaleChar125AdminUsersNewRoute
   Char123LocaleChar125AdminBannersIndexRoute: typeof Char123LocaleChar125AdminBannersIndexRoute
   Char123LocaleChar125AdminBlog_postsIndexRoute: typeof Char123LocaleChar125AdminBlog_postsIndexRoute
-  Char123LocaleChar125AdminLanguage_categoriesIndexRoute: typeof Char123LocaleChar125AdminLanguage_categoriesIndexRoute
-  Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute: typeof Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute
-  Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute: typeof Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute
-  Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute: typeof Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute
-  Char123LocaleChar125AdminLanguagesIndexRoute: typeof Char123LocaleChar125AdminLanguagesIndexRoute
+  Char123LocaleChar125AdminCourse_categoriesIndexRoute: typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
+  Char123LocaleChar125AdminCourse_landing_pagesIndexRoute: typeof Char123LocaleChar125AdminCourse_landing_pagesIndexRoute
+  Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute: typeof Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute
+  Char123LocaleChar125AdminCoursesIndexRoute: typeof Char123LocaleChar125AdminCoursesIndexRoute
   Char123LocaleChar125AdminLeadsIndexRoute: typeof Char123LocaleChar125AdminLeadsIndexRoute
+  Char123LocaleChar125AdminLesson_progressIndexRoute: typeof Char123LocaleChar125AdminLesson_progressIndexRoute
   Char123LocaleChar125AdminMessagesIndexRoute: typeof Char123LocaleChar125AdminMessagesIndexRoute
   Char123LocaleChar125AdminReviewsIndexRoute: typeof Char123LocaleChar125AdminReviewsIndexRoute
   Char123LocaleChar125AdminUsersIndexRoute: typeof Char123LocaleChar125AdminUsersIndexRoute
@@ -899,18 +899,18 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminBlog_postsIdRoute,
     Char123LocaleChar125AdminBlog_postsNewRoute:
       Char123LocaleChar125AdminBlog_postsNewRoute,
-    Char123LocaleChar125AdminLanguage_categoriesIdRoute:
-      Char123LocaleChar125AdminLanguage_categoriesIdRoute,
-    Char123LocaleChar125AdminLanguage_categoriesNewRoute:
-      Char123LocaleChar125AdminLanguage_categoriesNewRoute,
-    Char123LocaleChar125AdminLanguage_landing_pagesIdRoute:
-      Char123LocaleChar125AdminLanguage_landing_pagesIdRoute,
-    Char123LocaleChar125AdminLanguage_landing_pagesNewRoute:
-      Char123LocaleChar125AdminLanguage_landing_pagesNewRoute,
-    Char123LocaleChar125AdminLanguagesIdRoute:
-      Char123LocaleChar125AdminLanguagesIdRoute,
-    Char123LocaleChar125AdminLanguagesNewRoute:
-      Char123LocaleChar125AdminLanguagesNewRoute,
+    Char123LocaleChar125AdminCourse_categoriesIdRoute:
+      Char123LocaleChar125AdminCourse_categoriesIdRoute,
+    Char123LocaleChar125AdminCourse_categoriesNewRoute:
+      Char123LocaleChar125AdminCourse_categoriesNewRoute,
+    Char123LocaleChar125AdminCourse_landing_pagesIdRoute:
+      Char123LocaleChar125AdminCourse_landing_pagesIdRoute,
+    Char123LocaleChar125AdminCourse_landing_pagesNewRoute:
+      Char123LocaleChar125AdminCourse_landing_pagesNewRoute,
+    Char123LocaleChar125AdminCoursesIdRoute:
+      Char123LocaleChar125AdminCoursesIdRoute,
+    Char123LocaleChar125AdminCoursesNewRoute:
+      Char123LocaleChar125AdminCoursesNewRoute,
     Char123LocaleChar125AdminReviewsIdRoute:
       Char123LocaleChar125AdminReviewsIdRoute,
     Char123LocaleChar125AdminReviewsNewRoute:
@@ -923,18 +923,18 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminBannersIndexRoute,
     Char123LocaleChar125AdminBlog_postsIndexRoute:
       Char123LocaleChar125AdminBlog_postsIndexRoute,
-    Char123LocaleChar125AdminLanguage_categoriesIndexRoute:
-      Char123LocaleChar125AdminLanguage_categoriesIndexRoute,
-    Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute:
-      Char123LocaleChar125AdminLanguage_landing_pagesIndexRoute,
-    Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute:
-      Char123LocaleChar125AdminLanguage_lesson_membersIndexRoute,
-    Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute:
-      Char123LocaleChar125AdminLanguage_lesson_reviewsIndexRoute,
-    Char123LocaleChar125AdminLanguagesIndexRoute:
-      Char123LocaleChar125AdminLanguagesIndexRoute,
+    Char123LocaleChar125AdminCourse_categoriesIndexRoute:
+      Char123LocaleChar125AdminCourse_categoriesIndexRoute,
+    Char123LocaleChar125AdminCourse_landing_pagesIndexRoute:
+      Char123LocaleChar125AdminCourse_landing_pagesIndexRoute,
+    Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute:
+      Char123LocaleChar125AdminCourse_lesson_reviewsIndexRoute,
+    Char123LocaleChar125AdminCoursesIndexRoute:
+      Char123LocaleChar125AdminCoursesIndexRoute,
     Char123LocaleChar125AdminLeadsIndexRoute:
       Char123LocaleChar125AdminLeadsIndexRoute,
+    Char123LocaleChar125AdminLesson_progressIndexRoute:
+      Char123LocaleChar125AdminLesson_progressIndexRoute,
     Char123LocaleChar125AdminMessagesIndexRoute:
       Char123LocaleChar125AdminMessagesIndexRoute,
     Char123LocaleChar125AdminReviewsIndexRoute:

@@ -2,28 +2,31 @@ import { Stack, Title } from "@mantine/core";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
-  adminCreateCourseMutation,
-  adminListCoursesQueryKey,
+  adminCreateCourseCategoryMutation,
+  adminListCourseCategoriesQueryKey,
 } from "@/client/@tanstack/react-query.gen";
-import { zCourseInput } from "@/client/zod.gen";
+import { zCourseCategoryInput } from "@/client/zod.gen";
 import { CrudForm } from "@/components/admin/CrudForm";
-import { emptyCourse, useCourseFields } from "@/components/admin/resources/course";
+import {
+  emptyCourseCategory,
+  useCourseCategoryFields,
+} from "@/components/admin/resources/courseCategory";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-export const Route = createFileRoute("/{-$locale}/admin/languages/new")({
-  component: NewCourse,
+export const Route = createFileRoute("/{-$locale}/admin/course_categories/new")({
+  component: NewCourseCategory,
 });
 
-export function NewCourse() {
+export function NewCourseCategory() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const fields = useCourseFields();
+  const fields = useCourseCategoryFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/languages" });
+  const backToList = () => navigate({ to: "/{-$locale}/admin/course_categories" });
 
   const mutation = useResourceMutation({
-    mutation: adminCreateCourseMutation(),
-    invalidate: [adminListCoursesQueryKey()],
+    mutation: adminCreateCourseCategoryMutation(),
+    invalidate: [adminListCourseCategoriesQueryKey()],
     successMessage: t(($) => $.admin.crud.created),
     errorMessage: t(($) => $.admin.crud.saveError),
     onDone: backToList,
@@ -34,8 +37,8 @@ export function NewCourse() {
       <Title order={2}>{t(($) => $.admin.crud.new)}</Title>
       <CrudForm
         fields={fields}
-        schema={zCourseInput}
-        defaultValues={emptyCourse}
+        schema={zCourseCategoryInput}
+        defaultValues={emptyCourseCategory}
         onSubmit={(values) => mutation.mutate({ body: values })}
         submitLabel={t(($) => $.admin.crud.create)}
         onCancel={backToList}

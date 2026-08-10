@@ -1387,18 +1387,6 @@ export const zAdminUpdateLandingPageQnaItemPath = z.object({
  */
 export const zAdminUpdateLandingPageQnaItemResponse = zQnaItem;
 
-export const zAdminListLessonProgressQuery = z.object({
-  page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-  perPage: z.int().gte(1).lte(100).optional(),
-  sortField: z.string().optional(),
-  sortOrder: z.enum(['asc', 'desc']).optional()
-});
-
-/**
- * The request has succeeded.
- */
-export const zAdminListLessonProgressResponse = zLessonProgressPage;
-
 export const zAdminListCourseLessonReviewsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
   perPage: z.int().gte(1).lte(100).optional(),
@@ -1500,6 +1488,18 @@ export const zAdminListLeadsQuery = z.object({
  * The request has succeeded.
  */
 export const zAdminListLeadsResponse = zLeadPage;
+
+export const zAdminListLessonProgressQuery = z.object({
+  page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+  perPage: z.int().gte(1).lte(100).optional(),
+  sortField: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional()
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminListLessonProgressResponse = zLessonProgressPage;
 
 export const zAdminGetRolePermissionsPath = z.object({
   roleId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })

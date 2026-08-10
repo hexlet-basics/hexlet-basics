@@ -1148,7 +1148,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_categories:
+  /admin/course_categories:
     get:
       operationId: adminListCourseCategories
       description: List course categories (paginated).
@@ -1236,7 +1236,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_categories/{categoryId}/qna_items:
+  /admin/course_categories/{categoryId}/qna_items:
     get:
       operationId: adminListCategoryQnaItems
       parameters:
@@ -1330,7 +1330,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_categories/{categoryId}/qna_items/{id}:
+  /admin/course_categories/{categoryId}/qna_items/{id}:
     put:
       operationId: adminUpdateCategoryQnaItem
       description: |-
@@ -1434,7 +1434,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_categories/{id}:
+  /admin/course_categories/{id}:
     get:
       operationId: adminGetCourseCategory
       description: |-
@@ -1572,7 +1572,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_landing_pages:
+  /admin/course_landing_pages:
     get:
       operationId: adminListCourseLandingPages
       parameters:
@@ -1656,7 +1656,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_landing_pages/{id}:
+  /admin/course_landing_pages/{id}:
     get:
       operationId: adminGetCourseLandingPage
       description: |-
@@ -1793,7 +1793,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_landing_pages/{landingPageId}/qna_items:
+  /admin/course_landing_pages/{landingPageId}/qna_items:
     get:
       operationId: adminListLandingPageQnaItems
       parameters:
@@ -1887,7 +1887,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_landing_pages/{landingPageId}/qna_items/{id}:
+  /admin/course_landing_pages/{landingPageId}/qna_items/{id}:
     put:
       operationId: adminUpdateLandingPageQnaItem
       description: |-
@@ -1991,48 +1991,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/language_lesson_members:
-    get:
-      operationId: adminListLessonProgress
-      parameters:
-        - $ref: '#/components/parameters/ListQuery.page'
-        - $ref: '#/components/parameters/ListQuery.perPage'
-        - $ref: '#/components/parameters/ListQuery.sortField'
-        - $ref: '#/components/parameters/ListQuery.sortOrder'
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LessonProgressPage'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '403':
-          description: The caller is authenticated but lacks permission for this resource.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - 'Admin: Lesson Progress'
-      security:
-        - AdminSession: []
-  /admin/language_lesson_reviews:
+  /admin/course_lesson_reviews:
     get:
       operationId: adminListCourseLessonReviews
       parameters:
@@ -2073,7 +2032,7 @@ paths:
         - 'Admin: Course Lesson Reviews'
       security:
         - AdminSession: []
-  /admin/language_lessons:
+  /admin/course_lessons:
     get:
       operationId: adminListCourseLessons
       parameters:
@@ -2114,7 +2073,7 @@ paths:
         - 'Admin: Course Lessons'
       security:
         - AdminSession: []
-  /admin/language_lessons/{id}/review:
+  /admin/course_lessons/{id}/review:
     post:
       operationId: adminReviewCourseLesson
       description: Enqueue AI review for a single lesson.
@@ -2161,7 +2120,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/languages:
+  /admin/courses:
     get:
       operationId: adminListCourses
       parameters:
@@ -2245,7 +2204,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/languages/{id}:
+  /admin/courses/{id}:
     get:
       operationId: adminGetCourse
       description: |-
@@ -2340,7 +2299,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/languages/{id}/review:
+  /admin/courses/{id}/review:
     post:
       operationId: adminReviewCourse
       description: Enqueue AI re-review of every current lesson version.
@@ -2387,7 +2346,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/languages/{id}/versions:
+  /admin/courses/{id}/versions:
     post:
       operationId: adminCreateCourseVersion
       description: Build a new version of the course exercises.
@@ -2477,6 +2436,47 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - 'Admin: Leads'
+      security:
+        - AdminSession: []
+  /admin/lesson_progress:
+    get:
+      operationId: adminListLessonProgress
+      parameters:
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+        - $ref: '#/components/parameters/ListQuery.sortField'
+        - $ref: '#/components/parameters/ListQuery.sortOrder'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LessonProgressPage'
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Lesson Progress'
       security:
         - AdminSession: []
   /admin/management/role_permissions/{roleId}:

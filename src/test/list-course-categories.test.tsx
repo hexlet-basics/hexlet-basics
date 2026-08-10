@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
-import { CourseCategoriesList } from "@/routes/{-$locale}/admin/language_categories/index";
+import { CourseCategoriesList } from "@/routes/{-$locale}/admin/course_categories/index";
 import { worker } from "@/test/msw";
 import { renderWithRouter } from "@/test/renderWithRouter";
 
@@ -14,7 +14,7 @@ import { renderWithRouter } from "@/test/renderWithRouter";
 // covers all 14: every admin list is the same CrudList with other columns.
 test("renders a server-paginated list through the CRUD engine", async () => {
   worker.use(
-    http.get("*/admin/language_categories", () =>
+    http.get("*/admin/course_categories", () =>
       HttpResponse.json({
         items: [
           {

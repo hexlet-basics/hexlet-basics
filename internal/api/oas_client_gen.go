@@ -42,32 +42,32 @@ type Invoker interface {
 	AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (AdminCreateBlogPostRes, error)
 	// AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 	//
-	// POST /admin/language_categories/{categoryId}/qna_items
+	// POST /admin/course_categories/{categoryId}/qna_items
 	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
 	// AdminCreateCourse invokes adminCreateCourse operation.
 	//
-	// POST /admin/languages
+	// POST /admin/courses
 	AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 	// 409 by the central ent-error handler.
 	//
-	// POST /admin/language_categories
+	// POST /admin/course_categories
 	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
 	// AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 	//
-	// POST /admin/language_landing_pages
+	// POST /admin/course_landing_pages
 	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
 	// AdminCreateCourseVersion invokes adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
 	//
-	// POST /admin/languages/{id}/versions
+	// POST /admin/courses/{id}/versions
 	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error)
 	// AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 	//
-	// POST /admin/language_landing_pages/{landingPageId}/qna_items
+	// POST /admin/course_landing_pages/{landingPageId}/qna_items
 	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
 	// AdminCreateReview invokes adminCreateReview operation.
 	//
@@ -103,21 +103,21 @@ type Invoker interface {
 	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error)
 	// AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 	//
-	// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
+	// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
 	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error)
 	// AdminDeleteCourseCategory invokes adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
-	// DELETE /admin/language_categories/{id}
+	// DELETE /admin/course_categories/{id}
 	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error)
 	// AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 	//
-	// DELETE /admin/language_landing_pages/{id}
+	// DELETE /admin/course_landing_pages/{id}
 	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error)
 	// AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 	//
-	// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+	// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error)
 	// AdminDeleteReview invokes adminDeleteReview operation.
 	//
@@ -150,21 +150,21 @@ type Invoker interface {
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// GET /admin/languages/{id}
+	// GET /admin/courses/{id}
 	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory invokes adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
-	// GET /admin/language_categories/{id}
+	// GET /admin/course_categories/{id}
 	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
 	// AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 	//
 	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
-	// GET /admin/language_landing_pages/{id}
+	// GET /admin/course_landing_pages/{id}
 	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
 	// AdminGetManagementUser invokes adminGetManagementUser operation.
 	//
@@ -215,33 +215,33 @@ type Invoker interface {
 	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error)
 	// AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 	//
-	// GET /admin/language_categories/{categoryId}/qna_items
+	// GET /admin/course_categories/{categoryId}/qna_items
 	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error)
 	// AdminListCourseCategories invokes adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
-	// GET /admin/language_categories
+	// GET /admin/course_categories
 	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error)
 	// AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 	//
-	// GET /admin/language_landing_pages
+	// GET /admin/course_landing_pages
 	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
 	// AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 	//
-	// GET /admin/language_lesson_reviews
+	// GET /admin/course_lesson_reviews
 	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error)
 	// AdminListCourseLessons invokes adminListCourseLessons operation.
 	//
-	// GET /admin/language_lessons
+	// GET /admin/course_lessons
 	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
 	// AdminListCourses invokes adminListCourses operation.
 	//
-	// GET /admin/languages
+	// GET /admin/courses
 	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error)
 	// AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 	//
-	// GET /admin/language_landing_pages/{landingPageId}/qna_items
+	// GET /admin/course_landing_pages/{landingPageId}/qna_items
 	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error)
 	// AdminListLeads invokes adminListLeads operation.
 	//
@@ -249,7 +249,7 @@ type Invoker interface {
 	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
 	// AdminListLessonProgress invokes adminListLessonProgress operation.
 	//
-	// GET /admin/language_lesson_members
+	// GET /admin/lesson_progress
 	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error)
 	// AdminListManagementUsers invokes adminListManagementUsers operation.
 	//
@@ -279,13 +279,13 @@ type Invoker interface {
 	//
 	// Enqueue AI re-review of every current lesson version.
 	//
-	// POST /admin/languages/{id}/review
+	// POST /admin/courses/{id}/review
 	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error)
 	// AdminReviewCourseLesson invokes adminReviewCourseLesson operation.
 	//
 	// Enqueue AI review for a single lesson.
 	//
-	// POST /admin/language_lessons/{id}/review
+	// POST /admin/course_lessons/{id}/review
 	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
 	// AdminSearchUsers invokes adminSearchUsers operation.
 	//
@@ -314,31 +314,31 @@ type Invoker interface {
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
-	// PUT /admin/language_categories/{categoryId}/qna_items/{id}
+	// PUT /admin/course_categories/{categoryId}/qna_items/{id}
 	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
 	// AdminUpdateCourse invokes adminUpdateCourse operation.
 	//
-	// PUT /admin/languages/{id}
+	// PUT /admin/courses/{id}
 	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 	// handler.
 	//
-	// PUT /admin/language_categories/{id}
+	// PUT /admin/course_categories/{id}
 	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
 	// AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 	//
 	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// PUT /admin/language_landing_pages/{id}
+	// PUT /admin/course_landing_pages/{id}
 	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
 	// AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
-	// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+	// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
 	// AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 	//
@@ -905,7 +905,7 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 
 // AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 //
-// POST /admin/language_categories/{categoryId}/qna_items
+// POST /admin/course_categories/{categoryId}/qna_items
 func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error) {
 	res, err := c.sendAdminCreateCategoryQnaItem(ctx, request, params)
 	return res, err
@@ -915,7 +915,7 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{categoryId}/qna_items"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -949,7 +949,7 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1049,7 +1049,7 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 
 // AdminCreateCourse invokes adminCreateCourse operation.
 //
-// POST /admin/languages
+// POST /admin/courses
 func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error) {
 	res, err := c.sendAdminCreateCourse(ctx, request)
 	return res, err
@@ -1059,7 +1059,7 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/languages"),
+		semconv.URLTemplateKey.String("/admin/courses"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1093,7 +1093,7 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/languages"
+	pathParts[0] = "/admin/courses"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1177,7 +1177,7 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 // Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 // 409 by the central ent-error handler.
 //
-// POST /admin/language_categories
+// POST /admin/course_categories
 func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error) {
 	res, err := c.sendAdminCreateCourseCategory(ctx, request)
 	return res, err
@@ -1187,7 +1187,7 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/language_categories"),
+		semconv.URLTemplateKey.String("/admin/course_categories"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1221,7 +1221,7 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_categories"
+	pathParts[0] = "/admin/course_categories"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1302,7 +1302,7 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 
 // AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 //
-// POST /admin/language_landing_pages
+// POST /admin/course_landing_pages
 func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error) {
 	res, err := c.sendAdminCreateCourseLandingPage(ctx, request)
 	return res, err
@@ -1312,7 +1312,7 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1346,7 +1346,7 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_landing_pages"
+	pathParts[0] = "/admin/course_landing_pages"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1429,7 +1429,7 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 //
 // Build a new version of the course exercises.
 //
-// POST /admin/languages/{id}/versions
+// POST /admin/courses/{id}/versions
 func (c *Client) AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error) {
 	res, err := c.sendAdminCreateCourseVersion(ctx, params)
 	return res, err
@@ -1439,7 +1439,7 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseVersion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/languages/{id}/versions"),
+		semconv.URLTemplateKey.String("/admin/courses/{id}/versions"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1473,7 +1473,7 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/languages/"
+	pathParts[0] = "/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1570,7 +1570,7 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 
 // AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 //
-// POST /admin/language_landing_pages/{landingPageId}/qna_items
+// POST /admin/course_landing_pages/{landingPageId}/qna_items
 func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminCreateLandingPageQnaItem(ctx, request, params)
 	return res, err
@@ -1580,7 +1580,7 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{landingPageId}/qna_items"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1614,7 +1614,7 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2502,7 +2502,7 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 
 // AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 //
-// DELETE /admin/language_categories/{categoryId}/qna_items/{id}
+// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
 func (c *Client) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error) {
 	res, err := c.sendAdminDeleteCategoryQnaItem(ctx, params)
 	return res, err
@@ -2512,7 +2512,7 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{categoryId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2546,7 +2546,7 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2663,7 +2663,7 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 //
 // Delete a course category.
 //
-// DELETE /admin/language_categories/{id}
+// DELETE /admin/course_categories/{id}
 func (c *Client) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error) {
 	res, err := c.sendAdminDeleteCourseCategory(ctx, params)
 	return res, err
@@ -2673,7 +2673,7 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2707,7 +2707,7 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2803,7 +2803,7 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 
 // AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 //
-// DELETE /admin/language_landing_pages/{id}
+// DELETE /admin/course_landing_pages/{id}
 func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error) {
 	res, err := c.sendAdminDeleteCourseLandingPage(ctx, params)
 	return res, err
@@ -2813,7 +2813,7 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2847,7 +2847,7 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2943,7 +2943,7 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 
 // AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 //
-// DELETE /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminDeleteLandingPageQnaItem(ctx, params)
 	return res, err
@@ -2953,7 +2953,7 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2987,7 +2987,7 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3925,7 +3925,7 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 //
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/languages/{id}
+// GET /admin/courses/{id}
 func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error) {
 	res, err := c.sendAdminGetCourse(ctx, params)
 	return res, err
@@ -3935,7 +3935,7 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/languages/{id}"),
+		semconv.URLTemplateKey.String("/admin/courses/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3969,7 +3969,7 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/languages/"
+	pathParts[0] = "/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4057,7 +4057,7 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 // Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/language_categories/{id}
+// GET /admin/course_categories/{id}
 func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error) {
 	res, err := c.sendAdminGetCourseCategory(ctx, params)
 	return res, err
@@ -4067,7 +4067,7 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4101,7 +4101,7 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4189,7 +4189,7 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 // Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/language_landing_pages/{id}
+// GET /admin/course_landing_pages/{id}
 func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error) {
 	res, err := c.sendAdminGetCourseLandingPage(ctx, params)
 	return res, err
@@ -4199,7 +4199,7 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4233,7 +4233,7 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5473,7 +5473,7 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 
 // AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 //
-// GET /admin/language_categories/{categoryId}/qna_items
+// GET /admin/course_categories/{categoryId}/qna_items
 func (c *Client) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error) {
 	res, err := c.sendAdminListCategoryQnaItems(ctx, params)
 	return res, err
@@ -5483,7 +5483,7 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCategoryQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{categoryId}/qna_items"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5517,7 +5517,7 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5605,7 +5605,7 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 //
 // List course categories (paginated).
 //
-// GET /admin/language_categories
+// GET /admin/course_categories
 func (c *Client) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error) {
 	res, err := c.sendAdminListCourseCategories(ctx, params)
 	return res, err
@@ -5615,7 +5615,7 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_categories"),
+		semconv.URLTemplateKey.String("/admin/course_categories"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5649,7 +5649,7 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_categories"
+	pathParts[0] = "/admin/course_categories"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -5788,7 +5788,7 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 
 // AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 //
-// GET /admin/language_landing_pages
+// GET /admin/course_landing_pages
 func (c *Client) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error) {
 	res, err := c.sendAdminListCourseLandingPages(ctx, params)
 	return res, err
@@ -5798,7 +5798,7 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLandingPages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5832,7 +5832,7 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_landing_pages"
+	pathParts[0] = "/admin/course_landing_pages"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -5971,7 +5971,7 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 
 // AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 //
-// GET /admin/language_lesson_reviews
+// GET /admin/course_lesson_reviews
 func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error) {
 	res, err := c.sendAdminListCourseLessonReviews(ctx, params)
 	return res, err
@@ -5981,7 +5981,7 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_lesson_reviews"),
+		semconv.URLTemplateKey.String("/admin/course_lesson_reviews"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6015,7 +6015,7 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_lesson_reviews"
+	pathParts[0] = "/admin/course_lesson_reviews"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6154,7 +6154,7 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 
 // AdminListCourseLessons invokes adminListCourseLessons operation.
 //
-// GET /admin/language_lessons
+// GET /admin/course_lessons
 func (c *Client) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error) {
 	res, err := c.sendAdminListCourseLessons(ctx, params)
 	return res, err
@@ -6164,7 +6164,7 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessons"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_lessons"),
+		semconv.URLTemplateKey.String("/admin/course_lessons"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6198,7 +6198,7 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_lessons"
+	pathParts[0] = "/admin/course_lessons"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6337,7 +6337,7 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 
 // AdminListCourses invokes adminListCourses operation.
 //
-// GET /admin/languages
+// GET /admin/courses
 func (c *Client) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error) {
 	res, err := c.sendAdminListCourses(ctx, params)
 	return res, err
@@ -6347,7 +6347,7 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/languages"),
+		semconv.URLTemplateKey.String("/admin/courses"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6381,7 +6381,7 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/languages"
+	pathParts[0] = "/admin/courses"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6520,7 +6520,7 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 
 // AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 //
-// GET /admin/language_landing_pages/{landingPageId}/qna_items
+// GET /admin/course_landing_pages/{landingPageId}/qna_items
 func (c *Client) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error) {
 	res, err := c.sendAdminListLandingPageQnaItems(ctx, params)
 	return res, err
@@ -6530,7 +6530,7 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLandingPageQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{landingPageId}/qna_items"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6564,7 +6564,7 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -6833,7 +6833,7 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 
 // AdminListLessonProgress invokes adminListLessonProgress operation.
 //
-// GET /admin/language_lesson_members
+// GET /admin/lesson_progress
 func (c *Client) AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error) {
 	res, err := c.sendAdminListLessonProgress(ctx, params)
 	return res, err
@@ -6843,7 +6843,7 @@ func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminLi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLessonProgress"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/language_lesson_members"),
+		semconv.URLTemplateKey.String("/admin/lesson_progress"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6877,7 +6877,7 @@ func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminLi
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/language_lesson_members"
+	pathParts[0] = "/admin/lesson_progress"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -8116,7 +8116,7 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 //
 // Enqueue AI re-review of every current lesson version.
 //
-// POST /admin/languages/{id}/review
+// POST /admin/courses/{id}/review
 func (c *Client) AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error) {
 	res, err := c.sendAdminReviewCourse(ctx, params)
 	return res, err
@@ -8126,7 +8126,7 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/languages/{id}/review"),
+		semconv.URLTemplateKey.String("/admin/courses/{id}/review"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8160,7 +8160,7 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/languages/"
+	pathParts[0] = "/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8259,7 +8259,7 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 //
 // Enqueue AI review for a single lesson.
 //
-// POST /admin/language_lessons/{id}/review
+// POST /admin/course_lessons/{id}/review
 func (c *Client) AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error) {
 	res, err := c.sendAdminReviewCourseLesson(ctx, params)
 	return res, err
@@ -8269,7 +8269,7 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/language_lessons/{id}/review"),
+		semconv.URLTemplateKey.String("/admin/course_lessons/{id}/review"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8303,7 +8303,7 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/language_lessons/"
+	pathParts[0] = "/admin/course_lessons/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8968,7 +8968,7 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/language_categories/{categoryId}/qna_items/{id}
+// PUT /admin/course_categories/{categoryId}/qna_items/{id}
 func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error) {
 	res, err := c.sendAdminUpdateCategoryQnaItem(ctx, request, params)
 	return res, err
@@ -8978,7 +8978,7 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{categoryId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9012,7 +9012,7 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9130,7 +9130,7 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 
 // AdminUpdateCourse invokes adminUpdateCourse operation.
 //
-// PUT /admin/languages/{id}
+// PUT /admin/courses/{id}
 func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error) {
 	res, err := c.sendAdminUpdateCourse(ctx, request, params)
 	return res, err
@@ -9140,7 +9140,7 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/languages/{id}"),
+		semconv.URLTemplateKey.String("/admin/courses/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9174,7 +9174,7 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/languages/"
+	pathParts[0] = "/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9276,7 +9276,7 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 // Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/language_categories/{id}
+// PUT /admin/course_categories/{id}
 func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error) {
 	res, err := c.sendAdminUpdateCourseCategory(ctx, request, params)
 	return res, err
@@ -9286,7 +9286,7 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/language_categories/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_categories/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9320,7 +9320,7 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/language_categories/"
+	pathParts[0] = "/admin/course_categories/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9421,7 +9421,7 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 //
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/language_landing_pages/{id}
+// PUT /admin/course_landing_pages/{id}
 func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error) {
 	res, err := c.sendAdminUpdateCourseLandingPage(ctx, request, params)
 	return res, err
@@ -9431,7 +9431,7 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9465,7 +9465,7 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9567,7 +9567,7 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/language_landing_pages/{landingPageId}/qna_items/{id}
+// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminUpdateLandingPageQnaItem(ctx, request, params)
 	return res, err
@@ -9577,7 +9577,7 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/language_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9611,7 +9611,7 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/language_landing_pages/"
+	pathParts[0] = "/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{

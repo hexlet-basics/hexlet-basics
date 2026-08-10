@@ -19,29 +19,29 @@ export const Route = createFileRoute("/{-$locale}/admin")({
 // office grouped its menu.
 const NAV = [
   {
-    to: "/{-$locale}/admin/languages",
+    to: "/{-$locale}/admin/courses",
     // Path fragment used to mark the entry active regardless of locale prefix.
-    match: "/admin/languages",
+    match: "/admin/courses",
     key: "courses",
   },
   {
-    to: "/{-$locale}/admin/language_categories",
-    match: "/admin/language_categories",
+    to: "/{-$locale}/admin/course_categories",
+    match: "/admin/course_categories",
     key: "courseCategories",
   },
   {
-    to: "/{-$locale}/admin/language_landing_pages",
-    match: "/admin/language_landing_pages",
+    to: "/{-$locale}/admin/course_landing_pages",
+    match: "/admin/course_landing_pages",
     key: "landingPages",
   },
   {
-    to: "/{-$locale}/admin/language_lesson_reviews",
-    match: "/admin/language_lesson_reviews",
+    to: "/{-$locale}/admin/course_lesson_reviews",
+    match: "/admin/course_lesson_reviews",
     key: "lessonReviews",
   },
   {
-    to: "/{-$locale}/admin/language_lesson_members",
-    match: "/admin/language_lesson_members",
+    to: "/{-$locale}/admin/lesson_progress",
+    match: "/admin/lesson_progress",
     key: "lessonProgress",
   },
   {

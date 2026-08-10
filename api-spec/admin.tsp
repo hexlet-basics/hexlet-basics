@@ -12,8 +12,8 @@ namespace HexletBasics;
 // ADMIN — the generated CRUD engine surface (FRONTEND_PLAN Wave 1/2).
 //
 // Every resource exposes a consistent list/get/create/update/delete subset so
-// one engine (<CrudList> + <CrudForm>) drives them all. URLs keep their legacy
-// `/admin/language_*` paths (ADR-0002); every model uses the domain name.
+// one engine (<CrudList> + <CrudForm>) drives them all. Admin URLs use the
+// domain vocabulary; only the public routes keep their legacy paths (ADR-0002).
 //
 // Uniform response shape: writes return `T | ValidationError` (422). Index is
 // `Page<T>` (paginated) via `...ListQuery`.
@@ -53,7 +53,7 @@ interface AdminAttachments {
 }
 
 // ---------------------------------------------------------------------------
-// Course Categories (legacy `/admin/language_categories`).
+// Course Categories.
 //
 // KEPT STABLE: this slice already has a Go handler + ent + generated client.
 // The input intentionally stays minimal. Aligning it to the full serializer
@@ -69,7 +69,7 @@ model CourseCategoryInput {
   description: string | null;
 }
 
-@route("/admin/language_categories")
+@route("/admin/course_categories")
 @tag("Admin: Course Categories")
 @useAuth(AdminSession)
 interface AdminCourseCategories {
@@ -234,7 +234,7 @@ interface AdminReviews {
 }
 
 // ---------------------------------------------------------------------------
-// Courses (legacy `/admin/languages`) — index/get/create/update (no delete)
+// Courses — index/get/create/update (no delete)
 // + trigger review + create version.
 // ---------------------------------------------------------------------------
 
@@ -249,7 +249,7 @@ model CourseInput {
   coverAttachmentId: int32 | null;
 }
 
-@route("/admin/languages")
+@route("/admin/courses")
 @tag("Admin: Courses")
 @useAuth(AdminSession)
 interface AdminCourses {
@@ -278,7 +278,7 @@ interface AdminCourses {
 }
 
 // ---------------------------------------------------------------------------
-// Course landing pages (legacy `/admin/language_landing_pages`) — full CRUD
+// Course landing pages — full CRUD
 // + nested QnA items.
 // ---------------------------------------------------------------------------
 
@@ -306,7 +306,7 @@ model CourseLandingPageInput {
   outcomesImageAttachmentId: int32 | null;
 }
 
-@route("/admin/language_landing_pages")
+@route("/admin/course_landing_pages")
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPages {
@@ -335,7 +335,7 @@ model QnaItemInput {
   @minLength(1) answer: string;
 }
 
-@route("/admin/language_landing_pages/{landingPageId}/qna_items")
+@route("/admin/course_landing_pages/{landingPageId}/qna_items")
 @tag("Admin: Course Landing Pages")
 @useAuth(AdminSession)
 interface AdminCourseLandingPageQnaItems {
@@ -353,7 +353,7 @@ interface AdminCourseLandingPageQnaItems {
   @delete @useAuth([AdminSession, XsrfToken]) @route("/{id}") @operationId("adminDeleteLandingPageQnaItem") delete(@path landingPageId: int32, @path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
-@route("/admin/language_categories/{categoryId}/qna_items")
+@route("/admin/course_categories/{categoryId}/qna_items")
 @tag("Admin: Course Categories")
 @useAuth(AdminSession)
 interface AdminCourseCategoryQnaItems {
@@ -375,7 +375,7 @@ interface AdminCourseCategoryQnaItems {
 // Read-only admin lists (legacy index-only routes).
 // ---------------------------------------------------------------------------
 
-@route("/admin/language_lessons")
+@route("/admin/course_lessons")
 @tag("Admin: Course Lessons")
 @useAuth(AdminSession)
 interface AdminCourseLessons {
@@ -385,14 +385,14 @@ interface AdminCourseLessons {
   @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/review") @operationId("adminReviewCourseLesson") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
 }
 
-@route("/admin/language_lesson_members")
+@route("/admin/lesson_progress")
 @tag("Admin: Lesson Progress")
 @useAuth(AdminSession)
 interface AdminLessonProgress {
   @get @operationId("adminListLessonProgress") list(...ListQuery): Page<LessonProgress> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
-@route("/admin/language_lesson_reviews")
+@route("/admin/course_lesson_reviews")
 @tag("Admin: Course Lesson Reviews")
 @useAuth(AdminSession)
 interface AdminCourseLessonReviews {

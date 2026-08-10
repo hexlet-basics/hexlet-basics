@@ -13,7 +13,7 @@ import {
 } from "@/components/admin/resources/courseLandingPage";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-export const Route = createFileRoute("/{-$locale}/admin/language_landing_pages/new")({
+export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/new")({
   component: NewCourseLandingPage,
 });
 
@@ -22,7 +22,7 @@ export function NewCourseLandingPage() {
   const navigate = useNavigate();
   const fields = useCourseLandingPageFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/language_landing_pages" });
+  const backToList = () => navigate({ to: "/{-$locale}/admin/course_landing_pages" });
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseLandingPageMutation(),

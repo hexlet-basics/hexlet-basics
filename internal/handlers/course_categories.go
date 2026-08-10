@@ -10,7 +10,7 @@ import (
 
 // AdminListCourseCategories returns a page of course categories, newest first.
 //
-// URL stays `/admin/language_categories` for backward-compat; the domain
+// URL stays `/admin/course_categories` for backward-compat; the domain
 // concept is a course category.
 func (s *Server) AdminListCourseCategories(ctx context.Context, params api.AdminListCourseCategoriesParams) (api.AdminListCourseCategoriesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,

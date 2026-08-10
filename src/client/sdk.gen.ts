@@ -425,7 +425,7 @@ export const adminListCourseCategories = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_categories',
+  url: '/admin/course_categories',
   ...options
 });
 
@@ -441,7 +441,7 @@ export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_categories',
+  url: '/admin/course_categories',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -457,7 +457,7 @@ export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_categories/{categoryId}/qna_items',
+  url: '/admin/course_categories/{categoryId}/qna_items',
   ...options
 });
 
@@ -469,7 +469,7 @@ export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_categories/{categoryId}/qna_items',
+  url: '/admin/course_categories/{categoryId}/qna_items',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -484,7 +484,7 @@ export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_categories/{categoryId}/qna_items/{id}',
+  url: '/admin/course_categories/{categoryId}/qna_items/{id}',
   ...options
 });
 
@@ -500,7 +500,7 @@ export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_categories/{categoryId}/qna_items/{id}',
+  url: '/admin/course_categories/{categoryId}/qna_items/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -518,7 +518,7 @@ export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_categories/{id}',
+  url: '/admin/course_categories/{id}',
   ...options
 });
 
@@ -534,7 +534,7 @@ export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_categories/{id}',
+  url: '/admin/course_categories/{id}',
   ...options
 });
 
@@ -550,7 +550,7 @@ export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_categories/{id}',
+  url: '/admin/course_categories/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -566,7 +566,7 @@ export const adminListCourseLandingPages = <ThrowOnError extends boolean = false
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_landing_pages',
+  url: '/admin/course_landing_pages',
   ...options
 });
 
@@ -578,7 +578,7 @@ export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_landing_pages',
+  url: '/admin/course_landing_pages',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -593,7 +593,7 @@ export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_landing_pages/{id}',
+  url: '/admin/course_landing_pages/{id}',
   ...options
 });
 
@@ -609,7 +609,7 @@ export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_landing_pages/{id}',
+  url: '/admin/course_landing_pages/{id}',
   ...options
 });
 
@@ -625,7 +625,7 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_landing_pages/{id}',
+  url: '/admin/course_landing_pages/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -641,7 +641,7 @@ export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items',
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items',
   ...options
 });
 
@@ -653,7 +653,7 @@ export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = fal
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items',
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -668,7 +668,7 @@ export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = fal
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}',
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}',
   ...options
 });
 
@@ -684,24 +684,12 @@ export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = fal
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_landing_pages/{landingPageId}/qna_items/{id}',
+  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
     ...options.headers
   }
-});
-
-export const adminListLessonProgress = <ThrowOnError extends boolean = false>(options?: Options<AdminListLessonProgressData, ThrowOnError>): RequestResult<AdminListLessonProgressResponses, AdminListLessonProgressErrors, ThrowOnError> => (options?.client ?? client).get<AdminListLessonProgressResponses, AdminListLessonProgressErrors, ThrowOnError>({
-  responseType: 'json',
-  security: [{
-      key: 'AdminSession',
-      in: 'cookie',
-      name: 'JWT',
-      type: 'apiKey'
-    }],
-  url: '/admin/language_lesson_members',
-  ...options
 });
 
 export const adminListCourseLessonReviews = <ThrowOnError extends boolean = false>(options?: Options<AdminListCourseLessonReviewsData, ThrowOnError>): RequestResult<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError> => (options?.client ?? client).get<AdminListCourseLessonReviewsResponses, AdminListCourseLessonReviewsErrors, ThrowOnError>({
@@ -712,7 +700,7 @@ export const adminListCourseLessonReviews = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_lesson_reviews',
+  url: '/admin/course_lesson_reviews',
   ...options
 });
 
@@ -724,7 +712,7 @@ export const adminListCourseLessons = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/language_lessons',
+  url: '/admin/course_lessons',
   ...options
 });
 
@@ -738,7 +726,7 @@ export const adminReviewCourseLesson = <ThrowOnError extends boolean = false>(op
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/language_lessons/{id}/review',
+  url: '/admin/course_lessons/{id}/review',
   ...options
 });
 
@@ -750,7 +738,7 @@ export const adminListCourses = <ThrowOnError extends boolean = false>(options?:
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/languages',
+  url: '/admin/courses',
   ...options
 });
 
@@ -762,7 +750,7 @@ export const adminCreateCourse = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/languages',
+  url: '/admin/courses',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -782,7 +770,7 @@ export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Op
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/languages/{id}',
+  url: '/admin/courses/{id}',
   ...options
 });
 
@@ -794,7 +782,7 @@ export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/languages/{id}',
+  url: '/admin/courses/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -812,7 +800,7 @@ export const adminReviewCourse = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/languages/{id}/review',
+  url: '/admin/courses/{id}/review',
   ...options
 });
 
@@ -827,7 +815,7 @@ export const adminCreateCourseVersion = <ThrowOnError extends boolean = false>(o
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/languages/{id}/versions',
+  url: '/admin/courses/{id}/versions',
   ...options
 });
 
@@ -840,6 +828,18 @@ export const adminListLeads = <ThrowOnError extends boolean = false>(options?: O
       type: 'apiKey'
     }],
   url: '/admin/leads',
+  ...options
+});
+
+export const adminListLessonProgress = <ThrowOnError extends boolean = false>(options?: Options<AdminListLessonProgressData, ThrowOnError>): RequestResult<AdminListLessonProgressResponses, AdminListLessonProgressErrors, ThrowOnError> => (options?.client ?? client).get<AdminListLessonProgressResponses, AdminListLessonProgressErrors, ThrowOnError>({
+  responseType: 'json',
+  security: [{
+      key: 'AdminSession',
+      in: 'cookie',
+      name: 'JWT',
+      type: 'apiKey'
+    }],
+  url: '/admin/lesson_progress',
   ...options
 });
 

@@ -14,7 +14,7 @@ func withLandingCourse(q *ent.LandingPageQuery) *ent.LandingPageQuery {
 	return q.WithCourse()
 }
 
-// URL stays `/admin/language_landing_pages`; the domain concept is a course
+// The route is `/admin/course_landing_pages`; the domain concept is a course
 // landing page. The `outcomesImage` asset is deferred (returned null) and the
 // input's `outcomesImageAttachmentId` is ignored until the Attachments uploader
 // lands — same deferral as the course cover.

@@ -9,7 +9,7 @@ import type { LessonProgress } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
 
 // Per-lesson progress (route keeps the legacy table name) — read-only.
-export const Route = createFileRoute("/{-$locale}/admin/language_lesson_members/")({
+export const Route = createFileRoute("/{-$locale}/admin/lesson_progress/")({
   component: LessonProgressList,
 });
 

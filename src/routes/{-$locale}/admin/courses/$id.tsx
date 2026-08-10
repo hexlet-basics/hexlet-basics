@@ -13,7 +13,7 @@ import { CrudForm } from "@/components/admin/CrudForm";
 import { courseToForm, useCourseFields } from "@/components/admin/resources/course";
 import { useResourceMutation } from "@/hooks/useResourceMutation";
 
-export const Route = createFileRoute("/{-$locale}/admin/languages/$id")({
+export const Route = createFileRoute("/{-$locale}/admin/courses/$id")({
   component: EditCourse,
 });
 
@@ -26,7 +26,7 @@ function EditCourse() {
 
   const { data, isLoading } = useQuery(adminGetCourseOptions({ path: { id: courseId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/languages" });
+  const backToList = () => navigate({ to: "/{-$locale}/admin/courses" });
 
   const mutation = useResourceMutation({
     mutation: adminUpdateCourseMutation(),
