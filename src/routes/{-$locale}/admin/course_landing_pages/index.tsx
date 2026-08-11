@@ -45,27 +45,27 @@ function CourseLandingPagesList() {
   const columns: CrudColumnDef<CourseLandingPage>[] = [
     {
       accessorKey: "name",
-      header: t(($) => $.models.attributes.language_landing_page.name),
+      header: t(($) => $.models.attributes.course_landing_page.name),
       enableSorting: false,
     },
     {
       accessorKey: "slug",
-      header: t(($) => $.models.attributes.language_landing_page.slug),
+      header: t(($) => $.models.attributes.course_landing_page.slug),
       enableSorting: false,
     },
     {
       accessorKey: "courseSlug",
-      header: t(($) => $.models.attributes.language_landing_page.language_id),
+      header: t(($) => $.models.attributes.course_landing_page.course_id),
       enableSorting: false,
     },
     {
       accessorKey: "state",
-      header: t(($) => $.models.attributes.language_landing_page.state),
+      header: t(($) => $.models.attributes.course_landing_page.state),
       enableSorting: false,
     },
     {
       id: "main",
-      header: t(($) => $.models.attributes.language_landing_page.main),
+      header: t(($) => $.models.attributes.course_landing_page.main),
       cell: ({ row }) => (row.original.main ? "✓" : ""),
       enableSorting: false,
     },

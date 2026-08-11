@@ -85,7 +85,7 @@ export default {
             published: "Published",
           },
         },
-        language: {
+        course: {
           category_id: "Category",
           cover: "Cover",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
@@ -94,25 +94,25 @@ export default {
             first_language: "First language",
             second_language: "Second language",
           },
-          progress: "Progress",
-          "progress/values": {
+          readiness: "Course readiness",
+          "readiness/values": {
             completed: "Completed",
             draft: "Draft",
             in_development: "In development",
           },
           slug: "Slug",
         },
-        language_category: {
+        course_category: {
           description: "Description",
           header: "Header",
           locale: "Locale",
           name: "Name",
           slug: "Slug",
         },
-        language_category_item: {
-          language_landing_page_id: "Лендинг",
+        course_category_item: {
+          course_landing_page_id: "Лендинг",
         },
-        language_landing_page: {
+        course_landing_page: {
           _destroy: "Destroy",
           answer: "Answer",
           description: "Description",
@@ -120,7 +120,7 @@ export default {
           footer_name: "Footer Name",
           header: "Header",
           landing_page_to_redirect_id: "Redirect to Page",
-          language_id: "Course",
+          course_id: "Course",
           listed: "Show in Lists",
           main: "Main",
           meta_description: "Meta Description",
@@ -161,7 +161,7 @@ export default {
         review: {
           body: "Review",
           first_name: "First name",
-          language_id: "Course",
+          course_id: "Course",
           last_name: "Last name",
           locale: "Locale",
           pinned: "Pinned (Shown at the top of the list)",
@@ -250,6 +250,20 @@ export default {
         relatedCourses: "Related courses",
       },
       courses: {
+        edit: {
+          header: "Edit Language",
+          id: "ID",
+          load_new_version: "Load new version",
+          result: "Result",
+          versions: "Versions",
+        },
+        index: {
+          add_new_course: "Add new language",
+          header: "Languages",
+        },
+        new: {
+          header: "New Language",
+        },
         createVersion: "Build version",
         currentVersion: "Current version",
         lessonsCount: "Lessons",
@@ -300,7 +314,7 @@ export default {
           dashboard: "Dashboard",
         },
       },
-      language_categories: {
+      course_categories: {
         edit: {
           header: "Редактирование {{id}}",
         },
@@ -310,55 +324,39 @@ export default {
           qna_items: "Q&A Items",
         },
         index: {
-          add_new_language: "Добавить категорию",
+          add_new_course: "Добавить категорию",
           header: "Категории",
         },
         new: {
           header: "Новая категория",
         },
       },
-      language_landing_pages: {
+      course_landing_pages: {
         edit: {
           header: "Редактирование {{id}}",
         },
         index: {
-          add_new_language: "Добавить лендинг",
+          add_new_course: "Добавить лендинг",
           header: "Лендинги",
         },
         new: {
           header: "Новый лендинг",
         },
       },
-      language_lesson_members: {
+      lesson_progress: {
         index: {
           header: "Прохождение уроков",
         },
       },
-      language_lesson_reviews: {
+      course_lesson_reviews: {
         index: {
           data: "Data",
           header: "Ревью уроков",
         },
       },
-      language_lessons: {
+      course_lessons: {
         index: {
           header: "Уроки",
-        },
-      },
-      languages: {
-        edit: {
-          header: "Edit Language",
-          id: "ID",
-          load_new_version: "Load new version",
-          result: "Result",
-          versions: "Versions",
-        },
-        index: {
-          add_new_language: "Add new language",
-          header: "Languages",
-        },
-        new: {
-          header: "New Language",
         },
       },
       leads: {
@@ -475,7 +473,7 @@ export default {
     api: {
       partners: {
         yandex_market: {
-          languages: {
+          courses: {
             index: {
               category: "Freemium",
               company: "Hexlet",
@@ -659,7 +657,7 @@ export default {
         one: "{{count}} hour",
       },
       instructions: "Instructions",
-      language_icon: "{{language}} icon",
+      course_icon: "{{language}} icon",
       languages: {
         en: "English",
         ru: "Russian",
@@ -746,7 +744,7 @@ export default {
       },
     },
     enums: {
-      language: {
+      course: {
         learn_as: {
           first_language: "basics for beginners",
           second_language: "as a second language",
@@ -851,7 +849,7 @@ export default {
             success: "Post successfully updated!",
           },
         },
-        languages: {
+        courses: {
           update: {
             error: "Something went wrong",
             success: "Language updated successfully",
@@ -899,16 +897,16 @@ export default {
           success: "You have signed in successfully. You can start learning now.",
         },
       },
-      languages: {
+      courses: {
         lessons: {
           show: {
             lesson_not_found: "Lesson not found. Please, try another lesson.",
           },
         },
         show: {
-          empty_language_current_version:
+          empty_course_current_version:
             "Language is under development, please check back later or try any other available language",
-          language_in_development_html:
+          course_in_development_html:
             'Language {{language}} is under development.\nYou can help send a pull request with new lessons or\nsupplement those that already exist <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nWe have prepared guidelines for writing <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">at the link</a>\n',
           warning: "The Language has lessons only in russian. Switch locale if you can read it :)",
         },
@@ -1024,7 +1022,7 @@ export default {
         subheader: "For those who start from scratch. From the creators of ",
         title: "Free Online Programming Courses: HTML, CSS, JavaScript\n",
       },
-      languages: {
+      courses: {
         courses: "Courses",
       },
       reviews: {
@@ -1052,7 +1050,7 @@ export default {
       hour_many: "",
       hour_other: "",
     },
-    language_categories: {
+    course_categories: {
       index: {
         header: "Course categories",
         link: "Go to",
@@ -1069,7 +1067,7 @@ export default {
         },
       },
     },
-    languages: {
+    courses: {
       lessons: {
         show: {
           autocomplete_hint:
@@ -1222,12 +1220,12 @@ export default {
           blog_posts: "Blog Posts",
           dashboard: "Dashboard",
           jobs: "Job queue",
-          language_categories: "Categories",
-          language_landing_pages: "Landing Pages",
-          language_lesson_members: "Прохождение уроков",
-          language_lesson_reviews: "Ревью уроков",
-          language_lessons: "Уроки",
-          languages: "Courses",
+          course_categories: "Categories",
+          course_landing_pages: "Landing Pages",
+          lesson_progress: "Прохождение уроков",
+          course_lesson_reviews: "Ревью уроков",
+          course_lessons: "Уроки",
+          courses: "Courses",
           leads: "Лиды",
           menu: "Menu",
           messages: "Conversations with AI",
@@ -1274,7 +1272,7 @@ export default {
           "hexlet-cv": "Хекслет.Карьера",
           "hexlet-sicp": "Хекслет.SICP",
           information: "Information",
-          language_categories: "Categories",
+          course_categories: "Categories",
           matrix: "Matrix",
           privacy: "Privacy",
           recommended_books: "Recommended Books",
@@ -1286,7 +1284,7 @@ export default {
           tos: "Terms of Service",
           useful: "Useful",
         },
-        language_menu: {
+        course_menu: {
           in_development: "In development",
         },
         nav: {
@@ -1470,7 +1468,7 @@ export default {
             published: "Published",
           },
         },
-        language: {
+        course: {
           category_id: "Category",
           cover: "Cover",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
@@ -1479,25 +1477,25 @@ export default {
             first_language: "First language",
             second_language: "Second language",
           },
-          progress: "Progress",
-          "progress/values": {
+          readiness: "Course readiness",
+          "readiness/values": {
             completed: "Completed",
             draft: "Draft",
             in_development: "In development",
           },
           slug: "Slug",
         },
-        language_category: {
+        course_category: {
           description: "Description",
           header: "Header",
           locale: "Locale",
           name: "Name",
           slug: "Slug",
         },
-        language_category_item: {
-          language_landing_page_id: "Лендинг",
+        course_category_item: {
+          course_landing_page_id: "Лендинг",
         },
-        language_landing_page: {
+        course_landing_page: {
           _destroy: "Destroy",
           answer: "Answer",
           description: "Description",
@@ -1505,7 +1503,7 @@ export default {
           footer_name: "Footer Name",
           header: "Header",
           landing_page_to_redirect_id: "Redirect to Page",
-          language_id: "Course",
+          course_id: "Course",
           listed: "Show in Lists",
           main: "Main",
           meta_description: "Meta Description",
@@ -1549,7 +1547,7 @@ export default {
         review: {
           body: "Review",
           first_name: "First name",
-          language_id: "Course",
+          course_id: "Course",
           last_name: "Last name",
           locale: "Locale",
           pinned: "Pinned (Shown at the top of the list)",
@@ -1633,7 +1631,7 @@ export default {
             dashboard: "Dashboard",
           },
         },
-        language_categories: {
+        course_categories: {
           edit: {
             header: "Редактирование {{id}}",
           },
@@ -1649,7 +1647,7 @@ export default {
             header: "Новая категория",
           },
         },
-        language_landing_pages: {
+        course_landing_pages: {
           edit: {
             header: "Редактирование {{id}}",
           },
@@ -1660,23 +1658,23 @@ export default {
             header: "Новый лендинг",
           },
         },
-        language_lesson_members: {
+        lesson_progress: {
           index: {
             header: "Прохождение уроков",
           },
         },
-        language_lesson_reviews: {
+        course_lesson_reviews: {
           index: {
             data: "Data",
             header: "Ревью уроков",
           },
         },
-        language_lessons: {
+        course_lessons: {
           index: {
             header: "Уроки",
           },
         },
-        languages: {
+        courses: {
           edit: {
             header: "Edit Language",
             id: "ID",
@@ -1859,20 +1857,20 @@ export default {
           reviews: "Reviews",
           sign_up: "Sign Up",
         },
-        languages: {
+        courses: {
           courses: "Courses",
         },
         sitemap: {
           home: "Home",
         },
       },
-      language_categories: {
+      course_categories: {
         index: {
           header: "Course categories",
           link: "Go to",
         },
       },
-      languages: {
+      courses: {
         index: {
           categories: "Categories",
           courses: "All courses",
@@ -2230,7 +2228,7 @@ export default {
       },
     },
     shared: {
-      languages: {
+      courses: {
         course_finished: "Course finished!",
       },
       reviews_showcase: {

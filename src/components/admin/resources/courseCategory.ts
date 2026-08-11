@@ -31,22 +31,22 @@ export function useCourseCategoryFields(): CrudFieldSpec<CourseCategoryInput>[] 
   return [
     {
       name: "name",
-      label: t(($) => $.models.attributes.language_category.name),
+      label: t(($) => $.models.attributes.course_category.name),
       required: true,
     },
     {
       name: "header",
-      label: t(($) => $.models.attributes.language_category.header),
+      label: t(($) => $.models.attributes.course_category.header),
       required: true,
     },
     {
       name: "slug",
-      label: t(($) => $.models.attributes.language_category.slug),
+      label: t(($) => $.models.attributes.course_category.slug),
       required: true,
     },
     {
       name: "description",
-      label: t(($) => $.models.attributes.language_category.description),
+      label: t(($) => $.models.attributes.course_category.description),
       type: "textarea",
     },
   ];

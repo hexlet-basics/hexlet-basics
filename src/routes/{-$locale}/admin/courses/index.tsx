@@ -55,17 +55,17 @@ function CoursesList() {
   const columns: CrudColumnDef<Course>[] = [
     {
       accessorKey: "slug",
-      header: t(($) => $.models.attributes.language.slug),
+      header: t(($) => $.models.attributes.course.slug),
       enableSorting: false,
     },
     {
       accessorKey: "progress",
-      header: t(($) => $.models.attributes.language.progress),
+      header: t(($) => $.models.attributes.course.readiness),
       enableSorting: false,
     },
     {
       accessorKey: "learnAs",
-      header: t(($) => $.models.attributes.language.learn_as),
+      header: t(($) => $.models.attributes.course.learn_as),
       enableSorting: false,
     },
     {

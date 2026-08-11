@@ -32,46 +32,46 @@ export function useCourseFields(): CrudFieldSpec<CourseInput>[] {
   return [
     {
       name: "slug",
-      label: t(($) => $.models.attributes.language.slug),
+      label: t(($) => $.models.attributes.course.slug),
       required: true,
     },
     {
       name: "learnAs",
-      label: t(($) => $.models.attributes.language.learn_as),
+      label: t(($) => $.models.attributes.course.learn_as),
       type: "select",
       options: [
         {
           value: "first_language",
-          label: t(($) => $.models.attributes.language["learn_as/values"].first_language),
+          label: t(($) => $.models.attributes.course["learn_as/values"].first_language),
         },
         {
           value: "second_language",
-          label: t(($) => $.models.attributes.language["learn_as/values"].second_language),
+          label: t(($) => $.models.attributes.course["learn_as/values"].second_language),
         },
       ],
     },
     {
       name: "readiness",
-      label: t(($) => $.models.attributes.language.progress),
+      label: t(($) => $.models.attributes.course.readiness),
       type: "select",
       options: [
         {
           value: "draft",
-          label: t(($) => $.models.attributes.language["progress/values"].draft),
+          label: t(($) => $.models.attributes.course["readiness/values"].draft),
         },
         {
           value: "in_development",
-          label: t(($) => $.models.attributes.language["progress/values"].in_development),
+          label: t(($) => $.models.attributes.course["readiness/values"].in_development),
         },
         {
           value: "completed",
-          label: t(($) => $.models.attributes.language["progress/values"].completed),
+          label: t(($) => $.models.attributes.course["readiness/values"].completed),
         },
       ],
     },
     {
       name: "hexletProgramLandingPage",
-      label: t(($) => $.models.attributes.language.hexlet_program_landing_page),
+      label: t(($) => $.models.attributes.course.hexlet_program_landing_page),
     },
   ];
 }

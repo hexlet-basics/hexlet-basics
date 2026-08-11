@@ -60,7 +60,7 @@ function BlogPostsList() {
     },
     {
       accessorKey: "locale",
-      header: t(($) => $.models.attributes.language_category.locale),
+      header: t(($) => $.models.attributes.course_category.locale),
       enableSorting: false,
     },
     {

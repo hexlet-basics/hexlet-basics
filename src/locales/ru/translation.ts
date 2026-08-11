@@ -85,7 +85,7 @@ export default {
             published: "Опубликован",
           },
         },
-        language: {
+        course: {
           category_id: "Категория",
           cover: "Обложка",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
@@ -94,25 +94,25 @@ export default {
             first_language: "Первый язык",
             second_language: "Второй язык",
           },
-          progress: "Прогресс",
-          "progress/values": {
+          readiness: "Готовность курса",
+          "readiness/values": {
             completed: "Завершённый",
             draft: "Черновик",
             in_development: "В разработке",
           },
           slug: "Slug",
         },
-        language_category: {
+        course_category: {
           description: "Описание",
           header: "Заголовок",
           locale: "Локаль",
           name: "Название",
           slug: "Slug",
         },
-        language_category_item: {
-          language_landing_page_id: "Лендинг",
+        course_category_item: {
+          course_landing_page_id: "Лендинг",
         },
-        language_landing_page: {
+        course_landing_page: {
           _destroy: "Удалить",
           answer: "Ответ",
           description: "Описание",
@@ -120,7 +120,7 @@ export default {
           footer_name: "Имя в футере",
           header: "Заголовок",
           landing_page_to_redirect_id: "Перенаправление на страницу",
-          language_id: "Курс",
+          course_id: "Курс",
           listed: "Отображать в списках",
           main: "Основной",
           meta_description: "Meta Description",
@@ -161,7 +161,7 @@ export default {
         review: {
           body: "Отзыв",
           first_name: "Имя",
-          language_id: "Курс",
+          course_id: "Курс",
           last_name: "Фамилия",
           locale: "Локаль",
           pinned: "Закрепленный (Показывается сверху списка)",
@@ -250,6 +250,20 @@ export default {
         relatedCourses: "Связанные курсы",
       },
       courses: {
+        edit: {
+          header: "Редактирование {{id}}",
+          id: "ID",
+          load_new_version: "Загрузить новую версию",
+          result: "Результат",
+          versions: "Версии",
+        },
+        index: {
+          add_new_course: "Добавить курс",
+          header: "Курсы",
+        },
+        new: {
+          header: "Новый курс",
+        },
         createVersion: "Собрать версию",
         currentVersion: "Текущая версия",
         lessonsCount: "Уроков",
@@ -300,7 +314,7 @@ export default {
           dashboard: "Кабинет",
         },
       },
-      language_categories: {
+      course_categories: {
         edit: {
           header: "Редактирование {{id}}",
         },
@@ -310,55 +324,39 @@ export default {
           qna_items: "Вопросы и ответы",
         },
         index: {
-          add_new_language: "Добавить категорию",
+          add_new_course: "Добавить категорию",
           header: "Категории",
         },
         new: {
           header: "Новая категория",
         },
       },
-      language_landing_pages: {
+      course_landing_pages: {
         edit: {
           header: "Редактирование {{id}}",
         },
         index: {
-          add_new_language: "Добавить лендинг",
+          add_new_course: "Добавить лендинг",
           header: "Лендинги",
         },
         new: {
           header: "Новый лендинг",
         },
       },
-      language_lesson_members: {
+      lesson_progress: {
         index: {
           header: "Прохождение уроков",
         },
       },
-      language_lesson_reviews: {
+      course_lesson_reviews: {
         index: {
           data: "Данные",
           header: "Ревью уроков",
         },
       },
-      language_lessons: {
+      course_lessons: {
         index: {
           header: "Уроки",
-        },
-      },
-      languages: {
-        edit: {
-          header: "Редактирование {{id}}",
-          id: "ID",
-          load_new_version: "Загрузить новую версию",
-          result: "Результат",
-          versions: "Версии",
-        },
-        index: {
-          add_new_language: "Добавить курс",
-          header: "Курсы",
-        },
-        new: {
-          header: "Новый курс",
         },
       },
       leads: {
@@ -475,7 +473,7 @@ export default {
     api: {
       partners: {
         yandex_market: {
-          languages: {
+          courses: {
             index: {
               category: "Фримиум",
               company: 'ООО "Хекслет Рус"',
@@ -658,7 +656,7 @@ export default {
         one: "{{count}} час",
       },
       instructions: "Инструкции",
-      language_icon: "Иконка {{language}}",
+      course_icon: "Иконка {{language}}",
       languages: {
         en: "Английский",
         ru: "Русский",
@@ -746,7 +744,7 @@ export default {
       },
     },
     enums: {
-      language: {
+      course: {
         learn_as: {
           first_language: "для начинающих",
           second_language: "как второй язык",
@@ -852,7 +850,7 @@ export default {
             success: "Пост успешно обновлен!",
           },
         },
-        languages: {
+        courses: {
           update: {
             error: "Что-то пошло не так",
             success: "Язык успешно сохранен",
@@ -900,16 +898,16 @@ export default {
           success: "Добро пожаловать! Пора немного поучиться -)",
         },
       },
-      languages: {
+      courses: {
         lessons: {
           show: {
             lesson_not_found: "Урок не найден, но вы можете начать другие!",
           },
         },
         show: {
-          empty_language_current_version:
+          empty_course_current_version:
             "Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык",
-          language_in_development_html:
+          course_in_development_html:
             'Курс по языку {{language}} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nМы подготовили рекомендации по написанию текстов <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">по ссылке</a>\n',
           warning: "Попробуйте переключить язык, возможно там найдется нужный урок! :)",
         },
@@ -1024,7 +1022,7 @@ export default {
         subheader: "Для тех, кто начинает с нуля. От создателей ",
         title: "Школа программирования для детей и взрослых",
       },
-      languages: {
+      courses: {
         courses: "Курсы по программированию",
       },
       reviews: {
@@ -1053,7 +1051,7 @@ export default {
       hour_many: "{{count}} часов",
       hour_other: "{{count}} часов",
     },
-    language_categories: {
+    course_categories: {
       index: {
         header: "Категории курсов по программированию",
         link: "Перейти",
@@ -1070,7 +1068,7 @@ export default {
         },
       },
     },
-    languages: {
+    courses: {
       lessons: {
         show: {
           autocomplete_hint:
@@ -1223,12 +1221,12 @@ export default {
           blog_posts: "Посты в блоге",
           dashboard: "Кабинет",
           jobs: "Очередь задач",
-          language_categories: "Категории",
-          language_landing_pages: "Лендинги",
-          language_lesson_members: "Прохождение уроков",
-          language_lesson_reviews: "Ревью уроков",
-          language_lessons: "Уроки",
-          languages: "Курсы",
+          course_categories: "Категории",
+          course_landing_pages: "Лендинги",
+          lesson_progress: "Прохождение уроков",
+          course_lesson_reviews: "Ревью уроков",
+          course_lessons: "Уроки",
+          courses: "Курсы",
           leads: "Лиды",
           menu: "Меню",
           messages: "Соообщения (AI)",
@@ -1276,7 +1274,7 @@ export default {
           "hexlet-cv": "Хекслет.Карьера",
           "hexlet-sicp": "Хекслет.SICP",
           information: "Информация",
-          language_categories: "Направления обучения",
+          course_categories: "Направления обучения",
           matrix: "Матрица компетентности",
           privacy: "Политика конфиденциальности",
           recommended_books: "Рекомендуемые книги",
@@ -1288,7 +1286,7 @@ export default {
           tos: "Условия использования",
           useful: "Полезное",
         },
-        language_menu: {
+        course_menu: {
           in_development: "В разработке",
         },
         nav: {
@@ -1474,7 +1472,7 @@ export default {
             published: "Опубликован",
           },
         },
-        language: {
+        course: {
           category_id: "Категория",
           cover: "Обложка",
           hexlet_program_landing_page: "Hexlet Program Landing Page",
@@ -1483,25 +1481,25 @@ export default {
             first_language: "Первый язык",
             second_language: "Второй язык",
           },
-          progress: "Прогресс",
-          "progress/values": {
+          readiness: "Готовность курса",
+          "readiness/values": {
             completed: "Завершённый",
             draft: "Черновик",
             in_development: "В разработке",
           },
           slug: "Slug",
         },
-        language_category: {
+        course_category: {
           description: "Описание",
           header: "Заголовок",
           locale: "Локаль",
           name: "Название",
           slug: "Slug",
         },
-        language_category_item: {
-          language_landing_page_id: "Лендинг",
+        course_category_item: {
+          course_landing_page_id: "Лендинг",
         },
-        language_landing_page: {
+        course_landing_page: {
           _destroy: "Удалить",
           answer: "Ответ",
           description: "Описание",
@@ -1509,7 +1507,7 @@ export default {
           footer_name: "Имя в футере",
           header: "Заголовок",
           landing_page_to_redirect_id: "Перенаправление на страницу",
-          language_id: "Курс",
+          course_id: "Курс",
           listed: "Отображать в списках",
           main: "Основной",
           meta_description: "Meta Description",
@@ -1553,7 +1551,7 @@ export default {
         review: {
           body: "Отзыв",
           first_name: "Имя",
-          language_id: "Курс",
+          course_id: "Курс",
           last_name: "Фамилия",
           locale: "Локаль",
           pinned: "Закрепленный (Показывается сверху списка)",
@@ -1637,7 +1635,7 @@ export default {
             dashboard: "Кабинет",
           },
         },
-        language_categories: {
+        course_categories: {
           edit: {
             header: "Редактирование {{id}}",
           },
@@ -1653,7 +1651,7 @@ export default {
             header: "Новая категория",
           },
         },
-        language_landing_pages: {
+        course_landing_pages: {
           edit: {
             header: "Редактирование {{id}}",
           },
@@ -1664,23 +1662,23 @@ export default {
             header: "Новый лендинг",
           },
         },
-        language_lesson_members: {
+        lesson_progress: {
           index: {
             header: "Прохождение уроков",
           },
         },
-        language_lesson_reviews: {
+        course_lesson_reviews: {
           index: {
             data: "Данные",
             header: "Ревью уроков",
           },
         },
-        language_lessons: {
+        course_lessons: {
           index: {
             header: "Уроки",
           },
         },
-        languages: {
+        courses: {
           edit: {
             header: "Редактирование {{id}}",
             id: "ID",
@@ -1862,20 +1860,20 @@ export default {
           reviews: "Отзывы",
           sign_up: "Регистрация",
         },
-        languages: {
+        courses: {
           courses: "Курсы по программированию",
         },
         sitemap: {
           home: "Главная",
         },
       },
-      language_categories: {
+      course_categories: {
         index: {
           header: "Категории курсов по программированию",
           link: "Перейти",
         },
       },
-      languages: {
+      courses: {
         index: {
           categories: "Категории",
           courses: "Все курсы",
@@ -2233,7 +2231,7 @@ export default {
       },
     },
     shared: {
-      languages: {
+      courses: {
         course_finished: "Курс пройден!",
       },
       reviews_showcase: {

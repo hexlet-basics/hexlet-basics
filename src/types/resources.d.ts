@@ -86,7 +86,7 @@ export default interface Resources {
             published: "Опубликован";
           };
         };
-        language: {
+        course: {
           category_id: "Категория";
           cover: "Обложка";
           hexlet_program_landing_page: "Hexlet Program Landing Page";
@@ -95,33 +95,33 @@ export default interface Resources {
             first_language: "Первый язык";
             second_language: "Второй язык";
           };
-          progress: "Прогресс";
-          "progress/values": {
+          readiness: "Готовность курса";
+          "readiness/values": {
             completed: "Завершённый";
             draft: "Черновик";
             in_development: "В разработке";
           };
           slug: "Slug";
         };
-        language_category: {
+        course_category: {
           description: "Описание";
           header: "Заголовок";
           locale: "Локаль";
           name: "Название";
           slug: "Slug";
         };
-        language_category_item: {
-          language_landing_page_id: "Лендинг";
+        course_category_item: {
+          course_landing_page_id: "Лендинг";
         };
-        language_landing_page: {
+        course_landing_page: {
           _destroy: "Удалить";
           answer: "Ответ";
+          course_id: "Курс";
           description: "Описание";
           footer: "Выводить в футере";
           footer_name: "Имя в футере";
           header: "Заголовок";
           landing_page_to_redirect_id: "Перенаправление на страницу";
-          language_id: "Курс";
           listed: "Отображать в списках";
           main: "Основной";
           meta_description: "Meta Description";
@@ -161,8 +161,8 @@ export default interface Resources {
         };
         review: {
           body: "Отзыв";
+          course_id: "Курс";
           first_name: "Имя";
-          language_id: "Курс";
           last_name: "Фамилия";
           locale: "Локаль";
           pinned: "Закрепленный (Показывается сверху списка)";
@@ -245,10 +245,64 @@ export default interface Resources {
           header: "Новый пост";
         };
       };
+      course_categories: {
+        edit: {
+          header: "Редактирование {{id}}";
+        };
+        form: {
+          items: "Элементы";
+          main: "Основное";
+          qna_items: "Вопросы и ответы";
+        };
+        index: {
+          add_new_course: "Добавить категорию";
+          header: "Категории";
+        };
+        new: {
+          header: "Новая категория";
+        };
+      };
+      course_landing_pages: {
+        edit: {
+          header: "Редактирование {{id}}";
+        };
+        index: {
+          add_new_course: "Добавить лендинг";
+          header: "Лендинги";
+        };
+        new: {
+          header: "Новый лендинг";
+        };
+      };
+      course_lesson_reviews: {
+        index: {
+          data: "Данные";
+          header: "Ревью уроков";
+        };
+      };
+      course_lessons: {
+        index: {
+          header: "Уроки";
+        };
+      };
       courses: {
         createVersion: "Собрать версию";
         currentVersion: "Текущая версия";
+        edit: {
+          header: "Редактирование {{id}}";
+          id: "ID";
+          load_new_version: "Загрузить новую версию";
+          result: "Результат";
+          versions: "Версии";
+        };
+        index: {
+          add_new_course: "Добавить курс";
+          header: "Курсы";
+        };
         lessonsCount: "Уроков";
+        new: {
+          header: "Новый курс";
+        };
         review: "AI-ревью";
         reviewQueued: "Задачи на ревью поставлены";
         versionQueued: "Сборка версии запущена";
@@ -274,73 +328,17 @@ export default interface Resources {
           dashboard: "Кабинет";
         };
       };
-      language_categories: {
-        edit: {
-          header: "Редактирование {{id}}";
-        };
-        form: {
-          items: "Элементы";
-          main: "Основное";
-          qna_items: "Вопросы и ответы";
-        };
-        index: {
-          add_new_language: "Добавить категорию";
-          header: "Категории";
-        };
-        new: {
-          header: "Новая категория";
-        };
-      };
-      language_landing_pages: {
-        edit: {
-          header: "Редактирование {{id}}";
-        };
-        index: {
-          add_new_language: "Добавить лендинг";
-          header: "Лендинги";
-        };
-        new: {
-          header: "Новый лендинг";
-        };
-      };
-      language_lesson_members: {
-        index: {
-          header: "Прохождение уроков";
-        };
-      };
-      language_lesson_reviews: {
-        index: {
-          data: "Данные";
-          header: "Ревью уроков";
-        };
-      };
-      language_lessons: {
-        index: {
-          header: "Уроки";
-        };
-      };
-      languages: {
-        edit: {
-          header: "Редактирование {{id}}";
-          id: "ID";
-          load_new_version: "Загрузить новую версию";
-          result: "Результат";
-          versions: "Версии";
-        };
-        index: {
-          add_new_language: "Добавить курс";
-          header: "Курсы";
-        };
-        new: {
-          header: "Новый курс";
-        };
-      };
       leads: {
         index: {
           answers: "Ответы";
           courses: "Курсы";
           data: "Данные";
           header: "Лиды";
+        };
+      };
+      lesson_progress: {
+        index: {
+          header: "Прохождение уроков";
         };
       };
       management: {
@@ -476,7 +474,7 @@ export default interface Resources {
     api: {
       partners: {
         yandex_market: {
-          languages: {
+          courses: {
             index: {
               category: "Фримиум";
               company: 'ООО "Хекслет Рус"';
@@ -625,6 +623,7 @@ export default interface Resources {
       community_chat: "Чат сообщества и поддержки";
       community_url: "https://t.me/hexletcommunity\n";
       confirm: "Убеждаемся, что мы делаем то что действительно хотим. Хотим?";
+      course_icon: "Иконка {{language}}";
       current_state: "Текущее состояние";
       discuss: "ИИ-помощник";
       editor: "Редактор";
@@ -641,7 +640,6 @@ export default interface Resources {
         one: "{{count}} час";
       };
       instructions: "Инструкции";
-      language_icon: "Иконка {{language}}";
       languages: {
         en: "Английский";
         ru: "Русский";
@@ -725,299 +723,7 @@ export default interface Resources {
         };
       };
     };
-    enums: {
-      language: {
-        learn_as: {
-          first_language: "для начинающих";
-          second_language: "как второй язык";
-        };
-        progress: {
-          completed: "Завершенный";
-          draft: "Черновик";
-          in_development: "В разработке";
-        };
-      };
-    };
-    errors: {
-      show: {
-        codes: {
-          "403": {
-            description: "Скорее всего это административный доступ, поэтому нини :)";
-            header: "Доступ к странице закрыт";
-          };
-          "404": {
-            description: "Возможно страница была удалена. Попробуйте перейти на нужную страницу через верхнее меню";
-            header: "Страница не найдена";
-          };
-          "500": {
-            description: "Что-то пошло не так. Программистам уже пришла смс и они бегут к компьютеру, чтобы быстрее выкатить исправление";
-            header: "Ошибка сервера";
-          };
-          other: {
-            description: "Что-то пошло не так. Мы получили уведомление и внимательно разбираемся с проблемой";
-            header: "Ошибка";
-          };
-        };
-      };
-    };
-    faq: {
-      header: "Вопросы и Ответы";
-      main: {
-        "about-project": {
-          answer: "Это полностью бесплатная платформа для обучения it (айти) с нуля. Code Basics был создан разработчиками и сообществом школы программирования Хекслет для того, чтобы любой желающий мог попробовать себя в программировании и заложить правильный фундамент для новой профессии, основанный не на запоминании специфики, а на понимании системы в целом. Одна из ключевых фишек проекта это тренажер по программированию\n";
-          question: "Что такое Code Basics?";
-        };
-        "for-whom": {
-          answer: "Курсы Code Basics подходят для всех, кто начинает изучать программирование с нуля и хочет стать профессиональным программистом. Возраст, профессия – не имеют значения. На Code Basics занимаются взрослые и подростки, технари и чистые гуманитарии.\n";
-          question: "Для кого курсы?";
-        };
-        "how-it-works": {
-          answer: "Code Basics – полностью автоматизированная онлайн платформа. Поэтому вы можете заниматься в любое удобное время, когда захотите.\n\nКурсы программирования состоят из тематических блоков, в каждом есть несколько уроков. Проходите уроки последовательно: сначала изучите теорию, потом выполните практическое упражнение прямо в браузере – система проверит его автоматически.\n";
-          question: "Как проходит обучение программированию?";
-        };
-        "how-much": {
-          answer: "Code Basics создавался как проект для обучения программированию с нуля бесплатно. Таким он, был, есть и будет. Более того, Code Basics это открытый проект, код которого можно не только найти на Github, но и принять участие в его разработке\n";
-          question: "Сколько стоят курсы на платформе?";
-        };
-        "how-to-start": {
-          answer: "Достаточно просто зарегистрироваться. Регистрация на платформе бесплатная, после регистрации вы получите доступ ко всем курсам Code Basics. Выбирайте любой – и проходите.\n";
-          question: "Как начать пользоваться платформой?";
-        };
-        "if-something-goes-wrong": {
-          answer: "Спрашивайте! В каждом уроке есть раздел «ИИ-помощник» в котором вы можете чатится с нашим ассистентом Tota AI. Здесь можно задать вопрос, уточнить условие задания, если оно кажется вам непонятным.\n\nПри выполнении практики также советуем внимательно читать вывод тестов – в нем содержится информация о том, почему решение не проходит. А еще вы можете сравнить свой результат с готовым решением. Впрочем, не советуем обращаться к нему до тех пор, пока успешно не выполните задание. Помните – вы учитесь, а не повторяете.\n";
-          question: "А если что-то не получается?";
-        };
-        possibilities: {
-          answer: "Code Basics – проект с открытым исходным кодом. Участвовать в его развитии может любой практикующий разработчик. Исходный код доступен на [GitHub](https://github.com/hexlet-basics). Вы можете помочь в создании новых курсов и уроков, улучшать существующие, исправлять неточности и опечатки, переводить курсы на английский язык.\n";
-          question: "Какие возможности есть для практикующих разработчиков?";
-        };
-        "what-type-of-courses": {
-          answer: "Изначально CodeBasics был ориентирован только на изучение программирования, но мы думаем о том чтобы расширить возможности платформы и добавить сюда курсы более широкого профиля, так что платформа превратится в бесплатные айти (it) курсы с нуля\n";
-          question: "Вы учите только программированию?";
-        };
-      };
-    };
-    flash: {
-      account: {
-        profiles: {
-          destroy: {
-            error: "Возникла ошибка при удалении аккаунта";
-            success: "Аккаунт успешно удален";
-          };
-          update: {
-            error: "Ошибка обновления";
-            success: "Данные успешно обновлены";
-          };
-        };
-      };
-      admin: {
-        blog_posts: {
-          create: {
-            error: "Что-то пошло не так";
-            success: "Пост успешно созданн";
-          };
-          update: {
-            error: "Что-то пошло не так";
-            success: "Пост успешно обновлен!";
-          };
-        };
-        languages: {
-          update: {
-            error: "Что-то пошло не так";
-            success: "Язык успешно сохранен";
-          };
-        };
-        reviews: {
-          create: {
-            error: "Что-то пошло не так";
-            success: "Отзыв успешно добавлен";
-          };
-          update: {
-            error: "Что-то пошло не так";
-            success: "Отзыв успешно обновлен!";
-          };
-        };
-      };
-      application: {
-        base: {
-          error: "Пожалуйста проверьте ошибки";
-          success: "Действие завершено успешно";
-        };
-      };
-      auth: {
-        callback: {
-          success: "Добро пожаловать! Пора немного поучиться -)";
-        };
-      };
-      blog_posts: {
-        likes: {
-          create: {
-            notice: "Ваш лайк уже засчитан :)";
-            success: "Спасибо за лайк!";
-          };
-        };
-      };
-      books: {
-        create_request: {
-          success: "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается";
-        };
-      };
-      google_auth: {
-        one_tap: {
-          error: "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!";
-          success: "Добро пожаловать! Пора немного поучиться -)";
-        };
-      };
-      languages: {
-        lessons: {
-          show: {
-            lesson_not_found: "Урок не найден, но вы можете начать другие!";
-          };
-        };
-        show: {
-          empty_language_current_version: "Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык";
-          language_in_development_html: 'Курс по языку {{language}} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nМы подготовили рекомендации по написанию текстов <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">по ссылке</a>\n';
-          warning: "Попробуйте переключить язык, возможно там найдется нужный урок! :)";
-        };
-        success: {
-          error: "В этом курсе есть уроки, которые вы не завершили";
-        };
-      };
-      leads: {
-        create: {
-          error: "Проверьте ошибки в форме";
-          success: "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a>телеграм</a> чтобы получить помощь быстрее";
-        };
-      };
-      passwords: {
-        update: {
-          success: "Пароль изменен. Можете входить с вашим новым паролем.";
-        };
-      };
-      remind_passwords: {
-        create: {
-          error: "В форме есть ошибки";
-          success: "Мы отправили вам письмо с инструкциями по восстановлению пароля";
-        };
-      };
-      sessions: {
-        create: {
-          error: "В форме есть ошибки";
-          success: "Внутри лучше чем снаружи. Запоминаем прогресс и ведем к свету";
-        };
-      };
-      surveys: {
-        show: {
-          success: "Вы уже отвечали на этот опрос. Возвращаемся обратно";
-        };
-      };
-      users: {
-        create: {
-          error: "Упс, кажется в форме есть ошибки";
-          success: "Добро пожаловать! Учитесь, практикуйтесь, кайфуйте";
-        };
-      };
-    };
-    helpers: {
-      continue: "Продолжить";
-      crud: {
-        add: "Добавить";
-        adding: "Добавление";
-        editing: "Редактирование";
-        list: "Список";
-        remove: "Удалить";
-      };
-      read: "Читать";
-      reset: "Сбросить";
-      select: {
-        prompt: "Выберите: ";
-      };
-      send: "Отправить";
-      submit: {
-        create: "Создать";
-        q: {
-          create: "Поиск";
-        };
-        remind_password_form: {
-          create: "Восстановить";
-        };
-        replace: "Сменить";
-        save: "Сохранить";
-        submit: "Сохранить {{model}}";
-        update: "Изменить";
-        user_sign_in_form: {
-          create: "Войти";
-        };
-        user_sign_up_form: {
-          create: "Создать аккаунт";
-        };
-      };
-    };
-    home: {
-      index: {
-        all_blog_posts: "Все статьи";
-        all_reviews: "Все отзывы";
-        blog_posts: "Блог";
-        categories: "Направления";
-        consultation: "Нужна помощь? Оставьте заявку, мы поможем";
-        hero: {
-          ai_count: "ИИ-ассистент";
-          ai_count_description: "Подсказки и анализ кода";
-          community_count: "Сообщество";
-          community_count_description: "Более 8 000 тысяч человек";
-          courses_count: "Текстовые курсы";
-          courses_count_description: "теория, тренажер, решение учителя";
-          fastest_way_to_start_coding: "С практикой в тренажере и ассистентом на базе ChatGPT";
-          free_programming_courses: "Бесплатные курсы по программированию с нуля";
-          how_coding_works: "Как работает обучение на code-basics";
-          learn: "Изучи";
-          learn_xs: "Научись программировать";
-          source_code: "Исходный код";
-          try: "К курсам →";
-        };
-        hexlet: "Хекслета";
-        in_development: "Курсы в разработке";
-        in_development_description: "Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub";
-        join: "Зарегистрируйтесь и начните учиться прямо сейчас";
-        meta: {
-          description: "Быстрый способ изучить основы языков программирования Go, PHP, Java, JavaScript, Python, Typescript, Ruby, C# и многих других.\n";
-        };
-        reviews: "Отзывы";
-        sign_up: "Регистрация";
-        subheader: "Для тех, кто начинает с нуля. От создателей ";
-        title: "Школа программирования для детей и взрослых";
-      };
-      languages: {
-        courses: "Курсы по программированию";
-      };
-      reviews: {
-        course_html: "Курс {{link}}";
-        reviews: "Отзывы";
-      };
-      sitemap: {
-        home: "Главная";
-        title: "Карта сайта";
-      };
-      stats: {
-        trusted_by: "Присоединись к {{count}} изующих программирование с помощью Code Basics\n";
-      };
-    };
-    i18n: {
-      plural: {
-        keys: ["one", "few", "many", "other"];
-      };
-      transliterate: {};
-    };
-    js: {
-      hour:
-        | "{{count}} часов"
-        | "{{count}} час"
-        | "{{count}} часа"
-        | "{{count}} часов"
-        | "{{count}} часов"
-        | "{{count}} часов";
-    };
-    language_categories: {
+    course_categories: {
       index: {
         header: "Категории курсов по программированию";
         link: "Перейти";
@@ -1032,7 +738,7 @@ export default interface Resources {
         };
       };
     };
-    languages: {
+    courses: {
       lessons: {
         show: {
           autocomplete_hint: "Редактор подсказывает команды по мере ввода. Нажмите Tab, чтобы принять подсказку, а клавишами ↑ и ↓ выбирайте нужную из списка.";
@@ -1155,21 +861,313 @@ export default interface Resources {
         struggle_choosing: "💬 Не уверены, что выбрать?";
       };
     };
+    enums: {
+      course: {
+        learn_as: {
+          first_language: "для начинающих";
+          second_language: "как второй язык";
+        };
+        progress: {
+          completed: "Завершенный";
+          draft: "Черновик";
+          in_development: "В разработке";
+        };
+      };
+    };
+    errors: {
+      show: {
+        codes: {
+          "403": {
+            description: "Скорее всего это административный доступ, поэтому нини :)";
+            header: "Доступ к странице закрыт";
+          };
+          "404": {
+            description: "Возможно страница была удалена. Попробуйте перейти на нужную страницу через верхнее меню";
+            header: "Страница не найдена";
+          };
+          "500": {
+            description: "Что-то пошло не так. Программистам уже пришла смс и они бегут к компьютеру, чтобы быстрее выкатить исправление";
+            header: "Ошибка сервера";
+          };
+          other: {
+            description: "Что-то пошло не так. Мы получили уведомление и внимательно разбираемся с проблемой";
+            header: "Ошибка";
+          };
+        };
+      };
+    };
+    faq: {
+      header: "Вопросы и Ответы";
+      main: {
+        "about-project": {
+          answer: "Это полностью бесплатная платформа для обучения it (айти) с нуля. Code Basics был создан разработчиками и сообществом школы программирования Хекслет для того, чтобы любой желающий мог попробовать себя в программировании и заложить правильный фундамент для новой профессии, основанный не на запоминании специфики, а на понимании системы в целом. Одна из ключевых фишек проекта это тренажер по программированию\n";
+          question: "Что такое Code Basics?";
+        };
+        "for-whom": {
+          answer: "Курсы Code Basics подходят для всех, кто начинает изучать программирование с нуля и хочет стать профессиональным программистом. Возраст, профессия – не имеют значения. На Code Basics занимаются взрослые и подростки, технари и чистые гуманитарии.\n";
+          question: "Для кого курсы?";
+        };
+        "how-it-works": {
+          answer: "Code Basics – полностью автоматизированная онлайн платформа. Поэтому вы можете заниматься в любое удобное время, когда захотите.\n\nКурсы программирования состоят из тематических блоков, в каждом есть несколько уроков. Проходите уроки последовательно: сначала изучите теорию, потом выполните практическое упражнение прямо в браузере – система проверит его автоматически.\n";
+          question: "Как проходит обучение программированию?";
+        };
+        "how-much": {
+          answer: "Code Basics создавался как проект для обучения программированию с нуля бесплатно. Таким он, был, есть и будет. Более того, Code Basics это открытый проект, код которого можно не только найти на Github, но и принять участие в его разработке\n";
+          question: "Сколько стоят курсы на платформе?";
+        };
+        "how-to-start": {
+          answer: "Достаточно просто зарегистрироваться. Регистрация на платформе бесплатная, после регистрации вы получите доступ ко всем курсам Code Basics. Выбирайте любой – и проходите.\n";
+          question: "Как начать пользоваться платформой?";
+        };
+        "if-something-goes-wrong": {
+          answer: "Спрашивайте! В каждом уроке есть раздел «ИИ-помощник» в котором вы можете чатится с нашим ассистентом Tota AI. Здесь можно задать вопрос, уточнить условие задания, если оно кажется вам непонятным.\n\nПри выполнении практики также советуем внимательно читать вывод тестов – в нем содержится информация о том, почему решение не проходит. А еще вы можете сравнить свой результат с готовым решением. Впрочем, не советуем обращаться к нему до тех пор, пока успешно не выполните задание. Помните – вы учитесь, а не повторяете.\n";
+          question: "А если что-то не получается?";
+        };
+        possibilities: {
+          answer: "Code Basics – проект с открытым исходным кодом. Участвовать в его развитии может любой практикующий разработчик. Исходный код доступен на [GitHub](https://github.com/hexlet-basics). Вы можете помочь в создании новых курсов и уроков, улучшать существующие, исправлять неточности и опечатки, переводить курсы на английский язык.\n";
+          question: "Какие возможности есть для практикующих разработчиков?";
+        };
+        "what-type-of-courses": {
+          answer: "Изначально CodeBasics был ориентирован только на изучение программирования, но мы думаем о том чтобы расширить возможности платформы и добавить сюда курсы более широкого профиля, так что платформа превратится в бесплатные айти (it) курсы с нуля\n";
+          question: "Вы учите только программированию?";
+        };
+      };
+    };
+    flash: {
+      account: {
+        profiles: {
+          destroy: {
+            error: "Возникла ошибка при удалении аккаунта";
+            success: "Аккаунт успешно удален";
+          };
+          update: {
+            error: "Ошибка обновления";
+            success: "Данные успешно обновлены";
+          };
+        };
+      };
+      admin: {
+        blog_posts: {
+          create: {
+            error: "Что-то пошло не так";
+            success: "Пост успешно созданн";
+          };
+          update: {
+            error: "Что-то пошло не так";
+            success: "Пост успешно обновлен!";
+          };
+        };
+        courses: {
+          update: {
+            error: "Что-то пошло не так";
+            success: "Язык успешно сохранен";
+          };
+        };
+        reviews: {
+          create: {
+            error: "Что-то пошло не так";
+            success: "Отзыв успешно добавлен";
+          };
+          update: {
+            error: "Что-то пошло не так";
+            success: "Отзыв успешно обновлен!";
+          };
+        };
+      };
+      application: {
+        base: {
+          error: "Пожалуйста проверьте ошибки";
+          success: "Действие завершено успешно";
+        };
+      };
+      auth: {
+        callback: {
+          success: "Добро пожаловать! Пора немного поучиться -)";
+        };
+      };
+      blog_posts: {
+        likes: {
+          create: {
+            notice: "Ваш лайк уже засчитан :)";
+            success: "Спасибо за лайк!";
+          };
+        };
+      };
+      books: {
+        create_request: {
+          success: "Ура, теперь книга доступна для скачивания! Нажмите на кнопку и книга скачается";
+        };
+      };
+      courses: {
+        lessons: {
+          show: {
+            lesson_not_found: "Урок не найден, но вы можете начать другие!";
+          };
+        };
+        show: {
+          course_in_development_html: 'Курс по языку {{language}} еще в разработке.\nВы можете помочь и отправить пулл-реквест с новыми уроками или дополнить те,\nкоторые уже есть <a href="{{link_to_repo}}" target="_blank" rel="noopener">{{link_to_repo}}</a>.\nМы подготовили рекомендации по написанию текстов <a href="{{link_to_recommendations}}" target="_blank" rel="noopener">по ссылке</a>\n';
+          empty_course_current_version: "Язык находится в разработке, пожалуйсте, зайдите позже или попробуйте любой другой доступный язык";
+          warning: "Попробуйте переключить язык, возможно там найдется нужный урок! :)";
+        };
+        success: {
+          error: "В этом курсе есть уроки, которые вы не завершили";
+        };
+      };
+      google_auth: {
+        one_tap: {
+          error: "Мы не смогли получить данные из Google! Проверьте настройки вашего аккаунта Google!";
+          success: "Добро пожаловать! Пора немного поучиться -)";
+        };
+      };
+      leads: {
+        create: {
+          error: "Проверьте ошибки в форме";
+          success: "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a>телеграм</a> чтобы получить помощь быстрее";
+        };
+      };
+      passwords: {
+        update: {
+          success: "Пароль изменен. Можете входить с вашим новым паролем.";
+        };
+      };
+      remind_passwords: {
+        create: {
+          error: "В форме есть ошибки";
+          success: "Мы отправили вам письмо с инструкциями по восстановлению пароля";
+        };
+      };
+      sessions: {
+        create: {
+          error: "В форме есть ошибки";
+          success: "Внутри лучше чем снаружи. Запоминаем прогресс и ведем к свету";
+        };
+      };
+      surveys: {
+        show: {
+          success: "Вы уже отвечали на этот опрос. Возвращаемся обратно";
+        };
+      };
+      users: {
+        create: {
+          error: "Упс, кажется в форме есть ошибки";
+          success: "Добро пожаловать! Учитесь, практикуйтесь, кайфуйте";
+        };
+      };
+    };
+    helpers: {
+      continue: "Продолжить";
+      crud: {
+        add: "Добавить";
+        adding: "Добавление";
+        editing: "Редактирование";
+        list: "Список";
+        remove: "Удалить";
+      };
+      read: "Читать";
+      reset: "Сбросить";
+      select: {
+        prompt: "Выберите: ";
+      };
+      send: "Отправить";
+      submit: {
+        create: "Создать";
+        q: {
+          create: "Поиск";
+        };
+        remind_password_form: {
+          create: "Восстановить";
+        };
+        replace: "Сменить";
+        save: "Сохранить";
+        submit: "Сохранить {{model}}";
+        update: "Изменить";
+        user_sign_in_form: {
+          create: "Войти";
+        };
+        user_sign_up_form: {
+          create: "Создать аккаунт";
+        };
+      };
+    };
+    home: {
+      courses: {
+        courses: "Курсы по программированию";
+      };
+      index: {
+        all_blog_posts: "Все статьи";
+        all_reviews: "Все отзывы";
+        blog_posts: "Блог";
+        categories: "Направления";
+        consultation: "Нужна помощь? Оставьте заявку, мы поможем";
+        hero: {
+          ai_count: "ИИ-ассистент";
+          ai_count_description: "Подсказки и анализ кода";
+          community_count: "Сообщество";
+          community_count_description: "Более 8 000 тысяч человек";
+          courses_count: "Текстовые курсы";
+          courses_count_description: "теория, тренажер, решение учителя";
+          fastest_way_to_start_coding: "С практикой в тренажере и ассистентом на базе ChatGPT";
+          free_programming_courses: "Бесплатные курсы по программированию с нуля";
+          how_coding_works: "Как работает обучение на code-basics";
+          learn: "Изучи";
+          learn_xs: "Научись программировать";
+          source_code: "Исходный код";
+          try: "К курсам →";
+        };
+        hexlet: "Хекслета";
+        in_development: "Курсы в разработке";
+        in_development_description: "Данные курсы находятся в разработке и не являются финальной версией. Вы можете помочь в разработке, прислав Pull Request в репозиторий GitHub";
+        join: "Зарегистрируйтесь и начните учиться прямо сейчас";
+        meta: {
+          description: "Быстрый способ изучить основы языков программирования Go, PHP, Java, JavaScript, Python, Typescript, Ruby, C# и многих других.\n";
+        };
+        reviews: "Отзывы";
+        sign_up: "Регистрация";
+        subheader: "Для тех, кто начинает с нуля. От создателей ";
+        title: "Школа программирования для детей и взрослых";
+      };
+      reviews: {
+        course_html: "Курс {{link}}";
+        reviews: "Отзывы";
+      };
+      sitemap: {
+        home: "Главная";
+        title: "Карта сайта";
+      };
+      stats: {
+        trusted_by: "Присоединись к {{count}} изующих программирование с помощью Code Basics\n";
+      };
+    };
+    i18n: {
+      plural: {
+        keys: ["one", "few", "many", "other"];
+      };
+      transliterate: {};
+    };
+    js: {
+      hour:
+        | "{{count}} часов"
+        | "{{count}} час"
+        | "{{count}} часа"
+        | "{{count}} часов"
+        | "{{count}} часов"
+        | "{{count}} часов";
+    };
     layouts: {
       admin: {
         application: {
           authentication: "Аутентификация";
           banners: "Баннеры";
           blog_posts: "Посты в блоге";
+          course_categories: "Категории";
+          course_landing_pages: "Лендинги";
+          course_lesson_reviews: "Ревью уроков";
+          course_lessons: "Уроки";
+          courses: "Курсы";
           dashboard: "Кабинет";
           jobs: "Очередь задач";
-          language_categories: "Категории";
-          language_landing_pages: "Лендинги";
-          language_lesson_members: "Прохождение уроков";
-          language_lesson_reviews: "Ревью уроков";
-          language_lessons: "Уроки";
-          languages: "Курсы";
           leads: "Лиды";
+          lesson_progress: "Прохождение уроков";
           menu: "Меню";
           messages: "Соообщения (AI)";
           reviews: "Отзывы";
@@ -1192,6 +1190,9 @@ export default interface Resources {
           description_html: "Чтобы мы могли связаться с вами, укажите предпочительный способ связи\n";
           go: "Заполнить&nbsp;→";
         };
+        course_menu: {
+          in_development: "В разработке";
+        };
         footer: {
           about: "О проекте";
           all_courses: "Все курсы";
@@ -1201,6 +1202,7 @@ export default interface Resources {
           codebasics: "Code Basics (от Хекслет)";
           community: "Сообщество";
           cookie_policy: "Cookie Policy";
+          course_categories: "Направления обучения";
           courses: "Курсы {{group}}";
           english_links: "English links";
           free_call: "Звонок по РФ бесплатный";
@@ -1212,7 +1214,6 @@ export default interface Resources {
           hexlet_number: "ОГРН 1217300010476";
           hexlet_title_html: '© <a href="{{link}}" class="text-decoration-none text-light" target="_blank" rel="noopener">Хекслет</a>, {{year}}';
           information: "Информация";
-          language_categories: "Направления обучения";
           matrix: "Матрица компетентности";
           privacy: "Политика конфиденциальности";
           recommended_books: "Рекомендуемые книги";
@@ -1223,9 +1224,6 @@ export default interface Resources {
           source_code: "Исходный код";
           tos: "Условия использования";
           useful: "Полезное";
-        };
-        language_menu: {
-          in_development: "В разработке";
         };
         nav: {
           about: "О проекте";
@@ -1371,7 +1369,7 @@ export default interface Resources {
             published: "Опубликован";
           };
         };
-        language: {
+        course: {
           category_id: "Категория";
           cover: "Обложка";
           hexlet_program_landing_page: "Hexlet Program Landing Page";
@@ -1380,33 +1378,33 @@ export default interface Resources {
             first_language: "Первый язык";
             second_language: "Второй язык";
           };
-          progress: "Прогресс";
-          "progress/values": {
+          readiness: "Готовность курса";
+          "readiness/values": {
             completed: "Завершённый";
             draft: "Черновик";
             in_development: "В разработке";
           };
           slug: "Slug";
         };
-        language_category: {
+        course_category: {
           description: "Описание";
           header: "Заголовок";
           locale: "Локаль";
           name: "Название";
           slug: "Slug";
         };
-        language_category_item: {
-          language_landing_page_id: "Лендинг";
+        course_category_item: {
+          course_landing_page_id: "Лендинг";
         };
-        language_landing_page: {
+        course_landing_page: {
           _destroy: "Удалить";
           answer: "Ответ";
+          course_id: "Курс";
           description: "Описание";
           footer: "Выводить в футере";
           footer_name: "Имя в футере";
           header: "Заголовок";
           landing_page_to_redirect_id: "Перенаправление на страницу";
-          language_id: "Курс";
           listed: "Отображать в списках";
           main: "Основной";
           meta_description: "Meta Description";
@@ -1462,8 +1460,8 @@ export default interface Resources {
         };
         review: {
           body: "Отзыв";
+          course_id: "Курс";
           first_name: "Имя";
-          language_id: "Курс";
           last_name: "Фамилия";
           locale: "Локаль";
           pinned: "Закрепленный (Показывается сверху списка)";
@@ -1549,12 +1547,7 @@ export default interface Resources {
             header: "Новый пост";
           };
         };
-        home: {
-          index: {
-            dashboard: "Кабинет";
-          };
-        };
-        language_categories: {
+        course_categories: {
           edit: {
             header: "Редактирование {{id}}";
           };
@@ -1570,7 +1563,7 @@ export default interface Resources {
             header: "Новая категория";
           };
         };
-        language_landing_pages: {
+        course_landing_pages: {
           edit: {
             header: "Редактирование {{id}}";
           };
@@ -1581,23 +1574,18 @@ export default interface Resources {
             header: "Новый лендинг";
           };
         };
-        language_lesson_members: {
-          index: {
-            header: "Прохождение уроков";
-          };
-        };
-        language_lesson_reviews: {
+        course_lesson_reviews: {
           index: {
             data: "Данные";
             header: "Ревью уроков";
           };
         };
-        language_lessons: {
+        course_lessons: {
           index: {
             header: "Уроки";
           };
         };
-        languages: {
+        courses: {
           edit: {
             header: "Редактирование {{id}}";
             id: "ID";
@@ -1612,12 +1600,22 @@ export default interface Resources {
             header: "Новый курс";
           };
         };
+        home: {
+          index: {
+            dashboard: "Кабинет";
+          };
+        };
         leads: {
           index: {
             answers: "Ответы";
             courses: "Курсы";
             data: "Данные";
             header: "Лиды";
+          };
+        };
+        lesson_progress: {
+          index: {
+            header: "Прохождение уроков";
           };
         };
         management: {
@@ -1751,40 +1749,13 @@ export default interface Resources {
           link: "Перейти";
         };
       };
-      home: {
-        index: {
-          blog_posts: "Блог";
-          consultation: "Нужна помощь? Оставьте заявку, мы поможем";
-          hero: {
-            ai_count: "ИИ-ассистент";
-            ai_count_description: "Подсказки и анализ кода";
-            community_count: "Сообщество";
-            community_count_description: "Более 8 000 тысяч человек";
-            courses_count: "Текстовые курсы";
-            courses_count_description: "теория, тренажер, решение учителя";
-            fastest_way_to_start_coding: "С практикой в тренажере и ассистентом на базе ChatGPT";
-            free_programming_courses: "Бесплатные курсы по программированию с нуля";
-            source_code: "Исходный код";
-            try: "К курсам →";
-          };
-          join: "Зарегистрируйтесь и начните учиться прямо сейчас";
-          reviews: "Отзывы";
-          sign_up: "Регистрация";
-        };
-        languages: {
-          courses: "Курсы по программированию";
-        };
-        sitemap: {
-          home: "Главная";
-        };
-      };
-      language_categories: {
+      course_categories: {
         index: {
           header: "Категории курсов по программированию";
           link: "Перейти";
         };
       };
-      languages: {
+      courses: {
         index: {
           categories: "Категории";
           courses: "Все курсы";
@@ -1890,6 +1861,33 @@ export default interface Resources {
           header: "Поздравляем, вы завершили курс «{{name}}»!";
           leave_request: "Оставьте заявку на бесплатную консультацию — наш специалист поможет вам определиться и ответит на все вопросы. 👉";
           struggle_choosing: "💬 Не уверены, что выбрать?";
+        };
+      };
+      home: {
+        courses: {
+          courses: "Курсы по программированию";
+        };
+        index: {
+          blog_posts: "Блог";
+          consultation: "Нужна помощь? Оставьте заявку, мы поможем";
+          hero: {
+            ai_count: "ИИ-ассистент";
+            ai_count_description: "Подсказки и анализ кода";
+            community_count: "Сообщество";
+            community_count_description: "Более 8 000 тысяч человек";
+            courses_count: "Текстовые курсы";
+            courses_count_description: "теория, тренажер, решение учителя";
+            fastest_way_to_start_coding: "С практикой в тренажере и ассистентом на базе ChatGPT";
+            free_programming_courses: "Бесплатные курсы по программированию с нуля";
+            source_code: "Исходный код";
+            try: "К курсам →";
+          };
+          join: "Зарегистрируйтесь и начните учиться прямо сейчас";
+          reviews: "Отзывы";
+          sign_up: "Регистрация";
+        };
+        sitemap: {
+          home: "Главная";
         };
       };
       leads: {
@@ -2117,7 +2115,7 @@ export default interface Resources {
       };
     };
     shared: {
-      languages: {
+      courses: {
         course_finished: "Курс пройден!";
       };
       reviews_showcase: {

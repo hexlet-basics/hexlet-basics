@@ -50,17 +50,17 @@ export function CourseCategoriesList() {
   const columns: CrudColumnDef<CourseCategory>[] = [
     {
       accessorKey: "name",
-      header: t(($) => $.models.attributes.language_category.name),
+      header: t(($) => $.models.attributes.course_category.name),
       enableSorting: false,
     },
     {
       accessorKey: "slug",
-      header: t(($) => $.models.attributes.language_category.slug),
+      header: t(($) => $.models.attributes.course_category.slug),
       enableSorting: false,
     },
     {
       accessorKey: "locale",
-      header: t(($) => $.models.attributes.language_category.locale),
+      header: t(($) => $.models.attributes.course_category.locale),
       enableSorting: false,
     },
     {

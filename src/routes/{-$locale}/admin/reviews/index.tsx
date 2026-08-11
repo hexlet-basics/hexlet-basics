@@ -50,7 +50,7 @@ function ReviewsList() {
     },
     {
       id: "course",
-      header: t(($) => $.models.attributes.review.language_id),
+      header: t(($) => $.models.attributes.review.course_id),
       cell: ({ row }) => row.original.course.slug,
       enableSorting: false,
     },

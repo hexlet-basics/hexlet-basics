@@ -60,7 +60,7 @@ export function useReviewFields(): CrudFieldSpec<ReviewInput>[] {
     },
     {
       name: "courseId",
-      label: t(($) => $.models.attributes.review.language_id),
+      label: t(($) => $.models.attributes.review.course_id),
       type: "number",
     },
     {

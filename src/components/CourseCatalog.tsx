@@ -41,7 +41,7 @@ export default function CourseCatalog() {
   return (
     <Container size="lg" my="xl">
       <Title order={1} mb="xl">
-        {t(($) => $.pages.languages.index.header)}
+        {t(($) => $.pages.courses.index.header)}
       </Title>
 
       <Box mb={48}>
@@ -55,11 +55,11 @@ export default function CourseCatalog() {
       {isRuLocale && (
         <Card withBorder p="xl">
           <Stack gap="md">
-            <Title order={2}>{t(($) => $.pages.languages.index.hexlet.title)}</Title>
-            <Text>{t(($) => $.pages.languages.index.hexlet.description)}</Text>
+            <Title order={2}>{t(($) => $.pages.courses.index.hexlet.title)}</Title>
+            <Text>{t(($) => $.pages.courses.index.hexlet.description)}</Text>
             <Box>
               <Text fw="bold" mb="sm">
-                {t(($) => $.pages.languages.index.hexlet.programs)}
+                {t(($) => $.pages.courses.index.hexlet.programs)}
               </Text>
               <List spacing="xs">
                 <List.Item>
@@ -68,7 +68,7 @@ export default function CourseCatalog() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {t(($) => $.pages.languages.index.hexlet.python)}
+                    {t(($) => $.pages.courses.index.hexlet.python)}
                   </Anchor>
                 </List.Item>
                 <List.Item>
@@ -77,7 +77,7 @@ export default function CourseCatalog() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {t(($) => $.pages.languages.index.hexlet.frontend)}
+                    {t(($) => $.pages.courses.index.hexlet.frontend)}
                   </Anchor>
                 </List.Item>
                 <List.Item>
@@ -86,12 +86,12 @@ export default function CourseCatalog() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {t(($) => $.pages.languages.index.hexlet.java)}
+                    {t(($) => $.pages.courses.index.hexlet.java)}
                   </Anchor>
                 </List.Item>
                 <List.Item>
                   <Anchor href="https://ru.hexlet.io/programs/go" target="_blank" rel="noreferrer">
-                    {t(($) => $.pages.languages.index.hexlet.go)}
+                    {t(($) => $.pages.courses.index.hexlet.go)}
                   </Anchor>
                 </List.Item>
                 <List.Item>
@@ -100,7 +100,7 @@ export default function CourseCatalog() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {t(($) => $.pages.languages.index.hexlet.devops)}
+                    {t(($) => $.pages.courses.index.hexlet.devops)}
                   </Anchor>
                 </List.Item>
                 <List.Item>
@@ -109,7 +109,7 @@ export default function CourseCatalog() {
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {t(($) => $.pages.languages.index.hexlet.analytics)}
+                    {t(($) => $.pages.courses.index.hexlet.analytics)}
                   </Anchor>
                 </List.Item>
               </List>

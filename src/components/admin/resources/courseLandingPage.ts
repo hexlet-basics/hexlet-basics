@@ -60,97 +60,97 @@ export function useCourseLandingPageFields(): CrudFieldSpec<CourseLandingPageInp
   return [
     {
       name: "courseId",
-      label: t(($) => $.models.attributes.language_landing_page.language_id),
+      label: t(($) => $.models.attributes.course_landing_page.course_id),
       type: "number",
       required: true,
     },
     {
       name: "name",
-      label: t(($) => $.models.attributes.language_landing_page.name),
+      label: t(($) => $.models.attributes.course_landing_page.name),
       required: true,
     },
     {
       name: "slug",
-      label: t(($) => $.models.attributes.language_landing_page.slug),
+      label: t(($) => $.models.attributes.course_landing_page.slug),
       required: true,
     },
     {
       name: "state",
-      label: t(($) => $.models.attributes.language_landing_page.state),
+      label: t(($) => $.models.attributes.course_landing_page.state),
       type: "select",
       required: true,
       options: [
         {
           value: "draft",
-          label: t(($) => $.models.attributes.language_landing_page["state/values"].draft),
+          label: t(($) => $.models.attributes.course_landing_page["state/values"].draft),
         },
         {
           value: "published",
-          label: t(($) => $.models.attributes.language_landing_page["state/values"].published),
+          label: t(($) => $.models.attributes.course_landing_page["state/values"].published),
         },
         {
           value: "archived",
-          label: t(($) => $.models.attributes.language_landing_page["state/values"].archived),
+          label: t(($) => $.models.attributes.course_landing_page["state/values"].archived),
         },
       ],
     },
     {
       name: "main",
-      label: t(($) => $.models.attributes.language_landing_page.main),
+      label: t(($) => $.models.attributes.course_landing_page.main),
       type: "checkbox",
     },
     {
       name: "listed",
-      label: t(($) => $.models.attributes.language_landing_page.listed),
+      label: t(($) => $.models.attributes.course_landing_page.listed),
       type: "checkbox",
     },
     {
       name: "footer",
-      label: t(($) => $.models.attributes.language_landing_page.footer),
+      label: t(($) => $.models.attributes.course_landing_page.footer),
       type: "checkbox",
     },
     {
       name: "footerName",
-      label: t(($) => $.models.attributes.language_landing_page.footer_name),
+      label: t(($) => $.models.attributes.course_landing_page.footer_name),
     },
     {
       name: "order",
-      label: t(($) => $.models.attributes.language_landing_page.order),
+      label: t(($) => $.models.attributes.course_landing_page.order),
     },
     {
       name: "header",
-      label: t(($) => $.models.attributes.language_landing_page.header),
+      label: t(($) => $.models.attributes.course_landing_page.header),
     },
     {
       name: "description",
-      label: t(($) => $.models.attributes.language_landing_page.description),
+      label: t(($) => $.models.attributes.course_landing_page.description),
       type: "textarea",
     },
     {
       name: "metaTitle",
-      label: t(($) => $.models.attributes.language_landing_page.meta_title),
+      label: t(($) => $.models.attributes.course_landing_page.meta_title),
     },
     {
       name: "metaDescription",
-      label: t(($) => $.models.attributes.language_landing_page.meta_description),
+      label: t(($) => $.models.attributes.course_landing_page.meta_description),
       type: "textarea",
     },
     {
       name: "usedInHeader",
-      label: t(($) => $.models.attributes.language_landing_page.used_in_header),
+      label: t(($) => $.models.attributes.course_landing_page.used_in_header),
     },
     {
       name: "usedInDescription",
-      label: t(($) => $.models.attributes.language_landing_page.used_in_description),
+      label: t(($) => $.models.attributes.course_landing_page.used_in_description),
       type: "textarea",
     },
     {
       name: "outcomesHeader",
-      label: t(($) => $.models.attributes.language_landing_page.outcomes_header),
+      label: t(($) => $.models.attributes.course_landing_page.outcomes_header),
     },
     {
       name: "outcomesDescription",
-      label: t(($) => $.models.attributes.language_landing_page.outcomes_description),
+      label: t(($) => $.models.attributes.course_landing_page.outcomes_description),
       type: "textarea",
     },
   ];
