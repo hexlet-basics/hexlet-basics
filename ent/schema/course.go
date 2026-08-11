@@ -33,8 +33,9 @@ func (Course) Fields() []ent.Field {
 		field.String("name").Optional().Nillable(),
 		field.String("learn_as").Optional().Nillable().
 			Annotations(AdminInputField{}),
+		// Course Readiness; the column keeps the retired name.
 		field.String("progress").Optional().Nillable().
-			Annotations(AdminInputField{}),
+			Annotations(AdminInputField{Rename: "Readiness"}),
 		field.String("hexlet_program_landing_page").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		// Counters maintained by the app; the baseline columns are NOT NULL

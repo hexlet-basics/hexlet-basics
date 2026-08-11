@@ -4941,12 +4941,12 @@ components:
         - slug
         - name
         - learnAs
-        - progress
+        - readiness
         - categoryId
         - currentVersionId
         - currentVersion
         - createdAt
-        - membersCount
+        - enrollmentsCount
         - lessonsCount
         - ratingCount
         - ratingValue
@@ -4967,7 +4967,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/CourseLearnAs'
           nullable: true
-        progress:
+        readiness:
           allOf:
             - $ref: '#/components/schemas/CourseReadiness'
           nullable: true
@@ -4987,7 +4987,7 @@ components:
         createdAt:
           type: string
           format: date-time
-        membersCount:
+        enrollmentsCount:
           type: integer
           format: int32
         lessonsCount:
@@ -5022,7 +5022,7 @@ components:
         - header
         - name
         - locale
-        - membersCount
+        - enrollmentsCount
         - duration
         - coverUrl
         - course
@@ -5041,7 +5041,7 @@ components:
         locale:
           type: string
           nullable: true
-        membersCount:
+        enrollmentsCount:
           type: integer
           format: int32
         duration:
@@ -5156,7 +5156,7 @@ components:
       required:
         - slug
         - learnAs
-        - progress
+        - readiness
         - hexletProgramLandingPage
         - repositoryUrl
         - coverAttachmentId
@@ -5168,7 +5168,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/CourseLearnAs'
           nullable: true
-        progress:
+        readiness:
           allOf:
             - $ref: '#/components/schemas/CourseReadiness'
           nullable: true
@@ -5209,7 +5209,7 @@ components:
         - outcomesDescription
         - outcomesImage
         - duration
-        - membersCount
+        - enrollmentsCount
       properties:
         id:
           type: integer
@@ -5280,7 +5280,7 @@ components:
           type: integer
           format: int32
           description: Estimated duration in hours.
-        membersCount:
+        enrollmentsCount:
           type: integer
           format: int32
       description: 'A marketing landing page for a course (legacy: `LanguageLandingPage`).'
@@ -5705,7 +5705,7 @@ components:
         - userId
         - courseId
         - state
-        - progress
+        - completion
         - nextLessonName
       properties:
         id:
@@ -5721,16 +5721,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/EnrollmentState'
           nullable: true
-        progress:
+        completion:
           type: integer
           format: int32
-          description: Completion percentage (0–100).
+          description: "Completion: the share of the course's current lessons finished (0–100)."
         nextLessonName:
           type: string
           nullable: true
-      description: |-
-        A learner's enrollment in a course (legacy `LanguageMember`, table
-        `language_members`).
+      description: A learner's enrollment in a course (table `language_members`).
     EnrollmentState:
       type: string
       enum:

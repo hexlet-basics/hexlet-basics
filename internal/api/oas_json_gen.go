@@ -7161,8 +7161,8 @@ func (s *Course) encodeFields(e *jx.Encoder) {
 		s.LearnAs.Encode(e)
 	}
 	{
-		e.FieldStart("progress")
-		s.Progress.Encode(e)
+		e.FieldStart("readiness")
+		s.Readiness.Encode(e)
 	}
 	{
 		e.FieldStart("categoryId")
@@ -7181,8 +7181,8 @@ func (s *Course) encodeFields(e *jx.Encoder) {
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
 	{
-		e.FieldStart("membersCount")
-		e.Int32(s.MembersCount)
+		e.FieldStart("enrollmentsCount")
+		e.Int32(s.EnrollmentsCount)
 	}
 	{
 		e.FieldStart("lessonsCount")
@@ -7219,12 +7219,12 @@ var jsonFieldsNameOfCourse = [17]string{
 	1:  "slug",
 	2:  "name",
 	3:  "learnAs",
-	4:  "progress",
+	4:  "readiness",
 	5:  "categoryId",
 	6:  "currentVersionId",
 	7:  "currentVersion",
 	8:  "createdAt",
-	9:  "membersCount",
+	9:  "enrollmentsCount",
 	10: "lessonsCount",
 	11: "ratingCount",
 	12: "ratingValue",
@@ -7287,15 +7287,15 @@ func (s *Course) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"learnAs\"")
 			}
-		case "progress":
+		case "readiness":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
-				if err := s.Progress.Decode(d); err != nil {
+				if err := s.Readiness.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"progress\"")
+				return errors.Wrap(err, "decode field \"readiness\"")
 			}
 		case "categoryId":
 			requiredBitSet[0] |= 1 << 5
@@ -7339,17 +7339,17 @@ func (s *Course) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"createdAt\"")
 			}
-		case "membersCount":
+		case "enrollmentsCount":
 			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
 				v, err := d.Int32()
-				s.MembersCount = int32(v)
+				s.EnrollmentsCount = int32(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"membersCount\"")
+				return errors.Wrap(err, "decode field \"enrollmentsCount\"")
 			}
 		case "lessonsCount":
 			requiredBitSet[1] |= 1 << 2
@@ -7515,8 +7515,8 @@ func (s *CourseCatalogItem) encodeFields(e *jx.Encoder) {
 		s.Locale.Encode(e)
 	}
 	{
-		e.FieldStart("membersCount")
-		e.Int32(s.MembersCount)
+		e.FieldStart("enrollmentsCount")
+		e.Int32(s.EnrollmentsCount)
 	}
 	{
 		e.FieldStart("duration")
@@ -7538,7 +7538,7 @@ var jsonFieldsNameOfCourseCatalogItem = [9]string{
 	2: "header",
 	3: "name",
 	4: "locale",
-	5: "membersCount",
+	5: "enrollmentsCount",
 	6: "duration",
 	7: "coverUrl",
 	8: "course",
@@ -7607,17 +7607,17 @@ func (s *CourseCatalogItem) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"locale\"")
 			}
-		case "membersCount":
+		case "enrollmentsCount":
 			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Int32()
-				s.MembersCount = int32(v)
+				s.EnrollmentsCount = int32(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"membersCount\"")
+				return errors.Wrap(err, "decode field \"enrollmentsCount\"")
 			}
 		case "duration":
 			requiredBitSet[0] |= 1 << 6
@@ -8337,8 +8337,8 @@ func (s *CourseInput) encodeFields(e *jx.Encoder) {
 		s.LearnAs.Encode(e)
 	}
 	{
-		e.FieldStart("progress")
-		s.Progress.Encode(e)
+		e.FieldStart("readiness")
+		s.Readiness.Encode(e)
 	}
 	{
 		e.FieldStart("hexletProgramLandingPage")
@@ -8357,7 +8357,7 @@ func (s *CourseInput) encodeFields(e *jx.Encoder) {
 var jsonFieldsNameOfCourseInput = [6]string{
 	0: "slug",
 	1: "learnAs",
-	2: "progress",
+	2: "readiness",
 	3: "hexletProgramLandingPage",
 	4: "repositoryUrl",
 	5: "coverAttachmentId",
@@ -8392,15 +8392,15 @@ func (s *CourseInput) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"learnAs\"")
 			}
-		case "progress":
+		case "readiness":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				if err := s.Progress.Decode(d); err != nil {
+				if err := s.Readiness.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"progress\"")
+				return errors.Wrap(err, "decode field \"readiness\"")
 			}
 		case "hexletProgramLandingPage":
 			requiredBitSet[0] |= 1 << 3
@@ -8590,8 +8590,8 @@ func (s *CourseLandingPage) encodeFields(e *jx.Encoder) {
 		e.Int32(s.Duration)
 	}
 	{
-		e.FieldStart("membersCount")
-		e.Int32(s.MembersCount)
+		e.FieldStart("enrollmentsCount")
+		e.Int32(s.EnrollmentsCount)
 	}
 }
 
@@ -8619,7 +8619,7 @@ var jsonFieldsNameOfCourseLandingPage = [24]string{
 	20: "outcomesDescription",
 	21: "outcomesImage",
 	22: "duration",
-	23: "membersCount",
+	23: "enrollmentsCount",
 }
 
 // Decode decodes CourseLandingPage from json.
@@ -8883,17 +8883,17 @@ func (s *CourseLandingPage) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"duration\"")
 			}
-		case "membersCount":
+		case "enrollmentsCount":
 			requiredBitSet[2] |= 1 << 7
 			if err := func() error {
 				v, err := d.Int32()
-				s.MembersCount = int32(v)
+				s.EnrollmentsCount = int32(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"membersCount\"")
+				return errors.Wrap(err, "decode field \"enrollmentsCount\"")
 			}
 		default:
 			return d.Skip()
@@ -11338,8 +11338,8 @@ func (s *Enrollment) encodeFields(e *jx.Encoder) {
 		s.State.Encode(e)
 	}
 	{
-		e.FieldStart("progress")
-		e.Int32(s.Progress)
+		e.FieldStart("completion")
+		e.Int32(s.Completion)
 	}
 	{
 		e.FieldStart("nextLessonName")
@@ -11352,7 +11352,7 @@ var jsonFieldsNameOfEnrollment = [6]string{
 	1: "userId",
 	2: "courseId",
 	3: "state",
-	4: "progress",
+	4: "completion",
 	5: "nextLessonName",
 }
 
@@ -11411,17 +11411,17 @@ func (s *Enrollment) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"state\"")
 			}
-		case "progress":
+		case "completion":
 			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				v, err := d.Int32()
-				s.Progress = int32(v)
+				s.Completion = int32(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"progress\"")
+				return errors.Wrap(err, "decode field \"completion\"")
 			}
 		case "nextLessonName":
 			requiredBitSet[0] |= 1 << 5

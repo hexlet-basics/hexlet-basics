@@ -190,12 +190,12 @@ export type Course = {
   slug: string;
   name: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseReadiness | null;
+  readiness: CourseReadiness | null;
   categoryId: number | null;
   currentVersionId: number | null;
   currentVersion: CourseVersion | null;
   createdAt: string;
-  membersCount: number;
+  enrollmentsCount: number;
   lessonsCount: number;
   ratingCount: number;
   ratingValue: number;
@@ -215,7 +215,7 @@ export type CourseCatalogItem = {
   header: string | null;
   name: string | null;
   locale: string | null;
-  membersCount: number;
+  enrollmentsCount: number;
   /**
    * Estimated duration in hours (derived from lesson count).
    */
@@ -281,7 +281,7 @@ export type CourseCategoryView = {
 export type CourseInput = {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseReadiness | null;
+  readiness: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
   /**
@@ -327,7 +327,7 @@ export type CourseLandingPage = {
    * Estimated duration in hours.
    */
   duration: number;
-  membersCount: number;
+  enrollmentsCount: number;
 };
 
 export type CourseLandingPageInput = {
@@ -531,8 +531,7 @@ export type EmailInput = {
 };
 
 /**
- * A learner's enrollment in a course (legacy `LanguageMember`, table
- * `language_members`).
+ * A learner's enrollment in a course (table `language_members`).
  */
 export type Enrollment = {
   id: number;
@@ -540,9 +539,9 @@ export type Enrollment = {
   courseId: number;
   state: EnrollmentState | null;
   /**
-   * Completion percentage (0–100).
+   * Completion: the share of the course's current lessons finished (0–100).
    */
-  progress: number;
+  completion: number;
   nextLessonName: string | null;
 };
 

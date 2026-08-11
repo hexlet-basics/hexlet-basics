@@ -511,7 +511,7 @@ func (s *Course) Validate() error {
 		})
 	}
 	if err := func() error {
-		if value, ok := s.Progress.Get(); ok {
+		if value, ok := s.Readiness.Get(); ok {
 			if err := func() error {
 				if err := value.Validate(); err != nil {
 					return err
@@ -524,7 +524,7 @@ func (s *Course) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "progress",
+			Name:  "readiness",
 			Error: err,
 		})
 	}
@@ -737,7 +737,7 @@ func (s *CourseInput) Validate() error {
 		})
 	}
 	if err := func() error {
-		if value, ok := s.Progress.Get(); ok {
+		if value, ok := s.Readiness.Get(); ok {
 			if err := func() error {
 				if err := value.Validate(); err != nil {
 					return err
@@ -750,7 +750,7 @@ func (s *CourseInput) Validate() error {
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "progress",
+			Name:  "readiness",
 			Error: err,
 		})
 	}

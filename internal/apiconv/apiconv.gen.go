@@ -47,7 +47,7 @@ func (c *ConverterImpl) ToCatalogItem(source *ent.LandingPage) api.CourseCatalog
 		if (*source).Edges.Course != nil {
 			pInt = &(*source).Edges.Course.MembersCount
 		}
-		apiCourseCatalogItem.MembersCount = Int32FromPtr(pInt)
+		apiCourseCatalogItem.EnrollmentsCount = Int32FromPtr(pInt)
 		apiCourseCatalogItem.CoverUrl = coverURLNull(source)
 		apiCourseCatalogItem.Course = c.ToCourse((*source).Edges.Course)
 	}
@@ -89,12 +89,12 @@ func (c *ConverterImpl) ToCourse(source *ent.Course) api.Course {
 		apiCourse.Slug = StringFromPtr((*source).Slug)
 		apiCourse.Name = NilStringFromPtr((*source).Name)
 		apiCourse.LearnAs = NilLearnAsFromPtr((*source).LearnAs)
-		apiCourse.Progress = NilProgressFromPtr((*source).Progress)
+		apiCourse.Readiness = NilReadinessFromPtr((*source).Progress)
 		apiCourse.CategoryId = NilInt32FromPtr((*source).CategoryID)
 		apiCourse.CurrentVersionId = NilInt32FromPtr((*source).CurrentVersionID)
 		apiCourse.CurrentVersion = NilCourseVersionFromEnt((*source).Edges.CurrentVersion)
 		apiCourse.CreatedAt = TimeIdentity((*source).CreatedAt)
-		apiCourse.MembersCount = Int32FromInt((*source).MembersCount)
+		apiCourse.EnrollmentsCount = Int32FromInt((*source).MembersCount)
 		apiCourse.LessonsCount = Int32FromInt((*source).LessonsCount)
 		apiCourse.RatingCount = ratingCount(source)
 		apiCourse.RatingValue = ratingValue(source)
@@ -162,7 +162,7 @@ func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseL
 		if (*source).Edges.Course != nil {
 			pInt = &(*source).Edges.Course.MembersCount
 		}
-		apiCourseLandingPage.MembersCount = Int32FromPtr(pInt)
+		apiCourseLandingPage.EnrollmentsCount = Int32FromPtr(pInt)
 	}
 	return apiCourseLandingPage
 }

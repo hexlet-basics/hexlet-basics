@@ -241,7 +241,7 @@ interface AdminReviews {
 model CourseInput {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseReadiness | null;
+  readiness: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
 

@@ -1534,12 +1534,12 @@ type Course struct {
 	Slug                     string             `json:"slug"`
 	Name                     NilString          `json:"name"`
 	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
-	Progress                 NilCourseReadiness `json:"progress"`
+	Readiness                NilCourseReadiness `json:"readiness"`
 	CategoryId               NilInt32           `json:"categoryId"`
 	CurrentVersionId         NilInt32           `json:"currentVersionId"`
 	CurrentVersion           NilCourseVersion   `json:"currentVersion"`
 	CreatedAt                time.Time          `json:"createdAt"`
-	MembersCount             int32              `json:"membersCount"`
+	EnrollmentsCount         int32              `json:"enrollmentsCount"`
 	LessonsCount             int32              `json:"lessonsCount"`
 	RatingCount              int32              `json:"ratingCount"`
 	RatingValue              float64            `json:"ratingValue"`
@@ -1569,9 +1569,9 @@ func (s *Course) GetLearnAs() NilCourseLearnAs {
 	return s.LearnAs
 }
 
-// GetProgress returns the value of Progress.
-func (s *Course) GetProgress() NilCourseReadiness {
-	return s.Progress
+// GetReadiness returns the value of Readiness.
+func (s *Course) GetReadiness() NilCourseReadiness {
+	return s.Readiness
 }
 
 // GetCategoryId returns the value of CategoryId.
@@ -1594,9 +1594,9 @@ func (s *Course) GetCreatedAt() time.Time {
 	return s.CreatedAt
 }
 
-// GetMembersCount returns the value of MembersCount.
-func (s *Course) GetMembersCount() int32 {
-	return s.MembersCount
+// GetEnrollmentsCount returns the value of EnrollmentsCount.
+func (s *Course) GetEnrollmentsCount() int32 {
+	return s.EnrollmentsCount
 }
 
 // GetLessonsCount returns the value of LessonsCount.
@@ -1654,9 +1654,9 @@ func (s *Course) SetLearnAs(val NilCourseLearnAs) {
 	s.LearnAs = val
 }
 
-// SetProgress sets the value of Progress.
-func (s *Course) SetProgress(val NilCourseReadiness) {
-	s.Progress = val
+// SetReadiness sets the value of Readiness.
+func (s *Course) SetReadiness(val NilCourseReadiness) {
+	s.Readiness = val
 }
 
 // SetCategoryId sets the value of CategoryId.
@@ -1679,9 +1679,9 @@ func (s *Course) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-// SetMembersCount sets the value of MembersCount.
-func (s *Course) SetMembersCount(val int32) {
-	s.MembersCount = val
+// SetEnrollmentsCount sets the value of EnrollmentsCount.
+func (s *Course) SetEnrollmentsCount(val int32) {
+	s.EnrollmentsCount = val
 }
 
 // SetLessonsCount sets the value of LessonsCount.
@@ -1727,12 +1727,12 @@ func (*Course) adminUpdateCourseRes() {}
 // full course plus derived fields.
 // Ref: #/components/schemas/CourseCatalogItem
 type CourseCatalogItem struct {
-	ID           int32     `json:"id"`
-	Slug         string    `json:"slug"`
-	Header       NilString `json:"header"`
-	Name         NilString `json:"name"`
-	Locale       NilString `json:"locale"`
-	MembersCount int32     `json:"membersCount"`
+	ID               int32     `json:"id"`
+	Slug             string    `json:"slug"`
+	Header           NilString `json:"header"`
+	Name             NilString `json:"name"`
+	Locale           NilString `json:"locale"`
+	EnrollmentsCount int32     `json:"enrollmentsCount"`
 	// Estimated duration in hours (derived from lesson count).
 	Duration int32 `json:"duration"`
 	// Course cover image URL; null until assets are re-uploaded.
@@ -1765,9 +1765,9 @@ func (s *CourseCatalogItem) GetLocale() NilString {
 	return s.Locale
 }
 
-// GetMembersCount returns the value of MembersCount.
-func (s *CourseCatalogItem) GetMembersCount() int32 {
-	return s.MembersCount
+// GetEnrollmentsCount returns the value of EnrollmentsCount.
+func (s *CourseCatalogItem) GetEnrollmentsCount() int32 {
+	return s.EnrollmentsCount
 }
 
 // GetDuration returns the value of Duration.
@@ -1810,9 +1810,9 @@ func (s *CourseCatalogItem) SetLocale(val NilString) {
 	s.Locale = val
 }
 
-// SetMembersCount sets the value of MembersCount.
-func (s *CourseCatalogItem) SetMembersCount(val int32) {
-	s.MembersCount = val
+// SetEnrollmentsCount sets the value of EnrollmentsCount.
+func (s *CourseCatalogItem) SetEnrollmentsCount(val int32) {
+	s.EnrollmentsCount = val
 }
 
 // SetDuration sets the value of Duration.
@@ -2053,7 +2053,7 @@ func (*CourseCategoryView) getPublicCourseCategoryRes() {}
 type CourseInput struct {
 	Slug                     NilString          `json:"slug"`
 	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
-	Progress                 NilCourseReadiness `json:"progress"`
+	Readiness                NilCourseReadiness `json:"readiness"`
 	HexletProgramLandingPage NilString          `json:"hexletProgramLandingPage"`
 	RepositoryUrl            NilString          `json:"repositoryUrl"`
 	// Attachment id from `POST /admin/attachments`, or null.
@@ -2070,9 +2070,9 @@ func (s *CourseInput) GetLearnAs() NilCourseLearnAs {
 	return s.LearnAs
 }
 
-// GetProgress returns the value of Progress.
-func (s *CourseInput) GetProgress() NilCourseReadiness {
-	return s.Progress
+// GetReadiness returns the value of Readiness.
+func (s *CourseInput) GetReadiness() NilCourseReadiness {
+	return s.Readiness
 }
 
 // GetHexletProgramLandingPage returns the value of HexletProgramLandingPage.
@@ -2100,9 +2100,9 @@ func (s *CourseInput) SetLearnAs(val NilCourseLearnAs) {
 	s.LearnAs = val
 }
 
-// SetProgress sets the value of Progress.
-func (s *CourseInput) SetProgress(val NilCourseReadiness) {
-	s.Progress = val
+// SetReadiness sets the value of Readiness.
+func (s *CourseInput) SetReadiness(val NilCourseReadiness) {
+	s.Readiness = val
 }
 
 // SetHexletProgramLandingPage sets the value of HexletProgramLandingPage.
@@ -2149,8 +2149,8 @@ type CourseLandingPage struct {
 	OutcomesDescription     NilString `json:"outcomesDescription"`
 	OutcomesImage           NilString `json:"outcomesImage"`
 	// Estimated duration in hours.
-	Duration     int32 `json:"duration"`
-	MembersCount int32 `json:"membersCount"`
+	Duration         int32 `json:"duration"`
+	EnrollmentsCount int32 `json:"enrollmentsCount"`
 }
 
 // GetID returns the value of ID.
@@ -2268,9 +2268,9 @@ func (s *CourseLandingPage) GetDuration() int32 {
 	return s.Duration
 }
 
-// GetMembersCount returns the value of MembersCount.
-func (s *CourseLandingPage) GetMembersCount() int32 {
-	return s.MembersCount
+// GetEnrollmentsCount returns the value of EnrollmentsCount.
+func (s *CourseLandingPage) GetEnrollmentsCount() int32 {
+	return s.EnrollmentsCount
 }
 
 // SetID sets the value of ID.
@@ -2388,9 +2388,9 @@ func (s *CourseLandingPage) SetDuration(val int32) {
 	s.Duration = val
 }
 
-// SetMembersCount sets the value of MembersCount.
-func (s *CourseLandingPage) SetMembersCount(val int32) {
-	s.MembersCount = val
+// SetEnrollmentsCount sets the value of EnrollmentsCount.
+func (s *CourseLandingPage) SetEnrollmentsCount(val int32) {
+	s.EnrollmentsCount = val
 }
 
 func (*CourseLandingPage) adminCreateCourseLandingPageRes() {}
@@ -3490,15 +3490,15 @@ func (s *EmailInput) SetEmail(val string) {
 	s.Email = val
 }
 
-// A learner's enrollment in a course (legacy `LanguageMember`, table `language_members`).
+// A learner's enrollment in a course (table `language_members`).
 // Ref: #/components/schemas/Enrollment
 type Enrollment struct {
 	ID       int32              `json:"id"`
 	UserId   int32              `json:"userId"`
 	CourseId int32              `json:"courseId"`
 	State    NilEnrollmentState `json:"state"`
-	// Completion percentage (0–100).
-	Progress       int32     `json:"progress"`
+	// Completion: the share of the course's current lessons finished (0–100).
+	Completion     int32     `json:"completion"`
 	NextLessonName NilString `json:"nextLessonName"`
 }
 
@@ -3522,9 +3522,9 @@ func (s *Enrollment) GetState() NilEnrollmentState {
 	return s.State
 }
 
-// GetProgress returns the value of Progress.
-func (s *Enrollment) GetProgress() int32 {
-	return s.Progress
+// GetCompletion returns the value of Completion.
+func (s *Enrollment) GetCompletion() int32 {
+	return s.Completion
 }
 
 // GetNextLessonName returns the value of NextLessonName.
@@ -3552,9 +3552,9 @@ func (s *Enrollment) SetState(val NilEnrollmentState) {
 	s.State = val
 }
 
-// SetProgress sets the value of Progress.
-func (s *Enrollment) SetProgress(val int32) {
-	s.Progress = val
+// SetCompletion sets the value of Completion.
+func (s *Enrollment) SetCompletion(val int32) {
+	s.Completion = val
 }
 
 // SetNextLessonName sets the value of NextLessonName.

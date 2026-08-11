@@ -116,12 +116,12 @@ model Course {
   slug: string;
   name: string | null;
   learnAs: CourseLearnAs | null;
-  progress: CourseReadiness | null;
+  readiness: CourseReadiness | null;
   categoryId: int32 | null;
   currentVersionId: int32 | null;
   currentVersion: CourseVersion | null;
   createdAt: utcDateTime;
-  membersCount: int32;
+  enrollmentsCount: int32;
   lessonsCount: int32;
   ratingCount: int32;
   ratingValue: float64;
@@ -141,7 +141,7 @@ model CourseCatalogItem {
   header: string | null;
   name: string | null;
   locale: string | null;
-  membersCount: int32;
+  enrollmentsCount: int32;
 
   /** Estimated duration in hours (derived from lesson count). */
   duration: int32;
@@ -152,16 +152,15 @@ model CourseCatalogItem {
   course: Course;
 }
 
-/** A learner's enrollment in a course (legacy `LanguageMember`, table
-`language_members`). */
+/** A learner's enrollment in a course (table `language_members`). */
 model Enrollment {
   id: int32;
   userId: int32;
   courseId: int32;
   state: EnrollmentState | null;
 
-  /** Completion percentage (0–100). */
-  progress: int32;
+  /** Completion: the share of the course's current lessons finished (0–100). */
+  completion: int32;
 
   nextLessonName: string | null;
 }
@@ -220,7 +219,7 @@ model CourseLandingPage {
   /** Estimated duration in hours. */
   duration: int32;
 
-  membersCount: int32;
+  enrollmentsCount: int32;
 }
 
 // ---- Lessons --------------------------------------------------------------

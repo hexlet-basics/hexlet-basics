@@ -31,7 +31,7 @@ import (
 // goverter:extend NilBoolFromPtr
 // goverter:extend NilDateTimeFromPtr
 // goverter:extend NilLearnAsFromPtr
-// goverter:extend NilProgressFromPtr
+// goverter:extend NilReadinessFromPtr
 // goverter:extend NilReviewStateFromPtr
 // goverter:extend NilReviewLocaleFromPtr
 // goverter:extend NilLandingPageStateFromPtr
@@ -44,7 +44,7 @@ type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
 
 	// goverter:map Edges.Course Course
-	// goverter:map Edges.Course.MembersCount MembersCount
+	// goverter:map Edges.Course.MembersCount EnrollmentsCount
 	// goverter:map . CoverUrl | coverURLNull
 	// goverter:ignore Duration
 	ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem
@@ -54,6 +54,10 @@ type Converter interface {
 	// current_version association, and the serializer's computed fields as bridges
 	// below. Only the ActiveStorage cover variants stay deferred (same reason as
 	// CourseCatalogItem.CoverUrl — blob assets are not migrated yet).
+	// The two legacy column names the contract renamed: `progress` carries
+	// Course Readiness, `members_count` counts Enrollments.
+	// goverter:map Progress Readiness
+	// goverter:map MembersCount EnrollmentsCount
 	// goverter:map CategoryID CategoryId
 	// goverter:map CurrentVersionID CurrentVersionId
 	// goverter:map Edges.CurrentVersion CurrentVersion
@@ -129,7 +133,7 @@ type Converter interface {
 	// goverter:map LanguageID CourseId
 	// goverter:map LandingPageToRedirectID LandingPageToRedirectId
 	// goverter:map Edges.Course.Slug CourseSlug
-	// goverter:map Edges.Course.MembersCount MembersCount
+	// goverter:map Edges.Course.MembersCount EnrollmentsCount
 	// goverter:map Edges.Course Duration | courseDuration
 	// goverter:map . OutcomesImage | landingOutcomesImageNull
 	ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage
@@ -286,8 +290,8 @@ func NilLearnAsFromPtr(v *string) api.NilCourseLearnAs {
 	return api.NewNilCourseLearnAs(api.CourseLearnAs(*v))
 }
 
-// NilProgressFromPtr bridges a nullable ent string to ogen's NilCourseReadiness.
-func NilProgressFromPtr(v *string) api.NilCourseReadiness {
+// NilReadinessFromPtr bridges a nullable ent string to ogen's NilCourseReadiness.
+func NilReadinessFromPtr(v *string) api.NilCourseReadiness {
 	if v == nil {
 		return api.NilCourseReadiness{Null: true}
 	}

@@ -10,7 +10,7 @@ import type { CrudFieldSpec } from "@/components/admin/CrudForm";
 export const emptyCourse: CourseInput = {
   slug: "",
   learnAs: null,
-  progress: "draft",
+  readiness: "draft",
   hexletProgramLandingPage: "",
   repositoryUrl: null,
   coverAttachmentId: null,
@@ -20,7 +20,7 @@ export function courseToForm(course: Course): CourseInput {
   return {
     slug: course.slug,
     learnAs: course.learnAs,
-    progress: course.progress,
+    readiness: course.readiness,
     hexletProgramLandingPage: course.hexletProgramLandingPage ?? "",
     repositoryUrl: null,
     coverAttachmentId: null,
@@ -51,7 +51,7 @@ export function useCourseFields(): CrudFieldSpec<CourseInput>[] {
       ],
     },
     {
-      name: "progress",
+      name: "readiness",
       label: t(($) => $.models.attributes.language.progress),
       type: "select",
       options: [

@@ -58,7 +58,7 @@ export default function CourseBlock({ item, lazy, ...props }: Props) {
             <Group gap="xs">
               <IconUsers size="15" />
               <Text size="sm">
-                <NumberFormatter thousandSeparator value={item.membersCount} />
+                <NumberFormatter thousandSeparator value={item.enrollmentsCount} />
               </Text>
             </Group>
           </Group>
