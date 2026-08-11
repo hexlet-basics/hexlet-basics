@@ -144,8 +144,8 @@ Further consequences:
   from the denormalized counter on the Enrollment. That counter includes
   Lessons dropped by later Versions, which is why the legacy serializer had to
   clamp it at 100%. The public enrollment count on Courses stays denormalized
-  (`membersCount`, after its column); it is a marketing figure on cached
-  catalogue pages, not a progress figure.
+  (`enrollmentsCount`, reading the legacy `members_count` column); it is a
+  marketing figure on cached catalogue pages, not a progress figure.
 - Course completion is re-evaluated when a new Course Version is promoted,
   driven by the course-loading module. The legacy nightly sweep over started
   enrollments is not ported: it existed because completion was only ever
