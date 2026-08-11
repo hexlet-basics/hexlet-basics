@@ -64,33 +64,27 @@ func (_c *CourseLessonReviewCreate) SetSummary(v string) *CourseLessonReviewCrea
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *CourseLessonReviewCreate) SetLanguageID(v int) *CourseLessonReviewCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *CourseLessonReviewCreate) SetCourseID(v int) *CourseLessonReviewCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
-// SetLanguageLessonID sets the "language_lesson_id" field.
-func (_c *CourseLessonReviewCreate) SetLanguageLessonID(v int) *CourseLessonReviewCreate {
-	_c.mutation.SetLanguageLessonID(v)
+// SetCourseLessonID sets the "course_lesson_id" field.
+func (_c *CourseLessonReviewCreate) SetCourseLessonID(v int) *CourseLessonReviewCreate {
+	_c.mutation.SetCourseLessonID(v)
 	return _c
 }
 
-// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
-func (_c *CourseLessonReviewCreate) SetLanguageLessonVersionID(v int) *CourseLessonReviewCreate {
-	_c.mutation.SetLanguageLessonVersionID(v)
+// SetCourseLessonVersionID sets the "course_lesson_version_id" field.
+func (_c *CourseLessonReviewCreate) SetCourseLessonVersionID(v int) *CourseLessonReviewCreate {
+	_c.mutation.SetCourseLessonVersionID(v)
 	return _c
 }
 
-// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
-func (_c *CourseLessonReviewCreate) SetLanguageLessonVersionInfoID(v int) *CourseLessonReviewCreate {
-	_c.mutation.SetLanguageLessonVersionInfoID(v)
-	return _c
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_c *CourseLessonReviewCreate) SetCourseID(id int) *CourseLessonReviewCreate {
-	_c.mutation.SetCourseID(id)
+// SetCourseLessonTranslationID sets the "course_lesson_translation_id" field.
+func (_c *CourseLessonReviewCreate) SetCourseLessonTranslationID(v int) *CourseLessonReviewCreate {
+	_c.mutation.SetCourseLessonTranslationID(v)
 	return _c
 }
 
@@ -169,17 +163,17 @@ func (_c *CourseLessonReviewCreate) check() error {
 	if _, ok := _c.mutation.Summary(); !ok {
 		return &ValidationError{Name: "summary", err: errors.New(`ent: missing required field "CourseLessonReview.summary"`)}
 	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "CourseLessonReview.language_id"`)}
+	if _, ok := _c.mutation.CourseID(); !ok {
+		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "CourseLessonReview.course_id"`)}
 	}
-	if _, ok := _c.mutation.LanguageLessonID(); !ok {
-		return &ValidationError{Name: "language_lesson_id", err: errors.New(`ent: missing required field "CourseLessonReview.language_lesson_id"`)}
+	if _, ok := _c.mutation.CourseLessonID(); !ok {
+		return &ValidationError{Name: "course_lesson_id", err: errors.New(`ent: missing required field "CourseLessonReview.course_lesson_id"`)}
 	}
-	if _, ok := _c.mutation.LanguageLessonVersionID(); !ok {
-		return &ValidationError{Name: "language_lesson_version_id", err: errors.New(`ent: missing required field "CourseLessonReview.language_lesson_version_id"`)}
+	if _, ok := _c.mutation.CourseLessonVersionID(); !ok {
+		return &ValidationError{Name: "course_lesson_version_id", err: errors.New(`ent: missing required field "CourseLessonReview.course_lesson_version_id"`)}
 	}
-	if _, ok := _c.mutation.LanguageLessonVersionInfoID(); !ok {
-		return &ValidationError{Name: "language_lesson_version_info_id", err: errors.New(`ent: missing required field "CourseLessonReview.language_lesson_version_info_id"`)}
+	if _, ok := _c.mutation.CourseLessonTranslationID(); !ok {
+		return &ValidationError{Name: "course_lesson_translation_id", err: errors.New(`ent: missing required field "CourseLessonReview.course_lesson_translation_id"`)}
 	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "CourseLessonReview.course"`)}
@@ -230,13 +224,13 @@ func (_c *CourseLessonReviewCreate) createSpec() (*CourseLessonReview, *sqlgraph
 		_spec.SetField(courselessonreview.FieldSummary, field.TypeString, value)
 		_node.Summary = value
 	}
-	if value, ok := _c.mutation.LanguageLessonVersionID(); ok {
-		_spec.SetField(courselessonreview.FieldLanguageLessonVersionID, field.TypeInt, value)
-		_node.LanguageLessonVersionID = value
+	if value, ok := _c.mutation.CourseLessonVersionID(); ok {
+		_spec.SetField(courselessonreview.FieldCourseLessonVersionID, field.TypeInt, value)
+		_node.CourseLessonVersionID = value
 	}
-	if value, ok := _c.mutation.LanguageLessonVersionInfoID(); ok {
-		_spec.SetField(courselessonreview.FieldLanguageLessonVersionInfoID, field.TypeInt, value)
-		_node.LanguageLessonVersionInfoID = value
+	if value, ok := _c.mutation.CourseLessonTranslationID(); ok {
+		_spec.SetField(courselessonreview.FieldCourseLessonTranslationID, field.TypeInt, value)
+		_node.CourseLessonTranslationID = value
 	}
 	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -252,7 +246,7 @@ func (_c *CourseLessonReviewCreate) createSpec() (*CourseLessonReview, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageID = nodes[0]
+		_node.CourseID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
@@ -269,7 +263,7 @@ func (_c *CourseLessonReviewCreate) createSpec() (*CourseLessonReview, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageLessonID = nodes[0]
+		_node.CourseLessonID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -360,63 +354,63 @@ func (u *CourseLessonReviewUpsert) UpdateSummary() *CourseLessonReviewUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseLessonReviewUpsert) SetLanguageID(v int) *CourseLessonReviewUpsert {
-	u.Set(courselessonreview.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *CourseLessonReviewUpsert) SetCourseID(v int) *CourseLessonReviewUpsert {
+	u.Set(courselessonreview.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsert) UpdateLanguageID() *CourseLessonReviewUpsert {
-	u.SetExcluded(courselessonreview.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsert) UpdateCourseID() *CourseLessonReviewUpsert {
+	u.SetExcluded(courselessonreview.FieldCourseID)
 	return u
 }
 
-// SetLanguageLessonID sets the "language_lesson_id" field.
-func (u *CourseLessonReviewUpsert) SetLanguageLessonID(v int) *CourseLessonReviewUpsert {
-	u.Set(courselessonreview.FieldLanguageLessonID, v)
+// SetCourseLessonID sets the "course_lesson_id" field.
+func (u *CourseLessonReviewUpsert) SetCourseLessonID(v int) *CourseLessonReviewUpsert {
+	u.Set(courselessonreview.FieldCourseLessonID, v)
 	return u
 }
 
-// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsert) UpdateLanguageLessonID() *CourseLessonReviewUpsert {
-	u.SetExcluded(courselessonreview.FieldLanguageLessonID)
+// UpdateCourseLessonID sets the "course_lesson_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsert) UpdateCourseLessonID() *CourseLessonReviewUpsert {
+	u.SetExcluded(courselessonreview.FieldCourseLessonID)
 	return u
 }
 
-// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
-func (u *CourseLessonReviewUpsert) SetLanguageLessonVersionID(v int) *CourseLessonReviewUpsert {
-	u.Set(courselessonreview.FieldLanguageLessonVersionID, v)
+// SetCourseLessonVersionID sets the "course_lesson_version_id" field.
+func (u *CourseLessonReviewUpsert) SetCourseLessonVersionID(v int) *CourseLessonReviewUpsert {
+	u.Set(courselessonreview.FieldCourseLessonVersionID, v)
 	return u
 }
 
-// UpdateLanguageLessonVersionID sets the "language_lesson_version_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsert) UpdateLanguageLessonVersionID() *CourseLessonReviewUpsert {
-	u.SetExcluded(courselessonreview.FieldLanguageLessonVersionID)
+// UpdateCourseLessonVersionID sets the "course_lesson_version_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsert) UpdateCourseLessonVersionID() *CourseLessonReviewUpsert {
+	u.SetExcluded(courselessonreview.FieldCourseLessonVersionID)
 	return u
 }
 
-// AddLanguageLessonVersionID adds v to the "language_lesson_version_id" field.
-func (u *CourseLessonReviewUpsert) AddLanguageLessonVersionID(v int) *CourseLessonReviewUpsert {
-	u.Add(courselessonreview.FieldLanguageLessonVersionID, v)
+// AddCourseLessonVersionID adds v to the "course_lesson_version_id" field.
+func (u *CourseLessonReviewUpsert) AddCourseLessonVersionID(v int) *CourseLessonReviewUpsert {
+	u.Add(courselessonreview.FieldCourseLessonVersionID, v)
 	return u
 }
 
-// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
-func (u *CourseLessonReviewUpsert) SetLanguageLessonVersionInfoID(v int) *CourseLessonReviewUpsert {
-	u.Set(courselessonreview.FieldLanguageLessonVersionInfoID, v)
+// SetCourseLessonTranslationID sets the "course_lesson_translation_id" field.
+func (u *CourseLessonReviewUpsert) SetCourseLessonTranslationID(v int) *CourseLessonReviewUpsert {
+	u.Set(courselessonreview.FieldCourseLessonTranslationID, v)
 	return u
 }
 
-// UpdateLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsert) UpdateLanguageLessonVersionInfoID() *CourseLessonReviewUpsert {
-	u.SetExcluded(courselessonreview.FieldLanguageLessonVersionInfoID)
+// UpdateCourseLessonTranslationID sets the "course_lesson_translation_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsert) UpdateCourseLessonTranslationID() *CourseLessonReviewUpsert {
+	u.SetExcluded(courselessonreview.FieldCourseLessonTranslationID)
 	return u
 }
 
-// AddLanguageLessonVersionInfoID adds v to the "language_lesson_version_info_id" field.
-func (u *CourseLessonReviewUpsert) AddLanguageLessonVersionInfoID(v int) *CourseLessonReviewUpsert {
-	u.Add(courselessonreview.FieldLanguageLessonVersionInfoID, v)
+// AddCourseLessonTranslationID adds v to the "course_lesson_translation_id" field.
+func (u *CourseLessonReviewUpsert) AddCourseLessonTranslationID(v int) *CourseLessonReviewUpsert {
+	u.Add(courselessonreview.FieldCourseLessonTranslationID, v)
 	return u
 }
 
@@ -507,73 +501,73 @@ func (u *CourseLessonReviewUpsertOne) UpdateSummary() *CourseLessonReviewUpsertO
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseLessonReviewUpsertOne) SetLanguageID(v int) *CourseLessonReviewUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *CourseLessonReviewUpsertOne) SetCourseID(v int) *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertOne) UpdateLanguageID() *CourseLessonReviewUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertOne) UpdateCourseID() *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
-// SetLanguageLessonID sets the "language_lesson_id" field.
-func (u *CourseLessonReviewUpsertOne) SetLanguageLessonID(v int) *CourseLessonReviewUpsertOne {
+// SetCourseLessonID sets the "course_lesson_id" field.
+func (u *CourseLessonReviewUpsertOne) SetCourseLessonID(v int) *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageLessonID(v)
+		s.SetCourseLessonID(v)
 	})
 }
 
-// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertOne) UpdateLanguageLessonID() *CourseLessonReviewUpsertOne {
+// UpdateCourseLessonID sets the "course_lesson_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertOne) UpdateCourseLessonID() *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageLessonID()
+		s.UpdateCourseLessonID()
 	})
 }
 
-// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
-func (u *CourseLessonReviewUpsertOne) SetLanguageLessonVersionID(v int) *CourseLessonReviewUpsertOne {
+// SetCourseLessonVersionID sets the "course_lesson_version_id" field.
+func (u *CourseLessonReviewUpsertOne) SetCourseLessonVersionID(v int) *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageLessonVersionID(v)
+		s.SetCourseLessonVersionID(v)
 	})
 }
 
-// AddLanguageLessonVersionID adds v to the "language_lesson_version_id" field.
-func (u *CourseLessonReviewUpsertOne) AddLanguageLessonVersionID(v int) *CourseLessonReviewUpsertOne {
+// AddCourseLessonVersionID adds v to the "course_lesson_version_id" field.
+func (u *CourseLessonReviewUpsertOne) AddCourseLessonVersionID(v int) *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.AddLanguageLessonVersionID(v)
+		s.AddCourseLessonVersionID(v)
 	})
 }
 
-// UpdateLanguageLessonVersionID sets the "language_lesson_version_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertOne) UpdateLanguageLessonVersionID() *CourseLessonReviewUpsertOne {
+// UpdateCourseLessonVersionID sets the "course_lesson_version_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertOne) UpdateCourseLessonVersionID() *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageLessonVersionID()
+		s.UpdateCourseLessonVersionID()
 	})
 }
 
-// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
-func (u *CourseLessonReviewUpsertOne) SetLanguageLessonVersionInfoID(v int) *CourseLessonReviewUpsertOne {
+// SetCourseLessonTranslationID sets the "course_lesson_translation_id" field.
+func (u *CourseLessonReviewUpsertOne) SetCourseLessonTranslationID(v int) *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageLessonVersionInfoID(v)
+		s.SetCourseLessonTranslationID(v)
 	})
 }
 
-// AddLanguageLessonVersionInfoID adds v to the "language_lesson_version_info_id" field.
-func (u *CourseLessonReviewUpsertOne) AddLanguageLessonVersionInfoID(v int) *CourseLessonReviewUpsertOne {
+// AddCourseLessonTranslationID adds v to the "course_lesson_translation_id" field.
+func (u *CourseLessonReviewUpsertOne) AddCourseLessonTranslationID(v int) *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.AddLanguageLessonVersionInfoID(v)
+		s.AddCourseLessonTranslationID(v)
 	})
 }
 
-// UpdateLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertOne) UpdateLanguageLessonVersionInfoID() *CourseLessonReviewUpsertOne {
+// UpdateCourseLessonTranslationID sets the "course_lesson_translation_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertOne) UpdateCourseLessonTranslationID() *CourseLessonReviewUpsertOne {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageLessonVersionInfoID()
+		s.UpdateCourseLessonTranslationID()
 	})
 }
 
@@ -830,73 +824,73 @@ func (u *CourseLessonReviewUpsertBulk) UpdateSummary() *CourseLessonReviewUpsert
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseLessonReviewUpsertBulk) SetLanguageID(v int) *CourseLessonReviewUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *CourseLessonReviewUpsertBulk) SetCourseID(v int) *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertBulk) UpdateLanguageID() *CourseLessonReviewUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertBulk) UpdateCourseID() *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
-// SetLanguageLessonID sets the "language_lesson_id" field.
-func (u *CourseLessonReviewUpsertBulk) SetLanguageLessonID(v int) *CourseLessonReviewUpsertBulk {
+// SetCourseLessonID sets the "course_lesson_id" field.
+func (u *CourseLessonReviewUpsertBulk) SetCourseLessonID(v int) *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageLessonID(v)
+		s.SetCourseLessonID(v)
 	})
 }
 
-// UpdateLanguageLessonID sets the "language_lesson_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertBulk) UpdateLanguageLessonID() *CourseLessonReviewUpsertBulk {
+// UpdateCourseLessonID sets the "course_lesson_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertBulk) UpdateCourseLessonID() *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageLessonID()
+		s.UpdateCourseLessonID()
 	})
 }
 
-// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
-func (u *CourseLessonReviewUpsertBulk) SetLanguageLessonVersionID(v int) *CourseLessonReviewUpsertBulk {
+// SetCourseLessonVersionID sets the "course_lesson_version_id" field.
+func (u *CourseLessonReviewUpsertBulk) SetCourseLessonVersionID(v int) *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageLessonVersionID(v)
+		s.SetCourseLessonVersionID(v)
 	})
 }
 
-// AddLanguageLessonVersionID adds v to the "language_lesson_version_id" field.
-func (u *CourseLessonReviewUpsertBulk) AddLanguageLessonVersionID(v int) *CourseLessonReviewUpsertBulk {
+// AddCourseLessonVersionID adds v to the "course_lesson_version_id" field.
+func (u *CourseLessonReviewUpsertBulk) AddCourseLessonVersionID(v int) *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.AddLanguageLessonVersionID(v)
+		s.AddCourseLessonVersionID(v)
 	})
 }
 
-// UpdateLanguageLessonVersionID sets the "language_lesson_version_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertBulk) UpdateLanguageLessonVersionID() *CourseLessonReviewUpsertBulk {
+// UpdateCourseLessonVersionID sets the "course_lesson_version_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertBulk) UpdateCourseLessonVersionID() *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageLessonVersionID()
+		s.UpdateCourseLessonVersionID()
 	})
 }
 
-// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
-func (u *CourseLessonReviewUpsertBulk) SetLanguageLessonVersionInfoID(v int) *CourseLessonReviewUpsertBulk {
+// SetCourseLessonTranslationID sets the "course_lesson_translation_id" field.
+func (u *CourseLessonReviewUpsertBulk) SetCourseLessonTranslationID(v int) *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.SetLanguageLessonVersionInfoID(v)
+		s.SetCourseLessonTranslationID(v)
 	})
 }
 
-// AddLanguageLessonVersionInfoID adds v to the "language_lesson_version_info_id" field.
-func (u *CourseLessonReviewUpsertBulk) AddLanguageLessonVersionInfoID(v int) *CourseLessonReviewUpsertBulk {
+// AddCourseLessonTranslationID adds v to the "course_lesson_translation_id" field.
+func (u *CourseLessonReviewUpsertBulk) AddCourseLessonTranslationID(v int) *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.AddLanguageLessonVersionInfoID(v)
+		s.AddCourseLessonTranslationID(v)
 	})
 }
 
-// UpdateLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field to the value that was provided on create.
-func (u *CourseLessonReviewUpsertBulk) UpdateLanguageLessonVersionInfoID() *CourseLessonReviewUpsertBulk {
+// UpdateCourseLessonTranslationID sets the "course_lesson_translation_id" field to the value that was provided on create.
+func (u *CourseLessonReviewUpsertBulk) UpdateCourseLessonTranslationID() *CourseLessonReviewUpsertBulk {
 	return u.Update(func(s *CourseLessonReviewUpsert) {
-		s.UpdateLanguageLessonVersionInfoID()
+		s.UpdateCourseLessonTranslationID()
 	})
 }
 

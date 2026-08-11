@@ -50,9 +50,9 @@ func (_c *LandingPageQnaItemCreate) SetNillableUpdatedAt(v *time.Time) *LandingP
 	return _c
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (_c *LandingPageQnaItemCreate) SetLanguageLandingPageID(v int) *LandingPageQnaItemCreate {
-	_c.mutation.SetLanguageLandingPageID(v)
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (_c *LandingPageQnaItemCreate) SetCourseLandingPageID(v int) *LandingPageQnaItemCreate {
+	_c.mutation.SetCourseLandingPageID(v)
 	return _c
 }
 
@@ -137,8 +137,8 @@ func (_c *LandingPageQnaItemCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LandingPageQnaItem.updated_at"`)}
 	}
-	if _, ok := _c.mutation.LanguageLandingPageID(); !ok {
-		return &ValidationError{Name: "language_landing_page_id", err: errors.New(`ent: missing required field "LandingPageQnaItem.language_landing_page_id"`)}
+	if _, ok := _c.mutation.CourseLandingPageID(); !ok {
+		return &ValidationError{Name: "course_landing_page_id", err: errors.New(`ent: missing required field "LandingPageQnaItem.course_landing_page_id"`)}
 	}
 	return nil
 }
@@ -175,9 +175,9 @@ func (_c *LandingPageQnaItemCreate) createSpec() (*LandingPageQnaItem, *sqlgraph
 		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := _c.mutation.LanguageLandingPageID(); ok {
-		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
-		_node.LanguageLandingPageID = value
+	if value, ok := _c.mutation.CourseLandingPageID(); ok {
+		_spec.SetField(landingpageqnaitem.FieldCourseLandingPageID, field.TypeInt, value)
+		_node.CourseLandingPageID = value
 	}
 	if value, ok := _c.mutation.Question(); ok {
 		_spec.SetField(landingpageqnaitem.FieldQuestion, field.TypeString, value)
@@ -251,21 +251,21 @@ func (u *LandingPageQnaItemUpsert) UpdateUpdatedAt() *LandingPageQnaItemUpsert {
 	return u
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (u *LandingPageQnaItemUpsert) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsert {
-	u.Set(landingpageqnaitem.FieldLanguageLandingPageID, v)
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (u *LandingPageQnaItemUpsert) SetCourseLandingPageID(v int) *LandingPageQnaItemUpsert {
+	u.Set(landingpageqnaitem.FieldCourseLandingPageID, v)
 	return u
 }
 
-// UpdateLanguageLandingPageID sets the "language_landing_page_id" field to the value that was provided on create.
-func (u *LandingPageQnaItemUpsert) UpdateLanguageLandingPageID() *LandingPageQnaItemUpsert {
-	u.SetExcluded(landingpageqnaitem.FieldLanguageLandingPageID)
+// UpdateCourseLandingPageID sets the "course_landing_page_id" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsert) UpdateCourseLandingPageID() *LandingPageQnaItemUpsert {
+	u.SetExcluded(landingpageqnaitem.FieldCourseLandingPageID)
 	return u
 }
 
-// AddLanguageLandingPageID adds v to the "language_landing_page_id" field.
-func (u *LandingPageQnaItemUpsert) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpsert {
-	u.Add(landingpageqnaitem.FieldLanguageLandingPageID, v)
+// AddCourseLandingPageID adds v to the "course_landing_page_id" field.
+func (u *LandingPageQnaItemUpsert) AddCourseLandingPageID(v int) *LandingPageQnaItemUpsert {
+	u.Add(landingpageqnaitem.FieldCourseLandingPageID, v)
 	return u
 }
 
@@ -364,24 +364,24 @@ func (u *LandingPageQnaItemUpsertOne) UpdateUpdatedAt() *LandingPageQnaItemUpser
 	})
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (u *LandingPageQnaItemUpsertOne) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsertOne {
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertOne) SetCourseLandingPageID(v int) *LandingPageQnaItemUpsertOne {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.SetLanguageLandingPageID(v)
+		s.SetCourseLandingPageID(v)
 	})
 }
 
-// AddLanguageLandingPageID adds v to the "language_landing_page_id" field.
-func (u *LandingPageQnaItemUpsertOne) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpsertOne {
+// AddCourseLandingPageID adds v to the "course_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertOne) AddCourseLandingPageID(v int) *LandingPageQnaItemUpsertOne {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.AddLanguageLandingPageID(v)
+		s.AddCourseLandingPageID(v)
 	})
 }
 
-// UpdateLanguageLandingPageID sets the "language_landing_page_id" field to the value that was provided on create.
-func (u *LandingPageQnaItemUpsertOne) UpdateLanguageLandingPageID() *LandingPageQnaItemUpsertOne {
+// UpdateCourseLandingPageID sets the "course_landing_page_id" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertOne) UpdateCourseLandingPageID() *LandingPageQnaItemUpsertOne {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.UpdateLanguageLandingPageID()
+		s.UpdateCourseLandingPageID()
 	})
 }
 
@@ -652,24 +652,24 @@ func (u *LandingPageQnaItemUpsertBulk) UpdateUpdatedAt() *LandingPageQnaItemUpse
 	})
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (u *LandingPageQnaItemUpsertBulk) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertBulk) SetCourseLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.SetLanguageLandingPageID(v)
+		s.SetCourseLandingPageID(v)
 	})
 }
 
-// AddLanguageLandingPageID adds v to the "language_landing_page_id" field.
-func (u *LandingPageQnaItemUpsertBulk) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
+// AddCourseLandingPageID adds v to the "course_landing_page_id" field.
+func (u *LandingPageQnaItemUpsertBulk) AddCourseLandingPageID(v int) *LandingPageQnaItemUpsertBulk {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.AddLanguageLandingPageID(v)
+		s.AddCourseLandingPageID(v)
 	})
 }
 
-// UpdateLanguageLandingPageID sets the "language_landing_page_id" field to the value that was provided on create.
-func (u *LandingPageQnaItemUpsertBulk) UpdateLanguageLandingPageID() *LandingPageQnaItemUpsertBulk {
+// UpdateCourseLandingPageID sets the "course_landing_page_id" field to the value that was provided on create.
+func (u *LandingPageQnaItemUpsertBulk) UpdateCourseLandingPageID() *LandingPageQnaItemUpsertBulk {
 	return u.Update(func(s *LandingPageQnaItemUpsert) {
-		s.UpdateLanguageLandingPageID()
+		s.UpdateCourseLandingPageID()
 	})
 }
 

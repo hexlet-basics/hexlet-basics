@@ -33,8 +33,8 @@ func (CourseLessonVersion) Fields() []ent.Field {
 		field.String("prepared_code").Optional().Nillable(),
 		field.String("test_code").Optional().Nillable(),
 		field.String("path_to_code").Optional().Nillable(),
-		field.Int("language_id"),
-		field.Int("language_version_id"),
+		field.Int("course_id").StorageKey("language_id"),
+		field.Int("course_version_id").StorageKey("language_version_id"),
 		field.Int("lesson_id"),
 		field.Int("module_version_id"),
 	}

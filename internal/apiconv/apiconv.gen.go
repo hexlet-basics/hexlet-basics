@@ -132,7 +132,7 @@ func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseL
 	var apiCourseLandingPage api.CourseLandingPage
 	if source != nil {
 		apiCourseLandingPage.ID = Int32FromInt((*source).ID)
-		apiCourseLandingPage.CourseId = Int32FromInt((*source).LanguageID)
+		apiCourseLandingPage.CourseId = Int32FromInt((*source).CourseID)
 		var pString *string
 		if (*source).Edges.Course != nil {
 			pString = (*source).Edges.Course.Slug
@@ -179,7 +179,7 @@ func (c *ConverterImpl) ToCourseLandingPages(source []*ent.LandingPage) []api.Co
 func (c *ConverterImpl) ToCourseLessonListItem(source *ent.CourseLessonTranslation) api.CourseLessonListItem {
 	var apiCourseLessonListItem api.CourseLessonListItem
 	if source != nil {
-		apiCourseLessonListItem.ID = Int32FromInt((*source).LanguageLessonID)
+		apiCourseLessonListItem.ID = Int32FromInt((*source).CourseLessonID)
 		apiCourseLessonListItem.Name = NilStringFromPtr((*source).Name)
 		apiCourseLessonListItem.Description = NilStringFromPtr((*source).Description)
 		var pString *string
@@ -205,10 +205,10 @@ func (c *ConverterImpl) ToCourseLessonReview(source *ent.CourseLessonReview) api
 	if source != nil {
 		apiCourseLessonReview.ID = Int32FromInt((*source).ID)
 		apiCourseLessonReview.Locale = (*source).Locale
-		apiCourseLessonReview.CourseId = Int32FromInt((*source).LanguageID)
-		apiCourseLessonReview.CourseLessonId = Int32FromInt((*source).LanguageLessonID)
-		apiCourseLessonReview.CourseLessonVersionId = Int32FromInt((*source).LanguageLessonVersionID)
-		apiCourseLessonReview.CourseLessonVersionInfoId = Int32FromInt((*source).LanguageLessonVersionInfoID)
+		apiCourseLessonReview.CourseId = Int32FromInt((*source).CourseID)
+		apiCourseLessonReview.CourseLessonId = Int32FromInt((*source).CourseLessonID)
+		apiCourseLessonReview.CourseLessonVersionId = Int32FromInt((*source).CourseLessonVersionID)
+		apiCourseLessonReview.CourseLessonVersionInfoId = Int32FromInt((*source).CourseLessonTranslationID)
 		apiCourseLessonReview.Summary = (*source).Summary
 		var pString *string
 		if (*source).Edges.Lesson != nil {
@@ -365,7 +365,7 @@ func (c *ConverterImpl) ToReview(source *ent.Review) api.Review {
 		apiReview.User = c.ToUser((*source).Edges.User)
 		apiReview.Course = c.ToCourse((*source).Edges.Course)
 		apiReview.UserId = Int32FromInt((*source).UserID)
-		apiReview.CourseId = Int32FromInt((*source).LanguageID)
+		apiReview.CourseId = Int32FromInt((*source).CourseID)
 		apiReview.Body = NilStringFromPtr((*source).Body)
 		apiReview.FirstName = NilStringFromPtr((*source).FirstName)
 		apiReview.LastName = NilStringFromPtr((*source).LastName)

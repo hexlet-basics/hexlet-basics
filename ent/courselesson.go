@@ -25,8 +25,8 @@ type CourseLesson struct {
 	Slug *string `json:"slug,omitempty"`
 	// NaturalOrder holds the value of the "natural_order" field.
 	NaturalOrder *int `json:"natural_order,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID *int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID *int `json:"course_id,omitempty"`
 	// ModuleID holds the value of the "module_id" field.
 	ModuleID *int `json:"module_id,omitempty"`
 	// State holds the value of the "state" field.
@@ -60,7 +60,7 @@ func (*CourseLesson) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case courselesson.FieldID, courselesson.FieldNaturalOrder, courselesson.FieldLanguageID, courselesson.FieldModuleID:
+		case courselesson.FieldID, courselesson.FieldNaturalOrder, courselesson.FieldCourseID, courselesson.FieldModuleID:
 			values[i] = new(sql.NullInt64)
 		case courselesson.FieldSlug, courselesson.FieldState:
 			values[i] = new(sql.NullString)
@@ -113,12 +113,12 @@ func (_m *CourseLesson) assignValues(columns []string, values []any) error {
 				_m.NaturalOrder = new(int)
 				*_m.NaturalOrder = int(value.Int64)
 			}
-		case courselesson.FieldLanguageID:
+		case courselesson.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = new(int)
-				*_m.LanguageID = int(value.Int64)
+				_m.CourseID = new(int)
+				*_m.CourseID = int(value.Int64)
 			}
 		case courselesson.FieldModuleID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -191,8 +191,8 @@ func (_m *CourseLesson) String() string {
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	if v := _m.LanguageID; v != nil {
-		builder.WriteString("language_id=")
+	if v := _m.CourseID; v != nil {
+		builder.WriteString("course_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")

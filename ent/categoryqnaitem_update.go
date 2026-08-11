@@ -34,24 +34,24 @@ func (_u *CategoryQnaItemUpdate) SetUpdatedAt(v time.Time) *CategoryQnaItemUpdat
 	return _u
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (_u *CategoryQnaItemUpdate) SetLanguageCategoryID(v int) *CategoryQnaItemUpdate {
-	_u.mutation.ResetLanguageCategoryID()
-	_u.mutation.SetLanguageCategoryID(v)
+// SetCourseCategoryID sets the "course_category_id" field.
+func (_u *CategoryQnaItemUpdate) SetCourseCategoryID(v int) *CategoryQnaItemUpdate {
+	_u.mutation.ResetCourseCategoryID()
+	_u.mutation.SetCourseCategoryID(v)
 	return _u
 }
 
-// SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
-func (_u *CategoryQnaItemUpdate) SetNillableLanguageCategoryID(v *int) *CategoryQnaItemUpdate {
+// SetNillableCourseCategoryID sets the "course_category_id" field if the given value is not nil.
+func (_u *CategoryQnaItemUpdate) SetNillableCourseCategoryID(v *int) *CategoryQnaItemUpdate {
 	if v != nil {
-		_u.SetLanguageCategoryID(*v)
+		_u.SetCourseCategoryID(*v)
 	}
 	return _u
 }
 
-// AddLanguageCategoryID adds value to the "language_category_id" field.
-func (_u *CategoryQnaItemUpdate) AddLanguageCategoryID(v int) *CategoryQnaItemUpdate {
-	_u.mutation.AddLanguageCategoryID(v)
+// AddCourseCategoryID adds value to the "course_category_id" field.
+func (_u *CategoryQnaItemUpdate) AddCourseCategoryID(v int) *CategoryQnaItemUpdate {
+	_u.mutation.AddCourseCategoryID(v)
 	return _u
 }
 
@@ -148,11 +148,11 @@ func (_u *CategoryQnaItemUpdate) sqlSave(ctx context.Context) (_node int, err er
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.LanguageCategoryID(); ok {
-		_spec.SetField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseCategoryID(); ok {
+		_spec.SetField(categoryqnaitem.FieldCourseCategoryID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageCategoryID(); ok {
-		_spec.AddField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseCategoryID(); ok {
+		_spec.AddField(categoryqnaitem.FieldCourseCategoryID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Question(); ok {
 		_spec.SetField(categoryqnaitem.FieldQuestion, field.TypeString, value)
@@ -192,24 +192,24 @@ func (_u *CategoryQnaItemUpdateOne) SetUpdatedAt(v time.Time) *CategoryQnaItemUp
 	return _u
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (_u *CategoryQnaItemUpdateOne) SetLanguageCategoryID(v int) *CategoryQnaItemUpdateOne {
-	_u.mutation.ResetLanguageCategoryID()
-	_u.mutation.SetLanguageCategoryID(v)
+// SetCourseCategoryID sets the "course_category_id" field.
+func (_u *CategoryQnaItemUpdateOne) SetCourseCategoryID(v int) *CategoryQnaItemUpdateOne {
+	_u.mutation.ResetCourseCategoryID()
+	_u.mutation.SetCourseCategoryID(v)
 	return _u
 }
 
-// SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
-func (_u *CategoryQnaItemUpdateOne) SetNillableLanguageCategoryID(v *int) *CategoryQnaItemUpdateOne {
+// SetNillableCourseCategoryID sets the "course_category_id" field if the given value is not nil.
+func (_u *CategoryQnaItemUpdateOne) SetNillableCourseCategoryID(v *int) *CategoryQnaItemUpdateOne {
 	if v != nil {
-		_u.SetLanguageCategoryID(*v)
+		_u.SetCourseCategoryID(*v)
 	}
 	return _u
 }
 
-// AddLanguageCategoryID adds value to the "language_category_id" field.
-func (_u *CategoryQnaItemUpdateOne) AddLanguageCategoryID(v int) *CategoryQnaItemUpdateOne {
-	_u.mutation.AddLanguageCategoryID(v)
+// AddCourseCategoryID adds value to the "course_category_id" field.
+func (_u *CategoryQnaItemUpdateOne) AddCourseCategoryID(v int) *CategoryQnaItemUpdateOne {
+	_u.mutation.AddCourseCategoryID(v)
 	return _u
 }
 
@@ -336,11 +336,11 @@ func (_u *CategoryQnaItemUpdateOne) sqlSave(ctx context.Context) (_node *Categor
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.LanguageCategoryID(); ok {
-		_spec.SetField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseCategoryID(); ok {
+		_spec.SetField(categoryqnaitem.FieldCourseCategoryID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageCategoryID(); ok {
-		_spec.AddField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseCategoryID(); ok {
+		_spec.AddField(categoryqnaitem.FieldCourseCategoryID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Question(); ok {
 		_spec.SetField(categoryqnaitem.FieldQuestion, field.TypeString, value)

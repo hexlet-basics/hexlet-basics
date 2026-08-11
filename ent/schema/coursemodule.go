@@ -28,7 +28,7 @@ func (CourseModule) Annotations() []schema.Annotation {
 func (CourseModule) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("slug").Optional().Nillable(),
-		field.Int("language_id").Optional().Nillable(),
+		field.Int("course_id").StorageKey("language_id").Optional().Nillable(),
 		field.Int("order").Optional().Nillable(),
 		field.String("state").Optional().Nillable(),
 	}
@@ -36,7 +36,7 @@ func (CourseModule) Fields() []ent.Field {
 
 func (CourseModule) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("language_id", "slug").Unique(),
+		index.Fields("course_id", "slug").Unique(),
 	}
 }
 

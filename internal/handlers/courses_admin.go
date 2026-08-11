@@ -100,7 +100,7 @@ func (s *Server) AdminReviewCourse(ctx context.Context, params api.AdminReviewCo
 	var infoIDs []int
 	if c.CurrentVersionID != nil {
 		infoIDs, err = s.db.CourseLessonTranslation.Query().
-			Where(courselessontranslation.LanguageVersionID(*c.CurrentVersionID)).
+			Where(courselessontranslation.CourseVersionID(*c.CurrentVersionID)).
 			Order(ent.Asc(courselessontranslation.FieldID)).
 			IDs(ctx)
 		if err != nil {

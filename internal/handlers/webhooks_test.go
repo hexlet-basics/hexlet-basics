@@ -77,7 +77,7 @@ func TestGitHubWebhookTriggersBuild(t *testing.T) {
 	version := db.CourseVersion.GetX(ctx, args.VersionID)
 	require.NotNil(t, version.State)
 	assert.Equal(t, "created", *version.State)
-	assert.Equal(t, courseRubyIDA, version.LanguageID)
+	assert.Equal(t, courseRubyIDA, version.CourseID)
 }
 
 func TestGitHubWebhookRejectsBadSignature(t *testing.T) {

@@ -29,12 +29,12 @@ type CourseLessonTranslation struct {
 	Description *string `json:"description,omitempty"`
 	// Locale holds the value of the "locale" field.
 	Locale *string `json:"locale,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
-	// LanguageLessonID holds the value of the "language_lesson_id" field.
-	LanguageLessonID int `json:"language_lesson_id,omitempty"`
-	// LanguageVersionID holds the value of the "language_version_id" field.
-	LanguageVersionID int `json:"language_version_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
+	// CourseLessonID holds the value of the "course_lesson_id" field.
+	CourseLessonID int `json:"course_lesson_id,omitempty"`
+	// CourseVersionID holds the value of the "course_version_id" field.
+	CourseVersionID int `json:"course_version_id,omitempty"`
 	// Theory holds the value of the "theory" field.
 	Theory *string `json:"theory,omitempty"`
 	// Instructions holds the value of the "instructions" field.
@@ -89,7 +89,7 @@ func (*CourseLessonTranslation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case courselessontranslation.FieldID, courselessontranslation.FieldLanguageID, courselessontranslation.FieldLanguageLessonID, courselessontranslation.FieldLanguageVersionID, courselessontranslation.FieldVersionID:
+		case courselessontranslation.FieldID, courselessontranslation.FieldCourseID, courselessontranslation.FieldCourseLessonID, courselessontranslation.FieldCourseVersionID, courselessontranslation.FieldVersionID:
 			values[i] = new(sql.NullInt64)
 		case courselessontranslation.FieldName, courselessontranslation.FieldDescription, courselessontranslation.FieldLocale, courselessontranslation.FieldTheory, courselessontranslation.FieldInstructions, courselessontranslation.FieldTips, courselessontranslation.FieldDefinitions:
 			values[i] = new(sql.NullString)
@@ -149,23 +149,23 @@ func (_m *CourseLessonTranslation) assignValues(columns []string, values []any) 
 				_m.Locale = new(string)
 				*_m.Locale = value.String
 			}
-		case courselessontranslation.FieldLanguageID:
+		case courselessontranslation.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
-		case courselessontranslation.FieldLanguageLessonID:
+		case courselessontranslation.FieldCourseLessonID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_lesson_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_lesson_id", values[i])
 			} else if value.Valid {
-				_m.LanguageLessonID = int(value.Int64)
+				_m.CourseLessonID = int(value.Int64)
 			}
-		case courselessontranslation.FieldLanguageVersionID:
+		case courselessontranslation.FieldCourseVersionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_version_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_version_id", values[i])
 			} else if value.Valid {
-				_m.LanguageVersionID = int(value.Int64)
+				_m.CourseVersionID = int(value.Int64)
 			}
 		case courselessontranslation.FieldTheory:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -268,14 +268,14 @@ func (_m *CourseLessonTranslation) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
-	builder.WriteString("language_lesson_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLessonID))
+	builder.WriteString("course_lesson_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseLessonID))
 	builder.WriteString(", ")
-	builder.WriteString("language_version_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageVersionID))
+	builder.WriteString("course_version_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseVersionID))
 	builder.WriteString(", ")
 	if v := _m.Theory; v != nil {
 		builder.WriteString("theory=")

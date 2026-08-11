@@ -28,7 +28,7 @@ func (CategoryQnaItem) Annotations() []schema.Annotation {
 
 func (CategoryQnaItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_category_id").
+		field.Int("course_category_id").StorageKey("language_category_id").
 			Annotations(AdminInputField{Skip: true}),
 		field.String("question").Optional().Nillable().
 			Annotations(AdminInputField{Required: true}),

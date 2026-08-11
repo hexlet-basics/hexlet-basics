@@ -51,9 +51,9 @@ func (_c *LandingPageCreate) SetNillableUpdatedAt(v *time.Time) *LandingPageCrea
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *LandingPageCreate) SetLanguageID(v int) *LandingPageCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *LandingPageCreate) SetCourseID(v int) *LandingPageCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
@@ -309,12 +309,6 @@ func (_c *LandingPageCreate) SetNillableLandingPageToRedirectID(v *int) *Landing
 	return _c
 }
 
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_c *LandingPageCreate) SetCourseID(id int) *LandingPageCreate {
-	_c.mutation.SetCourseID(id)
-	return _c
-}
-
 // SetCourse sets the "course" edge to the Course entity.
 func (_c *LandingPageCreate) SetCourse(v *Course) *LandingPageCreate {
 	return _c.SetCourseID(v.ID)
@@ -373,8 +367,8 @@ func (_c *LandingPageCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LandingPage.updated_at"`)}
 	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "LandingPage.language_id"`)}
+	if _, ok := _c.mutation.CourseID(); !ok {
+		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "LandingPage.course_id"`)}
 	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "LandingPage.course"`)}
@@ -500,7 +494,7 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageID = nodes[0]
+		_node.CourseID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -567,15 +561,15 @@ func (u *LandingPageUpsert) UpdateUpdatedAt() *LandingPageUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *LandingPageUpsert) SetLanguageID(v int) *LandingPageUpsert {
-	u.Set(landingpage.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *LandingPageUpsert) SetCourseID(v int) *LandingPageUpsert {
+	u.Set(landingpage.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *LandingPageUpsert) UpdateLanguageID() *LandingPageUpsert {
-	u.SetExcluded(landingpage.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateCourseID() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldCourseID)
 	return u
 }
 
@@ -968,17 +962,17 @@ func (u *LandingPageUpsertOne) UpdateUpdatedAt() *LandingPageUpsertOne {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *LandingPageUpsertOne) SetLanguageID(v int) *LandingPageUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *LandingPageUpsertOne) SetCourseID(v int) *LandingPageUpsertOne {
 	return u.Update(func(s *LandingPageUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *LandingPageUpsertOne) UpdateLanguageID() *LandingPageUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateCourseID() *LandingPageUpsertOne {
 	return u.Update(func(s *LandingPageUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
@@ -1592,17 +1586,17 @@ func (u *LandingPageUpsertBulk) UpdateUpdatedAt() *LandingPageUpsertBulk {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *LandingPageUpsertBulk) SetLanguageID(v int) *LandingPageUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *LandingPageUpsertBulk) SetCourseID(v int) *LandingPageUpsertBulk {
 	return u.Update(func(s *LandingPageUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *LandingPageUpsertBulk) UpdateLanguageID() *LandingPageUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateCourseID() *LandingPageUpsertBulk {
 	return u.Update(func(s *LandingPageUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 

@@ -34,24 +34,24 @@ func (_u *LandingPageQnaItemUpdate) SetUpdatedAt(v time.Time) *LandingPageQnaIte
 	return _u
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (_u *LandingPageQnaItemUpdate) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpdate {
-	_u.mutation.ResetLanguageLandingPageID()
-	_u.mutation.SetLanguageLandingPageID(v)
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (_u *LandingPageQnaItemUpdate) SetCourseLandingPageID(v int) *LandingPageQnaItemUpdate {
+	_u.mutation.ResetCourseLandingPageID()
+	_u.mutation.SetCourseLandingPageID(v)
 	return _u
 }
 
-// SetNillableLanguageLandingPageID sets the "language_landing_page_id" field if the given value is not nil.
-func (_u *LandingPageQnaItemUpdate) SetNillableLanguageLandingPageID(v *int) *LandingPageQnaItemUpdate {
+// SetNillableCourseLandingPageID sets the "course_landing_page_id" field if the given value is not nil.
+func (_u *LandingPageQnaItemUpdate) SetNillableCourseLandingPageID(v *int) *LandingPageQnaItemUpdate {
 	if v != nil {
-		_u.SetLanguageLandingPageID(*v)
+		_u.SetCourseLandingPageID(*v)
 	}
 	return _u
 }
 
-// AddLanguageLandingPageID adds value to the "language_landing_page_id" field.
-func (_u *LandingPageQnaItemUpdate) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpdate {
-	_u.mutation.AddLanguageLandingPageID(v)
+// AddCourseLandingPageID adds value to the "course_landing_page_id" field.
+func (_u *LandingPageQnaItemUpdate) AddCourseLandingPageID(v int) *LandingPageQnaItemUpdate {
+	_u.mutation.AddCourseLandingPageID(v)
 	return _u
 }
 
@@ -148,11 +148,11 @@ func (_u *LandingPageQnaItemUpdate) sqlSave(ctx context.Context) (_node int, err
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.LanguageLandingPageID(); ok {
-		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseLandingPageID(); ok {
+		_spec.SetField(landingpageqnaitem.FieldCourseLandingPageID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageLandingPageID(); ok {
-		_spec.AddField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseLandingPageID(); ok {
+		_spec.AddField(landingpageqnaitem.FieldCourseLandingPageID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Question(); ok {
 		_spec.SetField(landingpageqnaitem.FieldQuestion, field.TypeString, value)
@@ -192,24 +192,24 @@ func (_u *LandingPageQnaItemUpdateOne) SetUpdatedAt(v time.Time) *LandingPageQna
 	return _u
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (_u *LandingPageQnaItemUpdateOne) SetLanguageLandingPageID(v int) *LandingPageQnaItemUpdateOne {
-	_u.mutation.ResetLanguageLandingPageID()
-	_u.mutation.SetLanguageLandingPageID(v)
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (_u *LandingPageQnaItemUpdateOne) SetCourseLandingPageID(v int) *LandingPageQnaItemUpdateOne {
+	_u.mutation.ResetCourseLandingPageID()
+	_u.mutation.SetCourseLandingPageID(v)
 	return _u
 }
 
-// SetNillableLanguageLandingPageID sets the "language_landing_page_id" field if the given value is not nil.
-func (_u *LandingPageQnaItemUpdateOne) SetNillableLanguageLandingPageID(v *int) *LandingPageQnaItemUpdateOne {
+// SetNillableCourseLandingPageID sets the "course_landing_page_id" field if the given value is not nil.
+func (_u *LandingPageQnaItemUpdateOne) SetNillableCourseLandingPageID(v *int) *LandingPageQnaItemUpdateOne {
 	if v != nil {
-		_u.SetLanguageLandingPageID(*v)
+		_u.SetCourseLandingPageID(*v)
 	}
 	return _u
 }
 
-// AddLanguageLandingPageID adds value to the "language_landing_page_id" field.
-func (_u *LandingPageQnaItemUpdateOne) AddLanguageLandingPageID(v int) *LandingPageQnaItemUpdateOne {
-	_u.mutation.AddLanguageLandingPageID(v)
+// AddCourseLandingPageID adds value to the "course_landing_page_id" field.
+func (_u *LandingPageQnaItemUpdateOne) AddCourseLandingPageID(v int) *LandingPageQnaItemUpdateOne {
+	_u.mutation.AddCourseLandingPageID(v)
 	return _u
 }
 
@@ -336,11 +336,11 @@ func (_u *LandingPageQnaItemUpdateOne) sqlSave(ctx context.Context) (_node *Land
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(landingpageqnaitem.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.LanguageLandingPageID(); ok {
-		_spec.SetField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseLandingPageID(); ok {
+		_spec.SetField(landingpageqnaitem.FieldCourseLandingPageID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageLandingPageID(); ok {
-		_spec.AddField(landingpageqnaitem.FieldLanguageLandingPageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseLandingPageID(); ok {
+		_spec.AddField(landingpageqnaitem.FieldCourseLandingPageID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Question(); ok {
 		_spec.SetField(landingpageqnaitem.FieldQuestion, field.TypeString, value)

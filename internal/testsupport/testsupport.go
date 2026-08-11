@@ -293,7 +293,7 @@ func (e *RecordingEnqueuer) EnqueueLessonReviews(_ context.Context, lessonInfoID
 // Start mirrors the production operation's visible result.
 func (e *RecordingEnqueuer) Start(ctx context.Context, courseID int) (*ent.CourseVersion, error) {
 	version, err := e.DB.CourseVersion.Create().
-		SetLanguageID(courseID).
+		SetCourseID(courseID).
 		SetState("created").
 		Save(ctx)
 	if err != nil {

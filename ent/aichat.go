@@ -25,8 +25,8 @@ type AiChat struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID int `json:"user_id,omitempty"`
-	// LanguageLessonMemberID holds the value of the "language_lesson_member_id" field.
-	LanguageLessonMemberID int `json:"language_lesson_member_id,omitempty"`
+	// LessonProgressID holds the value of the "lesson_progress_id" field.
+	LessonProgressID int `json:"lesson_progress_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AiChatQuery when eager-loading is set.
 	Edges        AiChatEdges `json:"edges"`
@@ -71,7 +71,7 @@ func (*AiChat) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case aichat.FieldID, aichat.FieldUserID, aichat.FieldLanguageLessonMemberID:
+		case aichat.FieldID, aichat.FieldUserID, aichat.FieldLessonProgressID:
 			values[i] = new(sql.NullInt64)
 		case aichat.FieldCreatedAt, aichat.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -114,11 +114,11 @@ func (_m *AiChat) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UserID = int(value.Int64)
 			}
-		case aichat.FieldLanguageLessonMemberID:
+		case aichat.FieldLessonProgressID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_lesson_member_id", values[i])
+				return fmt.Errorf("unexpected type %T for field lesson_progress_id", values[i])
 			} else if value.Valid {
-				_m.LanguageLessonMemberID = int(value.Int64)
+				_m.LessonProgressID = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -175,8 +175,8 @@ func (_m *AiChat) String() string {
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("language_lesson_member_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLessonMemberID))
+	builder.WriteString("lesson_progress_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.LessonProgressID))
 	builder.WriteByte(')')
 	return builder.String()
 }

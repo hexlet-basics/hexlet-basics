@@ -236,24 +236,24 @@ func (_u *CourseVersionUpdate) AddLessonsCount(v int) *CourseVersionUpdate {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *CourseVersionUpdate) SetLanguageID(v int) *CourseVersionUpdate {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *CourseVersionUpdate) SetCourseID(v int) *CourseVersionUpdate {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *CourseVersionUpdate) SetNillableLanguageID(v *int) *CourseVersionUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *CourseVersionUpdate) SetNillableCourseID(v *int) *CourseVersionUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *CourseVersionUpdate) AddLanguageID(v int) *CourseVersionUpdate {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *CourseVersionUpdate) AddCourseID(v int) *CourseVersionUpdate {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
@@ -406,11 +406,11 @@ func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 	if value, ok := _u.mutation.AddedLessonsCount(); ok {
 		_spec.AddField(courseversion.FieldLessonsCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(courseversion.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(courseversion.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(courseversion.FieldCourseID, field.TypeInt, value)
 	}
 	if _u.mutation.CurrentCoursesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -684,24 +684,24 @@ func (_u *CourseVersionUpdateOne) AddLessonsCount(v int) *CourseVersionUpdateOne
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *CourseVersionUpdateOne) SetLanguageID(v int) *CourseVersionUpdateOne {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *CourseVersionUpdateOne) SetCourseID(v int) *CourseVersionUpdateOne {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *CourseVersionUpdateOne) SetNillableLanguageID(v *int) *CourseVersionUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *CourseVersionUpdateOne) SetNillableCourseID(v *int) *CourseVersionUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *CourseVersionUpdateOne) AddLanguageID(v int) *CourseVersionUpdateOne {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *CourseVersionUpdateOne) AddCourseID(v int) *CourseVersionUpdateOne {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
@@ -884,11 +884,11 @@ func (_u *CourseVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseVer
 	if value, ok := _u.mutation.AddedLessonsCount(); ok {
 		_spec.AddField(courseversion.FieldLessonsCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(courseversion.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(courseversion.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(courseversion.FieldCourseID, field.TypeInt, value)
 	}
 	if _u.mutation.CurrentCoursesCleared() {
 		edge := &sqlgraph.EdgeSpec{

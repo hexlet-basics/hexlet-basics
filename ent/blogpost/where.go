@@ -100,14 +100,14 @@ func CreatorID(v int) predicate.BlogPost {
 	return predicate.BlogPost(sql.FieldEQ(FieldCreatorID, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEQ(FieldCourseID, v))
 }
 
-// RelatedLanguageItemsCount applies equality check predicate on the "related_language_items_count" field. It's identical to RelatedLanguageItemsCountEQ.
-func RelatedLanguageItemsCount(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEQ(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCount applies equality check predicate on the "related_course_items_count" field. It's identical to RelatedCourseItemsCountEQ.
+func RelatedCourseItemsCount(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEQ(FieldRelatedCourseItemsCount, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -650,94 +650,94 @@ func CreatorIDNotIn(vs ...int) predicate.BlogPost {
 	return predicate.BlogPost(sql.FieldNotIn(FieldCreatorID, vs...))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldGT(FieldLanguageID, v))
+// CourseIDGT applies the GT predicate on the "course_id" field.
+func CourseIDGT(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldGT(FieldCourseID, v))
 }
 
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldGTE(FieldLanguageID, v))
+// CourseIDGTE applies the GTE predicate on the "course_id" field.
+func CourseIDGTE(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldGTE(FieldCourseID, v))
 }
 
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldLT(FieldLanguageID, v))
+// CourseIDLT applies the LT predicate on the "course_id" field.
+func CourseIDLT(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldLT(FieldCourseID, v))
 }
 
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldLTE(FieldLanguageID, v))
+// CourseIDLTE applies the LTE predicate on the "course_id" field.
+func CourseIDLTE(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldLTE(FieldCourseID, v))
 }
 
-// LanguageIDIsNil applies the IsNil predicate on the "language_id" field.
-func LanguageIDIsNil() predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldIsNull(FieldLanguageID))
+// CourseIDIsNil applies the IsNil predicate on the "course_id" field.
+func CourseIDIsNil() predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldIsNull(FieldCourseID))
 }
 
-// LanguageIDNotNil applies the NotNil predicate on the "language_id" field.
-func LanguageIDNotNil() predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNotNull(FieldLanguageID))
+// CourseIDNotNil applies the NotNil predicate on the "course_id" field.
+func CourseIDNotNil() predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNotNull(FieldCourseID))
 }
 
-// RelatedLanguageItemsCountEQ applies the EQ predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountEQ(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldEQ(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCountEQ applies the EQ predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountEQ(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldEQ(FieldRelatedCourseItemsCount, v))
 }
 
-// RelatedLanguageItemsCountNEQ applies the NEQ predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountNEQ(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNEQ(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCountNEQ applies the NEQ predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountNEQ(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNEQ(FieldRelatedCourseItemsCount, v))
 }
 
-// RelatedLanguageItemsCountIn applies the In predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountIn(vs ...int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldIn(FieldRelatedLanguageItemsCount, vs...))
+// RelatedCourseItemsCountIn applies the In predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountIn(vs ...int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldIn(FieldRelatedCourseItemsCount, vs...))
 }
 
-// RelatedLanguageItemsCountNotIn applies the NotIn predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountNotIn(vs ...int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldNotIn(FieldRelatedLanguageItemsCount, vs...))
+// RelatedCourseItemsCountNotIn applies the NotIn predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountNotIn(vs ...int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldNotIn(FieldRelatedCourseItemsCount, vs...))
 }
 
-// RelatedLanguageItemsCountGT applies the GT predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountGT(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldGT(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCountGT applies the GT predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountGT(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldGT(FieldRelatedCourseItemsCount, v))
 }
 
-// RelatedLanguageItemsCountGTE applies the GTE predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountGTE(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldGTE(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCountGTE applies the GTE predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountGTE(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldGTE(FieldRelatedCourseItemsCount, v))
 }
 
-// RelatedLanguageItemsCountLT applies the LT predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountLT(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldLT(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCountLT applies the LT predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountLT(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldLT(FieldRelatedCourseItemsCount, v))
 }
 
-// RelatedLanguageItemsCountLTE applies the LTE predicate on the "related_language_items_count" field.
-func RelatedLanguageItemsCountLTE(v int) predicate.BlogPost {
-	return predicate.BlogPost(sql.FieldLTE(FieldRelatedLanguageItemsCount, v))
+// RelatedCourseItemsCountLTE applies the LTE predicate on the "related_course_items_count" field.
+func RelatedCourseItemsCountLTE(v int) predicate.BlogPost {
+	return predicate.BlogPost(sql.FieldLTE(FieldRelatedCourseItemsCount, v))
 }
 
 // HasCreator applies the HasEdge predicate on the "creator" edge.

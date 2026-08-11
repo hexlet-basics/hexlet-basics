@@ -43,9 +43,9 @@ func (BlogPost) Fields() []ent.Field {
 			Annotations(AdminInputField{}),
 		// creator_id is NOT NULL (FK to users); the read model embeds the creator.
 		field.Int("creator_id"),
-		field.Int("language_id").Optional().Nillable(),
+		field.Int("course_id").StorageKey("language_id").Optional().Nillable(),
 		// App-maintained counter; NOT NULL DEFAULT 0 in the baseline.
-		field.Int("related_language_items_count").Default(0),
+		field.Int("related_course_items_count").StorageKey("related_language_items_count").Default(0),
 	}
 }
 

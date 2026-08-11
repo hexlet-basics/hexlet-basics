@@ -448,7 +448,7 @@ func (_q *LessonProgressQuery) loadCourse(ctx context.Context, query *CourseQuer
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*LessonProgress)
 	for i := range nodes {
-		fk := nodes[i].LanguageID
+		fk := nodes[i].CourseID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -465,7 +465,7 @@ func (_q *LessonProgressQuery) loadCourse(ctx context.Context, query *CourseQuer
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "course_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -529,7 +529,7 @@ func (_q *LessonProgressQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if _q.withCourse != nil {
-			_spec.Node.AddColumnOnce(lessonprogress.FieldLanguageID)
+			_spec.Node.AddColumnOnce(lessonprogress.FieldCourseID)
 		}
 		if _q.withLesson != nil {
 			_spec.Node.AddColumnOnce(lessonprogress.FieldLessonID)

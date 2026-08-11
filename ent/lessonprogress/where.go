@@ -60,9 +60,9 @@ func UserID(v int) predicate.LessonProgress {
 	return predicate.LessonProgress(sql.FieldEQ(FieldUserID, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.LessonProgress {
-	return predicate.LessonProgress(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.LessonProgress {
+	return predicate.LessonProgress(sql.FieldEQ(FieldCourseID, v))
 }
 
 // LessonID applies equality check predicate on the "lesson_id" field. It's identical to LessonIDEQ.
@@ -125,24 +125,24 @@ func UserIDLTE(v int) predicate.LessonProgress {
 	return predicate.LessonProgress(sql.FieldLTE(FieldUserID, v))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.LessonProgress {
-	return predicate.LessonProgress(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.LessonProgress {
+	return predicate.LessonProgress(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.LessonProgress {
-	return predicate.LessonProgress(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.LessonProgress {
+	return predicate.LessonProgress(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.LessonProgress {
-	return predicate.LessonProgress(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.LessonProgress {
+	return predicate.LessonProgress(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.LessonProgress {
-	return predicate.LessonProgress(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.LessonProgress {
+	return predicate.LessonProgress(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
 // LessonIDEQ applies the EQ predicate on the "lesson_id" field.

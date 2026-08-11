@@ -28,8 +28,8 @@ func (CourseModuleTranslation) Fields() []ent.Field {
 		field.String("name").Optional().Nillable(),
 		field.String("description").Optional().Nillable(),
 		field.String("locale").Optional().Nillable(),
-		field.Int("language_id"),
-		field.Int("language_version_id"),
+		field.Int("course_id").StorageKey("language_id"),
+		field.Int("course_version_id").StorageKey("language_version_id"),
 		field.Int("version_id"),
 	}
 }

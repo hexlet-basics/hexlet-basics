@@ -20,8 +20,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldBlogPostID holds the string denoting the blog_post_id field in the database.
 	FieldBlogPostID = "blog_post_id"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
 	// FieldOrder holds the string denoting the order field in the database.
 	FieldOrder = "order"
 	// EdgePost holds the string denoting the post edge name in mutations.
@@ -52,7 +52,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldBlogPostID,
-	FieldLanguageID,
+	FieldCourseID,
 	FieldOrder,
 }
 
@@ -98,9 +98,9 @@ func ByBlogPostID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBlogPostID, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
 // ByOrder orders the results by the order field.

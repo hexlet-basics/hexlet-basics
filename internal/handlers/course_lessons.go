@@ -158,7 +158,7 @@ func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminRe
 	}
 
 	infoIDs, err := s.db.CourseLessonTranslation.Query().
-		Where(courselessontranslation.LanguageLessonID(lesson.ID)).
+		Where(courselessontranslation.CourseLessonID(lesson.ID)).
 		Order(ent.Asc(courselessontranslation.FieldID)).
 		IDs(ctx)
 	if err != nil {

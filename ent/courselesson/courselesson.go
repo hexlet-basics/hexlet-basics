@@ -22,8 +22,8 @@ const (
 	FieldSlug = "slug"
 	// FieldNaturalOrder holds the string denoting the natural_order field in the database.
 	FieldNaturalOrder = "natural_order"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
 	// FieldModuleID holds the string denoting the module_id field in the database.
 	FieldModuleID = "module_id"
 	// FieldState holds the string denoting the state field in the database.
@@ -48,7 +48,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldSlug,
 	FieldNaturalOrder,
-	FieldLanguageID,
+	FieldCourseID,
 	FieldModuleID,
 	FieldState,
 }
@@ -100,9 +100,9 @@ func ByNaturalOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNaturalOrder, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
 // ByModuleID orders the results by the module_id field.

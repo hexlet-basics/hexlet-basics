@@ -27,7 +27,7 @@ func (LessonProgress) Annotations() []schema.Annotation {
 func (LessonProgress) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("user_id"),
-		field.Int("language_id"),
+		field.Int("course_id").StorageKey("language_id"),
 		field.Int("lesson_id"),
 		field.String("state").Optional().Nillable(),
 		field.Int("messages_count").Optional().Nillable(),
@@ -38,7 +38,7 @@ func (LessonProgress) Fields() []ent.Field {
 func (LessonProgress) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("course", Course.Type).
-			Field("language_id").
+			Field("course_id").
 			Unique().
 			Required(),
 		edge.To("lesson", CourseLesson.Type).

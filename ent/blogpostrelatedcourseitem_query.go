@@ -477,7 +477,7 @@ func (_q *BlogPostRelatedCourseItemQuery) loadCourse(ctx context.Context, query 
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BlogPostRelatedCourseItem)
 	for i := range nodes {
-		fk := nodes[i].LanguageID
+		fk := nodes[i].CourseID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -494,7 +494,7 @@ func (_q *BlogPostRelatedCourseItemQuery) loadCourse(ctx context.Context, query 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "course_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -532,7 +532,7 @@ func (_q *BlogPostRelatedCourseItemQuery) querySpec() *sqlgraph.QuerySpec {
 			_spec.Node.AddColumnOnce(blogpostrelatedcourseitem.FieldBlogPostID)
 		}
 		if _q.withCourse != nil {
-			_spec.Node.AddColumnOnce(blogpostrelatedcourseitem.FieldLanguageID)
+			_spec.Node.AddColumnOnce(blogpostrelatedcourseitem.FieldCourseID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

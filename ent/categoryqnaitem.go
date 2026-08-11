@@ -21,8 +21,8 @@ type CategoryQnaItem struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// LanguageCategoryID holds the value of the "language_category_id" field.
-	LanguageCategoryID int `json:"language_category_id,omitempty"`
+	// CourseCategoryID holds the value of the "course_category_id" field.
+	CourseCategoryID int `json:"course_category_id,omitempty"`
 	// Question holds the value of the "question" field.
 	Question *string `json:"question,omitempty"`
 	// Answer holds the value of the "answer" field.
@@ -35,7 +35,7 @@ func (*CategoryQnaItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case categoryqnaitem.FieldID, categoryqnaitem.FieldLanguageCategoryID:
+		case categoryqnaitem.FieldID, categoryqnaitem.FieldCourseCategoryID:
 			values[i] = new(sql.NullInt64)
 		case categoryqnaitem.FieldQuestion, categoryqnaitem.FieldAnswer:
 			values[i] = new(sql.NullString)
@@ -74,11 +74,11 @@ func (_m *CategoryQnaItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case categoryqnaitem.FieldLanguageCategoryID:
+		case categoryqnaitem.FieldCourseCategoryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_category_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_category_id", values[i])
 			} else if value.Valid {
-				_m.LanguageCategoryID = int(value.Int64)
+				_m.CourseCategoryID = int(value.Int64)
 			}
 		case categoryqnaitem.FieldQuestion:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -136,8 +136,8 @@ func (_m *CategoryQnaItem) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("language_category_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageCategoryID))
+	builder.WriteString("course_category_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseCategoryID))
 	builder.WriteString(", ")
 	if v := _m.Question; v != nil {
 		builder.WriteString("question=")

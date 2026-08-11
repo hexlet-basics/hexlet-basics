@@ -23,8 +23,8 @@ type Review struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID int `json:"user_id,omitempty"`
 	// Body holds the value of the "body" field.
@@ -85,7 +85,7 @@ func (*Review) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case review.FieldPinned:
 			values[i] = new(sql.NullBool)
-		case review.FieldID, review.FieldLanguageID, review.FieldUserID:
+		case review.FieldID, review.FieldCourseID, review.FieldUserID:
 			values[i] = new(sql.NullInt64)
 		case review.FieldBody, review.FieldFirstName, review.FieldLastName, review.FieldLocale, review.FieldState:
 			values[i] = new(sql.NullString)
@@ -124,11 +124,11 @@ func (_m *Review) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case review.FieldLanguageID:
+		case review.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
 		case review.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -230,8 +230,8 @@ func (_m *Review) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UserID))

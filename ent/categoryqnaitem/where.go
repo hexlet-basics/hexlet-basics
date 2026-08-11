@@ -64,9 +64,9 @@ func UpdatedAt(v time.Time) predicate.CategoryQnaItem {
 	return predicate.CategoryQnaItem(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// LanguageCategoryID applies equality check predicate on the "language_category_id" field. It's identical to LanguageCategoryIDEQ.
-func LanguageCategoryID(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldEQ(FieldLanguageCategoryID, v))
+// CourseCategoryID applies equality check predicate on the "course_category_id" field. It's identical to CourseCategoryIDEQ.
+func CourseCategoryID(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldEQ(FieldCourseCategoryID, v))
 }
 
 // Question applies equality check predicate on the "question" field. It's identical to QuestionEQ.
@@ -159,44 +159,44 @@ func UpdatedAtLTE(v time.Time) predicate.CategoryQnaItem {
 	return predicate.CategoryQnaItem(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// LanguageCategoryIDEQ applies the EQ predicate on the "language_category_id" field.
-func LanguageCategoryIDEQ(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldEQ(FieldLanguageCategoryID, v))
+// CourseCategoryIDEQ applies the EQ predicate on the "course_category_id" field.
+func CourseCategoryIDEQ(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldEQ(FieldCourseCategoryID, v))
 }
 
-// LanguageCategoryIDNEQ applies the NEQ predicate on the "language_category_id" field.
-func LanguageCategoryIDNEQ(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldNEQ(FieldLanguageCategoryID, v))
+// CourseCategoryIDNEQ applies the NEQ predicate on the "course_category_id" field.
+func CourseCategoryIDNEQ(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldNEQ(FieldCourseCategoryID, v))
 }
 
-// LanguageCategoryIDIn applies the In predicate on the "language_category_id" field.
-func LanguageCategoryIDIn(vs ...int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldIn(FieldLanguageCategoryID, vs...))
+// CourseCategoryIDIn applies the In predicate on the "course_category_id" field.
+func CourseCategoryIDIn(vs ...int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldIn(FieldCourseCategoryID, vs...))
 }
 
-// LanguageCategoryIDNotIn applies the NotIn predicate on the "language_category_id" field.
-func LanguageCategoryIDNotIn(vs ...int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldNotIn(FieldLanguageCategoryID, vs...))
+// CourseCategoryIDNotIn applies the NotIn predicate on the "course_category_id" field.
+func CourseCategoryIDNotIn(vs ...int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldNotIn(FieldCourseCategoryID, vs...))
 }
 
-// LanguageCategoryIDGT applies the GT predicate on the "language_category_id" field.
-func LanguageCategoryIDGT(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldGT(FieldLanguageCategoryID, v))
+// CourseCategoryIDGT applies the GT predicate on the "course_category_id" field.
+func CourseCategoryIDGT(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldGT(FieldCourseCategoryID, v))
 }
 
-// LanguageCategoryIDGTE applies the GTE predicate on the "language_category_id" field.
-func LanguageCategoryIDGTE(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldGTE(FieldLanguageCategoryID, v))
+// CourseCategoryIDGTE applies the GTE predicate on the "course_category_id" field.
+func CourseCategoryIDGTE(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldGTE(FieldCourseCategoryID, v))
 }
 
-// LanguageCategoryIDLT applies the LT predicate on the "language_category_id" field.
-func LanguageCategoryIDLT(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldLT(FieldLanguageCategoryID, v))
+// CourseCategoryIDLT applies the LT predicate on the "course_category_id" field.
+func CourseCategoryIDLT(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldLT(FieldCourseCategoryID, v))
 }
 
-// LanguageCategoryIDLTE applies the LTE predicate on the "language_category_id" field.
-func LanguageCategoryIDLTE(v int) predicate.CategoryQnaItem {
-	return predicate.CategoryQnaItem(sql.FieldLTE(FieldLanguageCategoryID, v))
+// CourseCategoryIDLTE applies the LTE predicate on the "course_category_id" field.
+func CourseCategoryIDLTE(v int) predicate.CategoryQnaItem {
+	return predicate.CategoryQnaItem(sql.FieldLTE(FieldCourseCategoryID, v))
 }
 
 // QuestionEQ applies the EQ predicate on the "question" field.

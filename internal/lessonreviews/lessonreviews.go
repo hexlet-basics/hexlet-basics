@@ -92,21 +92,21 @@ func (r *Reviewer) ReviewLesson(ctx context.Context, lessonInfoID int) error {
 		Where(
 			aimessage.RoleEQ("user"),
 			aimessage.HasChatWith(aichat.HasLessonProgressWith(
-				lessonprogress.LessonID(info.LanguageLessonID),
+				lessonprogress.LessonID(info.CourseLessonID),
 			)),
 		).
 		Order(ent.Desc(aimessage.FieldID)).
 		Limit(maxQuestions).
 		All(ctx)
 	if err != nil {
-		return oops.Wrapf(err, "load student questions for lesson %d", info.LanguageLessonID)
+		return oops.Wrapf(err, "load student questions for lesson %d", info.CourseLessonID)
 	}
 
 	summary := ""
 	if len(questions) > 0 {
 		summary, err = r.llm.Complete(ctx, reviewInstructions, reviewPrompt(info, questions))
 		if err != nil {
-			return oops.Wrapf(err, "summarize lesson %d", info.LanguageLessonID)
+			return oops.Wrapf(err, "summarize lesson %d", info.CourseLessonID)
 		}
 	}
 
@@ -131,29 +131,29 @@ func reviewPrompt(info *ent.CourseLessonTranslation, questions []*ent.AiMessage)
 func (r *Reviewer) upsertReview(ctx context.Context, info *ent.CourseLessonTranslation, summary string) error {
 	existing, err := r.db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.LanguageID(info.LanguageID),
-			courselessonreview.LanguageLessonID(info.LanguageLessonID),
+			courselessonreview.CourseID(info.CourseID),
+			courselessonreview.CourseLessonID(info.CourseLessonID),
 			courselessonreview.LocaleEQ(lo.FromPtr(info.Locale)),
 		).
 		Only(ctx)
 	switch {
 	case ent.IsNotFound(err):
 		_, err = r.db.CourseLessonReview.Create().
-			SetLanguageID(info.LanguageID).
-			SetLanguageLessonID(info.LanguageLessonID).
+			SetCourseID(info.CourseID).
+			SetCourseLessonID(info.CourseLessonID).
 			SetLocale(lo.FromPtr(info.Locale)).
 			SetSummary(summary).
-			SetLanguageLessonVersionID(info.VersionID).
-			SetLanguageLessonVersionInfoID(info.ID).
+			SetCourseLessonVersionID(info.VersionID).
+			SetCourseLessonTranslationID(info.ID).
 			Save(ctx)
 	case err != nil:
-		return oops.Wrapf(err, "find review for lesson %d", info.LanguageLessonID)
+		return oops.Wrapf(err, "find review for lesson %d", info.CourseLessonID)
 	default:
 		_, err = existing.Update().
 			SetSummary(summary).
-			SetLanguageLessonVersionID(info.VersionID).
-			SetLanguageLessonVersionInfoID(info.ID).
+			SetCourseLessonVersionID(info.VersionID).
+			SetCourseLessonTranslationID(info.ID).
 			Save(ctx)
 	}
-	return oops.Wrapf(err, "save review for lesson %d", info.LanguageLessonID)
+	return oops.Wrapf(err, "save review for lesson %d", info.CourseLessonID)
 }

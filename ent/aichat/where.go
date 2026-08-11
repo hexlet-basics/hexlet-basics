@@ -70,9 +70,9 @@ func UserID(v int) predicate.AiChat {
 	return predicate.AiChat(sql.FieldEQ(FieldUserID, v))
 }
 
-// LanguageLessonMemberID applies equality check predicate on the "language_lesson_member_id" field. It's identical to LanguageLessonMemberIDEQ.
-func LanguageLessonMemberID(v int) predicate.AiChat {
-	return predicate.AiChat(sql.FieldEQ(FieldLanguageLessonMemberID, v))
+// LessonProgressID applies equality check predicate on the "lesson_progress_id" field. It's identical to LessonProgressIDEQ.
+func LessonProgressID(v int) predicate.AiChat {
+	return predicate.AiChat(sql.FieldEQ(FieldLessonProgressID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -175,24 +175,24 @@ func UserIDNotIn(vs ...int) predicate.AiChat {
 	return predicate.AiChat(sql.FieldNotIn(FieldUserID, vs...))
 }
 
-// LanguageLessonMemberIDEQ applies the EQ predicate on the "language_lesson_member_id" field.
-func LanguageLessonMemberIDEQ(v int) predicate.AiChat {
-	return predicate.AiChat(sql.FieldEQ(FieldLanguageLessonMemberID, v))
+// LessonProgressIDEQ applies the EQ predicate on the "lesson_progress_id" field.
+func LessonProgressIDEQ(v int) predicate.AiChat {
+	return predicate.AiChat(sql.FieldEQ(FieldLessonProgressID, v))
 }
 
-// LanguageLessonMemberIDNEQ applies the NEQ predicate on the "language_lesson_member_id" field.
-func LanguageLessonMemberIDNEQ(v int) predicate.AiChat {
-	return predicate.AiChat(sql.FieldNEQ(FieldLanguageLessonMemberID, v))
+// LessonProgressIDNEQ applies the NEQ predicate on the "lesson_progress_id" field.
+func LessonProgressIDNEQ(v int) predicate.AiChat {
+	return predicate.AiChat(sql.FieldNEQ(FieldLessonProgressID, v))
 }
 
-// LanguageLessonMemberIDIn applies the In predicate on the "language_lesson_member_id" field.
-func LanguageLessonMemberIDIn(vs ...int) predicate.AiChat {
-	return predicate.AiChat(sql.FieldIn(FieldLanguageLessonMemberID, vs...))
+// LessonProgressIDIn applies the In predicate on the "lesson_progress_id" field.
+func LessonProgressIDIn(vs ...int) predicate.AiChat {
+	return predicate.AiChat(sql.FieldIn(FieldLessonProgressID, vs...))
 }
 
-// LanguageLessonMemberIDNotIn applies the NotIn predicate on the "language_lesson_member_id" field.
-func LanguageLessonMemberIDNotIn(vs ...int) predicate.AiChat {
-	return predicate.AiChat(sql.FieldNotIn(FieldLanguageLessonMemberID, vs...))
+// LessonProgressIDNotIn applies the NotIn predicate on the "lesson_progress_id" field.
+func LessonProgressIDNotIn(vs ...int) predicate.AiChat {
+	return predicate.AiChat(sql.FieldNotIn(FieldLessonProgressID, vs...))
 }
 
 // HasLessonProgress applies the HasEdge predicate on the "lesson_progress" edge.

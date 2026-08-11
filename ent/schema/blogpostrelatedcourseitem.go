@@ -27,7 +27,7 @@ func (BlogPostRelatedCourseItem) Annotations() []schema.Annotation {
 func (BlogPostRelatedCourseItem) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("blog_post_id"),
-		field.Int("language_id"),
+		field.Int("course_id").StorageKey("language_id"),
 		field.Int("order").Optional().Nillable(),
 	}
 }
@@ -39,7 +39,7 @@ func (BlogPostRelatedCourseItem) Edges() []ent.Edge {
 			Unique().
 			Required(),
 		edge.To("course", Course.Type).
-			Field("language_id").
+			Field("course_id").
 			Unique().
 			Required(),
 	}

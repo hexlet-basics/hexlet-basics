@@ -30,10 +30,10 @@ func (CourseLessonReview) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("locale"),
 		field.String("summary"),
-		field.Int("language_id"),
-		field.Int("language_lesson_id"),
-		field.Int("language_lesson_version_id"),
-		field.Int("language_lesson_version_info_id"),
+		field.Int("course_id").StorageKey("language_id"),
+		field.Int("course_lesson_id").StorageKey("language_lesson_id"),
+		field.Int("course_lesson_version_id").StorageKey("language_lesson_version_id"),
+		field.Int("course_lesson_translation_id").StorageKey("language_lesson_version_info_id"),
 	}
 }
 
@@ -44,11 +44,11 @@ func (CourseLessonReview) Mixin() []ent.Mixin {
 func (CourseLessonReview) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("course", Course.Type).
-			Field("language_id").
+			Field("course_id").
 			Unique().
 			Required(),
 		edge.To("lesson", CourseLesson.Type).
-			Field("language_lesson_id").
+			Field("course_lesson_id").
 			Unique().
 			Required(),
 	}

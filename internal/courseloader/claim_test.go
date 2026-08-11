@@ -25,7 +25,7 @@ func TestClaimAllowsOnlyOneConcurrentOwner(t *testing.T) {
 	ruby, err := db.Course.Query().Where(course.Slug("ruby")).Only(ctx)
 	require.NoError(t, err)
 	version, err := db.CourseVersion.Create().
-		SetLanguageID(ruby.ID).
+		SetCourseID(ruby.ID).
 		SetState(stateCreated).
 		Save(ctx)
 	require.NoError(t, err)

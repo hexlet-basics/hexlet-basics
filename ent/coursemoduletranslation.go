@@ -27,10 +27,10 @@ type CourseModuleTranslation struct {
 	Description *string `json:"description,omitempty"`
 	// Locale holds the value of the "locale" field.
 	Locale *string `json:"locale,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
-	// LanguageVersionID holds the value of the "language_version_id" field.
-	LanguageVersionID int `json:"language_version_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
+	// CourseVersionID holds the value of the "course_version_id" field.
+	CourseVersionID int `json:"course_version_id,omitempty"`
 	// VersionID holds the value of the "version_id" field.
 	VersionID    int `json:"version_id,omitempty"`
 	selectValues sql.SelectValues
@@ -41,7 +41,7 @@ func (*CourseModuleTranslation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case coursemoduletranslation.FieldID, coursemoduletranslation.FieldLanguageID, coursemoduletranslation.FieldLanguageVersionID, coursemoduletranslation.FieldVersionID:
+		case coursemoduletranslation.FieldID, coursemoduletranslation.FieldCourseID, coursemoduletranslation.FieldCourseVersionID, coursemoduletranslation.FieldVersionID:
 			values[i] = new(sql.NullInt64)
 		case coursemoduletranslation.FieldName, coursemoduletranslation.FieldDescription, coursemoduletranslation.FieldLocale:
 			values[i] = new(sql.NullString)
@@ -101,17 +101,17 @@ func (_m *CourseModuleTranslation) assignValues(columns []string, values []any) 
 				_m.Locale = new(string)
 				*_m.Locale = value.String
 			}
-		case coursemoduletranslation.FieldLanguageID:
+		case coursemoduletranslation.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
-		case coursemoduletranslation.FieldLanguageVersionID:
+		case coursemoduletranslation.FieldCourseVersionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_version_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_version_id", values[i])
 			} else if value.Valid {
-				_m.LanguageVersionID = int(value.Int64)
+				_m.CourseVersionID = int(value.Int64)
 			}
 		case coursemoduletranslation.FieldVersionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -176,11 +176,11 @@ func (_m *CourseModuleTranslation) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
-	builder.WriteString("language_version_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageVersionID))
+	builder.WriteString("course_version_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseVersionID))
 	builder.WriteString(", ")
 	builder.WriteString("version_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.VersionID))

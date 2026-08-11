@@ -23,10 +23,10 @@ const (
 	FieldDescription = "description"
 	// FieldLocale holds the string denoting the locale field in the database.
 	FieldLocale = "locale"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
-	// FieldLanguageVersionID holds the string denoting the language_version_id field in the database.
-	FieldLanguageVersionID = "language_version_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
+	// FieldCourseVersionID holds the string denoting the course_version_id field in the database.
+	FieldCourseVersionID = "language_version_id"
 	// FieldVersionID holds the string denoting the version_id field in the database.
 	FieldVersionID = "version_id"
 	// Table holds the table name of the coursemoduletranslation in the database.
@@ -41,8 +41,8 @@ var Columns = []string{
 	FieldName,
 	FieldDescription,
 	FieldLocale,
-	FieldLanguageID,
-	FieldLanguageVersionID,
+	FieldCourseID,
+	FieldCourseVersionID,
 	FieldVersionID,
 }
 
@@ -98,14 +98,14 @@ func ByLocale(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLocale, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
-// ByLanguageVersionID orders the results by the language_version_id field.
-func ByLanguageVersionID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageVersionID, opts...).ToFunc()
+// ByCourseVersionID orders the results by the course_version_id field.
+func ByCourseVersionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseVersionID, opts...).ToFunc()
 }
 
 // ByVersionID orders the results by the version_id field.

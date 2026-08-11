@@ -25,7 +25,7 @@ func (LandingPageQnaItem) Annotations() []schema.Annotation {
 
 func (LandingPageQnaItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_landing_page_id").
+		field.Int("course_landing_page_id").StorageKey("language_landing_page_id").
 			Annotations(AdminInputField{Skip: true}),
 		field.String("question").Optional().Nillable().
 			Annotations(AdminInputField{Required: true}),

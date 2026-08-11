@@ -108,7 +108,7 @@ type Converter interface {
 	// own first/last name (mirrors ReviewResource#full_name).
 	// goverter:map Edges.Course Course
 	// goverter:map Edges.User User
-	// goverter:map LanguageID CourseId
+	// goverter:map CourseID CourseId
 	// goverter:map UserID UserId
 	// goverter:map . FullName | reviewFullName
 	ToReview(source *ent.Review) api.Review
@@ -130,7 +130,7 @@ type Converter interface {
 	// WithCourse); outcomesImage stays null until blob assets are migrated (same
 	// deferral as the course cover). Required-string fields resolve from nullable
 	// columns via StringFromPtr.
-	// goverter:map LanguageID CourseId
+	// goverter:map CourseID CourseId
 	// goverter:map LandingPageToRedirectID LandingPageToRedirectId
 	// goverter:map Edges.Course.Slug CourseSlug
 	// goverter:map Edges.Course.MembersCount EnrollmentsCount
@@ -167,7 +167,7 @@ type Converter interface {
 
 	// Lesson list rows are version infos with the stable lesson identity loaded
 	// through WithLesson.
-	// goverter:map LanguageLessonID ID
+	// goverter:map CourseLessonID ID
 	// goverter:map Edges.Lesson.Slug Slug
 	ToCourseLessonListItem(source *ent.CourseLessonTranslation) api.CourseLessonListItem
 
@@ -197,10 +197,10 @@ type Converter interface {
 	ToLessonAssistantMessages(source []*ent.AiMessage) []api.LessonAssistantMessage
 
 	// Review projections require WithCourse and WithLesson.
-	// goverter:map LanguageID CourseId
-	// goverter:map LanguageLessonID CourseLessonId
-	// goverter:map LanguageLessonVersionID CourseLessonVersionId
-	// goverter:map LanguageLessonVersionInfoID CourseLessonVersionInfoId
+	// goverter:map CourseID CourseId
+	// goverter:map CourseLessonID CourseLessonId
+	// goverter:map CourseLessonVersionID CourseLessonVersionId
+	// goverter:map CourseLessonTranslationID CourseLessonVersionInfoId
 	// goverter:map Edges.Lesson.Slug Slug
 	// goverter:map Edges.Lesson.NaturalOrder LessonNaturalOrder
 	// goverter:map Edges.Course.Slug CourseSlug

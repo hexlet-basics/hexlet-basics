@@ -25,8 +25,8 @@ type BlogPostRelatedCourseItem struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// BlogPostID holds the value of the "blog_post_id" field.
 	BlogPostID int `json:"blog_post_id,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
 	// Order holds the value of the "order" field.
 	Order *int `json:"order,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -73,7 +73,7 @@ func (*BlogPostRelatedCourseItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case blogpostrelatedcourseitem.FieldID, blogpostrelatedcourseitem.FieldBlogPostID, blogpostrelatedcourseitem.FieldLanguageID, blogpostrelatedcourseitem.FieldOrder:
+		case blogpostrelatedcourseitem.FieldID, blogpostrelatedcourseitem.FieldBlogPostID, blogpostrelatedcourseitem.FieldCourseID, blogpostrelatedcourseitem.FieldOrder:
 			values[i] = new(sql.NullInt64)
 		case blogpostrelatedcourseitem.FieldCreatedAt, blogpostrelatedcourseitem.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -116,11 +116,11 @@ func (_m *BlogPostRelatedCourseItem) assignValues(columns []string, values []any
 			} else if value.Valid {
 				_m.BlogPostID = int(value.Int64)
 			}
-		case blogpostrelatedcourseitem.FieldLanguageID:
+		case blogpostrelatedcourseitem.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
 		case blogpostrelatedcourseitem.FieldOrder:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -184,8 +184,8 @@ func (_m *BlogPostRelatedCourseItem) String() string {
 	builder.WriteString("blog_post_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.BlogPostID))
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
 	if v := _m.Order; v != nil {
 		builder.WriteString("order=")

@@ -29,10 +29,10 @@ const (
 	FieldTestCode = "test_code"
 	// FieldPathToCode holds the string denoting the path_to_code field in the database.
 	FieldPathToCode = "path_to_code"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
-	// FieldLanguageVersionID holds the string denoting the language_version_id field in the database.
-	FieldLanguageVersionID = "language_version_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
+	// FieldCourseVersionID holds the string denoting the course_version_id field in the database.
+	FieldCourseVersionID = "language_version_id"
 	// FieldLessonID holds the string denoting the lesson_id field in the database.
 	FieldLessonID = "lesson_id"
 	// FieldModuleVersionID holds the string denoting the module_version_id field in the database.
@@ -52,8 +52,8 @@ var Columns = []string{
 	FieldPreparedCode,
 	FieldTestCode,
 	FieldPathToCode,
-	FieldLanguageID,
-	FieldLanguageVersionID,
+	FieldCourseID,
+	FieldCourseVersionID,
 	FieldLessonID,
 	FieldModuleVersionID,
 }
@@ -125,14 +125,14 @@ func ByPathToCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPathToCode, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
-// ByLanguageVersionID orders the results by the language_version_id field.
-func ByLanguageVersionID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageVersionID, opts...).ToFunc()
+// ByCourseVersionID orders the results by the course_version_id field.
+func ByCourseVersionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseVersionID, opts...).ToFunc()
 }
 
 // ByLessonID orders the results by the lesson_id field.

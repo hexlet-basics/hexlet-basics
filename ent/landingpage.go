@@ -22,8 +22,8 @@ type LandingPage struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
 	// Slug holds the value of the "slug" field.
 	Slug *string `json:"slug,omitempty"`
 	// Header holds the value of the "header" field.
@@ -93,7 +93,7 @@ func (*LandingPage) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case landingpage.FieldListed, landingpage.FieldMain, landingpage.FieldFooter:
 			values[i] = new(sql.NullBool)
-		case landingpage.FieldID, landingpage.FieldLanguageID, landingpage.FieldLandingPageToRedirectID:
+		case landingpage.FieldID, landingpage.FieldCourseID, landingpage.FieldLandingPageToRedirectID:
 			values[i] = new(sql.NullInt64)
 		case landingpage.FieldSlug, landingpage.FieldHeader, landingpage.FieldName, landingpage.FieldLocale, landingpage.FieldState, landingpage.FieldOrder, landingpage.FieldMetaTitle, landingpage.FieldMetaDescription, landingpage.FieldDescription, landingpage.FieldUsedInHeader, landingpage.FieldUsedInDescription, landingpage.FieldOutcomesHeader, landingpage.FieldOutcomesDescription, landingpage.FieldFooterName:
 			values[i] = new(sql.NullString)
@@ -132,11 +132,11 @@ func (_m *LandingPage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case landingpage.FieldLanguageID:
+		case landingpage.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
 		case landingpage.FieldSlug:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -311,8 +311,8 @@ func (_m *LandingPage) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
 	if v := _m.Slug; v != nil {
 		builder.WriteString("slug=")

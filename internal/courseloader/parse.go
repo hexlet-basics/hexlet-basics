@@ -129,12 +129,12 @@ func parseSpec(dir string) (*Spec, error) {
 		return nil, oops.Wrapf(err, "read %s", path)
 	}
 	var doc struct {
-		Language Spec `yaml:"language"`
+		Course Spec `yaml:"language"`
 	}
 	if err := decodeYAML(raw, &doc); err != nil {
 		return nil, oops.Wrapf(err, "parse %s", path)
 	}
-	s := doc.Language
+	s := doc.Course
 	// Mirror legacy's fetch("...") — a missing key is a hard error, not a blank
 	// build. Report the first offender so the fix is obvious.
 	for k, v := range map[string]string{

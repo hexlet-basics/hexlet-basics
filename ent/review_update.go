@@ -36,16 +36,16 @@ func (_u *ReviewUpdate) SetUpdatedAt(v time.Time) *ReviewUpdate {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *ReviewUpdate) SetLanguageID(v int) *ReviewUpdate {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *ReviewUpdate) SetCourseID(v int) *ReviewUpdate {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *ReviewUpdate) SetNillableLanguageID(v *int) *ReviewUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *ReviewUpdate) SetNillableCourseID(v *int) *ReviewUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -181,12 +181,6 @@ func (_u *ReviewUpdate) SetNillablePinned(v *bool) *ReviewUpdate {
 // ClearPinned clears the value of the "pinned" field.
 func (_u *ReviewUpdate) ClearPinned() *ReviewUpdate {
 	_u.mutation.ClearPinned()
-	return _u
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *ReviewUpdate) SetCourseID(id int) *ReviewUpdate {
-	_u.mutation.SetCourseID(id)
 	return _u
 }
 
@@ -399,16 +393,16 @@ func (_u *ReviewUpdateOne) SetUpdatedAt(v time.Time) *ReviewUpdateOne {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *ReviewUpdateOne) SetLanguageID(v int) *ReviewUpdateOne {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *ReviewUpdateOne) SetCourseID(v int) *ReviewUpdateOne {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *ReviewUpdateOne) SetNillableLanguageID(v *int) *ReviewUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *ReviewUpdateOne) SetNillableCourseID(v *int) *ReviewUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -544,12 +538,6 @@ func (_u *ReviewUpdateOne) SetNillablePinned(v *bool) *ReviewUpdateOne {
 // ClearPinned clears the value of the "pinned" field.
 func (_u *ReviewUpdateOne) ClearPinned() *ReviewUpdateOne {
 	_u.mutation.ClearPinned()
-	return _u
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *ReviewUpdateOne) SetCourseID(id int) *ReviewUpdateOne {
-	_u.mutation.SetCourseID(id)
 	return _u
 }
 

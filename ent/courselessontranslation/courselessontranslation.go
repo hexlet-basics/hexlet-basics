@@ -24,12 +24,12 @@ const (
 	FieldDescription = "description"
 	// FieldLocale holds the string denoting the locale field in the database.
 	FieldLocale = "locale"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
-	// FieldLanguageLessonID holds the string denoting the language_lesson_id field in the database.
-	FieldLanguageLessonID = "language_lesson_id"
-	// FieldLanguageVersionID holds the string denoting the language_version_id field in the database.
-	FieldLanguageVersionID = "language_version_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
+	// FieldCourseLessonID holds the string denoting the course_lesson_id field in the database.
+	FieldCourseLessonID = "language_lesson_id"
+	// FieldCourseVersionID holds the string denoting the course_version_id field in the database.
+	FieldCourseVersionID = "language_version_id"
 	// FieldTheory holds the string denoting the theory field in the database.
 	FieldTheory = "theory"
 	// FieldInstructions holds the string denoting the instructions field in the database.
@@ -70,9 +70,9 @@ var Columns = []string{
 	FieldName,
 	FieldDescription,
 	FieldLocale,
-	FieldLanguageID,
-	FieldLanguageLessonID,
-	FieldLanguageVersionID,
+	FieldCourseID,
+	FieldCourseLessonID,
+	FieldCourseVersionID,
 	FieldTheory,
 	FieldInstructions,
 	FieldTips,
@@ -132,19 +132,19 @@ func ByLocale(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLocale, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
-// ByLanguageLessonID orders the results by the language_lesson_id field.
-func ByLanguageLessonID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageLessonID, opts...).ToFunc()
+// ByCourseLessonID orders the results by the course_lesson_id field.
+func ByCourseLessonID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseLessonID, opts...).ToFunc()
 }
 
-// ByLanguageVersionID orders the results by the language_version_id field.
-func ByLanguageVersionID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageVersionID, opts...).ToFunc()
+// ByCourseVersionID orders the results by the course_version_id field.
+func ByCourseVersionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseVersionID, opts...).ToFunc()
 }
 
 // ByTheory orders the results by the theory field.

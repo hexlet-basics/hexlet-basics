@@ -448,7 +448,7 @@ func (_q *CourseLessonTranslationQuery) loadLesson(ctx context.Context, query *C
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*CourseLessonTranslation)
 	for i := range nodes {
-		fk := nodes[i].LanguageLessonID
+		fk := nodes[i].CourseLessonID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -465,7 +465,7 @@ func (_q *CourseLessonTranslationQuery) loadLesson(ctx context.Context, query *C
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_lesson_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "course_lesson_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -477,7 +477,7 @@ func (_q *CourseLessonTranslationQuery) loadCourseVersion(ctx context.Context, q
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*CourseLessonTranslation)
 	for i := range nodes {
-		fk := nodes[i].LanguageVersionID
+		fk := nodes[i].CourseVersionID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -494,7 +494,7 @@ func (_q *CourseLessonTranslationQuery) loadCourseVersion(ctx context.Context, q
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_version_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "course_version_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -529,10 +529,10 @@ func (_q *CourseLessonTranslationQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if _q.withLesson != nil {
-			_spec.Node.AddColumnOnce(courselessontranslation.FieldLanguageLessonID)
+			_spec.Node.AddColumnOnce(courselessontranslation.FieldCourseLessonID)
 		}
 		if _q.withCourseVersion != nil {
-			_spec.Node.AddColumnOnce(courselessontranslation.FieldLanguageVersionID)
+			_spec.Node.AddColumnOnce(courselessontranslation.FieldCourseVersionID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

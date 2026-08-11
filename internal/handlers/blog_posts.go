@@ -166,7 +166,7 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 	for i, courseID := range courseIDs {
 		builders[i] = s.db.BlogPostRelatedCourseItem.Create().
 			SetBlogPostID(id).
-			SetLanguageID(int(courseID)).
+			SetCourseID(int(courseID)).
 			SetOrder(i)
 	}
 	if _, err := s.db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
@@ -174,7 +174,7 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 	}
 
 	if err := s.db.BlogPost.UpdateOneID(id).
-		SetRelatedLanguageItemsCount(len(courseIDs)).
+		SetRelatedCourseItemsCount(len(courseIDs)).
 		Exec(ctx); err != nil {
 		return nil, err
 	}
@@ -223,7 +223,7 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 			RichBodyHtml:            p.RichBody,
 			ReadingTime:             readingTime(p.RichBody),
 			LikesCount:              int32(likesByPost[p.ID]),
-			RelatedCourseItemsCount: int32(p.RelatedLanguageItemsCount),
+			RelatedCourseItemsCount: int32(p.RelatedCourseItemsCount),
 			RelatedCourseIds:        relatedByPost[p.ID],
 			CoverThumbVariant:       s.coverVariant(coverKeyByPost[p.ID]),
 			CoverListVariant:        s.coverVariant(coverKeyByPost[p.ID]),
@@ -277,7 +277,7 @@ func (s *Server) blogRelatedCourseIDs(ctx context.Context, ids []int) (map[int][
 		out[id] = []int32{}
 	}
 	for _, r := range rows {
-		out[r.BlogPostID] = append(out[r.BlogPostID], int32(r.LanguageID))
+		out[r.BlogPostID] = append(out[r.BlogPostID], int32(r.CourseID))
 	}
 	return out, nil
 }

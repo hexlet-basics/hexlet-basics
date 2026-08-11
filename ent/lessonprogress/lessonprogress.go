@@ -14,8 +14,8 @@ const (
 	FieldID = "id"
 	// FieldUserID holds the string denoting the user_id field in the database.
 	FieldUserID = "user_id"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
 	// FieldLessonID holds the string denoting the lesson_id field in the database.
 	FieldLessonID = "lesson_id"
 	// FieldState holds the string denoting the state field in the database.
@@ -50,7 +50,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldUserID,
-	FieldLanguageID,
+	FieldCourseID,
 	FieldLessonID,
 	FieldState,
 	FieldMessagesCount,
@@ -80,9 +80,9 @@ func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
 // ByLessonID orders the results by the lesson_id field.

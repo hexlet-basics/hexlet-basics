@@ -70,9 +70,9 @@ func BlogPostID(v int) predicate.BlogPostRelatedCourseItem {
 	return predicate.BlogPostRelatedCourseItem(sql.FieldEQ(FieldBlogPostID, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.BlogPostRelatedCourseItem {
-	return predicate.BlogPostRelatedCourseItem(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.BlogPostRelatedCourseItem {
+	return predicate.BlogPostRelatedCourseItem(sql.FieldEQ(FieldCourseID, v))
 }
 
 // Order applies equality check predicate on the "order" field. It's identical to OrderEQ.
@@ -180,24 +180,24 @@ func BlogPostIDNotIn(vs ...int) predicate.BlogPostRelatedCourseItem {
 	return predicate.BlogPostRelatedCourseItem(sql.FieldNotIn(FieldBlogPostID, vs...))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.BlogPostRelatedCourseItem {
-	return predicate.BlogPostRelatedCourseItem(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.BlogPostRelatedCourseItem {
+	return predicate.BlogPostRelatedCourseItem(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.BlogPostRelatedCourseItem {
-	return predicate.BlogPostRelatedCourseItem(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.BlogPostRelatedCourseItem {
+	return predicate.BlogPostRelatedCourseItem(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.BlogPostRelatedCourseItem {
-	return predicate.BlogPostRelatedCourseItem(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.BlogPostRelatedCourseItem {
+	return predicate.BlogPostRelatedCourseItem(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.BlogPostRelatedCourseItem {
-	return predicate.BlogPostRelatedCourseItem(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.BlogPostRelatedCourseItem {
+	return predicate.BlogPostRelatedCourseItem(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
 // OrderEQ applies the EQ predicate on the "order" field.

@@ -52,9 +52,9 @@ func (_c *ReviewCreate) SetNillableUpdatedAt(v *time.Time) *ReviewCreate {
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *ReviewCreate) SetLanguageID(v int) *ReviewCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *ReviewCreate) SetCourseID(v int) *ReviewCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
@@ -148,12 +148,6 @@ func (_c *ReviewCreate) SetNillablePinned(v *bool) *ReviewCreate {
 	return _c
 }
 
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_c *ReviewCreate) SetCourseID(id int) *ReviewCreate {
-	_c.mutation.SetCourseID(id)
-	return _c
-}
-
 // SetCourse sets the "course" edge to the Course entity.
 func (_c *ReviewCreate) SetCourse(v *Course) *ReviewCreate {
 	return _c.SetCourseID(v.ID)
@@ -217,8 +211,8 @@ func (_c *ReviewCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Review.updated_at"`)}
 	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "Review.language_id"`)}
+	if _, ok := _c.mutation.CourseID(); !ok {
+		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "Review.course_id"`)}
 	}
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Review.user_id"`)}
@@ -302,7 +296,7 @@ func (_c *ReviewCreate) createSpec() (*Review, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageID = nodes[0]
+		_node.CourseID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
@@ -386,15 +380,15 @@ func (u *ReviewUpsert) UpdateUpdatedAt() *ReviewUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *ReviewUpsert) SetLanguageID(v int) *ReviewUpsert {
-	u.Set(review.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *ReviewUpsert) SetCourseID(v int) *ReviewUpsert {
+	u.Set(review.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *ReviewUpsert) UpdateLanguageID() *ReviewUpsert {
-	u.SetExcluded(review.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *ReviewUpsert) UpdateCourseID() *ReviewUpsert {
+	u.SetExcluded(review.FieldCourseID)
 	return u
 }
 
@@ -577,17 +571,17 @@ func (u *ReviewUpsertOne) UpdateUpdatedAt() *ReviewUpsertOne {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *ReviewUpsertOne) SetLanguageID(v int) *ReviewUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *ReviewUpsertOne) SetCourseID(v int) *ReviewUpsertOne {
 	return u.Update(func(s *ReviewUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *ReviewUpsertOne) UpdateLanguageID() *ReviewUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *ReviewUpsertOne) UpdateCourseID() *ReviewUpsertOne {
 	return u.Update(func(s *ReviewUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
@@ -956,17 +950,17 @@ func (u *ReviewUpsertBulk) UpdateUpdatedAt() *ReviewUpsertBulk {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *ReviewUpsertBulk) SetLanguageID(v int) *ReviewUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *ReviewUpsertBulk) SetCourseID(v int) *ReviewUpsertBulk {
 	return u.Update(func(s *ReviewUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *ReviewUpsertBulk) UpdateLanguageID() *ReviewUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *ReviewUpsertBulk) UpdateCourseID() *ReviewUpsertBulk {
 	return u.Update(func(s *ReviewUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 

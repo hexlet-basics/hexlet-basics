@@ -163,51 +163,51 @@ func (_u *BlogPostUpdate) SetNillableCreatorID(v *int) *BlogPostUpdate {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *BlogPostUpdate) SetLanguageID(v int) *BlogPostUpdate {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *BlogPostUpdate) SetCourseID(v int) *BlogPostUpdate {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *BlogPostUpdate) SetNillableLanguageID(v *int) *BlogPostUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *BlogPostUpdate) SetNillableCourseID(v *int) *BlogPostUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *BlogPostUpdate) AddLanguageID(v int) *BlogPostUpdate {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *BlogPostUpdate) AddCourseID(v int) *BlogPostUpdate {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (_u *BlogPostUpdate) ClearLanguageID() *BlogPostUpdate {
-	_u.mutation.ClearLanguageID()
+// ClearCourseID clears the value of the "course_id" field.
+func (_u *BlogPostUpdate) ClearCourseID() *BlogPostUpdate {
+	_u.mutation.ClearCourseID()
 	return _u
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (_u *BlogPostUpdate) SetRelatedLanguageItemsCount(v int) *BlogPostUpdate {
-	_u.mutation.ResetRelatedLanguageItemsCount()
-	_u.mutation.SetRelatedLanguageItemsCount(v)
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (_u *BlogPostUpdate) SetRelatedCourseItemsCount(v int) *BlogPostUpdate {
+	_u.mutation.ResetRelatedCourseItemsCount()
+	_u.mutation.SetRelatedCourseItemsCount(v)
 	return _u
 }
 
-// SetNillableRelatedLanguageItemsCount sets the "related_language_items_count" field if the given value is not nil.
-func (_u *BlogPostUpdate) SetNillableRelatedLanguageItemsCount(v *int) *BlogPostUpdate {
+// SetNillableRelatedCourseItemsCount sets the "related_course_items_count" field if the given value is not nil.
+func (_u *BlogPostUpdate) SetNillableRelatedCourseItemsCount(v *int) *BlogPostUpdate {
 	if v != nil {
-		_u.SetRelatedLanguageItemsCount(*v)
+		_u.SetRelatedCourseItemsCount(*v)
 	}
 	return _u
 }
 
-// AddRelatedLanguageItemsCount adds value to the "related_language_items_count" field.
-func (_u *BlogPostUpdate) AddRelatedLanguageItemsCount(v int) *BlogPostUpdate {
-	_u.mutation.AddRelatedLanguageItemsCount(v)
+// AddRelatedCourseItemsCount adds value to the "related_course_items_count" field.
+func (_u *BlogPostUpdate) AddRelatedCourseItemsCount(v int) *BlogPostUpdate {
+	_u.mutation.AddRelatedCourseItemsCount(v)
 	return _u
 }
 
@@ -319,20 +319,20 @@ func (_u *BlogPostUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.RichBody(); ok {
 		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(blogpost.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(blogpost.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(blogpost.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(blogpost.FieldCourseID, field.TypeInt, value)
 	}
-	if _u.mutation.LanguageIDCleared() {
-		_spec.ClearField(blogpost.FieldLanguageID, field.TypeInt)
+	if _u.mutation.CourseIDCleared() {
+		_spec.ClearField(blogpost.FieldCourseID, field.TypeInt)
 	}
-	if value, ok := _u.mutation.RelatedLanguageItemsCount(); ok {
-		_spec.SetField(blogpost.FieldRelatedLanguageItemsCount, field.TypeInt, value)
+	if value, ok := _u.mutation.RelatedCourseItemsCount(); ok {
+		_spec.SetField(blogpost.FieldRelatedCourseItemsCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedRelatedLanguageItemsCount(); ok {
-		_spec.AddField(blogpost.FieldRelatedLanguageItemsCount, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedRelatedCourseItemsCount(); ok {
+		_spec.AddField(blogpost.FieldRelatedCourseItemsCount, field.TypeInt, value)
 	}
 	if _u.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -517,51 +517,51 @@ func (_u *BlogPostUpdateOne) SetNillableCreatorID(v *int) *BlogPostUpdateOne {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *BlogPostUpdateOne) SetLanguageID(v int) *BlogPostUpdateOne {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *BlogPostUpdateOne) SetCourseID(v int) *BlogPostUpdateOne {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *BlogPostUpdateOne) SetNillableLanguageID(v *int) *BlogPostUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *BlogPostUpdateOne) SetNillableCourseID(v *int) *BlogPostUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *BlogPostUpdateOne) AddLanguageID(v int) *BlogPostUpdateOne {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *BlogPostUpdateOne) AddCourseID(v int) *BlogPostUpdateOne {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (_u *BlogPostUpdateOne) ClearLanguageID() *BlogPostUpdateOne {
-	_u.mutation.ClearLanguageID()
+// ClearCourseID clears the value of the "course_id" field.
+func (_u *BlogPostUpdateOne) ClearCourseID() *BlogPostUpdateOne {
+	_u.mutation.ClearCourseID()
 	return _u
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (_u *BlogPostUpdateOne) SetRelatedLanguageItemsCount(v int) *BlogPostUpdateOne {
-	_u.mutation.ResetRelatedLanguageItemsCount()
-	_u.mutation.SetRelatedLanguageItemsCount(v)
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (_u *BlogPostUpdateOne) SetRelatedCourseItemsCount(v int) *BlogPostUpdateOne {
+	_u.mutation.ResetRelatedCourseItemsCount()
+	_u.mutation.SetRelatedCourseItemsCount(v)
 	return _u
 }
 
-// SetNillableRelatedLanguageItemsCount sets the "related_language_items_count" field if the given value is not nil.
-func (_u *BlogPostUpdateOne) SetNillableRelatedLanguageItemsCount(v *int) *BlogPostUpdateOne {
+// SetNillableRelatedCourseItemsCount sets the "related_course_items_count" field if the given value is not nil.
+func (_u *BlogPostUpdateOne) SetNillableRelatedCourseItemsCount(v *int) *BlogPostUpdateOne {
 	if v != nil {
-		_u.SetRelatedLanguageItemsCount(*v)
+		_u.SetRelatedCourseItemsCount(*v)
 	}
 	return _u
 }
 
-// AddRelatedLanguageItemsCount adds value to the "related_language_items_count" field.
-func (_u *BlogPostUpdateOne) AddRelatedLanguageItemsCount(v int) *BlogPostUpdateOne {
-	_u.mutation.AddRelatedLanguageItemsCount(v)
+// AddRelatedCourseItemsCount adds value to the "related_course_items_count" field.
+func (_u *BlogPostUpdateOne) AddRelatedCourseItemsCount(v int) *BlogPostUpdateOne {
+	_u.mutation.AddRelatedCourseItemsCount(v)
 	return _u
 }
 
@@ -703,20 +703,20 @@ func (_u *BlogPostUpdateOne) sqlSave(ctx context.Context) (_node *BlogPost, err 
 	if value, ok := _u.mutation.RichBody(); ok {
 		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(blogpost.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(blogpost.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(blogpost.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(blogpost.FieldCourseID, field.TypeInt, value)
 	}
-	if _u.mutation.LanguageIDCleared() {
-		_spec.ClearField(blogpost.FieldLanguageID, field.TypeInt)
+	if _u.mutation.CourseIDCleared() {
+		_spec.ClearField(blogpost.FieldCourseID, field.TypeInt)
 	}
-	if value, ok := _u.mutation.RelatedLanguageItemsCount(); ok {
-		_spec.SetField(blogpost.FieldRelatedLanguageItemsCount, field.TypeInt, value)
+	if value, ok := _u.mutation.RelatedCourseItemsCount(); ok {
+		_spec.SetField(blogpost.FieldRelatedCourseItemsCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedRelatedLanguageItemsCount(); ok {
-		_spec.AddField(blogpost.FieldRelatedLanguageItemsCount, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedRelatedCourseItemsCount(); ok {
+		_spec.AddField(blogpost.FieldRelatedCourseItemsCount, field.TypeInt, value)
 	}
 	if _u.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{

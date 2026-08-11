@@ -414,7 +414,7 @@ func (_q *CourseLessonQuery) loadInfos(ctx context.Context, query *CourseLessonT
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(courselessontranslation.FieldLanguageLessonID)
+		query.ctx.AppendFieldOnce(courselessontranslation.FieldCourseLessonID)
 	}
 	query.Where(predicate.CourseLessonTranslation(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(courselesson.InfosColumn), fks...))
@@ -424,10 +424,10 @@ func (_q *CourseLessonQuery) loadInfos(ctx context.Context, query *CourseLessonT
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.LanguageLessonID
+		fk := n.CourseLessonID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "language_lesson_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "course_lesson_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

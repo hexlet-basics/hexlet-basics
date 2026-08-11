@@ -20,7 +20,7 @@ type AiChat struct {
 func (AiChat) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("user_id"),
-		field.Int("language_lesson_member_id"),
+		field.Int("lesson_progress_id").StorageKey("language_lesson_member_id"),
 	}
 }
 
@@ -31,7 +31,7 @@ func (AiChat) Edges() []ent.Edge {
 		// through. The edge name is ours to choose — the pinned Field keeps the
 		// legacy column, so renaming it moves no storage identifier.
 		edge.To("lesson_progress", LessonProgress.Type).
-			Field("language_lesson_member_id").
+			Field("lesson_progress_id").
 			Unique().
 			Required(),
 		edge.To("user", User.Type).

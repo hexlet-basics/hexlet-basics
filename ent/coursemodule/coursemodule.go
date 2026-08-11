@@ -19,8 +19,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldSlug holds the string denoting the slug field in the database.
 	FieldSlug = "slug"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
 	// FieldOrder holds the string denoting the order field in the database.
 	FieldOrder = "order"
 	// FieldState holds the string denoting the state field in the database.
@@ -35,7 +35,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldSlug,
-	FieldLanguageID,
+	FieldCourseID,
 	FieldOrder,
 	FieldState,
 }
@@ -82,9 +82,9 @@ func BySlug(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSlug, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
 // ByOrder orders the results by the order field.

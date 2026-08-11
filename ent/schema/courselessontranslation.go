@@ -34,9 +34,9 @@ func (CourseLessonTranslation) Fields() []ent.Field {
 		field.String("name").Optional().Nillable(),
 		field.String("description").Optional().Nillable(),
 		field.String("locale").Optional().Nillable(),
-		field.Int("language_id"),
-		field.Int("language_lesson_id"),
-		field.Int("language_version_id"),
+		field.Int("course_id").StorageKey("language_id"),
+		field.Int("course_lesson_id").StorageKey("language_lesson_id"),
+		field.Int("course_version_id").StorageKey("language_version_id"),
 		// Written by the loader from the lesson's <locale>/ dir: README.md →
 		// theory, EXERCISE.md → instructions, data.yml tips/definitions serialized
 		// as YAML arrays (Rails `serialize type: Array` compatibility). version_id
@@ -52,11 +52,11 @@ func (CourseLessonTranslation) Fields() []ent.Field {
 func (CourseLessonTranslation) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("lesson", CourseLesson.Type).
-			Field("language_lesson_id").
+			Field("course_lesson_id").
 			Unique().
 			Required(),
 		edge.To("course_version", CourseVersion.Type).
-			Field("language_version_id").
+			Field("course_version_id").
 			Unique().
 			Required(),
 	}

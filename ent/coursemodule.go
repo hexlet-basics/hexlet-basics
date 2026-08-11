@@ -23,8 +23,8 @@ type CourseModule struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Slug holds the value of the "slug" field.
 	Slug *string `json:"slug,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID *int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID *int `json:"course_id,omitempty"`
 	// Order holds the value of the "order" field.
 	Order *int `json:"order,omitempty"`
 	// State holds the value of the "state" field.
@@ -37,7 +37,7 @@ func (*CourseModule) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case coursemodule.FieldID, coursemodule.FieldLanguageID, coursemodule.FieldOrder:
+		case coursemodule.FieldID, coursemodule.FieldCourseID, coursemodule.FieldOrder:
 			values[i] = new(sql.NullInt64)
 		case coursemodule.FieldSlug, coursemodule.FieldState:
 			values[i] = new(sql.NullString)
@@ -83,12 +83,12 @@ func (_m *CourseModule) assignValues(columns []string, values []any) error {
 				_m.Slug = new(string)
 				*_m.Slug = value.String
 			}
-		case coursemodule.FieldLanguageID:
+		case coursemodule.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = new(int)
-				*_m.LanguageID = int(value.Int64)
+				_m.CourseID = new(int)
+				*_m.CourseID = int(value.Int64)
 			}
 		case coursemodule.FieldOrder:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -151,8 +151,8 @@ func (_m *CourseModule) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := _m.LanguageID; v != nil {
-		builder.WriteString("language_id=")
+	if v := _m.CourseID; v != nil {
+		builder.WriteString("course_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")

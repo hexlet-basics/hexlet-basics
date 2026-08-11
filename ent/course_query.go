@@ -457,7 +457,7 @@ func (_q *CourseQuery) loadLandingPages(ctx context.Context, query *LandingPageQ
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(landingpage.FieldLanguageID)
+		query.ctx.AppendFieldOnce(landingpage.FieldCourseID)
 	}
 	query.Where(predicate.LandingPage(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(course.LandingPagesColumn), fks...))
@@ -467,10 +467,10 @@ func (_q *CourseQuery) loadLandingPages(ctx context.Context, query *LandingPageQ
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.LanguageID
+		fk := n.CourseID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "language_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "course_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

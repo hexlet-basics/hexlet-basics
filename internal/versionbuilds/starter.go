@@ -33,7 +33,7 @@ func (s *Starter) Start(ctx context.Context, courseID int) (_ *ent.CourseVersion
 	var version *ent.CourseVersion
 	err = s.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
 		version, err = txClient.CourseVersion.Create().
-			SetLanguageID(courseID).
+			SetCourseID(courseID).
 			SetState(stateCreated).
 			Save(ctx)
 		if err != nil {

@@ -30,7 +30,7 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 	row := h.DB.CourseVersion.Query().Where(courseversion.ID(int(version.ID))).OnlyX(ctx)
 	require.NotNil(t, row.State)
 	assert.Equal(t, "created", *row.State)
-	assert.Equal(t, courseRubyIDA, row.LanguageID)
+	assert.Equal(t, courseRubyIDA, row.CourseID)
 
 	// The loader job was enqueued for exactly this version.
 	require.Len(t, h.Enqueuer.Inserted, 1)

@@ -115,9 +115,9 @@ func LessonsCount(v int) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldEQ(FieldLessonsCount, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldCourseID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -915,44 +915,44 @@ func LessonsCountLTE(v int) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.FieldLTE(FieldLessonsCount, v))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldGT(FieldLanguageID, v))
+// CourseIDGT applies the GT predicate on the "course_id" field.
+func CourseIDGT(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGT(FieldCourseID, v))
 }
 
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldGTE(FieldLanguageID, v))
+// CourseIDGTE applies the GTE predicate on the "course_id" field.
+func CourseIDGTE(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldGTE(FieldCourseID, v))
 }
 
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldLT(FieldLanguageID, v))
+// CourseIDLT applies the LT predicate on the "course_id" field.
+func CourseIDLT(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLT(FieldCourseID, v))
 }
 
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.CourseVersion {
-	return predicate.CourseVersion(sql.FieldLTE(FieldLanguageID, v))
+// CourseIDLTE applies the LTE predicate on the "course_id" field.
+func CourseIDLTE(v int) predicate.CourseVersion {
+	return predicate.CourseVersion(sql.FieldLTE(FieldCourseID, v))
 }
 
 // HasCurrentCourses applies the HasEdge predicate on the "current_courses" edge.

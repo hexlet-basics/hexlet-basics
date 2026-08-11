@@ -75,9 +75,9 @@ func NaturalOrder(v int) predicate.CourseLesson {
 	return predicate.CourseLesson(sql.FieldEQ(FieldNaturalOrder, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldEQ(FieldCourseID, v))
 }
 
 // ModuleID applies equality check predicate on the "module_id" field. It's identical to ModuleIDEQ.
@@ -295,54 +295,54 @@ func NaturalOrderNotNil() predicate.CourseLesson {
 	return predicate.CourseLesson(sql.FieldNotNull(FieldNaturalOrder))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldGT(FieldLanguageID, v))
+// CourseIDGT applies the GT predicate on the "course_id" field.
+func CourseIDGT(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldGT(FieldCourseID, v))
 }
 
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldGTE(FieldLanguageID, v))
+// CourseIDGTE applies the GTE predicate on the "course_id" field.
+func CourseIDGTE(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldGTE(FieldCourseID, v))
 }
 
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldLT(FieldLanguageID, v))
+// CourseIDLT applies the LT predicate on the "course_id" field.
+func CourseIDLT(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldLT(FieldCourseID, v))
 }
 
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldLTE(FieldLanguageID, v))
+// CourseIDLTE applies the LTE predicate on the "course_id" field.
+func CourseIDLTE(v int) predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldLTE(FieldCourseID, v))
 }
 
-// LanguageIDIsNil applies the IsNil predicate on the "language_id" field.
-func LanguageIDIsNil() predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldIsNull(FieldLanguageID))
+// CourseIDIsNil applies the IsNil predicate on the "course_id" field.
+func CourseIDIsNil() predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldIsNull(FieldCourseID))
 }
 
-// LanguageIDNotNil applies the NotNil predicate on the "language_id" field.
-func LanguageIDNotNil() predicate.CourseLesson {
-	return predicate.CourseLesson(sql.FieldNotNull(FieldLanguageID))
+// CourseIDNotNil applies the NotNil predicate on the "course_id" field.
+func CourseIDNotNil() predicate.CourseLesson {
+	return predicate.CourseLesson(sql.FieldNotNull(FieldCourseID))
 }
 
 // ModuleIDEQ applies the EQ predicate on the "module_id" field.

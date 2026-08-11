@@ -180,7 +180,7 @@ func (u *CourseCategoryUpdateOne) SetInput(i *api.CourseCategoryInput) *CourseCa
 // contract fields are set directly, nullable ones go through SetNillable so a
 // null leaves the column unset, set-only ones apply only when non-null.
 func (c *LandingPageCreate) SetInput(i *api.CourseLandingPageInput) *LandingPageCreate {
-	c.SetLanguageID(int(i.CourseId))
+	c.SetCourseID(int(i.CourseId))
 	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
 	c.SetNillableHeader(inputconv.StringPtr(i.Header))
 	c.SetNillableName(inputconv.StringPtr(i.Name))
@@ -206,7 +206,7 @@ func (c *LandingPageCreate) SetInput(i *api.CourseLandingPageInput) *LandingPage
 // (the legacy assign_attributes semantics), a null set-only field leaves the
 // column untouched.
 func (u *LandingPageUpdateOne) SetInput(i *api.CourseLandingPageInput) *LandingPageUpdateOne {
-	u.SetLanguageID(int(i.CourseId))
+	u.SetCourseID(int(i.CourseId))
 	if i.Slug.Null {
 		u.ClearSlug()
 	} else {
@@ -319,7 +319,7 @@ func (u *LandingPageQnaItemUpdateOne) SetInput(i *api.QnaItemInput) *LandingPage
 // null leaves the column unset, set-only ones apply only when non-null.
 func (c *ReviewCreate) SetInput(i *api.ReviewInput) *ReviewCreate {
 	if !i.CourseId.Null {
-		c.SetLanguageID(int(i.CourseId.Value))
+		c.SetCourseID(int(i.CourseId.Value))
 	}
 	if !i.UserId.Null {
 		c.SetUserID(int(i.UserId.Value))
@@ -338,7 +338,7 @@ func (c *ReviewCreate) SetInput(i *api.ReviewInput) *ReviewCreate {
 // column untouched.
 func (u *ReviewUpdateOne) SetInput(i *api.ReviewInput) *ReviewUpdateOne {
 	if !i.CourseId.Null {
-		u.SetLanguageID(int(i.CourseId.Value))
+		u.SetCourseID(int(i.CourseId.Value))
 	}
 	if !i.UserId.Null {
 		u.SetUserID(int(i.UserId.Value))

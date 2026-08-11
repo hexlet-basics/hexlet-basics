@@ -27,14 +27,14 @@ type CourseLessonReview struct {
 	Locale string `json:"locale,omitempty"`
 	// Summary holds the value of the "summary" field.
 	Summary string `json:"summary,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
-	// LanguageLessonID holds the value of the "language_lesson_id" field.
-	LanguageLessonID int `json:"language_lesson_id,omitempty"`
-	// LanguageLessonVersionID holds the value of the "language_lesson_version_id" field.
-	LanguageLessonVersionID int `json:"language_lesson_version_id,omitempty"`
-	// LanguageLessonVersionInfoID holds the value of the "language_lesson_version_info_id" field.
-	LanguageLessonVersionInfoID int `json:"language_lesson_version_info_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
+	// CourseLessonID holds the value of the "course_lesson_id" field.
+	CourseLessonID int `json:"course_lesson_id,omitempty"`
+	// CourseLessonVersionID holds the value of the "course_lesson_version_id" field.
+	CourseLessonVersionID int `json:"course_lesson_version_id,omitempty"`
+	// CourseLessonTranslationID holds the value of the "course_lesson_translation_id" field.
+	CourseLessonTranslationID int `json:"course_lesson_translation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CourseLessonReviewQuery when eager-loading is set.
 	Edges        CourseLessonReviewEdges `json:"edges"`
@@ -79,7 +79,7 @@ func (*CourseLessonReview) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case courselessonreview.FieldID, courselessonreview.FieldLanguageID, courselessonreview.FieldLanguageLessonID, courselessonreview.FieldLanguageLessonVersionID, courselessonreview.FieldLanguageLessonVersionInfoID:
+		case courselessonreview.FieldID, courselessonreview.FieldCourseID, courselessonreview.FieldCourseLessonID, courselessonreview.FieldCourseLessonVersionID, courselessonreview.FieldCourseLessonTranslationID:
 			values[i] = new(sql.NullInt64)
 		case courselessonreview.FieldLocale, courselessonreview.FieldSummary:
 			values[i] = new(sql.NullString)
@@ -130,29 +130,29 @@ func (_m *CourseLessonReview) assignValues(columns []string, values []any) error
 			} else if value.Valid {
 				_m.Summary = value.String
 			}
-		case courselessonreview.FieldLanguageID:
+		case courselessonreview.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
-		case courselessonreview.FieldLanguageLessonID:
+		case courselessonreview.FieldCourseLessonID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_lesson_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_lesson_id", values[i])
 			} else if value.Valid {
-				_m.LanguageLessonID = int(value.Int64)
+				_m.CourseLessonID = int(value.Int64)
 			}
-		case courselessonreview.FieldLanguageLessonVersionID:
+		case courselessonreview.FieldCourseLessonVersionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_lesson_version_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_lesson_version_id", values[i])
 			} else if value.Valid {
-				_m.LanguageLessonVersionID = int(value.Int64)
+				_m.CourseLessonVersionID = int(value.Int64)
 			}
-		case courselessonreview.FieldLanguageLessonVersionInfoID:
+		case courselessonreview.FieldCourseLessonTranslationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_lesson_version_info_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_lesson_translation_id", values[i])
 			} else if value.Valid {
-				_m.LanguageLessonVersionInfoID = int(value.Int64)
+				_m.CourseLessonTranslationID = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -212,17 +212,17 @@ func (_m *CourseLessonReview) String() string {
 	builder.WriteString("summary=")
 	builder.WriteString(_m.Summary)
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
-	builder.WriteString("language_lesson_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLessonID))
+	builder.WriteString("course_lesson_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseLessonID))
 	builder.WriteString(", ")
-	builder.WriteString("language_lesson_version_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLessonVersionID))
+	builder.WriteString("course_lesson_version_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseLessonVersionID))
 	builder.WriteString(", ")
-	builder.WriteString("language_lesson_version_info_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLessonVersionInfoID))
+	builder.WriteString("course_lesson_translation_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseLessonTranslationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

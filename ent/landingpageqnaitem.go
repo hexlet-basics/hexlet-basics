@@ -21,8 +21,8 @@ type LandingPageQnaItem struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// LanguageLandingPageID holds the value of the "language_landing_page_id" field.
-	LanguageLandingPageID int `json:"language_landing_page_id,omitempty"`
+	// CourseLandingPageID holds the value of the "course_landing_page_id" field.
+	CourseLandingPageID int `json:"course_landing_page_id,omitempty"`
 	// Question holds the value of the "question" field.
 	Question *string `json:"question,omitempty"`
 	// Answer holds the value of the "answer" field.
@@ -35,7 +35,7 @@ func (*LandingPageQnaItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case landingpageqnaitem.FieldID, landingpageqnaitem.FieldLanguageLandingPageID:
+		case landingpageqnaitem.FieldID, landingpageqnaitem.FieldCourseLandingPageID:
 			values[i] = new(sql.NullInt64)
 		case landingpageqnaitem.FieldQuestion, landingpageqnaitem.FieldAnswer:
 			values[i] = new(sql.NullString)
@@ -74,11 +74,11 @@ func (_m *LandingPageQnaItem) assignValues(columns []string, values []any) error
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case landingpageqnaitem.FieldLanguageLandingPageID:
+		case landingpageqnaitem.FieldCourseLandingPageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_landing_page_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_landing_page_id", values[i])
 			} else if value.Valid {
-				_m.LanguageLandingPageID = int(value.Int64)
+				_m.CourseLandingPageID = int(value.Int64)
 			}
 		case landingpageqnaitem.FieldQuestion:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -136,8 +136,8 @@ func (_m *LandingPageQnaItem) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("language_landing_page_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageLandingPageID))
+	builder.WriteString("course_landing_page_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseLandingPageID))
 	builder.WriteString(", ")
 	if v := _m.Question; v != nil {
 		builder.WriteString("question=")

@@ -40,7 +40,7 @@ func (CourseLesson) Fields() []ent.Field {
 		field.Int("natural_order").Optional().Nillable(),
 		// Written by the loader: the owning course and the module the lesson
 		// currently belongs to (a lesson can move modules across rebuilds).
-		field.Int("language_id").Optional().Nillable(),
+		field.Int("course_id").StorageKey("language_id").Optional().Nillable(),
 		field.Int("module_id").Optional().Nillable(),
 		field.String("state").Optional().Nillable(),
 	}
@@ -55,7 +55,7 @@ func (CourseLesson) Edges() []ent.Edge {
 
 func (CourseLesson) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("language_id", "slug").Unique(),
+		index.Fields("course_id", "slug").Unique(),
 	}
 }
 

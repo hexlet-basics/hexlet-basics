@@ -448,7 +448,7 @@ func (_q *CourseLessonReviewQuery) loadCourse(ctx context.Context, query *Course
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*CourseLessonReview)
 	for i := range nodes {
-		fk := nodes[i].LanguageID
+		fk := nodes[i].CourseID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -465,7 +465,7 @@ func (_q *CourseLessonReviewQuery) loadCourse(ctx context.Context, query *Course
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "course_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -477,7 +477,7 @@ func (_q *CourseLessonReviewQuery) loadLesson(ctx context.Context, query *Course
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*CourseLessonReview)
 	for i := range nodes {
-		fk := nodes[i].LanguageLessonID
+		fk := nodes[i].CourseLessonID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -494,7 +494,7 @@ func (_q *CourseLessonReviewQuery) loadLesson(ctx context.Context, query *Course
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_lesson_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "course_lesson_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -529,10 +529,10 @@ func (_q *CourseLessonReviewQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if _q.withCourse != nil {
-			_spec.Node.AddColumnOnce(courselessonreview.FieldLanguageID)
+			_spec.Node.AddColumnOnce(courselessonreview.FieldCourseID)
 		}
 		if _q.withLesson != nil {
-			_spec.Node.AddColumnOnce(courselessonreview.FieldLanguageLessonID)
+			_spec.Node.AddColumnOnce(courselessonreview.FieldCourseLessonID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

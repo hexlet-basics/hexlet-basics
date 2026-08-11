@@ -17,8 +17,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldLanguageCategoryID holds the string denoting the language_category_id field in the database.
-	FieldLanguageCategoryID = "language_category_id"
+	// FieldCourseCategoryID holds the string denoting the course_category_id field in the database.
+	FieldCourseCategoryID = "language_category_id"
 	// FieldQuestion holds the string denoting the question field in the database.
 	FieldQuestion = "question"
 	// FieldAnswer holds the string denoting the answer field in the database.
@@ -32,7 +32,7 @@ var Columns = []string{
 	FieldID,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-	FieldLanguageCategoryID,
+	FieldCourseCategoryID,
 	FieldQuestion,
 	FieldAnswer,
 }
@@ -74,9 +74,9 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByLanguageCategoryID orders the results by the language_category_id field.
-func ByLanguageCategoryID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageCategoryID, opts...).ToFunc()
+// ByCourseCategoryID orders the results by the course_category_id field.
+func ByCourseCategoryID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseCategoryID, opts...).ToFunc()
 }
 
 // ByQuestion orders the results by the question field.

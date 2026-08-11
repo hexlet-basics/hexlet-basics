@@ -36,10 +36,10 @@ type BlogPost struct {
 	RichBody string `json:"rich_body,omitempty"`
 	// CreatorID holds the value of the "creator_id" field.
 	CreatorID int `json:"creator_id,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID *int `json:"language_id,omitempty"`
-	// RelatedLanguageItemsCount holds the value of the "related_language_items_count" field.
-	RelatedLanguageItemsCount int `json:"related_language_items_count,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID *int `json:"course_id,omitempty"`
+	// RelatedCourseItemsCount holds the value of the "related_course_items_count" field.
+	RelatedCourseItemsCount int `json:"related_course_items_count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BlogPostQuery when eager-loading is set.
 	Edges        BlogPostEdges `json:"edges"`
@@ -71,7 +71,7 @@ func (*BlogPost) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case blogpost.FieldID, blogpost.FieldCreatorID, blogpost.FieldLanguageID, blogpost.FieldRelatedLanguageItemsCount:
+		case blogpost.FieldID, blogpost.FieldCreatorID, blogpost.FieldCourseID, blogpost.FieldRelatedCourseItemsCount:
 			values[i] = new(sql.NullInt64)
 		case blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldDescription, blogpost.FieldLocale, blogpost.FieldState, blogpost.FieldRichBody:
 			values[i] = new(sql.NullString)
@@ -157,18 +157,18 @@ func (_m *BlogPost) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.CreatorID = int(value.Int64)
 			}
-		case blogpost.FieldLanguageID:
+		case blogpost.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = new(int)
-				*_m.LanguageID = int(value.Int64)
+				_m.CourseID = new(int)
+				*_m.CourseID = int(value.Int64)
 			}
-		case blogpost.FieldRelatedLanguageItemsCount:
+		case blogpost.FieldRelatedCourseItemsCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field related_language_items_count", values[i])
+				return fmt.Errorf("unexpected type %T for field related_course_items_count", values[i])
 			} else if value.Valid {
-				_m.RelatedLanguageItemsCount = int(value.Int64)
+				_m.RelatedCourseItemsCount = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -248,13 +248,13 @@ func (_m *BlogPost) String() string {
 	builder.WriteString("creator_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.CreatorID))
 	builder.WriteString(", ")
-	if v := _m.LanguageID; v != nil {
-		builder.WriteString("language_id=")
+	if v := _m.CourseID; v != nil {
+		builder.WriteString("course_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("related_language_items_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.RelatedLanguageItemsCount))
+	builder.WriteString("related_course_items_count=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RelatedCourseItemsCount))
 	builder.WriteByte(')')
 	return builder.String()
 }

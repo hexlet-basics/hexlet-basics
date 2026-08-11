@@ -50,16 +50,16 @@ func (_u *LessonProgressUpdate) AddUserID(v int) *LessonProgressUpdate {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *LessonProgressUpdate) SetLanguageID(v int) *LessonProgressUpdate {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *LessonProgressUpdate) SetCourseID(v int) *LessonProgressUpdate {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *LessonProgressUpdate) SetNillableLanguageID(v *int) *LessonProgressUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *LessonProgressUpdate) SetNillableCourseID(v *int) *LessonProgressUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -122,12 +122,6 @@ func (_u *LessonProgressUpdate) AddMessagesCount(v int) *LessonProgressUpdate {
 // ClearMessagesCount clears the value of the "messages_count" field.
 func (_u *LessonProgressUpdate) ClearMessagesCount() *LessonProgressUpdate {
 	_u.mutation.ClearMessagesCount()
-	return _u
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *LessonProgressUpdate) SetCourseID(id int) *LessonProgressUpdate {
-	_u.mutation.SetCourseID(id)
 	return _u
 }
 
@@ -328,16 +322,16 @@ func (_u *LessonProgressUpdateOne) AddUserID(v int) *LessonProgressUpdateOne {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *LessonProgressUpdateOne) SetLanguageID(v int) *LessonProgressUpdateOne {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *LessonProgressUpdateOne) SetCourseID(v int) *LessonProgressUpdateOne {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *LessonProgressUpdateOne) SetNillableLanguageID(v *int) *LessonProgressUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *LessonProgressUpdateOne) SetNillableCourseID(v *int) *LessonProgressUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -400,12 +394,6 @@ func (_u *LessonProgressUpdateOne) AddMessagesCount(v int) *LessonProgressUpdate
 // ClearMessagesCount clears the value of the "messages_count" field.
 func (_u *LessonProgressUpdateOne) ClearMessagesCount() *LessonProgressUpdateOne {
 	_u.mutation.ClearMessagesCount()
-	return _u
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *LessonProgressUpdateOne) SetCourseID(id int) *LessonProgressUpdateOne {
-	_u.mutation.SetCourseID(id)
 	return _u
 }
 

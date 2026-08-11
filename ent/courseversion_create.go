@@ -191,9 +191,9 @@ func (_c *CourseVersionCreate) SetNillableLessonsCount(v *int) *CourseVersionCre
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *CourseVersionCreate) SetLanguageID(v int) *CourseVersionCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *CourseVersionCreate) SetCourseID(v int) *CourseVersionCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
@@ -272,8 +272,8 @@ func (_c *CourseVersionCreate) check() error {
 	if _, ok := _c.mutation.LessonsCount(); !ok {
 		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "CourseVersion.lessons_count"`)}
 	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "CourseVersion.language_id"`)}
+	if _, ok := _c.mutation.CourseID(); !ok {
+		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "CourseVersion.course_id"`)}
 	}
 	return nil
 }
@@ -350,9 +350,9 @@ func (_c *CourseVersionCreate) createSpec() (*CourseVersion, *sqlgraph.CreateSpe
 		_spec.SetField(courseversion.FieldLessonsCount, field.TypeInt, value)
 		_node.LessonsCount = value
 	}
-	if value, ok := _c.mutation.LanguageID(); ok {
-		_spec.SetField(courseversion.FieldLanguageID, field.TypeInt, value)
-		_node.LanguageID = value
+	if value, ok := _c.mutation.CourseID(); ok {
+		_spec.SetField(courseversion.FieldCourseID, field.TypeInt, value)
+		_node.CourseID = value
 	}
 	if nodes := _c.mutation.CurrentCoursesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -614,21 +614,21 @@ func (u *CourseVersionUpsert) AddLessonsCount(v int) *CourseVersionUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseVersionUpsert) SetLanguageID(v int) *CourseVersionUpsert {
-	u.Set(courseversion.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *CourseVersionUpsert) SetCourseID(v int) *CourseVersionUpsert {
+	u.Set(courseversion.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseVersionUpsert) UpdateLanguageID() *CourseVersionUpsert {
-	u.SetExcluded(courseversion.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseVersionUpsert) UpdateCourseID() *CourseVersionUpsert {
+	u.SetExcluded(courseversion.FieldCourseID)
 	return u
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *CourseVersionUpsert) AddLanguageID(v int) *CourseVersionUpsert {
-	u.Add(courseversion.FieldLanguageID, v)
+// AddCourseID adds v to the "course_id" field.
+func (u *CourseVersionUpsert) AddCourseID(v int) *CourseVersionUpsert {
+	u.Add(courseversion.FieldCourseID, v)
 	return u
 }
 
@@ -901,24 +901,24 @@ func (u *CourseVersionUpsertOne) UpdateLessonsCount() *CourseVersionUpsertOne {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseVersionUpsertOne) SetLanguageID(v int) *CourseVersionUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *CourseVersionUpsertOne) SetCourseID(v int) *CourseVersionUpsertOne {
 	return u.Update(func(s *CourseVersionUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *CourseVersionUpsertOne) AddLanguageID(v int) *CourseVersionUpsertOne {
+// AddCourseID adds v to the "course_id" field.
+func (u *CourseVersionUpsertOne) AddCourseID(v int) *CourseVersionUpsertOne {
 	return u.Update(func(s *CourseVersionUpsert) {
-		s.AddLanguageID(v)
+		s.AddCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseVersionUpsertOne) UpdateLanguageID() *CourseVersionUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseVersionUpsertOne) UpdateCourseID() *CourseVersionUpsertOne {
 	return u.Update(func(s *CourseVersionUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
@@ -1357,24 +1357,24 @@ func (u *CourseVersionUpsertBulk) UpdateLessonsCount() *CourseVersionUpsertBulk 
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseVersionUpsertBulk) SetLanguageID(v int) *CourseVersionUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *CourseVersionUpsertBulk) SetCourseID(v int) *CourseVersionUpsertBulk {
 	return u.Update(func(s *CourseVersionUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *CourseVersionUpsertBulk) AddLanguageID(v int) *CourseVersionUpsertBulk {
+// AddCourseID adds v to the "course_id" field.
+func (u *CourseVersionUpsertBulk) AddCourseID(v int) *CourseVersionUpsertBulk {
 	return u.Update(func(s *CourseVersionUpsert) {
-		s.AddLanguageID(v)
+		s.AddCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseVersionUpsertBulk) UpdateLanguageID() *CourseVersionUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseVersionUpsertBulk) UpdateCourseID() *CourseVersionUpsertBulk {
 	return u.Update(func(s *CourseVersionUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 

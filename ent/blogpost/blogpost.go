@@ -32,10 +32,10 @@ const (
 	FieldRichBody = "rich_body"
 	// FieldCreatorID holds the string denoting the creator_id field in the database.
 	FieldCreatorID = "creator_id"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
-	// FieldRelatedLanguageItemsCount holds the string denoting the related_language_items_count field in the database.
-	FieldRelatedLanguageItemsCount = "related_language_items_count"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
+	// FieldRelatedCourseItemsCount holds the string denoting the related_course_items_count field in the database.
+	FieldRelatedCourseItemsCount = "related_language_items_count"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// Table holds the table name of the blogpost in the database.
@@ -61,8 +61,8 @@ var Columns = []string{
 	FieldState,
 	FieldRichBody,
 	FieldCreatorID,
-	FieldLanguageID,
-	FieldRelatedLanguageItemsCount,
+	FieldCourseID,
+	FieldRelatedCourseItemsCount,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -84,8 +84,8 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultRichBody holds the default value on creation for the "rich_body" field.
 	DefaultRichBody string
-	// DefaultRelatedLanguageItemsCount holds the default value on creation for the "related_language_items_count" field.
-	DefaultRelatedLanguageItemsCount int
+	// DefaultRelatedCourseItemsCount holds the default value on creation for the "related_course_items_count" field.
+	DefaultRelatedCourseItemsCount int
 )
 
 // OrderOption defines the ordering options for the BlogPost queries.
@@ -141,14 +141,14 @@ func ByCreatorID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatorID, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
-// ByRelatedLanguageItemsCount orders the results by the related_language_items_count field.
-func ByRelatedLanguageItemsCount(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRelatedLanguageItemsCount, opts...).ToFunc()
+// ByRelatedCourseItemsCount orders the results by the related_course_items_count field.
+func ByRelatedCourseItemsCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRelatedCourseItemsCount, opts...).ToFunc()
 }
 
 // ByCreatorField orders the results by creator field.

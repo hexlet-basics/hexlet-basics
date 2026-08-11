@@ -30,7 +30,7 @@ func (LandingPage) Annotations() []schema.Annotation {
 
 func (LandingPage) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_id").
+		field.Int("course_id").StorageKey("language_id").
 			Annotations(AdminInputField{Rename: "CourseId"}),
 		field.String("slug").Optional().Nillable(),
 		field.String("header").Optional().Nillable(),
@@ -60,7 +60,7 @@ func (LandingPage) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("course", Course.Type).
 			Ref("landing_pages").
-			Field("language_id").
+			Field("course_id").
 			Unique().
 			Required(),
 	}

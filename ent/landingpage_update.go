@@ -35,16 +35,16 @@ func (_u *LandingPageUpdate) SetUpdatedAt(v time.Time) *LandingPageUpdate {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *LandingPageUpdate) SetLanguageID(v int) *LandingPageUpdate {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *LandingPageUpdate) SetCourseID(v int) *LandingPageUpdate {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableLanguageID(v *int) *LandingPageUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableCourseID(v *int) *LandingPageUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -416,12 +416,6 @@ func (_u *LandingPageUpdate) ClearLandingPageToRedirectID() *LandingPageUpdate {
 	return _u
 }
 
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *LandingPageUpdate) SetCourseID(id int) *LandingPageUpdate {
-	_u.mutation.SetCourseID(id)
-	return _u
-}
-
 // SetCourse sets the "course" edge to the Course entity.
 func (_u *LandingPageUpdate) SetCourse(v *Course) *LandingPageUpdate {
 	return _u.SetCourseID(v.ID)
@@ -663,16 +657,16 @@ func (_u *LandingPageUpdateOne) SetUpdatedAt(v time.Time) *LandingPageUpdateOne 
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *LandingPageUpdateOne) SetLanguageID(v int) *LandingPageUpdateOne {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *LandingPageUpdateOne) SetCourseID(v int) *LandingPageUpdateOne {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableLanguageID(v *int) *LandingPageUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableCourseID(v *int) *LandingPageUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -1041,12 +1035,6 @@ func (_u *LandingPageUpdateOne) AddLandingPageToRedirectID(v int) *LandingPageUp
 // ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
 func (_u *LandingPageUpdateOne) ClearLandingPageToRedirectID() *LandingPageUpdateOne {
 	_u.mutation.ClearLandingPageToRedirectID()
-	return _u
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *LandingPageUpdateOne) SetCourseID(id int) *LandingPageUpdateOne {
-	_u.mutation.SetCourseID(id)
 	return _u
 }
 

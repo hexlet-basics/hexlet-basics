@@ -20,7 +20,7 @@ import (
 func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.AdminListCategoryQnaItemsParams) (api.AdminListCategoryQnaItemsRes, error) {
 	items, err := listAll(ctx,
 		s.db.CategoryQnaItem.Query().
-			Where(categoryqnaitem.LanguageCategoryID(int(params.CategoryId))).
+			Where(categoryqnaitem.CourseCategoryID(int(params.CategoryId))).
 			Order(ent.Asc(categoryqnaitem.FieldID)).
 			All,
 		s.conv.ToCategoryQnaItems,
@@ -34,7 +34,7 @@ func (s *Server) AdminListCategoryQnaItems(ctx context.Context, params api.Admin
 
 func (s *Server) AdminCreateCategoryQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateCategoryQnaItemParams) (api.AdminCreateCategoryQnaItemRes, error) {
 	row, err := s.db.CategoryQnaItem.Create().
-		SetLanguageCategoryID(int(params.CategoryId)).
+		SetCourseCategoryID(int(params.CategoryId)).
 		SetInput(req).
 		Save(ctx)
 	if err != nil {
@@ -50,7 +50,7 @@ func (s *Server) AdminUpdateCategoryQnaItem(ctx context.Context, req *api.QnaIte
 	row, err := s.db.CategoryQnaItem.Query().
 		Where(
 			categoryqnaitem.ID(int(params.ID)),
-			categoryqnaitem.LanguageCategoryID(int(params.CategoryId)),
+			categoryqnaitem.CourseCategoryID(int(params.CategoryId)),
 		).
 		Only(ctx)
 	if err != nil {
@@ -69,7 +69,7 @@ func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.Admi
 	row, err := s.db.CategoryQnaItem.Query().
 		Where(
 			categoryqnaitem.ID(int(params.ID)),
-			categoryqnaitem.LanguageCategoryID(int(params.CategoryId)),
+			categoryqnaitem.CourseCategoryID(int(params.CategoryId)),
 		).
 		Only(ctx)
 	if err != nil {
@@ -86,7 +86,7 @@ func (s *Server) AdminDeleteCategoryQnaItem(ctx context.Context, params api.Admi
 func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.AdminListLandingPageQnaItemsParams) (api.AdminListLandingPageQnaItemsRes, error) {
 	items, err := listAll(ctx,
 		s.db.LandingPageQnaItem.Query().
-			Where(landingpageqnaitem.LanguageLandingPageID(int(params.LandingPageId))).
+			Where(landingpageqnaitem.CourseLandingPageID(int(params.LandingPageId))).
 			Order(ent.Asc(landingpageqnaitem.FieldID)).
 			All,
 		s.conv.ToLandingPageQnaItems,
@@ -100,7 +100,7 @@ func (s *Server) AdminListLandingPageQnaItems(ctx context.Context, params api.Ad
 
 func (s *Server) AdminCreateLandingPageQnaItem(ctx context.Context, req *api.QnaItemInput, params api.AdminCreateLandingPageQnaItemParams) (api.AdminCreateLandingPageQnaItemRes, error) {
 	row, err := s.db.LandingPageQnaItem.Create().
-		SetLanguageLandingPageID(int(params.LandingPageId)).
+		SetCourseLandingPageID(int(params.LandingPageId)).
 		SetInput(req).
 		Save(ctx)
 	if err != nil {
@@ -114,7 +114,7 @@ func (s *Server) AdminUpdateLandingPageQnaItem(ctx context.Context, req *api.Qna
 	row, err := s.db.LandingPageQnaItem.Query().
 		Where(
 			landingpageqnaitem.ID(int(params.ID)),
-			landingpageqnaitem.LanguageLandingPageID(int(params.LandingPageId)),
+			landingpageqnaitem.CourseLandingPageID(int(params.LandingPageId)),
 		).
 		Only(ctx)
 	if err != nil {
@@ -133,7 +133,7 @@ func (s *Server) AdminDeleteLandingPageQnaItem(ctx context.Context, params api.A
 	row, err := s.db.LandingPageQnaItem.Query().
 		Where(
 			landingpageqnaitem.ID(int(params.ID)),
-			landingpageqnaitem.LanguageLandingPageID(int(params.LandingPageId)),
+			landingpageqnaitem.CourseLandingPageID(int(params.LandingPageId)),
 		).
 		Only(ctx)
 	if err != nil {

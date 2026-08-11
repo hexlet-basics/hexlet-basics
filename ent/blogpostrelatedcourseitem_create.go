@@ -58,9 +58,9 @@ func (_c *BlogPostRelatedCourseItemCreate) SetBlogPostID(v int) *BlogPostRelated
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *BlogPostRelatedCourseItemCreate) SetLanguageID(v int) *BlogPostRelatedCourseItemCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *BlogPostRelatedCourseItemCreate) SetCourseID(v int) *BlogPostRelatedCourseItemCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
@@ -87,12 +87,6 @@ func (_c *BlogPostRelatedCourseItemCreate) SetPostID(id int) *BlogPostRelatedCou
 // SetPost sets the "post" edge to the BlogPost entity.
 func (_c *BlogPostRelatedCourseItemCreate) SetPost(v *BlogPost) *BlogPostRelatedCourseItemCreate {
 	return _c.SetPostID(v.ID)
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_c *BlogPostRelatedCourseItemCreate) SetCourseID(id int) *BlogPostRelatedCourseItemCreate {
-	_c.mutation.SetCourseID(id)
-	return _c
 }
 
 // SetCourse sets the "course" edge to the Course entity.
@@ -156,8 +150,8 @@ func (_c *BlogPostRelatedCourseItemCreate) check() error {
 	if _, ok := _c.mutation.BlogPostID(); !ok {
 		return &ValidationError{Name: "blog_post_id", err: errors.New(`ent: missing required field "BlogPostRelatedCourseItem.blog_post_id"`)}
 	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "BlogPostRelatedCourseItem.language_id"`)}
+	if _, ok := _c.mutation.CourseID(); !ok {
+		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "BlogPostRelatedCourseItem.course_id"`)}
 	}
 	if len(_c.mutation.PostIDs()) == 0 {
 		return &ValidationError{Name: "post", err: errors.New(`ent: missing required edge "BlogPostRelatedCourseItem.post"`)}
@@ -235,7 +229,7 @@ func (_c *BlogPostRelatedCourseItemCreate) createSpec() (*BlogPostRelatedCourseI
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageID = nodes[0]
+		_node.CourseID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -314,15 +308,15 @@ func (u *BlogPostRelatedCourseItemUpsert) UpdateBlogPostID() *BlogPostRelatedCou
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *BlogPostRelatedCourseItemUpsert) SetLanguageID(v int) *BlogPostRelatedCourseItemUpsert {
-	u.Set(blogpostrelatedcourseitem.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *BlogPostRelatedCourseItemUpsert) SetCourseID(v int) *BlogPostRelatedCourseItemUpsert {
+	u.Set(blogpostrelatedcourseitem.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *BlogPostRelatedCourseItemUpsert) UpdateLanguageID() *BlogPostRelatedCourseItemUpsert {
-	u.SetExcluded(blogpostrelatedcourseitem.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *BlogPostRelatedCourseItemUpsert) UpdateCourseID() *BlogPostRelatedCourseItemUpsert {
+	u.SetExcluded(blogpostrelatedcourseitem.FieldCourseID)
 	return u
 }
 
@@ -423,17 +417,17 @@ func (u *BlogPostRelatedCourseItemUpsertOne) UpdateBlogPostID() *BlogPostRelated
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *BlogPostRelatedCourseItemUpsertOne) SetLanguageID(v int) *BlogPostRelatedCourseItemUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *BlogPostRelatedCourseItemUpsertOne) SetCourseID(v int) *BlogPostRelatedCourseItemUpsertOne {
 	return u.Update(func(s *BlogPostRelatedCourseItemUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *BlogPostRelatedCourseItemUpsertOne) UpdateLanguageID() *BlogPostRelatedCourseItemUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *BlogPostRelatedCourseItemUpsertOne) UpdateCourseID() *BlogPostRelatedCourseItemUpsertOne {
 	return u.Update(func(s *BlogPostRelatedCourseItemUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
@@ -704,17 +698,17 @@ func (u *BlogPostRelatedCourseItemUpsertBulk) UpdateBlogPostID() *BlogPostRelate
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *BlogPostRelatedCourseItemUpsertBulk) SetLanguageID(v int) *BlogPostRelatedCourseItemUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *BlogPostRelatedCourseItemUpsertBulk) SetCourseID(v int) *BlogPostRelatedCourseItemUpsertBulk {
 	return u.Update(func(s *BlogPostRelatedCourseItemUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *BlogPostRelatedCourseItemUpsertBulk) UpdateLanguageID() *BlogPostRelatedCourseItemUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *BlogPostRelatedCourseItemUpsertBulk) UpdateCourseID() *BlogPostRelatedCourseItemUpsertBulk {
 	return u.Update(func(s *BlogPostRelatedCourseItemUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 

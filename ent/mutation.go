@@ -1342,13 +1342,13 @@ func (m *AiChatMutation) ResetUserID() {
 	m.user = nil
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (m *AiChatMutation) SetLanguageLessonMemberID(i int) {
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (m *AiChatMutation) SetLessonProgressID(i int) {
 	m.lesson_progress = &i
 }
 
-// LanguageLessonMemberID returns the value of the "language_lesson_member_id" field in the mutation.
-func (m *AiChatMutation) LanguageLessonMemberID() (r int, exists bool) {
+// LessonProgressID returns the value of the "lesson_progress_id" field in the mutation.
+func (m *AiChatMutation) LessonProgressID() (r int, exists bool) {
 	v := m.lesson_progress
 	if v == nil {
 		return
@@ -1356,50 +1356,37 @@ func (m *AiChatMutation) LanguageLessonMemberID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageLessonMemberID returns the old "language_lesson_member_id" field's value of the AiChat entity.
+// OldLessonProgressID returns the old "lesson_progress_id" field's value of the AiChat entity.
 // If the AiChat object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AiChatMutation) OldLanguageLessonMemberID(ctx context.Context) (v int, err error) {
+func (m *AiChatMutation) OldLessonProgressID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageLessonMemberID is only allowed on UpdateOne operations")
+		return v, errors.New("OldLessonProgressID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageLessonMemberID requires an ID field in the mutation")
+		return v, errors.New("OldLessonProgressID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageLessonMemberID: %w", err)
+		return v, fmt.Errorf("querying old value for OldLessonProgressID: %w", err)
 	}
-	return oldValue.LanguageLessonMemberID, nil
+	return oldValue.LessonProgressID, nil
 }
 
-// ResetLanguageLessonMemberID resets all changes to the "language_lesson_member_id" field.
-func (m *AiChatMutation) ResetLanguageLessonMemberID() {
+// ResetLessonProgressID resets all changes to the "lesson_progress_id" field.
+func (m *AiChatMutation) ResetLessonProgressID() {
 	m.lesson_progress = nil
-}
-
-// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by id.
-func (m *AiChatMutation) SetLessonProgressID(id int) {
-	m.lesson_progress = &id
 }
 
 // ClearLessonProgress clears the "lesson_progress" edge to the LessonProgress entity.
 func (m *AiChatMutation) ClearLessonProgress() {
 	m.clearedlesson_progress = true
-	m.clearedFields[aichat.FieldLanguageLessonMemberID] = struct{}{}
+	m.clearedFields[aichat.FieldLessonProgressID] = struct{}{}
 }
 
 // LessonProgressCleared reports if the "lesson_progress" edge to the LessonProgress entity was cleared.
 func (m *AiChatMutation) LessonProgressCleared() bool {
 	return m.clearedlesson_progress
-}
-
-// LessonProgressID returns the "lesson_progress" edge ID in the mutation.
-func (m *AiChatMutation) LessonProgressID() (id int, exists bool) {
-	if m.lesson_progress != nil {
-		return *m.lesson_progress, true
-	}
-	return
 }
 
 // LessonProgressIDs returns the "lesson_progress" edge IDs in the mutation.
@@ -1490,7 +1477,7 @@ func (m *AiChatMutation) Fields() []string {
 		fields = append(fields, aichat.FieldUserID)
 	}
 	if m.lesson_progress != nil {
-		fields = append(fields, aichat.FieldLanguageLessonMemberID)
+		fields = append(fields, aichat.FieldLessonProgressID)
 	}
 	return fields
 }
@@ -1506,8 +1493,8 @@ func (m *AiChatMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case aichat.FieldUserID:
 		return m.UserID()
-	case aichat.FieldLanguageLessonMemberID:
-		return m.LanguageLessonMemberID()
+	case aichat.FieldLessonProgressID:
+		return m.LessonProgressID()
 	}
 	return nil, false
 }
@@ -1523,8 +1510,8 @@ func (m *AiChatMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldUpdatedAt(ctx)
 	case aichat.FieldUserID:
 		return m.OldUserID(ctx)
-	case aichat.FieldLanguageLessonMemberID:
-		return m.OldLanguageLessonMemberID(ctx)
+	case aichat.FieldLessonProgressID:
+		return m.OldLessonProgressID(ctx)
 	}
 	return nil, fmt.Errorf("unknown AiChat field %s", name)
 }
@@ -1555,12 +1542,12 @@ func (m *AiChatMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUserID(v)
 		return nil
-	case aichat.FieldLanguageLessonMemberID:
+	case aichat.FieldLessonProgressID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageLessonMemberID(v)
+		m.SetLessonProgressID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AiChat field %s", name)
@@ -1623,8 +1610,8 @@ func (m *AiChatMutation) ResetField(name string) error {
 	case aichat.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case aichat.FieldLanguageLessonMemberID:
-		m.ResetLanguageLessonMemberID()
+	case aichat.FieldLessonProgressID:
+		m.ResetLessonProgressID()
 		return nil
 	}
 	return fmt.Errorf("unknown AiChat field %s", name)
@@ -4076,27 +4063,27 @@ func (m *BannerMutation) ResetEdge(name string) error {
 // BlogPostMutation represents an operation that mutates the BlogPost nodes in the graph.
 type BlogPostMutation struct {
 	config
-	op                              Op
-	typ                             string
-	id                              *int
-	created_at                      *time.Time
-	updated_at                      *time.Time
-	name                            *string
-	slug                            *string
-	description                     *string
-	locale                          *string
-	state                           *string
-	rich_body                       *string
-	language_id                     *int
-	addlanguage_id                  *int
-	related_language_items_count    *int
-	addrelated_language_items_count *int
-	clearedFields                   map[string]struct{}
-	creator                         *int
-	clearedcreator                  bool
-	done                            bool
-	oldValue                        func(context.Context) (*BlogPost, error)
-	predicates                      []predicate.BlogPost
+	op                            Op
+	typ                           string
+	id                            *int
+	created_at                    *time.Time
+	updated_at                    *time.Time
+	name                          *string
+	slug                          *string
+	description                   *string
+	locale                        *string
+	state                         *string
+	rich_body                     *string
+	course_id                     *int
+	addcourse_id                  *int
+	related_course_items_count    *int
+	addrelated_course_items_count *int
+	clearedFields                 map[string]struct{}
+	creator                       *int
+	clearedcreator                bool
+	done                          bool
+	oldValue                      func(context.Context) (*BlogPost, error)
+	predicates                    []predicate.BlogPost
 }
 
 var _ ent.Mutation = (*BlogPostMutation)(nil)
@@ -4586,130 +4573,130 @@ func (m *BlogPostMutation) ResetCreatorID() {
 	m.creator = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *BlogPostMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *BlogPostMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *BlogPostMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *BlogPostMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the BlogPost entity.
+// OldCourseID returns the old "course_id" field's value of the BlogPost entity.
 // If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlogPostMutation) OldLanguageID(ctx context.Context) (v *int, err error) {
+func (m *BlogPostMutation) OldCourseID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *BlogPostMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *BlogPostMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *BlogPostMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *BlogPostMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (m *BlogPostMutation) ClearLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
-	m.clearedFields[blogpost.FieldLanguageID] = struct{}{}
+// ClearCourseID clears the value of the "course_id" field.
+func (m *BlogPostMutation) ClearCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
+	m.clearedFields[blogpost.FieldCourseID] = struct{}{}
 }
 
-// LanguageIDCleared returns if the "language_id" field was cleared in this mutation.
-func (m *BlogPostMutation) LanguageIDCleared() bool {
-	_, ok := m.clearedFields[blogpost.FieldLanguageID]
+// CourseIDCleared returns if the "course_id" field was cleared in this mutation.
+func (m *BlogPostMutation) CourseIDCleared() bool {
+	_, ok := m.clearedFields[blogpost.FieldCourseID]
 	return ok
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *BlogPostMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
-	delete(m.clearedFields, blogpost.FieldLanguageID)
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *BlogPostMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
+	delete(m.clearedFields, blogpost.FieldCourseID)
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (m *BlogPostMutation) SetRelatedLanguageItemsCount(i int) {
-	m.related_language_items_count = &i
-	m.addrelated_language_items_count = nil
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (m *BlogPostMutation) SetRelatedCourseItemsCount(i int) {
+	m.related_course_items_count = &i
+	m.addrelated_course_items_count = nil
 }
 
-// RelatedLanguageItemsCount returns the value of the "related_language_items_count" field in the mutation.
-func (m *BlogPostMutation) RelatedLanguageItemsCount() (r int, exists bool) {
-	v := m.related_language_items_count
+// RelatedCourseItemsCount returns the value of the "related_course_items_count" field in the mutation.
+func (m *BlogPostMutation) RelatedCourseItemsCount() (r int, exists bool) {
+	v := m.related_course_items_count
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRelatedLanguageItemsCount returns the old "related_language_items_count" field's value of the BlogPost entity.
+// OldRelatedCourseItemsCount returns the old "related_course_items_count" field's value of the BlogPost entity.
 // If the BlogPost object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlogPostMutation) OldRelatedLanguageItemsCount(ctx context.Context) (v int, err error) {
+func (m *BlogPostMutation) OldRelatedCourseItemsCount(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRelatedLanguageItemsCount is only allowed on UpdateOne operations")
+		return v, errors.New("OldRelatedCourseItemsCount is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRelatedLanguageItemsCount requires an ID field in the mutation")
+		return v, errors.New("OldRelatedCourseItemsCount requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRelatedLanguageItemsCount: %w", err)
+		return v, fmt.Errorf("querying old value for OldRelatedCourseItemsCount: %w", err)
 	}
-	return oldValue.RelatedLanguageItemsCount, nil
+	return oldValue.RelatedCourseItemsCount, nil
 }
 
-// AddRelatedLanguageItemsCount adds i to the "related_language_items_count" field.
-func (m *BlogPostMutation) AddRelatedLanguageItemsCount(i int) {
-	if m.addrelated_language_items_count != nil {
-		*m.addrelated_language_items_count += i
+// AddRelatedCourseItemsCount adds i to the "related_course_items_count" field.
+func (m *BlogPostMutation) AddRelatedCourseItemsCount(i int) {
+	if m.addrelated_course_items_count != nil {
+		*m.addrelated_course_items_count += i
 	} else {
-		m.addrelated_language_items_count = &i
+		m.addrelated_course_items_count = &i
 	}
 }
 
-// AddedRelatedLanguageItemsCount returns the value that was added to the "related_language_items_count" field in this mutation.
-func (m *BlogPostMutation) AddedRelatedLanguageItemsCount() (r int, exists bool) {
-	v := m.addrelated_language_items_count
+// AddedRelatedCourseItemsCount returns the value that was added to the "related_course_items_count" field in this mutation.
+func (m *BlogPostMutation) AddedRelatedCourseItemsCount() (r int, exists bool) {
+	v := m.addrelated_course_items_count
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRelatedLanguageItemsCount resets all changes to the "related_language_items_count" field.
-func (m *BlogPostMutation) ResetRelatedLanguageItemsCount() {
-	m.related_language_items_count = nil
-	m.addrelated_language_items_count = nil
+// ResetRelatedCourseItemsCount resets all changes to the "related_course_items_count" field.
+func (m *BlogPostMutation) ResetRelatedCourseItemsCount() {
+	m.related_course_items_count = nil
+	m.addrelated_course_items_count = nil
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -4801,11 +4788,11 @@ func (m *BlogPostMutation) Fields() []string {
 	if m.creator != nil {
 		fields = append(fields, blogpost.FieldCreatorID)
 	}
-	if m.language_id != nil {
-		fields = append(fields, blogpost.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, blogpost.FieldCourseID)
 	}
-	if m.related_language_items_count != nil {
-		fields = append(fields, blogpost.FieldRelatedLanguageItemsCount)
+	if m.related_course_items_count != nil {
+		fields = append(fields, blogpost.FieldRelatedCourseItemsCount)
 	}
 	return fields
 }
@@ -4833,10 +4820,10 @@ func (m *BlogPostMutation) Field(name string) (ent.Value, bool) {
 		return m.RichBody()
 	case blogpost.FieldCreatorID:
 		return m.CreatorID()
-	case blogpost.FieldLanguageID:
-		return m.LanguageID()
-	case blogpost.FieldRelatedLanguageItemsCount:
-		return m.RelatedLanguageItemsCount()
+	case blogpost.FieldCourseID:
+		return m.CourseID()
+	case blogpost.FieldRelatedCourseItemsCount:
+		return m.RelatedCourseItemsCount()
 	}
 	return nil, false
 }
@@ -4864,10 +4851,10 @@ func (m *BlogPostMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldRichBody(ctx)
 	case blogpost.FieldCreatorID:
 		return m.OldCreatorID(ctx)
-	case blogpost.FieldLanguageID:
-		return m.OldLanguageID(ctx)
-	case blogpost.FieldRelatedLanguageItemsCount:
-		return m.OldRelatedLanguageItemsCount(ctx)
+	case blogpost.FieldCourseID:
+		return m.OldCourseID(ctx)
+	case blogpost.FieldRelatedCourseItemsCount:
+		return m.OldRelatedCourseItemsCount(ctx)
 	}
 	return nil, fmt.Errorf("unknown BlogPost field %s", name)
 }
@@ -4940,19 +4927,19 @@ func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCreatorID(v)
 		return nil
-	case blogpost.FieldLanguageID:
+	case blogpost.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
-	case blogpost.FieldRelatedLanguageItemsCount:
+	case blogpost.FieldRelatedCourseItemsCount:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRelatedLanguageItemsCount(v)
+		m.SetRelatedCourseItemsCount(v)
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPost field %s", name)
@@ -4962,11 +4949,11 @@ func (m *BlogPostMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *BlogPostMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_id != nil {
-		fields = append(fields, blogpost.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, blogpost.FieldCourseID)
 	}
-	if m.addrelated_language_items_count != nil {
-		fields = append(fields, blogpost.FieldRelatedLanguageItemsCount)
+	if m.addrelated_course_items_count != nil {
+		fields = append(fields, blogpost.FieldRelatedCourseItemsCount)
 	}
 	return fields
 }
@@ -4976,10 +4963,10 @@ func (m *BlogPostMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *BlogPostMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case blogpost.FieldLanguageID:
-		return m.AddedLanguageID()
-	case blogpost.FieldRelatedLanguageItemsCount:
-		return m.AddedRelatedLanguageItemsCount()
+	case blogpost.FieldCourseID:
+		return m.AddedCourseID()
+	case blogpost.FieldRelatedCourseItemsCount:
+		return m.AddedRelatedCourseItemsCount()
 	}
 	return nil, false
 }
@@ -4989,19 +4976,19 @@ func (m *BlogPostMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *BlogPostMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case blogpost.FieldLanguageID:
+	case blogpost.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
-	case blogpost.FieldRelatedLanguageItemsCount:
+	case blogpost.FieldRelatedCourseItemsCount:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRelatedLanguageItemsCount(v)
+		m.AddRelatedCourseItemsCount(v)
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPost numeric field %s", name)
@@ -5026,8 +5013,8 @@ func (m *BlogPostMutation) ClearedFields() []string {
 	if m.FieldCleared(blogpost.FieldState) {
 		fields = append(fields, blogpost.FieldState)
 	}
-	if m.FieldCleared(blogpost.FieldLanguageID) {
-		fields = append(fields, blogpost.FieldLanguageID)
+	if m.FieldCleared(blogpost.FieldCourseID) {
+		fields = append(fields, blogpost.FieldCourseID)
 	}
 	return fields
 }
@@ -5058,8 +5045,8 @@ func (m *BlogPostMutation) ClearField(name string) error {
 	case blogpost.FieldState:
 		m.ClearState()
 		return nil
-	case blogpost.FieldLanguageID:
-		m.ClearLanguageID()
+	case blogpost.FieldCourseID:
+		m.ClearCourseID()
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPost nullable field %s", name)
@@ -5096,11 +5083,11 @@ func (m *BlogPostMutation) ResetField(name string) error {
 	case blogpost.FieldCreatorID:
 		m.ResetCreatorID()
 		return nil
-	case blogpost.FieldLanguageID:
-		m.ResetLanguageID()
+	case blogpost.FieldCourseID:
+		m.ResetCourseID()
 		return nil
-	case blogpost.FieldRelatedLanguageItemsCount:
-		m.ResetRelatedLanguageItemsCount()
+	case blogpost.FieldRelatedCourseItemsCount:
+		m.ResetRelatedCourseItemsCount()
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPost field %s", name)
@@ -5768,13 +5755,13 @@ func (m *BlogPostRelatedCourseItemMutation) ResetBlogPostID() {
 	m.post = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *BlogPostRelatedCourseItemMutation) SetLanguageID(i int) {
+// SetCourseID sets the "course_id" field.
+func (m *BlogPostRelatedCourseItemMutation) SetCourseID(i int) {
 	m.course = &i
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *BlogPostRelatedCourseItemMutation) LanguageID() (r int, exists bool) {
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *BlogPostRelatedCourseItemMutation) CourseID() (r int, exists bool) {
 	v := m.course
 	if v == nil {
 		return
@@ -5782,25 +5769,25 @@ func (m *BlogPostRelatedCourseItemMutation) LanguageID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the BlogPostRelatedCourseItem entity.
+// OldCourseID returns the old "course_id" field's value of the BlogPostRelatedCourseItem entity.
 // If the BlogPostRelatedCourseItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlogPostRelatedCourseItemMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *BlogPostRelatedCourseItemMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *BlogPostRelatedCourseItemMutation) ResetLanguageID() {
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *BlogPostRelatedCourseItemMutation) ResetCourseID() {
 	m.course = nil
 }
 
@@ -5914,28 +5901,15 @@ func (m *BlogPostRelatedCourseItemMutation) ResetPost() {
 	m.clearedpost = false
 }
 
-// SetCourseID sets the "course" edge to the Course entity by id.
-func (m *BlogPostRelatedCourseItemMutation) SetCourseID(id int) {
-	m.course = &id
-}
-
 // ClearCourse clears the "course" edge to the Course entity.
 func (m *BlogPostRelatedCourseItemMutation) ClearCourse() {
 	m.clearedcourse = true
-	m.clearedFields[blogpostrelatedcourseitem.FieldLanguageID] = struct{}{}
+	m.clearedFields[blogpostrelatedcourseitem.FieldCourseID] = struct{}{}
 }
 
 // CourseCleared reports if the "course" edge to the Course entity was cleared.
 func (m *BlogPostRelatedCourseItemMutation) CourseCleared() bool {
 	return m.clearedcourse
-}
-
-// CourseID returns the "course" edge ID in the mutation.
-func (m *BlogPostRelatedCourseItemMutation) CourseID() (id int, exists bool) {
-	if m.course != nil {
-		return *m.course, true
-	}
-	return
 }
 
 // CourseIDs returns the "course" edge IDs in the mutation.
@@ -5999,7 +5973,7 @@ func (m *BlogPostRelatedCourseItemMutation) Fields() []string {
 		fields = append(fields, blogpostrelatedcourseitem.FieldBlogPostID)
 	}
 	if m.course != nil {
-		fields = append(fields, blogpostrelatedcourseitem.FieldLanguageID)
+		fields = append(fields, blogpostrelatedcourseitem.FieldCourseID)
 	}
 	if m._order != nil {
 		fields = append(fields, blogpostrelatedcourseitem.FieldOrder)
@@ -6018,8 +5992,8 @@ func (m *BlogPostRelatedCourseItemMutation) Field(name string) (ent.Value, bool)
 		return m.UpdatedAt()
 	case blogpostrelatedcourseitem.FieldBlogPostID:
 		return m.BlogPostID()
-	case blogpostrelatedcourseitem.FieldLanguageID:
-		return m.LanguageID()
+	case blogpostrelatedcourseitem.FieldCourseID:
+		return m.CourseID()
 	case blogpostrelatedcourseitem.FieldOrder:
 		return m.Order()
 	}
@@ -6037,8 +6011,8 @@ func (m *BlogPostRelatedCourseItemMutation) OldField(ctx context.Context, name s
 		return m.OldUpdatedAt(ctx)
 	case blogpostrelatedcourseitem.FieldBlogPostID:
 		return m.OldBlogPostID(ctx)
-	case blogpostrelatedcourseitem.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case blogpostrelatedcourseitem.FieldCourseID:
+		return m.OldCourseID(ctx)
 	case blogpostrelatedcourseitem.FieldOrder:
 		return m.OldOrder(ctx)
 	}
@@ -6071,12 +6045,12 @@ func (m *BlogPostRelatedCourseItemMutation) SetField(name string, value ent.Valu
 		}
 		m.SetBlogPostID(v)
 		return nil
-	case blogpostrelatedcourseitem.FieldLanguageID:
+	case blogpostrelatedcourseitem.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	case blogpostrelatedcourseitem.FieldOrder:
 		v, ok := value.(int)
@@ -6167,8 +6141,8 @@ func (m *BlogPostRelatedCourseItemMutation) ResetField(name string) error {
 	case blogpostrelatedcourseitem.FieldBlogPostID:
 		m.ResetBlogPostID()
 		return nil
-	case blogpostrelatedcourseitem.FieldLanguageID:
-		m.ResetLanguageID()
+	case blogpostrelatedcourseitem.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	case blogpostrelatedcourseitem.FieldOrder:
 		m.ResetOrder()
@@ -6272,19 +6246,19 @@ func (m *BlogPostRelatedCourseItemMutation) ResetEdge(name string) error {
 // CategoryQnaItemMutation represents an operation that mutates the CategoryQnaItem nodes in the graph.
 type CategoryQnaItemMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int
-	created_at              *time.Time
-	updated_at              *time.Time
-	language_category_id    *int
-	addlanguage_category_id *int
-	question                *string
-	answer                  *string
-	clearedFields           map[string]struct{}
-	done                    bool
-	oldValue                func(context.Context) (*CategoryQnaItem, error)
-	predicates              []predicate.CategoryQnaItem
+	op                    Op
+	typ                   string
+	id                    *int
+	created_at            *time.Time
+	updated_at            *time.Time
+	course_category_id    *int
+	addcourse_category_id *int
+	question              *string
+	answer                *string
+	clearedFields         map[string]struct{}
+	done                  bool
+	oldValue              func(context.Context) (*CategoryQnaItem, error)
+	predicates            []predicate.CategoryQnaItem
 }
 
 var _ ent.Mutation = (*CategoryQnaItemMutation)(nil)
@@ -6457,60 +6431,60 @@ func (m *CategoryQnaItemMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (m *CategoryQnaItemMutation) SetLanguageCategoryID(i int) {
-	m.language_category_id = &i
-	m.addlanguage_category_id = nil
+// SetCourseCategoryID sets the "course_category_id" field.
+func (m *CategoryQnaItemMutation) SetCourseCategoryID(i int) {
+	m.course_category_id = &i
+	m.addcourse_category_id = nil
 }
 
-// LanguageCategoryID returns the value of the "language_category_id" field in the mutation.
-func (m *CategoryQnaItemMutation) LanguageCategoryID() (r int, exists bool) {
-	v := m.language_category_id
+// CourseCategoryID returns the value of the "course_category_id" field in the mutation.
+func (m *CategoryQnaItemMutation) CourseCategoryID() (r int, exists bool) {
+	v := m.course_category_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageCategoryID returns the old "language_category_id" field's value of the CategoryQnaItem entity.
+// OldCourseCategoryID returns the old "course_category_id" field's value of the CategoryQnaItem entity.
 // If the CategoryQnaItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CategoryQnaItemMutation) OldLanguageCategoryID(ctx context.Context) (v int, err error) {
+func (m *CategoryQnaItemMutation) OldCourseCategoryID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageCategoryID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseCategoryID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageCategoryID requires an ID field in the mutation")
+		return v, errors.New("OldCourseCategoryID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageCategoryID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseCategoryID: %w", err)
 	}
-	return oldValue.LanguageCategoryID, nil
+	return oldValue.CourseCategoryID, nil
 }
 
-// AddLanguageCategoryID adds i to the "language_category_id" field.
-func (m *CategoryQnaItemMutation) AddLanguageCategoryID(i int) {
-	if m.addlanguage_category_id != nil {
-		*m.addlanguage_category_id += i
+// AddCourseCategoryID adds i to the "course_category_id" field.
+func (m *CategoryQnaItemMutation) AddCourseCategoryID(i int) {
+	if m.addcourse_category_id != nil {
+		*m.addcourse_category_id += i
 	} else {
-		m.addlanguage_category_id = &i
+		m.addcourse_category_id = &i
 	}
 }
 
-// AddedLanguageCategoryID returns the value that was added to the "language_category_id" field in this mutation.
-func (m *CategoryQnaItemMutation) AddedLanguageCategoryID() (r int, exists bool) {
-	v := m.addlanguage_category_id
+// AddedCourseCategoryID returns the value that was added to the "course_category_id" field in this mutation.
+func (m *CategoryQnaItemMutation) AddedCourseCategoryID() (r int, exists bool) {
+	v := m.addcourse_category_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageCategoryID resets all changes to the "language_category_id" field.
-func (m *CategoryQnaItemMutation) ResetLanguageCategoryID() {
-	m.language_category_id = nil
-	m.addlanguage_category_id = nil
+// ResetCourseCategoryID resets all changes to the "course_category_id" field.
+func (m *CategoryQnaItemMutation) ResetCourseCategoryID() {
+	m.course_category_id = nil
+	m.addcourse_category_id = nil
 }
 
 // SetQuestion sets the "question" field.
@@ -6652,8 +6626,8 @@ func (m *CategoryQnaItemMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, categoryqnaitem.FieldUpdatedAt)
 	}
-	if m.language_category_id != nil {
-		fields = append(fields, categoryqnaitem.FieldLanguageCategoryID)
+	if m.course_category_id != nil {
+		fields = append(fields, categoryqnaitem.FieldCourseCategoryID)
 	}
 	if m.question != nil {
 		fields = append(fields, categoryqnaitem.FieldQuestion)
@@ -6673,8 +6647,8 @@ func (m *CategoryQnaItemMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case categoryqnaitem.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case categoryqnaitem.FieldLanguageCategoryID:
-		return m.LanguageCategoryID()
+	case categoryqnaitem.FieldCourseCategoryID:
+		return m.CourseCategoryID()
 	case categoryqnaitem.FieldQuestion:
 		return m.Question()
 	case categoryqnaitem.FieldAnswer:
@@ -6692,8 +6666,8 @@ func (m *CategoryQnaItemMutation) OldField(ctx context.Context, name string) (en
 		return m.OldCreatedAt(ctx)
 	case categoryqnaitem.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case categoryqnaitem.FieldLanguageCategoryID:
-		return m.OldLanguageCategoryID(ctx)
+	case categoryqnaitem.FieldCourseCategoryID:
+		return m.OldCourseCategoryID(ctx)
 	case categoryqnaitem.FieldQuestion:
 		return m.OldQuestion(ctx)
 	case categoryqnaitem.FieldAnswer:
@@ -6721,12 +6695,12 @@ func (m *CategoryQnaItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case categoryqnaitem.FieldLanguageCategoryID:
+	case categoryqnaitem.FieldCourseCategoryID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageCategoryID(v)
+		m.SetCourseCategoryID(v)
 		return nil
 	case categoryqnaitem.FieldQuestion:
 		v, ok := value.(string)
@@ -6750,8 +6724,8 @@ func (m *CategoryQnaItemMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *CategoryQnaItemMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_category_id != nil {
-		fields = append(fields, categoryqnaitem.FieldLanguageCategoryID)
+	if m.addcourse_category_id != nil {
+		fields = append(fields, categoryqnaitem.FieldCourseCategoryID)
 	}
 	return fields
 }
@@ -6761,8 +6735,8 @@ func (m *CategoryQnaItemMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *CategoryQnaItemMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case categoryqnaitem.FieldLanguageCategoryID:
-		return m.AddedLanguageCategoryID()
+	case categoryqnaitem.FieldCourseCategoryID:
+		return m.AddedCourseCategoryID()
 	}
 	return nil, false
 }
@@ -6772,12 +6746,12 @@ func (m *CategoryQnaItemMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *CategoryQnaItemMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case categoryqnaitem.FieldLanguageCategoryID:
+	case categoryqnaitem.FieldCourseCategoryID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageCategoryID(v)
+		m.AddCourseCategoryID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CategoryQnaItem numeric field %s", name)
@@ -6827,8 +6801,8 @@ func (m *CategoryQnaItemMutation) ResetField(name string) error {
 	case categoryqnaitem.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case categoryqnaitem.FieldLanguageCategoryID:
-		m.ResetLanguageCategoryID()
+	case categoryqnaitem.FieldCourseCategoryID:
+		m.ResetCourseCategoryID()
 		return nil
 	case categoryqnaitem.FieldQuestion:
 		m.ResetQuestion()
@@ -8998,8 +8972,8 @@ type CourseLessonMutation struct {
 	slug             *string
 	natural_order    *int
 	addnatural_order *int
-	language_id      *int
-	addlanguage_id   *int
+	course_id        *int
+	addcourse_id     *int
 	module_id        *int
 	addmodule_id     *int
 	state            *string
@@ -9301,74 +9275,74 @@ func (m *CourseLessonMutation) ResetNaturalOrder() {
 	delete(m.clearedFields, courselesson.FieldNaturalOrder)
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseLessonMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseLessonMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseLessonMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseLessonMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseLesson entity.
+// OldCourseID returns the old "course_id" field's value of the CourseLesson entity.
 // If the CourseLesson object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonMutation) OldLanguageID(ctx context.Context) (v *int, err error) {
+func (m *CourseLessonMutation) OldCourseID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseLessonMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseLessonMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseLessonMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseLessonMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (m *CourseLessonMutation) ClearLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
-	m.clearedFields[courselesson.FieldLanguageID] = struct{}{}
+// ClearCourseID clears the value of the "course_id" field.
+func (m *CourseLessonMutation) ClearCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
+	m.clearedFields[courselesson.FieldCourseID] = struct{}{}
 }
 
-// LanguageIDCleared returns if the "language_id" field was cleared in this mutation.
-func (m *CourseLessonMutation) LanguageIDCleared() bool {
-	_, ok := m.clearedFields[courselesson.FieldLanguageID]
+// CourseIDCleared returns if the "course_id" field was cleared in this mutation.
+func (m *CourseLessonMutation) CourseIDCleared() bool {
+	_, ok := m.clearedFields[courselesson.FieldCourseID]
 	return ok
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseLessonMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
-	delete(m.clearedFields, courselesson.FieldLanguageID)
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseLessonMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
+	delete(m.clearedFields, courselesson.FieldCourseID)
 }
 
 // SetModuleID sets the "module_id" field.
@@ -9591,8 +9565,8 @@ func (m *CourseLessonMutation) Fields() []string {
 	if m.natural_order != nil {
 		fields = append(fields, courselesson.FieldNaturalOrder)
 	}
-	if m.language_id != nil {
-		fields = append(fields, courselesson.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, courselesson.FieldCourseID)
 	}
 	if m.module_id != nil {
 		fields = append(fields, courselesson.FieldModuleID)
@@ -9616,8 +9590,8 @@ func (m *CourseLessonMutation) Field(name string) (ent.Value, bool) {
 		return m.Slug()
 	case courselesson.FieldNaturalOrder:
 		return m.NaturalOrder()
-	case courselesson.FieldLanguageID:
-		return m.LanguageID()
+	case courselesson.FieldCourseID:
+		return m.CourseID()
 	case courselesson.FieldModuleID:
 		return m.ModuleID()
 	case courselesson.FieldState:
@@ -9639,8 +9613,8 @@ func (m *CourseLessonMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldSlug(ctx)
 	case courselesson.FieldNaturalOrder:
 		return m.OldNaturalOrder(ctx)
-	case courselesson.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case courselesson.FieldCourseID:
+		return m.OldCourseID(ctx)
 	case courselesson.FieldModuleID:
 		return m.OldModuleID(ctx)
 	case courselesson.FieldState:
@@ -9682,12 +9656,12 @@ func (m *CourseLessonMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetNaturalOrder(v)
 		return nil
-	case courselesson.FieldLanguageID:
+	case courselesson.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	case courselesson.FieldModuleID:
 		v, ok := value.(int)
@@ -9714,8 +9688,8 @@ func (m *CourseLessonMutation) AddedFields() []string {
 	if m.addnatural_order != nil {
 		fields = append(fields, courselesson.FieldNaturalOrder)
 	}
-	if m.addlanguage_id != nil {
-		fields = append(fields, courselesson.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, courselesson.FieldCourseID)
 	}
 	if m.addmodule_id != nil {
 		fields = append(fields, courselesson.FieldModuleID)
@@ -9730,8 +9704,8 @@ func (m *CourseLessonMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case courselesson.FieldNaturalOrder:
 		return m.AddedNaturalOrder()
-	case courselesson.FieldLanguageID:
-		return m.AddedLanguageID()
+	case courselesson.FieldCourseID:
+		return m.AddedCourseID()
 	case courselesson.FieldModuleID:
 		return m.AddedModuleID()
 	}
@@ -9750,12 +9724,12 @@ func (m *CourseLessonMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddNaturalOrder(v)
 		return nil
-	case courselesson.FieldLanguageID:
+	case courselesson.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
 	case courselesson.FieldModuleID:
 		v, ok := value.(int)
@@ -9778,8 +9752,8 @@ func (m *CourseLessonMutation) ClearedFields() []string {
 	if m.FieldCleared(courselesson.FieldNaturalOrder) {
 		fields = append(fields, courselesson.FieldNaturalOrder)
 	}
-	if m.FieldCleared(courselesson.FieldLanguageID) {
-		fields = append(fields, courselesson.FieldLanguageID)
+	if m.FieldCleared(courselesson.FieldCourseID) {
+		fields = append(fields, courselesson.FieldCourseID)
 	}
 	if m.FieldCleared(courselesson.FieldModuleID) {
 		fields = append(fields, courselesson.FieldModuleID)
@@ -9807,8 +9781,8 @@ func (m *CourseLessonMutation) ClearField(name string) error {
 	case courselesson.FieldNaturalOrder:
 		m.ClearNaturalOrder()
 		return nil
-	case courselesson.FieldLanguageID:
-		m.ClearLanguageID()
+	case courselesson.FieldCourseID:
+		m.ClearCourseID()
 		return nil
 	case courselesson.FieldModuleID:
 		m.ClearModuleID()
@@ -9836,8 +9810,8 @@ func (m *CourseLessonMutation) ResetField(name string) error {
 	case courselesson.FieldNaturalOrder:
 		m.ResetNaturalOrder()
 		return nil
-	case courselesson.FieldLanguageID:
-		m.ResetLanguageID()
+	case courselesson.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	case courselesson.FieldModuleID:
 		m.ResetModuleID()
@@ -9936,25 +9910,25 @@ func (m *CourseLessonMutation) ResetEdge(name string) error {
 // CourseLessonReviewMutation represents an operation that mutates the CourseLessonReview nodes in the graph.
 type CourseLessonReviewMutation struct {
 	config
-	op                                 Op
-	typ                                string
-	id                                 *int
-	created_at                         *time.Time
-	updated_at                         *time.Time
-	locale                             *string
-	summary                            *string
-	language_lesson_version_id         *int
-	addlanguage_lesson_version_id      *int
-	language_lesson_version_info_id    *int
-	addlanguage_lesson_version_info_id *int
-	clearedFields                      map[string]struct{}
-	course                             *int
-	clearedcourse                      bool
-	lesson                             *int
-	clearedlesson                      bool
-	done                               bool
-	oldValue                           func(context.Context) (*CourseLessonReview, error)
-	predicates                         []predicate.CourseLessonReview
+	op                              Op
+	typ                             string
+	id                              *int
+	created_at                      *time.Time
+	updated_at                      *time.Time
+	locale                          *string
+	summary                         *string
+	course_lesson_version_id        *int
+	addcourse_lesson_version_id     *int
+	course_lesson_translation_id    *int
+	addcourse_lesson_translation_id *int
+	clearedFields                   map[string]struct{}
+	course                          *int
+	clearedcourse                   bool
+	lesson                          *int
+	clearedlesson                   bool
+	done                            bool
+	oldValue                        func(context.Context) (*CourseLessonReview, error)
+	predicates                      []predicate.CourseLessonReview
 }
 
 var _ ent.Mutation = (*CourseLessonReviewMutation)(nil)
@@ -10199,13 +10173,13 @@ func (m *CourseLessonReviewMutation) ResetSummary() {
 	m.summary = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseLessonReviewMutation) SetLanguageID(i int) {
+// SetCourseID sets the "course_id" field.
+func (m *CourseLessonReviewMutation) SetCourseID(i int) {
 	m.course = &i
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseLessonReviewMutation) LanguageID() (r int, exists bool) {
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseLessonReviewMutation) CourseID() (r int, exists bool) {
 	v := m.course
 	if v == nil {
 		return
@@ -10213,35 +10187,35 @@ func (m *CourseLessonReviewMutation) LanguageID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseLessonReview entity.
+// OldCourseID returns the old "course_id" field's value of the CourseLessonReview entity.
 // If the CourseLessonReview object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonReviewMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonReviewMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseLessonReviewMutation) ResetLanguageID() {
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseLessonReviewMutation) ResetCourseID() {
 	m.course = nil
 }
 
-// SetLanguageLessonID sets the "language_lesson_id" field.
-func (m *CourseLessonReviewMutation) SetLanguageLessonID(i int) {
+// SetCourseLessonID sets the "course_lesson_id" field.
+func (m *CourseLessonReviewMutation) SetCourseLessonID(i int) {
 	m.lesson = &i
 }
 
-// LanguageLessonID returns the value of the "language_lesson_id" field in the mutation.
-func (m *CourseLessonReviewMutation) LanguageLessonID() (r int, exists bool) {
+// CourseLessonID returns the value of the "course_lesson_id" field in the mutation.
+func (m *CourseLessonReviewMutation) CourseLessonID() (r int, exists bool) {
 	v := m.lesson
 	if v == nil {
 		return
@@ -10249,162 +10223,149 @@ func (m *CourseLessonReviewMutation) LanguageLessonID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageLessonID returns the old "language_lesson_id" field's value of the CourseLessonReview entity.
+// OldCourseLessonID returns the old "course_lesson_id" field's value of the CourseLessonReview entity.
 // If the CourseLessonReview object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonReviewMutation) OldLanguageLessonID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonReviewMutation) OldCourseLessonID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageLessonID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseLessonID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageLessonID requires an ID field in the mutation")
+		return v, errors.New("OldCourseLessonID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageLessonID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseLessonID: %w", err)
 	}
-	return oldValue.LanguageLessonID, nil
+	return oldValue.CourseLessonID, nil
 }
 
-// ResetLanguageLessonID resets all changes to the "language_lesson_id" field.
-func (m *CourseLessonReviewMutation) ResetLanguageLessonID() {
+// ResetCourseLessonID resets all changes to the "course_lesson_id" field.
+func (m *CourseLessonReviewMutation) ResetCourseLessonID() {
 	m.lesson = nil
 }
 
-// SetLanguageLessonVersionID sets the "language_lesson_version_id" field.
-func (m *CourseLessonReviewMutation) SetLanguageLessonVersionID(i int) {
-	m.language_lesson_version_id = &i
-	m.addlanguage_lesson_version_id = nil
+// SetCourseLessonVersionID sets the "course_lesson_version_id" field.
+func (m *CourseLessonReviewMutation) SetCourseLessonVersionID(i int) {
+	m.course_lesson_version_id = &i
+	m.addcourse_lesson_version_id = nil
 }
 
-// LanguageLessonVersionID returns the value of the "language_lesson_version_id" field in the mutation.
-func (m *CourseLessonReviewMutation) LanguageLessonVersionID() (r int, exists bool) {
-	v := m.language_lesson_version_id
+// CourseLessonVersionID returns the value of the "course_lesson_version_id" field in the mutation.
+func (m *CourseLessonReviewMutation) CourseLessonVersionID() (r int, exists bool) {
+	v := m.course_lesson_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageLessonVersionID returns the old "language_lesson_version_id" field's value of the CourseLessonReview entity.
+// OldCourseLessonVersionID returns the old "course_lesson_version_id" field's value of the CourseLessonReview entity.
 // If the CourseLessonReview object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonReviewMutation) OldLanguageLessonVersionID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonReviewMutation) OldCourseLessonVersionID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageLessonVersionID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseLessonVersionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageLessonVersionID requires an ID field in the mutation")
+		return v, errors.New("OldCourseLessonVersionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageLessonVersionID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseLessonVersionID: %w", err)
 	}
-	return oldValue.LanguageLessonVersionID, nil
+	return oldValue.CourseLessonVersionID, nil
 }
 
-// AddLanguageLessonVersionID adds i to the "language_lesson_version_id" field.
-func (m *CourseLessonReviewMutation) AddLanguageLessonVersionID(i int) {
-	if m.addlanguage_lesson_version_id != nil {
-		*m.addlanguage_lesson_version_id += i
+// AddCourseLessonVersionID adds i to the "course_lesson_version_id" field.
+func (m *CourseLessonReviewMutation) AddCourseLessonVersionID(i int) {
+	if m.addcourse_lesson_version_id != nil {
+		*m.addcourse_lesson_version_id += i
 	} else {
-		m.addlanguage_lesson_version_id = &i
+		m.addcourse_lesson_version_id = &i
 	}
 }
 
-// AddedLanguageLessonVersionID returns the value that was added to the "language_lesson_version_id" field in this mutation.
-func (m *CourseLessonReviewMutation) AddedLanguageLessonVersionID() (r int, exists bool) {
-	v := m.addlanguage_lesson_version_id
+// AddedCourseLessonVersionID returns the value that was added to the "course_lesson_version_id" field in this mutation.
+func (m *CourseLessonReviewMutation) AddedCourseLessonVersionID() (r int, exists bool) {
+	v := m.addcourse_lesson_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageLessonVersionID resets all changes to the "language_lesson_version_id" field.
-func (m *CourseLessonReviewMutation) ResetLanguageLessonVersionID() {
-	m.language_lesson_version_id = nil
-	m.addlanguage_lesson_version_id = nil
+// ResetCourseLessonVersionID resets all changes to the "course_lesson_version_id" field.
+func (m *CourseLessonReviewMutation) ResetCourseLessonVersionID() {
+	m.course_lesson_version_id = nil
+	m.addcourse_lesson_version_id = nil
 }
 
-// SetLanguageLessonVersionInfoID sets the "language_lesson_version_info_id" field.
-func (m *CourseLessonReviewMutation) SetLanguageLessonVersionInfoID(i int) {
-	m.language_lesson_version_info_id = &i
-	m.addlanguage_lesson_version_info_id = nil
+// SetCourseLessonTranslationID sets the "course_lesson_translation_id" field.
+func (m *CourseLessonReviewMutation) SetCourseLessonTranslationID(i int) {
+	m.course_lesson_translation_id = &i
+	m.addcourse_lesson_translation_id = nil
 }
 
-// LanguageLessonVersionInfoID returns the value of the "language_lesson_version_info_id" field in the mutation.
-func (m *CourseLessonReviewMutation) LanguageLessonVersionInfoID() (r int, exists bool) {
-	v := m.language_lesson_version_info_id
+// CourseLessonTranslationID returns the value of the "course_lesson_translation_id" field in the mutation.
+func (m *CourseLessonReviewMutation) CourseLessonTranslationID() (r int, exists bool) {
+	v := m.course_lesson_translation_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageLessonVersionInfoID returns the old "language_lesson_version_info_id" field's value of the CourseLessonReview entity.
+// OldCourseLessonTranslationID returns the old "course_lesson_translation_id" field's value of the CourseLessonReview entity.
 // If the CourseLessonReview object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonReviewMutation) OldLanguageLessonVersionInfoID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonReviewMutation) OldCourseLessonTranslationID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageLessonVersionInfoID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseLessonTranslationID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageLessonVersionInfoID requires an ID field in the mutation")
+		return v, errors.New("OldCourseLessonTranslationID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageLessonVersionInfoID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseLessonTranslationID: %w", err)
 	}
-	return oldValue.LanguageLessonVersionInfoID, nil
+	return oldValue.CourseLessonTranslationID, nil
 }
 
-// AddLanguageLessonVersionInfoID adds i to the "language_lesson_version_info_id" field.
-func (m *CourseLessonReviewMutation) AddLanguageLessonVersionInfoID(i int) {
-	if m.addlanguage_lesson_version_info_id != nil {
-		*m.addlanguage_lesson_version_info_id += i
+// AddCourseLessonTranslationID adds i to the "course_lesson_translation_id" field.
+func (m *CourseLessonReviewMutation) AddCourseLessonTranslationID(i int) {
+	if m.addcourse_lesson_translation_id != nil {
+		*m.addcourse_lesson_translation_id += i
 	} else {
-		m.addlanguage_lesson_version_info_id = &i
+		m.addcourse_lesson_translation_id = &i
 	}
 }
 
-// AddedLanguageLessonVersionInfoID returns the value that was added to the "language_lesson_version_info_id" field in this mutation.
-func (m *CourseLessonReviewMutation) AddedLanguageLessonVersionInfoID() (r int, exists bool) {
-	v := m.addlanguage_lesson_version_info_id
+// AddedCourseLessonTranslationID returns the value that was added to the "course_lesson_translation_id" field in this mutation.
+func (m *CourseLessonReviewMutation) AddedCourseLessonTranslationID() (r int, exists bool) {
+	v := m.addcourse_lesson_translation_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageLessonVersionInfoID resets all changes to the "language_lesson_version_info_id" field.
-func (m *CourseLessonReviewMutation) ResetLanguageLessonVersionInfoID() {
-	m.language_lesson_version_info_id = nil
-	m.addlanguage_lesson_version_info_id = nil
-}
-
-// SetCourseID sets the "course" edge to the Course entity by id.
-func (m *CourseLessonReviewMutation) SetCourseID(id int) {
-	m.course = &id
+// ResetCourseLessonTranslationID resets all changes to the "course_lesson_translation_id" field.
+func (m *CourseLessonReviewMutation) ResetCourseLessonTranslationID() {
+	m.course_lesson_translation_id = nil
+	m.addcourse_lesson_translation_id = nil
 }
 
 // ClearCourse clears the "course" edge to the Course entity.
 func (m *CourseLessonReviewMutation) ClearCourse() {
 	m.clearedcourse = true
-	m.clearedFields[courselessonreview.FieldLanguageID] = struct{}{}
+	m.clearedFields[courselessonreview.FieldCourseID] = struct{}{}
 }
 
 // CourseCleared reports if the "course" edge to the Course entity was cleared.
 func (m *CourseLessonReviewMutation) CourseCleared() bool {
 	return m.clearedcourse
-}
-
-// CourseID returns the "course" edge ID in the mutation.
-func (m *CourseLessonReviewMutation) CourseID() (id int, exists bool) {
-	if m.course != nil {
-		return *m.course, true
-	}
-	return
 }
 
 // CourseIDs returns the "course" edge IDs in the mutation.
@@ -10431,7 +10392,7 @@ func (m *CourseLessonReviewMutation) SetLessonID(id int) {
 // ClearLesson clears the "lesson" edge to the CourseLesson entity.
 func (m *CourseLessonReviewMutation) ClearLesson() {
 	m.clearedlesson = true
-	m.clearedFields[courselessonreview.FieldLanguageLessonID] = struct{}{}
+	m.clearedFields[courselessonreview.FieldCourseLessonID] = struct{}{}
 }
 
 // LessonCleared reports if the "lesson" edge to the CourseLesson entity was cleared.
@@ -10511,16 +10472,16 @@ func (m *CourseLessonReviewMutation) Fields() []string {
 		fields = append(fields, courselessonreview.FieldSummary)
 	}
 	if m.course != nil {
-		fields = append(fields, courselessonreview.FieldLanguageID)
+		fields = append(fields, courselessonreview.FieldCourseID)
 	}
 	if m.lesson != nil {
-		fields = append(fields, courselessonreview.FieldLanguageLessonID)
+		fields = append(fields, courselessonreview.FieldCourseLessonID)
 	}
-	if m.language_lesson_version_id != nil {
-		fields = append(fields, courselessonreview.FieldLanguageLessonVersionID)
+	if m.course_lesson_version_id != nil {
+		fields = append(fields, courselessonreview.FieldCourseLessonVersionID)
 	}
-	if m.language_lesson_version_info_id != nil {
-		fields = append(fields, courselessonreview.FieldLanguageLessonVersionInfoID)
+	if m.course_lesson_translation_id != nil {
+		fields = append(fields, courselessonreview.FieldCourseLessonTranslationID)
 	}
 	return fields
 }
@@ -10538,14 +10499,14 @@ func (m *CourseLessonReviewMutation) Field(name string) (ent.Value, bool) {
 		return m.Locale()
 	case courselessonreview.FieldSummary:
 		return m.Summary()
-	case courselessonreview.FieldLanguageID:
-		return m.LanguageID()
-	case courselessonreview.FieldLanguageLessonID:
-		return m.LanguageLessonID()
-	case courselessonreview.FieldLanguageLessonVersionID:
-		return m.LanguageLessonVersionID()
-	case courselessonreview.FieldLanguageLessonVersionInfoID:
-		return m.LanguageLessonVersionInfoID()
+	case courselessonreview.FieldCourseID:
+		return m.CourseID()
+	case courselessonreview.FieldCourseLessonID:
+		return m.CourseLessonID()
+	case courselessonreview.FieldCourseLessonVersionID:
+		return m.CourseLessonVersionID()
+	case courselessonreview.FieldCourseLessonTranslationID:
+		return m.CourseLessonTranslationID()
 	}
 	return nil, false
 }
@@ -10563,14 +10524,14 @@ func (m *CourseLessonReviewMutation) OldField(ctx context.Context, name string) 
 		return m.OldLocale(ctx)
 	case courselessonreview.FieldSummary:
 		return m.OldSummary(ctx)
-	case courselessonreview.FieldLanguageID:
-		return m.OldLanguageID(ctx)
-	case courselessonreview.FieldLanguageLessonID:
-		return m.OldLanguageLessonID(ctx)
-	case courselessonreview.FieldLanguageLessonVersionID:
-		return m.OldLanguageLessonVersionID(ctx)
-	case courselessonreview.FieldLanguageLessonVersionInfoID:
-		return m.OldLanguageLessonVersionInfoID(ctx)
+	case courselessonreview.FieldCourseID:
+		return m.OldCourseID(ctx)
+	case courselessonreview.FieldCourseLessonID:
+		return m.OldCourseLessonID(ctx)
+	case courselessonreview.FieldCourseLessonVersionID:
+		return m.OldCourseLessonVersionID(ctx)
+	case courselessonreview.FieldCourseLessonTranslationID:
+		return m.OldCourseLessonTranslationID(ctx)
 	}
 	return nil, fmt.Errorf("unknown CourseLessonReview field %s", name)
 }
@@ -10608,33 +10569,33 @@ func (m *CourseLessonReviewMutation) SetField(name string, value ent.Value) erro
 		}
 		m.SetSummary(v)
 		return nil
-	case courselessonreview.FieldLanguageID:
+	case courselessonreview.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
-	case courselessonreview.FieldLanguageLessonID:
+	case courselessonreview.FieldCourseLessonID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageLessonID(v)
+		m.SetCourseLessonID(v)
 		return nil
-	case courselessonreview.FieldLanguageLessonVersionID:
+	case courselessonreview.FieldCourseLessonVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageLessonVersionID(v)
+		m.SetCourseLessonVersionID(v)
 		return nil
-	case courselessonreview.FieldLanguageLessonVersionInfoID:
+	case courselessonreview.FieldCourseLessonTranslationID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageLessonVersionInfoID(v)
+		m.SetCourseLessonTranslationID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonReview field %s", name)
@@ -10644,11 +10605,11 @@ func (m *CourseLessonReviewMutation) SetField(name string, value ent.Value) erro
 // this mutation.
 func (m *CourseLessonReviewMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_lesson_version_id != nil {
-		fields = append(fields, courselessonreview.FieldLanguageLessonVersionID)
+	if m.addcourse_lesson_version_id != nil {
+		fields = append(fields, courselessonreview.FieldCourseLessonVersionID)
 	}
-	if m.addlanguage_lesson_version_info_id != nil {
-		fields = append(fields, courselessonreview.FieldLanguageLessonVersionInfoID)
+	if m.addcourse_lesson_translation_id != nil {
+		fields = append(fields, courselessonreview.FieldCourseLessonTranslationID)
 	}
 	return fields
 }
@@ -10658,10 +10619,10 @@ func (m *CourseLessonReviewMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *CourseLessonReviewMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case courselessonreview.FieldLanguageLessonVersionID:
-		return m.AddedLanguageLessonVersionID()
-	case courselessonreview.FieldLanguageLessonVersionInfoID:
-		return m.AddedLanguageLessonVersionInfoID()
+	case courselessonreview.FieldCourseLessonVersionID:
+		return m.AddedCourseLessonVersionID()
+	case courselessonreview.FieldCourseLessonTranslationID:
+		return m.AddedCourseLessonTranslationID()
 	}
 	return nil, false
 }
@@ -10671,19 +10632,19 @@ func (m *CourseLessonReviewMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *CourseLessonReviewMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case courselessonreview.FieldLanguageLessonVersionID:
+	case courselessonreview.FieldCourseLessonVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageLessonVersionID(v)
+		m.AddCourseLessonVersionID(v)
 		return nil
-	case courselessonreview.FieldLanguageLessonVersionInfoID:
+	case courselessonreview.FieldCourseLessonTranslationID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageLessonVersionInfoID(v)
+		m.AddCourseLessonTranslationID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonReview numeric field %s", name)
@@ -10724,17 +10685,17 @@ func (m *CourseLessonReviewMutation) ResetField(name string) error {
 	case courselessonreview.FieldSummary:
 		m.ResetSummary()
 		return nil
-	case courselessonreview.FieldLanguageID:
-		m.ResetLanguageID()
+	case courselessonreview.FieldCourseID:
+		m.ResetCourseID()
 		return nil
-	case courselessonreview.FieldLanguageLessonID:
-		m.ResetLanguageLessonID()
+	case courselessonreview.FieldCourseLessonID:
+		m.ResetCourseLessonID()
 		return nil
-	case courselessonreview.FieldLanguageLessonVersionID:
-		m.ResetLanguageLessonVersionID()
+	case courselessonreview.FieldCourseLessonVersionID:
+		m.ResetCourseLessonVersionID()
 		return nil
-	case courselessonreview.FieldLanguageLessonVersionInfoID:
-		m.ResetLanguageLessonVersionInfoID()
+	case courselessonreview.FieldCourseLessonTranslationID:
+		m.ResetCourseLessonTranslationID()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonReview field %s", name)
@@ -10843,8 +10804,8 @@ type CourseLessonTranslationMutation struct {
 	name                  *string
 	description           *string
 	locale                *string
-	language_id           *int
-	addlanguage_id        *int
+	course_id             *int
+	addcourse_id          *int
 	theory                *string
 	instructions          *string
 	tips                  *string
@@ -11178,69 +11139,69 @@ func (m *CourseLessonTranslationMutation) ResetLocale() {
 	delete(m.clearedFields, courselessontranslation.FieldLocale)
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseLessonTranslationMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseLessonTranslationMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseLessonTranslationMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseLessonTranslationMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseLessonTranslation entity.
+// OldCourseID returns the old "course_id" field's value of the CourseLessonTranslation entity.
 // If the CourseLessonTranslation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonTranslationMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonTranslationMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseLessonTranslationMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseLessonTranslationMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseLessonTranslationMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseLessonTranslationMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseLessonTranslationMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseLessonTranslationMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
 }
 
-// SetLanguageLessonID sets the "language_lesson_id" field.
-func (m *CourseLessonTranslationMutation) SetLanguageLessonID(i int) {
+// SetCourseLessonID sets the "course_lesson_id" field.
+func (m *CourseLessonTranslationMutation) SetCourseLessonID(i int) {
 	m.lesson = &i
 }
 
-// LanguageLessonID returns the value of the "language_lesson_id" field in the mutation.
-func (m *CourseLessonTranslationMutation) LanguageLessonID() (r int, exists bool) {
+// CourseLessonID returns the value of the "course_lesson_id" field in the mutation.
+func (m *CourseLessonTranslationMutation) CourseLessonID() (r int, exists bool) {
 	v := m.lesson
 	if v == nil {
 		return
@@ -11248,35 +11209,35 @@ func (m *CourseLessonTranslationMutation) LanguageLessonID() (r int, exists bool
 	return *v, true
 }
 
-// OldLanguageLessonID returns the old "language_lesson_id" field's value of the CourseLessonTranslation entity.
+// OldCourseLessonID returns the old "course_lesson_id" field's value of the CourseLessonTranslation entity.
 // If the CourseLessonTranslation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonTranslationMutation) OldLanguageLessonID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonTranslationMutation) OldCourseLessonID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageLessonID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseLessonID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageLessonID requires an ID field in the mutation")
+		return v, errors.New("OldCourseLessonID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageLessonID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseLessonID: %w", err)
 	}
-	return oldValue.LanguageLessonID, nil
+	return oldValue.CourseLessonID, nil
 }
 
-// ResetLanguageLessonID resets all changes to the "language_lesson_id" field.
-func (m *CourseLessonTranslationMutation) ResetLanguageLessonID() {
+// ResetCourseLessonID resets all changes to the "course_lesson_id" field.
+func (m *CourseLessonTranslationMutation) ResetCourseLessonID() {
 	m.lesson = nil
 }
 
-// SetLanguageVersionID sets the "language_version_id" field.
-func (m *CourseLessonTranslationMutation) SetLanguageVersionID(i int) {
+// SetCourseVersionID sets the "course_version_id" field.
+func (m *CourseLessonTranslationMutation) SetCourseVersionID(i int) {
 	m.course_version = &i
 }
 
-// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
-func (m *CourseLessonTranslationMutation) LanguageVersionID() (r int, exists bool) {
+// CourseVersionID returns the value of the "course_version_id" field in the mutation.
+func (m *CourseLessonTranslationMutation) CourseVersionID() (r int, exists bool) {
 	v := m.course_version
 	if v == nil {
 		return
@@ -11284,25 +11245,25 @@ func (m *CourseLessonTranslationMutation) LanguageVersionID() (r int, exists boo
 	return *v, true
 }
 
-// OldLanguageVersionID returns the old "language_version_id" field's value of the CourseLessonTranslation entity.
+// OldCourseVersionID returns the old "course_version_id" field's value of the CourseLessonTranslation entity.
 // If the CourseLessonTranslation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonTranslationMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonTranslationMutation) OldCourseVersionID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseVersionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+		return v, errors.New("OldCourseVersionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseVersionID: %w", err)
 	}
-	return oldValue.LanguageVersionID, nil
+	return oldValue.CourseVersionID, nil
 }
 
-// ResetLanguageVersionID resets all changes to the "language_version_id" field.
-func (m *CourseLessonTranslationMutation) ResetLanguageVersionID() {
+// ResetCourseVersionID resets all changes to the "course_version_id" field.
+func (m *CourseLessonTranslationMutation) ResetCourseVersionID() {
 	m.course_version = nil
 }
 
@@ -11566,7 +11527,7 @@ func (m *CourseLessonTranslationMutation) SetLessonID(id int) {
 // ClearLesson clears the "lesson" edge to the CourseLesson entity.
 func (m *CourseLessonTranslationMutation) ClearLesson() {
 	m.clearedlesson = true
-	m.clearedFields[courselessontranslation.FieldLanguageLessonID] = struct{}{}
+	m.clearedFields[courselessontranslation.FieldCourseLessonID] = struct{}{}
 }
 
 // LessonCleared reports if the "lesson" edge to the CourseLesson entity was cleared.
@@ -11598,28 +11559,15 @@ func (m *CourseLessonTranslationMutation) ResetLesson() {
 	m.clearedlesson = false
 }
 
-// SetCourseVersionID sets the "course_version" edge to the CourseVersion entity by id.
-func (m *CourseLessonTranslationMutation) SetCourseVersionID(id int) {
-	m.course_version = &id
-}
-
 // ClearCourseVersion clears the "course_version" edge to the CourseVersion entity.
 func (m *CourseLessonTranslationMutation) ClearCourseVersion() {
 	m.clearedcourse_version = true
-	m.clearedFields[courselessontranslation.FieldLanguageVersionID] = struct{}{}
+	m.clearedFields[courselessontranslation.FieldCourseVersionID] = struct{}{}
 }
 
 // CourseVersionCleared reports if the "course_version" edge to the CourseVersion entity was cleared.
 func (m *CourseLessonTranslationMutation) CourseVersionCleared() bool {
 	return m.clearedcourse_version
-}
-
-// CourseVersionID returns the "course_version" edge ID in the mutation.
-func (m *CourseLessonTranslationMutation) CourseVersionID() (id int, exists bool) {
-	if m.course_version != nil {
-		return *m.course_version, true
-	}
-	return
 }
 
 // CourseVersionIDs returns the "course_version" edge IDs in the mutation.
@@ -11688,14 +11636,14 @@ func (m *CourseLessonTranslationMutation) Fields() []string {
 	if m.locale != nil {
 		fields = append(fields, courselessontranslation.FieldLocale)
 	}
-	if m.language_id != nil {
-		fields = append(fields, courselessontranslation.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, courselessontranslation.FieldCourseID)
 	}
 	if m.lesson != nil {
-		fields = append(fields, courselessontranslation.FieldLanguageLessonID)
+		fields = append(fields, courselessontranslation.FieldCourseLessonID)
 	}
 	if m.course_version != nil {
-		fields = append(fields, courselessontranslation.FieldLanguageVersionID)
+		fields = append(fields, courselessontranslation.FieldCourseVersionID)
 	}
 	if m.theory != nil {
 		fields = append(fields, courselessontranslation.FieldTheory)
@@ -11730,12 +11678,12 @@ func (m *CourseLessonTranslationMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case courselessontranslation.FieldLocale:
 		return m.Locale()
-	case courselessontranslation.FieldLanguageID:
-		return m.LanguageID()
-	case courselessontranslation.FieldLanguageLessonID:
-		return m.LanguageLessonID()
-	case courselessontranslation.FieldLanguageVersionID:
-		return m.LanguageVersionID()
+	case courselessontranslation.FieldCourseID:
+		return m.CourseID()
+	case courselessontranslation.FieldCourseLessonID:
+		return m.CourseLessonID()
+	case courselessontranslation.FieldCourseVersionID:
+		return m.CourseVersionID()
 	case courselessontranslation.FieldTheory:
 		return m.Theory()
 	case courselessontranslation.FieldInstructions:
@@ -11765,12 +11713,12 @@ func (m *CourseLessonTranslationMutation) OldField(ctx context.Context, name str
 		return m.OldDescription(ctx)
 	case courselessontranslation.FieldLocale:
 		return m.OldLocale(ctx)
-	case courselessontranslation.FieldLanguageID:
-		return m.OldLanguageID(ctx)
-	case courselessontranslation.FieldLanguageLessonID:
-		return m.OldLanguageLessonID(ctx)
-	case courselessontranslation.FieldLanguageVersionID:
-		return m.OldLanguageVersionID(ctx)
+	case courselessontranslation.FieldCourseID:
+		return m.OldCourseID(ctx)
+	case courselessontranslation.FieldCourseLessonID:
+		return m.OldCourseLessonID(ctx)
+	case courselessontranslation.FieldCourseVersionID:
+		return m.OldCourseVersionID(ctx)
 	case courselessontranslation.FieldTheory:
 		return m.OldTheory(ctx)
 	case courselessontranslation.FieldInstructions:
@@ -11825,26 +11773,26 @@ func (m *CourseLessonTranslationMutation) SetField(name string, value ent.Value)
 		}
 		m.SetLocale(v)
 		return nil
-	case courselessontranslation.FieldLanguageID:
+	case courselessontranslation.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
-	case courselessontranslation.FieldLanguageLessonID:
+	case courselessontranslation.FieldCourseLessonID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageLessonID(v)
+		m.SetCourseLessonID(v)
 		return nil
-	case courselessontranslation.FieldLanguageVersionID:
+	case courselessontranslation.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageVersionID(v)
+		m.SetCourseVersionID(v)
 		return nil
 	case courselessontranslation.FieldTheory:
 		v, ok := value.(string)
@@ -11889,8 +11837,8 @@ func (m *CourseLessonTranslationMutation) SetField(name string, value ent.Value)
 // this mutation.
 func (m *CourseLessonTranslationMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_id != nil {
-		fields = append(fields, courselessontranslation.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, courselessontranslation.FieldCourseID)
 	}
 	if m.addversion_id != nil {
 		fields = append(fields, courselessontranslation.FieldVersionID)
@@ -11903,8 +11851,8 @@ func (m *CourseLessonTranslationMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *CourseLessonTranslationMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case courselessontranslation.FieldLanguageID:
-		return m.AddedLanguageID()
+	case courselessontranslation.FieldCourseID:
+		return m.AddedCourseID()
 	case courselessontranslation.FieldVersionID:
 		return m.AddedVersionID()
 	}
@@ -11916,12 +11864,12 @@ func (m *CourseLessonTranslationMutation) AddedField(name string) (ent.Value, bo
 // type.
 func (m *CourseLessonTranslationMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case courselessontranslation.FieldLanguageID:
+	case courselessontranslation.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
 	case courselessontranslation.FieldVersionID:
 		v, ok := value.(int)
@@ -12017,14 +11965,14 @@ func (m *CourseLessonTranslationMutation) ResetField(name string) error {
 	case courselessontranslation.FieldLocale:
 		m.ResetLocale()
 		return nil
-	case courselessontranslation.FieldLanguageID:
-		m.ResetLanguageID()
+	case courselessontranslation.FieldCourseID:
+		m.ResetCourseID()
 		return nil
-	case courselessontranslation.FieldLanguageLessonID:
-		m.ResetLanguageLessonID()
+	case courselessontranslation.FieldCourseLessonID:
+		m.ResetCourseLessonID()
 		return nil
-	case courselessontranslation.FieldLanguageVersionID:
-		m.ResetLanguageVersionID()
+	case courselessontranslation.FieldCourseVersionID:
+		m.ResetCourseVersionID()
 		return nil
 	case courselessontranslation.FieldTheory:
 		m.ResetTheory()
@@ -12140,31 +12088,31 @@ func (m *CourseLessonTranslationMutation) ResetEdge(name string) error {
 // CourseLessonVersionMutation represents an operation that mutates the CourseLessonVersion nodes in the graph.
 type CourseLessonVersionMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *int
-	created_at             *time.Time
-	updated_at             *time.Time
-	natural_order          *int
-	addnatural_order       *int
-	_order                 *int
-	add_order              *int
-	original_code          *string
-	prepared_code          *string
-	test_code              *string
-	path_to_code           *string
-	language_id            *int
-	addlanguage_id         *int
-	language_version_id    *int
-	addlanguage_version_id *int
-	lesson_id              *int
-	addlesson_id           *int
-	module_version_id      *int
-	addmodule_version_id   *int
-	clearedFields          map[string]struct{}
-	done                   bool
-	oldValue               func(context.Context) (*CourseLessonVersion, error)
-	predicates             []predicate.CourseLessonVersion
+	op                   Op
+	typ                  string
+	id                   *int
+	created_at           *time.Time
+	updated_at           *time.Time
+	natural_order        *int
+	addnatural_order     *int
+	_order               *int
+	add_order            *int
+	original_code        *string
+	prepared_code        *string
+	test_code            *string
+	path_to_code         *string
+	course_id            *int
+	addcourse_id         *int
+	course_version_id    *int
+	addcourse_version_id *int
+	lesson_id            *int
+	addlesson_id         *int
+	module_version_id    *int
+	addmodule_version_id *int
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*CourseLessonVersion, error)
+	predicates           []predicate.CourseLessonVersion
 }
 
 var _ ent.Mutation = (*CourseLessonVersionMutation)(nil)
@@ -12673,116 +12621,116 @@ func (m *CourseLessonVersionMutation) ResetPathToCode() {
 	delete(m.clearedFields, courselessonversion.FieldPathToCode)
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseLessonVersionMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseLessonVersionMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseLessonVersionMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseLessonVersionMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseLessonVersion entity.
+// OldCourseID returns the old "course_id" field's value of the CourseLessonVersion entity.
 // If the CourseLessonVersion object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonVersionMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonVersionMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseLessonVersionMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseLessonVersionMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseLessonVersionMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseLessonVersionMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseLessonVersionMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseLessonVersionMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
 }
 
-// SetLanguageVersionID sets the "language_version_id" field.
-func (m *CourseLessonVersionMutation) SetLanguageVersionID(i int) {
-	m.language_version_id = &i
-	m.addlanguage_version_id = nil
+// SetCourseVersionID sets the "course_version_id" field.
+func (m *CourseLessonVersionMutation) SetCourseVersionID(i int) {
+	m.course_version_id = &i
+	m.addcourse_version_id = nil
 }
 
-// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
-func (m *CourseLessonVersionMutation) LanguageVersionID() (r int, exists bool) {
-	v := m.language_version_id
+// CourseVersionID returns the value of the "course_version_id" field in the mutation.
+func (m *CourseLessonVersionMutation) CourseVersionID() (r int, exists bool) {
+	v := m.course_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageVersionID returns the old "language_version_id" field's value of the CourseLessonVersion entity.
+// OldCourseVersionID returns the old "course_version_id" field's value of the CourseLessonVersion entity.
 // If the CourseLessonVersion object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseLessonVersionMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+func (m *CourseLessonVersionMutation) OldCourseVersionID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseVersionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+		return v, errors.New("OldCourseVersionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseVersionID: %w", err)
 	}
-	return oldValue.LanguageVersionID, nil
+	return oldValue.CourseVersionID, nil
 }
 
-// AddLanguageVersionID adds i to the "language_version_id" field.
-func (m *CourseLessonVersionMutation) AddLanguageVersionID(i int) {
-	if m.addlanguage_version_id != nil {
-		*m.addlanguage_version_id += i
+// AddCourseVersionID adds i to the "course_version_id" field.
+func (m *CourseLessonVersionMutation) AddCourseVersionID(i int) {
+	if m.addcourse_version_id != nil {
+		*m.addcourse_version_id += i
 	} else {
-		m.addlanguage_version_id = &i
+		m.addcourse_version_id = &i
 	}
 }
 
-// AddedLanguageVersionID returns the value that was added to the "language_version_id" field in this mutation.
-func (m *CourseLessonVersionMutation) AddedLanguageVersionID() (r int, exists bool) {
-	v := m.addlanguage_version_id
+// AddedCourseVersionID returns the value that was added to the "course_version_id" field in this mutation.
+func (m *CourseLessonVersionMutation) AddedCourseVersionID() (r int, exists bool) {
+	v := m.addcourse_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageVersionID resets all changes to the "language_version_id" field.
-func (m *CourseLessonVersionMutation) ResetLanguageVersionID() {
-	m.language_version_id = nil
-	m.addlanguage_version_id = nil
+// ResetCourseVersionID resets all changes to the "course_version_id" field.
+func (m *CourseLessonVersionMutation) ResetCourseVersionID() {
+	m.course_version_id = nil
+	m.addcourse_version_id = nil
 }
 
 // SetLessonID sets the "lesson_id" field.
@@ -12956,11 +12904,11 @@ func (m *CourseLessonVersionMutation) Fields() []string {
 	if m.path_to_code != nil {
 		fields = append(fields, courselessonversion.FieldPathToCode)
 	}
-	if m.language_id != nil {
-		fields = append(fields, courselessonversion.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, courselessonversion.FieldCourseID)
 	}
-	if m.language_version_id != nil {
-		fields = append(fields, courselessonversion.FieldLanguageVersionID)
+	if m.course_version_id != nil {
+		fields = append(fields, courselessonversion.FieldCourseVersionID)
 	}
 	if m.lesson_id != nil {
 		fields = append(fields, courselessonversion.FieldLessonID)
@@ -12992,10 +12940,10 @@ func (m *CourseLessonVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.TestCode()
 	case courselessonversion.FieldPathToCode:
 		return m.PathToCode()
-	case courselessonversion.FieldLanguageID:
-		return m.LanguageID()
-	case courselessonversion.FieldLanguageVersionID:
-		return m.LanguageVersionID()
+	case courselessonversion.FieldCourseID:
+		return m.CourseID()
+	case courselessonversion.FieldCourseVersionID:
+		return m.CourseVersionID()
 	case courselessonversion.FieldLessonID:
 		return m.LessonID()
 	case courselessonversion.FieldModuleVersionID:
@@ -13025,10 +12973,10 @@ func (m *CourseLessonVersionMutation) OldField(ctx context.Context, name string)
 		return m.OldTestCode(ctx)
 	case courselessonversion.FieldPathToCode:
 		return m.OldPathToCode(ctx)
-	case courselessonversion.FieldLanguageID:
-		return m.OldLanguageID(ctx)
-	case courselessonversion.FieldLanguageVersionID:
-		return m.OldLanguageVersionID(ctx)
+	case courselessonversion.FieldCourseID:
+		return m.OldCourseID(ctx)
+	case courselessonversion.FieldCourseVersionID:
+		return m.OldCourseVersionID(ctx)
 	case courselessonversion.FieldLessonID:
 		return m.OldLessonID(ctx)
 	case courselessonversion.FieldModuleVersionID:
@@ -13098,19 +13046,19 @@ func (m *CourseLessonVersionMutation) SetField(name string, value ent.Value) err
 		}
 		m.SetPathToCode(v)
 		return nil
-	case courselessonversion.FieldLanguageID:
+	case courselessonversion.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
-	case courselessonversion.FieldLanguageVersionID:
+	case courselessonversion.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageVersionID(v)
+		m.SetCourseVersionID(v)
 		return nil
 	case courselessonversion.FieldLessonID:
 		v, ok := value.(int)
@@ -13140,11 +13088,11 @@ func (m *CourseLessonVersionMutation) AddedFields() []string {
 	if m.add_order != nil {
 		fields = append(fields, courselessonversion.FieldOrder)
 	}
-	if m.addlanguage_id != nil {
-		fields = append(fields, courselessonversion.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, courselessonversion.FieldCourseID)
 	}
-	if m.addlanguage_version_id != nil {
-		fields = append(fields, courselessonversion.FieldLanguageVersionID)
+	if m.addcourse_version_id != nil {
+		fields = append(fields, courselessonversion.FieldCourseVersionID)
 	}
 	if m.addlesson_id != nil {
 		fields = append(fields, courselessonversion.FieldLessonID)
@@ -13164,10 +13112,10 @@ func (m *CourseLessonVersionMutation) AddedField(name string) (ent.Value, bool) 
 		return m.AddedNaturalOrder()
 	case courselessonversion.FieldOrder:
 		return m.AddedOrder()
-	case courselessonversion.FieldLanguageID:
-		return m.AddedLanguageID()
-	case courselessonversion.FieldLanguageVersionID:
-		return m.AddedLanguageVersionID()
+	case courselessonversion.FieldCourseID:
+		return m.AddedCourseID()
+	case courselessonversion.FieldCourseVersionID:
+		return m.AddedCourseVersionID()
 	case courselessonversion.FieldLessonID:
 		return m.AddedLessonID()
 	case courselessonversion.FieldModuleVersionID:
@@ -13195,19 +13143,19 @@ func (m *CourseLessonVersionMutation) AddField(name string, value ent.Value) err
 		}
 		m.AddOrder(v)
 		return nil
-	case courselessonversion.FieldLanguageID:
+	case courselessonversion.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
-	case courselessonversion.FieldLanguageVersionID:
+	case courselessonversion.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageVersionID(v)
+		m.AddCourseVersionID(v)
 		return nil
 	case courselessonversion.FieldLessonID:
 		v, ok := value.(int)
@@ -13313,11 +13261,11 @@ func (m *CourseLessonVersionMutation) ResetField(name string) error {
 	case courselessonversion.FieldPathToCode:
 		m.ResetPathToCode()
 		return nil
-	case courselessonversion.FieldLanguageID:
-		m.ResetLanguageID()
+	case courselessonversion.FieldCourseID:
+		m.ResetCourseID()
 		return nil
-	case courselessonversion.FieldLanguageVersionID:
-		m.ResetLanguageVersionID()
+	case courselessonversion.FieldCourseVersionID:
+		m.ResetCourseVersionID()
 		return nil
 	case courselessonversion.FieldLessonID:
 		m.ResetLessonID()
@@ -13380,21 +13328,21 @@ func (m *CourseLessonVersionMutation) ResetEdge(name string) error {
 // CourseModuleMutation represents an operation that mutates the CourseModule nodes in the graph.
 type CourseModuleMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *int
-	created_at     *time.Time
-	updated_at     *time.Time
-	slug           *string
-	language_id    *int
-	addlanguage_id *int
-	_order         *int
-	add_order      *int
-	state          *string
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*CourseModule, error)
-	predicates     []predicate.CourseModule
+	op            Op
+	typ           string
+	id            *int
+	created_at    *time.Time
+	updated_at    *time.Time
+	slug          *string
+	course_id     *int
+	addcourse_id  *int
+	_order        *int
+	add_order     *int
+	state         *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*CourseModule, error)
+	predicates    []predicate.CourseModule
 }
 
 var _ ent.Mutation = (*CourseModuleMutation)(nil)
@@ -13616,74 +13564,74 @@ func (m *CourseModuleMutation) ResetSlug() {
 	delete(m.clearedFields, coursemodule.FieldSlug)
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseModuleMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseModuleMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseModuleMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseModuleMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseModule entity.
+// OldCourseID returns the old "course_id" field's value of the CourseModule entity.
 // If the CourseModule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseModuleMutation) OldLanguageID(ctx context.Context) (v *int, err error) {
+func (m *CourseModuleMutation) OldCourseID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseModuleMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseModuleMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseModuleMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseModuleMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (m *CourseModuleMutation) ClearLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
-	m.clearedFields[coursemodule.FieldLanguageID] = struct{}{}
+// ClearCourseID clears the value of the "course_id" field.
+func (m *CourseModuleMutation) ClearCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
+	m.clearedFields[coursemodule.FieldCourseID] = struct{}{}
 }
 
-// LanguageIDCleared returns if the "language_id" field was cleared in this mutation.
-func (m *CourseModuleMutation) LanguageIDCleared() bool {
-	_, ok := m.clearedFields[coursemodule.FieldLanguageID]
+// CourseIDCleared returns if the "course_id" field was cleared in this mutation.
+func (m *CourseModuleMutation) CourseIDCleared() bool {
+	_, ok := m.clearedFields[coursemodule.FieldCourseID]
 	return ok
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseModuleMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
-	delete(m.clearedFields, coursemodule.FieldLanguageID)
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseModuleMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
+	delete(m.clearedFields, coursemodule.FieldCourseID)
 }
 
 // SetOrder sets the "order" field.
@@ -13849,8 +13797,8 @@ func (m *CourseModuleMutation) Fields() []string {
 	if m.slug != nil {
 		fields = append(fields, coursemodule.FieldSlug)
 	}
-	if m.language_id != nil {
-		fields = append(fields, coursemodule.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, coursemodule.FieldCourseID)
 	}
 	if m._order != nil {
 		fields = append(fields, coursemodule.FieldOrder)
@@ -13872,8 +13820,8 @@ func (m *CourseModuleMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case coursemodule.FieldSlug:
 		return m.Slug()
-	case coursemodule.FieldLanguageID:
-		return m.LanguageID()
+	case coursemodule.FieldCourseID:
+		return m.CourseID()
 	case coursemodule.FieldOrder:
 		return m.Order()
 	case coursemodule.FieldState:
@@ -13893,8 +13841,8 @@ func (m *CourseModuleMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldUpdatedAt(ctx)
 	case coursemodule.FieldSlug:
 		return m.OldSlug(ctx)
-	case coursemodule.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case coursemodule.FieldCourseID:
+		return m.OldCourseID(ctx)
 	case coursemodule.FieldOrder:
 		return m.OldOrder(ctx)
 	case coursemodule.FieldState:
@@ -13929,12 +13877,12 @@ func (m *CourseModuleMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSlug(v)
 		return nil
-	case coursemodule.FieldLanguageID:
+	case coursemodule.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	case coursemodule.FieldOrder:
 		v, ok := value.(int)
@@ -13958,8 +13906,8 @@ func (m *CourseModuleMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *CourseModuleMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_id != nil {
-		fields = append(fields, coursemodule.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, coursemodule.FieldCourseID)
 	}
 	if m.add_order != nil {
 		fields = append(fields, coursemodule.FieldOrder)
@@ -13972,8 +13920,8 @@ func (m *CourseModuleMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *CourseModuleMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case coursemodule.FieldLanguageID:
-		return m.AddedLanguageID()
+	case coursemodule.FieldCourseID:
+		return m.AddedCourseID()
 	case coursemodule.FieldOrder:
 		return m.AddedOrder()
 	}
@@ -13985,12 +13933,12 @@ func (m *CourseModuleMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *CourseModuleMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case coursemodule.FieldLanguageID:
+	case coursemodule.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
 	case coursemodule.FieldOrder:
 		v, ok := value.(int)
@@ -14010,8 +13958,8 @@ func (m *CourseModuleMutation) ClearedFields() []string {
 	if m.FieldCleared(coursemodule.FieldSlug) {
 		fields = append(fields, coursemodule.FieldSlug)
 	}
-	if m.FieldCleared(coursemodule.FieldLanguageID) {
-		fields = append(fields, coursemodule.FieldLanguageID)
+	if m.FieldCleared(coursemodule.FieldCourseID) {
+		fields = append(fields, coursemodule.FieldCourseID)
 	}
 	if m.FieldCleared(coursemodule.FieldOrder) {
 		fields = append(fields, coursemodule.FieldOrder)
@@ -14036,8 +13984,8 @@ func (m *CourseModuleMutation) ClearField(name string) error {
 	case coursemodule.FieldSlug:
 		m.ClearSlug()
 		return nil
-	case coursemodule.FieldLanguageID:
-		m.ClearLanguageID()
+	case coursemodule.FieldCourseID:
+		m.ClearCourseID()
 		return nil
 	case coursemodule.FieldOrder:
 		m.ClearOrder()
@@ -14062,8 +14010,8 @@ func (m *CourseModuleMutation) ResetField(name string) error {
 	case coursemodule.FieldSlug:
 		m.ResetSlug()
 		return nil
-	case coursemodule.FieldLanguageID:
-		m.ResetLanguageID()
+	case coursemodule.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	case coursemodule.FieldOrder:
 		m.ResetOrder()
@@ -14126,24 +14074,24 @@ func (m *CourseModuleMutation) ResetEdge(name string) error {
 // CourseModuleTranslationMutation represents an operation that mutates the CourseModuleTranslation nodes in the graph.
 type CourseModuleTranslationMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *int
-	created_at             *time.Time
-	updated_at             *time.Time
-	name                   *string
-	description            *string
-	locale                 *string
-	language_id            *int
-	addlanguage_id         *int
-	language_version_id    *int
-	addlanguage_version_id *int
-	version_id             *int
-	addversion_id          *int
-	clearedFields          map[string]struct{}
-	done                   bool
-	oldValue               func(context.Context) (*CourseModuleTranslation, error)
-	predicates             []predicate.CourseModuleTranslation
+	op                   Op
+	typ                  string
+	id                   *int
+	created_at           *time.Time
+	updated_at           *time.Time
+	name                 *string
+	description          *string
+	locale               *string
+	course_id            *int
+	addcourse_id         *int
+	course_version_id    *int
+	addcourse_version_id *int
+	version_id           *int
+	addversion_id        *int
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*CourseModuleTranslation, error)
+	predicates           []predicate.CourseModuleTranslation
 }
 
 var _ ent.Mutation = (*CourseModuleTranslationMutation)(nil)
@@ -14463,116 +14411,116 @@ func (m *CourseModuleTranslationMutation) ResetLocale() {
 	delete(m.clearedFields, coursemoduletranslation.FieldLocale)
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseModuleTranslationMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseModuleTranslationMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseModuleTranslationMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseModuleTranslationMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseModuleTranslation entity.
+// OldCourseID returns the old "course_id" field's value of the CourseModuleTranslation entity.
 // If the CourseModuleTranslation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseModuleTranslationMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *CourseModuleTranslationMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseModuleTranslationMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseModuleTranslationMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseModuleTranslationMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseModuleTranslationMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseModuleTranslationMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseModuleTranslationMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
 }
 
-// SetLanguageVersionID sets the "language_version_id" field.
-func (m *CourseModuleTranslationMutation) SetLanguageVersionID(i int) {
-	m.language_version_id = &i
-	m.addlanguage_version_id = nil
+// SetCourseVersionID sets the "course_version_id" field.
+func (m *CourseModuleTranslationMutation) SetCourseVersionID(i int) {
+	m.course_version_id = &i
+	m.addcourse_version_id = nil
 }
 
-// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
-func (m *CourseModuleTranslationMutation) LanguageVersionID() (r int, exists bool) {
-	v := m.language_version_id
+// CourseVersionID returns the value of the "course_version_id" field in the mutation.
+func (m *CourseModuleTranslationMutation) CourseVersionID() (r int, exists bool) {
+	v := m.course_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageVersionID returns the old "language_version_id" field's value of the CourseModuleTranslation entity.
+// OldCourseVersionID returns the old "course_version_id" field's value of the CourseModuleTranslation entity.
 // If the CourseModuleTranslation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseModuleTranslationMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+func (m *CourseModuleTranslationMutation) OldCourseVersionID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseVersionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+		return v, errors.New("OldCourseVersionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseVersionID: %w", err)
 	}
-	return oldValue.LanguageVersionID, nil
+	return oldValue.CourseVersionID, nil
 }
 
-// AddLanguageVersionID adds i to the "language_version_id" field.
-func (m *CourseModuleTranslationMutation) AddLanguageVersionID(i int) {
-	if m.addlanguage_version_id != nil {
-		*m.addlanguage_version_id += i
+// AddCourseVersionID adds i to the "course_version_id" field.
+func (m *CourseModuleTranslationMutation) AddCourseVersionID(i int) {
+	if m.addcourse_version_id != nil {
+		*m.addcourse_version_id += i
 	} else {
-		m.addlanguage_version_id = &i
+		m.addcourse_version_id = &i
 	}
 }
 
-// AddedLanguageVersionID returns the value that was added to the "language_version_id" field in this mutation.
-func (m *CourseModuleTranslationMutation) AddedLanguageVersionID() (r int, exists bool) {
-	v := m.addlanguage_version_id
+// AddedCourseVersionID returns the value that was added to the "course_version_id" field in this mutation.
+func (m *CourseModuleTranslationMutation) AddedCourseVersionID() (r int, exists bool) {
+	v := m.addcourse_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageVersionID resets all changes to the "language_version_id" field.
-func (m *CourseModuleTranslationMutation) ResetLanguageVersionID() {
-	m.language_version_id = nil
-	m.addlanguage_version_id = nil
+// ResetCourseVersionID resets all changes to the "course_version_id" field.
+func (m *CourseModuleTranslationMutation) ResetCourseVersionID() {
+	m.course_version_id = nil
+	m.addcourse_version_id = nil
 }
 
 // SetVersionID sets the "version_id" field.
@@ -14681,11 +14629,11 @@ func (m *CourseModuleTranslationMutation) Fields() []string {
 	if m.locale != nil {
 		fields = append(fields, coursemoduletranslation.FieldLocale)
 	}
-	if m.language_id != nil {
-		fields = append(fields, coursemoduletranslation.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, coursemoduletranslation.FieldCourseID)
 	}
-	if m.language_version_id != nil {
-		fields = append(fields, coursemoduletranslation.FieldLanguageVersionID)
+	if m.course_version_id != nil {
+		fields = append(fields, coursemoduletranslation.FieldCourseVersionID)
 	}
 	if m.version_id != nil {
 		fields = append(fields, coursemoduletranslation.FieldVersionID)
@@ -14708,10 +14656,10 @@ func (m *CourseModuleTranslationMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case coursemoduletranslation.FieldLocale:
 		return m.Locale()
-	case coursemoduletranslation.FieldLanguageID:
-		return m.LanguageID()
-	case coursemoduletranslation.FieldLanguageVersionID:
-		return m.LanguageVersionID()
+	case coursemoduletranslation.FieldCourseID:
+		return m.CourseID()
+	case coursemoduletranslation.FieldCourseVersionID:
+		return m.CourseVersionID()
 	case coursemoduletranslation.FieldVersionID:
 		return m.VersionID()
 	}
@@ -14733,10 +14681,10 @@ func (m *CourseModuleTranslationMutation) OldField(ctx context.Context, name str
 		return m.OldDescription(ctx)
 	case coursemoduletranslation.FieldLocale:
 		return m.OldLocale(ctx)
-	case coursemoduletranslation.FieldLanguageID:
-		return m.OldLanguageID(ctx)
-	case coursemoduletranslation.FieldLanguageVersionID:
-		return m.OldLanguageVersionID(ctx)
+	case coursemoduletranslation.FieldCourseID:
+		return m.OldCourseID(ctx)
+	case coursemoduletranslation.FieldCourseVersionID:
+		return m.OldCourseVersionID(ctx)
 	case coursemoduletranslation.FieldVersionID:
 		return m.OldVersionID(ctx)
 	}
@@ -14783,19 +14731,19 @@ func (m *CourseModuleTranslationMutation) SetField(name string, value ent.Value)
 		}
 		m.SetLocale(v)
 		return nil
-	case coursemoduletranslation.FieldLanguageID:
+	case coursemoduletranslation.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
-	case coursemoduletranslation.FieldLanguageVersionID:
+	case coursemoduletranslation.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageVersionID(v)
+		m.SetCourseVersionID(v)
 		return nil
 	case coursemoduletranslation.FieldVersionID:
 		v, ok := value.(int)
@@ -14812,11 +14760,11 @@ func (m *CourseModuleTranslationMutation) SetField(name string, value ent.Value)
 // this mutation.
 func (m *CourseModuleTranslationMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_id != nil {
-		fields = append(fields, coursemoduletranslation.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, coursemoduletranslation.FieldCourseID)
 	}
-	if m.addlanguage_version_id != nil {
-		fields = append(fields, coursemoduletranslation.FieldLanguageVersionID)
+	if m.addcourse_version_id != nil {
+		fields = append(fields, coursemoduletranslation.FieldCourseVersionID)
 	}
 	if m.addversion_id != nil {
 		fields = append(fields, coursemoduletranslation.FieldVersionID)
@@ -14829,10 +14777,10 @@ func (m *CourseModuleTranslationMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *CourseModuleTranslationMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case coursemoduletranslation.FieldLanguageID:
-		return m.AddedLanguageID()
-	case coursemoduletranslation.FieldLanguageVersionID:
-		return m.AddedLanguageVersionID()
+	case coursemoduletranslation.FieldCourseID:
+		return m.AddedCourseID()
+	case coursemoduletranslation.FieldCourseVersionID:
+		return m.AddedCourseVersionID()
 	case coursemoduletranslation.FieldVersionID:
 		return m.AddedVersionID()
 	}
@@ -14844,19 +14792,19 @@ func (m *CourseModuleTranslationMutation) AddedField(name string) (ent.Value, bo
 // type.
 func (m *CourseModuleTranslationMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case coursemoduletranslation.FieldLanguageID:
+	case coursemoduletranslation.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
-	case coursemoduletranslation.FieldLanguageVersionID:
+	case coursemoduletranslation.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageVersionID(v)
+		m.AddCourseVersionID(v)
 		return nil
 	case coursemoduletranslation.FieldVersionID:
 		v, ok := value.(int)
@@ -14928,11 +14876,11 @@ func (m *CourseModuleTranslationMutation) ResetField(name string) error {
 	case coursemoduletranslation.FieldLocale:
 		m.ResetLocale()
 		return nil
-	case coursemoduletranslation.FieldLanguageID:
-		m.ResetLanguageID()
+	case coursemoduletranslation.FieldCourseID:
+		m.ResetCourseID()
 		return nil
-	case coursemoduletranslation.FieldLanguageVersionID:
-		m.ResetLanguageVersionID()
+	case coursemoduletranslation.FieldCourseVersionID:
+		m.ResetCourseVersionID()
 		return nil
 	case coursemoduletranslation.FieldVersionID:
 		m.ResetVersionID()
@@ -14992,23 +14940,23 @@ func (m *CourseModuleTranslationMutation) ResetEdge(name string) error {
 // CourseModuleVersionMutation represents an operation that mutates the CourseModuleVersion nodes in the graph.
 type CourseModuleVersionMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *int
-	created_at             *time.Time
-	updated_at             *time.Time
-	_order                 *int
-	add_order              *int
-	language_id            *int
-	addlanguage_id         *int
-	language_version_id    *int
-	addlanguage_version_id *int
-	module_id              *int
-	addmodule_id           *int
-	clearedFields          map[string]struct{}
-	done                   bool
-	oldValue               func(context.Context) (*CourseModuleVersion, error)
-	predicates             []predicate.CourseModuleVersion
+	op                   Op
+	typ                  string
+	id                   *int
+	created_at           *time.Time
+	updated_at           *time.Time
+	_order               *int
+	add_order            *int
+	course_id            *int
+	addcourse_id         *int
+	course_version_id    *int
+	addcourse_version_id *int
+	module_id            *int
+	addmodule_id         *int
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*CourseModuleVersion, error)
+	predicates           []predicate.CourseModuleVersion
 }
 
 var _ ent.Mutation = (*CourseModuleVersionMutation)(nil)
@@ -15251,116 +15199,116 @@ func (m *CourseModuleVersionMutation) ResetOrder() {
 	delete(m.clearedFields, coursemoduleversion.FieldOrder)
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseModuleVersionMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseModuleVersionMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseModuleVersionMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseModuleVersionMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseModuleVersion entity.
+// OldCourseID returns the old "course_id" field's value of the CourseModuleVersion entity.
 // If the CourseModuleVersion object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseModuleVersionMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *CourseModuleVersionMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseModuleVersionMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseModuleVersionMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseModuleVersionMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseModuleVersionMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseModuleVersionMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseModuleVersionMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
 }
 
-// SetLanguageVersionID sets the "language_version_id" field.
-func (m *CourseModuleVersionMutation) SetLanguageVersionID(i int) {
-	m.language_version_id = &i
-	m.addlanguage_version_id = nil
+// SetCourseVersionID sets the "course_version_id" field.
+func (m *CourseModuleVersionMutation) SetCourseVersionID(i int) {
+	m.course_version_id = &i
+	m.addcourse_version_id = nil
 }
 
-// LanguageVersionID returns the value of the "language_version_id" field in the mutation.
-func (m *CourseModuleVersionMutation) LanguageVersionID() (r int, exists bool) {
-	v := m.language_version_id
+// CourseVersionID returns the value of the "course_version_id" field in the mutation.
+func (m *CourseModuleVersionMutation) CourseVersionID() (r int, exists bool) {
+	v := m.course_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageVersionID returns the old "language_version_id" field's value of the CourseModuleVersion entity.
+// OldCourseVersionID returns the old "course_version_id" field's value of the CourseModuleVersion entity.
 // If the CourseModuleVersion object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseModuleVersionMutation) OldLanguageVersionID(ctx context.Context) (v int, err error) {
+func (m *CourseModuleVersionMutation) OldCourseVersionID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageVersionID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseVersionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageVersionID requires an ID field in the mutation")
+		return v, errors.New("OldCourseVersionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageVersionID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseVersionID: %w", err)
 	}
-	return oldValue.LanguageVersionID, nil
+	return oldValue.CourseVersionID, nil
 }
 
-// AddLanguageVersionID adds i to the "language_version_id" field.
-func (m *CourseModuleVersionMutation) AddLanguageVersionID(i int) {
-	if m.addlanguage_version_id != nil {
-		*m.addlanguage_version_id += i
+// AddCourseVersionID adds i to the "course_version_id" field.
+func (m *CourseModuleVersionMutation) AddCourseVersionID(i int) {
+	if m.addcourse_version_id != nil {
+		*m.addcourse_version_id += i
 	} else {
-		m.addlanguage_version_id = &i
+		m.addcourse_version_id = &i
 	}
 }
 
-// AddedLanguageVersionID returns the value that was added to the "language_version_id" field in this mutation.
-func (m *CourseModuleVersionMutation) AddedLanguageVersionID() (r int, exists bool) {
-	v := m.addlanguage_version_id
+// AddedCourseVersionID returns the value that was added to the "course_version_id" field in this mutation.
+func (m *CourseModuleVersionMutation) AddedCourseVersionID() (r int, exists bool) {
+	v := m.addcourse_version_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageVersionID resets all changes to the "language_version_id" field.
-func (m *CourseModuleVersionMutation) ResetLanguageVersionID() {
-	m.language_version_id = nil
-	m.addlanguage_version_id = nil
+// ResetCourseVersionID resets all changes to the "course_version_id" field.
+func (m *CourseModuleVersionMutation) ResetCourseVersionID() {
+	m.course_version_id = nil
+	m.addcourse_version_id = nil
 }
 
 // SetModuleID sets the "module_id" field.
@@ -15463,11 +15411,11 @@ func (m *CourseModuleVersionMutation) Fields() []string {
 	if m._order != nil {
 		fields = append(fields, coursemoduleversion.FieldOrder)
 	}
-	if m.language_id != nil {
-		fields = append(fields, coursemoduleversion.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, coursemoduleversion.FieldCourseID)
 	}
-	if m.language_version_id != nil {
-		fields = append(fields, coursemoduleversion.FieldLanguageVersionID)
+	if m.course_version_id != nil {
+		fields = append(fields, coursemoduleversion.FieldCourseVersionID)
 	}
 	if m.module_id != nil {
 		fields = append(fields, coursemoduleversion.FieldModuleID)
@@ -15486,10 +15434,10 @@ func (m *CourseModuleVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case coursemoduleversion.FieldOrder:
 		return m.Order()
-	case coursemoduleversion.FieldLanguageID:
-		return m.LanguageID()
-	case coursemoduleversion.FieldLanguageVersionID:
-		return m.LanguageVersionID()
+	case coursemoduleversion.FieldCourseID:
+		return m.CourseID()
+	case coursemoduleversion.FieldCourseVersionID:
+		return m.CourseVersionID()
 	case coursemoduleversion.FieldModuleID:
 		return m.ModuleID()
 	}
@@ -15507,10 +15455,10 @@ func (m *CourseModuleVersionMutation) OldField(ctx context.Context, name string)
 		return m.OldUpdatedAt(ctx)
 	case coursemoduleversion.FieldOrder:
 		return m.OldOrder(ctx)
-	case coursemoduleversion.FieldLanguageID:
-		return m.OldLanguageID(ctx)
-	case coursemoduleversion.FieldLanguageVersionID:
-		return m.OldLanguageVersionID(ctx)
+	case coursemoduleversion.FieldCourseID:
+		return m.OldCourseID(ctx)
+	case coursemoduleversion.FieldCourseVersionID:
+		return m.OldCourseVersionID(ctx)
 	case coursemoduleversion.FieldModuleID:
 		return m.OldModuleID(ctx)
 	}
@@ -15543,19 +15491,19 @@ func (m *CourseModuleVersionMutation) SetField(name string, value ent.Value) err
 		}
 		m.SetOrder(v)
 		return nil
-	case coursemoduleversion.FieldLanguageID:
+	case coursemoduleversion.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
-	case coursemoduleversion.FieldLanguageVersionID:
+	case coursemoduleversion.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageVersionID(v)
+		m.SetCourseVersionID(v)
 		return nil
 	case coursemoduleversion.FieldModuleID:
 		v, ok := value.(int)
@@ -15575,11 +15523,11 @@ func (m *CourseModuleVersionMutation) AddedFields() []string {
 	if m.add_order != nil {
 		fields = append(fields, coursemoduleversion.FieldOrder)
 	}
-	if m.addlanguage_id != nil {
-		fields = append(fields, coursemoduleversion.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, coursemoduleversion.FieldCourseID)
 	}
-	if m.addlanguage_version_id != nil {
-		fields = append(fields, coursemoduleversion.FieldLanguageVersionID)
+	if m.addcourse_version_id != nil {
+		fields = append(fields, coursemoduleversion.FieldCourseVersionID)
 	}
 	if m.addmodule_id != nil {
 		fields = append(fields, coursemoduleversion.FieldModuleID)
@@ -15594,10 +15542,10 @@ func (m *CourseModuleVersionMutation) AddedField(name string) (ent.Value, bool) 
 	switch name {
 	case coursemoduleversion.FieldOrder:
 		return m.AddedOrder()
-	case coursemoduleversion.FieldLanguageID:
-		return m.AddedLanguageID()
-	case coursemoduleversion.FieldLanguageVersionID:
-		return m.AddedLanguageVersionID()
+	case coursemoduleversion.FieldCourseID:
+		return m.AddedCourseID()
+	case coursemoduleversion.FieldCourseVersionID:
+		return m.AddedCourseVersionID()
 	case coursemoduleversion.FieldModuleID:
 		return m.AddedModuleID()
 	}
@@ -15616,19 +15564,19 @@ func (m *CourseModuleVersionMutation) AddField(name string, value ent.Value) err
 		}
 		m.AddOrder(v)
 		return nil
-	case coursemoduleversion.FieldLanguageID:
+	case coursemoduleversion.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
-	case coursemoduleversion.FieldLanguageVersionID:
+	case coursemoduleversion.FieldCourseVersionID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageVersionID(v)
+		m.AddCourseVersionID(v)
 		return nil
 	case coursemoduleversion.FieldModuleID:
 		v, ok := value.(int)
@@ -15682,11 +15630,11 @@ func (m *CourseModuleVersionMutation) ResetField(name string) error {
 	case coursemoduleversion.FieldOrder:
 		m.ResetOrder()
 		return nil
-	case coursemoduleversion.FieldLanguageID:
-		m.ResetLanguageID()
+	case coursemoduleversion.FieldCourseID:
+		m.ResetCourseID()
 		return nil
-	case coursemoduleversion.FieldLanguageVersionID:
-		m.ResetLanguageVersionID()
+	case coursemoduleversion.FieldCourseVersionID:
+		m.ResetCourseVersionID()
 		return nil
 	case coursemoduleversion.FieldModuleID:
 		m.ResetModuleID()
@@ -15762,8 +15710,8 @@ type CourseVersionMutation struct {
 	exercise_test_filename *string
 	lessons_count          *int
 	addlessons_count       *int
-	language_id            *int
-	addlanguage_id         *int
+	course_id              *int
+	addcourse_id           *int
 	clearedFields          map[string]struct{}
 	current_courses        map[int]struct{}
 	removedcurrent_courses map[int]struct{}
@@ -16440,60 +16388,60 @@ func (m *CourseVersionMutation) ResetLessonsCount() {
 	m.addlessons_count = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *CourseVersionMutation) SetLanguageID(i int) {
-	m.language_id = &i
-	m.addlanguage_id = nil
+// SetCourseID sets the "course_id" field.
+func (m *CourseVersionMutation) SetCourseID(i int) {
+	m.course_id = &i
+	m.addcourse_id = nil
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *CourseVersionMutation) LanguageID() (r int, exists bool) {
-	v := m.language_id
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *CourseVersionMutation) CourseID() (r int, exists bool) {
+	v := m.course_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the CourseVersion entity.
+// OldCourseID returns the old "course_id" field's value of the CourseVersion entity.
 // If the CourseVersion object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseVersionMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *CourseVersionMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// AddLanguageID adds i to the "language_id" field.
-func (m *CourseVersionMutation) AddLanguageID(i int) {
-	if m.addlanguage_id != nil {
-		*m.addlanguage_id += i
+// AddCourseID adds i to the "course_id" field.
+func (m *CourseVersionMutation) AddCourseID(i int) {
+	if m.addcourse_id != nil {
+		*m.addcourse_id += i
 	} else {
-		m.addlanguage_id = &i
+		m.addcourse_id = &i
 	}
 }
 
-// AddedLanguageID returns the value that was added to the "language_id" field in this mutation.
-func (m *CourseVersionMutation) AddedLanguageID() (r int, exists bool) {
-	v := m.addlanguage_id
+// AddedCourseID returns the value that was added to the "course_id" field in this mutation.
+func (m *CourseVersionMutation) AddedCourseID() (r int, exists bool) {
+	v := m.addcourse_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *CourseVersionMutation) ResetLanguageID() {
-	m.language_id = nil
-	m.addlanguage_id = nil
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *CourseVersionMutation) ResetCourseID() {
+	m.course_id = nil
+	m.addcourse_id = nil
 }
 
 // AddCurrentCourseIDs adds the "current_courses" edge to the Course entity by ids.
@@ -16621,8 +16569,8 @@ func (m *CourseVersionMutation) Fields() []string {
 	if m.lessons_count != nil {
 		fields = append(fields, courseversion.FieldLessonsCount)
 	}
-	if m.language_id != nil {
-		fields = append(fields, courseversion.FieldLanguageID)
+	if m.course_id != nil {
+		fields = append(fields, courseversion.FieldCourseID)
 	}
 	return fields
 }
@@ -16656,8 +16604,8 @@ func (m *CourseVersionMutation) Field(name string) (ent.Value, bool) {
 		return m.ExerciseTestFilename()
 	case courseversion.FieldLessonsCount:
 		return m.LessonsCount()
-	case courseversion.FieldLanguageID:
-		return m.LanguageID()
+	case courseversion.FieldCourseID:
+		return m.CourseID()
 	}
 	return nil, false
 }
@@ -16691,8 +16639,8 @@ func (m *CourseVersionMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldExerciseTestFilename(ctx)
 	case courseversion.FieldLessonsCount:
 		return m.OldLessonsCount(ctx)
-	case courseversion.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case courseversion.FieldCourseID:
+		return m.OldCourseID(ctx)
 	}
 	return nil, fmt.Errorf("unknown CourseVersion field %s", name)
 }
@@ -16786,12 +16734,12 @@ func (m *CourseVersionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLessonsCount(v)
 		return nil
-	case courseversion.FieldLanguageID:
+	case courseversion.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion field %s", name)
@@ -16804,8 +16752,8 @@ func (m *CourseVersionMutation) AddedFields() []string {
 	if m.addlessons_count != nil {
 		fields = append(fields, courseversion.FieldLessonsCount)
 	}
-	if m.addlanguage_id != nil {
-		fields = append(fields, courseversion.FieldLanguageID)
+	if m.addcourse_id != nil {
+		fields = append(fields, courseversion.FieldCourseID)
 	}
 	return fields
 }
@@ -16817,8 +16765,8 @@ func (m *CourseVersionMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case courseversion.FieldLessonsCount:
 		return m.AddedLessonsCount()
-	case courseversion.FieldLanguageID:
-		return m.AddedLanguageID()
+	case courseversion.FieldCourseID:
+		return m.AddedCourseID()
 	}
 	return nil, false
 }
@@ -16835,12 +16783,12 @@ func (m *CourseVersionMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddLessonsCount(v)
 		return nil
-	case courseversion.FieldLanguageID:
+	case courseversion.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageID(v)
+		m.AddCourseID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion numeric field %s", name)
@@ -16962,8 +16910,8 @@ func (m *CourseVersionMutation) ResetField(name string) error {
 	case courseversion.FieldLessonsCount:
 		m.ResetLessonsCount()
 		return nil
-	case courseversion.FieldLanguageID:
-		m.ResetLanguageID()
+	case courseversion.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion field %s", name)
@@ -17258,13 +17206,13 @@ func (m *LandingPageMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *LandingPageMutation) SetLanguageID(i int) {
+// SetCourseID sets the "course_id" field.
+func (m *LandingPageMutation) SetCourseID(i int) {
 	m.course = &i
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *LandingPageMutation) LanguageID() (r int, exists bool) {
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *LandingPageMutation) CourseID() (r int, exists bool) {
 	v := m.course
 	if v == nil {
 		return
@@ -17272,25 +17220,25 @@ func (m *LandingPageMutation) LanguageID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the LandingPage entity.
+// OldCourseID returns the old "course_id" field's value of the LandingPage entity.
 // If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LandingPageMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *LandingPageMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *LandingPageMutation) ResetLanguageID() {
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *LandingPageMutation) ResetCourseID() {
 	m.course = nil
 }
 
@@ -18197,28 +18145,15 @@ func (m *LandingPageMutation) ResetLandingPageToRedirectID() {
 	delete(m.clearedFields, landingpage.FieldLandingPageToRedirectID)
 }
 
-// SetCourseID sets the "course" edge to the Course entity by id.
-func (m *LandingPageMutation) SetCourseID(id int) {
-	m.course = &id
-}
-
 // ClearCourse clears the "course" edge to the Course entity.
 func (m *LandingPageMutation) ClearCourse() {
 	m.clearedcourse = true
-	m.clearedFields[landingpage.FieldLanguageID] = struct{}{}
+	m.clearedFields[landingpage.FieldCourseID] = struct{}{}
 }
 
 // CourseCleared reports if the "course" edge to the Course entity was cleared.
 func (m *LandingPageMutation) CourseCleared() bool {
 	return m.clearedcourse
-}
-
-// CourseID returns the "course" edge ID in the mutation.
-func (m *LandingPageMutation) CourseID() (id int, exists bool) {
-	if m.course != nil {
-		return *m.course, true
-	}
-	return
 }
 
 // CourseIDs returns the "course" edge IDs in the mutation.
@@ -18279,7 +18214,7 @@ func (m *LandingPageMutation) Fields() []string {
 		fields = append(fields, landingpage.FieldUpdatedAt)
 	}
 	if m.course != nil {
-		fields = append(fields, landingpage.FieldLanguageID)
+		fields = append(fields, landingpage.FieldCourseID)
 	}
 	if m.slug != nil {
 		fields = append(fields, landingpage.FieldSlug)
@@ -18347,8 +18282,8 @@ func (m *LandingPageMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case landingpage.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case landingpage.FieldLanguageID:
-		return m.LanguageID()
+	case landingpage.FieldCourseID:
+		return m.CourseID()
 	case landingpage.FieldSlug:
 		return m.Slug()
 	case landingpage.FieldHeader:
@@ -18398,8 +18333,8 @@ func (m *LandingPageMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldCreatedAt(ctx)
 	case landingpage.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case landingpage.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case landingpage.FieldCourseID:
+		return m.OldCourseID(ctx)
 	case landingpage.FieldSlug:
 		return m.OldSlug(ctx)
 	case landingpage.FieldHeader:
@@ -18459,12 +18394,12 @@ func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case landingpage.FieldLanguageID:
+	case landingpage.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	case landingpage.FieldSlug:
 		v, ok := value.(string)
@@ -18773,8 +18708,8 @@ func (m *LandingPageMutation) ResetField(name string) error {
 	case landingpage.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case landingpage.FieldLanguageID:
-		m.ResetLanguageID()
+	case landingpage.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	case landingpage.FieldSlug:
 		m.ResetSlug()
@@ -18911,19 +18846,19 @@ func (m *LandingPageMutation) ResetEdge(name string) error {
 // LandingPageQnaItemMutation represents an operation that mutates the LandingPageQnaItem nodes in the graph.
 type LandingPageQnaItemMutation struct {
 	config
-	op                          Op
-	typ                         string
-	id                          *int
-	created_at                  *time.Time
-	updated_at                  *time.Time
-	language_landing_page_id    *int
-	addlanguage_landing_page_id *int
-	question                    *string
-	answer                      *string
-	clearedFields               map[string]struct{}
-	done                        bool
-	oldValue                    func(context.Context) (*LandingPageQnaItem, error)
-	predicates                  []predicate.LandingPageQnaItem
+	op                        Op
+	typ                       string
+	id                        *int
+	created_at                *time.Time
+	updated_at                *time.Time
+	course_landing_page_id    *int
+	addcourse_landing_page_id *int
+	question                  *string
+	answer                    *string
+	clearedFields             map[string]struct{}
+	done                      bool
+	oldValue                  func(context.Context) (*LandingPageQnaItem, error)
+	predicates                []predicate.LandingPageQnaItem
 }
 
 var _ ent.Mutation = (*LandingPageQnaItemMutation)(nil)
@@ -19096,60 +19031,60 @@ func (m *LandingPageQnaItemMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetLanguageLandingPageID sets the "language_landing_page_id" field.
-func (m *LandingPageQnaItemMutation) SetLanguageLandingPageID(i int) {
-	m.language_landing_page_id = &i
-	m.addlanguage_landing_page_id = nil
+// SetCourseLandingPageID sets the "course_landing_page_id" field.
+func (m *LandingPageQnaItemMutation) SetCourseLandingPageID(i int) {
+	m.course_landing_page_id = &i
+	m.addcourse_landing_page_id = nil
 }
 
-// LanguageLandingPageID returns the value of the "language_landing_page_id" field in the mutation.
-func (m *LandingPageQnaItemMutation) LanguageLandingPageID() (r int, exists bool) {
-	v := m.language_landing_page_id
+// CourseLandingPageID returns the value of the "course_landing_page_id" field in the mutation.
+func (m *LandingPageQnaItemMutation) CourseLandingPageID() (r int, exists bool) {
+	v := m.course_landing_page_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLanguageLandingPageID returns the old "language_landing_page_id" field's value of the LandingPageQnaItem entity.
+// OldCourseLandingPageID returns the old "course_landing_page_id" field's value of the LandingPageQnaItem entity.
 // If the LandingPageQnaItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LandingPageQnaItemMutation) OldLanguageLandingPageID(ctx context.Context) (v int, err error) {
+func (m *LandingPageQnaItemMutation) OldCourseLandingPageID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageLandingPageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseLandingPageID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageLandingPageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseLandingPageID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageLandingPageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseLandingPageID: %w", err)
 	}
-	return oldValue.LanguageLandingPageID, nil
+	return oldValue.CourseLandingPageID, nil
 }
 
-// AddLanguageLandingPageID adds i to the "language_landing_page_id" field.
-func (m *LandingPageQnaItemMutation) AddLanguageLandingPageID(i int) {
-	if m.addlanguage_landing_page_id != nil {
-		*m.addlanguage_landing_page_id += i
+// AddCourseLandingPageID adds i to the "course_landing_page_id" field.
+func (m *LandingPageQnaItemMutation) AddCourseLandingPageID(i int) {
+	if m.addcourse_landing_page_id != nil {
+		*m.addcourse_landing_page_id += i
 	} else {
-		m.addlanguage_landing_page_id = &i
+		m.addcourse_landing_page_id = &i
 	}
 }
 
-// AddedLanguageLandingPageID returns the value that was added to the "language_landing_page_id" field in this mutation.
-func (m *LandingPageQnaItemMutation) AddedLanguageLandingPageID() (r int, exists bool) {
-	v := m.addlanguage_landing_page_id
+// AddedCourseLandingPageID returns the value that was added to the "course_landing_page_id" field in this mutation.
+func (m *LandingPageQnaItemMutation) AddedCourseLandingPageID() (r int, exists bool) {
+	v := m.addcourse_landing_page_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLanguageLandingPageID resets all changes to the "language_landing_page_id" field.
-func (m *LandingPageQnaItemMutation) ResetLanguageLandingPageID() {
-	m.language_landing_page_id = nil
-	m.addlanguage_landing_page_id = nil
+// ResetCourseLandingPageID resets all changes to the "course_landing_page_id" field.
+func (m *LandingPageQnaItemMutation) ResetCourseLandingPageID() {
+	m.course_landing_page_id = nil
+	m.addcourse_landing_page_id = nil
 }
 
 // SetQuestion sets the "question" field.
@@ -19291,8 +19226,8 @@ func (m *LandingPageQnaItemMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, landingpageqnaitem.FieldUpdatedAt)
 	}
-	if m.language_landing_page_id != nil {
-		fields = append(fields, landingpageqnaitem.FieldLanguageLandingPageID)
+	if m.course_landing_page_id != nil {
+		fields = append(fields, landingpageqnaitem.FieldCourseLandingPageID)
 	}
 	if m.question != nil {
 		fields = append(fields, landingpageqnaitem.FieldQuestion)
@@ -19312,8 +19247,8 @@ func (m *LandingPageQnaItemMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case landingpageqnaitem.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case landingpageqnaitem.FieldLanguageLandingPageID:
-		return m.LanguageLandingPageID()
+	case landingpageqnaitem.FieldCourseLandingPageID:
+		return m.CourseLandingPageID()
 	case landingpageqnaitem.FieldQuestion:
 		return m.Question()
 	case landingpageqnaitem.FieldAnswer:
@@ -19331,8 +19266,8 @@ func (m *LandingPageQnaItemMutation) OldField(ctx context.Context, name string) 
 		return m.OldCreatedAt(ctx)
 	case landingpageqnaitem.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case landingpageqnaitem.FieldLanguageLandingPageID:
-		return m.OldLanguageLandingPageID(ctx)
+	case landingpageqnaitem.FieldCourseLandingPageID:
+		return m.OldCourseLandingPageID(ctx)
 	case landingpageqnaitem.FieldQuestion:
 		return m.OldQuestion(ctx)
 	case landingpageqnaitem.FieldAnswer:
@@ -19360,12 +19295,12 @@ func (m *LandingPageQnaItemMutation) SetField(name string, value ent.Value) erro
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case landingpageqnaitem.FieldLanguageLandingPageID:
+	case landingpageqnaitem.FieldCourseLandingPageID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageLandingPageID(v)
+		m.SetCourseLandingPageID(v)
 		return nil
 	case landingpageqnaitem.FieldQuestion:
 		v, ok := value.(string)
@@ -19389,8 +19324,8 @@ func (m *LandingPageQnaItemMutation) SetField(name string, value ent.Value) erro
 // this mutation.
 func (m *LandingPageQnaItemMutation) AddedFields() []string {
 	var fields []string
-	if m.addlanguage_landing_page_id != nil {
-		fields = append(fields, landingpageqnaitem.FieldLanguageLandingPageID)
+	if m.addcourse_landing_page_id != nil {
+		fields = append(fields, landingpageqnaitem.FieldCourseLandingPageID)
 	}
 	return fields
 }
@@ -19400,8 +19335,8 @@ func (m *LandingPageQnaItemMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *LandingPageQnaItemMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case landingpageqnaitem.FieldLanguageLandingPageID:
-		return m.AddedLanguageLandingPageID()
+	case landingpageqnaitem.FieldCourseLandingPageID:
+		return m.AddedCourseLandingPageID()
 	}
 	return nil, false
 }
@@ -19411,12 +19346,12 @@ func (m *LandingPageQnaItemMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *LandingPageQnaItemMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case landingpageqnaitem.FieldLanguageLandingPageID:
+	case landingpageqnaitem.FieldCourseLandingPageID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLanguageLandingPageID(v)
+		m.AddCourseLandingPageID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPageQnaItem numeric field %s", name)
@@ -19466,8 +19401,8 @@ func (m *LandingPageQnaItemMutation) ResetField(name string) error {
 	case landingpageqnaitem.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case landingpageqnaitem.FieldLanguageLandingPageID:
-		m.ResetLanguageLandingPageID()
+	case landingpageqnaitem.FieldCourseLandingPageID:
+		m.ResetCourseLandingPageID()
 		return nil
 	case landingpageqnaitem.FieldQuestion:
 		m.ResetQuestion()
@@ -20560,13 +20495,13 @@ func (m *LessonProgressMutation) ResetUserID() {
 	m.adduser_id = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *LessonProgressMutation) SetLanguageID(i int) {
+// SetCourseID sets the "course_id" field.
+func (m *LessonProgressMutation) SetCourseID(i int) {
 	m.course = &i
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *LessonProgressMutation) LanguageID() (r int, exists bool) {
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *LessonProgressMutation) CourseID() (r int, exists bool) {
 	v := m.course
 	if v == nil {
 		return
@@ -20574,25 +20509,25 @@ func (m *LessonProgressMutation) LanguageID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the LessonProgress entity.
+// OldCourseID returns the old "course_id" field's value of the LessonProgress entity.
 // If the LessonProgress object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LessonProgressMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *LessonProgressMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *LessonProgressMutation) ResetLanguageID() {
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *LessonProgressMutation) ResetCourseID() {
 	m.course = nil
 }
 
@@ -20787,28 +20722,15 @@ func (m *LessonProgressMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetCourseID sets the "course" edge to the Course entity by id.
-func (m *LessonProgressMutation) SetCourseID(id int) {
-	m.course = &id
-}
-
 // ClearCourse clears the "course" edge to the Course entity.
 func (m *LessonProgressMutation) ClearCourse() {
 	m.clearedcourse = true
-	m.clearedFields[lessonprogress.FieldLanguageID] = struct{}{}
+	m.clearedFields[lessonprogress.FieldCourseID] = struct{}{}
 }
 
 // CourseCleared reports if the "course" edge to the Course entity was cleared.
 func (m *LessonProgressMutation) CourseCleared() bool {
 	return m.clearedcourse
-}
-
-// CourseID returns the "course" edge ID in the mutation.
-func (m *LessonProgressMutation) CourseID() (id int, exists bool) {
-	if m.course != nil {
-		return *m.course, true
-	}
-	return
 }
 
 // CourseIDs returns the "course" edge IDs in the mutation.
@@ -20893,7 +20815,7 @@ func (m *LessonProgressMutation) Fields() []string {
 		fields = append(fields, lessonprogress.FieldUserID)
 	}
 	if m.course != nil {
-		fields = append(fields, lessonprogress.FieldLanguageID)
+		fields = append(fields, lessonprogress.FieldCourseID)
 	}
 	if m.lesson != nil {
 		fields = append(fields, lessonprogress.FieldLessonID)
@@ -20917,8 +20839,8 @@ func (m *LessonProgressMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case lessonprogress.FieldUserID:
 		return m.UserID()
-	case lessonprogress.FieldLanguageID:
-		return m.LanguageID()
+	case lessonprogress.FieldCourseID:
+		return m.CourseID()
 	case lessonprogress.FieldLessonID:
 		return m.LessonID()
 	case lessonprogress.FieldState:
@@ -20938,8 +20860,8 @@ func (m *LessonProgressMutation) OldField(ctx context.Context, name string) (ent
 	switch name {
 	case lessonprogress.FieldUserID:
 		return m.OldUserID(ctx)
-	case lessonprogress.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case lessonprogress.FieldCourseID:
+		return m.OldCourseID(ctx)
 	case lessonprogress.FieldLessonID:
 		return m.OldLessonID(ctx)
 	case lessonprogress.FieldState:
@@ -20964,12 +20886,12 @@ func (m *LessonProgressMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUserID(v)
 		return nil
-	case lessonprogress.FieldLanguageID:
+	case lessonprogress.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	case lessonprogress.FieldLessonID:
 		v, ok := value.(int)
@@ -21093,8 +21015,8 @@ func (m *LessonProgressMutation) ResetField(name string) error {
 	case lessonprogress.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case lessonprogress.FieldLanguageID:
-		m.ResetLanguageID()
+	case lessonprogress.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	case lessonprogress.FieldLessonID:
 		m.ResetLessonID()
@@ -21398,13 +21320,13 @@ func (m *ReviewMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetLanguageID sets the "language_id" field.
-func (m *ReviewMutation) SetLanguageID(i int) {
+// SetCourseID sets the "course_id" field.
+func (m *ReviewMutation) SetCourseID(i int) {
 	m.course = &i
 }
 
-// LanguageID returns the value of the "language_id" field in the mutation.
-func (m *ReviewMutation) LanguageID() (r int, exists bool) {
+// CourseID returns the value of the "course_id" field in the mutation.
+func (m *ReviewMutation) CourseID() (r int, exists bool) {
 	v := m.course
 	if v == nil {
 		return
@@ -21412,25 +21334,25 @@ func (m *ReviewMutation) LanguageID() (r int, exists bool) {
 	return *v, true
 }
 
-// OldLanguageID returns the old "language_id" field's value of the Review entity.
+// OldCourseID returns the old "course_id" field's value of the Review entity.
 // If the Review object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ReviewMutation) OldLanguageID(ctx context.Context) (v int, err error) {
+func (m *ReviewMutation) OldCourseID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLanguageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldCourseID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLanguageID requires an ID field in the mutation")
+		return v, errors.New("OldCourseID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLanguageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldCourseID: %w", err)
 	}
-	return oldValue.LanguageID, nil
+	return oldValue.CourseID, nil
 }
 
-// ResetLanguageID resets all changes to the "language_id" field.
-func (m *ReviewMutation) ResetLanguageID() {
+// ResetCourseID resets all changes to the "course_id" field.
+func (m *ReviewMutation) ResetCourseID() {
 	m.course = nil
 }
 
@@ -21764,28 +21686,15 @@ func (m *ReviewMutation) ResetPinned() {
 	delete(m.clearedFields, review.FieldPinned)
 }
 
-// SetCourseID sets the "course" edge to the Course entity by id.
-func (m *ReviewMutation) SetCourseID(id int) {
-	m.course = &id
-}
-
 // ClearCourse clears the "course" edge to the Course entity.
 func (m *ReviewMutation) ClearCourse() {
 	m.clearedcourse = true
-	m.clearedFields[review.FieldLanguageID] = struct{}{}
+	m.clearedFields[review.FieldCourseID] = struct{}{}
 }
 
 // CourseCleared reports if the "course" edge to the Course entity was cleared.
 func (m *ReviewMutation) CourseCleared() bool {
 	return m.clearedcourse
-}
-
-// CourseID returns the "course" edge ID in the mutation.
-func (m *ReviewMutation) CourseID() (id int, exists bool) {
-	if m.course != nil {
-		return *m.course, true
-	}
-	return
 }
 
 // CourseIDs returns the "course" edge IDs in the mutation.
@@ -21873,7 +21782,7 @@ func (m *ReviewMutation) Fields() []string {
 		fields = append(fields, review.FieldUpdatedAt)
 	}
 	if m.course != nil {
-		fields = append(fields, review.FieldLanguageID)
+		fields = append(fields, review.FieldCourseID)
 	}
 	if m.user != nil {
 		fields = append(fields, review.FieldUserID)
@@ -21908,8 +21817,8 @@ func (m *ReviewMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case review.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case review.FieldLanguageID:
-		return m.LanguageID()
+	case review.FieldCourseID:
+		return m.CourseID()
 	case review.FieldUserID:
 		return m.UserID()
 	case review.FieldBody:
@@ -21937,8 +21846,8 @@ func (m *ReviewMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldCreatedAt(ctx)
 	case review.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case review.FieldLanguageID:
-		return m.OldLanguageID(ctx)
+	case review.FieldCourseID:
+		return m.OldCourseID(ctx)
 	case review.FieldUserID:
 		return m.OldUserID(ctx)
 	case review.FieldBody:
@@ -21976,12 +21885,12 @@ func (m *ReviewMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case review.FieldLanguageID:
+	case review.FieldCourseID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLanguageID(v)
+		m.SetCourseID(v)
 		return nil
 	case review.FieldUserID:
 		v, ok := value.(int)
@@ -22129,8 +22038,8 @@ func (m *ReviewMutation) ResetField(name string) error {
 	case review.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case review.FieldLanguageID:
-		m.ResetLanguageID()
+	case review.FieldCourseID:
+		m.ResetCourseID()
 		return nil
 	case review.FieldUserID:
 		m.ResetUserID()

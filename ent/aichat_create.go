@@ -58,15 +58,9 @@ func (_c *AiChatCreate) SetUserID(v int) *AiChatCreate {
 	return _c
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (_c *AiChatCreate) SetLanguageLessonMemberID(v int) *AiChatCreate {
-	_c.mutation.SetLanguageLessonMemberID(v)
-	return _c
-}
-
-// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by ID.
-func (_c *AiChatCreate) SetLessonProgressID(id int) *AiChatCreate {
-	_c.mutation.SetLessonProgressID(id)
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (_c *AiChatCreate) SetLessonProgressID(v int) *AiChatCreate {
+	_c.mutation.SetLessonProgressID(v)
 	return _c
 }
 
@@ -136,8 +130,8 @@ func (_c *AiChatCreate) check() error {
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AiChat.user_id"`)}
 	}
-	if _, ok := _c.mutation.LanguageLessonMemberID(); !ok {
-		return &ValidationError{Name: "language_lesson_member_id", err: errors.New(`ent: missing required field "AiChat.language_lesson_member_id"`)}
+	if _, ok := _c.mutation.LessonProgressID(); !ok {
+		return &ValidationError{Name: "lesson_progress_id", err: errors.New(`ent: missing required field "AiChat.lesson_progress_id"`)}
 	}
 	if len(_c.mutation.LessonProgressIDs()) == 0 {
 		return &ValidationError{Name: "lesson_progress", err: errors.New(`ent: missing required edge "AiChat.lesson_progress"`)}
@@ -194,7 +188,7 @@ func (_c *AiChatCreate) createSpec() (*AiChat, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageLessonMemberID = nodes[0]
+		_node.LessonProgressID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
@@ -290,15 +284,15 @@ func (u *AiChatUpsert) UpdateUserID() *AiChatUpsert {
 	return u
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (u *AiChatUpsert) SetLanguageLessonMemberID(v int) *AiChatUpsert {
-	u.Set(aichat.FieldLanguageLessonMemberID, v)
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (u *AiChatUpsert) SetLessonProgressID(v int) *AiChatUpsert {
+	u.Set(aichat.FieldLessonProgressID, v)
 	return u
 }
 
-// UpdateLanguageLessonMemberID sets the "language_lesson_member_id" field to the value that was provided on create.
-func (u *AiChatUpsert) UpdateLanguageLessonMemberID() *AiChatUpsert {
-	u.SetExcluded(aichat.FieldLanguageLessonMemberID)
+// UpdateLessonProgressID sets the "lesson_progress_id" field to the value that was provided on create.
+func (u *AiChatUpsert) UpdateLessonProgressID() *AiChatUpsert {
+	u.SetExcluded(aichat.FieldLessonProgressID)
 	return u
 }
 
@@ -375,17 +369,17 @@ func (u *AiChatUpsertOne) UpdateUserID() *AiChatUpsertOne {
 	})
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (u *AiChatUpsertOne) SetLanguageLessonMemberID(v int) *AiChatUpsertOne {
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (u *AiChatUpsertOne) SetLessonProgressID(v int) *AiChatUpsertOne {
 	return u.Update(func(s *AiChatUpsert) {
-		s.SetLanguageLessonMemberID(v)
+		s.SetLessonProgressID(v)
 	})
 }
 
-// UpdateLanguageLessonMemberID sets the "language_lesson_member_id" field to the value that was provided on create.
-func (u *AiChatUpsertOne) UpdateLanguageLessonMemberID() *AiChatUpsertOne {
+// UpdateLessonProgressID sets the "lesson_progress_id" field to the value that was provided on create.
+func (u *AiChatUpsertOne) UpdateLessonProgressID() *AiChatUpsertOne {
 	return u.Update(func(s *AiChatUpsert) {
-		s.UpdateLanguageLessonMemberID()
+		s.UpdateLessonProgressID()
 	})
 }
 
@@ -628,17 +622,17 @@ func (u *AiChatUpsertBulk) UpdateUserID() *AiChatUpsertBulk {
 	})
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (u *AiChatUpsertBulk) SetLanguageLessonMemberID(v int) *AiChatUpsertBulk {
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (u *AiChatUpsertBulk) SetLessonProgressID(v int) *AiChatUpsertBulk {
 	return u.Update(func(s *AiChatUpsert) {
-		s.SetLanguageLessonMemberID(v)
+		s.SetLessonProgressID(v)
 	})
 }
 
-// UpdateLanguageLessonMemberID sets the "language_lesson_member_id" field to the value that was provided on create.
-func (u *AiChatUpsertBulk) UpdateLanguageLessonMemberID() *AiChatUpsertBulk {
+// UpdateLessonProgressID sets the "lesson_progress_id" field to the value that was provided on create.
+func (u *AiChatUpsertBulk) UpdateLessonProgressID() *AiChatUpsertBulk {
 	return u.Update(func(s *AiChatUpsert) {
-		s.UpdateLanguageLessonMemberID()
+		s.UpdateLessonProgressID()
 	})
 }
 

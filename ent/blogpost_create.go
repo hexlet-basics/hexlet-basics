@@ -141,30 +141,30 @@ func (_c *BlogPostCreate) SetCreatorID(v int) *BlogPostCreate {
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *BlogPostCreate) SetLanguageID(v int) *BlogPostCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *BlogPostCreate) SetCourseID(v int) *BlogPostCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_c *BlogPostCreate) SetNillableLanguageID(v *int) *BlogPostCreate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_c *BlogPostCreate) SetNillableCourseID(v *int) *BlogPostCreate {
 	if v != nil {
-		_c.SetLanguageID(*v)
+		_c.SetCourseID(*v)
 	}
 	return _c
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (_c *BlogPostCreate) SetRelatedLanguageItemsCount(v int) *BlogPostCreate {
-	_c.mutation.SetRelatedLanguageItemsCount(v)
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (_c *BlogPostCreate) SetRelatedCourseItemsCount(v int) *BlogPostCreate {
+	_c.mutation.SetRelatedCourseItemsCount(v)
 	return _c
 }
 
-// SetNillableRelatedLanguageItemsCount sets the "related_language_items_count" field if the given value is not nil.
-func (_c *BlogPostCreate) SetNillableRelatedLanguageItemsCount(v *int) *BlogPostCreate {
+// SetNillableRelatedCourseItemsCount sets the "related_course_items_count" field if the given value is not nil.
+func (_c *BlogPostCreate) SetNillableRelatedCourseItemsCount(v *int) *BlogPostCreate {
 	if v != nil {
-		_c.SetRelatedLanguageItemsCount(*v)
+		_c.SetRelatedCourseItemsCount(*v)
 	}
 	return _c
 }
@@ -221,9 +221,9 @@ func (_c *BlogPostCreate) defaults() {
 		v := blogpost.DefaultRichBody
 		_c.mutation.SetRichBody(v)
 	}
-	if _, ok := _c.mutation.RelatedLanguageItemsCount(); !ok {
-		v := blogpost.DefaultRelatedLanguageItemsCount
-		_c.mutation.SetRelatedLanguageItemsCount(v)
+	if _, ok := _c.mutation.RelatedCourseItemsCount(); !ok {
+		v := blogpost.DefaultRelatedCourseItemsCount
+		_c.mutation.SetRelatedCourseItemsCount(v)
 	}
 }
 
@@ -241,8 +241,8 @@ func (_c *BlogPostCreate) check() error {
 	if _, ok := _c.mutation.CreatorID(); !ok {
 		return &ValidationError{Name: "creator_id", err: errors.New(`ent: missing required field "BlogPost.creator_id"`)}
 	}
-	if _, ok := _c.mutation.RelatedLanguageItemsCount(); !ok {
-		return &ValidationError{Name: "related_language_items_count", err: errors.New(`ent: missing required field "BlogPost.related_language_items_count"`)}
+	if _, ok := _c.mutation.RelatedCourseItemsCount(); !ok {
+		return &ValidationError{Name: "related_course_items_count", err: errors.New(`ent: missing required field "BlogPost.related_course_items_count"`)}
 	}
 	if len(_c.mutation.CreatorIDs()) == 0 {
 		return &ValidationError{Name: "creator", err: errors.New(`ent: missing required edge "BlogPost.creator"`)}
@@ -306,13 +306,13 @@ func (_c *BlogPostCreate) createSpec() (*BlogPost, *sqlgraph.CreateSpec) {
 		_spec.SetField(blogpost.FieldRichBody, field.TypeString, value)
 		_node.RichBody = value
 	}
-	if value, ok := _c.mutation.LanguageID(); ok {
-		_spec.SetField(blogpost.FieldLanguageID, field.TypeInt, value)
-		_node.LanguageID = &value
+	if value, ok := _c.mutation.CourseID(); ok {
+		_spec.SetField(blogpost.FieldCourseID, field.TypeInt, value)
+		_node.CourseID = &value
 	}
-	if value, ok := _c.mutation.RelatedLanguageItemsCount(); ok {
-		_spec.SetField(blogpost.FieldRelatedLanguageItemsCount, field.TypeInt, value)
-		_node.RelatedLanguageItemsCount = value
+	if value, ok := _c.mutation.RelatedCourseItemsCount(); ok {
+		_spec.SetField(blogpost.FieldRelatedCourseItemsCount, field.TypeInt, value)
+		_node.RelatedCourseItemsCount = value
 	}
 	if nodes := _c.mutation.CreatorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -509,45 +509,45 @@ func (u *BlogPostUpsert) UpdateCreatorID() *BlogPostUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *BlogPostUpsert) SetLanguageID(v int) *BlogPostUpsert {
-	u.Set(blogpost.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *BlogPostUpsert) SetCourseID(v int) *BlogPostUpsert {
+	u.Set(blogpost.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *BlogPostUpsert) UpdateLanguageID() *BlogPostUpsert {
-	u.SetExcluded(blogpost.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *BlogPostUpsert) UpdateCourseID() *BlogPostUpsert {
+	u.SetExcluded(blogpost.FieldCourseID)
 	return u
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *BlogPostUpsert) AddLanguageID(v int) *BlogPostUpsert {
-	u.Add(blogpost.FieldLanguageID, v)
+// AddCourseID adds v to the "course_id" field.
+func (u *BlogPostUpsert) AddCourseID(v int) *BlogPostUpsert {
+	u.Add(blogpost.FieldCourseID, v)
 	return u
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (u *BlogPostUpsert) ClearLanguageID() *BlogPostUpsert {
-	u.SetNull(blogpost.FieldLanguageID)
+// ClearCourseID clears the value of the "course_id" field.
+func (u *BlogPostUpsert) ClearCourseID() *BlogPostUpsert {
+	u.SetNull(blogpost.FieldCourseID)
 	return u
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (u *BlogPostUpsert) SetRelatedLanguageItemsCount(v int) *BlogPostUpsert {
-	u.Set(blogpost.FieldRelatedLanguageItemsCount, v)
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (u *BlogPostUpsert) SetRelatedCourseItemsCount(v int) *BlogPostUpsert {
+	u.Set(blogpost.FieldRelatedCourseItemsCount, v)
 	return u
 }
 
-// UpdateRelatedLanguageItemsCount sets the "related_language_items_count" field to the value that was provided on create.
-func (u *BlogPostUpsert) UpdateRelatedLanguageItemsCount() *BlogPostUpsert {
-	u.SetExcluded(blogpost.FieldRelatedLanguageItemsCount)
+// UpdateRelatedCourseItemsCount sets the "related_course_items_count" field to the value that was provided on create.
+func (u *BlogPostUpsert) UpdateRelatedCourseItemsCount() *BlogPostUpsert {
+	u.SetExcluded(blogpost.FieldRelatedCourseItemsCount)
 	return u
 }
 
-// AddRelatedLanguageItemsCount adds v to the "related_language_items_count" field.
-func (u *BlogPostUpsert) AddRelatedLanguageItemsCount(v int) *BlogPostUpsert {
-	u.Add(blogpost.FieldRelatedLanguageItemsCount, v)
+// AddRelatedCourseItemsCount adds v to the "related_course_items_count" field.
+func (u *BlogPostUpsert) AddRelatedCourseItemsCount(v int) *BlogPostUpsert {
+	u.Add(blogpost.FieldRelatedCourseItemsCount, v)
 	return u
 }
 
@@ -743,52 +743,52 @@ func (u *BlogPostUpsertOne) UpdateCreatorID() *BlogPostUpsertOne {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *BlogPostUpsertOne) SetLanguageID(v int) *BlogPostUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *BlogPostUpsertOne) SetCourseID(v int) *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *BlogPostUpsertOne) AddLanguageID(v int) *BlogPostUpsertOne {
+// AddCourseID adds v to the "course_id" field.
+func (u *BlogPostUpsertOne) AddCourseID(v int) *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.AddLanguageID(v)
+		s.AddCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *BlogPostUpsertOne) UpdateLanguageID() *BlogPostUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *BlogPostUpsertOne) UpdateCourseID() *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (u *BlogPostUpsertOne) ClearLanguageID() *BlogPostUpsertOne {
+// ClearCourseID clears the value of the "course_id" field.
+func (u *BlogPostUpsertOne) ClearCourseID() *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.ClearLanguageID()
+		s.ClearCourseID()
 	})
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (u *BlogPostUpsertOne) SetRelatedLanguageItemsCount(v int) *BlogPostUpsertOne {
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (u *BlogPostUpsertOne) SetRelatedCourseItemsCount(v int) *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.SetRelatedLanguageItemsCount(v)
+		s.SetRelatedCourseItemsCount(v)
 	})
 }
 
-// AddRelatedLanguageItemsCount adds v to the "related_language_items_count" field.
-func (u *BlogPostUpsertOne) AddRelatedLanguageItemsCount(v int) *BlogPostUpsertOne {
+// AddRelatedCourseItemsCount adds v to the "related_course_items_count" field.
+func (u *BlogPostUpsertOne) AddRelatedCourseItemsCount(v int) *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.AddRelatedLanguageItemsCount(v)
+		s.AddRelatedCourseItemsCount(v)
 	})
 }
 
-// UpdateRelatedLanguageItemsCount sets the "related_language_items_count" field to the value that was provided on create.
-func (u *BlogPostUpsertOne) UpdateRelatedLanguageItemsCount() *BlogPostUpsertOne {
+// UpdateRelatedCourseItemsCount sets the "related_course_items_count" field to the value that was provided on create.
+func (u *BlogPostUpsertOne) UpdateRelatedCourseItemsCount() *BlogPostUpsertOne {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.UpdateRelatedLanguageItemsCount()
+		s.UpdateRelatedCourseItemsCount()
 	})
 }
 
@@ -1150,52 +1150,52 @@ func (u *BlogPostUpsertBulk) UpdateCreatorID() *BlogPostUpsertBulk {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *BlogPostUpsertBulk) SetLanguageID(v int) *BlogPostUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *BlogPostUpsertBulk) SetCourseID(v int) *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *BlogPostUpsertBulk) AddLanguageID(v int) *BlogPostUpsertBulk {
+// AddCourseID adds v to the "course_id" field.
+func (u *BlogPostUpsertBulk) AddCourseID(v int) *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.AddLanguageID(v)
+		s.AddCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *BlogPostUpsertBulk) UpdateLanguageID() *BlogPostUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *BlogPostUpsertBulk) UpdateCourseID() *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (u *BlogPostUpsertBulk) ClearLanguageID() *BlogPostUpsertBulk {
+// ClearCourseID clears the value of the "course_id" field.
+func (u *BlogPostUpsertBulk) ClearCourseID() *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.ClearLanguageID()
+		s.ClearCourseID()
 	})
 }
 
-// SetRelatedLanguageItemsCount sets the "related_language_items_count" field.
-func (u *BlogPostUpsertBulk) SetRelatedLanguageItemsCount(v int) *BlogPostUpsertBulk {
+// SetRelatedCourseItemsCount sets the "related_course_items_count" field.
+func (u *BlogPostUpsertBulk) SetRelatedCourseItemsCount(v int) *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.SetRelatedLanguageItemsCount(v)
+		s.SetRelatedCourseItemsCount(v)
 	})
 }
 
-// AddRelatedLanguageItemsCount adds v to the "related_language_items_count" field.
-func (u *BlogPostUpsertBulk) AddRelatedLanguageItemsCount(v int) *BlogPostUpsertBulk {
+// AddRelatedCourseItemsCount adds v to the "related_course_items_count" field.
+func (u *BlogPostUpsertBulk) AddRelatedCourseItemsCount(v int) *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.AddRelatedLanguageItemsCount(v)
+		s.AddRelatedCourseItemsCount(v)
 	})
 }
 
-// UpdateRelatedLanguageItemsCount sets the "related_language_items_count" field to the value that was provided on create.
-func (u *BlogPostUpsertBulk) UpdateRelatedLanguageItemsCount() *BlogPostUpsertBulk {
+// UpdateRelatedCourseItemsCount sets the "related_course_items_count" field to the value that was provided on create.
+func (u *BlogPostUpsertBulk) UpdateRelatedCourseItemsCount() *BlogPostUpsertBulk {
 	return u.Update(func(s *BlogPostUpsert) {
-		s.UpdateRelatedLanguageItemsCount()
+		s.UpdateRelatedCourseItemsCount()
 	})
 }
 

@@ -32,7 +32,7 @@ func (Review) Annotations() []schema.Annotation {
 
 func (Review) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("language_id").
+		field.Int("course_id").StorageKey("language_id").
 			Annotations(AdminInputField{SetOnly: true, Rename: "CourseId"}),
 		field.Int("user_id").
 			Annotations(AdminInputField{SetOnly: true, Rename: "UserId"}),
@@ -51,7 +51,7 @@ func (Review) Edges() []ent.Edge {
 		// belongs-to: the FK lives on this (reviews) table, so the edge owns the
 		// field. `course` binds the legacy `language_id` column to a Course.
 		edge.To("course", Course.Type).
-			Field("language_id").
+			Field("course_id").
 			Unique().
 			Required(),
 		edge.To("user", User.Type).

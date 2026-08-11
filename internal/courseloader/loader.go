@@ -75,9 +75,9 @@ func (l *Loader) Run(ctx context.Context, versionID int) error {
 		return nil
 	}
 
-	course, err := l.db.Course.Get(ctx, version.LanguageID)
+	course, err := l.db.Course.Get(ctx, version.CourseID)
 	if err != nil {
-		return oops.Wrapf(err, "load course %d for version %d", version.LanguageID, versionID)
+		return oops.Wrapf(err, "load course %d for version %d", version.CourseID, versionID)
 	}
 	if course.Slug == nil || *course.Slug == "" {
 		return l.fail(ctx, version, oops.Errorf("course %d has no slug", course.ID))
@@ -173,8 +173,8 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 		}
 
 		mv, err := tx.CourseModuleVersion.Create().
-			SetLanguageID(languageID).
-			SetLanguageVersionID(versionID).
+			SetCourseID(languageID).
+			SetCourseVersionID(versionID).
 			SetModuleID(moduleID).
 			SetOrder(m.Order).
 			Save(ctx)
@@ -184,8 +184,8 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 
 		for _, info := range m.Infos {
 			if _, err := tx.CourseModuleTranslation.Create().
-				SetLanguageID(languageID).
-				SetLanguageVersionID(versionID).
+				SetCourseID(languageID).
+				SetCourseVersionID(versionID).
 				SetVersionID(mv.ID).
 				SetLocale(info.Locale).
 				SetName(info.Name).
@@ -202,8 +202,8 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 			}
 
 			lv, err := tx.CourseLessonVersion.Create().
-				SetLanguageID(languageID).
-				SetLanguageVersionID(versionID).
+				SetCourseID(languageID).
+				SetCourseVersionID(versionID).
 				SetLessonID(lessonID).
 				SetModuleVersionID(mv.ID).
 				SetOrder(lesson.Order).
@@ -250,9 +250,9 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 // for Rails `serialize type: Array` compatibility.
 func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
 	create := tx.CourseLessonTranslation.Create().
-		SetLanguageID(languageID).
-		SetLanguageVersionID(versionID).
-		SetLanguageLessonID(lessonID).
+		SetCourseID(languageID).
+		SetCourseVersionID(versionID).
+		SetCourseLessonID(lessonID).
 		SetVersionID(lessonVersionID).
 		SetLocale(info.Locale).
 		SetName(info.Name).
@@ -288,9 +288,9 @@ func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageI
 // per-build ordering lives on the module version, not here.
 func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug string) (int, error) {
 	id, err := tx.CourseModule.Create().
-		SetLanguageID(languageID).
+		SetCourseID(languageID).
 		SetSlug(slug).
-		OnConflictColumns(coursemodule.FieldLanguageID, coursemodule.FieldSlug).
+		OnConflictColumns(coursemodule.FieldCourseID, coursemodule.FieldSlug).
 		UpdateNewValues().
 		ID(ctx)
 	if err != nil {
@@ -305,11 +305,11 @@ func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug stri
 // recreated.
 func upsertLesson(ctx context.Context, tx *ent.Client, languageID, moduleID int, slug string) (int, error) {
 	id, err := tx.CourseLesson.Create().
-		SetLanguageID(languageID).
+		SetCourseID(languageID).
 		SetModuleID(moduleID).
 		SetSlug(slug).
 		SetState(lessonStateCreated).
-		OnConflictColumns(courselesson.FieldLanguageID, courselesson.FieldSlug).
+		OnConflictColumns(courselesson.FieldCourseID, courselesson.FieldSlug).
 		Update(func(update *ent.CourseLessonUpsert) {
 			update.SetModuleID(moduleID)
 		}).

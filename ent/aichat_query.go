@@ -448,7 +448,7 @@ func (_q *AiChatQuery) loadLessonProgress(ctx context.Context, query *LessonProg
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AiChat)
 	for i := range nodes {
-		fk := nodes[i].LanguageLessonMemberID
+		fk := nodes[i].LessonProgressID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -465,7 +465,7 @@ func (_q *AiChatQuery) loadLessonProgress(ctx context.Context, query *LessonProg
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "language_lesson_member_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "lesson_progress_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -529,7 +529,7 @@ func (_q *AiChatQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 		if _q.withLessonProgress != nil {
-			_spec.Node.AddColumnOnce(aichat.FieldLanguageLessonMemberID)
+			_spec.Node.AddColumnOnce(aichat.FieldLessonProgressID)
 		}
 		if _q.withUser != nil {
 			_spec.Node.AddColumnOnce(aichat.FieldUserID)

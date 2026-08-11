@@ -21,8 +21,8 @@ type LessonProgress struct {
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID int `json:"user_id,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
 	// LessonID holds the value of the "lesson_id" field.
 	LessonID int `json:"lesson_id,omitempty"`
 	// State holds the value of the "state" field.
@@ -75,7 +75,7 @@ func (*LessonProgress) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case lessonprogress.FieldID, lessonprogress.FieldUserID, lessonprogress.FieldLanguageID, lessonprogress.FieldLessonID, lessonprogress.FieldMessagesCount:
+		case lessonprogress.FieldID, lessonprogress.FieldUserID, lessonprogress.FieldCourseID, lessonprogress.FieldLessonID, lessonprogress.FieldMessagesCount:
 			values[i] = new(sql.NullInt64)
 		case lessonprogress.FieldState:
 			values[i] = new(sql.NullString)
@@ -108,11 +108,11 @@ func (_m *LessonProgress) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UserID = int(value.Int64)
 			}
-		case lessonprogress.FieldLanguageID:
+		case lessonprogress.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
 		case lessonprogress.FieldLessonID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -189,8 +189,8 @@ func (_m *LessonProgress) String() string {
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteString(", ")
 	builder.WriteString("lesson_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LessonID))

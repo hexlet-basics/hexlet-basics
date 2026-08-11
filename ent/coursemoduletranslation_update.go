@@ -94,45 +94,45 @@ func (_u *CourseModuleTranslationUpdate) ClearLocale() *CourseModuleTranslationU
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *CourseModuleTranslationUpdate) SetLanguageID(v int) *CourseModuleTranslationUpdate {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *CourseModuleTranslationUpdate) SetCourseID(v int) *CourseModuleTranslationUpdate {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *CourseModuleTranslationUpdate) SetNillableLanguageID(v *int) *CourseModuleTranslationUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *CourseModuleTranslationUpdate) SetNillableCourseID(v *int) *CourseModuleTranslationUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *CourseModuleTranslationUpdate) AddLanguageID(v int) *CourseModuleTranslationUpdate {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *CourseModuleTranslationUpdate) AddCourseID(v int) *CourseModuleTranslationUpdate {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
-// SetLanguageVersionID sets the "language_version_id" field.
-func (_u *CourseModuleTranslationUpdate) SetLanguageVersionID(v int) *CourseModuleTranslationUpdate {
-	_u.mutation.ResetLanguageVersionID()
-	_u.mutation.SetLanguageVersionID(v)
+// SetCourseVersionID sets the "course_version_id" field.
+func (_u *CourseModuleTranslationUpdate) SetCourseVersionID(v int) *CourseModuleTranslationUpdate {
+	_u.mutation.ResetCourseVersionID()
+	_u.mutation.SetCourseVersionID(v)
 	return _u
 }
 
-// SetNillableLanguageVersionID sets the "language_version_id" field if the given value is not nil.
-func (_u *CourseModuleTranslationUpdate) SetNillableLanguageVersionID(v *int) *CourseModuleTranslationUpdate {
+// SetNillableCourseVersionID sets the "course_version_id" field if the given value is not nil.
+func (_u *CourseModuleTranslationUpdate) SetNillableCourseVersionID(v *int) *CourseModuleTranslationUpdate {
 	if v != nil {
-		_u.SetLanguageVersionID(*v)
+		_u.SetCourseVersionID(*v)
 	}
 	return _u
 }
 
-// AddLanguageVersionID adds value to the "language_version_id" field.
-func (_u *CourseModuleTranslationUpdate) AddLanguageVersionID(v int) *CourseModuleTranslationUpdate {
-	_u.mutation.AddLanguageVersionID(v)
+// AddCourseVersionID adds value to the "course_version_id" field.
+func (_u *CourseModuleTranslationUpdate) AddCourseVersionID(v int) *CourseModuleTranslationUpdate {
+	_u.mutation.AddCourseVersionID(v)
 	return _u
 }
 
@@ -228,17 +228,17 @@ func (_u *CourseModuleTranslationUpdate) sqlSave(ctx context.Context) (_node int
 	if _u.mutation.LocaleCleared() {
 		_spec.ClearField(coursemoduletranslation.FieldLocale, field.TypeString)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(coursemoduletranslation.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(coursemoduletranslation.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(coursemoduletranslation.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(coursemoduletranslation.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LanguageVersionID(); ok {
-		_spec.SetField(coursemoduletranslation.FieldLanguageVersionID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseVersionID(); ok {
+		_spec.SetField(coursemoduletranslation.FieldCourseVersionID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageVersionID(); ok {
-		_spec.AddField(coursemoduletranslation.FieldLanguageVersionID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseVersionID(); ok {
+		_spec.AddField(coursemoduletranslation.FieldCourseVersionID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.VersionID(); ok {
 		_spec.SetField(coursemoduletranslation.FieldVersionID, field.TypeInt, value)
@@ -332,45 +332,45 @@ func (_u *CourseModuleTranslationUpdateOne) ClearLocale() *CourseModuleTranslati
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *CourseModuleTranslationUpdateOne) SetLanguageID(v int) *CourseModuleTranslationUpdateOne {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *CourseModuleTranslationUpdateOne) SetCourseID(v int) *CourseModuleTranslationUpdateOne {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *CourseModuleTranslationUpdateOne) SetNillableLanguageID(v *int) *CourseModuleTranslationUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *CourseModuleTranslationUpdateOne) SetNillableCourseID(v *int) *CourseModuleTranslationUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *CourseModuleTranslationUpdateOne) AddLanguageID(v int) *CourseModuleTranslationUpdateOne {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *CourseModuleTranslationUpdateOne) AddCourseID(v int) *CourseModuleTranslationUpdateOne {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
-// SetLanguageVersionID sets the "language_version_id" field.
-func (_u *CourseModuleTranslationUpdateOne) SetLanguageVersionID(v int) *CourseModuleTranslationUpdateOne {
-	_u.mutation.ResetLanguageVersionID()
-	_u.mutation.SetLanguageVersionID(v)
+// SetCourseVersionID sets the "course_version_id" field.
+func (_u *CourseModuleTranslationUpdateOne) SetCourseVersionID(v int) *CourseModuleTranslationUpdateOne {
+	_u.mutation.ResetCourseVersionID()
+	_u.mutation.SetCourseVersionID(v)
 	return _u
 }
 
-// SetNillableLanguageVersionID sets the "language_version_id" field if the given value is not nil.
-func (_u *CourseModuleTranslationUpdateOne) SetNillableLanguageVersionID(v *int) *CourseModuleTranslationUpdateOne {
+// SetNillableCourseVersionID sets the "course_version_id" field if the given value is not nil.
+func (_u *CourseModuleTranslationUpdateOne) SetNillableCourseVersionID(v *int) *CourseModuleTranslationUpdateOne {
 	if v != nil {
-		_u.SetLanguageVersionID(*v)
+		_u.SetCourseVersionID(*v)
 	}
 	return _u
 }
 
-// AddLanguageVersionID adds value to the "language_version_id" field.
-func (_u *CourseModuleTranslationUpdateOne) AddLanguageVersionID(v int) *CourseModuleTranslationUpdateOne {
-	_u.mutation.AddLanguageVersionID(v)
+// AddCourseVersionID adds value to the "course_version_id" field.
+func (_u *CourseModuleTranslationUpdateOne) AddCourseVersionID(v int) *CourseModuleTranslationUpdateOne {
+	_u.mutation.AddCourseVersionID(v)
 	return _u
 }
 
@@ -496,17 +496,17 @@ func (_u *CourseModuleTranslationUpdateOne) sqlSave(ctx context.Context) (_node 
 	if _u.mutation.LocaleCleared() {
 		_spec.ClearField(coursemoduletranslation.FieldLocale, field.TypeString)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(coursemoduletranslation.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(coursemoduletranslation.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(coursemoduletranslation.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(coursemoduletranslation.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LanguageVersionID(); ok {
-		_spec.SetField(coursemoduletranslation.FieldLanguageVersionID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseVersionID(); ok {
+		_spec.SetField(coursemoduletranslation.FieldCourseVersionID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageVersionID(); ok {
-		_spec.AddField(coursemoduletranslation.FieldLanguageVersionID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseVersionID(); ok {
+		_spec.AddField(coursemoduletranslation.FieldCourseVersionID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.VersionID(); ok {
 		_spec.SetField(coursemoduletranslation.FieldVersionID, field.TypeInt, value)

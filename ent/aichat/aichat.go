@@ -20,8 +20,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldUserID holds the string denoting the user_id field in the database.
 	FieldUserID = "user_id"
-	// FieldLanguageLessonMemberID holds the string denoting the language_lesson_member_id field in the database.
-	FieldLanguageLessonMemberID = "language_lesson_member_id"
+	// FieldLessonProgressID holds the string denoting the lesson_progress_id field in the database.
+	FieldLessonProgressID = "language_lesson_member_id"
 	// EdgeLessonProgress holds the string denoting the lesson_progress edge name in mutations.
 	EdgeLessonProgress = "lesson_progress"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -50,7 +50,7 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldUserID,
-	FieldLanguageLessonMemberID,
+	FieldLessonProgressID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -95,9 +95,9 @@ func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
-// ByLanguageLessonMemberID orders the results by the language_lesson_member_id field.
-func ByLanguageLessonMemberID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageLessonMemberID, opts...).ToFunc()
+// ByLessonProgressID orders the results by the lesson_progress_id field.
+func ByLessonProgressID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLessonProgressID, opts...).ToFunc()
 }
 
 // ByLessonProgressField orders the results by lesson_progress field.

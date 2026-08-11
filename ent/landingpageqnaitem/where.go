@@ -64,9 +64,9 @@ func UpdatedAt(v time.Time) predicate.LandingPageQnaItem {
 	return predicate.LandingPageQnaItem(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// LanguageLandingPageID applies equality check predicate on the "language_landing_page_id" field. It's identical to LanguageLandingPageIDEQ.
-func LanguageLandingPageID(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldEQ(FieldLanguageLandingPageID, v))
+// CourseLandingPageID applies equality check predicate on the "course_landing_page_id" field. It's identical to CourseLandingPageIDEQ.
+func CourseLandingPageID(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldEQ(FieldCourseLandingPageID, v))
 }
 
 // Question applies equality check predicate on the "question" field. It's identical to QuestionEQ.
@@ -159,44 +159,44 @@ func UpdatedAtLTE(v time.Time) predicate.LandingPageQnaItem {
 	return predicate.LandingPageQnaItem(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// LanguageLandingPageIDEQ applies the EQ predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDEQ(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldEQ(FieldLanguageLandingPageID, v))
+// CourseLandingPageIDEQ applies the EQ predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDEQ(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldEQ(FieldCourseLandingPageID, v))
 }
 
-// LanguageLandingPageIDNEQ applies the NEQ predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDNEQ(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldNEQ(FieldLanguageLandingPageID, v))
+// CourseLandingPageIDNEQ applies the NEQ predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDNEQ(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldNEQ(FieldCourseLandingPageID, v))
 }
 
-// LanguageLandingPageIDIn applies the In predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDIn(vs ...int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldIn(FieldLanguageLandingPageID, vs...))
+// CourseLandingPageIDIn applies the In predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDIn(vs ...int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldIn(FieldCourseLandingPageID, vs...))
 }
 
-// LanguageLandingPageIDNotIn applies the NotIn predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDNotIn(vs ...int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldNotIn(FieldLanguageLandingPageID, vs...))
+// CourseLandingPageIDNotIn applies the NotIn predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDNotIn(vs ...int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldNotIn(FieldCourseLandingPageID, vs...))
 }
 
-// LanguageLandingPageIDGT applies the GT predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDGT(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldGT(FieldLanguageLandingPageID, v))
+// CourseLandingPageIDGT applies the GT predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDGT(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldGT(FieldCourseLandingPageID, v))
 }
 
-// LanguageLandingPageIDGTE applies the GTE predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDGTE(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldGTE(FieldLanguageLandingPageID, v))
+// CourseLandingPageIDGTE applies the GTE predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDGTE(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldGTE(FieldCourseLandingPageID, v))
 }
 
-// LanguageLandingPageIDLT applies the LT predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDLT(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldLT(FieldLanguageLandingPageID, v))
+// CourseLandingPageIDLT applies the LT predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDLT(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldLT(FieldCourseLandingPageID, v))
 }
 
-// LanguageLandingPageIDLTE applies the LTE predicate on the "language_landing_page_id" field.
-func LanguageLandingPageIDLTE(v int) predicate.LandingPageQnaItem {
-	return predicate.LandingPageQnaItem(sql.FieldLTE(FieldLanguageLandingPageID, v))
+// CourseLandingPageIDLTE applies the LTE predicate on the "course_landing_page_id" field.
+func CourseLandingPageIDLTE(v int) predicate.LandingPageQnaItem {
+	return predicate.LandingPageQnaItem(sql.FieldLTE(FieldCourseLandingPageID, v))
 }
 
 // QuestionEQ applies the EQ predicate on the "question" field.

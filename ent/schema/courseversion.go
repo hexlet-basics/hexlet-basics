@@ -45,7 +45,7 @@ func (CourseVersion) Fields() []ent.Field {
 		field.Int("lessons_count").Default(0),
 		// language_id is the owning course (NOT NULL FK). A version is always built
 		// for a specific course, so it is a required value field, not nillable.
-		field.Int("language_id"),
+		field.Int("course_id").StorageKey("language_id"),
 		// Rails-owned timestamp (NOT NULL, no DB default); supplied by ent now that
 		// the loader writes this table.
 	}

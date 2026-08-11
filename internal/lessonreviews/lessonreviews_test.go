@@ -44,13 +44,13 @@ func TestReviewLessonUpdatesExistingReview(t *testing.T) {
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.LanguageID(82481401),
-			courselessonreview.LanguageLessonID(1001),
+			courselessonreview.CourseID(82481401),
+			courselessonreview.CourseLessonID(1001),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "AI summary", review.Summary)
-	assert.Equal(t, 2002, review.LanguageLessonVersionInfoID)
+	assert.Equal(t, 2002, review.CourseLessonTranslationID)
 }
 
 // Info 2001 = strings (lesson 1003) en. The lesson has no assistant chats, so
@@ -69,8 +69,8 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.LanguageID(82481401),
-			courselessonreview.LanguageLessonID(1003),
+			courselessonreview.CourseID(82481401),
+			courselessonreview.CourseLessonID(1003),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
@@ -87,8 +87,8 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 
 	_, err := db.CourseLessonReview.Delete().
 		Where(
-			courselessonreview.LanguageID(82481401),
-			courselessonreview.LanguageLessonID(1002),
+			courselessonreview.CourseID(82481401),
+			courselessonreview.CourseLessonID(1002),
 			courselessonreview.LocaleEQ("en"),
 		).
 		Exec(ctx)
@@ -104,11 +104,11 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 
 	review := db.CourseLessonReview.Query().
 		Where(
-			courselessonreview.LanguageID(82481401),
-			courselessonreview.LanguageLessonID(1002),
+			courselessonreview.CourseID(82481401),
+			courselessonreview.CourseLessonID(1002),
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "AI summary", review.Summary)
-	assert.Equal(t, 965227298, review.LanguageLessonVersionID)
+	assert.Equal(t, 965227298, review.CourseLessonVersionID)
 }

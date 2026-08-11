@@ -82,30 +82,30 @@ func (_u *CourseLessonUpdate) ClearNaturalOrder() *CourseLessonUpdate {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *CourseLessonUpdate) SetLanguageID(v int) *CourseLessonUpdate {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *CourseLessonUpdate) SetCourseID(v int) *CourseLessonUpdate {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *CourseLessonUpdate) SetNillableLanguageID(v *int) *CourseLessonUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *CourseLessonUpdate) SetNillableCourseID(v *int) *CourseLessonUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *CourseLessonUpdate) AddLanguageID(v int) *CourseLessonUpdate {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *CourseLessonUpdate) AddCourseID(v int) *CourseLessonUpdate {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (_u *CourseLessonUpdate) ClearLanguageID() *CourseLessonUpdate {
-	_u.mutation.ClearLanguageID()
+// ClearCourseID clears the value of the "course_id" field.
+func (_u *CourseLessonUpdate) ClearCourseID() *CourseLessonUpdate {
+	_u.mutation.ClearCourseID()
 	return _u
 }
 
@@ -260,14 +260,14 @@ func (_u *CourseLessonUpdate) sqlSave(ctx context.Context) (_node int, err error
 	if _u.mutation.NaturalOrderCleared() {
 		_spec.ClearField(courselesson.FieldNaturalOrder, field.TypeInt)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(courselesson.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(courselesson.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(courselesson.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(courselesson.FieldCourseID, field.TypeInt, value)
 	}
-	if _u.mutation.LanguageIDCleared() {
-		_spec.ClearField(courselesson.FieldLanguageID, field.TypeInt)
+	if _u.mutation.CourseIDCleared() {
+		_spec.ClearField(courselesson.FieldCourseID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.ModuleID(); ok {
 		_spec.SetField(courselesson.FieldModuleID, field.TypeInt, value)
@@ -402,30 +402,30 @@ func (_u *CourseLessonUpdateOne) ClearNaturalOrder() *CourseLessonUpdateOne {
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *CourseLessonUpdateOne) SetLanguageID(v int) *CourseLessonUpdateOne {
-	_u.mutation.ResetLanguageID()
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *CourseLessonUpdateOne) SetCourseID(v int) *CourseLessonUpdateOne {
+	_u.mutation.ResetCourseID()
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *CourseLessonUpdateOne) SetNillableLanguageID(v *int) *CourseLessonUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *CourseLessonUpdateOne) SetNillableCourseID(v *int) *CourseLessonUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
 
-// AddLanguageID adds value to the "language_id" field.
-func (_u *CourseLessonUpdateOne) AddLanguageID(v int) *CourseLessonUpdateOne {
-	_u.mutation.AddLanguageID(v)
+// AddCourseID adds value to the "course_id" field.
+func (_u *CourseLessonUpdateOne) AddCourseID(v int) *CourseLessonUpdateOne {
+	_u.mutation.AddCourseID(v)
 	return _u
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (_u *CourseLessonUpdateOne) ClearLanguageID() *CourseLessonUpdateOne {
-	_u.mutation.ClearLanguageID()
+// ClearCourseID clears the value of the "course_id" field.
+func (_u *CourseLessonUpdateOne) ClearCourseID() *CourseLessonUpdateOne {
+	_u.mutation.ClearCourseID()
 	return _u
 }
 
@@ -610,14 +610,14 @@ func (_u *CourseLessonUpdateOne) sqlSave(ctx context.Context) (_node *CourseLess
 	if _u.mutation.NaturalOrderCleared() {
 		_spec.ClearField(courselesson.FieldNaturalOrder, field.TypeInt)
 	}
-	if value, ok := _u.mutation.LanguageID(); ok {
-		_spec.SetField(courselesson.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.CourseID(); ok {
+		_spec.SetField(courselesson.FieldCourseID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedLanguageID(); ok {
-		_spec.AddField(courselesson.FieldLanguageID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedCourseID(); ok {
+		_spec.AddField(courselesson.FieldCourseID, field.TypeInt, value)
 	}
-	if _u.mutation.LanguageIDCleared() {
-		_spec.ClearField(courselesson.FieldLanguageID, field.TypeInt)
+	if _u.mutation.CourseIDCleared() {
+		_spec.ClearField(courselesson.FieldCourseID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.ModuleID(); ok {
 		_spec.SetField(courselesson.FieldModuleID, field.TypeInt, value)

@@ -30,9 +30,9 @@ func (_c *LessonProgressCreate) SetUserID(v int) *LessonProgressCreate {
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *LessonProgressCreate) SetLanguageID(v int) *LessonProgressCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *LessonProgressCreate) SetCourseID(v int) *LessonProgressCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
@@ -73,12 +73,6 @@ func (_c *LessonProgressCreate) SetNillableMessagesCount(v *int) *LessonProgress
 // SetCreatedAt sets the "created_at" field.
 func (_c *LessonProgressCreate) SetCreatedAt(v time.Time) *LessonProgressCreate {
 	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_c *LessonProgressCreate) SetCourseID(id int) *LessonProgressCreate {
-	_c.mutation.SetCourseID(id)
 	return _c
 }
 
@@ -129,8 +123,8 @@ func (_c *LessonProgressCreate) check() error {
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "LessonProgress.user_id"`)}
 	}
-	if _, ok := _c.mutation.LanguageID(); !ok {
-		return &ValidationError{Name: "language_id", err: errors.New(`ent: missing required field "LessonProgress.language_id"`)}
+	if _, ok := _c.mutation.CourseID(); !ok {
+		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "LessonProgress.course_id"`)}
 	}
 	if _, ok := _c.mutation.LessonID(); !ok {
 		return &ValidationError{Name: "lesson_id", err: errors.New(`ent: missing required field "LessonProgress.lesson_id"`)}
@@ -201,7 +195,7 @@ func (_c *LessonProgressCreate) createSpec() (*LessonProgress, *sqlgraph.CreateS
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.LanguageID = nodes[0]
+		_node.CourseID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
@@ -291,15 +285,15 @@ func (u *LessonProgressUpsert) AddUserID(v int) *LessonProgressUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *LessonProgressUpsert) SetLanguageID(v int) *LessonProgressUpsert {
-	u.Set(lessonprogress.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *LessonProgressUpsert) SetCourseID(v int) *LessonProgressUpsert {
+	u.Set(lessonprogress.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *LessonProgressUpsert) UpdateLanguageID() *LessonProgressUpsert {
-	u.SetExcluded(lessonprogress.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *LessonProgressUpsert) UpdateCourseID() *LessonProgressUpsert {
+	u.SetExcluded(lessonprogress.FieldCourseID)
 	return u
 }
 
@@ -423,17 +417,17 @@ func (u *LessonProgressUpsertOne) UpdateUserID() *LessonProgressUpsertOne {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *LessonProgressUpsertOne) SetLanguageID(v int) *LessonProgressUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *LessonProgressUpsertOne) SetCourseID(v int) *LessonProgressUpsertOne {
 	return u.Update(func(s *LessonProgressUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *LessonProgressUpsertOne) UpdateLanguageID() *LessonProgressUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *LessonProgressUpsertOne) UpdateCourseID() *LessonProgressUpsertOne {
 	return u.Update(func(s *LessonProgressUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
@@ -731,17 +725,17 @@ func (u *LessonProgressUpsertBulk) UpdateUserID() *LessonProgressUpsertBulk {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *LessonProgressUpsertBulk) SetLanguageID(v int) *LessonProgressUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *LessonProgressUpsertBulk) SetCourseID(v int) *LessonProgressUpsertBulk {
 	return u.Update(func(s *LessonProgressUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *LessonProgressUpsertBulk) UpdateLanguageID() *LessonProgressUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *LessonProgressUpsertBulk) UpdateCourseID() *LessonProgressUpsertBulk {
 	return u.Update(func(s *LessonProgressUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 

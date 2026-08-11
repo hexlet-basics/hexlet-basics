@@ -227,8 +227,8 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, items, 2)
 	// Submission order is the display order.
-	assert.Equal(t, 207281424, items[0].LanguageID)
-	assert.Equal(t, 82481401, items[1].LanguageID)
+	assert.Equal(t, 207281424, items[0].CourseID)
+	assert.Equal(t, 82481401, items[1].CourseID)
 
 	// Clearing the set drops the counter to zero.
 	post, err = h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{

@@ -94,14 +94,14 @@ func PathToCode(v string) predicate.CourseLessonVersion {
 	return predicate.CourseLessonVersion(sql.FieldEQ(FieldPathToCode, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageVersionID applies equality check predicate on the "language_version_id" field. It's identical to LanguageVersionIDEQ.
-func LanguageVersionID(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldEQ(FieldLanguageVersionID, v))
+// CourseVersionID applies equality check predicate on the "course_version_id" field. It's identical to CourseVersionIDEQ.
+func CourseVersionID(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldEQ(FieldCourseVersionID, v))
 }
 
 // LessonID applies equality check predicate on the "lesson_id" field. It's identical to LessonIDEQ.
@@ -594,84 +594,84 @@ func PathToCodeContainsFold(v string) predicate.CourseLessonVersion {
 	return predicate.CourseLessonVersion(sql.FieldContainsFold(FieldPathToCode, v))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGT(FieldLanguageID, v))
+// CourseIDGT applies the GT predicate on the "course_id" field.
+func CourseIDGT(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldGT(FieldCourseID, v))
 }
 
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGTE(FieldLanguageID, v))
+// CourseIDGTE applies the GTE predicate on the "course_id" field.
+func CourseIDGTE(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldGTE(FieldCourseID, v))
 }
 
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLT(FieldLanguageID, v))
+// CourseIDLT applies the LT predicate on the "course_id" field.
+func CourseIDLT(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldLT(FieldCourseID, v))
 }
 
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLTE(FieldLanguageID, v))
+// CourseIDLTE applies the LTE predicate on the "course_id" field.
+func CourseIDLTE(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldLTE(FieldCourseID, v))
 }
 
-// LanguageVersionIDEQ applies the EQ predicate on the "language_version_id" field.
-func LanguageVersionIDEQ(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldEQ(FieldLanguageVersionID, v))
+// CourseVersionIDEQ applies the EQ predicate on the "course_version_id" field.
+func CourseVersionIDEQ(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldEQ(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDNEQ applies the NEQ predicate on the "language_version_id" field.
-func LanguageVersionIDNEQ(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldNEQ(FieldLanguageVersionID, v))
+// CourseVersionIDNEQ applies the NEQ predicate on the "course_version_id" field.
+func CourseVersionIDNEQ(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldNEQ(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDIn applies the In predicate on the "language_version_id" field.
-func LanguageVersionIDIn(vs ...int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldIn(FieldLanguageVersionID, vs...))
+// CourseVersionIDIn applies the In predicate on the "course_version_id" field.
+func CourseVersionIDIn(vs ...int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldIn(FieldCourseVersionID, vs...))
 }
 
-// LanguageVersionIDNotIn applies the NotIn predicate on the "language_version_id" field.
-func LanguageVersionIDNotIn(vs ...int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldNotIn(FieldLanguageVersionID, vs...))
+// CourseVersionIDNotIn applies the NotIn predicate on the "course_version_id" field.
+func CourseVersionIDNotIn(vs ...int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldNotIn(FieldCourseVersionID, vs...))
 }
 
-// LanguageVersionIDGT applies the GT predicate on the "language_version_id" field.
-func LanguageVersionIDGT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGT(FieldLanguageVersionID, v))
+// CourseVersionIDGT applies the GT predicate on the "course_version_id" field.
+func CourseVersionIDGT(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldGT(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDGTE applies the GTE predicate on the "language_version_id" field.
-func LanguageVersionIDGTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGTE(FieldLanguageVersionID, v))
+// CourseVersionIDGTE applies the GTE predicate on the "course_version_id" field.
+func CourseVersionIDGTE(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldGTE(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDLT applies the LT predicate on the "language_version_id" field.
-func LanguageVersionIDLT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLT(FieldLanguageVersionID, v))
+// CourseVersionIDLT applies the LT predicate on the "course_version_id" field.
+func CourseVersionIDLT(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldLT(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDLTE applies the LTE predicate on the "language_version_id" field.
-func LanguageVersionIDLTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLTE(FieldLanguageVersionID, v))
+// CourseVersionIDLTE applies the LTE predicate on the "course_version_id" field.
+func CourseVersionIDLTE(v int) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(sql.FieldLTE(FieldCourseVersionID, v))
 }
 
 // LessonIDEQ applies the EQ predicate on the "lesson_id" field.

@@ -79,14 +79,14 @@ func Locale(v string) predicate.CourseModuleTranslation {
 	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldLocale, v))
 }
 
-// LanguageID applies equality check predicate on the "language_id" field. It's identical to LanguageIDEQ.
-func LanguageID(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldLanguageID, v))
+// CourseID applies equality check predicate on the "course_id" field. It's identical to CourseIDEQ.
+func CourseID(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageVersionID applies equality check predicate on the "language_version_id" field. It's identical to LanguageVersionIDEQ.
-func LanguageVersionID(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldLanguageVersionID, v))
+// CourseVersionID applies equality check predicate on the "course_version_id" field. It's identical to CourseVersionIDEQ.
+func CourseVersionID(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldCourseVersionID, v))
 }
 
 // VersionID applies equality check predicate on the "version_id" field. It's identical to VersionIDEQ.
@@ -399,84 +399,84 @@ func LocaleContainsFold(v string) predicate.CourseModuleTranslation {
 	return predicate.CourseModuleTranslation(sql.FieldContainsFold(FieldLocale, v))
 }
 
-// LanguageIDEQ applies the EQ predicate on the "language_id" field.
-func LanguageIDEQ(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldLanguageID, v))
+// CourseIDEQ applies the EQ predicate on the "course_id" field.
+func CourseIDEQ(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldCourseID, v))
 }
 
-// LanguageIDNEQ applies the NEQ predicate on the "language_id" field.
-func LanguageIDNEQ(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldNEQ(FieldLanguageID, v))
+// CourseIDNEQ applies the NEQ predicate on the "course_id" field.
+func CourseIDNEQ(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldNEQ(FieldCourseID, v))
 }
 
-// LanguageIDIn applies the In predicate on the "language_id" field.
-func LanguageIDIn(vs ...int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldIn(FieldLanguageID, vs...))
+// CourseIDIn applies the In predicate on the "course_id" field.
+func CourseIDIn(vs ...int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldIn(FieldCourseID, vs...))
 }
 
-// LanguageIDNotIn applies the NotIn predicate on the "language_id" field.
-func LanguageIDNotIn(vs ...int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldNotIn(FieldLanguageID, vs...))
+// CourseIDNotIn applies the NotIn predicate on the "course_id" field.
+func CourseIDNotIn(vs ...int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldNotIn(FieldCourseID, vs...))
 }
 
-// LanguageIDGT applies the GT predicate on the "language_id" field.
-func LanguageIDGT(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldGT(FieldLanguageID, v))
+// CourseIDGT applies the GT predicate on the "course_id" field.
+func CourseIDGT(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldGT(FieldCourseID, v))
 }
 
-// LanguageIDGTE applies the GTE predicate on the "language_id" field.
-func LanguageIDGTE(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldGTE(FieldLanguageID, v))
+// CourseIDGTE applies the GTE predicate on the "course_id" field.
+func CourseIDGTE(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldGTE(FieldCourseID, v))
 }
 
-// LanguageIDLT applies the LT predicate on the "language_id" field.
-func LanguageIDLT(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldLT(FieldLanguageID, v))
+// CourseIDLT applies the LT predicate on the "course_id" field.
+func CourseIDLT(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldLT(FieldCourseID, v))
 }
 
-// LanguageIDLTE applies the LTE predicate on the "language_id" field.
-func LanguageIDLTE(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldLTE(FieldLanguageID, v))
+// CourseIDLTE applies the LTE predicate on the "course_id" field.
+func CourseIDLTE(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldLTE(FieldCourseID, v))
 }
 
-// LanguageVersionIDEQ applies the EQ predicate on the "language_version_id" field.
-func LanguageVersionIDEQ(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldLanguageVersionID, v))
+// CourseVersionIDEQ applies the EQ predicate on the "course_version_id" field.
+func CourseVersionIDEQ(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldEQ(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDNEQ applies the NEQ predicate on the "language_version_id" field.
-func LanguageVersionIDNEQ(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldNEQ(FieldLanguageVersionID, v))
+// CourseVersionIDNEQ applies the NEQ predicate on the "course_version_id" field.
+func CourseVersionIDNEQ(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldNEQ(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDIn applies the In predicate on the "language_version_id" field.
-func LanguageVersionIDIn(vs ...int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldIn(FieldLanguageVersionID, vs...))
+// CourseVersionIDIn applies the In predicate on the "course_version_id" field.
+func CourseVersionIDIn(vs ...int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldIn(FieldCourseVersionID, vs...))
 }
 
-// LanguageVersionIDNotIn applies the NotIn predicate on the "language_version_id" field.
-func LanguageVersionIDNotIn(vs ...int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldNotIn(FieldLanguageVersionID, vs...))
+// CourseVersionIDNotIn applies the NotIn predicate on the "course_version_id" field.
+func CourseVersionIDNotIn(vs ...int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldNotIn(FieldCourseVersionID, vs...))
 }
 
-// LanguageVersionIDGT applies the GT predicate on the "language_version_id" field.
-func LanguageVersionIDGT(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldGT(FieldLanguageVersionID, v))
+// CourseVersionIDGT applies the GT predicate on the "course_version_id" field.
+func CourseVersionIDGT(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldGT(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDGTE applies the GTE predicate on the "language_version_id" field.
-func LanguageVersionIDGTE(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldGTE(FieldLanguageVersionID, v))
+// CourseVersionIDGTE applies the GTE predicate on the "course_version_id" field.
+func CourseVersionIDGTE(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldGTE(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDLT applies the LT predicate on the "language_version_id" field.
-func LanguageVersionIDLT(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldLT(FieldLanguageVersionID, v))
+// CourseVersionIDLT applies the LT predicate on the "course_version_id" field.
+func CourseVersionIDLT(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldLT(FieldCourseVersionID, v))
 }
 
-// LanguageVersionIDLTE applies the LTE predicate on the "language_version_id" field.
-func LanguageVersionIDLTE(v int) predicate.CourseModuleTranslation {
-	return predicate.CourseModuleTranslation(sql.FieldLTE(FieldLanguageVersionID, v))
+// CourseVersionIDLTE applies the LTE predicate on the "course_version_id" field.
+func CourseVersionIDLTE(v int) predicate.CourseModuleTranslation {
+	return predicate.CourseModuleTranslation(sql.FieldLTE(FieldCourseVersionID, v))
 }
 
 // VersionIDEQ applies the EQ predicate on the "version_id" field.

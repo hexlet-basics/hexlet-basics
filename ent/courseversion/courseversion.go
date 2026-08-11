@@ -38,8 +38,8 @@ const (
 	FieldExerciseTestFilename = "exercise_test_filename"
 	// FieldLessonsCount holds the string denoting the lessons_count field in the database.
 	FieldLessonsCount = "lessons_count"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
 	// EdgeCurrentCourses holds the string denoting the current_courses edge name in mutations.
 	EdgeCurrentCourses = "current_courses"
 	// Table holds the table name of the courseversion in the database.
@@ -68,7 +68,7 @@ var Columns = []string{
 	FieldExerciseFilename,
 	FieldExerciseTestFilename,
 	FieldLessonsCount,
-	FieldLanguageID,
+	FieldCourseID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -160,9 +160,9 @@ func ByLessonsCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLessonsCount, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
 // ByCurrentCoursesCount orders the results by current_courses count.

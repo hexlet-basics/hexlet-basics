@@ -113,10 +113,10 @@ func init() {
 	blogpostDescRichBody := blogpostFields[5].Descriptor()
 	// blogpost.DefaultRichBody holds the default value on creation for the rich_body field.
 	blogpost.DefaultRichBody = blogpostDescRichBody.Default.(string)
-	// blogpostDescRelatedLanguageItemsCount is the schema descriptor for related_language_items_count field.
-	blogpostDescRelatedLanguageItemsCount := blogpostFields[8].Descriptor()
-	// blogpost.DefaultRelatedLanguageItemsCount holds the default value on creation for the related_language_items_count field.
-	blogpost.DefaultRelatedLanguageItemsCount = blogpostDescRelatedLanguageItemsCount.Default.(int)
+	// blogpostDescRelatedCourseItemsCount is the schema descriptor for related_course_items_count field.
+	blogpostDescRelatedCourseItemsCount := blogpostFields[8].Descriptor()
+	// blogpost.DefaultRelatedCourseItemsCount holds the default value on creation for the related_course_items_count field.
+	blogpost.DefaultRelatedCourseItemsCount = blogpostDescRelatedCourseItemsCount.Default.(int)
 	blogpostrelatedcourseitemMixin := schema.BlogPostRelatedCourseItem{}.Mixin()
 	blogpostrelatedcourseitemMixinFields0 := blogpostrelatedcourseitemMixin[0].Fields()
 	_ = blogpostrelatedcourseitemMixinFields0

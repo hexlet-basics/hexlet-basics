@@ -50,16 +50,16 @@ func (_u *BlogPostRelatedCourseItemUpdate) SetNillableBlogPostID(v *int) *BlogPo
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *BlogPostRelatedCourseItemUpdate) SetLanguageID(v int) *BlogPostRelatedCourseItemUpdate {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *BlogPostRelatedCourseItemUpdate) SetCourseID(v int) *BlogPostRelatedCourseItemUpdate {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *BlogPostRelatedCourseItemUpdate) SetNillableLanguageID(v *int) *BlogPostRelatedCourseItemUpdate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *BlogPostRelatedCourseItemUpdate) SetNillableCourseID(v *int) *BlogPostRelatedCourseItemUpdate {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -100,12 +100,6 @@ func (_u *BlogPostRelatedCourseItemUpdate) SetPostID(id int) *BlogPostRelatedCou
 // SetPost sets the "post" edge to the BlogPost entity.
 func (_u *BlogPostRelatedCourseItemUpdate) SetPost(v *BlogPost) *BlogPostRelatedCourseItemUpdate {
 	return _u.SetPostID(v.ID)
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *BlogPostRelatedCourseItemUpdate) SetCourseID(id int) *BlogPostRelatedCourseItemUpdate {
-	_u.mutation.SetCourseID(id)
-	return _u
 }
 
 // SetCourse sets the "course" edge to the Course entity.
@@ -299,16 +293,16 @@ func (_u *BlogPostRelatedCourseItemUpdateOne) SetNillableBlogPostID(v *int) *Blo
 	return _u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_u *BlogPostRelatedCourseItemUpdateOne) SetLanguageID(v int) *BlogPostRelatedCourseItemUpdateOne {
-	_u.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_u *BlogPostRelatedCourseItemUpdateOne) SetCourseID(v int) *BlogPostRelatedCourseItemUpdateOne {
+	_u.mutation.SetCourseID(v)
 	return _u
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_u *BlogPostRelatedCourseItemUpdateOne) SetNillableLanguageID(v *int) *BlogPostRelatedCourseItemUpdateOne {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_u *BlogPostRelatedCourseItemUpdateOne) SetNillableCourseID(v *int) *BlogPostRelatedCourseItemUpdateOne {
 	if v != nil {
-		_u.SetLanguageID(*v)
+		_u.SetCourseID(*v)
 	}
 	return _u
 }
@@ -349,12 +343,6 @@ func (_u *BlogPostRelatedCourseItemUpdateOne) SetPostID(id int) *BlogPostRelated
 // SetPost sets the "post" edge to the BlogPost entity.
 func (_u *BlogPostRelatedCourseItemUpdateOne) SetPost(v *BlogPost) *BlogPostRelatedCourseItemUpdateOne {
 	return _u.SetPostID(v.ID)
-}
-
-// SetCourseID sets the "course" edge to the Course entity by ID.
-func (_u *BlogPostRelatedCourseItemUpdateOne) SetCourseID(id int) *BlogPostRelatedCourseItemUpdateOne {
-	_u.mutation.SetCourseID(id)
-	return _u
 }
 
 // SetCourse sets the "course" edge to the Course entity.

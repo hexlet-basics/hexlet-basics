@@ -64,16 +64,16 @@ func (_c *CourseModuleCreate) SetNillableSlug(v *string) *CourseModuleCreate {
 	return _c
 }
 
-// SetLanguageID sets the "language_id" field.
-func (_c *CourseModuleCreate) SetLanguageID(v int) *CourseModuleCreate {
-	_c.mutation.SetLanguageID(v)
+// SetCourseID sets the "course_id" field.
+func (_c *CourseModuleCreate) SetCourseID(v int) *CourseModuleCreate {
+	_c.mutation.SetCourseID(v)
 	return _c
 }
 
-// SetNillableLanguageID sets the "language_id" field if the given value is not nil.
-func (_c *CourseModuleCreate) SetNillableLanguageID(v *int) *CourseModuleCreate {
+// SetNillableCourseID sets the "course_id" field if the given value is not nil.
+func (_c *CourseModuleCreate) SetNillableCourseID(v *int) *CourseModuleCreate {
 	if v != nil {
-		_c.SetLanguageID(*v)
+		_c.SetCourseID(*v)
 	}
 	return _c
 }
@@ -198,9 +198,9 @@ func (_c *CourseModuleCreate) createSpec() (*CourseModule, *sqlgraph.CreateSpec)
 		_spec.SetField(coursemodule.FieldSlug, field.TypeString, value)
 		_node.Slug = &value
 	}
-	if value, ok := _c.mutation.LanguageID(); ok {
-		_spec.SetField(coursemodule.FieldLanguageID, field.TypeInt, value)
-		_node.LanguageID = &value
+	if value, ok := _c.mutation.CourseID(); ok {
+		_spec.SetField(coursemodule.FieldCourseID, field.TypeInt, value)
+		_node.CourseID = &value
 	}
 	if value, ok := _c.mutation.Order(); ok {
 		_spec.SetField(coursemodule.FieldOrder, field.TypeInt, value)
@@ -292,27 +292,27 @@ func (u *CourseModuleUpsert) ClearSlug() *CourseModuleUpsert {
 	return u
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseModuleUpsert) SetLanguageID(v int) *CourseModuleUpsert {
-	u.Set(coursemodule.FieldLanguageID, v)
+// SetCourseID sets the "course_id" field.
+func (u *CourseModuleUpsert) SetCourseID(v int) *CourseModuleUpsert {
+	u.Set(coursemodule.FieldCourseID, v)
 	return u
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseModuleUpsert) UpdateLanguageID() *CourseModuleUpsert {
-	u.SetExcluded(coursemodule.FieldLanguageID)
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseModuleUpsert) UpdateCourseID() *CourseModuleUpsert {
+	u.SetExcluded(coursemodule.FieldCourseID)
 	return u
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *CourseModuleUpsert) AddLanguageID(v int) *CourseModuleUpsert {
-	u.Add(coursemodule.FieldLanguageID, v)
+// AddCourseID adds v to the "course_id" field.
+func (u *CourseModuleUpsert) AddCourseID(v int) *CourseModuleUpsert {
+	u.Add(coursemodule.FieldCourseID, v)
 	return u
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (u *CourseModuleUpsert) ClearLanguageID() *CourseModuleUpsert {
-	u.SetNull(coursemodule.FieldLanguageID)
+// ClearCourseID clears the value of the "course_id" field.
+func (u *CourseModuleUpsert) ClearCourseID() *CourseModuleUpsert {
+	u.SetNull(coursemodule.FieldCourseID)
 	return u
 }
 
@@ -438,31 +438,31 @@ func (u *CourseModuleUpsertOne) ClearSlug() *CourseModuleUpsertOne {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseModuleUpsertOne) SetLanguageID(v int) *CourseModuleUpsertOne {
+// SetCourseID sets the "course_id" field.
+func (u *CourseModuleUpsertOne) SetCourseID(v int) *CourseModuleUpsertOne {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *CourseModuleUpsertOne) AddLanguageID(v int) *CourseModuleUpsertOne {
+// AddCourseID adds v to the "course_id" field.
+func (u *CourseModuleUpsertOne) AddCourseID(v int) *CourseModuleUpsertOne {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.AddLanguageID(v)
+		s.AddCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseModuleUpsertOne) UpdateLanguageID() *CourseModuleUpsertOne {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseModuleUpsertOne) UpdateCourseID() *CourseModuleUpsertOne {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (u *CourseModuleUpsertOne) ClearLanguageID() *CourseModuleUpsertOne {
+// ClearCourseID clears the value of the "course_id" field.
+func (u *CourseModuleUpsertOne) ClearCourseID() *CourseModuleUpsertOne {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.ClearLanguageID()
+		s.ClearCourseID()
 	})
 }
 
@@ -761,31 +761,31 @@ func (u *CourseModuleUpsertBulk) ClearSlug() *CourseModuleUpsertBulk {
 	})
 }
 
-// SetLanguageID sets the "language_id" field.
-func (u *CourseModuleUpsertBulk) SetLanguageID(v int) *CourseModuleUpsertBulk {
+// SetCourseID sets the "course_id" field.
+func (u *CourseModuleUpsertBulk) SetCourseID(v int) *CourseModuleUpsertBulk {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.SetLanguageID(v)
+		s.SetCourseID(v)
 	})
 }
 
-// AddLanguageID adds v to the "language_id" field.
-func (u *CourseModuleUpsertBulk) AddLanguageID(v int) *CourseModuleUpsertBulk {
+// AddCourseID adds v to the "course_id" field.
+func (u *CourseModuleUpsertBulk) AddCourseID(v int) *CourseModuleUpsertBulk {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.AddLanguageID(v)
+		s.AddCourseID(v)
 	})
 }
 
-// UpdateLanguageID sets the "language_id" field to the value that was provided on create.
-func (u *CourseModuleUpsertBulk) UpdateLanguageID() *CourseModuleUpsertBulk {
+// UpdateCourseID sets the "course_id" field to the value that was provided on create.
+func (u *CourseModuleUpsertBulk) UpdateCourseID() *CourseModuleUpsertBulk {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.UpdateLanguageID()
+		s.UpdateCourseID()
 	})
 }
 
-// ClearLanguageID clears the value of the "language_id" field.
-func (u *CourseModuleUpsertBulk) ClearLanguageID() *CourseModuleUpsertBulk {
+// ClearCourseID clears the value of the "course_id" field.
+func (u *CourseModuleUpsertBulk) ClearCourseID() *CourseModuleUpsertBulk {
 	return u.Update(func(s *CourseModuleUpsert) {
-		s.ClearLanguageID()
+		s.ClearCourseID()
 	})
 }
 

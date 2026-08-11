@@ -88,7 +88,7 @@ func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, erro
 			// language_id is the FK to Course, so it equals the Course id — order
 			// by it directly (a main-table column) instead of joining the edge
 			// again for its id.
-			landingpage.ByLanguageID(),
+			landingpage.ByCourseID(),
 			// Qualify the landing page id: the edge ordering joins `languages`,
 			// so a bare `id` term is ambiguous.
 			func(s *sql.Selector) { s.OrderBy(s.C(landingpage.FieldID)) },

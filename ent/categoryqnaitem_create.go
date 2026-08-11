@@ -50,9 +50,9 @@ func (_c *CategoryQnaItemCreate) SetNillableUpdatedAt(v *time.Time) *CategoryQna
 	return _c
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (_c *CategoryQnaItemCreate) SetLanguageCategoryID(v int) *CategoryQnaItemCreate {
-	_c.mutation.SetLanguageCategoryID(v)
+// SetCourseCategoryID sets the "course_category_id" field.
+func (_c *CategoryQnaItemCreate) SetCourseCategoryID(v int) *CategoryQnaItemCreate {
+	_c.mutation.SetCourseCategoryID(v)
 	return _c
 }
 
@@ -137,8 +137,8 @@ func (_c *CategoryQnaItemCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CategoryQnaItem.updated_at"`)}
 	}
-	if _, ok := _c.mutation.LanguageCategoryID(); !ok {
-		return &ValidationError{Name: "language_category_id", err: errors.New(`ent: missing required field "CategoryQnaItem.language_category_id"`)}
+	if _, ok := _c.mutation.CourseCategoryID(); !ok {
+		return &ValidationError{Name: "course_category_id", err: errors.New(`ent: missing required field "CategoryQnaItem.course_category_id"`)}
 	}
 	return nil
 }
@@ -175,9 +175,9 @@ func (_c *CategoryQnaItemCreate) createSpec() (*CategoryQnaItem, *sqlgraph.Creat
 		_spec.SetField(categoryqnaitem.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := _c.mutation.LanguageCategoryID(); ok {
-		_spec.SetField(categoryqnaitem.FieldLanguageCategoryID, field.TypeInt, value)
-		_node.LanguageCategoryID = value
+	if value, ok := _c.mutation.CourseCategoryID(); ok {
+		_spec.SetField(categoryqnaitem.FieldCourseCategoryID, field.TypeInt, value)
+		_node.CourseCategoryID = value
 	}
 	if value, ok := _c.mutation.Question(); ok {
 		_spec.SetField(categoryqnaitem.FieldQuestion, field.TypeString, value)
@@ -251,21 +251,21 @@ func (u *CategoryQnaItemUpsert) UpdateUpdatedAt() *CategoryQnaItemUpsert {
 	return u
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (u *CategoryQnaItemUpsert) SetLanguageCategoryID(v int) *CategoryQnaItemUpsert {
-	u.Set(categoryqnaitem.FieldLanguageCategoryID, v)
+// SetCourseCategoryID sets the "course_category_id" field.
+func (u *CategoryQnaItemUpsert) SetCourseCategoryID(v int) *CategoryQnaItemUpsert {
+	u.Set(categoryqnaitem.FieldCourseCategoryID, v)
 	return u
 }
 
-// UpdateLanguageCategoryID sets the "language_category_id" field to the value that was provided on create.
-func (u *CategoryQnaItemUpsert) UpdateLanguageCategoryID() *CategoryQnaItemUpsert {
-	u.SetExcluded(categoryqnaitem.FieldLanguageCategoryID)
+// UpdateCourseCategoryID sets the "course_category_id" field to the value that was provided on create.
+func (u *CategoryQnaItemUpsert) UpdateCourseCategoryID() *CategoryQnaItemUpsert {
+	u.SetExcluded(categoryqnaitem.FieldCourseCategoryID)
 	return u
 }
 
-// AddLanguageCategoryID adds v to the "language_category_id" field.
-func (u *CategoryQnaItemUpsert) AddLanguageCategoryID(v int) *CategoryQnaItemUpsert {
-	u.Add(categoryqnaitem.FieldLanguageCategoryID, v)
+// AddCourseCategoryID adds v to the "course_category_id" field.
+func (u *CategoryQnaItemUpsert) AddCourseCategoryID(v int) *CategoryQnaItemUpsert {
+	u.Add(categoryqnaitem.FieldCourseCategoryID, v)
 	return u
 }
 
@@ -364,24 +364,24 @@ func (u *CategoryQnaItemUpsertOne) UpdateUpdatedAt() *CategoryQnaItemUpsertOne {
 	})
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (u *CategoryQnaItemUpsertOne) SetLanguageCategoryID(v int) *CategoryQnaItemUpsertOne {
+// SetCourseCategoryID sets the "course_category_id" field.
+func (u *CategoryQnaItemUpsertOne) SetCourseCategoryID(v int) *CategoryQnaItemUpsertOne {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.SetLanguageCategoryID(v)
+		s.SetCourseCategoryID(v)
 	})
 }
 
-// AddLanguageCategoryID adds v to the "language_category_id" field.
-func (u *CategoryQnaItemUpsertOne) AddLanguageCategoryID(v int) *CategoryQnaItemUpsertOne {
+// AddCourseCategoryID adds v to the "course_category_id" field.
+func (u *CategoryQnaItemUpsertOne) AddCourseCategoryID(v int) *CategoryQnaItemUpsertOne {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.AddLanguageCategoryID(v)
+		s.AddCourseCategoryID(v)
 	})
 }
 
-// UpdateLanguageCategoryID sets the "language_category_id" field to the value that was provided on create.
-func (u *CategoryQnaItemUpsertOne) UpdateLanguageCategoryID() *CategoryQnaItemUpsertOne {
+// UpdateCourseCategoryID sets the "course_category_id" field to the value that was provided on create.
+func (u *CategoryQnaItemUpsertOne) UpdateCourseCategoryID() *CategoryQnaItemUpsertOne {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.UpdateLanguageCategoryID()
+		s.UpdateCourseCategoryID()
 	})
 }
 
@@ -652,24 +652,24 @@ func (u *CategoryQnaItemUpsertBulk) UpdateUpdatedAt() *CategoryQnaItemUpsertBulk
 	})
 }
 
-// SetLanguageCategoryID sets the "language_category_id" field.
-func (u *CategoryQnaItemUpsertBulk) SetLanguageCategoryID(v int) *CategoryQnaItemUpsertBulk {
+// SetCourseCategoryID sets the "course_category_id" field.
+func (u *CategoryQnaItemUpsertBulk) SetCourseCategoryID(v int) *CategoryQnaItemUpsertBulk {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.SetLanguageCategoryID(v)
+		s.SetCourseCategoryID(v)
 	})
 }
 
-// AddLanguageCategoryID adds v to the "language_category_id" field.
-func (u *CategoryQnaItemUpsertBulk) AddLanguageCategoryID(v int) *CategoryQnaItemUpsertBulk {
+// AddCourseCategoryID adds v to the "course_category_id" field.
+func (u *CategoryQnaItemUpsertBulk) AddCourseCategoryID(v int) *CategoryQnaItemUpsertBulk {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.AddLanguageCategoryID(v)
+		s.AddCourseCategoryID(v)
 	})
 }
 
-// UpdateLanguageCategoryID sets the "language_category_id" field to the value that was provided on create.
-func (u *CategoryQnaItemUpsertBulk) UpdateLanguageCategoryID() *CategoryQnaItemUpsertBulk {
+// UpdateCourseCategoryID sets the "course_category_id" field to the value that was provided on create.
+func (u *CategoryQnaItemUpsertBulk) UpdateCourseCategoryID() *CategoryQnaItemUpsertBulk {
 	return u.Update(func(s *CategoryQnaItemUpsert) {
-		s.UpdateLanguageCategoryID()
+		s.UpdateCourseCategoryID()
 	})
 }
 

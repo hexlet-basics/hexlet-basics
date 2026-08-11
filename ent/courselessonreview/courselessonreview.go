@@ -22,14 +22,14 @@ const (
 	FieldLocale = "locale"
 	// FieldSummary holds the string denoting the summary field in the database.
 	FieldSummary = "summary"
-	// FieldLanguageID holds the string denoting the language_id field in the database.
-	FieldLanguageID = "language_id"
-	// FieldLanguageLessonID holds the string denoting the language_lesson_id field in the database.
-	FieldLanguageLessonID = "language_lesson_id"
-	// FieldLanguageLessonVersionID holds the string denoting the language_lesson_version_id field in the database.
-	FieldLanguageLessonVersionID = "language_lesson_version_id"
-	// FieldLanguageLessonVersionInfoID holds the string denoting the language_lesson_version_info_id field in the database.
-	FieldLanguageLessonVersionInfoID = "language_lesson_version_info_id"
+	// FieldCourseID holds the string denoting the course_id field in the database.
+	FieldCourseID = "language_id"
+	// FieldCourseLessonID holds the string denoting the course_lesson_id field in the database.
+	FieldCourseLessonID = "language_lesson_id"
+	// FieldCourseLessonVersionID holds the string denoting the course_lesson_version_id field in the database.
+	FieldCourseLessonVersionID = "language_lesson_version_id"
+	// FieldCourseLessonTranslationID holds the string denoting the course_lesson_translation_id field in the database.
+	FieldCourseLessonTranslationID = "language_lesson_version_info_id"
 	// EdgeCourse holds the string denoting the course edge name in mutations.
 	EdgeCourse = "course"
 	// EdgeLesson holds the string denoting the lesson edge name in mutations.
@@ -59,10 +59,10 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldLocale,
 	FieldSummary,
-	FieldLanguageID,
-	FieldLanguageLessonID,
-	FieldLanguageLessonVersionID,
-	FieldLanguageLessonVersionInfoID,
+	FieldCourseID,
+	FieldCourseLessonID,
+	FieldCourseLessonVersionID,
+	FieldCourseLessonTranslationID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -112,24 +112,24 @@ func BySummary(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSummary, opts...).ToFunc()
 }
 
-// ByLanguageID orders the results by the language_id field.
-func ByLanguageID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageID, opts...).ToFunc()
+// ByCourseID orders the results by the course_id field.
+func ByCourseID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseID, opts...).ToFunc()
 }
 
-// ByLanguageLessonID orders the results by the language_lesson_id field.
-func ByLanguageLessonID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageLessonID, opts...).ToFunc()
+// ByCourseLessonID orders the results by the course_lesson_id field.
+func ByCourseLessonID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseLessonID, opts...).ToFunc()
 }
 
-// ByLanguageLessonVersionID orders the results by the language_lesson_version_id field.
-func ByLanguageLessonVersionID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageLessonVersionID, opts...).ToFunc()
+// ByCourseLessonVersionID orders the results by the course_lesson_version_id field.
+func ByCourseLessonVersionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseLessonVersionID, opts...).ToFunc()
 }
 
-// ByLanguageLessonVersionInfoID orders the results by the language_lesson_version_info_id field.
-func ByLanguageLessonVersionInfoID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLanguageLessonVersionInfoID, opts...).ToFunc()
+// ByCourseLessonTranslationID orders the results by the course_lesson_translation_id field.
+func ByCourseLessonTranslationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCourseLessonTranslationID, opts...).ToFunc()
 }
 
 // ByCourseField orders the results by course field.

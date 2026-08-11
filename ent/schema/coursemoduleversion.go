@@ -25,8 +25,8 @@ func (CourseModuleVersion) Annotations() []schema.Annotation {
 func (CourseModuleVersion) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("order").Optional().Nillable(),
-		field.Int("language_id"),
-		field.Int("language_version_id"),
+		field.Int("course_id").StorageKey("language_id"),
+		field.Int("course_version_id").StorageKey("language_version_id"),
 		field.Int("module_id"),
 	}
 }

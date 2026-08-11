@@ -41,8 +41,8 @@ type CourseVersion struct {
 	ExerciseTestFilename *string `json:"exercise_test_filename,omitempty"`
 	// LessonsCount holds the value of the "lessons_count" field.
 	LessonsCount int `json:"lessons_count,omitempty"`
-	// LanguageID holds the value of the "language_id" field.
-	LanguageID int `json:"language_id,omitempty"`
+	// CourseID holds the value of the "course_id" field.
+	CourseID int `json:"course_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CourseVersionQuery when eager-loading is set.
 	Edges        CourseVersionEdges `json:"edges"`
@@ -72,7 +72,7 @@ func (*CourseVersion) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case courseversion.FieldID, courseversion.FieldLessonsCount, courseversion.FieldLanguageID:
+		case courseversion.FieldID, courseversion.FieldLessonsCount, courseversion.FieldCourseID:
 			values[i] = new(sql.NullInt64)
 		case courseversion.FieldResult, courseversion.FieldState, courseversion.FieldName, courseversion.FieldProgress, courseversion.FieldLearnAs, courseversion.FieldExtension, courseversion.FieldDockerImage, courseversion.FieldExerciseFilename, courseversion.FieldExerciseTestFilename:
 			values[i] = new(sql.NullString)
@@ -180,11 +180,11 @@ func (_m *CourseVersion) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.LessonsCount = int(value.Int64)
 			}
-		case courseversion.FieldLanguageID:
+		case courseversion.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field language_id", values[i])
+				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
-				_m.LanguageID = int(value.Int64)
+				_m.CourseID = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -281,8 +281,8 @@ func (_m *CourseVersion) String() string {
 	builder.WriteString("lessons_count=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LessonsCount))
 	builder.WriteString(", ")
-	builder.WriteString("language_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.LanguageID))
+	builder.WriteString("course_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
 	builder.WriteByte(')')
 	return builder.String()
 }

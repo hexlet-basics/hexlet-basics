@@ -50,23 +50,17 @@ func (_u *AiChatUpdate) SetNillableUserID(v *int) *AiChatUpdate {
 	return _u
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (_u *AiChatUpdate) SetLanguageLessonMemberID(v int) *AiChatUpdate {
-	_u.mutation.SetLanguageLessonMemberID(v)
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (_u *AiChatUpdate) SetLessonProgressID(v int) *AiChatUpdate {
+	_u.mutation.SetLessonProgressID(v)
 	return _u
 }
 
-// SetNillableLanguageLessonMemberID sets the "language_lesson_member_id" field if the given value is not nil.
-func (_u *AiChatUpdate) SetNillableLanguageLessonMemberID(v *int) *AiChatUpdate {
+// SetNillableLessonProgressID sets the "lesson_progress_id" field if the given value is not nil.
+func (_u *AiChatUpdate) SetNillableLessonProgressID(v *int) *AiChatUpdate {
 	if v != nil {
-		_u.SetLanguageLessonMemberID(*v)
+		_u.SetLessonProgressID(*v)
 	}
-	return _u
-}
-
-// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by ID.
-func (_u *AiChatUpdate) SetLessonProgressID(id int) *AiChatUpdate {
-	_u.mutation.SetLessonProgressID(id)
 	return _u
 }
 
@@ -257,23 +251,17 @@ func (_u *AiChatUpdateOne) SetNillableUserID(v *int) *AiChatUpdateOne {
 	return _u
 }
 
-// SetLanguageLessonMemberID sets the "language_lesson_member_id" field.
-func (_u *AiChatUpdateOne) SetLanguageLessonMemberID(v int) *AiChatUpdateOne {
-	_u.mutation.SetLanguageLessonMemberID(v)
+// SetLessonProgressID sets the "lesson_progress_id" field.
+func (_u *AiChatUpdateOne) SetLessonProgressID(v int) *AiChatUpdateOne {
+	_u.mutation.SetLessonProgressID(v)
 	return _u
 }
 
-// SetNillableLanguageLessonMemberID sets the "language_lesson_member_id" field if the given value is not nil.
-func (_u *AiChatUpdateOne) SetNillableLanguageLessonMemberID(v *int) *AiChatUpdateOne {
+// SetNillableLessonProgressID sets the "lesson_progress_id" field if the given value is not nil.
+func (_u *AiChatUpdateOne) SetNillableLessonProgressID(v *int) *AiChatUpdateOne {
 	if v != nil {
-		_u.SetLanguageLessonMemberID(*v)
+		_u.SetLessonProgressID(*v)
 	}
-	return _u
-}
-
-// SetLessonProgressID sets the "lesson_progress" edge to the LessonProgress entity by ID.
-func (_u *AiChatUpdateOne) SetLessonProgressID(id int) *AiChatUpdateOne {
-	_u.mutation.SetLessonProgressID(id)
 	return _u
 }
 
