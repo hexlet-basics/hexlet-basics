@@ -31,9 +31,20 @@ alongside each.
 
 ## Use the glossary's vocabulary
 
-When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `CONTEXT.md`. Don't drift to synonyms the glossary explicitly avoids.
+When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `CONTEXT.md`.
+
+`CONTEXT.md` opens with a **Naming rule** that says where the term binds: everywhere the name is ours to choose — Go and TypeScript identifiers, contract models and fields, ent schema and edge names, i18n keys, docs, tests, open issues — with three permanent exceptions (table names, column names, public URLs) and one that expires at the cutover (`PermissionResource` values). Read that section before proposing a rename; the exceptions are what stops a sweep from moving storage.
 
 If the concept you need isn't in the glossary yet, that's a signal — either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/domain-modeling`).
+
+### This repo's glossary format differs from the skill's
+
+`/domain-modeling` ships a `CONTEXT-FORMAT.md` that prescribes an `_Avoid_` line per entry. This repo deliberately dropped those: the Naming rule replaced them, and an entry that only warns about a retired word is a warning, not a definition. Don't reintroduce `_Avoid_` lines when editing `CONTEXT.md`.
+
+Two additions the skill's format doesn't have, both load-bearing:
+
+- **`_ru_` / `_es_` lines** on terms that reach a screen, so the same concept is not translated two ways across the three locales.
+- **A storage mapping table** at the end, recording which legacy table each concept kept. It is the only place that mapping exists for concepts whose ent schema hasn't been written yet.
 
 ## Flag ADR conflicts
 

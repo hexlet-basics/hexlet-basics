@@ -142,6 +142,7 @@ schema does not exist yet.
 | Course Version | `language_versions` | `language_id` |
 | Course Module | `language_modules` | `language_id` |
 | Course Category | `language_categories` | — |
+| Course Category Item | `language_category_items` | `language_category_id`, `language_landing_page_id`; no ent schema yet |
 | Course Landing Page | `language_landing_pages` | `language_id` |
 | Course Lesson Review | `language_lesson_reviews` | `language_lesson_version_id` |
 | Staff Member | `staff_members` | — |
