@@ -472,6 +472,22 @@ export type CourseLessonReviewPage = {
 };
 
 /**
+ * The lesson page: the lesson itself, and where the visitor stands in it.
+ */
+export type CourseLessonView = {
+  lesson: CourseLesson;
+  /**
+   * Where the visitor stands in the course this lesson belongs to — the same
+   * payload the course landing read returns, for a signed-in learner and a
+   * guest alike. The player reads `lessons[].available` to know whether this
+   * one may be taken, and `nextLessonSlug` for where "next" goes.
+   *
+   * Null only for a course with no built version.
+   */
+  progress: CourseProgress | null;
+};
+
+/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -4550,7 +4566,7 @@ export type GetCourseLessonResponses = {
   /**
    * The request has succeeded.
    */
-  200: CourseLesson;
+  200: CourseLessonView;
 };
 
 export type GetCourseLessonResponse = GetCourseLessonResponses[keyof GetCourseLessonResponses];

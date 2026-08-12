@@ -11,6 +11,7 @@ import (
 
 	"github.com/lib/pq"
 	"github.com/samber/lo"
+	"gopkg.in/yaml.v3"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
@@ -246,6 +247,91 @@ func ToCourseProgress(state *progress.CourseState) api.CourseProgress {
 		FurthestFinishedPosition: int32(state.FurthestFinishedPosition),
 		Lessons:                  lessons,
 	}
+}
+
+// LessonContent is one Lesson as the player needs it, drawn from the three
+// rows that hold it: the stable Lesson identity, the Version carrying the code
+// and the tests, and the Translation carrying the prose for one locale.
+//
+// They are passed in rather than walked from an edge because only the caller
+// knows which Version and which locale it resolved — the current Version and
+// the request locale — and a converter that re-resolved them could disagree
+// with the query that produced them.
+type LessonContent struct {
+	Course      *ent.Course
+	Lesson      *ent.CourseLesson
+	Version     *ent.CourseLessonVersion
+	Translation *ent.CourseLessonTranslation
+
+	// SourceCodeURL points at the Lesson's README in the content repository.
+	// Built by the caller, which has the repository host in config.
+	SourceCodeURL string
+}
+
+// ToCourseLesson projects the player payload. Hand-written for the same reason
+// ToEnrollment is: it is assembled from several rows, and two of its fields are
+// YAML columns rather than scalars.
+func ToCourseLesson(content LessonContent, course api.Course) api.CourseLesson {
+	version := content.Version
+	translation := content.Translation
+
+	return api.CourseLesson{
+		Course:       course,
+		ID:           int32(content.Lesson.ID),
+		Slug:         lo.FromPtr(content.Lesson.Slug),
+		Name:         NilStringFromPtr(translation.Name),
+		Locale:       NilStringFromPtr(translation.Locale),
+		Description:  NilStringFromPtr(translation.Description),
+		Instructions: NilStringFromPtr(translation.Instructions),
+		Theory:       NilStringFromPtr(translation.Theory),
+		Definitions:  lessonDefinitions(translation.Definitions),
+		Tips:         lessonTips(translation.Tips),
+		NaturalOrder: int32(lo.FromPtr(version.NaturalOrder)),
+		// versionId and version both carry the Lesson Version id, as the legacy
+		// serializer emitted them: one from the Translation's FK column, one from
+		// the row it points at. The check operation reads the former.
+		VersionId:     int32(version.ID),
+		Version:       api.NewNilInt32(int32(version.ID)),
+		PreparedCode:  NilStringFromPtr(version.PreparedCode),
+		OriginalCode:  NilStringFromPtr(version.OriginalCode),
+		TestCode:      NilStringFromPtr(version.TestCode),
+		SourceCodeUrl: NilStringFromPtr(&content.SourceCodeURL),
+		CreatedAt:     content.Lesson.CreatedAt,
+	}
+}
+
+// lessonTips and lessonDefinitions decode the two columns the loader writes as
+// YAML arrays, for compatibility with Rails' `serialize type: Array`.
+//
+// A column that does not decode yields nothing rather than failing the read: a
+// lesson whose tips are malformed is a content defect, and refusing to render
+// the theory over it would turn a cosmetic problem into an outage on a page
+// that is also the one search engines index.
+func lessonTips(raw *string) []string {
+	tips := []string{}
+	decodeLessonYAML(raw, &tips)
+	return tips
+}
+
+func lessonDefinitions(raw *string) []api.LessonDefinition {
+	var decoded []struct {
+		Name        string `yaml:"name"`
+		Description string `yaml:"description"`
+	}
+	decodeLessonYAML(raw, &decoded)
+
+	definitions := make([]api.LessonDefinition, 0, len(decoded))
+	for _, d := range decoded {
+		definitions = append(definitions, api.LessonDefinition{Name: d.Name, Description: d.Description})
+	}
+	return definitions
+}
+
+func decodeLessonYAML(raw *string, into any) {
+	if raw == nil || *raw == "" {
+		return
+	}
+	_ = yaml.Unmarshal([]byte(*raw), into)
 }
 
 // nilEnrollmentState resolves the nullable legacy column to the contract's

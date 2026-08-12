@@ -3590,7 +3590,7 @@ func encodeGetCourseResponse(response GetCourseRes, w http.ResponseWriter, span 
 
 func encodeGetCourseLessonResponse(response GetCourseLessonRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *CourseLesson:
+	case *CourseLessonView:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 

@@ -63,14 +63,37 @@ interface Courses {
   get(@path slug: string): CourseView | NotFoundError | ApiError;
 }
 
+/** The lesson page: the lesson itself, and where the visitor stands in it. */
+model CourseLessonView {
+  lesson: CourseLesson;
+
+  /**
+   * Where the visitor stands in the course this lesson belongs to — the same
+   * payload the course landing read returns, for a signed-in learner and a
+   * guest alike. The player reads `lessons[].available` to know whether this
+   * one may be taken, and `nextLessonSlug` for where "next" goes.
+   *
+   * Null only for a course with no built version.
+   */
+  progress: CourseProgress | null;
+}
+
 @route("/languages/{courseSlug}/lessons")
 @tag("Courses")
 interface CourseLessons {
-  /** Lesson player payload (theory, starter code, tests) by slug. */
+  /**
+   * Lesson player payload (theory, starter code, tests) by slug, plus the
+   * visitor's progress.
+   *
+   * Reading a lesson never starts it: the frontend preloads routes on hover,
+   * so a read with that effect would enroll a learner in every lesson they
+   * pointed at (ADR-0012). Theory stays public and indexable for everyone,
+   * including a lesson the visitor may not take yet.
+   */
   @get
   @route("/{slug}")
   @operationId("getCourseLesson")
-  get(@path courseSlug: string, @path slug: string): CourseLesson | NotFoundError | ApiError;
+  get(@path courseSlug: string, @path slug: string): CourseLessonView | NotFoundError | ApiError;
 }
 
 @route("/language_categories")

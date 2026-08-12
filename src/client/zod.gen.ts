@@ -536,6 +536,14 @@ export const zCourseProgress = z.object({
 });
 
 /**
+ * The lesson page: the lesson itself, and where the visitor stands in it.
+ */
+export const zCourseLessonView = z.object({
+  lesson: zCourseLesson,
+  progress: zCourseProgress.nullable()
+});
+
+/**
  * A learner's enrollment in a course (table `language_members`).
  */
 export const zEnrollment = z.object({
@@ -1823,7 +1831,7 @@ export const zGetCourseLessonPath = z.object({
 /**
  * The request has succeeded.
  */
-export const zGetCourseLessonResponse = zCourseLesson;
+export const zGetCourseLessonResponse = zCourseLessonView;
 
 export const zGetCoursePath = z.object({
   slug: z.string()

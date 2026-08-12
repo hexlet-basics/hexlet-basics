@@ -3767,7 +3767,14 @@ paths:
   /languages/{courseSlug}/lessons/{slug}:
     get:
       operationId: getCourseLesson
-      description: Lesson player payload (theory, starter code, tests) by slug.
+      description: |-
+        Lesson player payload (theory, starter code, tests) by slug, plus the
+        visitor's progress.
+
+        Reading a lesson never starts it: the frontend preloads routes on hover,
+        so a read with that effect would enroll a learner in every lesson they
+        pointed at (ADR-0012). Theory stays public and indexable for everyone,
+        including a lesson the visitor may not take yet.
       parameters:
         - name: courseSlug
           in: path
@@ -3785,7 +3792,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourseLesson'
+                $ref: '#/components/schemas/CourseLessonView'
         '404':
           description: A resource was not found.
           content:
@@ -5690,6 +5697,27 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
+    CourseLessonView:
+      type: object
+      required:
+        - lesson
+        - progress
+      properties:
+        lesson:
+          $ref: '#/components/schemas/CourseLesson'
+        progress:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/CourseProgress'
+          nullable: true
+          description: |-
+            Where the visitor stands in the course this lesson belongs to — the same
+            payload the course landing read returns, for a signed-in learner and a
+            guest alike. The player reads `lessons[].available` to know whether this
+            one may be taken, and `nextLessonSlug` for where "next" goes.
+
+            Null only for a course with no built version.
+      description: 'The lesson page: the lesson itself, and where the visitor stands in it.'
     CoursePage:
       type: object
       required:

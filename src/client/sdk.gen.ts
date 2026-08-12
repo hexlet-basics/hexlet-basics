@@ -1272,7 +1272,13 @@ export const listCourses = <ThrowOnError extends boolean = false>(options?: Opti
 });
 
 /**
- * Lesson player payload (theory, starter code, tests) by slug.
+ * Lesson player payload (theory, starter code, tests) by slug, plus the
+ * visitor's progress.
+ *
+ * Reading a lesson never starts it: the frontend preloads routes on hover,
+ * so a read with that effect would enroll a learner in every lesson they
+ * pointed at (ADR-0012). Theory stays public and indexable for everyone,
+ * including a lesson the visitor may not take yet.
  */
 export const getCourseLesson = <ThrowOnError extends boolean = false>(options: Options<GetCourseLessonData, ThrowOnError>): RequestResult<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError> => (options.client ?? client).get<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError>({
   responseType: 'json',

@@ -2912,8 +2912,6 @@ func (s *CourseLesson) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-func (*CourseLesson) getCourseLessonRes() {}
-
 // A lesson as shown in admin lists (legacy: `LanguageLessonForLists`).
 // Ref: #/components/schemas/CourseLessonListItem
 type CourseLessonListItem struct {
@@ -3198,6 +3196,41 @@ func (s *CourseLessonReviewPage) SetPerPage(val int32) {
 }
 
 func (*CourseLessonReviewPage) adminListCourseLessonReviewsRes() {}
+
+// The lesson page: the lesson itself, and where the visitor stands in it.
+// Ref: #/components/schemas/CourseLessonView
+type CourseLessonView struct {
+	Lesson CourseLesson `json:"lesson"`
+	// Where the visitor stands in the course this lesson belongs to — the same payload the course
+	// landing read returns, for a signed-in learner and a guest alike. The player reads
+	// `lessons[].available` to know whether this one may be taken, and `nextLessonSlug` for where "next"
+	// goes.
+	//
+	// Null only for a course with no built version.
+	Progress NilCourseProgress `json:"progress"`
+}
+
+// GetLesson returns the value of Lesson.
+func (s *CourseLessonView) GetLesson() CourseLesson {
+	return s.Lesson
+}
+
+// GetProgress returns the value of Progress.
+func (s *CourseLessonView) GetProgress() NilCourseProgress {
+	return s.Progress
+}
+
+// SetLesson sets the value of Lesson.
+func (s *CourseLessonView) SetLesson(val CourseLesson) {
+	s.Lesson = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *CourseLessonView) SetProgress(val NilCourseProgress) {
+	s.Progress = val
+}
+
+func (*CourseLessonView) getCourseLessonRes() {}
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.

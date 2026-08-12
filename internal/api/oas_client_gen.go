@@ -493,7 +493,11 @@ type Invoker interface {
 	GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error)
 	// GetCourseLesson invokes getCourseLesson operation.
 	//
-	// Lesson player payload (theory, starter code, tests) by slug.
+	// Lesson player payload (theory, starter code, tests) by slug, plus the visitor's progress.
+	//
+	// Reading a lesson never starts it: the frontend preloads routes on hover, so a read with that effect
+	// would enroll a learner in every lesson they pointed at (ADR-0012). Theory stays public and indexable
+	// for everyone, including a lesson the visitor may not take yet.
 	//
 	// GET /languages/{courseSlug}/lessons/{slug}
 	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error)
@@ -12612,7 +12616,11 @@ func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res
 
 // GetCourseLesson invokes getCourseLesson operation.
 //
-// Lesson player payload (theory, starter code, tests) by slug.
+// Lesson player payload (theory, starter code, tests) by slug, plus the visitor's progress.
+//
+// Reading a lesson never starts it: the frontend preloads routes on hover, so a read with that effect
+// would enroll a learner in every lesson they pointed at (ADR-0012). Theory stays public and indexable
+// for everyone, including a lesson the visitor may not take yet.
 //
 // GET /languages/{courseSlug}/lessons/{slug}
 func (c *Client) GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error) {

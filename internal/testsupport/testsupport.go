@@ -45,9 +45,10 @@ import (
 // testConfig gives handlers fixed public hosts so URL-building assertions are
 // deterministic (independent of the ambient env a `config.Load` would read).
 var testConfig = &config.Config{
-	AppHost:   "code-basics.com",
-	PublicURL: "http://localhost:3001",
-	JWTSecret: "test-secret",
+	AppHost:           "code-basics.com",
+	PublicURL:         "http://localhost:3001",
+	JWTSecret:         "test-secret",
+	CourseRepoBaseURL: "https://github.com/hexlet-basics",
 }
 
 // NewClient opens an ent client bound to a fresh sql.Tx that is rolled back when
@@ -301,6 +302,13 @@ func NewVisitorHarness(t *testing.T, guest progress.GuestProgress) *Harness {
 	return h
 }
 
+// SpeakTo makes every following request ask for a locale, as a browser does
+// with Accept-Language. The generated client has no seam for request headers,
+// and the locale decides which translation of a lesson is served.
+func SpeakTo(h *Harness, locale string) {
+	h.doer.locale = locale
+}
+
 // ForgeGuestCookie makes the harness carry progress signed with the wrong
 // secret — what a visitor editing their own cookie can produce. The server must
 // treat it as no cookie at all.
@@ -503,6 +511,8 @@ type inProcessDoer struct {
 	anonymous bool
 	// guest is the signed guest-progress cookie a visitor would carry.
 	guest string
+	// locale is the Accept-Language a browser would send.
+	locale string
 	// setCookies are the raw Set-Cookie headers of the last response.
 	setCookies []string
 }
@@ -519,6 +529,9 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	// progress without carrying a session, which is the whole point of it.
 	if d.guest != "" {
 		r.AddCookie(&http.Cookie{Name: progress.GuestCookieName, Value: d.guest})
+	}
+	if d.locale != "" {
+		r.Header.Set("Accept-Language", d.locale)
 	}
 	rec := httptest.NewRecorder()
 	d.server.ServeHTTP(rec, r)

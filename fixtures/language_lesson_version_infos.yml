@@ -28,6 +28,9 @@
   version_id: 965227298
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# Carries the prose the lesson-player read serves. tips and definitions are
+# stored as YAML arrays, the form Rails' `serialize type: Array` wrote and the
+# loader still writes.
 - id: 2003
   name: Variables
   description: Storing values
@@ -36,6 +39,16 @@
   language_lesson_id: 1002
   language_version_id: 965227298
   version_id: 965227298
+  theory: A variable is a name bound to a value.
+  instructions: Assign the string `hello` to `greeting`.
+  tips: |
+    ---
+    - Names are case sensitive
+    - Prefer const until you need to reassign
+  definitions: |
+    ---
+    - name: variable
+      description: A name bound to a value
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Excluded: not the current version (545350298 is a JS version, but not the

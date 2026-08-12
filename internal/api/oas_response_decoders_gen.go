@@ -13050,7 +13050,7 @@ func decodeGetCourseLessonResponse(resp *http.Response) (res GetCourseLessonRes,
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response CourseLesson
+			var response CourseLessonView
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
