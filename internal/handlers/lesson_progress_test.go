@@ -78,6 +78,9 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, 1, count, "the enrollment is created by starting, never by viewing")
 
+	enrolledCourse := h.DB.Course.GetX(ctx, *lesson.CourseID)
+	assert.Equal(t, 1, enrolledCourse.MembersCount, "the catalogue figure counts the new enrollment")
+
 	courseStarted := publishedOf[events.CourseStarted](h)
 	require.Len(t, courseStarted, 1)
 	assert.Equal(t, "go-basics", courseStarted[0].Slug)

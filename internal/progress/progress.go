@@ -281,6 +281,13 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	if err != nil {
 		return nil, false, fmt.Errorf("load new enrollment: %w", err)
 	}
+
+	// The Course's member count stays denormalized, as the legacy counter cache
+	// kept it: it is the marketing figure on catalogue pages, which are read far
+	// more often than anyone enrolls, and it is never used as a progress figure.
+	if err := db.Course.UpdateOneID(courseID).AddMembersCount(1).Exec(ctx); err != nil {
+		return nil, false, fmt.Errorf("count new enrollment on course %d: %w", courseID, err)
+	}
 	return row, true, nil
 }
 
