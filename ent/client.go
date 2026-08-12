@@ -31,6 +31,7 @@ import (
 	"hexletbasics/ent/coursemoduletranslation"
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
@@ -92,6 +93,8 @@ type Client struct {
 	CourseModuleVersion *CourseModuleVersionClient
 	// CourseVersion is the client for interacting with the CourseVersion builders.
 	CourseVersion *CourseVersionClient
+	// Enrollment is the client for interacting with the Enrollment builders.
+	Enrollment *EnrollmentClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
@@ -141,6 +144,7 @@ func (c *Client) init() {
 	c.CourseModuleTranslation = NewCourseModuleTranslationClient(c.config)
 	c.CourseModuleVersion = NewCourseModuleVersionClient(c.config)
 	c.CourseVersion = NewCourseVersionClient(c.config)
+	c.Enrollment = NewEnrollmentClient(c.config)
 	c.LandingPage = NewLandingPageClient(c.config)
 	c.LandingPageQnaItem = NewLandingPageQnaItemClient(c.config)
 	c.Lead = NewLeadClient(c.config)
@@ -262,6 +266,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CourseModuleTranslation:   NewCourseModuleTranslationClient(cfg),
 		CourseModuleVersion:       NewCourseModuleVersionClient(cfg),
 		CourseVersion:             NewCourseVersionClient(cfg),
+		Enrollment:                NewEnrollmentClient(cfg),
 		LandingPage:               NewLandingPageClient(cfg),
 		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
 		Lead:                      NewLeadClient(cfg),
@@ -310,6 +315,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CourseModuleTranslation:   NewCourseModuleTranslationClient(cfg),
 		CourseModuleVersion:       NewCourseModuleVersionClient(cfg),
 		CourseVersion:             NewCourseVersionClient(cfg),
+		Enrollment:                NewEnrollmentClient(cfg),
 		LandingPage:               NewLandingPageClient(cfg),
 		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
 		Lead:                      NewLeadClient(cfg),
@@ -353,9 +359,9 @@ func (c *Client) Use(hooks ...Hook) {
 		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
 		c.CourseLesson, c.CourseLessonReview, c.CourseLessonTranslation,
 		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
-		c.CourseModuleVersion, c.CourseVersion, c.LandingPage, c.LandingPageQnaItem,
-		c.Lead, c.LessonProgress, c.Review, c.StaffMember, c.StaffRole,
-		c.StaffRolePermission, c.User,
+		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
+		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
+		c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -370,9 +376,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
 		c.CourseLesson, c.CourseLessonReview, c.CourseLessonTranslation,
 		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
-		c.CourseModuleVersion, c.CourseVersion, c.LandingPage, c.LandingPageQnaItem,
-		c.Lead, c.LessonProgress, c.Review, c.StaffMember, c.StaffRole,
-		c.StaffRolePermission, c.User,
+		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
+		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
+		c.StaffRole, c.StaffRolePermission, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -421,6 +427,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.CourseModuleVersion.mutate(ctx, m)
 	case *CourseVersionMutation:
 		return c.CourseVersion.mutate(ctx, m)
+	case *EnrollmentMutation:
+		return c.Enrollment.mutate(ctx, m)
 	case *LandingPageMutation:
 		return c.LandingPage.mutate(ctx, m)
 	case *LandingPageQnaItemMutation:
@@ -3344,6 +3352,187 @@ func (c *CourseVersionClient) mutate(ctx context.Context, m *CourseVersionMutati
 	}
 }
 
+// EnrollmentClient is a client for the Enrollment schema.
+type EnrollmentClient struct {
+	config
+}
+
+// NewEnrollmentClient returns a client for the Enrollment from the given config.
+func NewEnrollmentClient(c config) *EnrollmentClient {
+	return &EnrollmentClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `enrollment.Hooks(f(g(h())))`.
+func (c *EnrollmentClient) Use(hooks ...Hook) {
+	c.hooks.Enrollment = append(c.hooks.Enrollment, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `enrollment.Intercept(f(g(h())))`.
+func (c *EnrollmentClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Enrollment = append(c.inters.Enrollment, interceptors...)
+}
+
+// Create returns a builder for creating a Enrollment entity.
+func (c *EnrollmentClient) Create() *EnrollmentCreate {
+	mutation := newEnrollmentMutation(c.config, OpCreate)
+	return &EnrollmentCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Enrollment entities.
+func (c *EnrollmentClient) CreateBulk(builders ...*EnrollmentCreate) *EnrollmentCreateBulk {
+	return &EnrollmentCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *EnrollmentClient) MapCreateBulk(slice any, setFunc func(*EnrollmentCreate, int)) *EnrollmentCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &EnrollmentCreateBulk{err: fmt.Errorf("calling to EnrollmentClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*EnrollmentCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &EnrollmentCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Enrollment.
+func (c *EnrollmentClient) Update() *EnrollmentUpdate {
+	mutation := newEnrollmentMutation(c.config, OpUpdate)
+	return &EnrollmentUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EnrollmentClient) UpdateOne(_m *Enrollment) *EnrollmentUpdateOne {
+	mutation := newEnrollmentMutation(c.config, OpUpdateOne, withEnrollment(_m))
+	return &EnrollmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EnrollmentClient) UpdateOneID(id int) *EnrollmentUpdateOne {
+	mutation := newEnrollmentMutation(c.config, OpUpdateOne, withEnrollmentID(id))
+	return &EnrollmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Enrollment.
+func (c *EnrollmentClient) Delete() *EnrollmentDelete {
+	mutation := newEnrollmentMutation(c.config, OpDelete)
+	return &EnrollmentDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *EnrollmentClient) DeleteOne(_m *Enrollment) *EnrollmentDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *EnrollmentClient) DeleteOneID(id int) *EnrollmentDeleteOne {
+	builder := c.Delete().Where(enrollment.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EnrollmentDeleteOne{builder}
+}
+
+// Query returns a query builder for Enrollment.
+func (c *EnrollmentClient) Query() *EnrollmentQuery {
+	return &EnrollmentQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeEnrollment},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Enrollment entity by its id.
+func (c *EnrollmentClient) Get(ctx context.Context, id int) (*Enrollment, error) {
+	return c.Query().Where(enrollment.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EnrollmentClient) GetX(ctx context.Context, id int) *Enrollment {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCourse queries the course edge of a Enrollment.
+func (c *EnrollmentClient) QueryCourse(_m *Enrollment) *CourseQuery {
+	query := (&CourseClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(enrollment.Table, enrollment.FieldID, id),
+			sqlgraph.To(course.Table, course.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, enrollment.CourseTable, enrollment.CourseColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryUser queries the user edge of a Enrollment.
+func (c *EnrollmentClient) QueryUser(_m *Enrollment) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(enrollment.Table, enrollment.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, enrollment.UserTable, enrollment.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLessonProgress queries the lesson_progress edge of a Enrollment.
+func (c *EnrollmentClient) QueryLessonProgress(_m *Enrollment) *LessonProgressQuery {
+	query := (&LessonProgressClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(enrollment.Table, enrollment.FieldID, id),
+			sqlgraph.To(lessonprogress.Table, lessonprogress.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, enrollment.LessonProgressTable, enrollment.LessonProgressColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *EnrollmentClient) Hooks() []Hook {
+	return c.hooks.Enrollment
+}
+
+// Interceptors returns the client interceptors.
+func (c *EnrollmentClient) Interceptors() []Interceptor {
+	return c.inters.Enrollment
+}
+
+func (c *EnrollmentClient) mutate(ctx context.Context, m *EnrollmentMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EnrollmentCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EnrollmentUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EnrollmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EnrollmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Enrollment mutation op: %q", m.Op())
+	}
+}
+
 // LandingPageClient is a client for the LandingPage schema.
 type LandingPageClient struct {
 	config
@@ -3876,6 +4065,22 @@ func (c *LessonProgressClient) QueryCourse(_m *LessonProgress) *CourseQuery {
 			sqlgraph.From(lessonprogress.Table, lessonprogress.FieldID, id),
 			sqlgraph.To(course.Table, course.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, lessonprogress.CourseTable, lessonprogress.CourseColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryEnrollment queries the enrollment edge of a LessonProgress.
+func (c *LessonProgressClient) QueryEnrollment(_m *LessonProgress) *EnrollmentQuery {
+	query := (&EnrollmentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(lessonprogress.Table, lessonprogress.FieldID, id),
+			sqlgraph.To(enrollment.Table, enrollment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, lessonprogress.EnrollmentTable, lessonprogress.EnrollmentColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -4692,17 +4897,17 @@ type (
 		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
 		Course, CourseCategory, CourseLesson, CourseLessonReview,
 		CourseLessonTranslation, CourseLessonVersion, CourseModule,
-		CourseModuleTranslation, CourseModuleVersion, CourseVersion, LandingPage,
-		LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Hook
+		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
+		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
+		StaffRole, StaffRolePermission, User []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
 		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
 		Course, CourseCategory, CourseLesson, CourseLessonReview,
 		CourseLessonTranslation, CourseLessonVersion, CourseModule,
-		CourseModuleTranslation, CourseModuleVersion, CourseVersion, LandingPage,
-		LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember, StaffRole,
-		StaffRolePermission, User []ent.Interceptor
+		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
+		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
+		StaffRole, StaffRolePermission, User []ent.Interceptor
 	}
 )

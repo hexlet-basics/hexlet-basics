@@ -1,9 +1,10 @@
-# Fixtures for `language_lesson_members`, HAND-CURATED for the Go admin read
-# tests. testfixtures disables FKs during load, so user_id/language_member_id
-# parents need not exist. Course = JavaScript (82481401); lessons from
-# language_lessons.yml.
+# Fixtures for `language_lesson_members` (Lesson Progress), HAND-CURATED for
+# the Go admin read tests. Each row's owner is a real Enrollment from
+# language_members.yml and a real user from users.yml, so a test that inserts
+# alongside them does not trip the baseline's FKs. Course = JavaScript
+# (82481401); lessons from language_lessons.yml.
 - id: 3001
-  user_id: 501
+  user_id: 1001
   language_id: 82481401
   language_member_id: 601
   lesson_id: 1001
@@ -12,7 +13,7 @@
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 - id: 3002
-  user_id: 502
+  user_id: 1002
   language_id: 82481401
   language_member_id: 602
   lesson_id: 1002

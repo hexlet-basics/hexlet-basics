@@ -28,17 +28,30 @@ func (LessonProgress) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("user_id"),
 		field.Int("course_id").StorageKey("language_id"),
+		field.Int("enrollment_id").StorageKey("language_member_id"),
 		field.Int("lesson_id"),
 		field.String("state").Optional().Nillable(),
 		field.Int("messages_count").Optional().Nillable(),
-		field.Time("created_at").Immutable(),
 	}
+}
+
+// Mixin supplies the Rails-owned timestamp pair. Both columns are NOT NULL with
+// no database default, so a schema that only declared created_at could be read
+// but never written — and the progress epic writes these rows.
+func (LessonProgress) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }
 
 func (LessonProgress) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("course", Course.Type).
 			Field("course_id").
+			Unique().
+			Required(),
+		// The owning Enrollment. Collapsing duplicate Enrollments re-points this
+		// FK, which is why the edge exists before any handler reads it.
+		edge.To("enrollment", Enrollment.Type).
+			Field("enrollment_id").
 			Unique().
 			Required(),
 		edge.To("lesson", CourseLesson.Type).

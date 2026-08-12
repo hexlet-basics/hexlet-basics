@@ -20,8 +20,10 @@ import (
 	"hexletbasics/ent/coursemoduletranslation"
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
 	"hexletbasics/ent/staffmember"
@@ -309,6 +311,25 @@ func init() {
 	courseversionDescLessonsCount := courseversionFields[9].Descriptor()
 	// courseversion.DefaultLessonsCount holds the default value on creation for the lessons_count field.
 	courseversion.DefaultLessonsCount = courseversionDescLessonsCount.Default.(int)
+	enrollmentMixin := schema.Enrollment{}.Mixin()
+	enrollmentMixinFields0 := enrollmentMixin[0].Fields()
+	_ = enrollmentMixinFields0
+	enrollmentFields := schema.Enrollment{}.Fields()
+	_ = enrollmentFields
+	// enrollmentDescCreatedAt is the schema descriptor for created_at field.
+	enrollmentDescCreatedAt := enrollmentMixinFields0[0].Descriptor()
+	// enrollment.DefaultCreatedAt holds the default value on creation for the created_at field.
+	enrollment.DefaultCreatedAt = enrollmentDescCreatedAt.Default.(func() time.Time)
+	// enrollmentDescUpdatedAt is the schema descriptor for updated_at field.
+	enrollmentDescUpdatedAt := enrollmentMixinFields0[1].Descriptor()
+	// enrollment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	enrollment.DefaultUpdatedAt = enrollmentDescUpdatedAt.Default.(func() time.Time)
+	// enrollment.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	enrollment.UpdateDefaultUpdatedAt = enrollmentDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// enrollmentDescFinishedLessonsCount is the schema descriptor for finished_lessons_count field.
+	enrollmentDescFinishedLessonsCount := enrollmentFields[3].Descriptor()
+	// enrollment.DefaultFinishedLessonsCount holds the default value on creation for the finished_lessons_count field.
+	enrollment.DefaultFinishedLessonsCount = enrollmentDescFinishedLessonsCount.Default.(int)
 	landingpageMixin := schema.LandingPage{}.Mixin()
 	landingpageMixinFields0 := landingpageMixin[0].Fields()
 	_ = landingpageMixinFields0
@@ -339,6 +360,21 @@ func init() {
 	landingpageqnaitem.DefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.Default.(func() time.Time)
 	// landingpageqnaitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	landingpageqnaitem.UpdateDefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
+	lessonprogressMixin := schema.LessonProgress{}.Mixin()
+	lessonprogressMixinFields0 := lessonprogressMixin[0].Fields()
+	_ = lessonprogressMixinFields0
+	lessonprogressFields := schema.LessonProgress{}.Fields()
+	_ = lessonprogressFields
+	// lessonprogressDescCreatedAt is the schema descriptor for created_at field.
+	lessonprogressDescCreatedAt := lessonprogressMixinFields0[0].Descriptor()
+	// lessonprogress.DefaultCreatedAt holds the default value on creation for the created_at field.
+	lessonprogress.DefaultCreatedAt = lessonprogressDescCreatedAt.Default.(func() time.Time)
+	// lessonprogressDescUpdatedAt is the schema descriptor for updated_at field.
+	lessonprogressDescUpdatedAt := lessonprogressMixinFields0[1].Descriptor()
+	// lessonprogress.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	lessonprogress.DefaultUpdatedAt = lessonprogressDescUpdatedAt.Default.(func() time.Time)
+	// lessonprogress.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	lessonprogress.UpdateDefaultUpdatedAt = lessonprogressDescUpdatedAt.UpdateDefault.(func() time.Time)
 	reviewMixin := schema.Review{}.Mixin()
 	reviewMixinFields0 := reviewMixin[0].Fields()
 	_ = reviewMixinFields0

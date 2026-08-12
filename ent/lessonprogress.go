@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"strings"
 	"time"
@@ -19,18 +20,22 @@ type LessonProgress struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID int `json:"user_id,omitempty"`
 	// CourseID holds the value of the "course_id" field.
 	CourseID int `json:"course_id,omitempty"`
+	// EnrollmentID holds the value of the "enrollment_id" field.
+	EnrollmentID int `json:"enrollment_id,omitempty"`
 	// LessonID holds the value of the "lesson_id" field.
 	LessonID int `json:"lesson_id,omitempty"`
 	// State holds the value of the "state" field.
 	State *string `json:"state,omitempty"`
 	// MessagesCount holds the value of the "messages_count" field.
 	MessagesCount *int `json:"messages_count,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the LessonProgressQuery when eager-loading is set.
 	Edges        LessonProgressEdges `json:"edges"`
@@ -41,11 +46,13 @@ type LessonProgress struct {
 type LessonProgressEdges struct {
 	// Course holds the value of the course edge.
 	Course *Course `json:"course,omitempty"`
+	// Enrollment holds the value of the enrollment edge.
+	Enrollment *Enrollment `json:"enrollment,omitempty"`
 	// Lesson holds the value of the lesson edge.
 	Lesson *CourseLesson `json:"lesson,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // CourseOrErr returns the Course value or an error if the edge
@@ -59,12 +66,23 @@ func (e LessonProgressEdges) CourseOrErr() (*Course, error) {
 	return nil, &NotLoadedError{edge: "course"}
 }
 
+// EnrollmentOrErr returns the Enrollment value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e LessonProgressEdges) EnrollmentOrErr() (*Enrollment, error) {
+	if e.Enrollment != nil {
+		return e.Enrollment, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: enrollment.Label}
+	}
+	return nil, &NotLoadedError{edge: "enrollment"}
+}
+
 // LessonOrErr returns the Lesson value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e LessonProgressEdges) LessonOrErr() (*CourseLesson, error) {
 	if e.Lesson != nil {
 		return e.Lesson, nil
-	} else if e.loadedTypes[1] {
+	} else if e.loadedTypes[2] {
 		return nil, &NotFoundError{label: courselesson.Label}
 	}
 	return nil, &NotLoadedError{edge: "lesson"}
@@ -75,11 +93,11 @@ func (*LessonProgress) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case lessonprogress.FieldID, lessonprogress.FieldUserID, lessonprogress.FieldCourseID, lessonprogress.FieldLessonID, lessonprogress.FieldMessagesCount:
+		case lessonprogress.FieldID, lessonprogress.FieldUserID, lessonprogress.FieldCourseID, lessonprogress.FieldEnrollmentID, lessonprogress.FieldLessonID, lessonprogress.FieldMessagesCount:
 			values[i] = new(sql.NullInt64)
 		case lessonprogress.FieldState:
 			values[i] = new(sql.NullString)
-		case lessonprogress.FieldCreatedAt:
+		case lessonprogress.FieldCreatedAt, lessonprogress.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -102,6 +120,18 @@ func (_m *LessonProgress) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case lessonprogress.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case lessonprogress.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case lessonprogress.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
@@ -113,6 +143,12 @@ func (_m *LessonProgress) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
 				_m.CourseID = int(value.Int64)
+			}
+		case lessonprogress.FieldEnrollmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field enrollment_id", values[i])
+			} else if value.Valid {
+				_m.EnrollmentID = int(value.Int64)
 			}
 		case lessonprogress.FieldLessonID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -134,12 +170,6 @@ func (_m *LessonProgress) assignValues(columns []string, values []any) error {
 				_m.MessagesCount = new(int)
 				*_m.MessagesCount = int(value.Int64)
 			}
-		case lessonprogress.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				_m.CreatedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -156,6 +186,11 @@ func (_m *LessonProgress) Value(name string) (ent.Value, error) {
 // QueryCourse queries the "course" edge of the LessonProgress entity.
 func (_m *LessonProgress) QueryCourse() *CourseQuery {
 	return NewLessonProgressClient(_m.config).QueryCourse(_m)
+}
+
+// QueryEnrollment queries the "enrollment" edge of the LessonProgress entity.
+func (_m *LessonProgress) QueryEnrollment() *EnrollmentQuery {
+	return NewLessonProgressClient(_m.config).QueryEnrollment(_m)
 }
 
 // QueryLesson queries the "lesson" edge of the LessonProgress entity.
@@ -186,11 +221,20 @@ func (_m *LessonProgress) String() string {
 	var builder strings.Builder
 	builder.WriteString("LessonProgress(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("course_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.CourseID))
+	builder.WriteString(", ")
+	builder.WriteString("enrollment_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.EnrollmentID))
 	builder.WriteString(", ")
 	builder.WriteString("lesson_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LessonID))
@@ -204,9 +248,6 @@ func (_m *LessonProgress) String() string {
 		builder.WriteString("messages_count=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
-	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

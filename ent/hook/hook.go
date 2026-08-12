@@ -248,6 +248,18 @@ func (f CourseVersionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CourseVersionMutation", m)
 }
 
+// The EnrollmentFunc type is an adapter to allow the use of ordinary
+// function as Enrollment mutator.
+type EnrollmentFunc func(context.Context, *ent.EnrollmentMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EnrollmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.EnrollmentMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EnrollmentMutation", m)
+}
+
 // The LandingPageFunc type is an adapter to allow the use of ordinary
 // function as LandingPage mutator.
 type LandingPageFunc func(context.Context, *ent.LandingPageMutation) (ent.Value, error)

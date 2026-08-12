@@ -26,6 +26,7 @@ import (
 	"hexletbasics/ent/coursemoduletranslation"
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
@@ -121,6 +122,7 @@ func checkColumn(t, c string) error {
 			coursemoduletranslation.Table:   coursemoduletranslation.ValidColumn,
 			coursemoduleversion.Table:       coursemoduleversion.ValidColumn,
 			courseversion.Table:             courseversion.ValidColumn,
+			enrollment.Table:                enrollment.ValidColumn,
 			landingpage.Table:               landingpage.ValidColumn,
 			landingpageqnaitem.Table:        landingpageqnaitem.ValidColumn,
 			lead.Table:                      lead.ValidColumn,

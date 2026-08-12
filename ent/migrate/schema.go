@@ -458,6 +458,43 @@ var (
 		Columns:    LanguageVersionsColumns,
 		PrimaryKey: []*schema.Column{LanguageVersionsColumns[0]},
 	}
+	// LanguageMembersColumns holds the columns for the "language_members" table.
+	LanguageMembersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "finished_lessons_count", Type: field.TypeInt, Default: 0},
+		{Name: "language_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
+	}
+	// LanguageMembersTable holds the schema information for the "language_members" table.
+	LanguageMembersTable = &schema.Table{
+		Name:       "language_members",
+		Columns:    LanguageMembersColumns,
+		PrimaryKey: []*schema.Column{LanguageMembersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_members_languages_course",
+				Columns:    []*schema.Column{LanguageMembersColumns[5]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_members_users_user",
+				Columns:    []*schema.Column{LanguageMembersColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "enrollment_user_id_language_id",
+				Unique:  true,
+				Columns: []*schema.Column{LanguageMembersColumns[6], LanguageMembersColumns[5]},
+			},
+		},
+	}
 	// LanguageLandingPagesColumns holds the columns for the "language_landing_pages" table.
 	LanguageLandingPagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -533,11 +570,13 @@ var (
 	// LanguageLessonMembersColumns holds the columns for the "language_lesson_members" table.
 	LanguageLessonMembersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "state", Type: field.TypeString, Nullable: true},
 		{Name: "messages_count", Type: field.TypeInt, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
 		{Name: "language_id", Type: field.TypeInt},
+		{Name: "language_member_id", Type: field.TypeInt},
 		{Name: "lesson_id", Type: field.TypeInt},
 	}
 	// LanguageLessonMembersTable holds the schema information for the "language_lesson_members" table.
@@ -548,13 +587,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "language_lesson_members_languages_course",
-				Columns:    []*schema.Column{LanguageLessonMembersColumns[5]},
+				Columns:    []*schema.Column{LanguageLessonMembersColumns[6]},
 				RefColumns: []*schema.Column{LanguagesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
+				Symbol:     "language_lesson_members_language_members_enrollment",
+				Columns:    []*schema.Column{LanguageLessonMembersColumns[7]},
+				RefColumns: []*schema.Column{LanguageMembersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
 				Symbol:     "language_lesson_members_language_lessons_lesson",
-				Columns:    []*schema.Column{LanguageLessonMembersColumns[6]},
+				Columns:    []*schema.Column{LanguageLessonMembersColumns[8]},
 				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -703,6 +748,7 @@ var (
 		LanguageModuleVersionInfosTable,
 		LanguageModuleVersionsTable,
 		LanguageVersionsTable,
+		LanguageMembersTable,
 		LanguageLandingPagesTable,
 		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
@@ -770,6 +816,11 @@ func init() {
 	LanguageVersionsTable.Annotation = &entsql.Annotation{
 		Table: "language_versions",
 	}
+	LanguageMembersTable.ForeignKeys[0].RefTable = LanguagesTable
+	LanguageMembersTable.ForeignKeys[1].RefTable = UsersTable
+	LanguageMembersTable.Annotation = &entsql.Annotation{
+		Table: "language_members",
+	}
 	LanguageLandingPagesTable.ForeignKeys[0].RefTable = LanguagesTable
 	LanguageLandingPagesTable.Annotation = &entsql.Annotation{
 		Table: "language_landing_pages",
@@ -778,7 +829,8 @@ func init() {
 		Table: "language_landing_page_qna_items",
 	}
 	LanguageLessonMembersTable.ForeignKeys[0].RefTable = LanguagesTable
-	LanguageLessonMembersTable.ForeignKeys[1].RefTable = LanguageLessonsTable
+	LanguageLessonMembersTable.ForeignKeys[1].RefTable = LanguageMembersTable
+	LanguageLessonMembersTable.ForeignKeys[2].RefTable = LanguageLessonsTable
 	LanguageLessonMembersTable.Annotation = &entsql.Annotation{
 		Table: "language_lesson_members",
 	}

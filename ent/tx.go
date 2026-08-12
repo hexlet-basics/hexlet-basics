@@ -52,6 +52,8 @@ type Tx struct {
 	CourseModuleVersion *CourseModuleVersionClient
 	// CourseVersion is the client for interacting with the CourseVersion builders.
 	CourseVersion *CourseVersionClient
+	// Enrollment is the client for interacting with the Enrollment builders.
+	Enrollment *EnrollmentClient
 	// LandingPage is the client for interacting with the LandingPage builders.
 	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
@@ -221,6 +223,7 @@ func (tx *Tx) init() {
 	tx.CourseModuleTranslation = NewCourseModuleTranslationClient(tx.config)
 	tx.CourseModuleVersion = NewCourseModuleVersionClient(tx.config)
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
+	tx.Enrollment = NewEnrollmentClient(tx.config)
 	tx.LandingPage = NewLandingPageClient(tx.config)
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)

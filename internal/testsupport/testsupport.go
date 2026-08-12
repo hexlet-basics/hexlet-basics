@@ -13,6 +13,7 @@ package testsupport
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"io"
 	"log/slog"
@@ -62,6 +63,16 @@ func NewClient(t *testing.T) *ent.Client {
 // keeps the shared fixture database clean.
 func NewClientWithTransactor(t *testing.T) (*ent.Client, store.Transactor) {
 	t.Helper()
+	client, tx := NewClientWithTx(t)
+	return client, newSavepointTransactor(tx, client)
+}
+
+// NewClientWithTx returns the same rolled-back client alongside the raw
+// transaction behind it, for the rare test that must issue SQL ent cannot
+// express — DDL, or a migration file executed verbatim so that what is verified
+// is what ships.
+func NewClientWithTx(t *testing.T) (*ent.Client, *sql.Tx) {
+	t.Helper()
 	db, err := store.NewDB(testdb.DatabaseURL())
 	if err != nil {
 		t.Fatalf("open test database: %v", err)
@@ -74,8 +85,7 @@ func NewClientWithTransactor(t *testing.T) (*ent.Client, store.Transactor) {
 	}
 	t.Cleanup(func() { _ = tx.Rollback() })
 
-	client := store.NewTxClient(tx)
-	return client, newSavepointTransactor(tx, client)
+	return store.NewTxClient(tx), tx
 }
 
 // NewTranslator loads the same embedded backend catalogs as production.

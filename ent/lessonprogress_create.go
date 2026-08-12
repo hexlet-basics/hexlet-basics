@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"time"
 
@@ -24,6 +25,34 @@ type LessonProgressCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LessonProgressCreate) SetCreatedAt(v time.Time) *LessonProgressCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LessonProgressCreate) SetNillableCreatedAt(v *time.Time) *LessonProgressCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LessonProgressCreate) SetUpdatedAt(v time.Time) *LessonProgressCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LessonProgressCreate) SetNillableUpdatedAt(v *time.Time) *LessonProgressCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetUserID sets the "user_id" field.
 func (_c *LessonProgressCreate) SetUserID(v int) *LessonProgressCreate {
 	_c.mutation.SetUserID(v)
@@ -33,6 +62,12 @@ func (_c *LessonProgressCreate) SetUserID(v int) *LessonProgressCreate {
 // SetCourseID sets the "course_id" field.
 func (_c *LessonProgressCreate) SetCourseID(v int) *LessonProgressCreate {
 	_c.mutation.SetCourseID(v)
+	return _c
+}
+
+// SetEnrollmentID sets the "enrollment_id" field.
+func (_c *LessonProgressCreate) SetEnrollmentID(v int) *LessonProgressCreate {
+	_c.mutation.SetEnrollmentID(v)
 	return _c
 }
 
@@ -70,15 +105,14 @@ func (_c *LessonProgressCreate) SetNillableMessagesCount(v *int) *LessonProgress
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *LessonProgressCreate) SetCreatedAt(v time.Time) *LessonProgressCreate {
-	_c.mutation.SetCreatedAt(v)
-	return _c
-}
-
 // SetCourse sets the "course" edge to the Course entity.
 func (_c *LessonProgressCreate) SetCourse(v *Course) *LessonProgressCreate {
 	return _c.SetCourseID(v.ID)
+}
+
+// SetEnrollment sets the "enrollment" edge to the Enrollment entity.
+func (_c *LessonProgressCreate) SetEnrollment(v *Enrollment) *LessonProgressCreate {
+	return _c.SetEnrollmentID(v.ID)
 }
 
 // SetLesson sets the "lesson" edge to the CourseLesson entity.
@@ -93,6 +127,7 @@ func (_c *LessonProgressCreate) Mutation() *LessonProgressMutation {
 
 // Save creates the LessonProgress in the database.
 func (_c *LessonProgressCreate) Save(ctx context.Context) (*LessonProgress, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -118,22 +153,43 @@ func (_c *LessonProgressCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *LessonProgressCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := lessonprogress.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := lessonprogress.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *LessonProgressCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LessonProgress.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "LessonProgress.updated_at"`)}
+	}
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "LessonProgress.user_id"`)}
 	}
 	if _, ok := _c.mutation.CourseID(); !ok {
 		return &ValidationError{Name: "course_id", err: errors.New(`ent: missing required field "LessonProgress.course_id"`)}
 	}
+	if _, ok := _c.mutation.EnrollmentID(); !ok {
+		return &ValidationError{Name: "enrollment_id", err: errors.New(`ent: missing required field "LessonProgress.enrollment_id"`)}
+	}
 	if _, ok := _c.mutation.LessonID(); !ok {
 		return &ValidationError{Name: "lesson_id", err: errors.New(`ent: missing required field "LessonProgress.lesson_id"`)}
 	}
-	if _, ok := _c.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "LessonProgress.created_at"`)}
-	}
 	if len(_c.mutation.CourseIDs()) == 0 {
 		return &ValidationError{Name: "course", err: errors.New(`ent: missing required edge "LessonProgress.course"`)}
+	}
+	if len(_c.mutation.EnrollmentIDs()) == 0 {
+		return &ValidationError{Name: "enrollment", err: errors.New(`ent: missing required edge "LessonProgress.enrollment"`)}
 	}
 	if len(_c.mutation.LessonIDs()) == 0 {
 		return &ValidationError{Name: "lesson", err: errors.New(`ent: missing required edge "LessonProgress.lesson"`)}
@@ -165,6 +221,14 @@ func (_c *LessonProgressCreate) createSpec() (*LessonProgress, *sqlgraph.CreateS
 		_spec = sqlgraph.NewCreateSpec(lessonprogress.Table, sqlgraph.NewFieldSpec(lessonprogress.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(lessonprogress.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(lessonprogress.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(lessonprogress.FieldUserID, field.TypeInt, value)
 		_node.UserID = value
@@ -176,10 +240,6 @@ func (_c *LessonProgressCreate) createSpec() (*LessonProgress, *sqlgraph.CreateS
 	if value, ok := _c.mutation.MessagesCount(); ok {
 		_spec.SetField(lessonprogress.FieldMessagesCount, field.TypeInt, value)
 		_node.MessagesCount = &value
-	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(lessonprogress.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
 	}
 	if nodes := _c.mutation.CourseIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -196,6 +256,23 @@ func (_c *LessonProgressCreate) createSpec() (*LessonProgress, *sqlgraph.CreateS
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.CourseID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.EnrollmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   lessonprogress.EnrollmentTable,
+			Columns: []string{lessonprogress.EnrollmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(enrollment.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.EnrollmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
@@ -222,7 +299,7 @@ func (_c *LessonProgressCreate) createSpec() (*LessonProgress, *sqlgraph.CreateS
 // of the `INSERT` statement. For example:
 //
 //	client.LessonProgress.Create().
-//		SetUserID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -231,7 +308,7 @@ func (_c *LessonProgressCreate) createSpec() (*LessonProgress, *sqlgraph.CreateS
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LessonProgressUpsert) {
-//			SetUserID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LessonProgressCreate) OnConflict(opts ...sql.ConflictOption) *LessonProgressUpsertOne {
@@ -267,6 +344,18 @@ type (
 	}
 )
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LessonProgressUpsert) SetUpdatedAt(v time.Time) *LessonProgressUpsert {
+	u.Set(lessonprogress.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LessonProgressUpsert) UpdateUpdatedAt() *LessonProgressUpsert {
+	u.SetExcluded(lessonprogress.FieldUpdatedAt)
+	return u
+}
+
 // SetUserID sets the "user_id" field.
 func (u *LessonProgressUpsert) SetUserID(v int) *LessonProgressUpsert {
 	u.Set(lessonprogress.FieldUserID, v)
@@ -294,6 +383,18 @@ func (u *LessonProgressUpsert) SetCourseID(v int) *LessonProgressUpsert {
 // UpdateCourseID sets the "course_id" field to the value that was provided on create.
 func (u *LessonProgressUpsert) UpdateCourseID() *LessonProgressUpsert {
 	u.SetExcluded(lessonprogress.FieldCourseID)
+	return u
+}
+
+// SetEnrollmentID sets the "enrollment_id" field.
+func (u *LessonProgressUpsert) SetEnrollmentID(v int) *LessonProgressUpsert {
+	u.Set(lessonprogress.FieldEnrollmentID, v)
+	return u
+}
+
+// UpdateEnrollmentID sets the "enrollment_id" field to the value that was provided on create.
+func (u *LessonProgressUpsert) UpdateEnrollmentID() *LessonProgressUpsert {
+	u.SetExcluded(lessonprogress.FieldEnrollmentID)
 	return u
 }
 
@@ -396,6 +497,20 @@ func (u *LessonProgressUpsertOne) Update(set func(*LessonProgressUpsert)) *Lesso
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LessonProgressUpsertOne) SetUpdatedAt(v time.Time) *LessonProgressUpsertOne {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LessonProgressUpsertOne) UpdateUpdatedAt() *LessonProgressUpsertOne {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *LessonProgressUpsertOne) SetUserID(v int) *LessonProgressUpsertOne {
 	return u.Update(func(s *LessonProgressUpsert) {
@@ -428,6 +543,20 @@ func (u *LessonProgressUpsertOne) SetCourseID(v int) *LessonProgressUpsertOne {
 func (u *LessonProgressUpsertOne) UpdateCourseID() *LessonProgressUpsertOne {
 	return u.Update(func(s *LessonProgressUpsert) {
 		s.UpdateCourseID()
+	})
+}
+
+// SetEnrollmentID sets the "enrollment_id" field.
+func (u *LessonProgressUpsertOne) SetEnrollmentID(v int) *LessonProgressUpsertOne {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.SetEnrollmentID(v)
+	})
+}
+
+// UpdateEnrollmentID sets the "enrollment_id" field to the value that was provided on create.
+func (u *LessonProgressUpsertOne) UpdateEnrollmentID() *LessonProgressUpsertOne {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.UpdateEnrollmentID()
 	})
 }
 
@@ -546,6 +675,7 @@ func (_c *LessonProgressCreateBulk) Save(ctx context.Context) ([]*LessonProgress
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*LessonProgressMutation)
 				if !ok {
@@ -628,7 +758,7 @@ func (_c *LessonProgressCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LessonProgressUpsert) {
-//			SetUserID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LessonProgressCreateBulk) OnConflict(opts ...sql.ConflictOption) *LessonProgressUpsertBulk {
@@ -704,6 +834,20 @@ func (u *LessonProgressUpsertBulk) Update(set func(*LessonProgressUpsert)) *Less
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LessonProgressUpsertBulk) SetUpdatedAt(v time.Time) *LessonProgressUpsertBulk {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LessonProgressUpsertBulk) UpdateUpdatedAt() *LessonProgressUpsertBulk {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *LessonProgressUpsertBulk) SetUserID(v int) *LessonProgressUpsertBulk {
 	return u.Update(func(s *LessonProgressUpsert) {
@@ -736,6 +880,20 @@ func (u *LessonProgressUpsertBulk) SetCourseID(v int) *LessonProgressUpsertBulk 
 func (u *LessonProgressUpsertBulk) UpdateCourseID() *LessonProgressUpsertBulk {
 	return u.Update(func(s *LessonProgressUpsert) {
 		s.UpdateCourseID()
+	})
+}
+
+// SetEnrollmentID sets the "enrollment_id" field.
+func (u *LessonProgressUpsertBulk) SetEnrollmentID(v int) *LessonProgressUpsertBulk {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.SetEnrollmentID(v)
+	})
+}
+
+// UpdateEnrollmentID sets the "enrollment_id" field to the value that was provided on create.
+func (u *LessonProgressUpsertBulk) UpdateEnrollmentID() *LessonProgressUpsertBulk {
+	return u.Update(func(s *LessonProgressUpsert) {
+		s.UpdateEnrollmentID()
 	})
 }
 

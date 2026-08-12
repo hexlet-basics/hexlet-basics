@@ -61,7 +61,7 @@ func TestAdminListLessonProgress(t *testing.T) {
 	assert.Equal(t, int32(3001), page.Items[1].ID)
 
 	first := page.Items[0] // 3002: started, no messages, lesson "variables"
-	assert.Equal(t, int32(502), first.UserId)
+	assert.Equal(t, int32(1002), first.UserId)
 	assert.Equal(t, api.EnrollmentStateStarted, first.State)
 	assert.True(t, first.MessagesCount.Null, "blank messages_count should be null")
 	assert.Equal(t, "javascript", first.CourseSlug)

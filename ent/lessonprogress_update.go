@@ -8,8 +8,10 @@ import (
 	"fmt"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselesson"
+	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -26,6 +28,12 @@ type LessonProgressUpdate struct {
 // Where appends a list predicates to the LessonProgressUpdate builder.
 func (_u *LessonProgressUpdate) Where(ps ...predicate.LessonProgress) *LessonProgressUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LessonProgressUpdate) SetUpdatedAt(v time.Time) *LessonProgressUpdate {
+	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -60,6 +68,20 @@ func (_u *LessonProgressUpdate) SetCourseID(v int) *LessonProgressUpdate {
 func (_u *LessonProgressUpdate) SetNillableCourseID(v *int) *LessonProgressUpdate {
 	if v != nil {
 		_u.SetCourseID(*v)
+	}
+	return _u
+}
+
+// SetEnrollmentID sets the "enrollment_id" field.
+func (_u *LessonProgressUpdate) SetEnrollmentID(v int) *LessonProgressUpdate {
+	_u.mutation.SetEnrollmentID(v)
+	return _u
+}
+
+// SetNillableEnrollmentID sets the "enrollment_id" field if the given value is not nil.
+func (_u *LessonProgressUpdate) SetNillableEnrollmentID(v *int) *LessonProgressUpdate {
+	if v != nil {
+		_u.SetEnrollmentID(*v)
 	}
 	return _u
 }
@@ -130,6 +152,11 @@ func (_u *LessonProgressUpdate) SetCourse(v *Course) *LessonProgressUpdate {
 	return _u.SetCourseID(v.ID)
 }
 
+// SetEnrollment sets the "enrollment" edge to the Enrollment entity.
+func (_u *LessonProgressUpdate) SetEnrollment(v *Enrollment) *LessonProgressUpdate {
+	return _u.SetEnrollmentID(v.ID)
+}
+
 // SetLesson sets the "lesson" edge to the CourseLesson entity.
 func (_u *LessonProgressUpdate) SetLesson(v *CourseLesson) *LessonProgressUpdate {
 	return _u.SetLessonID(v.ID)
@@ -146,6 +173,12 @@ func (_u *LessonProgressUpdate) ClearCourse() *LessonProgressUpdate {
 	return _u
 }
 
+// ClearEnrollment clears the "enrollment" edge to the Enrollment entity.
+func (_u *LessonProgressUpdate) ClearEnrollment() *LessonProgressUpdate {
+	_u.mutation.ClearEnrollment()
+	return _u
+}
+
 // ClearLesson clears the "lesson" edge to the CourseLesson entity.
 func (_u *LessonProgressUpdate) ClearLesson() *LessonProgressUpdate {
 	_u.mutation.ClearLesson()
@@ -154,6 +187,7 @@ func (_u *LessonProgressUpdate) ClearLesson() *LessonProgressUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *LessonProgressUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -179,10 +213,21 @@ func (_u *LessonProgressUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *LessonProgressUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := lessonprogress.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_u *LessonProgressUpdate) check() error {
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "LessonProgress.course"`)
+	}
+	if _u.mutation.EnrollmentCleared() && len(_u.mutation.EnrollmentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "LessonProgress.enrollment"`)
 	}
 	if _u.mutation.LessonCleared() && len(_u.mutation.LessonIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "LessonProgress.lesson"`)
@@ -201,6 +246,9 @@ func (_u *LessonProgressUpdate) sqlSave(ctx context.Context) (_node int, err err
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(lessonprogress.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(lessonprogress.FieldUserID, field.TypeInt, value)
@@ -245,6 +293,35 @@ func (_u *LessonProgressUpdate) sqlSave(ctx context.Context) (_node int, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.EnrollmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   lessonprogress.EnrollmentTable,
+			Columns: []string{lessonprogress.EnrollmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(enrollment.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EnrollmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   lessonprogress.EnrollmentTable,
+			Columns: []string{lessonprogress.EnrollmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(enrollment.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -301,6 +378,12 @@ type LessonProgressUpdateOne struct {
 	mutation *LessonProgressMutation
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LessonProgressUpdateOne) SetUpdatedAt(v time.Time) *LessonProgressUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
 // SetUserID sets the "user_id" field.
 func (_u *LessonProgressUpdateOne) SetUserID(v int) *LessonProgressUpdateOne {
 	_u.mutation.ResetUserID()
@@ -332,6 +415,20 @@ func (_u *LessonProgressUpdateOne) SetCourseID(v int) *LessonProgressUpdateOne {
 func (_u *LessonProgressUpdateOne) SetNillableCourseID(v *int) *LessonProgressUpdateOne {
 	if v != nil {
 		_u.SetCourseID(*v)
+	}
+	return _u
+}
+
+// SetEnrollmentID sets the "enrollment_id" field.
+func (_u *LessonProgressUpdateOne) SetEnrollmentID(v int) *LessonProgressUpdateOne {
+	_u.mutation.SetEnrollmentID(v)
+	return _u
+}
+
+// SetNillableEnrollmentID sets the "enrollment_id" field if the given value is not nil.
+func (_u *LessonProgressUpdateOne) SetNillableEnrollmentID(v *int) *LessonProgressUpdateOne {
+	if v != nil {
+		_u.SetEnrollmentID(*v)
 	}
 	return _u
 }
@@ -402,6 +499,11 @@ func (_u *LessonProgressUpdateOne) SetCourse(v *Course) *LessonProgressUpdateOne
 	return _u.SetCourseID(v.ID)
 }
 
+// SetEnrollment sets the "enrollment" edge to the Enrollment entity.
+func (_u *LessonProgressUpdateOne) SetEnrollment(v *Enrollment) *LessonProgressUpdateOne {
+	return _u.SetEnrollmentID(v.ID)
+}
+
 // SetLesson sets the "lesson" edge to the CourseLesson entity.
 func (_u *LessonProgressUpdateOne) SetLesson(v *CourseLesson) *LessonProgressUpdateOne {
 	return _u.SetLessonID(v.ID)
@@ -415,6 +517,12 @@ func (_u *LessonProgressUpdateOne) Mutation() *LessonProgressMutation {
 // ClearCourse clears the "course" edge to the Course entity.
 func (_u *LessonProgressUpdateOne) ClearCourse() *LessonProgressUpdateOne {
 	_u.mutation.ClearCourse()
+	return _u
+}
+
+// ClearEnrollment clears the "enrollment" edge to the Enrollment entity.
+func (_u *LessonProgressUpdateOne) ClearEnrollment() *LessonProgressUpdateOne {
+	_u.mutation.ClearEnrollment()
 	return _u
 }
 
@@ -439,6 +547,7 @@ func (_u *LessonProgressUpdateOne) Select(field string, fields ...string) *Lesso
 
 // Save executes the query and returns the updated LessonProgress entity.
 func (_u *LessonProgressUpdateOne) Save(ctx context.Context) (*LessonProgress, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -464,10 +573,21 @@ func (_u *LessonProgressUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *LessonProgressUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := lessonprogress.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_u *LessonProgressUpdateOne) check() error {
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "LessonProgress.course"`)
+	}
+	if _u.mutation.EnrollmentCleared() && len(_u.mutation.EnrollmentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "LessonProgress.enrollment"`)
 	}
 	if _u.mutation.LessonCleared() && len(_u.mutation.LessonIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "LessonProgress.lesson"`)
@@ -503,6 +623,9 @@ func (_u *LessonProgressUpdateOne) sqlSave(ctx context.Context) (_node *LessonPr
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(lessonprogress.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(lessonprogress.FieldUserID, field.TypeInt, value)
@@ -547,6 +670,35 @@ func (_u *LessonProgressUpdateOne) sqlSave(ctx context.Context) (_node *LessonPr
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.EnrollmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   lessonprogress.EnrollmentTable,
+			Columns: []string{lessonprogress.EnrollmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(enrollment.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.EnrollmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   lessonprogress.EnrollmentTable,
+			Columns: []string{lessonprogress.EnrollmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(enrollment.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

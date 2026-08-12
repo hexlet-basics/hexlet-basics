@@ -1,0 +1,18 @@
+# Fixtures for `language_members` (Enrollments), HAND-CURATED. 601 and 602 are
+# the two Enrollments language_lesson_members.yml already points at, so the
+# Lesson Progress rows finally have the owner their FK column claims.
+# Course = JavaScript (82481401); users from users.yml.
+- id: 601
+  user_id: 1001
+  language_id: 82481401
+  state: started
+  finished_lessons_count: 1
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 602
+  user_id: 1002
+  language_id: 82481401
+  state: finished
+  finished_lessons_count: 2
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'
