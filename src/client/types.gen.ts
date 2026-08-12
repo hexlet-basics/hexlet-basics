@@ -492,6 +492,30 @@ export type CoursePage = {
 };
 
 /**
+ * A learner's position in one Course, computed against its current Version.
+ *
+ * Availability travels with it even though it is a pure function of position:
+ * a client deriving it would be a second implementation of the gate, free to
+ * drift from the server that enforces it.
+ */
+export type CourseProgress = {
+  state: EnrollmentState | null;
+  /**
+   * The share of the Course's current Lessons finished (0–100).
+   */
+  completion: number;
+  /**
+   * The first unfinished Lesson in course order — where the learner resumes.
+   */
+  nextLessonSlug: string | null;
+  /**
+   * The highest Position finished, 0 when nothing has been.
+   */
+  furthestFinishedPosition: number;
+  lessons: Array<LessonProgressItem>;
+};
+
+/**
  * Publication/readiness state of a course.
  */
 export type CourseReadiness = 'completed' | 'in_development' | 'draft';
@@ -543,6 +567,10 @@ export type Enrollment = {
    */
   completion: number;
   nextLessonName: string | null;
+  /**
+   * Where the learner stands, and what they may take next.
+   */
+  progress: CourseProgress;
 };
 
 /**
@@ -667,6 +695,22 @@ export type LessonProgress = {
   courseSlug: string;
   courseLessonSlug: string;
   courseLessonName: string;
+};
+
+/**
+ * Per-Lesson state for the course and lesson pages: locks and checkmarks.
+ */
+export type LessonProgressItem = {
+  slug: string;
+  /**
+   * Position in the current Version, 1..N across the whole Course.
+   */
+  position: number;
+  finished: boolean;
+  /**
+   * Whether the gate lets the learner take it (ADR-0012).
+   */
+  available: boolean;
 };
 
 /**

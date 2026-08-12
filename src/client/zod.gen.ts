@@ -311,18 +311,6 @@ export const zEmailInput = z.object({
 export const zEnrollmentState = z.enum(['started', 'finished']);
 
 /**
- * A learner's enrollment in a course (table `language_members`).
- */
-export const zEnrollment = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  state: zEnrollmentState.nullable(),
-  completion: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nextLessonName: z.string().nullable()
-});
-
-/**
  * Publication state shared by landing pages.
  */
 export const zLandingPageState = z.enum([
@@ -392,16 +380,6 @@ export const zCourseLandingPagePage = z.object({
   total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * Everything the public course landing needs in one payload.
- */
-export const zCourseView = z.object({
-  course: zCourse,
-  landingPage: zCourseLandingPage.nullable(),
-  lessons: z.array(zCourseLessonListItem),
-  enrollment: zEnrollment.nullable()
 });
 
 /**
@@ -530,6 +508,54 @@ export const zLessonProgress = z.object({
   courseSlug: z.string(),
   courseLessonSlug: z.string(),
   courseLessonName: z.string()
+});
+
+/**
+ * Per-Lesson state for the course and lesson pages: locks and checkmarks.
+ */
+export const zLessonProgressItem = z.object({
+  slug: z.string(),
+  position: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  finished: z.boolean(),
+  available: z.boolean()
+});
+
+/**
+ * A learner's position in one Course, computed against its current Version.
+ *
+ * Availability travels with it even though it is a pure function of position:
+ * a client deriving it would be a second implementation of the gate, free to
+ * drift from the server that enforces it.
+ */
+export const zCourseProgress = z.object({
+  state: zEnrollmentState.nullable(),
+  completion: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  nextLessonSlug: z.string().nullable(),
+  furthestFinishedPosition: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  lessons: z.array(zLessonProgressItem)
+});
+
+/**
+ * A learner's enrollment in a course (table `language_members`).
+ */
+export const zEnrollment = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  state: zEnrollmentState.nullable(),
+  completion: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  nextLessonName: z.string().nullable(),
+  progress: zCourseProgress
+});
+
+/**
+ * Everything the public course landing needs in one payload.
+ */
+export const zCourseView = z.object({
+  course: zCourse,
+  landingPage: zCourseLandingPage.nullable(),
+  lessons: z.array(zCourseLessonListItem),
+  enrollment: zEnrollment.nullable()
 });
 
 /**

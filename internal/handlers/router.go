@@ -30,6 +30,9 @@ func NewRouter(
 	// GitHub webhook: verifies its own HMAC signature, so it is safe outside any
 	// auth middleware — but it must stay a build TRIGGER only.
 	transport.HandleFunc("POST /webhooks/github", gh.Handle)
-	transport.Handle("/", apiHandler)
+	// Identify wraps only the generated operations: it attaches the signed-in
+	// user when a session cookie is present, so a public read can answer a
+	// learner with their progress and a visitor without it.
+	transport.Handle("/", auth.Identify(apiHandler))
 	return auth.Trace(transport)
 }

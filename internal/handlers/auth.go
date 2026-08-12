@@ -116,6 +116,33 @@ func (h *AuthHandler) Trace(next http.Handler) http.Handler {
 	return h.auth.Trace(next)
 }
 
+// Identify attaches the signed-in user to the request context when a valid
+// session cookie is present, and does nothing otherwise.
+//
+// Contract-declared authentication (ADR-0011) covers operations that REQUIRE a
+// session: ogen runs their security handler and rejects the request. The public
+// reads are different — they must answer a visitor and a learner alike, with
+// the learner getting their progress — and ogen never invokes security for an
+// operation that declares none. This middleware supplies that optional
+// identity, and never fails a request: an absent or invalid cookie simply
+// leaves the context anonymous.
+func (h *AuthHandler) Identify(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie(authCookie)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		ctx, err := h.loadAuthenticatedUser(r.Context(), cookie.Value)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
 // AuthenticatedUser returns the database user loaded by the generated security
 // handler. Protected application handlers use this context seam instead of
 // reparsing JWT claims or issuing a second user query.

@@ -14,6 +14,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/progress"
 )
 
 //go:generate go tool goverter gen hexletbasics/internal/apiconv
@@ -207,6 +208,54 @@ type Converter interface {
 	ToCourseLessonReview(source *ent.CourseLessonReview) api.CourseLessonReview
 
 	ToCourseLessonReviews(source []*ent.CourseLessonReview) []api.CourseLessonReview
+}
+
+// ToEnrollment projects a learner's Enrollment together with the computed
+// progress that belongs to it. goverter maps ent rows field by field; this one
+// is hand-written because the payload is half row, half computation — the
+// percentage and the availability flags exist nowhere in storage.
+func ToEnrollment(row *ent.Enrollment, state *progress.CourseState) api.Enrollment {
+	return api.Enrollment{
+		ID:             int32(row.ID),
+		UserId:         int32(row.UserID),
+		CourseId:       int32(row.CourseID),
+		State:          nilEnrollmentState(row.State),
+		Completion:     int32(state.Completion),
+		NextLessonName: NilStringFromPtr(state.NextLessonSlug),
+		Progress:       ToCourseProgress(state),
+	}
+}
+
+// ToCourseProgress projects the computed course state. Availability travels
+// with it so the client renders locks from the server's answer instead of
+// reimplementing the gate.
+func ToCourseProgress(state *progress.CourseState) api.CourseProgress {
+	lessons := make([]api.LessonProgressItem, 0, len(state.Lessons))
+	for _, lesson := range state.Lessons {
+		lessons = append(lessons, api.LessonProgressItem{
+			Slug:      lesson.Slug,
+			Position:  int32(lesson.Position),
+			Finished:  lesson.Finished,
+			Available: lesson.Available,
+		})
+	}
+	return api.CourseProgress{
+		State:                    nilEnrollmentState(&state.State),
+		Completion:               int32(state.Completion),
+		NextLessonSlug:           NilStringFromPtr(state.NextLessonSlug),
+		FurthestFinishedPosition: int32(state.FurthestFinishedPosition),
+		Lessons:                  lessons,
+	}
+}
+
+// nilEnrollmentState resolves the nullable legacy column to the contract's
+// nilable enum: a learner with no Enrollment has no state at all, which is the
+// "not started" condition rather than a state a record can be in.
+func nilEnrollmentState(v *string) api.NilEnrollmentState {
+	if v == nil || *v == "" {
+		return api.NilEnrollmentState{Null: true}
+	}
+	return api.NewNilEnrollmentState(api.EnrollmentState(*v))
 }
 
 // TimeIdentity copies a time.Time as-is, so goverter treats it as a scalar

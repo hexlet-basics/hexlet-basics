@@ -163,7 +163,7 @@ func NewHarness(t *testing.T) *Harness {
 	// The real progress module, over the test's transaction: the gate and the
 	// transitions under test are the production ones, only the event transport
 	// is recorded instead of written to the outbox.
-	tracker := progress.New(transactor, eventPublisher)
+	tracker := progress.New(db, transactor, eventPublisher)
 	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, tracker, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
@@ -176,8 +176,11 @@ func NewHarness(t *testing.T) *Harness {
 		t.Fatalf("new api server: %v", err)
 	}
 
-	doer := &inProcessDoer{server: translator.Middleware(handler.AuthHandler().Trace(srv))}
 	security := newHarnessSecurity(t, db)
+	doer := &inProcessDoer{
+		server: translator.Middleware(handler.AuthHandler().Trace(handler.AuthHandler().Identify(srv))),
+		jwt:    security.jwt,
+	}
 	client, err := api.NewClient("http://test", security, api.WithClient(doer))
 	if err != nil {
 		t.Fatalf("new api client: %v", err)
@@ -188,6 +191,15 @@ func NewHarness(t *testing.T) *Harness {
 		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
 		UserID: security.userID,
 	}
+}
+
+// NewAnonymousHarness is the same in-process stack with no session cookie, for
+// the public reads that must answer a visitor as well as a learner.
+func NewAnonymousHarness(t *testing.T) *Harness {
+	t.Helper()
+	h := NewHarness(t)
+	h.doer.anonymous = true
+	return h
 }
 
 type harnessSecurity struct {
@@ -349,9 +361,23 @@ func (e *RecordingEnqueuer) Start(ctx context.Context, courseID int) (*ent.Cours
 type inProcessDoer struct {
 	server http.Handler
 	status int
+	// jwt is the session a browser would send on EVERY request, including the
+	// public reads whose contract declares no security — those still answer a
+	// signed-in learner differently.
+	jwt string
+	// anonymous drops it, so a public read can be exercised exactly as a visitor
+	// reaches it.
+	anonymous bool
 }
 
 func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
+	switch {
+	case d.anonymous:
+		r.Header.Del("Cookie")
+		r.Header.Del("X-XSRF-TOKEN")
+	case d.jwt != "":
+		r.AddCookie(&http.Cookie{Name: "JWT", Value: d.jwt})
+	}
 	rec := httptest.NewRecorder()
 	d.server.ServeHTTP(rec, r)
 	d.status = rec.Code

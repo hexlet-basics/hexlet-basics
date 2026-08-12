@@ -166,6 +166,10 @@ var serverPackage = do.Package(
 	// The progress module owns sequential progression. It writes and publishes
 	// through the same transaction seam every other business module uses.
 	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
 		txStore, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
@@ -174,7 +178,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return progress.New(txStore, publisher), nil
+		return progress.New(db, txStore, publisher), nil
 	}),
 	do.Lazy[*api.Server](func(i do.Injector) (*api.Server, error) {
 		handler, err := do.Invoke[*handlers.Server](i)

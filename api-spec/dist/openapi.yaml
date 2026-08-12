@@ -5684,6 +5684,41 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
+    CourseProgress:
+      type: object
+      required:
+        - state
+        - completion
+        - nextLessonSlug
+        - furthestFinishedPosition
+        - lessons
+      properties:
+        state:
+          allOf:
+            - $ref: '#/components/schemas/EnrollmentState'
+          nullable: true
+        completion:
+          type: integer
+          format: int32
+          description: The share of the Course's current Lessons finished (0–100).
+        nextLessonSlug:
+          type: string
+          nullable: true
+          description: The first unfinished Lesson in course order — where the learner resumes.
+        furthestFinishedPosition:
+          type: integer
+          format: int32
+          description: The highest Position finished, 0 when nothing has been.
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonProgressItem'
+      description: |-
+        A learner's position in one Course, computed against its current Version.
+
+        Availability travels with it even though it is a pure function of position:
+        a client deriving it would be a second implementation of the gate, free to
+        drift from the server that enforces it.
     CourseReadiness:
       type: string
       enum:
@@ -5766,6 +5801,7 @@ components:
         - state
         - completion
         - nextLessonName
+        - progress
       properties:
         id:
           type: integer
@@ -5787,6 +5823,10 @@ components:
         nextLessonName:
           type: string
           nullable: true
+        progress:
+          allOf:
+            - $ref: '#/components/schemas/CourseProgress'
+          description: Where the learner stands, and what they may take next.
       description: A learner's enrollment in a course (table `language_members`).
     EnrollmentState:
       type: string
@@ -6028,6 +6068,26 @@ components:
       description: |-
         A learner's progress through one lesson (legacy: `LanguageLessonMember`,
         table `language_lesson_members`).
+    LessonProgressItem:
+      type: object
+      required:
+        - slug
+        - position
+        - finished
+        - available
+      properties:
+        slug:
+          type: string
+        position:
+          type: integer
+          format: int32
+          description: Position in the current Version, 1..N across the whole Course.
+        finished:
+          type: boolean
+        available:
+          type: boolean
+          description: Whether the gate lets the learner take it (ADR-0012).
+      description: 'Per-Lesson state for the course and lesson pages: locks and checkmarks.'
     LessonProgressPage:
       type: object
       required:

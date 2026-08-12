@@ -3254,6 +3254,72 @@ func (s *CoursePage) SetPerPage(val int32) {
 
 func (*CoursePage) adminListCoursesRes() {}
 
+// A learner's position in one Course, computed against its current Version.
+//
+// Availability travels with it even though it is a pure function of position: a client deriving it
+// would be a second implementation of the gate, free to drift from the server that enforces it.
+// Ref: #/components/schemas/CourseProgress
+type CourseProgress struct {
+	State NilEnrollmentState `json:"state"`
+	// The share of the Course's current Lessons finished (0–100).
+	Completion int32 `json:"completion"`
+	// The first unfinished Lesson in course order — where the learner resumes.
+	NextLessonSlug NilString `json:"nextLessonSlug"`
+	// The highest Position finished, 0 when nothing has been.
+	FurthestFinishedPosition int32                `json:"furthestFinishedPosition"`
+	Lessons                  []LessonProgressItem `json:"lessons"`
+}
+
+// GetState returns the value of State.
+func (s *CourseProgress) GetState() NilEnrollmentState {
+	return s.State
+}
+
+// GetCompletion returns the value of Completion.
+func (s *CourseProgress) GetCompletion() int32 {
+	return s.Completion
+}
+
+// GetNextLessonSlug returns the value of NextLessonSlug.
+func (s *CourseProgress) GetNextLessonSlug() NilString {
+	return s.NextLessonSlug
+}
+
+// GetFurthestFinishedPosition returns the value of FurthestFinishedPosition.
+func (s *CourseProgress) GetFurthestFinishedPosition() int32 {
+	return s.FurthestFinishedPosition
+}
+
+// GetLessons returns the value of Lessons.
+func (s *CourseProgress) GetLessons() []LessonProgressItem {
+	return s.Lessons
+}
+
+// SetState sets the value of State.
+func (s *CourseProgress) SetState(val NilEnrollmentState) {
+	s.State = val
+}
+
+// SetCompletion sets the value of Completion.
+func (s *CourseProgress) SetCompletion(val int32) {
+	s.Completion = val
+}
+
+// SetNextLessonSlug sets the value of NextLessonSlug.
+func (s *CourseProgress) SetNextLessonSlug(val NilString) {
+	s.NextLessonSlug = val
+}
+
+// SetFurthestFinishedPosition sets the value of FurthestFinishedPosition.
+func (s *CourseProgress) SetFurthestFinishedPosition(val int32) {
+	s.FurthestFinishedPosition = val
+}
+
+// SetLessons sets the value of Lessons.
+func (s *CourseProgress) SetLessons(val []LessonProgressItem) {
+	s.Lessons = val
+}
+
 // Publication/readiness state of a course.
 // Ref: #/components/schemas/CourseReadiness
 type CourseReadiness string
@@ -3500,6 +3566,8 @@ type Enrollment struct {
 	// Completion: the share of the course's current lessons finished (0–100).
 	Completion     int32     `json:"completion"`
 	NextLessonName NilString `json:"nextLessonName"`
+	// Where the learner stands, and what they may take next.
+	Progress CourseProgress `json:"progress"`
 }
 
 // GetID returns the value of ID.
@@ -3532,6 +3600,11 @@ func (s *Enrollment) GetNextLessonName() NilString {
 	return s.NextLessonName
 }
 
+// GetProgress returns the value of Progress.
+func (s *Enrollment) GetProgress() CourseProgress {
+	return s.Progress
+}
+
 // SetID sets the value of ID.
 func (s *Enrollment) SetID(val int32) {
 	s.ID = val
@@ -3560,6 +3633,11 @@ func (s *Enrollment) SetCompletion(val int32) {
 // SetNextLessonName sets the value of NextLessonName.
 func (s *Enrollment) SetNextLessonName(val NilString) {
 	s.NextLessonName = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *Enrollment) SetProgress(val CourseProgress) {
+	s.Progress = val
 }
 
 // Enrollment and lesson-progress lifecycle (legacy `MemberState`).
@@ -4301,6 +4379,57 @@ func (s *LessonProgress) SetCourseLessonSlug(val string) {
 // SetCourseLessonName sets the value of CourseLessonName.
 func (s *LessonProgress) SetCourseLessonName(val string) {
 	s.CourseLessonName = val
+}
+
+// Per-Lesson state for the course and lesson pages: locks and checkmarks.
+// Ref: #/components/schemas/LessonProgressItem
+type LessonProgressItem struct {
+	Slug string `json:"slug"`
+	// Position in the current Version, 1..N across the whole Course.
+	Position int32 `json:"position"`
+	Finished bool  `json:"finished"`
+	// Whether the gate lets the learner take it (ADR-0012).
+	Available bool `json:"available"`
+}
+
+// GetSlug returns the value of Slug.
+func (s *LessonProgressItem) GetSlug() string {
+	return s.Slug
+}
+
+// GetPosition returns the value of Position.
+func (s *LessonProgressItem) GetPosition() int32 {
+	return s.Position
+}
+
+// GetFinished returns the value of Finished.
+func (s *LessonProgressItem) GetFinished() bool {
+	return s.Finished
+}
+
+// GetAvailable returns the value of Available.
+func (s *LessonProgressItem) GetAvailable() bool {
+	return s.Available
+}
+
+// SetSlug sets the value of Slug.
+func (s *LessonProgressItem) SetSlug(val string) {
+	s.Slug = val
+}
+
+// SetPosition sets the value of Position.
+func (s *LessonProgressItem) SetPosition(val int32) {
+	s.Position = val
+}
+
+// SetFinished sets the value of Finished.
+func (s *LessonProgressItem) SetFinished(val bool) {
+	s.Finished = val
+}
+
+// SetAvailable sets the value of Available.
+func (s *LessonProgressItem) SetAvailable(val bool) {
+	s.Available = val
 }
 
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
