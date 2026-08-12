@@ -15,16 +15,28 @@ const (
 	ResultFailedInfinity = "failed-infinity"
 )
 
-// Submission is one solution to run. Code is only ever meaningful relative to a
-// Lesson Version — the Version carries the tests it runs against, the image it
-// runs in and the paths inside that image — so the pair travels together.
+// Submission is one solution to run, resolved down to what running it needs:
+// the image the Course Version was built as, where the Lesson's tests live
+// inside it, and the path the submitted code has to land at.
+//
+// It is resolved here rather than by the runner so the runner never touches the
+// database — it is a Docker adapter, and which columns hold an image name is
+// not its business.
 type Submission struct {
-	LessonVersionID int
-	CourseVersionID int
+	// Image is the exercise image, from the Course Version's docker_image.
+	Image string
 
-	// UserID is 0 for a guest. The legacy runner used it to name the scratch
-	// directory it wrote the submitted code into, so who submitted stays part of
-	// the request rather than something the runner has to ask for separately.
+	// TestDir is the Lesson's directory inside that image; its Makefile is what
+	// gets run. From the Lesson Version's path_to_code.
+	TestDir string
+
+	// ExerciseFile is where the submitted code must land — the Lesson's
+	// directory plus the Course Version's exercise filename. Replacing the file
+	// the reference solution ships is exactly how the tests find the submission.
+	ExerciseFile string
+
+	// UserID is 0 for a guest. Carried for logs and container labels, so a run
+	// can be traced back to who asked for it.
 	UserID int
 
 	Code string

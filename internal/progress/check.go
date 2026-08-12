@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"path"
 	"time"
 
 	"github.com/samber/lo"
@@ -75,12 +76,12 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 		return nil, err
 	}
 
-	outcome, err := p.runner.Run(ctx, Submission{
-		LessonVersionID: version.ID,
-		CourseVersionID: version.CourseVersionID,
-		UserID:          check.Learner.UserID,
-		Code:            check.Code,
-	})
+	submission, err := p.submissionFor(ctx, version, check)
+	if err != nil {
+		return nil, err
+	}
+
+	outcome, err := p.runner.Run(ctx, submission)
 	if err != nil {
 		return nil, fmt.Errorf("run submission for lesson %d: %w", check.LessonID, err)
 	}
@@ -144,6 +145,39 @@ func (p *Progress) submittedVersion(ctx context.Context, crs *ent.Course, check 
 		return nil, fmt.Errorf("load lesson version %d: %w", check.VersionID, err)
 	}
 	return version, nil
+}
+
+// submissionFor resolves what running this submission takes: the image the
+// Course Version was built as, and the two paths inside it.
+//
+// The image is required. A Version built before the loader recorded one cannot
+// be graded, and running some default image instead would grade the submission
+// against the wrong language — so it reads as not found, the same answer as a
+// Lesson with no content.
+func (p *Progress) submissionFor(
+	ctx context.Context,
+	version *ent.CourseLessonVersion,
+	check Check,
+) (Submission, error) {
+	built, err := p.db.CourseVersion.Get(ctx, version.CourseVersionID)
+	if err != nil {
+		return Submission{}, fmt.Errorf("load course version %d: %w", version.CourseVersionID, err)
+	}
+
+	image := lo.FromPtr(built.DockerImage)
+	testDir := lo.FromPtr(version.PathToCode)
+	exerciseFile := lo.FromPtr(built.ExerciseFilename)
+	if image == "" || testDir == "" || exerciseFile == "" {
+		return Submission{}, &ent.NotFoundError{}
+	}
+
+	return Submission{
+		Image:        image,
+		TestDir:      testDir,
+		ExerciseFile: path.Join(testDir, exerciseFile),
+		UserID:       check.Learner.UserID,
+		Code:         check.Code,
+	}, nil
 }
 
 // furthestPosition is the furthest Position the learner has finished in this

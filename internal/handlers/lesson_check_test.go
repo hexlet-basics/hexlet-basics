@@ -394,6 +394,7 @@ func seedLesson(t *testing.T, h *testsupport.Harness, crs *ent.Course, slug stri
 		SetLessonID(lesson.ID).
 		SetModuleVersionID(seedModuleVersion(t, h, crs.ID, *crs.CurrentVersionID)).
 		SetNaturalOrder(position).
+		SetPathToCode("/exercises-javascript/modules/10-basics/" + slug).
 		SaveX(ctx)
 	return lesson
 }

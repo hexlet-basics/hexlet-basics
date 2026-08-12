@@ -282,9 +282,13 @@ func seedCourse(t *testing.T, h *testsupport.Harness, courseSlug, lessonSlug str
 	ctx := t.Context()
 
 	created := h.DB.Course.Create().SetSlug(courseSlug).SaveX(ctx)
+	// The image and the exercise filename are what the runner needs to grade a
+	// submission, so a seeded course carries them as a built one does.
 	version := h.DB.CourseVersion.Create().
 		SetCourseID(created.ID).
 		SetState("ready").
+		SetDockerImage("hexletbasics/exercises-" + courseSlug).
+		SetExerciseFilename("index.js").
 		SaveX(ctx)
 	promoted := created.Update().SetCurrentVersionID(version.ID).SaveX(ctx)
 
@@ -299,6 +303,7 @@ func seedCourse(t *testing.T, h *testsupport.Harness, courseSlug, lessonSlug str
 		SetLessonID(lesson.ID).
 		SetModuleVersionID(seedModuleVersion(t, h, promoted.ID, version.ID)).
 		SetNaturalOrder(1).
+		SetPathToCode("/exercises-" + courseSlug + "/modules/10-basics/10-" + lessonSlug).
 		SaveX(ctx)
 	return lesson
 }

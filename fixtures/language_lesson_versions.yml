@@ -11,6 +11,10 @@
 #    retired version (545350298) carries none — a Lesson only has a Position
 #    relative to one Course Version.
 #
+# `path_to_code` is where the lesson's Makefile lives inside the exercise image.
+# The runner needs it; the course version supplies the image itself and the name
+# of the file the submitted code replaces.
+#
 # testfixtures disables FKs during load, so module_version_id parents need not
 # exist. Course = JavaScript (82481401), current version 965227298.
 - id: 965227298
@@ -19,6 +23,7 @@
   lesson_id: 1001
   module_version_id: 1
   natural_order: 1
+  path_to_code: /exercises-javascript/modules/10-basics/10-hello-world
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # The lesson-player read serves this one: it carries the code, the tests and
@@ -41,6 +46,7 @@
   lesson_id: 1003
   module_version_id: 1
   natural_order: 3
+  path_to_code: /exercises-javascript/modules/10-basics/30-strings
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 - id: 545350298

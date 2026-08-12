@@ -18,6 +18,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/exerciserunner"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/lessonreviews"
@@ -178,10 +179,22 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// The exercise runner is still the placeholder: running untrusted
-		// submissions in Docker is its own piece of work, and until it lands a
-		// check fails loudly rather than reporting an outcome nothing produced.
-		return progress.New(db, txStore, publisher, progress.UnavailableRunner{}), nil
+		runner, err := do.Invoke[*exerciserunner.Docker](i)
+		if err != nil {
+			return nil, err
+		}
+		return progress.New(db, txStore, publisher, runner), nil
+	}),
+	// The exercise runner is the only Docker consumer in the app (ADR-0013).
+	// The client resolves the daemon from the environment and connects lazily,
+	// so a deployment with no daemon reachable fails on the first check rather
+	// than refusing to boot — which is what keeps every other surface serving.
+	do.Lazy[*exerciserunner.Docker](func(i do.Injector) (*exerciserunner.Docker, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		return exerciserunner.New(exerciserunner.OptionsFrom(cfg.ExerciseRunner))
 	}),
 	do.Lazy[*api.Server](func(i do.Injector) (*api.Server, error) {
 		handler, err := do.Invoke[*handlers.Server](i)

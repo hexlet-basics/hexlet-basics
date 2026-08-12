@@ -56,6 +56,44 @@ type Config struct {
 	// committed .env.example supplies a development value, while deployments
 	// must provide a non-empty secret explicitly.
 	JWTSecret string `env:"JWT_SECRET,required,notEmpty"`
+	// ExerciseRunner bounds what a learner's submission may do to the host
+	// (ADR-0013). Every limit is settable because the defaults tighten what the
+	// legacy runner allowed, and a course that turns out to need more room must
+	// be fixable without a release.
+	ExerciseRunner ExerciseRunnerConfig `envPrefix:"CHECK_"`
+}
+
+// ExerciseRunnerConfig is the isolation budget one submission runs under. The
+// zero values are never used: Load fills them from the hardened defaults.
+type ExerciseRunnerConfig struct {
+	// TimeoutSeconds is the budget the in-container `timeout` enforces, and is
+	// therefore what classifies a submission as an infinite loop.
+	TimeoutSeconds int `env:"TIMEOUT_SECONDS" envDefault:"6"`
+	// GraceSeconds is added to it for the outer deadline, which fires only when
+	// the container never reported at all.
+	GraceSeconds int   `env:"GRACE_SECONDS" envDefault:"10"`
+	MemoryBytes  int64 `env:"MEMORY_BYTES" envDefault:"536870912"`
+	// SwapBytes equals MemoryBytes by default, which means no swap. Legacy set
+	// -1 — unlimited swap, which is the absence of a limit rather than one.
+	SwapBytes int64 `env:"SWAP_BYTES" envDefault:"536870912"`
+	// PidsLimit stops a fork bomb, which neither a memory cap nor an isolated
+	// network does. Legacy set none.
+	PidsLimit int64 `env:"PIDS_LIMIT" envDefault:"256"`
+	// NanoCPUs caps CPU in billionths of a core.
+	NanoCPUs int64 `env:"NANO_CPUS" envDefault:"1000000000"`
+	// ReadonlyRootfs and RunAsUser are the two limits that can break a currently
+	// green exercise — compiled languages write build artifacts beside their
+	// sources — so they stay off until a run of every course's reference
+	// solutions says otherwise.
+	ReadonlyRootfs bool `env:"READONLY_ROOTFS" envDefault:"false"`
+	// RunAsUser is spelled out rather than named USER: the prefixed name is what
+	// a deployment sets, but a bare USER would sit one refactor away from
+	// picking up the ambient account name of whoever started the process.
+	RunAsUser      string `env:"RUN_AS_USER"`
+	MaxOutputBytes int    `env:"MAX_OUTPUT_BYTES" envDefault:"65536"`
+	// Concurrency bounds simultaneous runs: the real ceiling is the Docker
+	// daemon's capacity, not this process's.
+	Concurrency int `env:"CONCURRENCY" envDefault:"8"`
 }
 
 // Load reads configuration from environment variables, applying defaults.
