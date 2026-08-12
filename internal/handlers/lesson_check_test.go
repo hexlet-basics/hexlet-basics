@@ -32,6 +32,7 @@ func TestCheckFinishesAnAvailableLesson(t *testing.T) {
 	assert.True(t, result.Response.LessonHasBeenFinished)
 	assert.False(t, result.Response.CourseHasBeenFinished, "the third lesson is still unfinished")
 	assert.Empty(t, result.SetCookie, "a signed-in learner's progress is rows, not a cookie")
+	assert.Empty(t, h.ResponseCookies(), "and no empty header is written for the one they do not get")
 
 	row, err := h.DB.LessonProgress.Query().
 		Where(
@@ -157,6 +158,33 @@ func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 	assert.Len(t, publishedOf[events.SolutionChecked](h), 1, "the check itself is still a fact")
 	assert.Empty(t, publishedOf[events.LessonFinished](h))
 	assert.Empty(t, publishedOf[events.CourseFinished](h))
+}
+
+// A learner whose lessons are all finished while their enrollment is not —
+// inherited data, or a version that dropped what they had left — closes the
+// course by passing anything, rather than having no submission left that would
+// notice.
+func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	finishLesson(t, h, secondLessonSlug)
+	finishLesson(t, h, thirdLessonSlug)
+
+	first := lessonBySlug(t, h, firstLessonSlug)
+	result := submitSolution(t, h, first)
+	assert.False(t, result.Response.LessonHasBeenFinished, "it was already finished")
+	assert.True(t, result.Response.CourseHasBeenFinished)
+
+	enrolled := h.DB.Enrollment.Query().
+		Where(
+			enrollment.UserID(actingUserID(t, h)),
+			enrollment.CourseID(*first.CourseID),
+		).
+		OnlyX(ctx)
+	assert.Equal(t, "finished", *enrolled.State)
+
+	assert.Empty(t, publishedOf[events.LessonFinished](h), "no lesson transitioned")
+	require.Len(t, publishedOf[events.CourseFinished](h), 1)
 }
 
 // A gap in the learner's history — inherited from a system that allowed any

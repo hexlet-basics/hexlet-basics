@@ -330,9 +330,6 @@ func (h *AuthHandler) loadAuthenticatedUser(ctx context.Context, rawJWT string) 
 	if err != nil || claims.Handshake != nil || claims.User == nil {
 		return ctx, errUnauthenticated
 	}
-	if h.jwt.IsExpired(claims) {
-		return ctx, errUnauthenticated
-	}
 
 	userID, err := strconv.Atoi(claims.User.ID)
 	if err != nil {

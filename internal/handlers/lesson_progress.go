@@ -24,7 +24,7 @@ import (
 func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) (api.StartLessonRes, error) {
 	state, err := s.progress.StartLesson(
 		ctx,
-		submittingLearner(ctx),
+		currentLearner(ctx),
 		int(params.ID),
 		s.i18n.Locale(ctx),
 	)
@@ -54,7 +54,7 @@ func (s *Server) CheckLesson(
 	params api.CheckLessonParams,
 ) (api.CheckLessonRes, error) {
 	result, err := s.progress.CheckSolution(ctx, progress.Check{
-		Learner:   submittingLearner(ctx),
+		Learner:   currentLearner(ctx),
 		LessonID:  int(params.ID),
 		VersionID: int(req.VersionId),
 		Code:      req.Code,
@@ -101,11 +101,11 @@ func (s *Server) lessonNotFound(ctx context.Context) *api.NotFoundError {
 	return &api.NotFoundError{Message: s.i18n.Text(ctx, localization.LessonNotFound)}
 }
 
-// submittingLearner is who the check belongs to: the signed-in user when the
-// session cookie identified one, and otherwise the visitor's cookie progress —
-// empty for a first visit, which is exactly the position of someone who has
-// finished nothing.
-func submittingLearner(ctx context.Context) progress.Learner {
+// currentLearner is whose progress a request is about: the signed-in user when
+// the session cookie identified one, and otherwise the visitor's cookie
+// progress — empty for a first visit, which is exactly the position of someone
+// who has finished nothing.
+func currentLearner(ctx context.Context) progress.Learner {
 	if u, ok := AuthenticatedUser(ctx); ok {
 		return progress.Learner{UserID: u.ID}
 	}

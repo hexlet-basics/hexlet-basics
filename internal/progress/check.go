@@ -65,34 +65,14 @@ type CheckResult struct {
 // arrived by a direct link and submitted gets their Enrollment and Lesson
 // Progress created lazily, so the route they took cannot lose their work.
 func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult, error) {
-	lesson, crs, err := loadLessonCourse(ctx, p.db, check.LessonID)
+	open, err := p.openGate(ctx, p.db, check.Learner, check.LessonID)
 	if err != nil {
 		return nil, err
 	}
 
-	lessons, err := currentLessons(ctx, p.db, crs)
+	version, err := p.submittedVersion(ctx, open.course, check)
 	if err != nil {
 		return nil, err
-	}
-
-	target := positionOf(lessons, check.LessonID)
-	if target == 0 {
-		// Not part of the current Version: a Lesson a later build dropped has no
-		// Position, so there is nothing to submit against.
-		return nil, &ent.NotFoundError{}
-	}
-
-	version, err := p.submittedVersion(ctx, crs, check)
-	if err != nil {
-		return nil, err
-	}
-
-	furthest, err := p.furthestPosition(ctx, p.db, check.Learner, crs, lessons)
-	if err != nil {
-		return nil, err
-	}
-	if target > furthest+1 {
-		return nil, ErrLessonNotAvailable
 	}
 
 	outcome, err := p.runner.Run(ctx, Submission{
@@ -112,8 +92,8 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 		// Published for everyone, guests included: pre-signup activity is exactly
 		// what this fact exists to keep visible.
 		if err := p.publisher.Publish(ctx, tx, events.SolutionChecked{
-			LessonSlug: slugOfLesson(lesson),
-			CourseSlug: slugOf(crs),
+			LessonSlug: slugOfLesson(open.lesson),
+			CourseSlug: slugOf(open.course),
 			Locale:     check.Locale,
 			Passed:     outcome.Passed,
 			OccurredAt: occurredAt,
@@ -127,13 +107,13 @@ func (p *Progress) CheckSolution(ctx context.Context, check Check) (*CheckResult
 			// is the furthest Lesson they finished, so a pass that does not move
 			// them forward — re-submitting one they already passed — changes
 			// nothing and writes no cookie.
-			if outcome.Passed && target > furthest {
-				advanced := check.Learner.Guest.Record(slugOf(crs), slugOfLesson(lesson))
+			if outcome.Passed && open.position > open.furthest {
+				advanced := check.Learner.Guest.Record(slugOf(open.course), slugOfLesson(open.lesson))
 				result.Guest = &advanced
 			}
 			return nil
 		}
-		return p.record(ctx, tx, db, check, lesson, crs, lessons, outcome, result, occurredAt)
+		return p.record(ctx, tx, db, check, open, outcome, result, occurredAt)
 	})
 	if err != nil {
 		return nil, err
@@ -198,33 +178,20 @@ func (p *Progress) record(
 	tx *sql.Tx,
 	db *ent.Client,
 	check Check,
-	lesson *ent.CourseLesson,
-	crs *ent.Course,
-	lessons []currentLesson,
+	open *openLesson,
 	outcome Outcome,
 	result *CheckResult,
 	occurredAt time.Time,
 ) error {
 	userID := check.Learner.UserID
 
-	enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, crs.ID)
+	enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, open.course.ID)
 	if err != nil {
 		return err
 	}
 	if createdEnrollment {
-		count, err := db.Enrollment.Query().
-			Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
-			Count(ctx)
-		if err != nil {
-			return fmt.Errorf("count started enrollments: %w", err)
-		}
-		if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
-			OccurrenceCount: count,
-			Slug:            slugOf(crs),
-			Locale:          check.Locale,
-			OccurredAt:      occurredAt,
-		}); err != nil {
-			return fmt.Errorf("publish course started: %w", err)
+		if err := p.publishCourseStarted(ctx, tx, db, userID, open.course, check.Locale, occurredAt); err != nil {
+			return err
 		}
 	}
 
@@ -238,7 +205,7 @@ func (p *Progress) record(
 	case ent.IsNotFound(err):
 		taken, err = db.LessonProgress.Create().
 			SetUserID(userID).
-			SetCourseID(crs.ID).
+			SetCourseID(open.course.ID).
 			SetEnrollmentID(enrolled.ID).
 			SetLessonID(check.LessonID).
 			SetState(StateStarted).
@@ -246,54 +213,52 @@ func (p *Progress) record(
 		if err != nil {
 			return fmt.Errorf("create lesson progress: %w", err)
 		}
-		count, err := lessonProgressCount(ctx, db, enrolled.ID)
-		if err != nil {
-			return err
-		}
 		// The learner reached this Lesson without pressing start — a deep link,
 		// or a page restored from history. Submitting is as deliberate an act as
 		// starting, so it produces the same fact.
-		if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
-			OccurrenceCount: count,
-			LessonSlug:      slugOfLesson(lesson),
-			CourseSlug:      slugOf(crs),
-			Locale:          check.Locale,
-			OccurredAt:      occurredAt,
-		}); err != nil {
-			return fmt.Errorf("publish lesson started: %w", err)
+		if err := p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, check.Locale, occurredAt); err != nil {
+			return err
 		}
 	case err != nil:
 		return fmt.Errorf("load lesson progress: %w", err)
 	}
 
-	if !outcome.Passed || lo.FromPtr(taken.State) == StateFinished {
-		// A failed attempt leaves the Lesson started — it counts as work done on
-		// it — and re-submitting to a Lesson already passed is safe by design:
-		// experimenting must not double-count anything, because the occurrence
-		// counts the CRM consumes count transitions, not submissions.
+	if !outcome.Passed {
+		// A failed attempt leaves the Lesson started: it counts as work done on
+		// it, and nothing beyond the attempt happened.
 		return nil
 	}
 
-	if _, err := taken.Update().SetState(StateFinished).Save(ctx); err != nil {
-		return fmt.Errorf("finish lesson progress: %w", err)
-	}
-	result.LessonFinished = true
+	// Re-submitting to a Lesson already passed transitions nothing and
+	// publishes nothing — experimenting must stay safe, and the occurrence
+	// counts the CRM consumes count transitions, not submissions.
+	if lo.FromPtr(taken.State) != StateFinished {
+		if _, err := taken.Update().SetState(StateFinished).Save(ctx); err != nil {
+			return fmt.Errorf("finish lesson progress: %w", err)
+		}
+		result.LessonFinished = true
 
-	count, err := lessonProgressCount(ctx, db, enrolled.ID)
-	if err != nil {
-		return err
-	}
-	if err := p.publisher.Publish(ctx, tx, events.LessonFinished{
-		OccurrenceCount: count,
-		LessonSlug:      slugOfLesson(lesson),
-		CourseSlug:      slugOf(crs),
-		Locale:          check.Locale,
-		OccurredAt:      occurredAt,
-	}); err != nil {
-		return fmt.Errorf("publish lesson finished: %w", err)
+		count, err := lessonProgressCount(ctx, db, enrolled.ID)
+		if err != nil {
+			return err
+		}
+		if err := p.publisher.Publish(ctx, tx, events.LessonFinished{
+			OccurrenceCount: count,
+			LessonSlug:      slugOfLesson(open.lesson),
+			CourseSlug:      slugOf(open.course),
+			Locale:          check.Locale,
+			OccurredAt:      occurredAt,
+		}); err != nil {
+			return fmt.Errorf("publish lesson finished: %w", err)
+		}
 	}
 
-	return p.finishCourse(ctx, tx, db, check, crs, lessons, enrolled, result, occurredAt)
+	// Completion is evaluated on every passing check, not only on one that
+	// transitioned a Lesson, exactly as the legacy check did. A learner whose
+	// Lessons are all finished while their Enrollment is not — inherited data,
+	// or a Version that shrank the Lesson set — closes their Course by passing
+	// anything, instead of having no submission left that would notice.
+	return p.finishCourse(ctx, tx, db, check, open, enrolled, result, occurredAt)
 }
 
 // finishCourse moves the Enrollment to finished when this check left no
@@ -308,8 +273,7 @@ func (p *Progress) finishCourse(
 	tx *sql.Tx,
 	db *ent.Client,
 	check Check,
-	crs *ent.Course,
-	lessons []currentLesson,
+	open *openLesson,
 	enrolled *ent.Enrollment,
 	result *CheckResult,
 	occurredAt time.Time,
@@ -320,17 +284,17 @@ func (p *Progress) finishCourse(
 	if lo.FromPtr(enrolled.State) == StateFinished {
 		return nil
 	}
-	if len(lessons) == 0 {
+	if len(open.lessons) == 0 {
 		// A Version with no Lessons completes nobody; the alternative reading —
 		// everybody has finished all zero of them — is the worse one.
 		return nil
 	}
 
-	finished, err := finishedLessonIDs(ctx, db, check.Learner.UserID, crs.ID)
+	finished, err := finishedLessonIDs(ctx, db, check.Learner.UserID, open.course.ID)
 	if err != nil {
 		return err
 	}
-	for _, lesson := range lessons {
+	for _, lesson := range open.lessons {
 		if !finished[lesson.lessonID] {
 			return nil
 		}
@@ -354,7 +318,7 @@ func (p *Progress) finishCourse(
 	}
 	if err := p.publisher.Publish(ctx, tx, events.CourseFinished{
 		OccurrenceCount: count,
-		Slug:            slugOf(crs),
+		Slug:            slugOf(open.course),
 		Locale:          check.Locale,
 		OccurredAt:      occurredAt,
 	}); err != nil {

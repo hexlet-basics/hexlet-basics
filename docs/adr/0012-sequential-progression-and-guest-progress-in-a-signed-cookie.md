@@ -103,6 +103,17 @@ which is why the signature cannot be dropped.
 Guests get no dashboard. The dashboard stays authenticated-only; it is where the
 incentive to create an account lives.
 
+The public reads return a position to **everyone**, including a visitor carrying
+no cookie at all. The tickets originally said such a visitor gets no progress,
+written before guest progress existed; once it does, the server cannot tell a
+first-time guest from an anonymous visitor, and they are the same person — one
+who has finished nothing and may take the first Lesson. Returning that rather
+than nothing keeps the gate stated in exactly one place: a client that had to
+infer "the first one is available" from a null payload would be a second
+implementation of the rule, which is the failure mode this decision exists to
+prevent. The cost is that the cheapest public read resolves the current
+Version's Lessons, which it already had to do to list them.
+
 Guest progress is merged into the account on **both sign-up and sign-in**,
 inside the same transaction that issues the session, so the resulting domain
 events leave through the existing transactional outbox together with the

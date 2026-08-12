@@ -54,7 +54,7 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 	// finished nothing stands at the beginning with the first lesson open, and
 	// that is a fact about the course, not about having an account. Deriving it
 	// client-side instead would be a second implementation of the gate.
-	learner := submittingLearner(ctx)
+	learner := currentLearner(ctx)
 	state, err := s.progress.CourseState(ctx, learner, crs.ID)
 	if err != nil {
 		return nil, err

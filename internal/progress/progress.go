@@ -117,36 +117,27 @@ func (p *Progress) StartLesson(
 // the read that follows it runs outside the transaction rather than inside.
 func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID int, locale string) (int, error) {
 	if !learner.SignedIn() {
-		return p.gateGuest(ctx, learner, lessonID)
+		// A guest is gated and nothing else. There is no guest equivalent of a
+		// started Lesson: the state would carry no data, and the one feature
+		// anchored on Lesson Progress — the in-lesson assistant — requires an
+		// account anyway.
+		open, err := p.openGate(ctx, p.db, learner, lessonID)
+		if err != nil {
+			return 0, err
+		}
+		return open.course.ID, nil
 	}
 
 	courseID := 0
 	err := p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
 		userID := learner.UserID
-		lesson, crs, err := loadLessonCourse(ctx, db, lessonID)
+		open, err := p.openGate(ctx, db, learner, lessonID)
 		if err != nil {
 			return err
 		}
-		courseID = crs.ID
+		courseID = open.course.ID
 
-		positions, err := currentPositions(ctx, db, crs)
-		if err != nil {
-			return err
-		}
-		target, inCurrentVersion := positions[lessonID]
-		if !inCurrentVersion {
-			return &ent.NotFoundError{}
-		}
-
-		furthest, err := furthestFinishedPosition(ctx, db, userID, crs.ID, positions)
-		if err != nil {
-			return err
-		}
-		if target > furthest+1 {
-			return ErrLessonNotAvailable
-		}
-
-		enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, crs.ID)
+		enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, open.course.ID)
 		if err != nil {
 			return err
 		}
@@ -170,7 +161,7 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 
 		if _, err := db.LessonProgress.Create().
 			SetUserID(userID).
-			SetCourseID(crs.ID).
+			SetCourseID(open.course.ID).
 			SetEnrollmentID(enrolled.ID).
 			SetLessonID(lessonID).
 			SetState(StateStarted).
@@ -180,68 +171,123 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 
 		occurredAt := p.now()
 		if createdEnrollment {
-			count, err := db.Enrollment.Query().
-				Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
-				Count(ctx)
-			if err != nil {
-				return fmt.Errorf("count started enrollments: %w", err)
-			}
-			if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
-				OccurrenceCount: count,
-				Slug:            slugOf(crs),
-				Locale:          locale,
-				OccurredAt:      occurredAt,
-			}); err != nil {
-				return fmt.Errorf("publish course started: %w", err)
+			if err := p.publishCourseStarted(ctx, tx, db, userID, open.course, locale, occurredAt); err != nil {
+				return err
 			}
 		}
-
-		lessonCount, err := lessonProgressCount(ctx, db, enrolled.ID)
-		if err != nil {
-			return err
-		}
-
-		if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
-			OccurrenceCount: lessonCount,
-			LessonSlug:      slugOfLesson(lesson),
-			CourseSlug:      slugOf(crs),
-			Locale:          locale,
-			OccurredAt:      occurredAt,
-		}); err != nil {
-			return fmt.Errorf("publish lesson started: %w", err)
-		}
-		return nil
+		return p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, locale, occurredAt)
 	})
 	return courseID, err
 }
 
-// gateGuest evaluates the gate for a visitor and reports the Course, writing
-// nothing. There is no guest equivalent of a started Lesson: a started state
-// carries no data, and the one feature anchored on Lesson Progress — the
-// in-lesson assistant — requires an account anyway.
-func (p *Progress) gateGuest(ctx context.Context, learner Learner, lessonID int) (int, error) {
-	_, crs, err := loadLessonCourse(ctx, p.db, lessonID)
+// openGate is the gate, and the only place it is evaluated: a Lesson is
+// available when its Position is at most one past the furthest Position the
+// learner has finished. Expressing it once is the point — the rule is applied
+// on both write paths and shipped to the client in every read, and three copies
+// of one comparison is three chances for them to disagree.
+//
+// It resolves the Lesson against the Course's current Version on the way, so a
+// Lesson a later build dropped reads as not found rather than as a Lesson at
+// some stale Position.
+func (p *Progress) openGate(ctx context.Context, db *ent.Client, learner Learner, lessonID int) (*openLesson, error) {
+	lesson, crs, err := loadLessonCourse(ctx, db, lessonID)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	lessons, err := currentLessons(ctx, p.db, crs)
+	lessons, err := currentLessons(ctx, db, crs)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	target := positionOf(lessons, lessonID)
 	if target == 0 {
-		return 0, &ent.NotFoundError{}
+		return nil, &ent.NotFoundError{}
 	}
 
-	furthest, err := p.furthestPosition(ctx, p.db, learner, crs, lessons)
+	furthest, err := p.furthestPosition(ctx, db, learner, crs, lessons)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	if target > furthest+1 {
-		return 0, ErrLessonNotAvailable
+		return nil, ErrLessonNotAvailable
 	}
-	return crs.ID, nil
+	return &openLesson{
+		lesson:   lesson,
+		course:   crs,
+		lessons:  lessons,
+		position: target,
+		furthest: furthest,
+	}, nil
+}
+
+// openLesson is a Lesson the gate let through, with everything resolving it
+// already cost: these travel together through every step that follows, so they
+// travel as one value.
+type openLesson struct {
+	lesson  *ent.CourseLesson
+	course  *ent.Course
+	lessons []currentLesson
+
+	// position is the Lesson's Position in the current Version; furthest is the
+	// learner's furthest finished one, which a guest's pass has to beat before
+	// it is worth writing a cookie.
+	position int
+	furthest int
+}
+
+// publishCourseStarted records the enrollment transition, counting the
+// learner's started Enrollments as the legacy publisher did.
+func (p *Progress) publishCourseStarted(
+	ctx context.Context,
+	tx *sql.Tx,
+	db *ent.Client,
+	userID int,
+	crs *ent.Course,
+	locale string,
+	occurredAt time.Time,
+) error {
+	count, err := db.Enrollment.Query().
+		Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
+		Count(ctx)
+	if err != nil {
+		return fmt.Errorf("count started enrollments: %w", err)
+	}
+	if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
+		OccurrenceCount: count,
+		Slug:            slugOf(crs),
+		Locale:          locale,
+		OccurredAt:      occurredAt,
+	}); err != nil {
+		return fmt.Errorf("publish course started: %w", err)
+	}
+	return nil
+}
+
+// publishLessonStarted records the Lesson transition, counting the Lesson
+// Progress rows on the Enrollment.
+func (p *Progress) publishLessonStarted(
+	ctx context.Context,
+	tx *sql.Tx,
+	db *ent.Client,
+	enrollmentID int,
+	open *openLesson,
+	locale string,
+	occurredAt time.Time,
+) error {
+	count, err := lessonProgressCount(ctx, db, enrollmentID)
+	if err != nil {
+		return err
+	}
+	if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
+		OccurrenceCount: count,
+		LessonSlug:      slugOfLesson(open.lesson),
+		CourseSlug:      slugOf(open.course),
+		Locale:          locale,
+		OccurredAt:      occurredAt,
+	}); err != nil {
+		return fmt.Errorf("publish lesson started: %w", err)
+	}
+	return nil
 }
 
 // enroll returns the learner's Enrollment in the Course, creating it when
@@ -312,21 +358,13 @@ func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.C
 	return lesson, crs, nil
 }
 
-// currentPositions maps every Lesson of the Course's current Version to its
-// Position. natural_order numbers Lessons 1..N across all modules in build
-// order, which is what course order means; `order` is per-module and cannot
-// gate anything on its own.
+// positionsOf maps every Lesson of the current Version to its Position.
+// natural_order numbers Lessons 1..N across all modules in build order, which
+// is what course order means; `order` is per-module and cannot gate anything on
+// its own.
 //
 // A Course with no current Version has no positions, so nothing in it is
 // startable — which is correct: there is no built content to start.
-func currentPositions(ctx context.Context, db *ent.Client, crs *ent.Course) (map[int]int, error) {
-	lessons, err := currentLessons(ctx, db, crs)
-	if err != nil {
-		return nil, err
-	}
-	return positionsOf(lessons), nil
-}
-
 func positionsOf(lessons []currentLesson) map[int]int {
 	positions := make(map[int]int, len(lessons))
 	for _, l := range lessons {

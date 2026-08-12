@@ -42,6 +42,30 @@ cannot generate its OpenAPI encoding. Only the exact
 `POST /admin/attachments` route is wrapped, using the same JWT, database-admin,
 XSRF, context, and Problem Details implementation as generated operations.
 
+### Optional identity on public operations
+
+Some public operations answer a visitor and a signed-in learner differently:
+the course read returns a learner's position, and starting or checking a lesson
+records against their account when there is one (ADR-0012). ogen never invokes
+a security handler for an operation that declares none, so an `Identify`
+middleware supplies that optional identity. It never fails a request — an
+absent or invalid cookie simply leaves the request anonymous — and it does not
+decide what requires a session; contract-declared security still does.
+
+`Identify` verifies the session token itself rather than reading what `Trace`
+left in the context. `Trace` refuses a token on an unsafe method without the
+XSRF header, which is correct for operations whose contract requires a session,
+but wrong for a *public* unsafe one: no client sends that header for an
+operation that does not declare the scheme, so every signed-in learner would be
+served as a guest.
+
+Two write operations are therefore public and carry no XSRF requirement:
+starting a lesson and checking a solution, both of which a guest must be able
+to call. Cross-site forgery is bounded by the session cookie being
+`SameSite=Lax`, so a cross-site POST carries no session to act with, and by
+what the operations can do — they advance the caller's own progress and expose
+nothing.
+
 ## Consequences
 
 - Adding a protected operation requires an explicit TypeSpec security
