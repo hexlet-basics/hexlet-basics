@@ -3,6 +3,7 @@ package exerciserunner
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/moby/moby/client"
 	"github.com/stretchr/testify/assert"
@@ -127,11 +128,17 @@ func pullImage(t *testing.T, runner *Docker) {
 		return
 	}
 	pulled, err := runner.docker.ImagePull(ctx, runnerImage, client.ImagePullOptions{})
-	require.NoError(t, err)
+	if err != nil {
+		// A daemon with no registry access is an environment without the image,
+		// not a failing runner.
+		t.Skipf("cannot pull %s: %v", runnerImage, err)
+	}
 	defer func() { _ = pulled.Close() }()
 	// The pull returns before it finishes; starting a container against a
 	// half-present image is the classic way to get a confusing failure.
-	require.NoError(t, pulled.Wait(ctx))
+	if err := pulled.Wait(ctx); err != nil {
+		t.Skipf("cannot pull %s: %v", runnerImage, err)
+	}
 }
 
 // runScript drives the real container lifecycle with a shell script in place of
@@ -153,4 +160,56 @@ func runScript(t *testing.T, runner *Docker, script string) (progress.Outcome, e
 		return progress.Outcome{}, err
 	}
 	return outcomeOf(status, output), nil
+}
+
+// A container that never exits must not hold the process: the outer deadline is
+// the backstop for an image whose `timeout` is missing or ignored.
+func TestRunGivesUpOnAContainerThatNeverReports(t *testing.T) {
+	runner := dockerRunner(t)
+	// Comfortably more than the daemon needs to create and start a container,
+	// and far short of the sleep below.
+	runner.opts.Timeout = 5 * time.Second
+	runner.opts.GraceTimeout = 10 * time.Second
+
+	done := make(chan error, 1)
+	go func() {
+		_, err := runScript(t, runner, "sleep 60")
+		done <- err
+	}()
+
+	select {
+	case err := <-done:
+		require.Error(t, err)
+		// Whichever call the budget runs out on, the run ends rather than
+		// holding its concurrency slot until the process dies.
+		assert.ErrorIs(t, err, context.DeadlineExceeded)
+	case <-time.After(45 * time.Second):
+		t.Fatal("the read never gave up: a container that never exits wedges the runner")
+	}
+}
+
+// The pin is created by pulling the moving tag once and freezing it, so a
+// course whose image has not been graded on this daemon before still runs — and
+// the next check for that version finds the pin rather than pulling again.
+func TestEnsureImagePinsToTheCourseVersion(t *testing.T) {
+	runner := dockerRunner(t)
+	runner.opts.ImageTag = "3"
+	submission := progress.Submission{Image: "alpine", VersionID: 20260812}
+	pinned, _ := runner.imageRefs(submission)
+	t.Cleanup(func() {
+		_, _ = runner.docker.ImageRemove(context.Background(), pinned, client.ImageRemoveOptions{})
+	})
+
+	resolved, err := runner.ensureImage(t.Context(), submission)
+	require.NoError(t, err)
+	assert.Equal(t, pinned, resolved)
+
+	_, err = runner.docker.ImageInspect(t.Context(), pinned)
+	assert.NoError(t, err, "the pin exists on the daemon now")
+
+	// Again, from the pin this time: the image is already frozen, so nothing is
+	// pulled and the answer is the same.
+	resolved, err = runner.ensureImage(t.Context(), submission)
+	require.NoError(t, err)
+	assert.Equal(t, pinned, resolved)
 }

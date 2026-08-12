@@ -19,7 +19,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/moby/moby/api/pkg/stdcopy"
 	"github.com/moby/moby/api/types/container"
@@ -83,6 +82,12 @@ type Options struct {
 	// Concurrency bounds how many submissions run at once, because the real
 	// ceiling is the daemon's capacity rather than this process's.
 	Concurrency int
+
+	// ImageTag is the moving registry tag a course publishes its latest build
+	// under. It is pulled once per Course Version and then frozen under a pinned
+	// reference, so it decides what a NEW version is graded by, never what an
+	// existing one is graded by.
+	ImageTag string
 }
 
 // OptionsFrom adapts the deployment's configuration. The two representations
@@ -100,6 +105,7 @@ func OptionsFrom(cfg config.ExerciseRunnerConfig) Options {
 		User:           cfg.RunAsUser,
 		MaxOutputBytes: cfg.MaxOutputBytes,
 		Concurrency:    cfg.Concurrency,
+		ImageTag:       cfg.ImageTag,
 	}
 }
 
@@ -149,16 +155,70 @@ func (d *Docker) Run(ctx context.Context, submission progress.Submission) (progr
 		return progress.Outcome{}, ctx.Err()
 	}
 
-	// The outer deadline is a backstop for a container that never reports; the
-	// in-container timeout is what decides an infinite loop.
-	ctx, cancel := context.WithTimeout(ctx, d.opts.Timeout+d.opts.GraceTimeout)
-	defer cancel()
+	image, err := d.ensureImage(ctx, submission)
+	if err != nil {
+		return progress.Outcome{}, err
+	}
 
-	status, output, err := d.run(ctx, submission, d.command(submission))
+	status, output, err := d.run(ctx, submission.WithImage(image), d.command(submission))
 	if err != nil {
 		return progress.Outcome{}, err
 	}
 	return outcomeOf(status, output), nil
+}
+
+// ensureImage resolves the image this submission is graded in, pinned to the
+// Course Version that produced it.
+//
+// The pin is what keeps grading honest across a rebuild: the registry tag a
+// course publishes moves, and a learner working through a promoted version must
+// keep being graded by the build that version was promoted as — not by whatever
+// was pushed since. Legacy did exactly this, and this is the port of it: look
+// for the pinned reference, and when it is missing pull the moving tag once and
+// freeze it under the pin.
+//
+// The freeze is local to the daemon, so the first check after a promotion pays
+// for the pull. Pre-pulling on promotion is the follow-up that removes that
+// cost; correctness does not depend on it.
+func (d *Docker) ensureImage(ctx context.Context, submission progress.Submission) (string, error) {
+	pinned, source := d.imageRefs(submission)
+	if pinned == source {
+		// The Course Version named an explicit tag; it is the pin.
+		return pinned, nil
+	}
+
+	if _, err := d.docker.ImageInspect(ctx, pinned); err == nil {
+		return pinned, nil
+	}
+
+	pulled, err := d.docker.ImagePull(ctx, source, client.ImagePullOptions{})
+	if err != nil {
+		return "", fmt.Errorf("pull %q: %w", source, err)
+	}
+	defer func() { _ = pulled.Close() }()
+	// The pull returns as soon as the daemon accepts it; starting a container
+	// against a half-present image is the confusing failure that follows from
+	// not waiting.
+	if err := pulled.Wait(ctx); err != nil {
+		return "", fmt.Errorf("pull %q: %w", source, err)
+	}
+
+	if _, err := d.docker.ImageTag(ctx, client.ImageTagOptions{Source: source, Target: pinned}); err != nil {
+		return "", fmt.Errorf("pin %q as %q: %w", source, pinned, err)
+	}
+	return pinned, nil
+}
+
+// imageRefs are the two references a submission needs: the pinned one it is
+// graded in, and the moving one that is pulled to create it. They are equal
+// when the Course Version already named a tag, which is its own pin.
+func (d *Docker) imageRefs(submission progress.Submission) (pinned, source string) {
+	repository := submission.Image
+	if strings.Contains(path.Base(repository), ":") {
+		return repository, repository
+	}
+	return fmt.Sprintf("%s:lv%d", repository, submission.VersionID),
+		fmt.Sprintf("%s:%s", repository, d.opts.ImageTag)
 }
 
 // outcomeOf maps an exit status onto the contract's classification, exactly as
@@ -189,6 +249,12 @@ func outcomeOf(status int, output string) progress.Outcome {
 // The command is a parameter rather than derived here so the lifecycle can be
 // exercised against an image that is not a course.
 func (d *Docker) run(ctx context.Context, submission progress.Submission, command []string) (int, string, error) {
+	// The deadline bounds the whole lifecycle, not just one call in it: it is the
+	// backstop for a container that never reports at all, while the in-container
+	// timeout is what decides an infinite loop.
+	ctx, cancel := context.WithTimeout(ctx, d.opts.Timeout+d.opts.GraceTimeout)
+	defer cancel()
+
 	created, err := d.docker.ContainerCreate(ctx, client.ContainerCreateOptions{
 		Config: &container.Config{
 			Image: submission.Image,
@@ -247,9 +313,30 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 		return 0, "", fmt.Errorf("start container: %w", err)
 	}
 
-	output, err := readOutput(attached.Reader, d.opts.MaxOutputBytes)
-	if err != nil {
-		return 0, "", err
+	// Read on its own goroutine. A hijacked connection does not honour context
+	// cancellation, so reading inline would mean a container that never exits —
+	// an image whose `timeout` is missing, a process that ignores the signal —
+	// blocks here forever: the deadline below would never be reached, the
+	// container would never be removed, and the concurrency slot would never be
+	// released. A few of those and every check hangs.
+	//
+	// The deferred close and force-remove are what end the read once this
+	// function returns, so the goroutine cannot outlive the run for long.
+	reading := make(chan readResult, 1)
+	go func() {
+		output, err := readOutput(attached.Reader, d.opts.MaxOutputBytes)
+		reading <- readResult{output: output, err: err}
+	}()
+
+	var output string
+	select {
+	case read := <-reading:
+		if read.err != nil {
+			return 0, "", read.err
+		}
+		output = read.output
+	case <-ctx.Done():
+		return 0, "", d.gaveUp(ctx)
 	}
 
 	select {
@@ -261,12 +348,23 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 	case err := <-wait.Error:
 		return 0, "", fmt.Errorf("wait for container: %w", err)
 	case <-ctx.Done():
-		// The container never reported within the budget plus its grace. That is
-		// infrastructure failing, not a learner writing a slow program — the
-		// in-container timeout would have classified that.
-		return 0, "", fmt.Errorf("container did not report within %s: %w",
-			d.opts.Timeout+d.opts.GraceTimeout, ctx.Err())
+		return 0, "", d.gaveUp(ctx)
 	}
+}
+
+// readResult carries what the output goroutine produced.
+type readResult struct {
+	output string
+	err    error
+}
+
+// gaveUp reports a container that never finished within the budget plus its
+// grace. That is infrastructure failing, not a learner writing a slow program —
+// the in-container timeout classifies that one, and this cannot tell why the
+// process stopped, only that nothing was heard.
+func (d *Docker) gaveUp(ctx context.Context) error {
+	return fmt.Errorf("container did not report within %s: %w",
+		d.opts.Timeout+d.opts.GraceTimeout, ctx.Err())
 }
 
 // command is the legacy command, unchanged: run the lesson's Makefile under a
@@ -277,6 +375,9 @@ func (d *Docker) command(submission progress.Submission) []string {
 }
 
 func (d *Docker) hostConfig() *container.HostConfig {
+	// Copied, because the field is a pointer and the options are shared by every
+	// run this runner performs.
+	pidsLimit := d.opts.PidsLimit
 	tmpfs := map[string]string{}
 	if d.opts.ReadonlyRootfs {
 		// Something has to be writable, or nothing compiles at all.
@@ -293,7 +394,7 @@ func (d *Docker) hostConfig() *container.HostConfig {
 		Resources: container.Resources{
 			Memory:     d.opts.MemoryBytes,
 			MemorySwap: d.opts.SwapBytes,
-			PidsLimit:  &d.opts.PidsLimit,
+			PidsLimit:  &pidsLimit,
 			NanoCPUs:   d.opts.NanoCPUs,
 		},
 	}
@@ -336,11 +437,7 @@ func readOutput(stream io.Reader, limit int) (string, error) {
 	// Scrubbed rather than rejected: exercise output is whatever the learner's
 	// program printed, and a stray byte must not fail the response encoding.
 	// Legacy escaped and base64-encoded it for the same reason.
-	output := strings.ToValidUTF8(capped.buf.String(), "")
-	if !utf8.ValidString(output) {
-		return "", nil
-	}
-	return output, nil
+	return strings.ToValidUTF8(capped.buf.String(), ""), nil
 }
 
 // cappedWriter keeps a bounded prefix of what the exercise printed. The cap has

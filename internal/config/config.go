@@ -94,6 +94,11 @@ type ExerciseRunnerConfig struct {
 	// Concurrency bounds simultaneous runs: the real ceiling is the Docker
 	// daemon's capacity, not this process's.
 	Concurrency int `env:"CONCURRENCY" envDefault:"8"`
+	// ImageTag is the moving tag a course publishes its latest build under. It
+	// is pulled once per course version and frozen under a pinned reference, so
+	// a rebuild cannot change how an already-promoted version is graded. Legacy
+	// used `release` in production and `latest` everywhere else.
+	ImageTag string `env:"IMAGE_TAG" envDefault:"latest"`
 }
 
 // Load reads configuration from environment variables, applying defaults.

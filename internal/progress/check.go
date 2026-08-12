@@ -173,6 +173,7 @@ func (p *Progress) submissionFor(
 
 	return Submission{
 		Image:        image,
+		VersionID:    built.ID,
 		TestDir:      testDir,
 		ExerciseFile: path.Join(testDir, exerciseFile),
 		UserID:       check.Learner.UserID,

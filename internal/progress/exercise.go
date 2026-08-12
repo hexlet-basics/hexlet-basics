@@ -23,8 +23,14 @@ const (
 // database — it is a Docker adapter, and which columns hold an image name is
 // not its business.
 type Submission struct {
-	// Image is the exercise image, from the Course Version's docker_image.
+	// Image is the exercise image repository, from the Course Version's
+	// docker_image.
 	Image string
+
+	// VersionID is the Course Version that produced it. The runner pins the
+	// image to it, so a rebuild of the course cannot change how an already
+	// promoted version is graded.
+	VersionID int
 
 	// TestDir is the Lesson's directory inside that image; its Makefile is what
 	// gets run. From the Lesson Version's path_to_code.
@@ -40,6 +46,14 @@ type Submission struct {
 	UserID int
 
 	Code string
+}
+
+// WithImage returns the Submission graded in a resolved image reference. The
+// runner pins the repository to a Course Version before running it, and the
+// rest of the request is unchanged.
+func (s Submission) WithImage(image string) Submission {
+	s.Image = image
+	return s
 }
 
 // Outcome is what running one Submission produced: whether it passed, the

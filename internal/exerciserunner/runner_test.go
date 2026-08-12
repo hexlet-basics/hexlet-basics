@@ -180,3 +180,45 @@ func testConfig() config.ExerciseRunnerConfig {
 	}
 	return cfg
 }
+
+// Grading is pinned to the course version that produced the image: a rebuild
+// moves the registry tag, and a learner working through an already-promoted
+// version must keep being graded by the build it was promoted as.
+func TestImageRefsPinToTheCourseVersion(t *testing.T) {
+	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	pinned, source := runner.imageRefs(progress.Submission{
+		Image:     "hexletbasics/exercises-javascript",
+		VersionID: 965227298,
+	})
+
+	assert.Equal(t, "hexletbasics/exercises-javascript:lv965227298", pinned)
+	assert.Equal(t, "hexletbasics/exercises-javascript:latest", source,
+		"the moving tag is only ever the pull source")
+}
+
+// A course version that already named a tag has said what it wants; that is its
+// own pin, and nothing is pulled or re-tagged behind it.
+func TestImageRefsRespectAnExplicitTag(t *testing.T) {
+	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	pinned, source := runner.imageRefs(progress.Submission{
+		Image:     "ghcr.io/hexlet-basics/exercises-go:2026-08",
+		VersionID: 1,
+	})
+
+	assert.Equal(t, "ghcr.io/hexlet-basics/exercises-go:2026-08", pinned)
+	assert.Equal(t, pinned, source)
+}
+
+// A registry host carries a port, which is not a tag.
+func TestImageRefsPinAnImageOnAPortedRegistry(t *testing.T) {
+	runner := &Docker{opts: OptionsFrom(testConfig())}
+
+	pinned, _ := runner.imageRefs(progress.Submission{
+		Image:     "registry.example.com:5000/exercises-go",
+		VersionID: 7,
+	})
+
+	assert.Equal(t, "registry.example.com:5000/exercises-go:lv7", pinned)
+}

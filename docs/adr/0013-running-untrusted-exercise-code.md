@@ -87,11 +87,20 @@ boot, so every other surface keeps serving. Note that mounting the host's
 Docker socket into a process is effectively granting it host root; that is an
 infrastructure decision this ADR deliberately does not make.
 
-**Images are expected to be present.** The runner runs the image named by the
-Course Version's `docker_image` and does not pull. A first-check-after-deploy
-pull is seconds to minutes inside a six-second grading budget, which reads to a
-learner as a broken lesson. Pre-pulling on version promotion and warming
-current versions at worker startup is the follow-up this leaves open.
+**Grading is pinned to the Course Version.** The registry tag a course
+publishes moves with every rebuild, so grading against it would mean a learner
+part-way through a promoted version silently switching to a build that version
+was never promoted as. The runner therefore grades in `<docker_image>:lv<id>`,
+and creates that reference the way legacy did: look for the pin, and when it is
+absent pull the moving tag once — configurable, `release` in legacy production
+— and freeze it under the pin. A Course Version whose `docker_image` already
+names a tag has said what it wants, and that is its own pin.
+
+The freeze is local to the daemon, so the first check after a promotion pays
+for the pull, which inside a six-second budget can read to a learner as a
+broken lesson. Pre-pulling on promotion, and warming current versions at
+startup, is the follow-up that removes that cost; correctness does not depend
+on it.
 
 ## Consequences
 
@@ -111,3 +120,11 @@ current versions at worker startup is the follow-up this leaves open.
   submission could not be run at all, and it surfaces as a server error rather
   than as a red check.
 - The `timeout` binary becomes a documented expectation of every exercise image.
+- The daemon accumulates one pinned image per Course Version it has graded.
+  Pruning them is an operational task, and one a periodic prune covers anyway,
+  since a crashed daemon leaves containers regardless.
+- The outer deadline has to be enforced around the whole container lifecycle
+  rather than around any single call: a hijacked attach stream does not honour
+  context cancellation, so the output is read on its own goroutine and the
+  deadline is what ends the run. Without that, a container that never exits
+  holds its concurrency slot forever, and a handful of them stop every check.
