@@ -20,7 +20,7 @@ against `ent/schema/`.
 | Admin (all resources) | done | done (66 ops) | done (17 screens) |
 | Public catalog `/languages` | done | `listCourses` only | catalog page only |
 | Course landing | done | done, with progress | stub page |
-| Lesson player | done (first cut) | check only, runner stubbed | none |
+| Lesson player | done (first cut) | done (read + check + runner) | none |
 | Learner progress (start, check, dashboard, guest) | done | done | none |
 | Blog, categories, reviews, pages, sitemap | done | none | none |
 | Auth (login/signup) | done | done | done |
@@ -53,19 +53,21 @@ re-evaluated when a version is promoted rather than by the unported
 What is left of it is frontend: the course landing page is still a stub and the
 dashboard has no screen.
 
-### 2. No code runner
+### 2. Code runner — **done** (ADR-0013)
 
-The contract shape is now decided — the check stays synchronous, as legacy had
-it — and `checkLesson` is implemented against a `progress.ExerciseRunner`
-interface. What is missing is the implementation behind that interface: nothing
-in the repo shells out to Docker (the only Docker references are `courseloader`
-parsing and testcontainers), so both process graphs wire
-`progress.UnavailableRunner`, which fails every check loudly. Running untrusted
-submissions — client choice, resource limits, timeout classification, output
-capture — is the work that remains.
+The check is synchronous, as legacy had it, and runs in Docker through
+`internal/exerciserunner`: isolation tightened past legacy with every limit
+configurable, grading pinned per course version, and the exit-code contract
+(0 / 124 / other) carried over unchanged. `getCourseLesson`, the player
+payload, is implemented too.
 
-Also unbuilt here: `getCourseLesson` (the player payload) and the whole
-`src/routes/…/languages/$slug/lessons/$slug` frontend.
+Two follow-ups are open rather than done: pre-pulling images on promotion
+(#767, so the first check after a deploy does not pay for a pull) and the
+canary that would let the two off-by-default limits be turned on (#768).
+
+What is left here is the frontend: the whole
+`src/routes/…/languages/$slug/lessons/$slug` player, which now has a complete
+contract to build against.
 
 ### 3. No mailer (ADR-0006 unimplemented)
 
@@ -169,10 +171,9 @@ Classified so the raw count does not mislead:
 ## Suggested order
 
 1. ~~Enrollment (`language_members`) + progress events~~ — done.
-2. Build the exercise runner behind `progress.ExerciseRunner`, then the lesson
-   player frontend on top of the contract that now exists (the product's core
-   loop, and the only thing standing between the learner spine and a usable
-   product).
+2. ~~Build the exercise runner~~ — done. Next is the lesson player frontend on
+   top of the contract that now exists, plus the course page: the backend of
+   the product's core loop is complete and nothing renders it.
 3. Mailer, then the four email-based auth flows.
 4. The blocker-free public reads (#10) and their pages — blog, reviews,
    categories, sitemap, static pages.
