@@ -219,23 +219,14 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		return err
 	}
 
-	guestPosition := 0
-	for _, lesson := range lessons {
-		if lesson.slug == entry.LessonSlug {
-			guestPosition = lesson.position
-		}
-	}
+	guestPosition := positionOfSlug(lessons, entry.LessonSlug)
 	if guestPosition == 0 {
 		// The stored Lesson is not in the current Version: there is nothing to
 		// resolve the position against, so this Course resets to the beginning.
 		return nil
 	}
 
-	positions := make(map[int]int, len(lessons))
-	for _, lesson := range lessons {
-		positions[lesson.lessonID] = lesson.position
-	}
-	accountPosition, err := furthestFinishedPosition(ctx, db, userID, crs.ID, positions)
+	accountPosition, err := furthestFinishedPosition(ctx, db, userID, crs.ID, positionsOf(lessons))
 	if err != nil {
 		return err
 	}
@@ -320,11 +311,9 @@ func (p *Progress) creditLesson(
 		return fmt.Errorf("load lesson progress: %w", err)
 	}
 
-	count, err := db.LessonProgress.Query().
-		Where(lessonprogress.EnrollmentID(enrolled.ID)).
-		Count(ctx)
+	count, err := lessonProgressCount(ctx, db, enrolled.ID)
 	if err != nil {
-		return fmt.Errorf("count lesson progress: %w", err)
+		return err
 	}
 
 	for _, event := range []events.Event{

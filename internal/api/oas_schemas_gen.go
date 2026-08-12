@@ -4210,7 +4210,33 @@ func (s *LessonCheckingResponse) SetCourseHasBeenFinished(val bool) {
 	s.CourseHasBeenFinished = val
 }
 
-func (*LessonCheckingResponse) checkLessonRes() {}
+// LessonCheckingResponseHeaders wraps LessonCheckingResponse with response headers.
+type LessonCheckingResponseHeaders struct {
+	SetCookie []string
+	Response  LessonCheckingResponse
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *LessonCheckingResponseHeaders) GetSetCookie() []string {
+	return s.SetCookie
+}
+
+// GetResponse returns the value of Response.
+func (s *LessonCheckingResponseHeaders) GetResponse() LessonCheckingResponse {
+	return s.Response
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *LessonCheckingResponseHeaders) SetSetCookie(val []string) {
+	s.SetCookie = val
+}
+
+// SetResponse sets the value of Response.
+func (s *LessonCheckingResponseHeaders) SetResponse(val LessonCheckingResponse) {
+	s.Response = val
+}
+
+func (*LessonCheckingResponseHeaders) checkLessonRes() {}
 
 type LessonCheckingResponseResult string
 
@@ -5378,6 +5404,7 @@ func (s *NotFoundError) SetMessage(val string) {
 func (*NotFoundError) adminCreateCourseVersionRes() {}
 func (*NotFoundError) adminReviewCourseLessonRes()  {}
 func (*NotFoundError) adminReviewCourseRes()        {}
+func (*NotFoundError) checkLessonRes()              {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
 func (*NotFoundError) consumeMagicLinkRes()         {}
 func (*NotFoundError) deletePasskeyRes()            {}
@@ -5845,6 +5872,7 @@ func (s *ProblemDetails) SetInstance(val OptString) {
 	s.Instance = val
 }
 
+func (*ProblemDetails) checkLessonRes()            {}
 func (*ProblemDetails) createAssistantMessageRes() {}
 func (*ProblemDetails) createBookRequestRes()      {}
 func (*ProblemDetails) createLeadRes()             {}

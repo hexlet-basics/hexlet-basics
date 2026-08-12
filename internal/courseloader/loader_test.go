@@ -62,7 +62,10 @@ func newLoaderWithCompletion(
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://localhost:3001")
 
-	return courseloader.NewLoader(db, txStore, assets, fetcher, progress.New(db, txStore, publisher))
+	// Promotion re-evaluates completion and never runs a submission, so the
+	// loader's progress module needs no exercise runner.
+	tracker := progress.New(db, txStore, publisher, progress.UnavailableRunner{})
+	return courseloader.NewLoader(db, txStore, assets, fetcher, tracker)
 }
 
 // newLoader builds a loader that fetches the committed fixture course.

@@ -86,7 +86,10 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return progress.New(db, txStore, publisher), nil
+		// No exercise runner in this graph: the worker reaches the progress
+		// module only through promotion, which re-evaluates completion and never
+		// runs a submission. Wiring a real runner here would suggest otherwise.
+		return progress.New(db, txStore, publisher, progress.UnavailableRunner{}), nil
 	}),
 	do.Lazy[*amocrm.Client](func(i do.Injector) (*amocrm.Client, error) {
 		cfg, err := do.Invoke[*config.Config](i)

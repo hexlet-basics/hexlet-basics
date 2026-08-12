@@ -45,6 +45,7 @@ var ErrLessonNotAvailable = errors.New("progress: lesson is not available to thi
 // is stored or how the gate is evaluated.
 type Tracker interface {
 	StartLesson(ctx context.Context, userID, lessonID int, locale string) error
+	CheckSolution(ctx context.Context, check Check) (*CheckResult, error)
 	CourseState(ctx context.Context, userID, courseID int) (*CourseState, error)
 	MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error
 }
@@ -75,12 +76,13 @@ type Progress struct {
 	db        *ent.Client
 	store     store.Transactor
 	publisher events.TxPublisher
+	runner    ExerciseRunner
 	now       func() time.Time
 }
 
 // New builds the production tracker.
-func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher) *Progress {
-	return &Progress{db: db, store: txStore, publisher: publisher, now: time.Now}
+func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher, runner ExerciseRunner) *Progress {
+	return &Progress{db: db, store: txStore, publisher: publisher, runner: runner, now: time.Now}
 }
 
 // StartLesson enrolls the learner in the Lesson's Course if they are not
@@ -95,19 +97,9 @@ func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher)
 // a later build dropped is no longer startable.
 func (p *Progress) StartLesson(ctx context.Context, userID, lessonID int, locale string) error {
 	return p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
-		lesson, err := db.CourseLesson.Query().
-			Where(courselesson.ID(lessonID)).
-			Only(ctx)
+		lesson, crs, err := loadLessonCourse(ctx, db, lessonID)
 		if err != nil {
-			return fmt.Errorf("load lesson %d: %w", lessonID, err)
-		}
-		if lesson.CourseID == nil {
-			return &ent.NotFoundError{}
-		}
-
-		crs, err := db.Course.Query().Where(course.ID(*lesson.CourseID)).Only(ctx)
-		if err != nil {
-			return fmt.Errorf("load course %d: %w", *lesson.CourseID, err)
+			return err
 		}
 
 		positions, err := currentPositions(ctx, db, crs)
@@ -177,11 +169,9 @@ func (p *Progress) StartLesson(ctx context.Context, userID, lessonID int, locale
 			}
 		}
 
-		lessonCount, err := db.LessonProgress.Query().
-			Where(lessonprogress.EnrollmentID(enrolled.ID)).
-			Count(ctx)
+		lessonCount, err := lessonProgressCount(ctx, db, enrolled.ID)
 		if err != nil {
-			return fmt.Errorf("count lesson progress: %w", err)
+			return err
 		}
 
 		if err := p.publisher.Publish(ctx, tx, events.LessonStarted{
@@ -237,6 +227,27 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	return row, true, nil
 }
 
+// loadLessonCourse resolves a Lesson and the Course it belongs to. A Lesson
+// with no Course is unreachable content rather than a server fault, so it reads
+// as not found, exactly like a Lesson id that does not exist.
+func loadLessonCourse(ctx context.Context, db *ent.Client, lessonID int) (*ent.CourseLesson, *ent.Course, error) {
+	lesson, err := db.CourseLesson.Query().
+		Where(courselesson.ID(lessonID)).
+		Only(ctx)
+	if err != nil {
+		return nil, nil, fmt.Errorf("load lesson %d: %w", lessonID, err)
+	}
+	if lesson.CourseID == nil {
+		return nil, nil, &ent.NotFoundError{}
+	}
+
+	crs, err := db.Course.Query().Where(course.ID(*lesson.CourseID)).Only(ctx)
+	if err != nil {
+		return nil, nil, fmt.Errorf("load course %d: %w", *lesson.CourseID, err)
+	}
+	return lesson, crs, nil
+}
+
 // currentPositions maps every Lesson of the Course's current Version to its
 // Position. natural_order numbers Lessons 1..N across all modules in build
 // order, which is what course order means; `order` is per-module and cannot
@@ -249,11 +260,40 @@ func currentPositions(ctx context.Context, db *ent.Client, crs *ent.Course) (map
 	if err != nil {
 		return nil, err
 	}
+	return positionsOf(lessons), nil
+}
+
+func positionsOf(lessons []currentLesson) map[int]int {
 	positions := make(map[int]int, len(lessons))
 	for _, l := range lessons {
 		positions[l.lessonID] = l.position
 	}
-	return positions, nil
+	return positions
+}
+
+// positionOf is a Lesson's Position in the current Version, or 0 when the
+// Version does not contain it. Zero is not a Position — Positions start at one
+// — so it reads as "this Lesson has none", which is the same answer the gate
+// and the guest merge both need for a Lesson a later build dropped.
+func positionOf(lessons []currentLesson, lessonID int) int {
+	for _, lesson := range lessons {
+		if lesson.lessonID == lessonID {
+			return lesson.position
+		}
+	}
+	return 0
+}
+
+// positionOfSlug is the same lookup by slug, which is how guest progress
+// identifies a Lesson: a stored Position would denote a different Lesson after
+// the next promotion, a stored slug resolves against whatever is current.
+func positionOfSlug(lessons []currentLesson, slug string) int {
+	for _, lesson := range lessons {
+		if lesson.slug == slug {
+			return lesson.position
+		}
+	}
+	return 0
 }
 
 // currentLesson is a Lesson of the current Version with the Position and slug

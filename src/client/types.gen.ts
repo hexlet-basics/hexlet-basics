@@ -4630,6 +4630,18 @@ export type CheckLessonData = {
 
 export type CheckLessonErrors = {
   /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * The learner has not reached this lesson yet. Sequential progression
+   * (ADR-0012) makes a lesson available only when its position in the course's
+   * current version is at most one past the furthest lesson they have finished.
+   *
+   * Distinct from 403: the caller's permissions are fine, their progress is not.
+   */
+  409: ProblemDetails;
+  /**
    * Field-level validation errors, keyed by field name (each value is the list
    * of messages for that field). Returned when a write fails validation —
    * including constraints the schema cannot express, like uniqueness.
@@ -4648,7 +4660,12 @@ export type CheckLessonError = CheckLessonErrors[keyof CheckLessonErrors];
 
 export type CheckLessonResponses = {
   /**
-   * The request has succeeded.
+   * A completed check: the exercise outcome, plus the progress cookie a guest's
+   * advanced position travels back in.
+   *
+   * The cookie is absent for a signed-in learner, whose progress is rows rather
+   * than a cookie — which is the only place the two paths differ, and the client
+   * never has to notice: it reads the same body either way.
    */
   200: LessonCheckingResponse;
 };

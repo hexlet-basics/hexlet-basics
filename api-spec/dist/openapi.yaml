@@ -3893,6 +3893,10 @@ paths:
       description: |-
         Run a submitted solution and record progress. Synchronous to match legacy;
         revisit as submit + stream for the Docker-job model (see file header).
+
+        Public on purpose: a guest must be able to submit, and their position
+        travels in the signed cookie rather than in rows. 409 when the lesson is
+        beyond the gate — the submission is refused before anything is run.
       parameters:
         - name: id
           in: path
@@ -3902,11 +3906,41 @@ paths:
             format: int32
       responses:
         '200':
-          description: The request has succeeded.
+          description: |-
+            A completed check: the exercise outcome, plus the progress cookie a guest's
+            advanced position travels back in.
+
+            The cookie is absent for a signed-in learner, whose progress is rows rather
+            than a cookie — which is the only place the two paths differ, and the client
+            never has to notice: it reads the same body either way.
+          headers:
+            Set-Cookie:
+              required: false
+              schema:
+                type: array
+                items:
+                  type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LessonCheckingResponse'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '409':
+          description: |-
+            The learner has not reached this lesson yet. Sequential progression
+            (ADR-0012) makes a lesson available only when its position in the course's
+            current version is at most one past the furthest lesson they have finished.
+
+            Distinct from 403: the caller's permissions are fine, their progress is not.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list

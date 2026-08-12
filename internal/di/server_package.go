@@ -178,7 +178,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return progress.New(db, txStore, publisher), nil
+		// The exercise runner is still the placeholder: running untrusted
+		// submissions in Docker is its own piece of work, and until it lands a
+		// check fails loudly rather than reporting an outcome nothing produced.
+		return progress.New(db, txStore, publisher, progress.UnavailableRunner{}), nil
 	}),
 	do.Lazy[*api.Server](func(i do.Injector) (*api.Server, error) {
 		handler, err := do.Invoke[*handlers.Server](i)

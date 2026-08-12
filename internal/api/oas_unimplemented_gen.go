@@ -561,6 +561,10 @@ func (UnimplementedHandler) AdminUpdateUser(ctx context.Context, req *UserInput,
 // Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
 // stream for the Docker-job model (see file header).
 //
+// Public on purpose: a guest must be able to submit, and their position travels in the signed cookie
+// rather than in rows. 409 when the lesson is beyond the gate — the submission is refused before
+// anything is run.
+//
 // POST /lessons/{id}/check
 func (UnimplementedHandler) CheckLesson(ctx context.Context, req *CheckLessonInput, params CheckLessonParams) (r CheckLessonRes, _ error) {
 	return r, ht.ErrNotImplemented

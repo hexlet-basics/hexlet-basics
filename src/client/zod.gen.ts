@@ -1847,7 +1847,12 @@ export const zCheckLessonPath = z.object({
 });
 
 /**
- * The request has succeeded.
+ * A completed check: the exercise outcome, plus the progress cookie a guest's
+ * advanced position travels back in.
+ *
+ * The cookie is absent for a signed-in learner, whose progress is rows rather
+ * than a cookie — which is the only place the two paths differ, and the client
+ * never has to notice: it reads the same body either way.
  */
 export const zCheckLessonResponse = zLessonCheckingResponse;
 

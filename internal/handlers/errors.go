@@ -154,6 +154,15 @@ func (h *APIErrorHandler) LessonNotAvailable(ctx context.Context) *api.StartLess
 	return &problem
 }
 
+// LessonNotAvailableProblem is the same 409 for the check operation. ogen names
+// a declared error after its operation only when the operation has a second
+// response of the same shape to tell it apart from; the check has none, so its
+// 409 is a bare ProblemDetails and needs a constructor of its own.
+func (h *APIErrorHandler) LessonNotAvailableProblem(ctx context.Context) *api.ProblemDetails {
+	problem := h.problem(ctx, http.StatusConflict)
+	return &problem
+}
+
 func (h *APIErrorHandler) problem(ctx context.Context, status int) api.ProblemDetails {
 	return api.ProblemDetails{
 		Type:   "about:blank",

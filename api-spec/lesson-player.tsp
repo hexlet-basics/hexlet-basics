@@ -43,19 +43,18 @@ model CheckLessonInput {
   versionId: int32;
 }
 
-@route("/lessons/{id}/check")
-@tag("Lesson Player")
-interface LessonCheck {
-  /**
-   * Run a submitted solution and record progress. Synchronous to match legacy;
-   * revisit as submit + stream for the Docker-job model (see file header).
-   */
-  @post
-  @operationId("checkLesson")
-  check(@path id: int32, @body body: CheckLessonInput): LessonCheckingResponse | ValidationError | ApiError;
+/**
+ * A completed check: the exercise outcome, plus the progress cookie a guest's
+ * advanced position travels back in.
+ *
+ * The cookie is absent for a signed-in learner, whose progress is rows rather
+ * than a cookie — which is the only place the two paths differ, and the client
+ * never has to notice: it reads the same body either way.
+ */
+model LessonCheckingResult {
+  @header("Set-Cookie") setCookie?: string[];
+  @body response: LessonCheckingResponse;
 }
-
-// ---- Starting a lesson -----------------------------------------------------
 
 /**
  * The learner has not reached this lesson yet. Sequential progression
@@ -70,6 +69,29 @@ model LessonNotAvailableError {
   @header contentType: "application/problem+json";
   @body body: ProblemDetails;
 }
+
+@route("/lessons/{id}/check")
+@tag("Lesson Player")
+interface LessonCheck {
+  /**
+   * Run a submitted solution and record progress. Synchronous to match legacy;
+   * revisit as submit + stream for the Docker-job model (see file header).
+   *
+   * Public on purpose: a guest must be able to submit, and their position
+   * travels in the signed cookie rather than in rows. 409 when the lesson is
+   * beyond the gate — the submission is refused before anything is run.
+   */
+  @post
+  @operationId("checkLesson")
+  check(@path id: int32, @body body: CheckLessonInput):
+    | LessonCheckingResult
+    | LessonNotAvailableError
+    | NotFoundError
+    | ValidationError
+    | ApiError;
+}
+
+// ---- Starting a lesson -----------------------------------------------------
 
 @route("/lessons/{id}/start")
 @tag("Lesson Player")

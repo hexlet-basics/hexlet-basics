@@ -1959,6 +1959,10 @@ export const createLeadMutation = (options?: Partial<Options<CreateLeadData>>): 
 /**
  * Run a submitted solution and record progress. Synchronous to match legacy;
  * revisit as submit + stream for the Docker-job model (see file header).
+ *
+ * Public on purpose: a guest must be able to submit, and their position
+ * travels in the signed cookie rather than in rows. 409 when the lesson is
+ * beyond the gate — the submission is refused before anything is run.
  */
 export const checkLessonMutation = (options?: Partial<Options<CheckLessonData>>): UseMutationOptions<CheckLessonResponse, AxiosError<CheckLessonError>, Options<CheckLessonData>> => {
   const mutationOptions: UseMutationOptions<CheckLessonResponse, AxiosError<CheckLessonError>, Options<CheckLessonData>> = {

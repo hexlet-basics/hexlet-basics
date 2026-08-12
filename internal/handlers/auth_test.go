@@ -16,6 +16,8 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
+	"hexletbasics/internal/progress"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -23,10 +25,11 @@ import (
 // proving the auth routes are implemented through the contract seam.
 func newAuthRouter(t *testing.T) http.Handler {
 	t.Helper()
-	return newAuthRouterWithDB(t, testsupport.NewClient(t))
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	return newAuthRouterWithDB(t, db, transactor)
 }
 
-func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
+func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transactor) http.Handler {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
@@ -36,7 +39,9 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 		&config.Config{JWTSecret: "test-secret"},
 		enqueuer,
 		enqueuer,
-		nil, // progress is not exercised by the auth contract tests
+		// The real progress module: the check is a public operation, so these
+		// tests reach it while asserting what the contract protects.
+		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
 		translator,
@@ -99,8 +104,8 @@ func doWithXSRF(
 }
 
 func TestAuthRegisterLoginFlow(t *testing.T) {
-	db := testsupport.NewClient(t)
-	router := newAuthRouterWithDB(t, db)
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	router := newAuthRouterWithDB(t, db, transactor)
 	const email = "auth-flow@example.com"
 	const password = "s3cret-pass"
 
@@ -200,8 +205,8 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 }
 
 func TestCurrentUserSurvivesEmailChange(t *testing.T) {
-	db := testsupport.NewClient(t)
-	router := newAuthRouterWithDB(t, db)
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	router := newAuthRouterWithDB(t, db, transactor)
 	const oldEmail = "jwt-old-email@example.com"
 	const newEmail = "jwt-new-email@example.com"
 
@@ -274,8 +279,8 @@ func TestContractSecurityProtectsParityRoutesAndKeepsLessonCheckPublic(t *testin
 }
 
 func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
-	db := testsupport.NewClient(t)
-	router := newAuthRouterWithDB(t, db)
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	router := newAuthRouterWithDB(t, db, transactor)
 	const email = "admin-revocation@example.com"
 
 	resp := do(t, router, http.MethodPost, "/users",

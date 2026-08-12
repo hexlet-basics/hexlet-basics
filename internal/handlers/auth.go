@@ -185,6 +185,17 @@ func GuestProgress(ctx context.Context) (progress.GuestProgress, bool) {
 	return guest, ok
 }
 
+// GuestCookie renders visitor progress as the signed response cookie carrying
+// it back. Handlers that advance a guest ask for the cookie rather than for the
+// codec, so the secret and the cookie attributes stay in one place.
+func (h *AuthHandler) GuestCookie(guest progress.GuestProgress) (string, error) {
+	cookie, err := h.guestJar.Cookie(guest, h.secure)
+	if err != nil {
+		return "", err
+	}
+	return cookie.String(), nil
+}
+
 // mergeGuestProgress credits the visitor's cookie progress to the account that
 // just signed in or signed up, and returns the cookie that clears it.
 //
@@ -303,14 +314,23 @@ func (h *AuthHandler) RequireAdmin(next http.Handler) http.Handler {
 	})
 }
 
+// loadAuthenticatedUser verifies a session token and attaches the user it names.
+//
+// Verification is done here rather than by reading what go-pkgz's Trace
+// middleware left in the context. Trace refuses a token on an unsafe method
+// without the double-submit XSRF header, which is right for the operations
+// whose contract requires a session — they declare the XsrfToken scheme and
+// ogen enforces it (ADR-0011) — but wrong for a PUBLIC unsafe operation:
+// checking a solution has to answer a guest as well as a learner, so no client
+// sends that header, and piggybacking on Trace would silently serve every
+// signed-in learner as a guest. The JWT cookie is SameSite=Lax, so a
+// cross-site POST carries no session to forge with.
 func (h *AuthHandler) loadAuthenticatedUser(ctx context.Context, rawJWT string) (context.Context, error) {
 	claims, err := h.jwt.Parse(rawJWT)
 	if err != nil || claims.Handshake != nil || claims.User == nil {
 		return ctx, errUnauthenticated
 	}
-
-	traced, err := token.GetUserInfo(httptest.NewRequest(http.MethodGet, "/", nil).WithContext(ctx))
-	if err != nil || traced.ID != claims.User.ID {
+	if h.jwt.IsExpired(claims) {
 		return ctx, errUnauthenticated
 	}
 

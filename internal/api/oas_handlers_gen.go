@@ -14498,6 +14498,10 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 // Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +
 // stream for the Docker-job model (see file header).
 //
+// Public on purpose: a guest must be able to submit, and their position travels in the signed cookie
+// rather than in rows. 409 when the lesson is beyond the gate — the submission is refused before
+// anything is run.
+//
 // POST /lessons/{id}/check
 func (s *Server) handleCheckLessonRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}

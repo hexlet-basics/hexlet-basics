@@ -2885,9 +2885,62 @@ func encodeAdminUpdateUserResponse(response AdminUpdateUserRes, w http.ResponseW
 
 func encodeCheckLessonResponse(response CheckLessonRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *LessonCheckingResponse:
+	case *LessonCheckingResponseHeaders:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.Header().Set("Access-Control-Expose-Headers", "Set-Cookie")
+		// Encoding response headers.
+		{
+			h := uri.NewHeaderEncoder(w.Header())
+			// Encode "Set-Cookie" header.
+			{
+				cfg := uri.HeaderParameterEncodingConfig{
+					Name:    "Set-Cookie",
+					Explode: false,
+				}
+				if err := h.EncodeParam(cfg, func(e uri.Encoder) error {
+					if response.SetCookie != nil {
+						return e.EncodeArray(func(e uri.Encoder) error {
+							for i, item := range response.SetCookie {
+								if err := func() error {
+									return e.EncodeValue(conv.StringToString(item))
+								}(); err != nil {
+									return errors.Wrapf(err, "[%d]", i)
+								}
+							}
+							return nil
+						})
+					}
+					return nil
+				}); err != nil {
+					return errors.Wrap(err, "encode Set-Cookie header")
+				}
+			}
+		}
 		w.WriteHeader(200)
+
+		e := new(jx.Encoder)
+		response.Response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *NotFoundError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(404)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *ProblemDetails:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(409)
 
 		e := new(jx.Encoder)
 		response.Encode(e)

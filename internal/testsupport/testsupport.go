@@ -130,6 +130,9 @@ type Harness struct {
 	Enqueuer  *RecordingEnqueuer
 	Registrar *RecordingRegistrar
 	Events    *RecordingEventPublisher
+	// Runner is the exercise runner behind the check, returning a canned outcome
+	// instead of starting a container.
+	Runner *StubExerciseRunner
 	// UserID is the fixture user the harness authenticates as, so a test can
 	// assert on rows belonging to the caller without hard-coding a fixture id.
 	UserID int
@@ -169,8 +172,11 @@ func NewHarness(t *testing.T) *Harness {
 	errorHandler := NewAPIErrorHandler(t, translator)
 	// The real progress module, over the test's transaction: the gate and the
 	// transitions under test are the production ones, only the event transport
-	// is recorded instead of written to the outbox.
-	tracker := progress.New(db, transactor, eventPublisher)
+	// is recorded instead of written to the outbox and the submission is not
+	// really run — running it means Docker, which is the one thing this seam
+	// exists to keep out of the tests.
+	runner := NewStubExerciseRunner()
+	tracker := progress.New(db, transactor, eventPublisher, runner)
 	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, tracker, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
@@ -198,8 +204,50 @@ func NewHarness(t *testing.T) *Harness {
 	return &Harness{
 		Client: &Client{Client: client}, DB: db, doer: doer,
 		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
+		Runner: runner,
 		UserID: security.userID,
 	}
+}
+
+// StubExerciseRunner answers every submission with a canned outcome and records
+// what it was asked to run. A passing outcome is the default because it is the
+// one that moves progress; a test after the failure path sets Outcome itself.
+type StubExerciseRunner struct {
+	Outcome     progress.Outcome
+	Err         error
+	Submissions []progress.Submission
+}
+
+// NewStubExerciseRunner builds the stub with a passing outcome.
+func NewStubExerciseRunner() *StubExerciseRunner {
+	return &StubExerciseRunner{Outcome: PassingOutcome()}
+}
+
+// PassingOutcome is what the runner returns for a solution that passes.
+func PassingOutcome() progress.Outcome {
+	return progress.Outcome{Passed: true, Result: progress.ResultPassed, Output: "", Status: 0}
+}
+
+// FailingOutcome is an ordinary test failure: the submission ran and lost.
+func FailingOutcome() progress.Outcome {
+	return progress.Outcome{
+		Passed: false,
+		Result: progress.ResultFailed,
+		Output: "expected 3, got 2",
+		Status: 1,
+	}
+}
+
+// Run records the submission and returns the canned outcome.
+func (r *StubExerciseRunner) Run(
+	_ context.Context,
+	submission progress.Submission,
+) (progress.Outcome, error) {
+	r.Submissions = append(r.Submissions, submission)
+	if r.Err != nil {
+		return progress.Outcome{}, r.Err
+	}
+	return r.Outcome, nil
 }
 
 // HarnessUserPassword is the password GivePassword sets, so a test can sign in
@@ -241,6 +289,38 @@ func NewAnonymousHarness(t *testing.T) *Harness {
 	h := NewHarness(t)
 	h.doer.anonymous = true
 	return h
+}
+
+// NewVisitorHarness is a visitor with no account and the progress cookie a
+// previous visit left them: the only client of the guest storage that is not
+// also signing in.
+func NewVisitorHarness(t *testing.T, guest progress.GuestProgress) *Harness {
+	t.Helper()
+	h := NewGuestHarness(t, guest)
+	h.doer.anonymous = true
+	return h
+}
+
+// DecodeGuestCookie reads the guest progress a response set, verifying its
+// signature exactly as the server does on the next request. It fails the test
+// when no guest cookie was set, so a caller asserting on progress cannot pass
+// by accident on an unchanged one.
+func DecodeGuestCookie(t *testing.T, setCookies []string) progress.GuestProgress {
+	t.Helper()
+
+	for _, raw := range setCookies {
+		parsed, err := http.ParseSetCookie(raw)
+		if err != nil || parsed.Name != progress.GuestCookieName {
+			continue
+		}
+		guest, err := progress.NewGuestCodec(testConfig.JWTSecret).Decode(parsed.Value)
+		if err != nil {
+			t.Fatalf("guest cookie does not verify: %v", err)
+		}
+		return guest
+	}
+	t.Fatalf("no %s cookie in %v", progress.GuestCookieName, setCookies)
+	return progress.GuestProgress{}
 }
 
 type harnessSecurity struct {
@@ -423,7 +503,9 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	case d.jwt != "":
 		r.AddCookie(&http.Cookie{Name: "JWT", Value: d.jwt})
 	}
-	if d.guest != "" && !d.anonymous {
+	// Added after the anonymous branch cleared the header: a visitor carries
+	// progress without carrying a session, which is the whole point of it.
+	if d.guest != "" {
 		r.AddCookie(&http.Cookie{Name: progress.GuestCookieName, Value: d.guest})
 	}
 	rec := httptest.NewRecorder()
