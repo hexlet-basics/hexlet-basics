@@ -19,6 +19,7 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/lessonreviews"
+	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 )
 
@@ -51,7 +52,41 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return courseloader.NewLoader(db, store, assets, fetcher), nil
+		completion, err := do.Invoke[*progress.Progress](i)
+		if err != nil {
+			return nil, err
+		}
+		return courseloader.NewLoader(db, store, assets, fetcher, completion), nil
+	}),
+	// Promoting a version re-evaluates completion, so the worker graph carries
+	// the progress module too. It also needs a publisher of its own: the worker
+	// otherwise only consumes facts, and promotion is the one place it raises
+	// them.
+	do.Lazy[*events.Publisher](func(i do.Injector) (*events.Publisher, error) {
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		logger, err := do.Invoke[*slog.Logger](i)
+		if err != nil {
+			return nil, err
+		}
+		return events.NewPublisher(txStore, logger), nil
+	}),
+	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		return progress.New(db, txStore, publisher), nil
 	}),
 	do.Lazy[*amocrm.Client](func(i do.Injector) (*amocrm.Client, error) {
 		cfg, err := do.Invoke[*config.Config](i)

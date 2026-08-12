@@ -18,6 +18,8 @@ import (
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/courseloader"
+	"hexletbasics/internal/events"
+	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
@@ -43,10 +45,24 @@ func newLoaderWith(
 	fetcher courseloader.Fetcher,
 ) *courseloader.Loader {
 	t.Helper()
+	return newLoaderWithCompletion(t, db, txStore, fetcher, &recordingPublisher{})
+}
+
+// newLoaderWithCompletion builds a loader whose promotion re-evaluates
+// completion through the real progress module, recording the facts it publishes.
+func newLoaderWithCompletion(
+	t *testing.T,
+	db *ent.Client,
+	txStore store.Transactor,
+	fetcher courseloader.Fetcher,
+	publisher events.TxPublisher,
+) *courseloader.Loader {
+	t.Helper()
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://localhost:3001")
-	return courseloader.NewLoader(db, txStore, assets, fetcher)
+
+	return courseloader.NewLoader(db, txStore, assets, fetcher, progress.New(db, txStore, publisher))
 }
 
 // newLoader builds a loader that fetches the committed fixture course.

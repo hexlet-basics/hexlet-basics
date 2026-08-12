@@ -45,16 +45,35 @@ const lessonStateCreated = "created"
 // flips) ONLY on success, in the same transaction that marks it built — so a
 // broken rebuild never takes a live course offline.
 type Loader struct {
-	db      *ent.Client
-	txStore store.Transactor
-	assets  *assetstore.Store
-	fetcher Fetcher
+	db         *ent.Client
+	txStore    store.Transactor
+	assets     *assetstore.Store
+	fetcher    Fetcher
+	completion CompletionReevaluator
 }
+
+// defaultEventLocale matches the translator's fallback: the loader runs in the
+// worker, where there is no request to take a locale from.
+const defaultEventLocale = "en"
 
 // NewLoader wires the loader to its dependencies. The fetcher is an interface so
 // tests can supply a fixture directory instead of cloning.
-func NewLoader(db *ent.Client, txStore store.Transactor, assets *assetstore.Store, fetcher Fetcher) *Loader {
-	return &Loader{db: db, txStore: txStore, assets: assets, fetcher: fetcher}
+func NewLoader(
+	db *ent.Client,
+	txStore store.Transactor,
+	assets *assetstore.Store,
+	fetcher Fetcher,
+	completion CompletionReevaluator,
+) *Loader {
+	return &Loader{db: db, txStore: txStore, assets: assets, fetcher: fetcher, completion: completion}
+}
+
+// CompletionReevaluator is the progress seam invoked at promotion. Promoting a
+// Version is the moment a Course's Lesson set changes, and therefore the only
+// moment completion can change without a learner doing anything — the loader
+// knows when that happens and nothing about what completion means.
+type CompletionReevaluator interface {
+	ReevaluateCompletion(ctx context.Context, tx *sql.Tx, db *ent.Client, courseID int, locale string) error
 }
 
 // Run builds the given course version. It is idempotent against dead runs: a
@@ -146,12 +165,12 @@ func (l *Loader) fail(ctx context.Context, version *ent.CourseVersion, cause err
 // built-state + live-promotion. Atomicity is the point — either the new version
 // is fully present and live, or nothing changed and the old version stays live.
 func (l *Loader) build(ctx context.Context, version *ent.CourseVersion, course *ent.Course, parsed *Course) error {
-	return l.txStore.WithinTx(ctx, func(_ *sql.Tx, txClient *ent.Client) error {
-		return l.buildTx(ctx, txClient, version.ID, course.ID, parsed)
+	return l.txStore.WithinTx(ctx, func(sqlTx *sql.Tx, txClient *ent.Client) error {
+		return l.buildTx(ctx, sqlTx, txClient, version.ID, course.ID, parsed)
 	})
 }
 
-func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languageID int, parsed *Course) error {
+func (l *Loader) buildTx(ctx context.Context, sqlTx *sql.Tx, tx *ent.Client, versionID, courseID int, parsed *Course) error {
 	spec := parsed.Spec
 	if _, err := tx.CourseVersion.UpdateOneID(versionID).
 		SetName(spec.Name).
@@ -167,13 +186,13 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 
 	totalLessons := 0
 	for _, m := range parsed.Modules {
-		moduleID, err := upsertModule(ctx, tx, languageID, m.Slug)
+		moduleID, err := upsertModule(ctx, tx, courseID, m.Slug)
 		if err != nil {
 			return err
 		}
 
 		mv, err := tx.CourseModuleVersion.Create().
-			SetCourseID(languageID).
+			SetCourseID(courseID).
 			SetCourseVersionID(versionID).
 			SetModuleID(moduleID).
 			SetOrder(m.Order).
@@ -184,7 +203,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 
 		for _, info := range m.Infos {
 			if _, err := tx.CourseModuleTranslation.Create().
-				SetCourseID(languageID).
+				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
 				SetVersionID(mv.ID).
 				SetLocale(info.Locale).
@@ -196,13 +215,13 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 		}
 
 		for _, lesson := range m.Lessons {
-			lessonID, err := upsertLesson(ctx, tx, languageID, moduleID, lesson.Slug)
+			lessonID, err := upsertLesson(ctx, tx, courseID, moduleID, lesson.Slug)
 			if err != nil {
 				return err
 			}
 
 			lv, err := tx.CourseLessonVersion.Create().
-				SetCourseID(languageID).
+				SetCourseID(courseID).
 				SetCourseVersionID(versionID).
 				SetLessonID(lessonID).
 				SetModuleVersionID(mv.ID).
@@ -218,7 +237,7 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 			}
 
 			for _, info := range lesson.Infos {
-				if err := l.createLessonInfo(ctx, tx, languageID, versionID, lessonID, lv.ID, info); err != nil {
+				if err := l.createLessonInfo(ctx, tx, courseID, versionID, lessonID, lv.ID, info); err != nil {
 					return err
 				}
 			}
@@ -235,11 +254,23 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 		Save(ctx); err != nil {
 		return oops.Wrapf(err, "mark version built")
 	}
-	if _, err := tx.Course.UpdateOneID(languageID).
+	if _, err := tx.Course.UpdateOneID(courseID).
 		SetCurrentVersionID(versionID).
 		SetLessonsCount(totalLessons).
 		Save(ctx); err != nil {
 		return oops.Wrapf(err, "promote version to live")
+	}
+
+	// A build that removes Lessons can complete the Course for learners who have
+	// nothing left to submit, and a submission is the only other thing that ever
+	// evaluates completion. Re-evaluating here — inside the promotion
+	// transaction, so the new Lesson set and the completions it implies become
+	// visible together — is what replaces the legacy hourly sweep.
+	//
+	// The worker has no request locale, so the facts carry the same default the
+	// translator falls back to.
+	if err := l.completion.ReevaluateCompletion(ctx, sqlTx, tx, courseID, defaultEventLocale); err != nil {
+		return oops.Wrapf(err, "re-evaluate completion after promotion")
 	}
 	return nil
 }
@@ -248,9 +279,9 @@ func (l *Loader) buildTx(ctx context.Context, tx *ent.Client, versionID, languag
 // uploaded and the markdown rewritten by uploadImages before this transaction, so
 // info.Theory is used as-is here. tips/definitions are serialized as YAML arrays
 // for Rails `serialize type: Array` compatibility.
-func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
+func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, courseID, versionID, lessonID, lessonVersionID int, info LessonInfo) error {
 	create := tx.CourseLessonTranslation.Create().
-		SetCourseID(languageID).
+		SetCourseID(courseID).
 		SetCourseVersionID(versionID).
 		SetCourseLessonID(lessonID).
 		SetVersionID(lessonVersionID).
@@ -286,9 +317,9 @@ func (l *Loader) createLessonInfo(ctx context.Context, tx *ent.Client, languageI
 // upsertModule atomically creates or finds the stable module row for (course,
 // slug). Identity is kept across rebuilds so downstream references survive; the
 // per-build ordering lives on the module version, not here.
-func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug string) (int, error) {
+func upsertModule(ctx context.Context, tx *ent.Client, courseID int, slug string) (int, error) {
 	id, err := tx.CourseModule.Create().
-		SetCourseID(languageID).
+		SetCourseID(courseID).
 		SetSlug(slug).
 		OnConflictColumns(coursemodule.FieldCourseID, coursemodule.FieldSlug).
 		UpdateNewValues().
@@ -303,9 +334,9 @@ func upsertModule(ctx context.Context, tx *ent.Client, languageID int, slug stri
 // slug), and (re)points it at its current module — a lesson can move between
 // modules across rebuilds. Learner progress FKs this stable id, so it must NOT be
 // recreated.
-func upsertLesson(ctx context.Context, tx *ent.Client, languageID, moduleID int, slug string) (int, error) {
+func upsertLesson(ctx context.Context, tx *ent.Client, courseID, moduleID int, slug string) (int, error) {
 	id, err := tx.CourseLesson.Create().
-		SetCourseID(languageID).
+		SetCourseID(courseID).
 		SetModuleID(moduleID).
 		SetSlug(slug).
 		SetState(lessonStateCreated).
