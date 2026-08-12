@@ -116,6 +116,25 @@ with a gap, the Next Lesson is the gap, while their Available Lessons run all
 the way to one past their furthest finished one.
 _ru_: следующий урок · _es_: siguiente lección
 
+**Starter Code**:
+The code a Lesson's editor opens with, written by the Course author as the
+learner's starting point, and what resetting the editor restores. Carried as
+`CourseLesson.preparedCode`.
+_ru_: заготовка кода · _es_: código inicial
+
+**Reference Solution**:
+The Course author's own answer to a Lesson, shown to a learner once they have
+passed it or waited out the delay. Not "the teacher's solution": nobody teaches
+here, an author wrote it. Carried as `CourseLesson.originalCode`.
+_ru_: авторское решение · _es_: solución del autor
+
+**Lesson Tests**:
+The checks a submission has to satisfy to finish a Lesson. They are shown to
+everyone, including visitors with no account — deliberately, since a learner who
+reads the tests has read the specification of the exercise. Carried as
+`CourseLesson.testCode`.
+_ru_: тесты урока · _es_: pruebas de la lección
+
 **Guest progress**:
 Lessons a visitor passed before having an account. It is one Lesson per Course —
 the furthest one they finished — carried in a signed, httpOnly cookie, because
