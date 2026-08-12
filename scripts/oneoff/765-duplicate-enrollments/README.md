@@ -1,4 +1,4 @@
-# Count duplicate Enrollments (#765)
+# Count and collapse duplicate Enrollments (#765)
 
 **One-off. Delete this whole directory once #765 is closed.** It is deliberately
 not wired into the `Makefile` — nothing here belongs to the permanent toolchain,
@@ -12,10 +12,17 @@ targets that outlive it.
 legacy find-or-create was racy, so two concurrent requests could each insert an
 Enrollment for the same learner and Course.
 
-The migration in #755 that adds `UNIQUE (user_id, language_id)` cannot be written
-until the size of the existing mess is known: a handful of duplicates collapse
-inside that migration, thousands need their own ticket with its own verification
-pass. These queries produce that number.
+The migration that adds `UNIQUE (user_id, language_id)`
+(`migrations/20260812013103_...`) does **not** clean up: if duplicates exist it
+fails and the deploy stops. That is deliberate — collapsing rows has its own
+volume question (a handful merge in one transaction, thousands need batching),
+and a deploy nobody is watching is the wrong place to decide it. `count.sql`
+produces the number that decides; `collapse.sql` does the merge for the "handful"
+answer, and is the thing to run before the migration reaches production.
+
+`collapse.sql` is covered by `internal/store/enrollment_collapse_test.go`, which
+executes this very file against duplicates it builds in a rolled-back
+transaction — the tie-break, the re-point, the counter sum and idempotency.
 
 ## Running it
 
@@ -23,13 +30,16 @@ pass. These queries produce that number.
 # The real thing — production, or a read replica for preference.
 psql "$PROD_DATABASE_URL" -f count.sql
 
+# Then, if the count says a single transaction is safe, collapse them.
+psql "$PROD_DATABASE_URL" --single-transaction -f collapse.sql
+
 # Prove the queries are correct first (see below).
 psql "$DATABASE_URL" --single-transaction -f fixture.sql -f count.sql
 ```
 
 `count.sql` is **read-only**: no writes, and no locks beyond shared reads. Queries
 1–3 full-scan `language_members` with a group-by, which is why a replica is
-preferable.
+preferable. `collapse.sql` writes, so it runs against the primary.
 
 ## Why there is a fixture
 

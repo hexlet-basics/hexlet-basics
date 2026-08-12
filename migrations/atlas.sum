@@ -1,4 +1,4 @@
-h1:wYgr1n3/X96fJ2Rge+f76q8AMN/AbS4qwjLDvmyes2I=
+h1:tLs3JHRGIxo09Y+EGg9HScoRIcbSCLWaX2mPNWmFeTs=
 20260727053619_baseline.sql h1:k0UP2U0C/d/PYhlRV0Zg9mFBBUk1ydV10HJhCWs9uhY=
 20260727090010_unique_language_categories.sql h1:6MzXizoBmgqPMqjR935c4YC50laWgayt8O51tAusr1E=
 20260727135709_unique_staff_member_roles.sql h1:AbDvNNzsbNvnvqE0LYFz/SdmFXplBxhLyxO2Qr1oqBs=
@@ -7,4 +7,4 @@ h1:wYgr1n3/X96fJ2Rge+f76q8AMN/AbS4qwjLDvmyes2I=
 20260729000000_unique_language_modules.sql h1:jlfW3qjxjIFaXvVDuTdSTHYCl5xoZFI6ucM/iOGZU0I=
 20260729120000_watermill_domain_events.sql h1:9AIcot74sPoRHYuVvYU9nL/qzPpS4QMGYk6n64mQ+BQ=
 20260729130000_add_blog_post_rich_body.sql h1:l4eY3dI8b47+iYjxuqLP9WwwA2tCpSGHt4crSiNRHLI=
-20260812013103_unique_enrollment_per_learner_and_course.sql h1:b9Ais4xaL/mYOe5jQNqaMrgLIYtbzwKb+Fdthnz8BvI=
+20260812013103_unique_enrollment_per_learner_and_course.sql h1:Ch8Sac1Ug/GvaiFaL36hWytyDi4B7EQAo8HUSBsTE4E=

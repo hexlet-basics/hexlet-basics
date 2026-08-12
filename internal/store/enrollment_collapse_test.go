@@ -19,11 +19,12 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// collapseMigration de-duplicates Enrollments and adds the unique index. These
-// tests execute the file rather than a restatement of it, so what is verified is
-// what ships — the same discipline as the #765 count script. It runs exactly
-// once, against production data nobody has counted yet.
-const collapseMigration = "20260812013103_unique_enrollment_per_learner_and_course.sql"
+// collapseScript de-duplicates Enrollments. The migration that adds the unique
+// index deliberately does not clean up — it fails loudly instead — so this SQL
+// is run by hand against production, once, after the count (#765). These tests
+// execute the file rather than a restatement of it, so what is verified is what
+// will be run.
+var collapseScript = filepath.Join("..", "..", "scripts", "oneoff", "765-duplicate-enrollments", "collapse.sql")
 
 // The winner is the oldest row, it absorbs the losers' Lesson Progress rows and
 // their counters, and the losers are gone.
@@ -44,7 +45,7 @@ func TestCollapseMergesDuplicateEnrollmentsOntoTheOldest(t *testing.T) {
 	createEnrollment(t, client, existing, existing.CreatedAt, 4)
 	attachProgress(t, client, newer)
 
-	for _, stmt := range migrationStatements(t) {
+	for _, stmt := range collapseStatements(t) {
 		execSQL(t, tx, stmt)
 	}
 
@@ -59,24 +60,26 @@ func TestCollapseMergesDuplicateEnrollmentsOntoTheOldest(t *testing.T) {
 	assert.Equal(t, progressBefore+1, progressCount(t, client, existing.ID),
 		"the loser's Lesson Progress row is re-pointed at the winner")
 
-	// Asserted last: the conflict aborts the shared transaction.
+	// The collapsed data admits the index again — which is exactly what the
+	// migration needs of production before it will apply. Asserted last: the
+	// conflict aborts the shared transaction.
+	execSQL(t, tx, `CREATE UNIQUE INDEX "index_language_members_on_user_id_and_language_id" ON "language_members" ("user_id", "language_id")`)
 	_, err := client.Enrollment.Create().
 		SetUserID(existing.UserID).
 		SetCourseID(existing.CourseID).
 		SetState("started").
 		Save(t.Context())
-	require.Error(t, err, "the migration re-created the unique index")
+	require.Error(t, err, "the pair is unique again once the duplicates are collapsed")
 }
 
-// Against a database that already has no duplicates the whole migration is a
-// no-op: the CTEs select nothing and the index creation is guarded, so applying
-// it to a collapsed database changes nothing and does not fail.
+// Against a database that already has no duplicates the script is a no-op: the
+// CTEs select nothing, so re-running it after a collapse writes nothing.
 func TestCollapseIsIdempotentWithoutDuplicates(t *testing.T) {
 	client, tx := testsupport.NewClientWithTx(t)
 	before := client.Enrollment.Query().CountX(t.Context())
 	progressBefore := client.LessonProgress.Query().CountX(t.Context())
 
-	for _, stmt := range migrationStatements(t) {
+	for _, stmt := range collapseStatements(t) {
 		execSQL(t, tx, stmt)
 	}
 
@@ -84,11 +87,11 @@ func TestCollapseIsIdempotentWithoutDuplicates(t *testing.T) {
 	assert.Equal(t, progressBefore, client.LessonProgress.Query().CountX(t.Context()))
 }
 
-// migrationStatements strips the commentary and splits the file into the four
-// statements it ships: re-point, sum, delete, create index.
-func migrationStatements(t *testing.T) []string {
+// collapseStatements strips the commentary and splits the script into the three
+// statements it ships: re-point, sum, delete.
+func collapseStatements(t *testing.T) []string {
 	t.Helper()
-	raw, err := os.ReadFile(filepath.Join("..", "..", "migrations", collapseMigration))
+	raw, err := os.ReadFile(collapseScript)
 	require.NoError(t, err)
 
 	var code []string
@@ -104,7 +107,7 @@ func migrationStatements(t *testing.T) []string {
 			stmts = append(stmts, part)
 		}
 	}
-	require.Len(t, stmts, 4, "re-point, sum, delete, create index")
+	require.Len(t, stmts, 3, "re-point, sum, delete")
 	return stmts
 }
 
