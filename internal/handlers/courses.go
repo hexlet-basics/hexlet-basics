@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/progress"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -32,9 +33,11 @@ type Server struct {
 	cfg     *config.Config
 	starter VersionBuildStarter
 	reviews LessonReviewEnqueuer
-	auth    *AuthHandler
-	i18n    *localization.Translator
-	errors  *APIErrorHandler
+	// progress owns sequential progression; handlers never evaluate the gate.
+	progress progress.Tracker
+	auth     *AuthHandler
+	i18n     *localization.Translator
+	errors   *APIErrorHandler
 }
 
 // NewServer wires the handler to its dependencies.
@@ -43,20 +46,22 @@ func NewServer(
 	cfg *config.Config,
 	starter VersionBuildStarter,
 	reviews LessonReviewEnqueuer,
+	tracker progress.Tracker,
 	registrar accounts.UserRegistrar,
 	eventPublisher events.StandalonePublisher,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 ) *Server {
 	return &Server{
-		db:      db,
-		conv:    &apiconv.ConverterImpl{},
-		cfg:     cfg,
-		starter: starter,
-		reviews: reviews,
-		auth:    NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher),
-		i18n:    translator,
-		errors:  errorHandler,
+		db:       db,
+		conv:     &apiconv.ConverterImpl{},
+		cfg:      cfg,
+		starter:  starter,
+		reviews:  reviews,
+		progress: tracker,
+		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher),
+		i18n:     translator,
+		errors:   errorHandler,
 	}
 }
 

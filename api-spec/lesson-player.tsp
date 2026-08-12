@@ -55,6 +55,41 @@ interface LessonCheck {
   check(@path id: int32, @body body: CheckLessonInput): LessonCheckingResponse | ValidationError | ApiError;
 }
 
+// ---- Starting a lesson -----------------------------------------------------
+
+/**
+ * The learner has not reached this lesson yet. Sequential progression
+ * (ADR-0012) makes a lesson available only when its position in the course's
+ * current version is at most one past the furthest lesson they have finished.
+ *
+ * Distinct from 403: the caller's permissions are fine, their progress is not.
+ */
+@error
+model LessonNotAvailableError {
+  @statusCode statusCode: 409;
+  @header contentType: "application/problem+json";
+  @body body: ProblemDetails;
+}
+
+@route("/lessons/{id}/start")
+@tag("Lesson Player")
+@useAuth(UserSession)
+interface LessonStart {
+  /**
+   * Start a lesson: enroll the learner in its course if they are not enrolled
+   * yet, and mark the lesson started. This is the only way progress begins —
+   * loading a page never has this effect, because the frontend preloads routes
+   * on hover.
+   *
+   * Idempotent: starting an already-started or already-finished lesson
+   * succeeds and changes nothing. 409 when the lesson is beyond the gate.
+   */
+  @post
+  @useAuth([UserSession, XsrfToken])
+  @operationId("startLesson")
+  start(@path id: int32): NoContent | LessonNotAvailableError | NotFoundError | UnauthorizedError | ApiError;
+}
+
 // ---- AI assistant (in-lesson chat) ----------------------------------------
 
 /** One message in the in-lesson AI chat (legacy: `AiMessage`). */

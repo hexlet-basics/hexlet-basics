@@ -36,6 +36,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client) http.Handler {
 		&config.Config{JWTSecret: "test-secret"},
 		enqueuer,
 		enqueuer,
+		nil, // progress is not exercised by the auth contract tests
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
 		translator,

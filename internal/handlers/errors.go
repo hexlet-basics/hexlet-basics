@@ -146,6 +146,14 @@ func errorStatus(err error) int {
 	}
 }
 
+// LessonNotAvailable builds the contract's typed 409 for a lesson beyond the
+// learner's gate. It is a declared domain outcome, not a failure, so it never
+// reaches the reporting path the transport errors take.
+func (h *APIErrorHandler) LessonNotAvailable(ctx context.Context) *api.StartLessonConflict {
+	problem := api.StartLessonConflict(h.problem(ctx, http.StatusConflict))
+	return &problem
+}
+
 func (h *APIErrorHandler) problem(ctx context.Context, status int) api.ProblemDetails {
 	return api.ProblemDetails{
 		Type:   "about:blank",

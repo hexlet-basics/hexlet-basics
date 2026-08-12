@@ -1,15 +1,40 @@
-# Fixtures for `language_lesson_versions`, HAND-CURATED. The review worker
-# writes `language_lesson_reviews.language_lesson_version_id` from each info's
-# `version_id`, and that column carries a real FK — so the lesson-version rows
-# the infos point at (see language_lesson_version_infos.yml) must exist. Ids
-# deliberately equal the corresponding course-version ids the info fixtures
-# reuse. testfixtures disables FKs during load, so module_version_id parents
-# need not exist.
+# Fixtures for `language_lesson_versions`, HAND-CURATED. Two jobs:
+#
+# 1. The review worker writes `language_lesson_reviews.language_lesson_version_id`
+#    from each info's `version_id`, and that column carries a real FK — so the
+#    lesson-version rows the infos point at (see language_lesson_version_infos.yml)
+#    must exist. Their ids deliberately equal the course-version ids the info
+#    fixtures reuse.
+#
+# 2. `natural_order` on the CURRENT version's rows is the Position sequential
+#    progression gates on: 1..N across the whole course, in build order. The
+#    retired version (545350298) carries none — a Lesson only has a Position
+#    relative to one Course Version.
+#
+# testfixtures disables FKs during load, so module_version_id parents need not
+# exist. Course = JavaScript (82481401), current version 965227298.
 - id: 965227298
   language_id: 82481401
   language_version_id: 965227298
   lesson_id: 1001
   module_version_id: 1
+  natural_order: 1
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 965227299
+  language_id: 82481401
+  language_version_id: 965227298
+  lesson_id: 1002
+  module_version_id: 1
+  natural_order: 2
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 965227300
+  language_id: 82481401
+  language_version_id: 965227298
+  lesson_id: 1003
+  module_version_id: 1
+  natural_order: 3
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 - id: 545350298

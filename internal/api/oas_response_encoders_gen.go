@@ -3956,6 +3956,54 @@ func encodeNewPasskeySessionResponse(response *PasskeyChallenge, w http.Response
 	return nil
 }
 
+func encodeStartLessonResponse(response StartLessonRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *StartLessonNoContent:
+		w.WriteHeader(204)
+
+		return nil
+
+	case *StartLessonUnauthorized:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(401)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *NotFoundError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(404)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *StartLessonConflict:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(409)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeSwitchLocaleResponse(response *SwitchLocaleNoContent, w http.ResponseWriter, span trace.Span) error {
 	w.WriteHeader(204)
 

@@ -109,6 +109,7 @@ const (
 	ListPublicReviewsOperation              OperationName = "ListPublicReviews"
 	NewPasskeyOperation                     OperationName = "NewPasskey"
 	NewPasskeySessionOperation              OperationName = "NewPasskeySession"
+	StartLessonOperation                    OperationName = "StartLesson"
 	SwitchLocaleOperation                   OperationName = "SwitchLocale"
 	UpdatePasswordOperation                 OperationName = "UpdatePassword"
 	UpdateProfileOperation                  OperationName = "UpdateProfile"

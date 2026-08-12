@@ -882,6 +882,20 @@ func (UnimplementedHandler) NewPasskeySession(ctx context.Context) (r *PasskeyCh
 	return r, ht.ErrNotImplemented
 }
 
+// StartLesson implements startLesson operation.
+//
+// Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson
+// started. This is the only way progress begins — loading a page never has this effect, because the
+// frontend preloads routes on hover.
+//
+// Idempotent: starting an already-started or already-finished lesson succeeds and changes nothing. 409
+// when the lesson is beyond the gate.
+//
+// POST /lessons/{id}/start
+func (UnimplementedHandler) StartLesson(ctx context.Context, params StartLessonParams) (r StartLessonRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // SwitchLocale implements switchLocale operation.
 //
 // Persist the preferred UI locale on the session.

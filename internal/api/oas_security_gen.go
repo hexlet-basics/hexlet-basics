@@ -143,6 +143,7 @@ var operationRolesUserSession = map[string][]string{
 	ListAssistantMessagesOperation:  []string{},
 	ListPasskeysOperation:           []string{},
 	NewPasskeyOperation:             []string{},
+	StartLessonOperation:            []string{},
 	UpdateProfileOperation:          []string{},
 }
 
@@ -215,6 +216,7 @@ var operationRolesXsrfToken = map[string][]string{
 	DeletePasskeyOperation:                  []string{},
 	DeleteSessionOperation:                  []string{},
 	LikeBlogPostOperation:                   []string{},
+	StartLessonOperation:                    []string{},
 	UpdateProfileOperation:                  []string{},
 }
 

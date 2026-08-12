@@ -1825,6 +1825,15 @@ export const zCheckLessonPath = z.object({
  */
 export const zCheckLessonResponse = zLessonCheckingResponse;
 
+export const zStartLessonPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * Empty 204 response for deletes and other content-less successes.
+ */
+export const zStartLessonResponse = z.void();
+
 export const zSwitchLocaleQuery = z.object({
   locale: zLocale
 });

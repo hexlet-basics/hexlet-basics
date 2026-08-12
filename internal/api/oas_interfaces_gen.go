@@ -385,6 +385,10 @@ type NewPasskeyRes interface {
 	newPasskeyRes()
 }
 
+type StartLessonRes interface {
+	startLessonRes()
+}
+
 type UpdatePasswordRes interface {
 	updatePasswordRes()
 }

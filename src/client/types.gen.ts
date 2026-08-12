@@ -4611,6 +4611,52 @@ export type CheckLessonResponses = {
 
 export type CheckLessonResponse = CheckLessonResponses[keyof CheckLessonResponses];
 
+export type StartLessonData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/lessons/{id}/start';
+};
+
+export type StartLessonErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * The learner has not reached this lesson yet. Sequential progression
+   * (ADR-0012) makes a lesson available only when its position in the course's
+   * current version is at most one past the furthest lesson they have finished.
+   *
+   * Distinct from 403: the caller's permissions are fine, their progress is not.
+   */
+  409: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type StartLessonError = StartLessonErrors[keyof StartLessonErrors];
+
+export type StartLessonResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type StartLessonResponse = StartLessonResponses[keyof StartLessonResponses];
+
 export type SwitchLocaleData = {
   body?: never;
   path?: never;

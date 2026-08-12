@@ -5259,6 +5259,7 @@ func (*NotFoundError) getNextBlogPostRes()          {}
 func (*NotFoundError) getPageRes()                  {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
+func (*NotFoundError) startLessonRes()              {}
 
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
@@ -7054,6 +7055,19 @@ func (s *StaffRolePermission) SetCanUpdate(val bool) {
 func (s *StaffRolePermission) SetCanDestroy(val bool) {
 	s.CanDestroy = val
 }
+
+type StartLessonConflict ProblemDetails
+
+func (*StartLessonConflict) startLessonRes() {}
+
+// StartLessonNoContent is response for StartLesson operation.
+type StartLessonNoContent struct{}
+
+func (*StartLessonNoContent) startLessonRes() {}
+
+type StartLessonUnauthorized ProblemDetails
+
+func (*StartLessonUnauthorized) startLessonRes() {}
 
 // SwitchLocaleNoContent is response for SwitchLocale operation.
 type SwitchLocaleNoContent struct{}

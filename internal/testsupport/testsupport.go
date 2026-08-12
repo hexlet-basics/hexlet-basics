@@ -36,6 +36,7 @@ import (
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -128,7 +129,15 @@ type Harness struct {
 	Enqueuer  *RecordingEnqueuer
 	Registrar *RecordingRegistrar
 	Events    *RecordingEventPublisher
-	doer      *inProcessDoer
+	// UserID is the fixture user the harness authenticates as, so a test can
+	// assert on rows belonging to the caller without hard-coding a fixture id.
+	UserID int
+	doer   *inProcessDoer
+}
+
+// HarnessUser reports the user every harness request is authenticated as.
+func HarnessUser(h *Harness) (int, bool) {
+	return h.UserID, h.UserID != 0
 }
 
 // LastStatus is the HTTP status of the most recent client call. It remains a
@@ -144,14 +153,18 @@ func (h *Harness) LastStatus() int { return h.doer.status }
 func NewHarness(t *testing.T) *Harness {
 	t.Helper()
 
-	db := NewClient(t)
+	db, transactor := NewClientWithTransactor(t)
 
 	enqueuer := &RecordingEnqueuer{DB: db}
 	registrar := NewRecordingRegistrar(db)
 	eventPublisher := &RecordingEventPublisher{}
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, registrar, eventPublisher, translator, errorHandler)
+	// The real progress module, over the test's transaction: the gate and the
+	// transitions under test are the production ones, only the event transport
+	// is recorded instead of written to the outbox.
+	tracker := progress.New(transactor, eventPublisher)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, tracker, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
@@ -173,12 +186,14 @@ func NewHarness(t *testing.T) *Harness {
 	return &Harness{
 		Client: &Client{Client: client}, DB: db, doer: doer,
 		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
+		UserID: security.userID,
 	}
 }
 
 type harnessSecurity struct {
-	jwt  string
-	xsrf string
+	jwt    string
+	xsrf   string
+	userID int
 }
 
 func newHarnessSecurity(t *testing.T, db *ent.Client) *harnessSecurity {
@@ -212,7 +227,7 @@ func newHarnessSecurity(t *testing.T, db *ent.Client) *harnessSecurity {
 
 	for _, cookie := range rec.Result().Cookies() {
 		if cookie.Name == "JWT" {
-			return &harnessSecurity{jwt: cookie.Value, xsrf: jti}
+			return &harnessSecurity{jwt: cookie.Value, xsrf: jti, userID: u.ID}
 		}
 	}
 	t.Fatal("JWT cookie was not issued")
@@ -240,6 +255,20 @@ type RecordingEventPublisher struct {
 // PublishStandalone records the fact without touching the SQL outbox.
 func (p *RecordingEventPublisher) PublishStandalone(
 	_ context.Context,
+	event events.Event,
+) error {
+	if p.Err != nil {
+		return p.Err
+	}
+	p.Published = append(p.Published, event)
+	return nil
+}
+
+// Publish records a fact raised inside a caller-owned transaction. The harness
+// asserts on what was published; Watermill's outbox write is production's job.
+func (p *RecordingEventPublisher) Publish(
+	_ context.Context,
+	_ *sql.Tx,
 	event events.Event,
 ) error {
 	if p.Err != nil {

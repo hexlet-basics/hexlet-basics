@@ -22,6 +22,7 @@ import (
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
@@ -146,16 +147,34 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		tracker, err := do.Invoke[*progress.Progress](i)
+		if err != nil {
+			return nil, err
+		}
 		return handlers.NewServer(
 			db,
 			cfg,
 			starter,
 			reviews,
+			tracker,
 			registrar,
 			publisher,
 			translator,
 			errorHandler,
 		), nil
+	}),
+	// The progress module owns sequential progression. It writes and publishes
+	// through the same transaction seam every other business module uses.
+	do.Lazy[*progress.Progress](func(i do.Injector) (*progress.Progress, error) {
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		return progress.New(txStore, publisher), nil
 	}),
 	do.Lazy[*api.Server](func(i do.Injector) (*api.Server, error) {
 		handler, err := do.Invoke[*handlers.Server](i)

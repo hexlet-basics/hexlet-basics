@@ -130,6 +130,9 @@ var (
 	rn65AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
+	rn123AllowedHeaders = map[string]string{
+		"POST": "X-Xsrf-Token",
+	}
 	rn80AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
@@ -2201,31 +2204,72 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							break
 						}
 						switch elem[0] {
-						case '/': // Prefix: "/check"
+						case '/': // Prefix: "/"
 
-							if l := len("/check"); len(elem) >= l && elem[0:l] == "/check" {
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								// Leaf node.
-								switch r.Method {
-								case "POST":
-									s.handleCheckLessonRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, notAllowedParams{
-										allowedMethods: "POST",
-										allowedHeaders: rn65AllowedHeaders,
-										acceptPost:     "application/json",
-										acceptPatch:    "",
-									})
+								break
+							}
+							switch elem[0] {
+							case 'c': // Prefix: "check"
+
+								if l := len("check"); len(elem) >= l && elem[0:l] == "check" {
+									elem = elem[l:]
+								} else {
+									break
 								}
 
-								return
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleCheckLessonRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, notAllowedParams{
+											allowedMethods: "POST",
+											allowedHeaders: rn65AllowedHeaders,
+											acceptPost:     "application/json",
+											acceptPatch:    "",
+										})
+									}
+
+									return
+								}
+
+							case 's': // Prefix: "start"
+
+								if l := len("start"); len(elem) >= l && elem[0:l] == "start" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch r.Method {
+									case "POST":
+										s.handleStartLessonRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									default:
+										s.notAllowed(w, r, notAllowedParams{
+											allowedMethods: "POST",
+											allowedHeaders: rn123AllowedHeaders,
+											acceptPost:     "",
+											acceptPatch:    "",
+										})
+									}
+
+									return
+								}
+
 							}
 
 						}
@@ -5012,29 +5056,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							break
 						}
 						switch elem[0] {
-						case '/': // Prefix: "/check"
+						case '/': // Prefix: "/"
 
-							if l := len("/check"); len(elem) >= l && elem[0:l] == "/check" {
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								// Leaf node.
-								switch method {
-								case "POST":
-									r.name = CheckLessonOperation
-									r.summary = ""
-									r.operationID = "checkLesson"
-									r.operationGroup = ""
-									r.pathPattern = "/lessons/{id}/check"
-									r.args = args
-									r.count = 1
-									return r, true
-								default:
-									return
+								break
+							}
+							switch elem[0] {
+							case 'c': // Prefix: "check"
+
+								if l := len("check"); len(elem) >= l && elem[0:l] == "check" {
+									elem = elem[l:]
+								} else {
+									break
 								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = CheckLessonOperation
+										r.summary = ""
+										r.operationID = "checkLesson"
+										r.operationGroup = ""
+										r.pathPattern = "/lessons/{id}/check"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
+							case 's': // Prefix: "start"
+
+								if l := len("start"); len(elem) >= l && elem[0:l] == "start" {
+									elem = elem[l:]
+								} else {
+									break
+								}
+
+								if len(elem) == 0 {
+									// Leaf node.
+									switch method {
+									case "POST":
+										r.name = StartLessonOperation
+										r.summary = ""
+										r.operationID = "startLesson"
+										r.operationGroup = ""
+										r.pathPattern = "/lessons/{id}/start"
+										r.args = args
+										r.count = 1
+										return r, true
+									default:
+										return
+									}
+								}
+
 							}
 
 						}
