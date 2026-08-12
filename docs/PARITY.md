@@ -19,17 +19,20 @@ against `ent/schema/`.
 |---|---|---|---|
 | Admin (all resources) | done | done (66 ops) | done (17 screens) |
 | Public catalog `/languages` | done | `listCourses` only | catalog page only |
-| Course landing / lesson player | done (first cut) | none | stub page |
+| Course landing | done | done, with progress | stub page |
+| Lesson player | done (first cut) | check only, runner stubbed | none |
+| Learner progress (start, check, dashboard, guest) | done | done | none |
 | Blog, categories, reviews, pages, sitemap | done | none | none |
 | Auth (login/signup) | done | done | done |
 | Auth (magic link, password reset, phone, passkeys) | done | none | none |
-| User area (`/my`, profile) | done | none | none |
+| User area (`/my`) | done | done | dashboard only |
+| Profile, locale, account deletion | done | none | none |
 | Cases, book download, feeds, error pages | **absent** | none | none |
 
-72 of 107 contract operations have handlers. The 35 without one are listed
+76 of 108 contract operations have handlers. The 32 without one are listed
 per blocker below (`adminUploadAttachment` is the exception — it is
 implemented outside the generated layer in `internal/handlers/attachments.go`
-because ogen cannot generate multipart, so the real count is 34).
+because ogen cannot generate multipart, so the real count is 31).
 
 ## Blockers, not tickets
 
@@ -37,28 +40,31 @@ The unimplemented operations cluster under a handful of missing foundations.
 Each foundation unlocks its whole group; sequencing should follow this graph,
 not the operation list.
 
-### 1. No Enrollment (`language_members`) — biggest one
+### 1. Enrollment and progress — **done** (ADR-0012)
 
-`Enrollment` exists **only** in the contract: no `ent/schema`, no
-`apiconv` mapping, no table access. This sits under the entire learner spine:
+The learner spine is built: `internal/progress` owns sequential progression,
+`ent/schema/enrollment.go` maps `language_members` behind a unique (user,
+course) index, and the four progress events have publishers. `startLesson`,
+`checkLesson`, `getCourse` and `getMyDashboard` are implemented, for a guest
+carrying a signed cookie as well as for a signed-in learner, and completion is
+re-evaluated when a version is promoted rather than by the unported
+`finish_language_members_job`.
 
-- `getMyDashboard` (`/my`)
-- `CourseView.enrollment` — the signed-in state of the course landing page
-- Lesson Progress, course start/finish
-- the `courseStarted` / `courseFinished` / `lessonStarted` / `lessonFinished`
-  events, which are *defined* in `internal/events` but have no publisher
-- `finish_language_members_job` (unported)
+What is left of it is frontend: the course landing page is still a stub and the
+dashboard has no screen.
 
-### 2. No code runner → no lesson player
+### 2. No code runner
 
-`checkLesson` is unimplemented and nothing in the repo shells out to Docker
-(the only Docker references are `courseloader` parsing and testcontainers).
-Legacy runs the check synchronously inside the request; the rewrite plans a
-river job (ADR-0004), which means the contract shape is **still undecided** —
-`api-spec/lesson-player.tsp` says so in its own header. Decide sync vs
-submit+poll/stream before building.
+The contract shape is now decided — the check stays synchronous, as legacy had
+it — and `checkLesson` is implemented against a `progress.ExerciseRunner`
+interface. What is missing is the implementation behind that interface: nothing
+in the repo shells out to Docker (the only Docker references are `courseloader`
+parsing and testcontainers), so both process graphs wire
+`progress.UnavailableRunner`, which fails every check loudly. Running untrusted
+submissions — client choice, resource limits, timeout classification, output
+capture — is the work that remains.
 
-Also blocked here: `getCourseLesson` (the player payload) and the whole
+Also unbuilt here: `getCourseLesson` (the player payload) and the whole
 `src/routes/…/languages/$slug/lessons/$slug` frontend.
 
 ### 3. No mailer (ADR-0006 unimplemented)
@@ -103,7 +109,7 @@ rewrite is an open decision.
 
 ### 10. Remaining public reads with no blocker
 
-Straight ports, only unwritten: `getCourse`, `listBlogPosts`, `getBlogPost`,
+Straight ports, only unwritten: `listBlogPosts`, `getBlogPost`,
 `getNextBlogPost`, `likeBlogPost`, `listPublicReviews`, `getSitemap`,
 `getProfile`, `updateProfile`, `deleteAccount`, `switchLocale`, `createLead`
 (the public lead form — everything downstream of it exists: the admin list, the
@@ -128,7 +134,9 @@ Invisible to the operation diff — these are not in TypeSpec yet:
 `internal/jobs` has `exercise_loader`, `review_lesson`, `amocrm_lead`.
 Unported legacy jobs:
 
-- `finish_language_members_job` (blocked by #1)
+- `finish_language_members_job` — **not being ported**: completion is
+  re-evaluated when a version is promoted (ADR-0012), which is why the Go stack
+  needs no nightly sweep for it
 - `find_related_courses_for_blog_post_job` — admin sets related courses
   manually today; the automatic suggestion is missing
 - `send_sms_job` (#4)
@@ -147,8 +155,9 @@ Classified so the raw count does not mislead:
   `survey_items`, `survey_answers`, `survey_scenario*`, `user_survey_pivots`,
   `ahoy_events`, `ahoy_visits`, `taggings`, `tags`, `uploads`, `ai_models`,
   `ai_tool_calls`.
-- **Blocking known work:** `language_members` (#1), `user_credentials` (#5),
-  `user_accounts` (OAuth), `language_category_items` (#6), `book_requests` (#7).
+- **Blocking known work:** `user_credentials` (#5), `user_accounts` (OAuth),
+  `language_category_items` (#6), `book_requests` (#7). (`language_members` is
+  mapped now — see #1.)
 - **Verify whether needed:** `language_version_infos`,
   `language_module_descriptions` (module/version info schemas exist for lessons
   and modules but not these).
@@ -159,10 +168,11 @@ Classified so the raw count does not mislead:
 
 ## Suggested order
 
-1. Enrollment (`language_members`) + progress events (unlocks `/my`, course
-   landing signed-in state, Lesson Progress).
-2. Decide the lesson-check contract, then build the runner (the product's core
-   loop and the only surface with an unsettled API design).
+1. ~~Enrollment (`language_members`) + progress events~~ — done.
+2. Build the exercise runner behind `progress.ExerciseRunner`, then the lesson
+   player frontend on top of the contract that now exists (the product's core
+   loop, and the only thing standing between the learner spine and a usable
+   product).
 3. Mailer, then the four email-based auth flows.
 4. The blocker-free public reads (#10) and their pages — blog, reviews,
    categories, sitemap, static pages.
