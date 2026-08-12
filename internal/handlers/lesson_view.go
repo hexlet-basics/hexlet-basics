@@ -98,6 +98,13 @@ func (s *Server) GetCourseLesson(
 		return nil, err
 	}
 
+	// The same page the course landing read resolves, because the player titles
+	// this page with the landing copy's name rather than the course's own.
+	landing, err := s.mainLandingPage(ctx, crs)
+	if err != nil {
+		return nil, err
+	}
+
 	view := &api.CourseLessonView{
 		Lesson: apiconv.ToCourseLesson(apiconv.LessonContent{
 			Course:        crs,
@@ -106,7 +113,8 @@ func (s *Server) GetCourseLesson(
 			Translation:   translation,
 			SourceCodeURL: s.lessonSourceURL(version, locale),
 		}, s.conv.ToCourse(crs)),
-		Progress: api.NilCourseProgress{Null: true},
+		LandingPage: landing,
+		Progress:    api.NilCourseProgress{Null: true},
 	}
 	if len(state.Lessons) > 0 {
 		view.Progress = api.NewNilCourseProgress(apiconv.ToCourseProgress(state))

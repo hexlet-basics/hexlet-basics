@@ -10643,14 +10643,19 @@ func (s *CourseLessonView) encodeFields(e *jx.Encoder) {
 		s.Lesson.Encode(e)
 	}
 	{
+		e.FieldStart("landingPage")
+		s.LandingPage.Encode(e)
+	}
+	{
 		e.FieldStart("progress")
 		s.Progress.Encode(e)
 	}
 }
 
-var jsonFieldsNameOfCourseLessonView = [2]string{
+var jsonFieldsNameOfCourseLessonView = [3]string{
 	0: "lesson",
-	1: "progress",
+	1: "landingPage",
+	2: "progress",
 }
 
 // Decode decodes CourseLessonView from json.
@@ -10672,8 +10677,18 @@ func (s *CourseLessonView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"lesson\"")
 			}
-		case "progress":
+		case "landingPage":
 			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				if err := s.LandingPage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"landingPage\"")
+			}
+		case "progress":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				if err := s.Progress.Decode(d); err != nil {
 					return err
@@ -10692,7 +10707,7 @@ func (s *CourseLessonView) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

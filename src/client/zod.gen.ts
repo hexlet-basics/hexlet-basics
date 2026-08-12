@@ -540,6 +540,7 @@ export const zCourseProgress = z.object({
  */
 export const zCourseLessonView = z.object({
   lesson: zCourseLesson,
+  landingPage: zCourseLandingPage.nullable(),
   progress: zCourseProgress.nullable()
 });
 

@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -50,6 +51,49 @@ func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
 	// The version the client submits its solution against.
 	assert.Equal(t, lesson.VersionId, lesson.Version.Value)
 	assert.NotZero(t, lesson.VersionId)
+}
+
+// The player titles the page with the course's landing copy, not with the
+// course's own name — two different strings, and the marketing one is what a
+// learner recognises. The page flagged main wins, exactly as the course read
+// picks the canonical one.
+func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+		CourseSlug: jsCourseSlug,
+		Slug:       secondLessonSlug,
+	})
+	require.NoError(t, err)
+	view := res.(*api.CourseLessonView)
+
+	require.False(t, view.LandingPage.Null)
+	landing := view.LandingPage.Value
+	assert.Equal(t, "javascript-ru", landing.Slug,
+		"the page flagged main wins, though the archived one has the lower id")
+	assert.Equal(t, "JavaScript", landing.Name)
+	assert.NotEqual(t, view.Lesson.Course.Name.Value, landing.Name,
+		"the two names are what makes this field necessary")
+}
+
+// A course nobody has written copy for is still readable: the landing page is
+// null rather than the read failing.
+func TestGetCourseLessonWithoutALandingPage(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+
+	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(ctx)
+	h.DB.LandingPage.Delete().Where(landingpage.CourseID(js.ID)).ExecX(ctx)
+
+	res, err := h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
+		CourseSlug: jsCourseSlug,
+		Slug:       secondLessonSlug,
+	})
+	require.NoError(t, err)
+	view, ok := res.(*api.CourseLessonView)
+	require.True(t, ok, "got %T", res)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
+	assert.True(t, view.LandingPage.Null)
 }
 
 // Reading a lesson never starts it: the frontend preloads routes on hover, so a

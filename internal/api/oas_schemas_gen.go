@@ -3201,6 +3201,16 @@ func (*CourseLessonReviewPage) adminListCourseLessonReviewsRes() {}
 // Ref: #/components/schemas/CourseLessonView
 type CourseLessonView struct {
 	Lesson CourseLesson `json:"lesson"`
+	// The course's landing copy — the same page the course landing read resolves: the one flagged main,
+	// otherwise the oldest.
+	//
+	// The player titles the page with the landing page's name, not the course's own `name`: those are two
+	// different strings, and the marketing name is the one a learner recognises. The description of the
+	// page is composed from it too, which is why the whole page travels rather than just its name.
+	//
+	// Null for a course with no landing page, which is a course nobody has written copy for yet — not a
+	// reason to fail the read.
+	LandingPage NilCourseLandingPage `json:"landingPage"`
 	// Where the visitor stands in the course this lesson belongs to — the same payload the course
 	// landing read returns, for a signed-in learner and a guest alike. The player reads
 	// `lessons[].available` to know whether this one may be taken, and `nextLessonSlug` for where "next"
@@ -3215,6 +3225,11 @@ func (s *CourseLessonView) GetLesson() CourseLesson {
 	return s.Lesson
 }
 
+// GetLandingPage returns the value of LandingPage.
+func (s *CourseLessonView) GetLandingPage() NilCourseLandingPage {
+	return s.LandingPage
+}
+
 // GetProgress returns the value of Progress.
 func (s *CourseLessonView) GetProgress() NilCourseProgress {
 	return s.Progress
@@ -3223,6 +3238,11 @@ func (s *CourseLessonView) GetProgress() NilCourseProgress {
 // SetLesson sets the value of Lesson.
 func (s *CourseLessonView) SetLesson(val CourseLesson) {
 	s.Lesson = val
+}
+
+// SetLandingPage sets the value of LandingPage.
+func (s *CourseLessonView) SetLandingPage(val NilCourseLandingPage) {
+	s.LandingPage = val
 }
 
 // SetProgress sets the value of Progress.

@@ -85,6 +85,10 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	assert.Equal(t, jsCourseSlug, view.Course.Slug)
 	assert.Len(t, view.Lessons, 3, "the public lesson list does not depend on a session")
 
+	require.False(t, view.LandingPage.Null)
+	assert.Equal(t, "javascript-ru", view.LandingPage.Value.Slug,
+		"the page flagged main is the canonical copy, though the archived one has the lower id")
+
 	require.False(t, view.Progress.Null)
 	progress := view.Progress.Value
 	assert.True(t, progress.State.Null, "nothing started")

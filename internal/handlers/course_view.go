@@ -3,6 +3,8 @@ package handlers
 import (
 	"context"
 
+	"entgo.io/ent/dialect/sql"
+
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselessontranslation"
@@ -83,10 +85,17 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 
 // mainLandingPage is the course's own landing copy: the page flagged main, and
 // otherwise the oldest one, mirroring how legacy picks the canonical page.
+//
+// `main` is nullable and most pages leave it null, so the ordering has to say
+// NULLS LAST explicitly: Postgres sorts nulls first under a bare DESC, which
+// would hand the canonical slot to whichever page is merely unflagged.
 func (s *Server) mainLandingPage(ctx context.Context, crs *ent.Course) (api.NilCourseLandingPage, error) {
 	page, err := s.db.LandingPage.Query().
 		Where(landingpage.CourseID(crs.ID)).
-		Order(ent.Desc(landingpage.FieldMain), ent.Asc(landingpage.FieldID)).
+		Order(
+			landingpage.ByMain(sql.OrderDesc(), sql.OrderNullsLast()),
+			landingpage.ByID(),
+		).
 		WithCourse().
 		First(ctx)
 	switch {
