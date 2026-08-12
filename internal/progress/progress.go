@@ -46,6 +46,7 @@ var ErrLessonNotAvailable = errors.New("progress: lesson is not available to thi
 type Tracker interface {
 	StartLesson(ctx context.Context, userID, lessonID int, locale string) error
 	CourseState(ctx context.Context, userID, courseID int) (*CourseState, error)
+	MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error
 }
 
 // CourseState is where a learner stands in one Course, computed against its

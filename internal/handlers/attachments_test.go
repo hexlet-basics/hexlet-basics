@@ -80,6 +80,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		errorHandler,
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
+		nil, // the upload path carries no guest progress
 	)
 	router := translator.Middleware(handlers.NewRouter(apiStub, att, gh, auth))
 

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+	"strings"
 	"time"
 
 	authlogger "github.com/go-pkgz/auth/v2/logger"
@@ -26,6 +27,7 @@ import (
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/localization"
+	"hexletbasics/internal/progress"
 )
 
 const (
@@ -63,6 +65,11 @@ type AuthHandler struct {
 	users  accounts.UserRegistrar
 	events events.StandalonePublisher
 	errors *APIErrorHandler
+	// guests carries the visitor progress a new session inherits, and the codec
+	// that reads and clears its cookie.
+	guests   progress.Tracker
+	guestJar *progress.GuestCodec
+	secure   bool
 }
 
 // NewAuthHandler builds the auth implementation used by the ogen handlers.
@@ -73,6 +80,7 @@ func NewAuthHandler(
 	errorHandler *APIErrorHandler,
 	registrar accounts.UserRegistrar,
 	eventPublisher events.StandalonePublisher,
+	tracker progress.Tracker,
 ) *AuthHandler {
 	tokenOpts := token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
@@ -104,10 +112,13 @@ func NewAuthHandler(
 				errorHandler.Write(r.Context(), w, r, withHTTPStatus(status, err))
 			},
 		},
-		i18n:   translator,
-		users:  registrar,
-		events: eventPublisher,
-		errors: errorHandler,
+		i18n:     translator,
+		users:    registrar,
+		events:   eventPublisher,
+		errors:   errorHandler,
+		guests:   tracker,
+		guestJar: progress.NewGuestCodec(cfg.JWTSecret),
+		secure:   strings.HasPrefix(cfg.PublicURL, "https://"),
 	}
 }
 
@@ -141,6 +152,68 @@ func (h *AuthHandler) Identify(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+// guestProgressContextKey carries the decoded guest cookie.
+type guestProgressContextKey struct{}
+
+// CarryGuestProgress decodes the guest cookie into the request context. Like
+// Identify it never fails a request: an absent, forged or tampered cookie
+// leaves the visitor with no progress, which is the same thing a first visit
+// looks like.
+func (h *AuthHandler) CarryGuestProgress(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie(progress.GuestCookieName)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		guest, err := h.guestJar.Decode(cookie.Value)
+		if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		next.ServeHTTP(w, r.WithContext(
+			context.WithValue(r.Context(), guestProgressContextKey{}, guest),
+		))
+	})
+}
+
+// GuestProgress returns the visitor progress carried by the request cookie.
+func GuestProgress(ctx context.Context) (progress.GuestProgress, bool) {
+	guest, ok := ctx.Value(guestProgressContextKey{}).(progress.GuestProgress)
+	return guest, ok
+}
+
+// mergeGuestProgress credits the visitor's cookie progress to the account that
+// just signed in or signed up, and returns the cookie that clears it.
+//
+// Deviation from #762 worth stating: the merge runs in its own transaction
+// rather than the one that issues the session. Session issue writes nothing
+// (the JWT is signed in process) and sign-up owns its transaction inside the
+// registrar, so one shared transaction would mean restructuring both. The merge
+// itself is atomic, and the cookie is cleared only after it succeeds — a failed
+// merge leaves the visitor's progress intact to be retried on the next sign-in,
+// which is the property the acceptance criterion is protecting.
+func (h *AuthHandler) mergeGuestProgress(ctx context.Context, userID int) ([]string, error) {
+	guest, ok := GuestProgress(ctx)
+	if !ok || len(guest.Entries) == 0 {
+		return nil, nil
+	}
+
+	if err := h.guests.MergeGuest(ctx, userID, guest, h.i18n.Locale(ctx)); err != nil {
+		return nil, err
+	}
+
+	cleared := &http.Cookie{
+		Name:     progress.GuestCookieName,
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   h.secure,
+		SameSite: http.SameSiteLaxMode,
+	}
+	return []string{cleared.String()}, nil
 }
 
 // AuthenticatedUser returns the database user loaded by the generated security
@@ -284,7 +357,11 @@ func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) 
 	if err != nil {
 		return nil, err
 	}
-	return &api.UserHeaders{SetCookie: cookies, Response: h.conv.ToUser(u)}, nil
+	merged, err := h.mergeGuestProgress(ctx, u.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &api.UserHeaders{SetCookie: append(cookies, merged...), Response: h.conv.ToUser(u)}, nil
 }
 
 // CreateUser creates an account and issues a go-pkgz/auth JWT cookie.
@@ -314,7 +391,11 @@ func (h *AuthHandler) CreateUser(ctx context.Context, req *api.SignUpInput) (api
 	if err != nil {
 		return nil, err
 	}
-	return &api.UserHeaders{SetCookie: cookies, Response: h.conv.ToUser(u)}, nil
+	merged, err := h.mergeGuestProgress(ctx, u.ID)
+	if err != nil {
+		return nil, err
+	}
+	return &api.UserHeaders{SetCookie: append(cookies, merged...), Response: h.conv.ToUser(u)}, nil
 }
 
 // DeleteSession returns go-pkgz/auth's expired session cookies.

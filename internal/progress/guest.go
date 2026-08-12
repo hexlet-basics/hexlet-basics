@@ -1,8 +1,10 @@
 package progress
 
 import (
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -10,6 +12,14 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/samber/lo"
+
+	"hexletbasics/ent"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/enrollment"
+	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/internal/events"
 )
 
 // GuestCookieName carries a visitor's progress. It is httpOnly: the client
@@ -163,4 +173,179 @@ func (c *GuestCodec) mac(body []byte) []byte {
 	sum := hmac.New(sha256.New, c.secret)
 	sum.Write(body)
 	return sum.Sum(nil)
+}
+
+// MergeGuest credits a visitor's cookie progress to their account.
+//
+// The transferred set is the PREFIX up to the guest's furthest finished Lesson,
+// not an explicit list: sequential progression means the prefix *is* the set,
+// because a guest could not have finished the fifth Lesson without finishing
+// the fourth. This is the one place rows are written for Lessons whose
+// completion is implied by the rule rather than individually observed, and a
+// deliberate departure from the legacy merge, which carried an explicit list of
+// lesson ids and could therefore transfer a non-contiguous selection.
+//
+// Both positions are resolved against the current Version before comparing, so
+// an account already further along is left untouched. A stored slug that the
+// current Version no longer contains resolves to nothing and that Course is
+// skipped — the guest's position resets, which is a bounded loss for someone
+// without an account and one that cannot corrupt the account.
+func (p *Progress) MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error {
+	if len(guest.Entries) == 0 {
+		return nil
+	}
+
+	return p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+		for _, entry := range guest.Entries {
+			if err := p.mergeCourse(ctx, tx, db, userID, entry, locale); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, userID int, entry GuestEntry, locale string) error {
+	crs, err := db.Course.Query().Where(course.SlugEQ(entry.CourseSlug)).Only(ctx)
+	switch {
+	case ent.IsNotFound(err):
+		return nil
+	case err != nil:
+		return fmt.Errorf("load course %q: %w", entry.CourseSlug, err)
+	}
+
+	lessons, err := currentLessons(ctx, db, crs)
+	if err != nil {
+		return err
+	}
+
+	guestPosition := 0
+	for _, lesson := range lessons {
+		if lesson.slug == entry.LessonSlug {
+			guestPosition = lesson.position
+		}
+	}
+	if guestPosition == 0 {
+		// The stored Lesson is not in the current Version: there is nothing to
+		// resolve the position against, so this Course resets to the beginning.
+		return nil
+	}
+
+	positions := make(map[int]int, len(lessons))
+	for _, lesson := range lessons {
+		positions[lesson.lessonID] = lesson.position
+	}
+	accountPosition, err := furthestFinishedPosition(ctx, db, userID, crs.ID, positions)
+	if err != nil {
+		return err
+	}
+	if accountPosition >= guestPosition {
+		// The account is already further along; the merge takes the higher of
+		// the two positions, which is the one already stored.
+		return nil
+	}
+
+	enrolled, createdEnrollment, err := p.enroll(ctx, db, userID, crs.ID)
+	if err != nil {
+		return err
+	}
+
+	occurredAt := p.now()
+	if createdEnrollment {
+		count, err := db.Enrollment.Query().
+			Where(enrollment.UserID(userID), enrollment.StateEQ(StateStarted)).
+			Count(ctx)
+		if err != nil {
+			return fmt.Errorf("count started enrollments: %w", err)
+		}
+		if err := p.publisher.Publish(ctx, tx, events.CourseStarted{
+			OccurrenceCount: count,
+			Slug:            entry.CourseSlug,
+			Locale:          locale,
+			OccurredAt:      occurredAt,
+		}); err != nil {
+			return fmt.Errorf("publish course started: %w", err)
+		}
+	}
+
+	finished, err := finishedLessonIDs(ctx, db, userID, crs.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, lesson := range lessons {
+		if lesson.position > guestPosition || finished[lesson.lessonID] {
+			continue
+		}
+		if err := p.creditLesson(ctx, tx, db, userID, crs, enrolled, lesson, locale, occurredAt); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// creditLesson writes one implied completion and the pair of facts that a
+// learner passing it would have produced.
+func (p *Progress) creditLesson(
+	ctx context.Context,
+	tx *sql.Tx,
+	db *ent.Client,
+	userID int,
+	crs *ent.Course,
+	enrolled *ent.Enrollment,
+	lesson currentLesson,
+	locale string,
+	occurredAt time.Time,
+) error {
+	existing, err := db.LessonProgress.Query().
+		Where(lessonprogress.UserID(userID), lessonprogress.LessonID(lesson.lessonID)).
+		Only(ctx)
+	switch {
+	case err == nil:
+		// Started but not finished: the guest's prefix says otherwise.
+		if _, err := existing.Update().SetState(StateFinished).Save(ctx); err != nil {
+			return fmt.Errorf("finish lesson progress: %w", err)
+		}
+	case ent.IsNotFound(err):
+		if _, err := db.LessonProgress.Create().
+			SetUserID(userID).
+			SetCourseID(crs.ID).
+			SetEnrollmentID(enrolled.ID).
+			SetLessonID(lesson.lessonID).
+			SetState(StateFinished).
+			Save(ctx); err != nil {
+			return fmt.Errorf("create finished lesson progress: %w", err)
+		}
+	default:
+		return fmt.Errorf("load lesson progress: %w", err)
+	}
+
+	count, err := db.LessonProgress.Query().
+		Where(lessonprogress.EnrollmentID(enrolled.ID)).
+		Count(ctx)
+	if err != nil {
+		return fmt.Errorf("count lesson progress: %w", err)
+	}
+
+	for _, event := range []events.Event{
+		events.LessonStarted{
+			OccurrenceCount: count,
+			LessonSlug:      lesson.slug,
+			CourseSlug:      lo.FromPtr(crs.Slug),
+			Locale:          locale,
+			OccurredAt:      occurredAt,
+		},
+		events.LessonFinished{
+			OccurrenceCount: count,
+			LessonSlug:      lesson.slug,
+			CourseSlug:      lo.FromPtr(crs.Slug),
+			Locale:          locale,
+			OccurredAt:      occurredAt,
+		},
+	} {
+		if err := p.publisher.Publish(ctx, tx, event); err != nil {
+			return fmt.Errorf("publish merge fact: %w", err)
+		}
+	}
+	return nil
 }

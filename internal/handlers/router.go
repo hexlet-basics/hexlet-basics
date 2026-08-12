@@ -33,6 +33,6 @@ func NewRouter(
 	// Identify wraps only the generated operations: it attaches the signed-in
 	// user when a session cookie is present, so a public read can answer a
 	// learner with their progress and a visitor without it.
-	transport.Handle("/", auth.Identify(apiHandler))
+	transport.Handle("/", auth.Identify(auth.CarryGuestProgress(apiHandler)))
 	return auth.Trace(transport)
 }

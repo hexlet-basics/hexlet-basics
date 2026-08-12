@@ -59,7 +59,7 @@ func NewServer(
 		starter:  starter,
 		reviews:  reviews,
 		progress: tracker,
-		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher),
+		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker),
 		i18n:     translator,
 		errors:   errorHandler,
 	}

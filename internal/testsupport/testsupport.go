@@ -24,6 +24,7 @@ import (
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/riverqueue/river"
+	"github.com/samber/lo"
 	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
@@ -145,6 +146,12 @@ func HarnessUser(h *Harness) (int, bool) {
 // generated ProblemDetailsStatusCode type.
 func (h *Harness) LastStatus() int { return h.doer.status }
 
+// ResponseCookies are the raw Set-Cookie headers of the most recent call. The
+// generated client decodes that header as a single comma-separated array and so
+// reports only the first cookie; a test that cares which cookies were actually
+// set has to look at the response itself.
+func (h *Harness) ResponseCookies() []string { return h.doer.setCookies }
+
 // NewHarness builds the in-process test stack: an ent client over a fresh SQL
 // transaction, the handlers.Server, the ogen api.Server with the production
 // ErrorHandler, and a generated client whose transport dispatches straight into
@@ -178,8 +185,10 @@ func NewHarness(t *testing.T) *Harness {
 
 	security := newHarnessSecurity(t, db)
 	doer := &inProcessDoer{
-		server: translator.Middleware(handler.AuthHandler().Trace(handler.AuthHandler().Identify(srv))),
-		jwt:    security.jwt,
+		server: translator.Middleware(handler.AuthHandler().Trace(
+			handler.AuthHandler().Identify(handler.AuthHandler().CarryGuestProgress(srv)),
+		)),
+		jwt: security.jwt,
 	}
 	client, err := api.NewClient("http://test", security, api.WithClient(doer))
 	if err != nil {
@@ -191,6 +200,38 @@ func NewHarness(t *testing.T) *Harness {
 		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
 		UserID: security.userID,
 	}
+}
+
+// HarnessUserPassword is the password GivePassword sets, so a test can sign in
+// as a fixture user without inventing credentials of its own.
+const HarnessUserPassword = "harness-password"
+
+// GivePassword gives a fixture user a usable password. The fixtures carry no
+// digest — the harness normally mints a JWT directly — so a test that exercises
+// the password flow has to supply one.
+func GivePassword(t *testing.T, h *Harness, userID int) string {
+	t.Helper()
+	digest, err := bcrypt.GenerateFromPassword([]byte(HarnessUserPassword), bcrypt.MinCost)
+	if err != nil {
+		t.Fatalf("hash harness password: %v", err)
+	}
+	u := h.DB.User.UpdateOneID(userID).
+		SetPasswordDigest(string(digest)).
+		SaveX(t.Context())
+	return lo.FromPtr(u.Email)
+}
+
+// NewGuestHarness is the harness with a signed guest-progress cookie on every
+// request, for the flows that turn a visitor's cookie into account rows.
+func NewGuestHarness(t *testing.T, guest progress.GuestProgress) *Harness {
+	t.Helper()
+	h := NewHarness(t)
+	value, err := progress.NewGuestCodec(testConfig.JWTSecret).Encode(guest)
+	if err != nil {
+		t.Fatalf("encode guest progress: %v", err)
+	}
+	h.doer.guest = value
+	return h
 }
 
 // NewAnonymousHarness is the same in-process stack with no session cookie, for
@@ -368,6 +409,10 @@ type inProcessDoer struct {
 	// anonymous drops it, so a public read can be exercised exactly as a visitor
 	// reaches it.
 	anonymous bool
+	// guest is the signed guest-progress cookie a visitor would carry.
+	guest string
+	// setCookies are the raw Set-Cookie headers of the last response.
+	setCookies []string
 }
 
 func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
@@ -378,8 +423,13 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	case d.jwt != "":
 		r.AddCookie(&http.Cookie{Name: "JWT", Value: d.jwt})
 	}
+	if d.guest != "" && !d.anonymous {
+		r.AddCookie(&http.Cookie{Name: progress.GuestCookieName, Value: d.guest})
+	}
 	rec := httptest.NewRecorder()
 	d.server.ServeHTTP(rec, r)
 	d.status = rec.Code
-	return rec.Result(), nil
+	result := rec.Result()
+	d.setCookies = result.Header.Values("Set-Cookie")
+	return result, nil
 }
