@@ -47,26 +47,34 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		LandingPage: landing,
 		Lessons:     lessons,
 		Enrollment:  api.NilEnrollment{Null: true},
+		Progress:    api.NilCourseProgress{Null: true},
 	}
 
-	u, signedIn := AuthenticatedUser(ctx)
-	if !signedIn {
+	// Everyone gets a position, because everyone has one: a visitor who has
+	// finished nothing stands at the beginning with the first lesson open, and
+	// that is a fact about the course, not about having an account. Deriving it
+	// client-side instead would be a second implementation of the gate.
+	learner := submittingLearner(ctx)
+	state, err := s.progress.CourseState(ctx, learner, crs.ID)
+	if err != nil {
+		return nil, err
+	}
+	if len(state.Lessons) > 0 {
+		view.Progress = api.NewNilCourseProgress(apiconv.ToCourseProgress(state))
+	}
+
+	if !learner.SignedIn() {
 		return view, nil
 	}
 
 	enrolled, err := s.db.Enrollment.Query().
-		Where(enrollment.UserID(u.ID), enrollment.CourseID(crs.ID)).
+		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(crs.ID)).
 		Only(ctx)
 	switch {
 	case ent.IsNotFound(err):
 		// Not started: the absence of a record, not a state a record can be in.
 		return view, nil
 	case err != nil:
-		return nil, err
-	}
-
-	state, err := s.progress.CourseState(ctx, u.ID, crs.ID)
-	if err != nil {
 		return nil, err
 	}
 	view.Enrollment = api.NewNilEnrollment(apiconv.ToEnrollment(enrolled, state))

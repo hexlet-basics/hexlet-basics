@@ -4011,14 +4011,9 @@ func encodeNewPasskeySessionResponse(response *PasskeyChallenge, w http.Response
 
 func encodeStartLessonResponse(response StartLessonRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *StartLessonNoContent:
-		w.WriteHeader(204)
-
-		return nil
-
-	case *StartLessonUnauthorized:
-		w.Header().Set("Content-Type", "application/problem+json")
-		w.WriteHeader(401)
+	case *CourseProgress:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
 
 		e := new(jx.Encoder)
 		response.Encode(e)
@@ -4040,7 +4035,7 @@ func encodeStartLessonResponse(response StartLessonRes, w http.ResponseWriter, s
 
 		return nil
 
-	case *StartLessonConflict:
+	case *ProblemDetails:
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(409)
 

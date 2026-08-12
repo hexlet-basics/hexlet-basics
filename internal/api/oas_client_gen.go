@@ -602,6 +602,10 @@ type Invoker interface {
 	// Idempotent: starting an already-started or already-finished lesson succeeds and changes nothing. 409
 	// when the lesson is beyond the gate.
 	//
+	// Public, because a guest progresses under the same rule. For them it validates the gate and returns
+	// their position without storing anything: their state is the signed cookie, and only a check moves
+	// it.
+	//
 	// POST /lessons/{id}/start
 	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
 	// SwitchLocale invokes switchLocale operation.
@@ -14475,6 +14479,10 @@ func (c *Client) sendNewPasskeySession(ctx context.Context) (res *PasskeyChallen
 // Idempotent: starting an already-started or already-finished lesson succeeds and changes nothing. 409
 // when the lesson is beyond the gate.
 //
+// Public, because a guest progresses under the same rule. For them it validates the gate and returns
+// their position without storing anything: their state is the signed cookie, and only a check moves
+// it.
+//
 // POST /lessons/{id}/start
 func (c *Client) StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error) {
 	res, err := c.sendStartLesson(ctx, params)
@@ -14545,50 +14553,6 @@ func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) 
 	r, err := ht.NewRequest(ctx, "POST", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:UserSession"
-			switch err := c.securityUserSession(ctx, StartLessonOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"UserSession\"")
-			}
-		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, StartLessonOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000011},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
 	}
 
 	stage = "SendRequest"

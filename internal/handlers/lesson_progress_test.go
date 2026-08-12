@@ -39,8 +39,8 @@ func TestStartLessonRecordsProgressOnTheNextAvailableLesson(t *testing.T) {
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
-	assert.Equal(t, http.StatusNoContent, h.LastStatus())
+	require.IsType(t, &api.CourseProgress{}, res)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
 
 	row, err := h.DB.LessonProgress.Query().
 		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
@@ -67,7 +67,7 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
+	require.IsType(t, &api.CourseProgress{}, res)
 
 	count, err := h.DB.Enrollment.Query().
 		Where(
@@ -100,7 +100,7 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonNoContent{}, res)
+	require.IsType(t, &api.CourseProgress{}, res)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "no row is written")
 	assert.Empty(t, h.Events.Published, "an already-finished lesson publishes nothing")
@@ -120,7 +120,7 @@ func TestStartLessonRefusesALessonBeyondTheGate(t *testing.T) {
 
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
 	require.NoError(t, err)
-	require.IsType(t, &api.StartLessonConflict{}, res)
+	require.IsType(t, &api.ProblemDetails{}, res)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
@@ -165,13 +165,68 @@ func TestStartLessonIgnoresLessonsDroppedFromTheCurrentVersion(t *testing.T) {
 	third := lessonBySlug(t, h, thirdLessonSlug)
 	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(third.ID)})
 	require.NoError(t, err)
-	assert.IsType(t, &api.StartLessonConflict{}, res, "a dropped lesson has no position")
+	assert.IsType(t, &api.ProblemDetails{}, res, "a dropped lesson has no position")
 
 	// While the lesson one past their furthest SURVIVING one still opens.
 	second := lessonBySlug(t, h, secondLessonSlug)
 	res, err = h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(second.ID)})
 	require.NoError(t, err)
-	assert.IsType(t, &api.StartLessonNoContent{}, res)
+	assert.IsType(t, &api.CourseProgress{}, res)
+}
+
+// Starting returns where the learner now stands, so the page they land on
+// renders locks and checkmarks from the server's answer rather than deriving
+// them.
+func TestStartLessonAnswersWithTheLearnersPosition(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	lesson := lessonBySlug(t, h, secondLessonSlug)
+
+	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
+	require.NoError(t, err)
+	state, ok := res.(*api.CourseProgress)
+	require.True(t, ok, "got %T", res)
+
+	assert.Equal(t, int32(1), state.FurthestFinishedPosition)
+	assert.Equal(t, secondLessonSlug, state.NextLessonSlug.Value, "started is not finished")
+	require.Len(t, state.Lessons, 3)
+	assert.True(t, state.Lessons[1].Available)
+	assert.False(t, state.Lessons[2].Available)
+}
+
+// A guest starts under the same rule and gets the same payload, with nothing
+// stored: only a check moves their position.
+func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
+	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, firstLessonSlug))
+	ctx := t.Context()
+	lesson := lessonBySlug(t, h, secondLessonSlug)
+	rows := h.DB.LessonProgress.Query().CountX(ctx)
+	enrollments := h.DB.Enrollment.Query().CountX(ctx)
+
+	res, err := h.Client.StartLesson(ctx, api.StartLessonParams{ID: int32(lesson.ID)})
+	require.NoError(t, err)
+	state, ok := res.(*api.CourseProgress)
+	require.True(t, ok, "got %T", res)
+
+	assert.Equal(t, api.EnrollmentStateStarted, state.State.Value, "derived from what they finished")
+	assert.Equal(t, int32(1), state.FurthestFinishedPosition)
+	assert.True(t, state.Lessons[1].Available)
+	assert.False(t, state.Lessons[2].Available)
+
+	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
+	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
+	assert.Empty(t, h.Events.Published, "starting is not a fact for someone with no account")
+}
+
+// The gate is real for a visitor too: with no cookie only the first lesson of a
+// course opens.
+func TestStartLessonRefusesAGuestBeyondTheGate(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	lesson := lessonBySlug(t, h, secondLessonSlug)
+
+	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: int32(lesson.ID)})
+	require.NoError(t, err)
+	require.IsType(t, &api.ProblemDetails{}, res)
+	assert.Equal(t, http.StatusConflict, h.LastStatus())
 }
 
 func lessonBySlug(t *testing.T, h *testsupport.Harness, slug string) *ent.CourseLesson {

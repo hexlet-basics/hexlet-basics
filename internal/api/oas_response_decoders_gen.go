@@ -14991,24 +14991,21 @@ func decodeNewPasskeySessionResponse(resp *http.Response) (res *PasskeyChallenge
 
 func decodeStartLessonResponse(resp *http.Response) (res StartLessonRes, _ error) {
 	switch resp.StatusCode {
-	case 204:
-		// Code 204.
-		return &StartLessonNoContent{}, nil
-	case 401:
-		// Code 401.
+	case 200:
+		// Code 200.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 		if err != nil {
 			return res, errors.Wrap(err, "parse media type")
 		}
 		switch {
-		case ct == "application/problem+json":
+		case ct == "application/json":
 			buf, err := io.ReadAll(resp.Body)
 			if err != nil {
 				return res, err
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response StartLessonUnauthorized
+			var response CourseProgress
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -15024,6 +15021,15 @@ func decodeStartLessonResponse(resp *http.Response) (res StartLessonRes, _ error
 					Err:         err,
 				}
 				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
 			}
 			return &response, nil
 		default:
@@ -15078,7 +15084,7 @@ func decodeStartLessonResponse(resp *http.Response) (res StartLessonRes, _ error
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response StartLessonConflict
+			var response ProblemDetails
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

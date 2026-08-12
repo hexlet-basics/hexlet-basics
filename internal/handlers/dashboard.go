@@ -56,7 +56,7 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 			continue
 		}
 
-		state, err := s.progress.CourseState(ctx, u.ID, enrolled.CourseID)
+		state, err := s.progress.CourseState(ctx, progress.Learner{UserID: u.ID}, enrolled.CourseID)
 		if err != nil {
 			return nil, err
 		}

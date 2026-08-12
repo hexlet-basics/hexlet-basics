@@ -44,9 +44,9 @@ var ErrLessonNotAvailable = errors.New("progress: lesson is not available to thi
 // Tracker is the seam handlers depend on, so no handler learns where progress
 // is stored or how the gate is evaluated.
 type Tracker interface {
-	StartLesson(ctx context.Context, userID, lessonID int, locale string) error
+	StartLesson(ctx context.Context, learner Learner, lessonID int, locale string) (*CourseState, error)
 	CheckSolution(ctx context.Context, check Check) (*CheckResult, error)
-	CourseState(ctx context.Context, userID, courseID int) (*CourseState, error)
+	CourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error)
 	MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error
 }
 
@@ -86,21 +86,48 @@ func New(db *ent.Client, txStore store.Transactor, publisher events.TxPublisher,
 }
 
 // StartLesson enrolls the learner in the Lesson's Course if they are not
-// enrolled yet and marks the Lesson started.
+// enrolled yet, marks the Lesson started, and returns where they now stand.
 //
 // Idempotent by design: starting a Lesson that is already started, or already
 // finished, succeeds and writes nothing — the frontend calls this from a button
 // that a learner can press twice, and from "next" at the end of a Lesson.
 //
+// A guest is gated by the same rule but stores nothing: their whole state is
+// the furthest Lesson they finished, which only a check can move. They still
+// get their position back, so the page they land on renders from the server's
+// answer exactly as a learner's does.
+//
 // Returns ErrLessonNotAvailable when the gate refuses, and an ent not-found
 // error when the Lesson is not part of its Course's current Version — a Lesson
 // a later build dropped is no longer startable.
-func (p *Progress) StartLesson(ctx context.Context, userID, lessonID int, locale string) error {
-	return p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+func (p *Progress) StartLesson(
+	ctx context.Context,
+	learner Learner,
+	lessonID int,
+	locale string,
+) (*CourseState, error) {
+	courseID, err := p.startLesson(ctx, learner, lessonID, locale)
+	if err != nil {
+		return nil, err
+	}
+	return p.CourseState(ctx, learner, courseID)
+}
+
+// startLesson performs the write half and reports which Course was started, so
+// the read that follows it runs outside the transaction rather than inside.
+func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID int, locale string) (int, error) {
+	if !learner.SignedIn() {
+		return p.gateGuest(ctx, learner, lessonID)
+	}
+
+	courseID := 0
+	err := p.store.WithinTx(ctx, func(tx *sql.Tx, db *ent.Client) error {
+		userID := learner.UserID
 		lesson, crs, err := loadLessonCourse(ctx, db, lessonID)
 		if err != nil {
 			return err
 		}
+		courseID = crs.ID
 
 		positions, err := currentPositions(ctx, db, crs)
 		if err != nil {
@@ -185,6 +212,36 @@ func (p *Progress) StartLesson(ctx context.Context, userID, lessonID int, locale
 		}
 		return nil
 	})
+	return courseID, err
+}
+
+// gateGuest evaluates the gate for a visitor and reports the Course, writing
+// nothing. There is no guest equivalent of a started Lesson: a started state
+// carries no data, and the one feature anchored on Lesson Progress — the
+// in-lesson assistant — requires an account anyway.
+func (p *Progress) gateGuest(ctx context.Context, learner Learner, lessonID int) (int, error) {
+	_, crs, err := loadLessonCourse(ctx, p.db, lessonID)
+	if err != nil {
+		return 0, err
+	}
+
+	lessons, err := currentLessons(ctx, p.db, crs)
+	if err != nil {
+		return 0, err
+	}
+	target := positionOf(lessons, lessonID)
+	if target == 0 {
+		return 0, &ent.NotFoundError{}
+	}
+
+	furthest, err := p.furthestPosition(ctx, p.db, learner, crs, lessons)
+	if err != nil {
+		return 0, err
+	}
+	if target > furthest+1 {
+		return 0, ErrLessonNotAvailable
+	}
+	return crs.ID, nil
 }
 
 // enroll returns the learner's Enrollment in the Course, creating it when
@@ -353,7 +410,11 @@ func currentLessons(ctx context.Context, db *ent.Client, crs *ent.Course) ([]cur
 // gets the same shape with nothing finished — the absence of a record is the
 // "not started" condition, not a state a record can be in, so the read does not
 // have to distinguish them.
-func (p *Progress) CourseState(ctx context.Context, userID, courseID int) (*CourseState, error) {
+//
+// A guest gets the same shape from the other storage. Sequential progression
+// makes their gaps unrepresentable, so their single furthest Lesson implies the
+// whole finished set: everything up to it is done, everything after it is not.
+func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error) {
 	crs, err := p.db.Course.Query().Where(course.ID(courseID)).Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load course %d: %w", courseID, err)
@@ -364,7 +425,7 @@ func (p *Progress) CourseState(ctx context.Context, userID, courseID int) (*Cour
 		return nil, err
 	}
 
-	finishedIDs, err := finishedLessonIDs(ctx, p.db, userID, courseID)
+	finishedIDs, err := p.finishedLessons(ctx, learner, crs, lessons)
 	if err != nil {
 		return nil, err
 	}
@@ -401,8 +462,23 @@ func (p *Progress) CourseState(ctx context.Context, userID, courseID int) (*Cour
 		state.Completion = finishedCount * 100 / len(lessons)
 	}
 
+	if !learner.SignedIn() {
+		// A guest has no Enrollment to read a state from, so it is derived from
+		// what they have finished. Deriving rather than leaving it null is what
+		// makes the payload the client renders identical for both.
+		switch {
+		case finishedCount == 0:
+			state.State = ""
+		case finishedCount == len(lessons):
+			state.State = StateFinished
+		default:
+			state.State = StateStarted
+		}
+		return state, nil
+	}
+
 	enrolled, err := p.db.Enrollment.Query().
-		Where(enrollment.UserID(userID), enrollment.CourseID(courseID)).
+		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(courseID)).
 		Only(ctx)
 	switch {
 	case err == nil:
@@ -411,6 +487,30 @@ func (p *Progress) CourseState(ctx context.Context, userID, courseID int) (*Cour
 		return nil, fmt.Errorf("load enrollment: %w", err)
 	}
 	return state, nil
+}
+
+// finishedLessons is the set of Lessons the learner has finished, from
+// whichever storage holds their progress: rows for an account, and for a guest
+// the prefix their furthest Lesson implies.
+func (p *Progress) finishedLessons(
+	ctx context.Context,
+	learner Learner,
+	crs *ent.Course,
+	lessons []currentLesson,
+) (map[int]bool, error) {
+	if learner.SignedIn() {
+		return finishedLessonIDs(ctx, p.db, learner.UserID, crs.ID)
+	}
+
+	furthest, err := p.furthestPosition(ctx, p.db, learner, crs, lessons)
+	if err != nil {
+		return nil, err
+	}
+	finished := make(map[int]bool, len(lessons))
+	for _, lesson := range lessons {
+		finished[lesson.lessonID] = lesson.position <= furthest
+	}
+	return finished, nil
 }
 
 func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int) (map[int]bool, error) {

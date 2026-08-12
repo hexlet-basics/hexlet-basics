@@ -95,7 +95,6 @@ interface LessonCheck {
 
 @route("/lessons/{id}/start")
 @tag("Lesson Player")
-@useAuth(UserSession)
 interface LessonStart {
   /**
    * Start a lesson: enroll the learner in its course if they are not enrolled
@@ -105,11 +104,14 @@ interface LessonStart {
    *
    * Idempotent: starting an already-started or already-finished lesson
    * succeeds and changes nothing. 409 when the lesson is beyond the gate.
+   *
+   * Public, because a guest progresses under the same rule. For them it
+   * validates the gate and returns their position without storing anything:
+   * their state is the signed cookie, and only a check moves it.
    */
   @post
-  @useAuth([UserSession, XsrfToken])
   @operationId("startLesson")
-  start(@path id: int32): NoContent | LessonNotAvailableError | NotFoundError | UnauthorizedError | ApiError;
+  start(@path id: int32): CourseProgress | LessonNotAvailableError | NotFoundError | ApiError;
 }
 
 // ---- AI assistant (in-lesson chat) ----------------------------------------

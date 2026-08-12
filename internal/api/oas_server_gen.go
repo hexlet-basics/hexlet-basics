@@ -581,6 +581,10 @@ type Handler interface {
 	// Idempotent: starting an already-started or already-finished lesson succeeds and changes nothing. 409
 	// when the lesson is beyond the gate.
 	//
+	// Public, because a guest progresses under the same rule. For them it validates the gate and returns
+	// their position without storing anything: their state is the signed cookie, and only a check moves
+	// it.
+	//
 	// POST /lessons/{id}/start
 	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
 	// SwitchLocale implements switchLocale operation.

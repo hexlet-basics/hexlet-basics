@@ -24,6 +24,15 @@ model CourseView {
 
   /** The current user's enrollment, when signed in. */
   enrollment: Enrollment | null;
+
+  /**
+   * Where the visitor stands in this course. Identical in shape for a
+   * signed-in learner, whose position is rows, and for a guest, whose position
+   * is the signed progress cookie — which is what keeps the client free of any
+   * guest/member branch. Null only for a course with no built version, where
+   * there is nothing to stand in.
+   */
+  progress: CourseProgress | null;
 }
 
 /** A category page with the courses it groups. */

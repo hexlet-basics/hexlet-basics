@@ -1986,6 +1986,10 @@ export const checkLessonMutation = (options?: Partial<Options<CheckLessonData>>)
  *
  * Idempotent: starting an already-started or already-finished lesson
  * succeeds and changes nothing. 409 when the lesson is beyond the gate.
+ *
+ * Public, because a guest progresses under the same rule. For them it
+ * validates the gate and returns their position without storing anything:
+ * their state is the signed cookie, and only a check moves it.
  */
 export const startLessonMutation = (options?: Partial<Options<StartLessonData>>): UseMutationOptions<StartLessonResponse, AxiosError<StartLessonError>, Options<StartLessonData>> => {
   const mutationOptions: UseMutationOptions<StartLessonResponse, AxiosError<StartLessonError>, Options<StartLessonData>> = {

@@ -541,6 +541,14 @@ export type CourseView = {
    * The current user's enrollment, when signed in.
    */
   enrollment: Enrollment | null;
+  /**
+   * Where the visitor stands in this course. Identical in shape for a
+   * signed-in learner, whose position is rows, and for a guest, whose position
+   * is the signed progress cookie — which is what keeps the client free of any
+   * guest/member branch. Null only for a course with no built version, where
+   * there is nothing to stand in.
+   */
+  progress: CourseProgress | null;
 };
 
 /**
@@ -4683,10 +4691,6 @@ export type StartLessonData = {
 
 export type StartLessonErrors = {
   /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
    * A resource was not found.
    */
   404: NotFoundError;
@@ -4711,9 +4715,9 @@ export type StartLessonError = StartLessonErrors[keyof StartLessonErrors];
 
 export type StartLessonResponses = {
   /**
-   * Empty 204 response for deletes and other content-less successes.
+   * The request has succeeded.
    */
-  204: void;
+  200: CourseProgress;
 };
 
 export type StartLessonResponse = StartLessonResponses[keyof StartLessonResponses];

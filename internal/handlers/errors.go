@@ -147,18 +147,10 @@ func errorStatus(err error) int {
 }
 
 // LessonNotAvailable builds the contract's typed 409 for a lesson beyond the
-// learner's gate. It is a declared domain outcome, not a failure, so it never
-// reaches the reporting path the transport errors take.
-func (h *APIErrorHandler) LessonNotAvailable(ctx context.Context) *api.StartLessonConflict {
-	problem := api.StartLessonConflict(h.problem(ctx, http.StatusConflict))
-	return &problem
-}
-
-// LessonNotAvailableProblem is the same 409 for the check operation. ogen names
-// a declared error after its operation only when the operation has a second
-// response of the same shape to tell it apart from; the check has none, so its
-// 409 is a bare ProblemDetails and needs a constructor of its own.
-func (h *APIErrorHandler) LessonNotAvailableProblem(ctx context.Context) *api.ProblemDetails {
+// learner's gate, shared by both lesson operations. It is a declared domain
+// outcome, not a failure, so it never reaches the reporting path the transport
+// errors take.
+func (h *APIErrorHandler) LessonNotAvailable(ctx context.Context) *api.ProblemDetails {
 	problem := h.problem(ctx, http.StatusConflict)
 	return &problem
 }

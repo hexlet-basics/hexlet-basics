@@ -555,7 +555,8 @@ export const zCourseView = z.object({
   course: zCourse,
   landingPage: zCourseLandingPage.nullable(),
   lessons: z.array(zCourseLessonListItem),
-  enrollment: zEnrollment.nullable()
+  enrollment: zEnrollment.nullable(),
+  progress: zCourseProgress.nullable()
 });
 
 /**
@@ -1861,9 +1862,9 @@ export const zStartLessonPath = z.object({
 });
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * The request has succeeded.
  */
-export const zStartLessonResponse = z.void();
+export const zStartLessonResponse = zCourseProgress;
 
 export const zSwitchLocaleQuery = z.object({
   locale: zLocale

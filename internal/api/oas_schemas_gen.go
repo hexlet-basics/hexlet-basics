@@ -3320,6 +3320,8 @@ func (s *CourseProgress) SetLessons(val []LessonProgressItem) {
 	s.Lessons = val
 }
 
+func (*CourseProgress) startLessonRes() {}
+
 // Publication/readiness state of a course.
 // Ref: #/components/schemas/CourseReadiness
 type CourseReadiness string
@@ -3429,6 +3431,11 @@ type CourseView struct {
 	Lessons     []CourseLessonListItem `json:"lessons"`
 	// The current user's enrollment, when signed in.
 	Enrollment NilEnrollment `json:"enrollment"`
+	// Where the visitor stands in this course. Identical in shape for a signed-in learner, whose position
+	// is rows, and for a guest, whose position is the signed progress cookie — which is what keeps the
+	// client free of any guest/member branch. Null only for a course with no built version, where there is
+	// nothing to stand in.
+	Progress NilCourseProgress `json:"progress"`
 }
 
 // GetCourse returns the value of Course.
@@ -3451,6 +3458,11 @@ func (s *CourseView) GetEnrollment() NilEnrollment {
 	return s.Enrollment
 }
 
+// GetProgress returns the value of Progress.
+func (s *CourseView) GetProgress() NilCourseProgress {
+	return s.Progress
+}
+
 // SetCourse sets the value of Course.
 func (s *CourseView) SetCourse(val Course) {
 	s.Course = val
@@ -3469,6 +3481,11 @@ func (s *CourseView) SetLessons(val []CourseLessonListItem) {
 // SetEnrollment sets the value of Enrollment.
 func (s *CourseView) SetEnrollment(val NilEnrollment) {
 	s.Enrollment = val
+}
+
+// SetProgress sets the value of Progress.
+func (s *CourseView) SetProgress(val NilCourseProgress) {
+	s.Progress = val
 }
 
 func (*CourseView) getCourseRes() {}
@@ -4845,6 +4862,51 @@ func (o NilCourseLearnAs) Or(d CourseLearnAs) CourseLearnAs {
 	return d
 }
 
+// NewNilCourseProgress returns new NilCourseProgress with value set to v.
+func NewNilCourseProgress(v CourseProgress) NilCourseProgress {
+	return NilCourseProgress{
+		Value: v,
+	}
+}
+
+// NilCourseProgress is nullable CourseProgress.
+type NilCourseProgress struct {
+	Value CourseProgress
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilCourseProgress) SetTo(v CourseProgress) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilCourseProgress) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilCourseProgress) SetToNull() {
+	o.Null = true
+	var v CourseProgress
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilCourseProgress) Get() (v CourseProgress, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilCourseProgress) Or(d CourseProgress) CourseProgress {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilCourseReadiness returns new NilCourseReadiness with value set to v.
 func NewNilCourseReadiness(v CourseReadiness) NilCourseReadiness {
 	return NilCourseReadiness{
@@ -5886,6 +5948,7 @@ func (*ProblemDetails) likeBlogPostRes()           {}
 func (*ProblemDetails) listAssistantMessagesRes()  {}
 func (*ProblemDetails) listPasskeysRes()           {}
 func (*ProblemDetails) newPasskeyRes()             {}
+func (*ProblemDetails) startLessonRes()            {}
 func (*ProblemDetails) updateProfileRes()          {}
 
 // ProblemDetailsStatusCode wraps ProblemDetails with StatusCode.
@@ -7212,19 +7275,6 @@ func (s *StaffRolePermission) SetCanUpdate(val bool) {
 func (s *StaffRolePermission) SetCanDestroy(val bool) {
 	s.CanDestroy = val
 }
-
-type StartLessonConflict ProblemDetails
-
-func (*StartLessonConflict) startLessonRes() {}
-
-// StartLessonNoContent is response for StartLesson operation.
-type StartLessonNoContent struct{}
-
-func (*StartLessonNoContent) startLessonRes() {}
-
-type StartLessonUnauthorized ProblemDetails
-
-func (*StartLessonUnauthorized) startLessonRes() {}
 
 // SwitchLocaleNoContent is response for SwitchLocale operation.
 type SwitchLocaleNoContent struct{}

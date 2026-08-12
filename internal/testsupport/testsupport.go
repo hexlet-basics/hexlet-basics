@@ -301,6 +301,18 @@ func NewVisitorHarness(t *testing.T, guest progress.GuestProgress) *Harness {
 	return h
 }
 
+// ForgeGuestCookie makes the harness carry progress signed with the wrong
+// secret — what a visitor editing their own cookie can produce. The server must
+// treat it as no cookie at all.
+func ForgeGuestCookie(t *testing.T, h *Harness, guest progress.GuestProgress) {
+	t.Helper()
+	value, err := progress.NewGuestCodec("not-the-server-secret").Encode(guest)
+	if err != nil {
+		t.Fatalf("encode forged guest progress: %v", err)
+	}
+	h.doer.guest = value
+}
+
 // DecodeGuestCookie reads the guest progress a response set, verifying its
 // signature exactly as the server does on the next request. It fails the test
 // when no guest cookie was set, so a caller asserting on progress cannot pass

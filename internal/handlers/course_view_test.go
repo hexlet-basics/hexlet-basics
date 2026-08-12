@@ -10,6 +10,7 @@ import (
 
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -66,9 +67,11 @@ func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value, "a gap leaves the course unfinished")
 }
 
-// An anonymous visitor gets the page and no progress — the shape guest progress
-// will later fill, but nothing is invented for them here.
-func TestGetCourseReturnsNoProgressForAnonymousVisitors(t *testing.T) {
+// A visitor with no session and no cookie has a position too: the beginning,
+// with the first lesson open. It is returned rather than left out, because a
+// client deriving "the first one is available" would be a second copy of the
+// gate.
+func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := context.Background()
 
@@ -81,6 +84,69 @@ func TestGetCourseReturnsNoProgressForAnonymousVisitors(t *testing.T) {
 	assert.True(t, view.Enrollment.Null, "no enrollment for a visitor with no session")
 	assert.Equal(t, jsCourseSlug, view.Course.Slug)
 	assert.Len(t, view.Lessons, 3, "the public lesson list does not depend on a session")
+
+	require.False(t, view.Progress.Null)
+	progress := view.Progress.Value
+	assert.True(t, progress.State.Null, "nothing started")
+	assert.Equal(t, int32(0), progress.Completion)
+	assert.Equal(t, int32(0), progress.FurthestFinishedPosition)
+	assert.Equal(t, firstLessonSlug, progress.NextLessonSlug.Value)
+	assert.True(t, progress.Lessons[0].Available)
+	assert.False(t, progress.Lessons[1].Available)
+}
+
+// A guest carrying a cookie gets exactly the shape a signed-in learner gets,
+// derived from the one lesson the cookie names: everything before it is
+// finished, the next one is open.
+func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
+	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, secondLessonSlug))
+	ctx := context.Background()
+
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+	require.NoError(t, err)
+	view := res.(*api.CourseView)
+
+	require.True(t, view.Enrollment.Null, "a guest has no enrollment")
+	require.False(t, view.Progress.Null)
+	progress := view.Progress.Value
+
+	assert.Equal(t, api.EnrollmentStateStarted, progress.State.Value)
+	assert.Equal(t, int32(66), progress.Completion, "two of three")
+	assert.Equal(t, int32(2), progress.FurthestFinishedPosition)
+	assert.Equal(t, thirdLessonSlug, progress.NextLessonSlug.Value)
+	assert.True(t, progress.Lessons[0].Finished, "the prefix is implied by the furthest lesson")
+	assert.True(t, progress.Lessons[1].Finished)
+	assert.True(t, progress.Lessons[2].Available)
+}
+
+// A cookie naming a lesson the current version dropped resolves to no position,
+// so the guest starts that course over rather than being stranded.
+func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
+	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
+
+	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsCourseSlug})
+	require.NoError(t, err)
+	view := res.(*api.CourseView)
+
+	require.False(t, view.Progress.Null)
+	assert.Equal(t, int32(0), view.Progress.Value.FurthestFinishedPosition)
+	assert.True(t, view.Progress.Value.Lessons[0].Available)
+	assert.False(t, view.Progress.Value.Lessons[1].Available)
+}
+
+// A tampered cookie is not progress: it is discarded on the way in, leaving the
+// visitor where a first visit leaves them.
+func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.ForgeGuestCookie(t, h, progressCookie(jsCourseSlug, thirdLessonSlug))
+
+	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsCourseSlug})
+	require.NoError(t, err)
+	view := res.(*api.CourseView)
+
+	require.False(t, view.Progress.Null)
+	assert.Equal(t, int32(0), view.Progress.Value.FurthestFinishedPosition,
+		"an unsigned cookie cannot mint completions")
 }
 
 // An unknown slug is a 404, not an empty page.
@@ -90,6 +156,12 @@ func TestGetCourseIsNotFoundForAnUnknownSlug(t *testing.T) {
 	_, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: "no-such-course"})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+// progressCookie is a visitor's whole state: the furthest lesson they finished
+// in one course.
+func progressCookie(courseSlug, lessonSlug string) progress.GuestProgress {
+	return progress.GuestProgress{}.Record(courseSlug, lessonSlug)
 }
 
 // finishLesson marks the acting learner's progress on a lesson finished,

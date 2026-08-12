@@ -1334,14 +1334,13 @@ export const checkLesson = <ThrowOnError extends boolean = false>(options: Optio
  *
  * Idempotent: starting an already-started or already-finished lesson
  * succeeds and changes nothing. 409 when the lesson is beyond the gate.
+ *
+ * Public, because a guest progresses under the same rule. For them it
+ * validates the gate and returns their position without storing anything:
+ * their state is the signed cookie, and only a check moves it.
  */
 export const startLesson = <ThrowOnError extends boolean = false>(options: Options<StartLessonData, ThrowOnError>): RequestResult<StartLessonResponses, StartLessonErrors, ThrowOnError> => (options.client ?? client).post<StartLessonResponses, StartLessonErrors, ThrowOnError>({
-  security: [{
-      key: 'UserSession',
-      in: 'cookie',
-      name: 'JWT',
-      type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
+  responseType: 'json',
   url: '/lessons/{id}/start',
   ...options
 });

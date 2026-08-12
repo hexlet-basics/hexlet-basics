@@ -3,32 +3,31 @@ package handlers
 import (
 	"context"
 	"errors"
-	"net/http"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 )
 
-// StartLesson marks a lesson started for the signed-in learner, enrolling them
-// in its course if needed. The rule — which lessons a learner may take — lives
-// in the progress module; this handler only translates its outcome to the
-// contract's responses.
+// StartLesson marks a lesson started and answers with where the learner now
+// stands. The rule — which lessons a learner may take — lives in the progress
+// module; this handler only translates its outcome to the contract's responses.
+//
+// A guest reaches it too, and gets the same payload with nothing stored: their
+// position is the signed cookie, and only a check moves it.
 //
 // 409 rather than 403 for a gated lesson: the caller's permissions are fine,
 // their progress is not, and a client that cannot tell those apart cannot
 // respond to either sensibly.
 func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) (api.StartLessonRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		// Defensive: the generated security handler rejects unauthenticated
-		// requests before this runs. Without the status the central writer would
-		// report a missing user as a server fault.
-		return nil, withHTTPStatus(http.StatusUnauthorized, errUnauthenticated)
-	}
-
-	err := s.progress.StartLesson(ctx, u.ID, int(params.ID), s.i18n.Locale(ctx))
+	state, err := s.progress.StartLesson(
+		ctx,
+		submittingLearner(ctx),
+		int(params.ID),
+		s.i18n.Locale(ctx),
+	)
 	switch {
 	case errors.Is(err, progress.ErrLessonNotAvailable):
 		return s.errors.LessonNotAvailable(ctx), nil
@@ -38,7 +37,9 @@ func (s *Server) StartLesson(ctx context.Context, params api.StartLessonParams) 
 		// Anything else is a server fault, reported by the central handler.
 		return nil, err
 	}
-	return &api.StartLessonNoContent{}, nil
+
+	progressView := apiconv.ToCourseProgress(state)
+	return &progressView, nil
 }
 
 // CheckLesson runs a submitted solution and reports what it changed.
@@ -63,7 +64,7 @@ func (s *Server) CheckLesson(
 	case errors.Is(err, progress.ErrLessonNotAvailable):
 		// Refused before the submission ran: nothing was executed and nothing
 		// was written.
-		return s.errors.LessonNotAvailableProblem(ctx), nil
+		return s.errors.LessonNotAvailable(ctx), nil
 	case ent.IsNotFound(err):
 		// The lesson, or the version the code was written against, is not part
 		// of the course's current build.
