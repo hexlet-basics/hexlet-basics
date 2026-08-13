@@ -2,14 +2,14 @@ import { http, HttpResponse } from "msw";
 import { afterEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import type { Course, CourseLandingPage, CourseLesson, CourseLessonView } from "@/client/types.gen";
-import LessonPage from "@/components/lesson/LessonPage";
+import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { worker } from "@/test/msw";
-import { renderWithRouter } from "@/test/renderWithRouter";
+import { renderRoute } from "@/test/renderRoute";
 
-// The lesson player's shell, driven through the route's component with the API
-// faked at the HTTP boundary — the seam the admin screens are tested at. What is
-// asserted is what a learner can see: the words on the page, the marks in the
-// lesson list, and the requests the page did (and did not) make.
+// The lesson player, driven through its real route with the API faked at the
+// HTTP boundary — the seam the admin screens are tested at. What is asserted is
+// what a learner can see: the words on the page, the marks in the lesson list,
+// and the requests the page did (and did not) make.
 
 const course: Course = {
   id: 1,
@@ -107,18 +107,17 @@ function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView
   };
 }
 
+// The real route at a real URL, so the loader and the route's chrome run as they
+// do for a visitor.
+//
 // The player needs a container with a real height: the two panes divide the
 // space they are given, and a zero-height box renders nothing a learner sees.
 function renderPlayer(lessonSlug: string) {
-  return renderWithRouter(
-    <div style={{ height: "800px", width: "1200px" }}>
-      <LessonPage courseSlug="javascript" lessonSlug={lessonSlug} />
-    </div>,
-    {
-      initialPath: `/languages/javascript/lessons/${lessonSlug}`,
-      path: "/languages/$slug/lessons/$s",
-    },
-  );
+  return renderRoute(lessonRoute, {
+    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+    initialPath: `/languages/javascript/lessons/${lessonSlug}`,
+    wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+  });
 }
 
 // What monaco has painted, with the non-breaking spaces it renders text with

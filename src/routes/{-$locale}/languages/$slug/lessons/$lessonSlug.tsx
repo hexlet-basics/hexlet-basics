@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
-import LessonPage from "@/components/lesson/LessonPage";
+import LessonPage, { LessonMissing } from "@/components/lesson/LessonPage";
 
 // The lesson player, at its legacy URL (ADR-0002) under the optional locale
 // prefix.
@@ -18,6 +18,9 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
     context.queryClient.ensureQueryData(
       getCourseLessonOptions({ path: { courseSlug: params.slug, slug: params.lessonSlug } }),
     ),
+  // A slug that resolves to nothing rejects in the loader, above the page, so
+  // the apology for it lives here rather than in a branch the page cannot reach.
+  errorComponent: LessonMissing,
   component: LessonRoute,
 });
 

@@ -46,11 +46,7 @@ export default function LessonPage({
   }
 
   if (isError || !data) {
-    return (
-      <Center h="100%">
-        <Text c="red">{t(($) => $.courses.lessons.show.lesson_not_found)}</Text>
-      </Center>
-    );
+    return <LessonMissing />;
   }
 
   return (
@@ -82,5 +78,18 @@ export default function LessonPage({
         </Splitter.Pane>
       </Splitter>
     </CodeHighlightAdapterProvider>
+  );
+}
+
+// A lesson slug that resolves to nothing — a mistyped URL, or a lesson dropped
+// from the course. The route renders this too, because its loader rejects before
+// the page above ever runs.
+export function LessonMissing() {
+  const { t } = useTranslation();
+
+  return (
+    <Center h="100%">
+      <Text c="red">{t(($) => $.courses.lessons.show.lesson_not_found)}</Text>
+    </Center>
   );
 }

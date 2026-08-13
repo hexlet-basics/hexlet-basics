@@ -20,12 +20,15 @@ const MonacoEditor = lazy(async () => {
 
 type LessonEditorProps = {
   courseSlug: string;
-  code: string;
+  // The buffer as it stands when the pane mounts. Monaco owns it from then on
+  // and reports changes back through `onChange`: driving `value` on every
+  // keystroke made monaco replace its model mid-word and drop characters.
+  initialCode: string;
   onChange: (code: string) => void;
-  // Bumped by the page when it wants the cursor in the editor: after a reset,
-  // where the learner's next move is to type. The editor also takes focus when
-  // it first mounts, as legacy does.
-  focusSignal: number;
+  // The page pushes a buffer back only when it replaces one. `resetCount` is
+  // bumped by a reset, and `starterCode` is what a reset restores.
+  starterCode: string;
+  resetCount: number;
 };
 
 // Where the learner writes their solution.
@@ -37,7 +40,13 @@ export default function LessonEditor(props: LessonEditorProps) {
   );
 }
 
-function EditorPane({ courseSlug, code, onChange, focusSignal }: LessonEditorProps) {
+function EditorPane({
+  courseSlug,
+  initialCode,
+  onChange,
+  starterCode,
+  resetCount,
+}: LessonEditorProps) {
   const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false });
   // Legacy asks the server whether the browser is a mobile one; the payload here
@@ -60,12 +69,24 @@ function EditorPane({ courseSlug, code, onChange, focusSignal }: LessonEditorPro
   const [instance, setInstance] = useState<editor.IStandaloneCodeEditor>();
   const settings = getEditorSettings(courseSlug);
 
+  // A reset replaces the buffer and hands the cursor back, because the learner's
+  // next move is to type. `resetCount` starts at 0, which is the mount, where
+  // monaco already holds the buffer it was given.
+  useEffect(() => {
+    if (!instance || resetCount === 0) return;
+
+    instance.setValue(starterCode);
+    if (!isTouchScreen) instance.focus();
+  }, [resetCount, starterCode, instance, isTouchScreen]);
+
+  // Taking focus on a touch screen would open an on-screen keyboard over half
+  // the exercise before the learner has read it.
   useEffect(() => {
     if (isTouchScreen) return;
 
     instance?.layout();
     instance?.focus();
-  }, [focusSignal, instance, isTouchScreen]);
+  }, [instance, isTouchScreen]);
 
   const options: editor.IStandaloneEditorConstructionOptions = {
     tabSize: settings.tabSize,
@@ -107,7 +128,7 @@ function EditorPane({ courseSlug, code, onChange, focusSignal }: LessonEditorPro
             theme={colorScheme === "dark" ? "vs-dark" : "vs"}
             language={settings.language}
             options={options}
-            value={code}
+            defaultValue={initialCode}
             onChange={(value) => onChange(value ?? "")}
             onMount={setInstance}
           />

@@ -20,8 +20,9 @@ function makeQueryClient() {
   });
 }
 
-export function renderWithProviders(ui: ReactNode) {
-  const queryClient = makeQueryClient();
+// `queryClient` is passed in by renderRoute, so a route loader and the hooks
+// under it share one cache, as they do in the app.
+export function renderWithProviders(ui: ReactNode, queryClient = makeQueryClient()) {
   const i18n = createI18n();
 
   function Wrapper({ children }: { children: ReactNode }) {

@@ -32,12 +32,12 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
     getInitialValueInEffect: false,
   });
 
-  // Bumped to ask the editor for the cursor back; see LessonEditor.
-  const [focusSignal, setFocusSignal] = useState(0);
+  // Bumped to tell the editor its buffer has been replaced; see LessonEditor.
+  const [resetCount, setResetCount] = useState(0);
 
   const reset = () => {
     setCode(starterCode);
-    setFocusSignal((count) => count + 1);
+    setResetCount((count) => count + 1);
   };
 
   return (
@@ -57,10 +57,14 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
 
         <Tabs.Panel value="editor" h="100%" mih={0}>
           <LessonEditor
+            // Monaco is handed its buffer once, so moving to another lesson has
+            // to give it a new editor rather than a new prop.
+            key={lesson.slug}
             courseSlug={courseSlug}
-            code={code}
+            initialCode={code}
             onChange={setCode}
-            focusSignal={focusSignal}
+            starterCode={starterCode}
+            resetCount={resetCount}
           />
         </Tabs.Panel>
       </Tabs>
