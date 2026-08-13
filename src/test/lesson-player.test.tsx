@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
-import { expect, test } from "vitest";
-import { page } from "vitest/browser";
+import { afterEach, expect, test } from "vitest";
+import { page, userEvent } from "vitest/browser";
 import type { Course, CourseLandingPage, CourseLesson, CourseLessonView } from "@/client/types.gen";
 import LessonPage from "@/components/lesson/LessonPage";
 import { worker } from "@/test/msw";
@@ -114,9 +114,28 @@ function renderPlayer(lessonSlug: string) {
     <div style={{ height: "800px", width: "1200px" }}>
       <LessonPage courseSlug="javascript" lessonSlug={lessonSlug} />
     </div>,
-    { initialPath: "/languages/javascript/lessons/variables", path: "/languages/$slug/lessons/$s" },
+    {
+      initialPath: `/languages/javascript/lessons/${lessonSlug}`,
+      path: "/languages/$slug/lessons/$s",
+    },
   );
 }
+
+// What monaco has painted, with the non-breaking spaces it renders text with
+// turned back into ordinary ones so assertions read like the code does.
+function editorText() {
+  return (document.querySelector(".view-lines")?.textContent ?? "").replaceAll("\u00a0", " ");
+}
+
+// The editor is a lazy chunk of a few hundred modules, and the first test to
+// open it waits for vite to transform all of them, so waiting on it gets a
+// budget of its own rather than the default second. The budget is sized for a
+// cold CI runner, not for a warm laptop.
+const editorLoad = { timeout: 30_000 };
+
+// Everything the player keeps between visits lives here; a test that seeds it
+// must not leak into the next one.
+afterEach(() => localStorage.clear());
 
 test("renders the lesson a learner reads, titled from the course's landing copy", async () => {
   worker.use(
@@ -141,7 +160,7 @@ test("renders the lesson a learner reads, titled from the course's landing copy"
     .element(page.getByRole("link", { name: "Lesson source on GitHub" }))
     .toHaveAttribute("href", "https://github.com/hexlet-basics/exercises-javascript");
 
-  // The right pane exists as its tab strip; the editor lands in its own ticket.
+  // The workspace the learner works in, tab by tab.
   await expect.element(page.getByRole("tab", { name: "Editor" })).toBeVisible();
   await expect.element(page.getByRole("tab", { name: "Output" })).toBeVisible();
   await expect.element(page.getByRole("tab", { name: "Tests" })).toBeVisible();
@@ -257,4 +276,118 @@ test("says so when the lesson is not there", async () => {
   await expect
     .element(page.getByText("Lesson not found. Please, try another lesson."))
     .toBeVisible();
+});
+
+test("opens the editor with the lesson's starter code, after the theory", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables");
+
+  // The theory does not wait for the editor: it renders from the payload, while
+  // monaco arrives on its own lazy import afterwards.
+  await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
+
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await expect.poll(editorText, editorLoad).toContain("let greeting = '';");
+
+  // Monaco is this application's own copy, not a CDN's.
+  const remote = performance
+    .getEntriesByType("resource")
+    .filter((entry) => !entry.name.startsWith(location.origin));
+  expect(remote).toEqual([]);
+});
+
+test("finds yesterday's work still there, and keeps it per lesson", async () => {
+  const strings = lessonView({
+    lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings", preparedCode: "// strings\n" },
+  });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(strings)),
+  );
+  localStorage.setItem(
+    "lesson-code-javascript-variables",
+    JSON.stringify("let greeting = 'yesterday';"),
+  );
+
+  const { screen } = await renderPlayer("variables");
+  await expect.poll(editorText, editorLoad).toContain("let greeting = 'yesterday';");
+
+  // The next lesson opens on its own starter code, not on the work done in the
+  // one before it.
+  await screen.unmount();
+  await renderPlayer("strings");
+  await expect.poll(editorText, editorLoad).toContain("// strings");
+  expect(editorText()).not.toContain("yesterday");
+});
+
+test("keeps what the learner typed when they come back to the lesson", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  const { screen } = await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  // The code area of the editor pane — the theory has code blocks of its own —
+  // and not monaco's hidden input, because that is what a learner clicks.
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("// mine");
+  await expect.poll(editorText).toContain("// mine");
+
+  await screen.unmount();
+  await renderPlayer("variables");
+
+  await expect.poll(editorText, editorLoad).toContain("// mine");
+});
+
+test("asks before resetting, and restores the starter code", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+  localStorage.setItem(
+    "lesson-code-javascript-variables",
+    JSON.stringify("let greeting = 'mess';"),
+  );
+
+  await renderPlayer("variables");
+  await expect.poll(editorText, editorLoad).toContain("let greeting = 'mess';");
+
+  await page.getByRole("button", { name: "Reset" }).click();
+
+  // One misclick must not cost a learner their work.
+  await expect.element(page.getByText("You want to reset the exercise progress.")).toBeVisible();
+  await page.getByRole("button", { name: "No", exact: true }).click();
+  expect(editorText()).toContain("let greeting = 'mess';");
+
+  await page.getByRole("button", { name: "Reset" }).click();
+  await page.getByRole("button", { name: "Yes", exact: true }).click();
+
+  await expect.poll(editorText).toContain("let greeting = '';");
+});
+
+test("tells the learner about autocomplete once", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  const { screen } = await renderPlayer("variables");
+  await expect
+    .element(page.getByText("The editor suggests commands as you type"), editorLoad)
+    .toBeVisible();
+
+  await page.getByRole("button", { name: "Dismiss" }).click();
+  await expect
+    .element(page.getByText("The editor suggests commands as you type"))
+    .not.toBeInTheDocument();
+
+  // And it stays dismissed for the next lesson, and the next visit.
+  await screen.unmount();
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await expect
+    .element(page.getByText("The editor suggests commands as you type"))
+    .not.toBeInTheDocument();
 });

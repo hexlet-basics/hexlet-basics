@@ -6,14 +6,15 @@ import { useTranslation } from "react-i18next";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import LessonTheory from "@/components/lesson/LessonTheory";
+import LessonWorkspace from "@/components/lesson/LessonWorkspace";
 import shikiAdapter from "@/lib/shiki";
 
 // The lesson player's shell: theory and navigation on the left, the workspace on
-// the right. Both panes stay mounted for the life of the page — the editor that
-// lands in the right pane must never remount and lose a learner's buffer.
+// the right. Both panes stay mounted for the life of the page — the editor in
+// the right pane must never remount and lose a learner's buffer.
 //
-// The right pane is its tab strip and nothing else for now; the editor, the
-// output and the reference solution arrive with their own tickets.
+// The workspace's output and reference-solution panes arrive with their own
+// tickets; what is here is the editor a learner writes their solution in.
 export default function LessonPage({
   courseSlug,
   lessonSlug,
@@ -77,20 +78,7 @@ export default function LessonPage({
         </Splitter.Pane>
 
         <Splitter.Pane defaultSize={paneSizes[1]}>
-          <Tabs
-            defaultValue="editor"
-            h="100%"
-            display="flex"
-            style={{ flexDirection: "column" }}
-            keepMountedMode="display-none"
-          >
-            <Tabs.List grow>
-              <Tabs.Tab value="editor">{t(($) => $.courses.lessons.show.editor)}</Tabs.Tab>
-              <Tabs.Tab value="output">{t(($) => $.courses.lessons.show.output)}</Tabs.Tab>
-              <Tabs.Tab value="tests">{t(($) => $.courses.lessons.show.tests)}</Tabs.Tab>
-              <Tabs.Tab value="solution">{t(($) => $.courses.lessons.show.solution)}</Tabs.Tab>
-            </Tabs.List>
-          </Tabs>
+          <LessonWorkspace view={data} />
         </Splitter.Pane>
       </Splitter>
     </CodeHighlightAdapterProvider>

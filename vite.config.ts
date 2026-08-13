@@ -14,7 +14,9 @@ export default defineConfig({
     },
   },
   test: {
-    testTimeout: 10_000,
+    // Long enough for the tests that wait on the editor; see `editorLoad` in
+    // src/test/lesson-player.test.tsx for why that wait is what it is.
+    testTimeout: 60_000,
     setupFiles: ["./src/test/setup.tsx"],
     browser: {
       enabled: true,
