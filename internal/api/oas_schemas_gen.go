@@ -3211,6 +3211,13 @@ type CourseLessonView struct {
 	// Null for a course with no landing page, which is a course nobody has written copy for yet — not a
 	// reason to fail the read.
 	LandingPage NilCourseLandingPage `json:"landingPage"`
+	// Every Lesson of the course's current version, in course order — the same list the course landing
+	// read returns.
+	//
+	// The player's navigation tab is this list joined to `progress.lessons` by slug: names and order from
+	// here, checks and locks from there. Both screens render from the same two arrays, which is what keeps
+	// the Course page's list and the player's from disagreeing.
+	Lessons []CourseLessonListItem `json:"lessons"`
 	// Where the visitor stands in the course this lesson belongs to — the same payload the course
 	// landing read returns, for a signed-in learner and a guest alike. The player reads
 	// `lessons[].available` to know whether this one may be taken, and `nextLessonSlug` for where "next"
@@ -3230,6 +3237,11 @@ func (s *CourseLessonView) GetLandingPage() NilCourseLandingPage {
 	return s.LandingPage
 }
 
+// GetLessons returns the value of Lessons.
+func (s *CourseLessonView) GetLessons() []CourseLessonListItem {
+	return s.Lessons
+}
+
 // GetProgress returns the value of Progress.
 func (s *CourseLessonView) GetProgress() NilCourseProgress {
 	return s.Progress
@@ -3243,6 +3255,11 @@ func (s *CourseLessonView) SetLesson(val CourseLesson) {
 // SetLandingPage sets the value of LandingPage.
 func (s *CourseLessonView) SetLandingPage(val NilCourseLandingPage) {
 	s.LandingPage = val
+}
+
+// SetLessons sets the value of Lessons.
+func (s *CourseLessonView) SetLessons(val []CourseLessonListItem) {
+	s.Lessons = val
 }
 
 // SetProgress sets the value of Progress.

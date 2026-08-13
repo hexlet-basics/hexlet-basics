@@ -44,6 +44,8 @@ const (
 	EdgeLesson = "lesson"
 	// EdgeCourseVersion holds the string denoting the course_version edge name in mutations.
 	EdgeCourseVersion = "course_version"
+	// EdgeVersion holds the string denoting the version edge name in mutations.
+	EdgeVersion = "version"
 	// Table holds the table name of the courselessontranslation in the database.
 	Table = "language_lesson_version_infos"
 	// LessonTable is the table that holds the lesson relation/edge.
@@ -60,6 +62,13 @@ const (
 	CourseVersionInverseTable = "language_versions"
 	// CourseVersionColumn is the table column denoting the course_version relation/edge.
 	CourseVersionColumn = "language_version_id"
+	// VersionTable is the table that holds the version relation/edge.
+	VersionTable = "language_lesson_version_infos"
+	// VersionInverseTable is the table name for the CourseLessonVersion entity.
+	// It exists in this package in order to avoid circular dependency with the "courselessonversion" package.
+	VersionInverseTable = "language_lesson_versions"
+	// VersionColumn is the table column denoting the version relation/edge.
+	VersionColumn = "version_id"
 )
 
 // Columns holds all SQL columns for courselessontranslation fields.
@@ -185,6 +194,13 @@ func ByCourseVersionField(field string, opts ...sql.OrderTermOption) OrderOption
 		sqlgraph.OrderByNeighborTerms(s, newCourseVersionStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByVersionField orders the results by version field.
+func ByVersionField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newVersionStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newLessonStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -197,5 +213,12 @@ func newCourseVersionStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CourseVersionInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, CourseVersionTable, CourseVersionColumn),
+	)
+}
+func newVersionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(VersionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, VersionTable, VersionColumn),
 	)
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/courseversion"
 	"strings"
 	"time"
@@ -57,9 +58,11 @@ type CourseLessonTranslationEdges struct {
 	Lesson *CourseLesson `json:"lesson,omitempty"`
 	// CourseVersion holds the value of the course_version edge.
 	CourseVersion *CourseVersion `json:"course_version,omitempty"`
+	// Version holds the value of the version edge.
+	Version *CourseLessonVersion `json:"version,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // LessonOrErr returns the Lesson value or an error if the edge
@@ -82,6 +85,17 @@ func (e CourseLessonTranslationEdges) CourseVersionOrErr() (*CourseVersion, erro
 		return nil, &NotFoundError{label: courseversion.Label}
 	}
 	return nil, &NotLoadedError{edge: "course_version"}
+}
+
+// VersionOrErr returns the Version value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CourseLessonTranslationEdges) VersionOrErr() (*CourseLessonVersion, error) {
+	if e.Version != nil {
+		return e.Version, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: courselessonversion.Label}
+	}
+	return nil, &NotLoadedError{edge: "version"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -222,6 +236,11 @@ func (_m *CourseLessonTranslation) QueryLesson() *CourseLessonQuery {
 // QueryCourseVersion queries the "course_version" edge of the CourseLessonTranslation entity.
 func (_m *CourseLessonTranslation) QueryCourseVersion() *CourseVersionQuery {
 	return NewCourseLessonTranslationClient(_m.config).QueryCourseVersion(_m)
+}
+
+// QueryVersion queries the "version" edge of the CourseLessonTranslation entity.
+func (_m *CourseLessonTranslation) QueryVersion() *CourseLessonVersionQuery {
+	return NewCourseLessonTranslationClient(_m.config).QueryVersion(_m)
 }
 
 // Update returns a builder for updating this CourseLessonTranslation.

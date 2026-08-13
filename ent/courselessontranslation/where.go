@@ -825,26 +825,6 @@ func VersionIDNotIn(vs ...int) predicate.CourseLessonTranslation {
 	return predicate.CourseLessonTranslation(sql.FieldNotIn(FieldVersionID, vs...))
 }
 
-// VersionIDGT applies the GT predicate on the "version_id" field.
-func VersionIDGT(v int) predicate.CourseLessonTranslation {
-	return predicate.CourseLessonTranslation(sql.FieldGT(FieldVersionID, v))
-}
-
-// VersionIDGTE applies the GTE predicate on the "version_id" field.
-func VersionIDGTE(v int) predicate.CourseLessonTranslation {
-	return predicate.CourseLessonTranslation(sql.FieldGTE(FieldVersionID, v))
-}
-
-// VersionIDLT applies the LT predicate on the "version_id" field.
-func VersionIDLT(v int) predicate.CourseLessonTranslation {
-	return predicate.CourseLessonTranslation(sql.FieldLT(FieldVersionID, v))
-}
-
-// VersionIDLTE applies the LTE predicate on the "version_id" field.
-func VersionIDLTE(v int) predicate.CourseLessonTranslation {
-	return predicate.CourseLessonTranslation(sql.FieldLTE(FieldVersionID, v))
-}
-
 // HasLesson applies the HasEdge predicate on the "lesson" edge.
 func HasLesson() predicate.CourseLessonTranslation {
 	return predicate.CourseLessonTranslation(func(s *sql.Selector) {
@@ -883,6 +863,29 @@ func HasCourseVersion() predicate.CourseLessonTranslation {
 func HasCourseVersionWith(preds ...predicate.CourseVersion) predicate.CourseLessonTranslation {
 	return predicate.CourseLessonTranslation(func(s *sql.Selector) {
 		step := newCourseVersionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasVersion applies the HasEdge predicate on the "version" edge.
+func HasVersion() predicate.CourseLessonTranslation {
+	return predicate.CourseLessonTranslation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, VersionTable, VersionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasVersionWith applies the HasEdge predicate on the "version" edge with a given conditions (other predicates).
+func HasVersionWith(preds ...predicate.CourseLessonVersion) predicate.CourseLessonTranslation {
+	return predicate.CourseLessonTranslation(func(s *sql.Selector) {
+		step := newVersionStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

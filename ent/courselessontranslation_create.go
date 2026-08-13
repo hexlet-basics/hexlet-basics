@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/courseversion"
 	"time"
 
@@ -190,6 +191,11 @@ func (_c *CourseLessonTranslationCreate) SetCourseVersion(v *CourseVersion) *Cou
 	return _c.SetCourseVersionID(v.ID)
 }
 
+// SetVersion sets the "version" edge to the CourseLessonVersion entity.
+func (_c *CourseLessonTranslationCreate) SetVersion(v *CourseLessonVersion) *CourseLessonTranslationCreate {
+	return _c.SetVersionID(v.ID)
+}
+
 // Mutation returns the CourseLessonTranslationMutation object of the builder.
 func (_c *CourseLessonTranslationCreate) Mutation() *CourseLessonTranslationMutation {
 	return _c.mutation
@@ -261,6 +267,9 @@ func (_c *CourseLessonTranslationCreate) check() error {
 	if len(_c.mutation.CourseVersionIDs()) == 0 {
 		return &ValidationError{Name: "course_version", err: errors.New(`ent: missing required edge "CourseLessonTranslation.course_version"`)}
 	}
+	if len(_c.mutation.VersionIDs()) == 0 {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required edge "CourseLessonTranslation.version"`)}
+	}
 	return nil
 }
 
@@ -328,10 +337,6 @@ func (_c *CourseLessonTranslationCreate) createSpec() (*CourseLessonTranslation,
 		_spec.SetField(courselessontranslation.FieldDefinitions, field.TypeString, value)
 		_node.Definitions = &value
 	}
-	if value, ok := _c.mutation.VersionID(); ok {
-		_spec.SetField(courselessontranslation.FieldVersionID, field.TypeInt, value)
-		_node.VersionID = value
-	}
 	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -364,6 +369,23 @@ func (_c *CourseLessonTranslationCreate) createSpec() (*CourseLessonTranslation,
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.CourseVersionID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.VersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   courselessontranslation.VersionTable,
+			Columns: []string{courselessontranslation.VersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessonversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.VersionID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -607,12 +629,6 @@ func (u *CourseLessonTranslationUpsert) SetVersionID(v int) *CourseLessonTransla
 // UpdateVersionID sets the "version_id" field to the value that was provided on create.
 func (u *CourseLessonTranslationUpsert) UpdateVersionID() *CourseLessonTranslationUpsert {
 	u.SetExcluded(courselessontranslation.FieldVersionID)
-	return u
-}
-
-// AddVersionID adds v to the "version_id" field.
-func (u *CourseLessonTranslationUpsert) AddVersionID(v int) *CourseLessonTranslationUpsert {
-	u.Add(courselessontranslation.FieldVersionID, v)
 	return u
 }
 
@@ -875,13 +891,6 @@ func (u *CourseLessonTranslationUpsertOne) ClearDefinitions() *CourseLessonTrans
 func (u *CourseLessonTranslationUpsertOne) SetVersionID(v int) *CourseLessonTranslationUpsertOne {
 	return u.Update(func(s *CourseLessonTranslationUpsert) {
 		s.SetVersionID(v)
-	})
-}
-
-// AddVersionID adds v to the "version_id" field.
-func (u *CourseLessonTranslationUpsertOne) AddVersionID(v int) *CourseLessonTranslationUpsertOne {
-	return u.Update(func(s *CourseLessonTranslationUpsert) {
-		s.AddVersionID(v)
 	})
 }
 
@@ -1317,13 +1326,6 @@ func (u *CourseLessonTranslationUpsertBulk) ClearDefinitions() *CourseLessonTran
 func (u *CourseLessonTranslationUpsertBulk) SetVersionID(v int) *CourseLessonTranslationUpsertBulk {
 	return u.Update(func(s *CourseLessonTranslationUpsert) {
 		s.SetVersionID(v)
-	})
-}
-
-// AddVersionID adds v to the "version_id" field.
-func (u *CourseLessonTranslationUpsertBulk) AddVersionID(v int) *CourseLessonTranslationUpsertBulk {
-	return u.Update(func(s *CourseLessonTranslationUpsert) {
-		s.AddVersionID(v)
 	})
 }
 

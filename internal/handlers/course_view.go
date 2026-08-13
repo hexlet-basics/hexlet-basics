@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
@@ -109,6 +110,12 @@ func (s *Server) mainLandingPage(ctx context.Context, crs *ent.Course) (api.NilC
 
 // currentLessonList is the lessons of the course's current version, in the
 // request locale, ordered as the course orders them.
+//
+// Course order is the Position on the lesson's version row — the same number the
+// progress payload's positions come from, so the two arrays the pages join line
+// up entry for entry. Ordering by the row's own id instead would be legacy crc32
+// ids in a random sequence, and ordering by the lesson's `natural_order` would
+// read a column the loader stopped writing.
 func (s *Server) currentLessonList(ctx context.Context, crs *ent.Course) ([]api.CourseLessonListItem, error) {
 	if crs.CurrentVersionID == nil {
 		return []api.CourseLessonListItem{}, nil
@@ -120,7 +127,12 @@ func (s *Server) currentLessonList(ctx context.Context, crs *ent.Course) ([]api.
 			courselessontranslation.HasCourseVersionWith(courseversion.ID(*crs.CurrentVersionID)),
 		).
 		WithLesson().
-		Order(ent.Asc(courselessontranslation.FieldID)).
+		Order(
+			courselessontranslation.ByVersionField(
+				courselessonversion.FieldNaturalOrder,
+				sql.OrderNullsLast(),
+			),
+		).
 		All(ctx)
 	if err != nil {
 		return nil, err

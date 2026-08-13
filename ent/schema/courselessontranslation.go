@@ -59,6 +59,14 @@ func (CourseLessonTranslation) Edges() []ent.Edge {
 			Field("course_version_id").
 			Unique().
 			Required(),
+		// The lesson version this row localizes. It is what carries the Position
+		// (`natural_order`) the reads order by: the loader writes that number onto
+		// the version row and never onto the lesson, so the lesson's own column is
+		// a legacy leftover nothing maintains.
+		edge.To("version", CourseLessonVersion.Type).
+			Field("version_id").
+			Unique().
+			Required(),
 	}
 }
 

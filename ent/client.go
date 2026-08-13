@@ -2646,6 +2646,22 @@ func (c *CourseLessonTranslationClient) QueryCourseVersion(_m *CourseLessonTrans
 	return query
 }
 
+// QueryVersion queries the version edge of a CourseLessonTranslation.
+func (c *CourseLessonTranslationClient) QueryVersion(_m *CourseLessonTranslation) *CourseLessonVersionQuery {
+	query := (&CourseLessonVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessontranslation.Table, courselessontranslation.FieldID, id),
+			sqlgraph.To(courselessonversion.Table, courselessonversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, courselessontranslation.VersionTable, courselessontranslation.VersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseLessonTranslationClient) Hooks() []Hook {
 	return c.hooks.CourseLessonTranslation

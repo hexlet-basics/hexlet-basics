@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
 	"math"
@@ -26,6 +27,7 @@ type CourseLessonTranslationQuery struct {
 	predicates        []predicate.CourseLessonTranslation
 	withLesson        *CourseLessonQuery
 	withCourseVersion *CourseVersionQuery
+	withVersion       *CourseLessonVersionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -99,6 +101,28 @@ func (_q *CourseLessonTranslationQuery) QueryCourseVersion() *CourseVersionQuery
 			sqlgraph.From(courselessontranslation.Table, courselessontranslation.FieldID, selector),
 			sqlgraph.To(courseversion.Table, courseversion.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, courselessontranslation.CourseVersionTable, courselessontranslation.CourseVersionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryVersion chains the current query on the "version" edge.
+func (_q *CourseLessonTranslationQuery) QueryVersion() *CourseLessonVersionQuery {
+	query := (&CourseLessonVersionClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessontranslation.Table, courselessontranslation.FieldID, selector),
+			sqlgraph.To(courselessonversion.Table, courselessonversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, courselessontranslation.VersionTable, courselessontranslation.VersionColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -300,6 +324,7 @@ func (_q *CourseLessonTranslationQuery) Clone() *CourseLessonTranslationQuery {
 		predicates:        append([]predicate.CourseLessonTranslation{}, _q.predicates...),
 		withLesson:        _q.withLesson.Clone(),
 		withCourseVersion: _q.withCourseVersion.Clone(),
+		withVersion:       _q.withVersion.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -325,6 +350,17 @@ func (_q *CourseLessonTranslationQuery) WithCourseVersion(opts ...func(*CourseVe
 		opt(query)
 	}
 	_q.withCourseVersion = query
+	return _q
+}
+
+// WithVersion tells the query-builder to eager-load the nodes that are connected to
+// the "version" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CourseLessonTranslationQuery) WithVersion(opts ...func(*CourseLessonVersionQuery)) *CourseLessonTranslationQuery {
+	query := (&CourseLessonVersionClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withVersion = query
 	return _q
 }
 
@@ -406,9 +442,10 @@ func (_q *CourseLessonTranslationQuery) sqlAll(ctx context.Context, hooks ...que
 	var (
 		nodes       = []*CourseLessonTranslation{}
 		_spec       = _q.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			_q.withLesson != nil,
 			_q.withCourseVersion != nil,
+			_q.withVersion != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -438,6 +475,12 @@ func (_q *CourseLessonTranslationQuery) sqlAll(ctx context.Context, hooks ...que
 	if query := _q.withCourseVersion; query != nil {
 		if err := _q.loadCourseVersion(ctx, query, nodes, nil,
 			func(n *CourseLessonTranslation, e *CourseVersion) { n.Edges.CourseVersion = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withVersion; query != nil {
+		if err := _q.loadVersion(ctx, query, nodes, nil,
+			func(n *CourseLessonTranslation, e *CourseLessonVersion) { n.Edges.Version = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -502,6 +545,35 @@ func (_q *CourseLessonTranslationQuery) loadCourseVersion(ctx context.Context, q
 	}
 	return nil
 }
+func (_q *CourseLessonTranslationQuery) loadVersion(ctx context.Context, query *CourseLessonVersionQuery, nodes []*CourseLessonTranslation, init func(*CourseLessonTranslation), assign func(*CourseLessonTranslation, *CourseLessonVersion)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*CourseLessonTranslation)
+	for i := range nodes {
+		fk := nodes[i].VersionID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(courselessonversion.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "version_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (_q *CourseLessonTranslationQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
@@ -533,6 +605,9 @@ func (_q *CourseLessonTranslationQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if _q.withCourseVersion != nil {
 			_spec.Node.AddColumnOnce(courselessontranslation.FieldCourseVersionID)
+		}
+		if _q.withVersion != nil {
+			_spec.Node.AddColumnOnce(courselessontranslation.FieldVersionID)
 		}
 	}
 	if ps := _q.predicates; len(ps) > 0 {

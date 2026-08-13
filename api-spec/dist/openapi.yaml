@@ -5702,6 +5702,7 @@ components:
       required:
         - lesson
         - landingPage
+        - lessons
         - progress
       properties:
         lesson:
@@ -5722,6 +5723,18 @@ components:
 
             Null for a course with no landing page, which is a course nobody has
             written copy for yet — not a reason to fail the read.
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseLessonListItem'
+          description: |-
+            Every Lesson of the course's current version, in course order — the same
+            list the course landing read returns.
+
+            The player's navigation tab is this list joined to `progress.lessons` by
+            slug: names and order from here, checks and locks from there. Both screens
+            render from the same two arrays, which is what keeps the Course page's list
+            and the player's from disagreeing.
         progress:
           type: object
           allOf:

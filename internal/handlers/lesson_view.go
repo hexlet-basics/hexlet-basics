@@ -105,6 +105,14 @@ func (s *Server) GetCourseLesson(
 		return nil, err
 	}
 
+	// The same list the course landing read returns: the player's navigation tab
+	// joins it to the progress payload by slug, so the two screens name and order
+	// the lessons identically.
+	lessons, err := s.currentLessonList(ctx, crs)
+	if err != nil {
+		return nil, err
+	}
+
 	view := &api.CourseLessonView{
 		Lesson: apiconv.ToCourseLesson(apiconv.LessonContent{
 			Course:        crs,
@@ -114,6 +122,7 @@ func (s *Server) GetCourseLesson(
 			SourceCodeURL: s.lessonSourceURL(version, locale),
 		}, s.conv.ToCourse(crs)),
 		LandingPage: landing,
+		Lessons:     lessons,
 		Progress:    api.NilCourseProgress{Null: true},
 	}
 	if len(state.Lessons) > 0 {

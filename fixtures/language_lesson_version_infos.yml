@@ -7,6 +7,11 @@
 # ransack default), but returns the LESSON id as each item's `id`. See
 # language_lessons.yml for the lesson slugs.
 #
+# `version_id` is the LESSON version this row localizes (language_lesson_versions),
+# which is what the loader writes and what carries the Position the public reads
+# order by. `language_version_id` is the COURSE version. The two id spaces overlap
+# by coincidence in these fixtures, so the difference is easy to miss.
+#
 # Visible in the lesson list (locale=en AND version=965227298, JS current):
 - id: 2001
   name: Strings
@@ -15,7 +20,7 @@
   language_id: 82481401
   language_lesson_id: 1003
   language_version_id: 965227298
-  version_id: 965227298
+  version_id: 965227300
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 - id: 2002
@@ -38,7 +43,7 @@
   language_id: 82481401
   language_lesson_id: 1002
   language_version_id: 965227298
-  version_id: 965227298
+  version_id: 965227299
   theory: A variable is a name bound to a value.
   instructions: Assign the string `hello` to `greeting`.
   tips: |

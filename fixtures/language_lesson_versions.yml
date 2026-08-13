@@ -3,8 +3,9 @@
 # 1. The review worker writes `language_lesson_reviews.language_lesson_version_id`
 #    from each info's `version_id`, and that column carries a real FK — so the
 #    lesson-version rows the infos point at (see language_lesson_version_infos.yml)
-#    must exist. Their ids deliberately equal the course-version ids the info
-#    fixtures reuse.
+#    must exist. Each info points at the row for ITS OWN lesson; the id space
+#    happens to overlap the course versions', which is a coincidence and not a
+#    relationship.
 #
 # 2. `natural_order` on the CURRENT version's rows is the Position sequential
 #    progression gates on: 1..N across the whole course, in build order. The

@@ -110,5 +110,5 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 		).
 		OnlyX(ctx)
 	assert.Equal(t, "AI summary", review.Summary)
-	assert.Equal(t, 965227298, review.CourseLessonVersionID)
+	assert.Equal(t, 965227299, review.CourseLessonVersionID, "the version of the lesson reviewed")
 }

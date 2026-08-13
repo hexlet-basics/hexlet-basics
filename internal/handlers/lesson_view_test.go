@@ -76,6 +76,31 @@ func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
 		"the two names are what makes this field necessary")
 }
 
+// The navigation tab's rows: every lesson of the current version, in course
+// order, named. The player joins this to the progress payload by slug, so the
+// two arrays line up entry for entry.
+func TestGetCourseLessonCarriesTheCoursesLessonList(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+		CourseSlug: jsCourseSlug,
+		Slug:       secondLessonSlug,
+	})
+	require.NoError(t, err)
+	view := res.(*api.CourseLessonView)
+
+	require.Len(t, view.Lessons, 3)
+	assert.Equal(t,
+		[]string{firstLessonSlug, secondLessonSlug, thirdLessonSlug},
+		[]string{view.Lessons[0].Slug, view.Lessons[1].Slug, view.Lessons[2].Slug},
+		"in course order")
+	assert.Equal(t, "Variables", view.Lessons[1].Name.Value, "named, or the nav list has no labels")
+
+	require.False(t, view.Progress.Null)
+	assert.Equal(t, view.Lessons[2].Slug, view.Progress.Value.Lessons[2].Slug,
+		"the two arrays are joined by slug, so they must agree entry for entry")
+}
+
 // A course nobody has written copy for is still readable: the landing page is
 // null rather than the read failing.
 func TestGetCourseLessonWithoutALandingPage(t *testing.T) {

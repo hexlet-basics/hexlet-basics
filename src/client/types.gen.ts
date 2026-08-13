@@ -490,6 +490,16 @@ export type CourseLessonView = {
    */
   landingPage: CourseLandingPage | null;
   /**
+   * Every Lesson of the course's current version, in course order — the same
+   * list the course landing read returns.
+   *
+   * The player's navigation tab is this list joined to `progress.lessons` by
+   * slug: names and order from here, checks and locks from there. Both screens
+   * render from the same two arrays, which is what keeps the Course page's list
+   * and the player's from disagreeing.
+   */
+  lessons: Array<CourseLessonListItem>;
+  /**
    * Where the visitor stands in the course this lesson belongs to — the same
    * payload the course landing read returns, for a signed-in learner and a
    * guest alike. The player reads `lessons[].available` to know whether this

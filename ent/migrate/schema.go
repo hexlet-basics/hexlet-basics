@@ -332,9 +332,9 @@ var (
 		{Name: "instructions", Type: field.TypeString, Nullable: true},
 		{Name: "tips", Type: field.TypeString, Nullable: true},
 		{Name: "definitions", Type: field.TypeString, Nullable: true},
-		{Name: "version_id", Type: field.TypeInt},
 		{Name: "language_lesson_id", Type: field.TypeInt},
 		{Name: "language_version_id", Type: field.TypeInt},
+		{Name: "version_id", Type: field.TypeInt},
 	}
 	// LanguageLessonVersionInfosTable holds the schema information for the "language_lesson_version_infos" table.
 	LanguageLessonVersionInfosTable = &schema.Table{
@@ -344,14 +344,20 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "language_lesson_version_infos_language_lessons_lesson",
-				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[12]},
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[11]},
 				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "language_lesson_version_infos_language_versions_course_version",
-				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[13]},
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[12]},
 				RefColumns: []*schema.Column{LanguageVersionsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_version_infos_language_lesson_versions_version",
+				Columns:    []*schema.Column{LanguageLessonVersionInfosColumns[13]},
+				RefColumns: []*schema.Column{LanguageLessonVersionsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -798,6 +804,7 @@ func init() {
 	}
 	LanguageLessonVersionInfosTable.ForeignKeys[0].RefTable = LanguageLessonsTable
 	LanguageLessonVersionInfosTable.ForeignKeys[1].RefTable = LanguageVersionsTable
+	LanguageLessonVersionInfosTable.ForeignKeys[2].RefTable = LanguageLessonVersionsTable
 	LanguageLessonVersionInfosTable.Annotation = &entsql.Annotation{
 		Table: "language_lesson_version_infos",
 	}

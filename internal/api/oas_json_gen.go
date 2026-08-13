@@ -10647,15 +10647,24 @@ func (s *CourseLessonView) encodeFields(e *jx.Encoder) {
 		s.LandingPage.Encode(e)
 	}
 	{
+		e.FieldStart("lessons")
+		e.ArrStart()
+		for _, elem := range s.Lessons {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
 		e.FieldStart("progress")
 		s.Progress.Encode(e)
 	}
 }
 
-var jsonFieldsNameOfCourseLessonView = [3]string{
+var jsonFieldsNameOfCourseLessonView = [4]string{
 	0: "lesson",
 	1: "landingPage",
-	2: "progress",
+	2: "lessons",
+	3: "progress",
 }
 
 // Decode decodes CourseLessonView from json.
@@ -10687,8 +10696,26 @@ func (s *CourseLessonView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"landingPage\"")
 			}
-		case "progress":
+		case "lessons":
 			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				s.Lessons = make([]CourseLessonListItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem CourseLessonListItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Lessons = append(s.Lessons, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lessons\"")
+			}
+		case "progress":
+			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
 				if err := s.Progress.Decode(d); err != nil {
 					return err
@@ -10707,7 +10734,7 @@ func (s *CourseLessonView) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000111,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

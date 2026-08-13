@@ -10812,13 +10812,13 @@ type CourseLessonTranslationMutation struct {
 	instructions          *string
 	tips                  *string
 	definitions           *string
-	version_id            *int
-	addversion_id         *int
 	clearedFields         map[string]struct{}
 	lesson                *int
 	clearedlesson         bool
 	course_version        *int
 	clearedcourse_version bool
+	version               *int
+	clearedversion        bool
 	done                  bool
 	oldValue              func(context.Context) (*CourseLessonTranslation, error)
 	predicates            []predicate.CourseLessonTranslation
@@ -11467,13 +11467,12 @@ func (m *CourseLessonTranslationMutation) ResetDefinitions() {
 
 // SetVersionID sets the "version_id" field.
 func (m *CourseLessonTranslationMutation) SetVersionID(i int) {
-	m.version_id = &i
-	m.addversion_id = nil
+	m.version = &i
 }
 
 // VersionID returns the value of the "version_id" field in the mutation.
 func (m *CourseLessonTranslationMutation) VersionID() (r int, exists bool) {
-	v := m.version_id
+	v := m.version
 	if v == nil {
 		return
 	}
@@ -11497,28 +11496,9 @@ func (m *CourseLessonTranslationMutation) OldVersionID(ctx context.Context) (v i
 	return oldValue.VersionID, nil
 }
 
-// AddVersionID adds i to the "version_id" field.
-func (m *CourseLessonTranslationMutation) AddVersionID(i int) {
-	if m.addversion_id != nil {
-		*m.addversion_id += i
-	} else {
-		m.addversion_id = &i
-	}
-}
-
-// AddedVersionID returns the value that was added to the "version_id" field in this mutation.
-func (m *CourseLessonTranslationMutation) AddedVersionID() (r int, exists bool) {
-	v := m.addversion_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetVersionID resets all changes to the "version_id" field.
 func (m *CourseLessonTranslationMutation) ResetVersionID() {
-	m.version_id = nil
-	m.addversion_id = nil
+	m.version = nil
 }
 
 // SetLessonID sets the "lesson" edge to the CourseLesson entity by id.
@@ -11586,6 +11566,33 @@ func (m *CourseLessonTranslationMutation) CourseVersionIDs() (ids []int) {
 func (m *CourseLessonTranslationMutation) ResetCourseVersion() {
 	m.course_version = nil
 	m.clearedcourse_version = false
+}
+
+// ClearVersion clears the "version" edge to the CourseLessonVersion entity.
+func (m *CourseLessonTranslationMutation) ClearVersion() {
+	m.clearedversion = true
+	m.clearedFields[courselessontranslation.FieldVersionID] = struct{}{}
+}
+
+// VersionCleared reports if the "version" edge to the CourseLessonVersion entity was cleared.
+func (m *CourseLessonTranslationMutation) VersionCleared() bool {
+	return m.clearedversion
+}
+
+// VersionIDs returns the "version" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// VersionID instead. It exists only for internal usage by the builders.
+func (m *CourseLessonTranslationMutation) VersionIDs() (ids []int) {
+	if id := m.version; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetVersion resets all changes to the "version" edge.
+func (m *CourseLessonTranslationMutation) ResetVersion() {
+	m.version = nil
+	m.clearedversion = false
 }
 
 // Where appends a list predicates to the CourseLessonTranslationMutation builder.
@@ -11659,7 +11666,7 @@ func (m *CourseLessonTranslationMutation) Fields() []string {
 	if m.definitions != nil {
 		fields = append(fields, courselessontranslation.FieldDefinitions)
 	}
-	if m.version_id != nil {
+	if m.version != nil {
 		fields = append(fields, courselessontranslation.FieldVersionID)
 	}
 	return fields
@@ -11842,9 +11849,6 @@ func (m *CourseLessonTranslationMutation) AddedFields() []string {
 	if m.addcourse_id != nil {
 		fields = append(fields, courselessontranslation.FieldCourseID)
 	}
-	if m.addversion_id != nil {
-		fields = append(fields, courselessontranslation.FieldVersionID)
-	}
 	return fields
 }
 
@@ -11855,8 +11859,6 @@ func (m *CourseLessonTranslationMutation) AddedField(name string) (ent.Value, bo
 	switch name {
 	case courselessontranslation.FieldCourseID:
 		return m.AddedCourseID()
-	case courselessontranslation.FieldVersionID:
-		return m.AddedVersionID()
 	}
 	return nil, false
 }
@@ -11872,13 +11874,6 @@ func (m *CourseLessonTranslationMutation) AddField(name string, value ent.Value)
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCourseID(v)
-		return nil
-	case courselessontranslation.FieldVersionID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddVersionID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonTranslation numeric field %s", name)
@@ -11997,12 +11992,15 @@ func (m *CourseLessonTranslationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CourseLessonTranslationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.lesson != nil {
 		edges = append(edges, courselessontranslation.EdgeLesson)
 	}
 	if m.course_version != nil {
 		edges = append(edges, courselessontranslation.EdgeCourseVersion)
+	}
+	if m.version != nil {
+		edges = append(edges, courselessontranslation.EdgeVersion)
 	}
 	return edges
 }
@@ -12019,13 +12017,17 @@ func (m *CourseLessonTranslationMutation) AddedIDs(name string) []ent.Value {
 		if id := m.course_version; id != nil {
 			return []ent.Value{*id}
 		}
+	case courselessontranslation.EdgeVersion:
+		if id := m.version; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CourseLessonTranslationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
@@ -12037,12 +12039,15 @@ func (m *CourseLessonTranslationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CourseLessonTranslationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedlesson {
 		edges = append(edges, courselessontranslation.EdgeLesson)
 	}
 	if m.clearedcourse_version {
 		edges = append(edges, courselessontranslation.EdgeCourseVersion)
+	}
+	if m.clearedversion {
+		edges = append(edges, courselessontranslation.EdgeVersion)
 	}
 	return edges
 }
@@ -12055,6 +12060,8 @@ func (m *CourseLessonTranslationMutation) EdgeCleared(name string) bool {
 		return m.clearedlesson
 	case courselessontranslation.EdgeCourseVersion:
 		return m.clearedcourse_version
+	case courselessontranslation.EdgeVersion:
+		return m.clearedversion
 	}
 	return false
 }
@@ -12069,6 +12076,9 @@ func (m *CourseLessonTranslationMutation) ClearEdge(name string) error {
 	case courselessontranslation.EdgeCourseVersion:
 		m.ClearCourseVersion()
 		return nil
+	case courselessontranslation.EdgeVersion:
+		m.ClearVersion()
+		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonTranslation unique edge %s", name)
 }
@@ -12082,6 +12092,9 @@ func (m *CourseLessonTranslationMutation) ResetEdge(name string) error {
 		return nil
 	case courselessontranslation.EdgeCourseVersion:
 		m.ResetCourseVersion()
+		return nil
+	case courselessontranslation.EdgeVersion:
+		m.ResetVersion()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonTranslation edge %s", name)
