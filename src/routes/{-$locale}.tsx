@@ -33,7 +33,9 @@ export const Route = createFileRoute("/{-$locale}")({
 
 function LocaleLayout() {
   const bare = useMatches({
-    select: (matches) => matches.some((match) => match.staticData.chrome === "bare"),
+    // Optional access: a route that declares no staticData at all is every route
+    // but one, and this runs for all of them.
+    select: (matches) => matches.some((match) => match.staticData?.chrome === "bare"),
   });
   const Layout = bare ? LessonLayout : ApplicationLayout;
 

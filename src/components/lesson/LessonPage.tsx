@@ -28,10 +28,12 @@ export default function LessonPage({
 
   // Where the learner dragged the divider, remembered per lesson exactly as
   // legacy remembered it.
+  // Read in an effect (the hook's default), not during render: this page is
+  // server-rendered, and reading storage on the first client render would paint
+  // a split the server's HTML does not have.
   const [paneSizes, setPaneSizes] = useLocalStorage<SplitterPaneSize[]>({
     key: `lesson-panes-${courseSlug}-${lessonSlug}`,
     defaultValue: ["40%", "60%"],
-    getInitialValueInEffect: false,
   });
 
   if (isPending) {

@@ -167,6 +167,11 @@ test("lists every lesson in course order, marking finished and locked ones", asy
   await expect.element(page.getByLabelText("Finished")).toBeVisible();
   await expect.element(page.getByLabelText("Locked")).toBeVisible();
 
+  // Where the learner is now.
+  await expect
+    .element(page.getByRole("link", { name: "Variables" }))
+    .toHaveAttribute("aria-current", "page");
+
   // Locked stays clickable: theory is public, only the exercise is gated.
   await expect
     .element(page.getByRole("link", { name: "Strings" }))
