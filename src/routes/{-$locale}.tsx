@@ -1,6 +1,16 @@
-import { createFileRoute, notFound, Outlet } from "@tanstack/react-router";
+import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-router";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
+import LessonLayout from "@/components/layout/LessonLayout";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
+
+// A route can ask for chrome other than the site layout. Declared per route
+// rather than matched on the URL here, so the page that wants a bare shell says
+// so itself and this layout keeps knowing nothing about which pages exist.
+declare module "@tanstack/react-router" {
+  interface StaticDataRouteOption {
+    chrome?: "bare";
+  }
+}
 
 // Optional locale prefix layout: `/` → en (unprefixed), `/ru`, `/es` → prefixed
 // (legacy `scope "(:suffix)", suffix: /es|ru/`). Only `ru`/`es` are valid
@@ -18,9 +28,18 @@ export const Route = createFileRoute("/{-$locale}")({
 
     return { locale };
   },
-  component: () => (
-    <ApplicationLayout>
-      <Outlet />
-    </ApplicationLayout>
-  ),
+  component: LocaleLayout,
 });
+
+function LocaleLayout() {
+  const bare = useMatches({
+    select: (matches) => matches.some((match) => match.staticData.chrome === "bare"),
+  });
+  const Layout = bare ? LessonLayout : ApplicationLayout;
+
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
+}

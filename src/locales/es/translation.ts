@@ -1121,12 +1121,15 @@ export default {
           editor: "Editor",
           editor_aria_label: "Editor de código",
           finish: "Завершить",
+          finished: "Completada",
           hint_close: "Cerrar",
           if_stuck_html:
             "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n",
           instructions: "Instructions",
           issues: "Found a bug? Have something to add? Pull requests are welcome!",
           lesson: "Lesson",
+          lesson_not_found: "Lección no encontrada. Prueba con otra lección.",
+          locked: "Bloqueada",
           navigation: "Navigation",
           next: "Next →",
           only_for_signed_in_users: "Exercise available only for signed users.",
@@ -1141,6 +1144,7 @@ export default {
           sign_up_for_tracking_progress_html:
             'Be sure to <a href="{{link}}" class="text-decoration-none" target="_blank">register</a> to ensure you don\'t lose the results you\'ve achieved\n',
           solution: "Solution",
+          source_code: "Código fuente de la lección en GitHub",
           tests: "Tests",
           tips: "Tips",
           title: "{{lesson_name}} | {{language_name}}\n",

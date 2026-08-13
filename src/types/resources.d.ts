@@ -783,11 +783,14 @@ export default interface Resources {
           editor: "Редактор";
           editor_aria_label: "Редактор кода";
           finish: "Завершить";
+          finished: "Пройден";
           hint_close: "Скрыть";
           if_stuck_html: "Если вы столкнулись с трудностями и не знаете, что делать, задайте вопрос в нашем большом и дружном <a>телеграм-сообществе</a>\n";
           instructions: "Задание";
           issues: "Нашли ошибку? Есть что добавить? Пулреквесты приветствуются";
           lesson: "Урок";
+          lesson_not_found: "Урок не найден, но вы можете начать другие!";
+          locked: "Недоступен";
           navigation: "Навигация";
           next: "Следующий →";
           only_for_signed_in_users: "Упражнение доступно только авторизованным пользователям.";
@@ -800,6 +803,7 @@ export default interface Resources {
           sign_in: "Войти";
           sign_up_for_tracking_progress_html: 'Чтобы не потерять достигнутые результаты, обязательно <a href="{{link}}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>\n';
           solution: "Решение";
+          source_code: "Исходный код урока на GitHub";
           tests: "Тесты";
           tips: "Полезное";
           title: "{{lesson_name}} | Уроки {{language_name}}\n";

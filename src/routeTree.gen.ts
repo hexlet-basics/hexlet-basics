@@ -14,7 +14,6 @@ import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$local
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
-import { Route as Char123LocaleChar125LanguagesSlugRouteImport } from './routes/{-$locale}/languages/$slug'
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
 import { Route as Char123LocaleChar125AdminBannersIndexRouteImport } from './routes/{-$locale}/admin/banners/index'
@@ -42,6 +41,7 @@ import { Route as Char123LocaleChar125AdminReviewsNewRouteImport } from './route
 import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './routes/{-$locale}/admin/users/index'
 import { Route as Char123LocaleChar125AdminUsersIdRouteImport } from './routes/{-$locale}/admin/users/$id'
 import { Route as Char123LocaleChar125AdminUsersNewRouteImport } from './routes/{-$locale}/admin/users/new'
+import { Route as Char123LocaleChar125LanguagesSlugIndexRouteImport } from './routes/{-$locale}/languages/$slug/index'
 import { Route as Char123LocaleChar125AdminManagementRolesIndexRouteImport } from './routes/{-$locale}/admin/management/roles/index'
 import { Route as Char123LocaleChar125AdminManagementRolesIdRouteImport } from './routes/{-$locale}/admin/management/roles/$id'
 import { Route as Char123LocaleChar125AdminManagementRolesNewRouteImport } from './routes/{-$locale}/admin/management/roles/new'
@@ -50,6 +50,7 @@ import { Route as Char123LocaleChar125AdminManagementStaff_membersIdRouteImport 
 import { Route as Char123LocaleChar125AdminManagementStaff_membersNewRouteImport } from './routes/{-$locale}/admin/management/staff_members/new'
 import { Route as Char123LocaleChar125AdminManagementUsersIndexRouteImport } from './routes/{-$locale}/admin/management/users/index'
 import { Route as Char123LocaleChar125AdminManagementUsersIdRouteImport } from './routes/{-$locale}/admin/management/users/$id'
+import { Route as Char123LocaleChar125LanguagesSlugLessonsLessonSlugRouteImport } from './routes/{-$locale}/languages/$slug/lessons/$lessonSlug'
 
 const Char123LocaleChar125Route = Char123LocaleChar125RouteImport.update({
   id: '/{-$locale}',
@@ -78,12 +79,6 @@ const Char123LocaleChar125LanguagesIndexRoute =
   Char123LocaleChar125LanguagesIndexRouteImport.update({
     id: '/languages/',
     path: '/languages/',
-    getParentRoute: () => Char123LocaleChar125Route,
-  } as any)
-const Char123LocaleChar125LanguagesSlugRoute =
-  Char123LocaleChar125LanguagesSlugRouteImport.update({
-    id: '/languages/$slug',
-    path: '/languages/$slug',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125SessionNewRoute =
@@ -248,6 +243,12 @@ const Char123LocaleChar125AdminUsersNewRoute =
     path: '/users/new',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
+const Char123LocaleChar125LanguagesSlugIndexRoute =
+  Char123LocaleChar125LanguagesSlugIndexRouteImport.update({
+    id: '/languages/$slug/',
+    path: '/languages/$slug/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125AdminManagementRolesIndexRoute =
   Char123LocaleChar125AdminManagementRolesIndexRouteImport.update({
     id: '/management/roles/',
@@ -296,12 +297,17 @@ const Char123LocaleChar125AdminManagementUsersIdRoute =
     path: '/management/users/$id',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
+const Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute =
+  Char123LocaleChar125LanguagesSlugLessonsLessonSlugRouteImport.update({
+    id: '/languages/$slug/lessons/$lessonSlug',
+    path: '/languages/$slug/lessons/$lessonSlug',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
-  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
@@ -331,18 +337,19 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/messages/': typeof Char123LocaleChar125AdminMessagesIndexRoute
   '/{-$locale}/admin/reviews/': typeof Char123LocaleChar125AdminReviewsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
+  '/{-$locale}/languages/$slug/': typeof Char123LocaleChar125LanguagesSlugIndexRoute
   '/{-$locale}/admin/management/roles/$id': typeof Char123LocaleChar125AdminManagementRolesIdRoute
   '/{-$locale}/admin/management/roles/new': typeof Char123LocaleChar125AdminManagementRolesNewRoute
   '/{-$locale}/admin/management/staff_members/$id': typeof Char123LocaleChar125AdminManagementStaff_membersIdRoute
   '/{-$locale}/admin/management/staff_members/new': typeof Char123LocaleChar125AdminManagementStaff_membersNewRoute
   '/{-$locale}/admin/management/users/$id': typeof Char123LocaleChar125AdminManagementUsersIdRoute
+  '/{-$locale}/languages/$slug/lessons/$lessonSlug': typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
   '/{-$locale}/admin/management/roles/': typeof Char123LocaleChar125AdminManagementRolesIndexRoute
   '/{-$locale}/admin/management/staff_members/': typeof Char123LocaleChar125AdminManagementStaff_membersIndexRoute
   '/{-$locale}/admin/management/users/': typeof Char123LocaleChar125AdminManagementUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
-  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminIndexRoute
@@ -372,11 +379,13 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/messages': typeof Char123LocaleChar125AdminMessagesIndexRoute
   '/{-$locale}/admin/reviews': typeof Char123LocaleChar125AdminReviewsIndexRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersIndexRoute
+  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugIndexRoute
   '/{-$locale}/admin/management/roles/$id': typeof Char123LocaleChar125AdminManagementRolesIdRoute
   '/{-$locale}/admin/management/roles/new': typeof Char123LocaleChar125AdminManagementRolesNewRoute
   '/{-$locale}/admin/management/staff_members/$id': typeof Char123LocaleChar125AdminManagementStaff_membersIdRoute
   '/{-$locale}/admin/management/staff_members/new': typeof Char123LocaleChar125AdminManagementStaff_membersNewRoute
   '/{-$locale}/admin/management/users/$id': typeof Char123LocaleChar125AdminManagementUsersIdRoute
+  '/{-$locale}/languages/$slug/lessons/$lessonSlug': typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
   '/{-$locale}/admin/management/roles': typeof Char123LocaleChar125AdminManagementRolesIndexRoute
   '/{-$locale}/admin/management/staff_members': typeof Char123LocaleChar125AdminManagementStaff_membersIndexRoute
   '/{-$locale}/admin/management/users': typeof Char123LocaleChar125AdminManagementUsersIndexRoute
@@ -386,7 +395,6 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
-  '/{-$locale}/languages/$slug': typeof Char123LocaleChar125LanguagesSlugRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
@@ -416,11 +424,13 @@ export interface FileRoutesById {
   '/{-$locale}/admin/messages/': typeof Char123LocaleChar125AdminMessagesIndexRoute
   '/{-$locale}/admin/reviews/': typeof Char123LocaleChar125AdminReviewsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
+  '/{-$locale}/languages/$slug/': typeof Char123LocaleChar125LanguagesSlugIndexRoute
   '/{-$locale}/admin/management/roles/$id': typeof Char123LocaleChar125AdminManagementRolesIdRoute
   '/{-$locale}/admin/management/roles/new': typeof Char123LocaleChar125AdminManagementRolesNewRoute
   '/{-$locale}/admin/management/staff_members/$id': typeof Char123LocaleChar125AdminManagementStaff_membersIdRoute
   '/{-$locale}/admin/management/staff_members/new': typeof Char123LocaleChar125AdminManagementStaff_membersNewRoute
   '/{-$locale}/admin/management/users/$id': typeof Char123LocaleChar125AdminManagementUsersIdRoute
+  '/{-$locale}/languages/$slug/lessons/$lessonSlug': typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
   '/{-$locale}/admin/management/roles/': typeof Char123LocaleChar125AdminManagementRolesIndexRoute
   '/{-$locale}/admin/management/staff_members/': typeof Char123LocaleChar125AdminManagementStaff_membersIndexRoute
   '/{-$locale}/admin/management/users/': typeof Char123LocaleChar125AdminManagementUsersIndexRoute
@@ -431,7 +441,6 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/'
-    | '/{-$locale}/languages/$slug'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
@@ -461,18 +470,19 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/messages/'
     | '/{-$locale}/admin/reviews/'
     | '/{-$locale}/admin/users/'
+    | '/{-$locale}/languages/$slug/'
     | '/{-$locale}/admin/management/roles/$id'
     | '/{-$locale}/admin/management/roles/new'
     | '/{-$locale}/admin/management/staff_members/$id'
     | '/{-$locale}/admin/management/staff_members/new'
     | '/{-$locale}/admin/management/users/$id'
+    | '/{-$locale}/languages/$slug/lessons/$lessonSlug'
     | '/{-$locale}/admin/management/roles/'
     | '/{-$locale}/admin/management/staff_members/'
     | '/{-$locale}/admin/management/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$locale}'
-    | '/{-$locale}/languages/$slug'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin'
@@ -502,11 +512,13 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/messages'
     | '/{-$locale}/admin/reviews'
     | '/{-$locale}/admin/users'
+    | '/{-$locale}/languages/$slug'
     | '/{-$locale}/admin/management/roles/$id'
     | '/{-$locale}/admin/management/roles/new'
     | '/{-$locale}/admin/management/staff_members/$id'
     | '/{-$locale}/admin/management/staff_members/new'
     | '/{-$locale}/admin/management/users/$id'
+    | '/{-$locale}/languages/$slug/lessons/$lessonSlug'
     | '/{-$locale}/admin/management/roles'
     | '/{-$locale}/admin/management/staff_members'
     | '/{-$locale}/admin/management/users'
@@ -515,7 +527,6 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/'
-    | '/{-$locale}/languages/$slug'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
@@ -545,11 +556,13 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/messages/'
     | '/{-$locale}/admin/reviews/'
     | '/{-$locale}/admin/users/'
+    | '/{-$locale}/languages/$slug/'
     | '/{-$locale}/admin/management/roles/$id'
     | '/{-$locale}/admin/management/roles/new'
     | '/{-$locale}/admin/management/staff_members/$id'
     | '/{-$locale}/admin/management/staff_members/new'
     | '/{-$locale}/admin/management/users/$id'
+    | '/{-$locale}/languages/$slug/lessons/$lessonSlug'
     | '/{-$locale}/admin/management/roles/'
     | '/{-$locale}/admin/management/staff_members/'
     | '/{-$locale}/admin/management/users/'
@@ -594,13 +607,6 @@ declare module '@tanstack/react-router' {
       path: '/languages'
       fullPath: '/{-$locale}/languages/'
       preLoaderRoute: typeof Char123LocaleChar125LanguagesIndexRouteImport
-      parentRoute: typeof Char123LocaleChar125Route
-    }
-    '/{-$locale}/languages/$slug': {
-      id: '/{-$locale}/languages/$slug'
-      path: '/languages/$slug'
-      fullPath: '/{-$locale}/languages/$slug'
-      preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/session/new': {
@@ -792,6 +798,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminUsersNewRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
+    '/{-$locale}/languages/$slug/': {
+      id: '/{-$locale}/languages/$slug/'
+      path: '/languages/$slug'
+      fullPath: '/{-$locale}/languages/$slug/'
+      preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/admin/management/roles/': {
       id: '/{-$locale}/admin/management/roles/'
       path: '/management/roles'
@@ -847,6 +860,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/{-$locale}/admin/management/users/$id'
       preLoaderRoute: typeof Char123LocaleChar125AdminManagementUsersIdRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/languages/$slug/lessons/$lessonSlug': {
+      id: '/{-$locale}/languages/$slug/lessons/$lessonSlug'
+      path: '/languages/$slug/lessons/$lessonSlug'
+      fullPath: '/{-$locale}/languages/$slug/lessons/$lessonSlug'
+      preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
   }
 }
@@ -967,21 +987,24 @@ const Char123LocaleChar125AdminRouteWithChildren =
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
-  Char123LocaleChar125LanguagesSlugRoute: typeof Char123LocaleChar125LanguagesSlugRoute
   Char123LocaleChar125SessionNewRoute: typeof Char123LocaleChar125SessionNewRoute
   Char123LocaleChar125UsersNewRoute: typeof Char123LocaleChar125UsersNewRoute
   Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
+  Char123LocaleChar125LanguagesSlugIndexRoute: typeof Char123LocaleChar125LanguagesSlugIndexRoute
+  Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute: typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
 }
 
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
-  Char123LocaleChar125LanguagesSlugRoute:
-    Char123LocaleChar125LanguagesSlugRoute,
   Char123LocaleChar125SessionNewRoute: Char123LocaleChar125SessionNewRoute,
   Char123LocaleChar125UsersNewRoute: Char123LocaleChar125UsersNewRoute,
   Char123LocaleChar125LanguagesIndexRoute:
     Char123LocaleChar125LanguagesIndexRoute,
+  Char123LocaleChar125LanguagesSlugIndexRoute:
+    Char123LocaleChar125LanguagesSlugIndexRoute,
+  Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute:
+    Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute,
 }
 
 const Char123LocaleChar125RouteWithChildren =

@@ -1,4 +1,13 @@
-import { ActionIcon, type ActionIconProps, Button, type ButtonProps } from "@mantine/core";
+import {
+  ActionIcon,
+  type ActionIconProps,
+  Button,
+  type ButtonProps,
+  NavLink as MantineNavLink,
+  type NavLinkProps,
+  Text,
+  type TextProps,
+} from "@mantine/core";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
 import { forwardRef } from "react";
 
@@ -32,4 +41,29 @@ const ActionIconLinkCreated = createLink(ActionIconLinkBase);
 
 export const ActionIconLink: LinkComponent<typeof ActionIconLinkBase> = (props) => (
   <ActionIconLinkCreated preload="intent" {...props} />
+);
+
+type TextLinkProps = Omit<TextProps, "href">;
+
+const TextLinkBase = forwardRef<HTMLAnchorElement, TextLinkProps>((props, ref) => (
+  <Text ref={ref} component="a" {...props} />
+));
+
+const TextLinkCreated = createLink(TextLinkBase);
+
+export const TextLink: LinkComponent<typeof TextLinkBase> = (props) => (
+  <TextLinkCreated preload="intent" {...props} />
+);
+
+type NavLinkLinkProps = Omit<NavLinkProps, "href">;
+
+const NavLinkBase = forwardRef<HTMLAnchorElement, NavLinkLinkProps>((props, ref) => (
+  <MantineNavLink ref={ref} component="a" {...props} />
+));
+
+const NavLinkCreated = createLink(NavLinkBase);
+
+// Mantine NavLink as a typed router link — the lesson navigation list.
+export const NavLink: LinkComponent<typeof NavLinkBase> = (props) => (
+  <NavLinkCreated preload="intent" {...props} />
 );
