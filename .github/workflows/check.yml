@@ -39,6 +39,18 @@ jobs:
       # `tool` directive in go.mod, so `make lint` builds it via `go tool`.
       - uses: jdx/mise-action@v2
 
+      # `tool` directives mean CI builds golangci-lint (and its analyzer tree)
+      # from source, so the module and build caches are what keep that off the
+      # critical path. Keyed on go.sum: a dependency bump invalidates it, the
+      # restore-key still seeds the next run from the previous tree.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
       - run: pnpm install
 
       # gofmt + go vet + golangci-lint (Go) and tsc (frontend).
@@ -74,6 +86,18 @@ jobs:
       - uses: actions/checkout@v7
 
       - uses: jdx/mise-action@v2
+
+      # `tool` directives mean CI builds golangci-lint (and its analyzer tree)
+      # from source, so the module and build caches are what keep that off the
+      # critical path. Keyed on go.sum: a dependency bump invalidates it, the
+      # restore-key still seeds the next run from the previous tree.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
 
       # DB packages use testcontainers-go to start independent PostgreSQL 18
       # instances, apply Atlas migrations, and load the committed fixtures.
