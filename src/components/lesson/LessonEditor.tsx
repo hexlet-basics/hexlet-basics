@@ -1,8 +1,9 @@
 import { Alert, Box, Stack, useComputedColorScheme } from "@mantine/core";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import { ClientOnly } from "@tanstack/react-router";
+import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getEditorSettings } from "@/lib/editor-languages";
 
@@ -29,6 +30,10 @@ type LessonEditorProps = {
   // bumped by a reset, and `starterCode` is what a reset restores.
   starterCode: string;
   resetCount: number;
+  // Ctrl+Enter, bound inside monaco. It has to be taken from monaco rather than
+  // listened for on the document: monaco binds Ctrl+Enter itself, to inserting a
+  // line below, and would swallow the keystroke and add a blank line to boot.
+  onRun: () => void;
 };
 
 // Where the learner writes their solution.
@@ -46,6 +51,7 @@ function EditorPane({
   onChange,
   starterCode,
   resetCount,
+  onRun,
 }: LessonEditorProps) {
   const { t } = useTranslation();
   const colorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false });
@@ -68,6 +74,16 @@ function EditorPane({
 
   const [instance, setInstance] = useState<editor.IStandaloneCodeEditor>();
   const settings = getEditorSettings(courseSlug);
+
+  // Monaco keeps the callback it is given for the life of the command, so the
+  // command calls through a ref rather than closing over a stale run.
+  const runRef = useRef(onRun);
+  runRef.current = onRun;
+
+  const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current());
+    setInstance(mounted);
+  };
 
   // A reset replaces the buffer and hands the cursor back, because the learner's
   // next move is to type. `resetCount` starts at 0, which is the mount, where
@@ -130,7 +146,7 @@ function EditorPane({
             options={options}
             defaultValue={initialCode}
             onChange={(value) => onChange(value ?? "")}
-            onMount={setInstance}
+            onMount={bindEditor}
           />
         </Suspense>
       </Box>

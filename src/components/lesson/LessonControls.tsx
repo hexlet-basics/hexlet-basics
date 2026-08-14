@@ -1,13 +1,22 @@
-import { ActionIcon, Box, Divider, Group, Stack } from "@mantine/core";
+import { ActionIcon, Box, Button, Divider, Group, Stack } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconRepeat } from "@tabler/icons-react";
+import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 
 // The bar under the workspace, where the buttons that act on the exercise live.
-// It carries reset today; run and the two navigation buttons join it with their
-// own tickets, which is why it sits below the tabs rather than inside the editor
-// pane — from here it is reachable from whichever tab the learner is on.
-export default function LessonControls({ onReset }: { onReset: () => void }) {
+// It sits below the tabs rather than inside the editor pane so that running a
+// solution is one press away from whichever tab the learner is on.
+//
+// Previous and next join it with #775.
+export default function LessonControls({
+  onReset,
+  onRun,
+  running,
+}: {
+  onReset: () => void;
+  onRun: () => void;
+  running: boolean;
+}) {
   const { t } = useTranslation();
 
   // Resetting throws away whatever the learner has written, and there is no undo
@@ -32,6 +41,18 @@ export default function LessonControls({ onReset }: { onReset: () => void }) {
           >
             <IconRepeat size={18} />
           </ActionIcon>
+
+          {/* While a check is in flight the button says so and refuses a second
+              press: one solution is running, and submitting it twice would tell
+              the learner nothing new. */}
+          <Button
+            leftSection={<IconPlayerPlay size={18} />}
+            onClick={onRun}
+            loading={running}
+            disabled={running}
+          >
+            {t(($) => $.courses.lessons.show.controls.run)}
+          </Button>
         </Group>
       </Box>
     </Stack>

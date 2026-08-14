@@ -8,6 +8,7 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import type { AuthUser } from "@/lib/auth";
 import { createI18n } from "@/lib/i18n";
 import { renderWithProviders } from "./renderWithProviders";
 
@@ -28,12 +29,17 @@ export async function renderRoute(
   {
     path,
     initialPath,
+    user = null,
     wrap = (element) => element,
   }: {
     // The route's own path pattern, e.g. "/{-$locale}/languages/$slug".
     path: string;
     // The URL to open, which must match that pattern.
     initialPath: string;
+    // Who is visiting. The application resolves this in the root route's
+    // beforeLoad, which the synthetic root does not run, so a test that cares
+    // whether the visitor is a guest says so here. The default is a guest.
+    user?: AuthUser | null;
     // Wraps the router, for a page that needs a sized container to render into.
     wrap?: (element: ReactNode) => ReactNode;
   },
@@ -53,7 +59,7 @@ export async function renderRoute(
 
   const router = createRouter({
     routeTree: rootRoute.addChildren([mounted as never]),
-    context: { queryClient, i18n: createI18n(), user: null } as never,
+    context: { queryClient, i18n: createI18n(), user } as never,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
   });
 

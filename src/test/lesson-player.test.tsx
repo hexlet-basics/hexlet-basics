@@ -1,7 +1,14 @@
 import { http, HttpResponse } from "msw";
 import { afterEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
-import type { Course, CourseLandingPage, CourseLesson, CourseLessonView } from "@/client/types.gen";
+import type {
+  Course,
+  CourseLandingPage,
+  CourseLesson,
+  CourseLessonView,
+  LessonCheckingResponse,
+} from "@/client/types.gen";
+import type { AuthUser } from "@/lib/auth";
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
@@ -75,8 +82,8 @@ const lesson: CourseLesson = {
   definitions: [],
   tips: ["Names are case sensitive"],
   preparedCode: "let greeting = '';\n",
-  originalCode: null,
-  testCode: null,
+  originalCode: "let greeting = 'hello'; // the author's answer\n",
+  testCode: "assert.equal(greeting, 'hello');\n",
   sourceCodeUrl: "https://github.com/hexlet-basics/exercises-javascript",
   createdAt: "2026-01-01T00:00:00Z",
 };
@@ -107,15 +114,32 @@ function lessonView(overrides: Partial<CourseLessonView> = {}): CourseLessonView
   };
 }
 
+// A signed-in learner, for the tests that need one. Everything else here is a
+// guest, which is the harder case and the one legacy under-tested.
+const learner: AuthUser = {
+  id: 7,
+  firstName: "Ada",
+  lastName: null,
+  name: "Ada",
+  email: "ada@example.com",
+  admin: false,
+  canAccessAdmin: false,
+  assistantMessagesCount: 0,
+  createdAt: "2026-01-01T00:00:00Z",
+  createdAtAsTimestamp: null,
+  type: "user",
+};
+
 // The real route at a real URL, so the loader and the route's chrome run as they
 // do for a visitor.
 //
 // The player needs a container with a real height: the two panes divide the
 // space they are given, and a zero-height box renders nothing a learner sees.
-function renderPlayer(lessonSlug: string) {
+function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
   return renderRoute(lessonRoute, {
     path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
     initialPath: `/languages/javascript/lessons/${lessonSlug}`,
+    user,
     wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
   });
 }
@@ -389,4 +413,224 @@ test("tells the learner about autocomplete once", async () => {
   await expect
     .element(page.getByText("The editor suggests commands as you type"))
     .not.toBeInTheDocument();
+});
+
+// A completed run, as the server reports one.
+function checkResult(overrides: Partial<LessonCheckingResponse> = {}): LessonCheckingResponse {
+  return {
+    passed: true,
+    result: "passed",
+    status: 0,
+    output: "1 example, 0 failures",
+    lessonHasBeenFinished: true,
+    courseHasBeenFinished: false,
+    ...overrides,
+  };
+}
+
+// The visitor here is a guest — no session, progress carried in a cookie the
+// browser never reads. The page is the same page a signed-in learner gets, which
+// is the point: nothing on this screen branches on whether there is an account.
+test("runs the solution and says it passed", async () => {
+  const submitted: unknown[] = [];
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", async ({ request }) => {
+      submitted.push(await request.json());
+      return HttpResponse.json(checkResult());
+    }),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  await page.getByRole("button", { name: "Run" }).click();
+
+  // The learner is looking at the output pane by the time the answer lands.
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await expect.element(page.getByText("1 example, 0 failures")).toBeVisible();
+
+  // What was sent: the buffer, against the version the page was loaded with.
+  expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
+});
+
+test("reports a failing solution without taking the lesson away", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () =>
+      HttpResponse.json(
+        checkResult({
+          passed: false,
+          result: "failed",
+          status: 1,
+          output: "expected 'hello', got ''",
+          lessonHasBeenFinished: false,
+        }),
+      ),
+    ),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect.element(page.getByText("Tests Failed", { exact: false })).toBeVisible();
+  await expect.element(page.getByText("expected 'hello', got ''")).toBeVisible();
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeEnabled();
+});
+
+test("reports a solution that never terminated as its own thing", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () =>
+      HttpResponse.json(
+        checkResult({
+          passed: false,
+          result: "failed-infinity",
+          status: 124,
+          output: "",
+          lessonHasBeenFinished: false,
+        }),
+      ),
+    ),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect.element(page.getByText("Infinity Loop", { exact: false })).toBeVisible();
+});
+
+test("says when the request itself failed, rather than leaving it to be read as a wrong answer", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.error()),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect
+    .element(page.getByText("There was a network problem", { exact: false }))
+    .toBeVisible();
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeEnabled();
+  await expect.element(page.getByText("Tests passed")).not.toBeInTheDocument();
+});
+
+test("refuses a second run while one is in flight", async () => {
+  let checks = 0;
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", async () => {
+      checks += 1;
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      return HttpResponse.json(checkResult());
+    }),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  const run = page.getByRole("button", { name: "Run" });
+  await run.click();
+  await expect.element(run).toBeDisabled();
+
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  expect(checks).toBe(1);
+});
+
+test("runs on ctrl+enter, without leaving the keyboard", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("{Control>}{Enter}{/Control}");
+
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+});
+
+test("shows the lesson's tests to anyone who opens them", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables");
+  await page.getByRole("tab", { name: "Tests" }).click();
+
+  await expect.element(page.getByText("assert.equal(greeting, 'hello');")).toBeVisible();
+});
+
+test("keeps the reference solution behind a wait until the lesson is passed", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("tab", { name: "Solution" }).click();
+
+  // How long is left of the wait, so a stuck learner knows whether to keep at it.
+  await expect.element(page.getByText(/^\d\d:\d\d$/)).toBeVisible();
+  await expect.element(page.getByText("the author's answer")).not.toBeInTheDocument();
+
+  // Passing opens it, next to the learner's own code.
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await page.getByRole("tab", { name: "Solution" }).click();
+  await expect.element(page.getByText("the author's answer")).toBeVisible();
+  // The learner's own code, beside the author's, so the comparison is on one
+  // screen — and it is the buffer, not the editor's copy of it.
+  await expect
+    .element(page.getByRole("tabpanel", { name: "Solution" }).getByText("let greeting = '';"))
+    .toBeVisible();
+});
+
+test("opens the reference solution straight away on a lesson already finished", async () => {
+  const finished = lessonView({
+    progress: {
+      state: "started",
+      completion: 66,
+      nextLessonSlug: "strings",
+      furthestFinishedPosition: 2,
+      lessons: [
+        { slug: "hello-world", position: 1, finished: true, available: true },
+        { slug: "variables", position: 2, finished: true, available: true },
+        { slug: "strings", position: 3, finished: false, available: true },
+      ],
+    },
+  });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
+  );
+
+  await renderPlayer("variables");
+  await page.getByRole("tab", { name: "Solution" }).click();
+
+  await expect.element(page.getByText("the author's answer")).toBeVisible();
+});
+
+test("gives a signed-in learner the same run a guest gets", async () => {
+  const submitted: unknown[] = [];
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", async ({ request }) => {
+      submitted.push(await request.json());
+      return HttpResponse.json(checkResult());
+    }),
+  );
+
+  await renderPlayer("variables", learner);
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("button", { name: "Run" }).click();
+
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
 });
