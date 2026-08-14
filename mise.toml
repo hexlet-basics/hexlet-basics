@@ -1,7 +1,14 @@
+# Only tools that cannot live in go.mod belong here. Anything installable as a
+# Go module is pinned by a `tool` directive in go.mod instead (air,
+# golangci-lint, ent, ogen, goverter, goi18n) and invoked as `go tool <name>`.
 [tools]
 go = "1.26.5"
-golangci-lint = "2.12.2"
+# kiota: .NET binary, no Go module exists.
 kiota = "1.34.1"
 # atlas: owns the DB schema going forward (versioned migrations). Tests apply
 # migrations through the Atlas Go library; new changes = atlas migrate new.
+# Cannot become a `go tool`: the public `ariga.io/atlas/cmd/atlas` module is
+# frozen at a 2024-11 snapshot of the 0.13.x CLI (the library kept moving to
+# 1.x), and even that snapshot refuses to install because its go.mod carries
+# replace directives.
 atlas = "1.2.0"

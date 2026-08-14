@@ -15,7 +15,7 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## prepare: install the mise-pinned toolchain (go, golangci-lint, atlas)
+## prepare: install the mise-pinned toolchain (go, kiota, atlas)
 prepare:
 	mise install
 
@@ -58,11 +58,11 @@ dev:
 
 ## dev-api: run only the Go API server with live-reload (:3001)
 dev-api:
-	air
+	go tool air
 
 ## dev-worker: run only the async Go worker with live-reload
 dev-worker:
-	air -c .air.worker.toml
+	go tool air -c .air.worker.toml
 
 ## dev-web: run only the Vite frontend
 dev-web:
@@ -142,7 +142,7 @@ lint: lint-go lint-web
 lint-go: lint-locales
 	@test -z "$$(gofmt -l cmd internal ent/schema)" || (echo "gofmt needed:"; gofmt -l cmd internal ent/schema; exit 1)
 	go vet ./...
-	golangci-lint run
+	go tool golangci-lint run
 
 ## lint-locales: verify generated source messages and complete translations
 lint-locales:
@@ -157,7 +157,7 @@ lint-web:
 ## lint-fix: auto-fix Go and frontend formatting and lint findings
 lint-fix:
 	gofmt -w cmd internal ent/schema
-	-golangci-lint run --fix
+	-go tool golangci-lint run --fix
 	pnpm lint:fix
 	pnpm format
 
