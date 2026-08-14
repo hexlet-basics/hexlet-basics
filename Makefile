@@ -15,7 +15,7 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## prepare: install the mise-pinned toolchain (go, kiota, atlas)
+## prepare: install the mise-pinned toolchain (go, golangci-lint, kiota, atlas)
 prepare:
 	mise install
 
@@ -142,7 +142,7 @@ lint: lint-go lint-web
 lint-go: lint-locales
 	@test -z "$$(gofmt -l cmd internal ent/schema)" || (echo "gofmt needed:"; gofmt -l cmd internal ent/schema; exit 1)
 	go vet ./...
-	go tool golangci-lint run
+	golangci-lint run
 
 ## lint-locales: verify generated source messages and complete translations
 lint-locales:
@@ -157,7 +157,7 @@ lint-web:
 ## lint-fix: auto-fix Go and frontend formatting and lint findings
 lint-fix:
 	gofmt -w cmd internal ent/schema
-	-go tool golangci-lint run --fix
+	-golangci-lint run --fix
 	pnpm lint:fix
 	pnpm format
 

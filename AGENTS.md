@@ -104,11 +104,13 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - `make dev-api` — Go API only. `make dev-worker` — async worker only.
   `make dev-web` — Vite only.
 - `make dev-spec` — watch TypeSpec and re-emit OpenAPI on change.
-- Go-based tooling is pinned by `tool` directives in `go.mod` and invoked as
-  `go tool <name>` (air, golangci-lint, ent, ogen, goverter, goi18n) — add new
-  ones with `go get -tool`, never by hand. `mise.toml` pins only what cannot be
-  a Go module: the go toolchain itself, kiota (.NET), and atlas (its public CLI
-  module is frozen at a 2024-11 0.13.x snapshot that will not even install).
+- Go tooling that is cheap to build is pinned by `tool` directives in `go.mod`
+  and invoked as `go tool <name>` (air, ent, ogen, goverter, goi18n) — add new
+  ones with `go get -tool`, never by hand. `mise.toml` pins the rest: the go
+  toolchain, kiota (.NET, no Go module), atlas (its public CLI module is frozen
+  at a 2024-11 0.13.x snapshot and will not install — its go.mod has replace
+  directives), and golangci-lint (a tool directive would drag its whole
+  analyzer tree into go.mod to rebuild what mise fetches as a binary).
   Use `pnpm`, never `npm`/`npx` directly for JS deps.
 
 ## Codegen Commands

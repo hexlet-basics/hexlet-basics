@@ -34,14 +34,12 @@ jobs:
           node-version: 26
           cache: pnpm
 
-      # Installs the Go toolchain pinned in mise.toml (single source of truth
-      # with local dev), and caches it between runs. golangci-lint itself is a
-      # `tool` directive in go.mod, so `make lint` builds it via `go tool`.
+      # Installs Go + golangci-lint pinned in mise.toml (single source of truth
+      # with local dev), and caches them between runs.
       - uses: jdx/mise-action@v2
 
-      # `tool` directives mean CI builds golangci-lint (and its analyzer tree)
-      # from source, so the module and build caches are what keep that off the
-      # critical path. Keyed on go.sum: a dependency bump invalidates it, the
+      # Neither job had a Go cache, so every run recompiled the dependency tree
+      # from scratch. Keyed on go.sum: a dependency bump invalidates it, the
       # restore-key still seeds the next run from the previous tree.
       - uses: actions/cache@v4
         with:
@@ -87,10 +85,8 @@ jobs:
 
       - uses: jdx/mise-action@v2
 
-      # `tool` directives mean CI builds golangci-lint (and its analyzer tree)
-      # from source, so the module and build caches are what keep that off the
-      # critical path. Keyed on go.sum: a dependency bump invalidates it, the
-      # restore-key still seeds the next run from the previous tree.
+      # Keyed on go.sum: a dependency bump invalidates it, the restore-key still
+      # seeds the next run from the previous tree.
       - uses: actions/cache@v4
         with:
           path: |
