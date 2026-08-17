@@ -3,7 +3,7 @@ name: release-please
 on:
   push:
     branches:
-      - main
+      - main-2
 
 permissions:
   contents: write
@@ -15,9 +15,7 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
-      # Голый semver (X.Y.Z) — тег Docker-образа и .Chart.Version. `v`-префикс
-      # живёт только в git-теге (tag_name), в образ/чарт не попадает.
-      version: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+      version: ${{ steps.release.outputs.version }}
     steps:
       # Maintains a "release PR" from conventional commits: bumps package.json,
       # k8s/app-chart/Chart.yaml ($.version) and CHANGELOG.md.
@@ -27,6 +25,7 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: main-2
 
   # Build & push the Docker images only when a release was just cut. Runs in this
   # same workflow run (triggered by the real push to main), so the default

@@ -3,10 +3,10 @@ name: build
 on:
   push:
     branches:
-      - main
+      - main-2
   pull_request:
     branches:
-      - main
+      - main-2
 
 env:
   VITE_RUBY_AUTO_BUILD: "false"

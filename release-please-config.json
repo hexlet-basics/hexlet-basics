@@ -9,6 +9,9 @@
       "include-v-in-tag": true,
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
+      "versioning": "prerelease",
+      "prerelease-type": "main2.0",
+      "prerelease": true,
       "extra-release-commit-types": ["chore", "build"],
       "changelog-sections": [
         { "type": "feat", "section": "Features" },
