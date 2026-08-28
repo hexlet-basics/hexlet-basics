@@ -32,5 +32,8 @@ provider "yandex" {
   cloud_id                 = local.data.terraform.yc.cloud_id
   folder_id                = local.data.terraform.yc.folder_id
   zone                     = local.data.terraform.yc.zone
+
   service_account_key_file = "yc_config.json"
+  storage_access_key       = var.access_key
+  storage_secret_key       = var.secret_key
 }

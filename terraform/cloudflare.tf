@@ -11,39 +11,39 @@ data "cloudflare_accounts" "hexlet" {
 # --------------------------------------
 # code-basics.ru
 # --------------------------------------
-resource "cloudflare_zone" "hexlet_basics_zone_ru" {
-  account = {
-    id = data.cloudflare_accounts.hexlet.result[0].id
-  }
-  name = local.data.terraform.domain_ru
-}
+# resource "cloudflare_zone" "hexlet_basics_zone_ru" {
+#   account = {
+#     id = data.cloudflare_accounts.hexlet.result[0].id
+#   }
+#   name = local.data.terraform.domain_ru
+# }
 
-resource "cloudflare_dns_record" "main_ru_1" {
-  zone_id = cloudflare_zone.hexlet_basics_zone_ru.id
-  name    = local.data.terraform.domain_ru
-  content = local.data.terraform.k8s_data.ip
-  type    = "A"
-  proxied = true
-  ttl     = 1
-}
+# resource "cloudflare_dns_record" "main_ru_1" {
+#   zone_id = cloudflare_zone.hexlet_basics_zone_ru.id
+#   name    = local.data.terraform.domain_ru
+#   content = local.data.terraform.k8s_data.ip
+#   type    = "A"
+#   proxied = true
+#   ttl     = 1
+# }
 
-resource "cloudflare_dns_record" "main_ru_www" {
-  zone_id = cloudflare_zone.hexlet_basics_zone_ru.id
-  name    = "www.${local.data.terraform.domain_ru}"
-  content = local.data.terraform.domain_ru
-  type    = "CNAME"
-  proxied = true
-   ttl    = 1
-}
+# resource "cloudflare_dns_record" "main_ru_www" {
+#   zone_id = cloudflare_zone.hexlet_basics_zone_ru.id
+#   name    = "www.${local.data.terraform.domain_ru}"
+#   content = local.data.terraform.domain_ru
+#   type    = "CNAME"
+#   proxied = true
+#    ttl    = 1
+# }
 
-resource "cloudflare_ruleset" "http_request_dynamic_redirect_main_ru" {
-  zone_id = cloudflare_zone.hexlet_basics_zone_ru.id
-  name    = "default"
-  kind    = "zone"
-  phase   = "http_request_dynamic_redirect"
+# resource "cloudflare_ruleset" "http_request_dynamic_redirect_main_ru" {
+#   zone_id = cloudflare_zone.hexlet_basics_zone_ru.id
+#   name    = "default"
+#   kind    = "zone"
+#   phase   = "http_request_dynamic_redirect"
 
-  rules = []
-}
+#   rules = []
+# }
 
 # --------------------------------------
 # code-basics.com
@@ -92,6 +92,16 @@ resource "cloudflare_dns_record" "www_ru" {
   ttl     = 1
 }
 
+resource "cloudflare_dns_record" "yandex_mx" {
+  zone_id  = cloudflare_zone.hexlet_basics_zone.id
+  name     = local.data.terraform.domain
+  content  = "mx.yandex.net"
+  type     = "MX"
+  proxied  = false
+  ttl      = 21600
+  priority = 10
+}
+
 resource "cloudflare_dns_record" "bounces" {
   zone_id = cloudflare_zone.hexlet_basics_zone.id
   name    = "bounces.${local.data.terraform.domain}"
@@ -120,17 +130,38 @@ resource "cloudflare_dns_record" "cq_dkim" {
 resource "cloudflare_dns_record" "spf" {
   zone_id = cloudflare_zone.hexlet_basics_zone.id
   name    = local.data.terraform.domain
-  content = "v=spf1 +a +mx include:spf.sendsay.ru include:mailgun.org ~all"
+  # content = "v=spf1 +a +mx include:spf.sendsay.ru include:mailgun.org ~all"
+  content = "\"v=spf1 mx include:_spf.yandex.net include:spf.sendsay.ru ~all\""
   type    = "TXT"
-  ttl     = 1
+  proxied = false
+  ttl     = 300
 }
 
-resource "cloudflare_dns_record" "yandex_verification" {
+resource "cloudflare_dns_record" "yandex_dkim" {
+  zone_id = cloudflare_zone.hexlet_basics_zone.id
+  name    = "mail._domainkey.${local.data.terraform.domain}"
+  content = "\"v=DKIM1; k=rsa; t=s; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCc2YbU0ftkaxg5+MGJcpCABBJRVclJsklspwKDwnIzdH5f8dSi54WpuvaTJFmyyWcotUYMBlbgYOS7zW8G/10lCRQD33JjXGumZn0+fuZXp2TgVZawMFBQ12PR/o9AzU/AI7Lstwr4e4nrI0uc8ilnyC8QayWJzziIAHpRbOHS6QIDAQAB\""
+  type    = "TXT"
+  proxied = false
+  ttl     = 300
+}
+
+resource "cloudflare_dns_record" "yandex_verification_1" {
   zone_id = cloudflare_zone.hexlet_basics_zone.id
   name    = local.data.terraform.domain
   content = "yandex-verification=ab7bd61d467a0773"
   type    = "TXT"
+  proxied = false
   ttl     = 1
+}
+
+resource "cloudflare_dns_record" "yandex_verification_2" {
+  zone_id = cloudflare_zone.hexlet_basics_zone.id
+  name    = local.data.terraform.domain
+  content = "yandex-verification: ab7bd61d467a0773"
+  type    = "TXT"
+  proxied = false
+  ttl     = 300
 }
 
 resource "cloudflare_dns_record" "yandex_verification_ru" {
