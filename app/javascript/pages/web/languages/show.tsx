@@ -200,9 +200,9 @@ export default function Show({
             <Title order={1} mb="lg" fz={48}>
               {courseLandingPage.header}
             </Title>
-            <Text size="lg" mb="sm">
-              {courseLandingPage.description}
-            </Text>
+            <Box fz="lg" mb="sm">
+              <MarkdownViewer>{courseLandingPage.description}</MarkdownViewer>
+            </Box>
             <Group mb="xl">
               <Group me="lg">
                 <IconUsers size={16} />
@@ -288,7 +288,9 @@ export default function Show({
             <Title order={2} size="h1" mb="md">
               {courseLandingPage.used_in_header}
             </Title>
-            <Text>{courseLandingPage.used_in_description}</Text>
+            <MarkdownViewer>
+              {courseLandingPage.used_in_description ?? ""}
+            </MarkdownViewer>
           </Grid.Col>
         </Grid>
 
@@ -311,7 +313,9 @@ export default function Show({
             <Title order={2} size="h1" mb="md">
               {courseLandingPage.outcomes_header}
             </Title>
-            <Text>{courseLandingPage.outcomes_description}</Text>
+            <MarkdownViewer>
+              {courseLandingPage.outcomes_description ?? ""}
+            </MarkdownViewer>
           </Box>
         </SimpleGrid>
 
