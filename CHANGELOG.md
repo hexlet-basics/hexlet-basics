@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.4-main2.1](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.4-main2.0...hexlet_basics-v0.1.4-main2.1) (2026-08-31)
+
+
+### Bug Fixes
+
+* **app:** render course landing descriptions as markdown ([96686c6](https://github.com/hexlet-basics/hexlet-basics/commit/96686c670be5bcdc9abbf390152b8e9eb6c62307)), closes [#781](https://github.com/hexlet-basics/hexlet-basics/issues/781)
+
+
+### Miscellaneous
+
+* update terraform providers & validate domain for yandex ([15a188f](https://github.com/hexlet-basics/hexlet-basics/commit/15a188f6da8c1d3a9a509eaa20c60da2352060de))
+
 ## [0.1.4-main2.0](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.3...hexlet_basics-v0.1.4-main2.0) (2026-08-17)
 
 
