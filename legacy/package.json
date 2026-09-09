@@ -131,7 +131,7 @@
     "postcss-preset-mantine": "^1.18.0",
     "rollup-plugin-visualizer": "^7.0.1",
     "simple-git-hooks": "^2.13.1",
-    "svgo": "^4.0.2",
+    "svgo": "^4.1.0",
     "terser": "^5.49.0",
     "typescript": "^7.0.2",
     "vite": "^8.1.5",
