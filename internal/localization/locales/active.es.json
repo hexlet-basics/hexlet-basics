@@ -23,14 +23,22 @@
   "http.unprocessable_entity": { "other": "No se pudieron procesar los datos" },
   "http.internal_server_error": { "other": "Error interno del servidor" },
   "emails.magic_link.subject": { "other": "Tu enlace de acceso" },
-  "emails.magic_link.intro": { "other": "Solicitaste un enlace de acceso a code-basics.com. Abre el enlace o pulsa el botón de abajo para iniciar sesión." },
+  "emails.magic_link.intro": {
+    "other": "Solicitaste un enlace de acceso a code-basics.com. Abre el enlace o pulsa el botón de abajo para iniciar sesión."
+  },
   "emails.magic_link.action": { "other": "Iniciar sesión" },
   "emails.magic_link.link_label": { "other": "Enlace de acceso a code-basics.com" },
   "emails.magic_link.ignore": { "other": "Si no lo solicitaste, simplemente ignora este correo." },
   "emails.password_reset.subject": { "other": "Restablecer contraseña" },
-  "emails.password_reset.intro": { "other": "Solicitaste un enlace para restablecer tu contraseña en code-basics.com. Abre el enlace o pulsa el botón de abajo para elegir una nueva contraseña." },
+  "emails.password_reset.intro": {
+    "other": "Solicitaste un enlace para restablecer tu contraseña en code-basics.com. Abre el enlace o pulsa el botón de abajo para elegir una nueva contraseña."
+  },
   "emails.password_reset.action": { "other": "Cambiar contraseña" },
-  "emails.password_reset.link_label": { "other": "Enlace para restablecer la contraseña en code-basics.com" },
-  "emails.password_reset.ignore": { "other": "Si no solicitaste restablecer la contraseña, ignora este correo. Tu contraseña no cambiará hasta que abras el enlace y elijas una nueva." },
+  "emails.password_reset.link_label": {
+    "other": "Enlace para restablecer la contraseña en code-basics.com"
+  },
+  "emails.password_reset.ignore": {
+    "other": "Si no solicitaste restablecer la contraseña, ignora este correo. Tu contraseña no cambiará hasta que abras el enlace y elijas una nueva."
+  },
   "emails.link_invalid": { "other": "Este enlace ya no es válido. Solicita uno nuevo." }
 }
