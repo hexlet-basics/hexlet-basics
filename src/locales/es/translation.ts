@@ -645,7 +645,7 @@ export default {
       empty: "Empty",
       errors: {
         network:
-          "There was a network problem. Please try again. If it doesn’t work, make sure you have good internet and no blockers.",
+          "Hubo un problema de red. Inténtalo de nuevo. Si no funciona, comprueba tu conexión a internet y desactiva los bloqueadores de anuncios.",
         server:
           "Error on server. Maybe it’ll let go soon, but maybe not. Try to find out what happened in https://slack.hexlet.io/",
       },
@@ -2072,7 +2072,7 @@ export default {
       },
       passwords: {
         edit: {
-          title: "Change password",
+          title: "Cambiar contraseña",
         },
       },
       remind_passwords: {
@@ -2113,7 +2113,7 @@ export default {
         new_password: "Nueva contraseña",
         password_hint: "Al menos 6 caracteres",
         submit: "Guardar contraseña",
-        title: "Change password",
+        title: "Cambiar contraseña",
       },
     },
     phone_auth: {

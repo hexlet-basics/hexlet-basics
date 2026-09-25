@@ -122,7 +122,7 @@ func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 
 	res, err := h.Client.UpdatePassword(t.Context(),
 		&api.ResetPasswordInput{Password: "new-password"},
-		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtokens.PasswordReset, u, issuedAgo(16*time.Minute))})
+		api.UpdatePasswordParams{Token: issueEmailToken(t, emailtokens.PasswordReset, u, issuedAgo(emailtokens.Lifetime+time.Minute))})
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.NotFoundError{}, res)

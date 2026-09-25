@@ -42,6 +42,11 @@ screens are generated from the same schema rather than authored per resource.
     browser never would; and a sign-in is not a cacheable read, so it has no
     business in `ensureQueryData`. The call is still the generated client —
     only the prefetch pattern is skipped.
+  - **Exception — reads with no data.** A loader that only asks whether
+    something may be shown (checking a Password Reset link, answered 204 or
+    404) calls the generated SDK function directly and redirects on refusal.
+    There is nothing to dehydrate, and TanStack Query rejects `undefined` as
+    query data, so `ensureQueryData` does not fit. It still runs during SSR.
 - **Forms:** TanStack Form (headless) + Mantine input wrappers; validators are
   Zod schemas generated from OpenAPI by the hey-api zod plugin. Chosen over
   `@mantine/form` because a schema-driven field layer is built regardless, which

@@ -2,7 +2,6 @@ import { Alert, Button, Card, Container, Stack, Title } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getCurrentUserQueryKey, updatePasswordMutation } from "@/client/@tanstack/react-query.gen";
 import { checkPasswordResetToken } from "@/client/sdk.gen";
@@ -20,8 +19,8 @@ const refusedLink = (locale: string | undefined) => ({
 // The emailed Password Reset link (legacy passwords#edit). The loader checks the
 // link before the form is shown, so nobody types a new password into a dead
 // one; a refused link goes back to the request form, which says it is no longer
-// valid. The check has no answer to cache, so it calls the SDK directly rather
-// than going through ensureQueryData. Submitting signs the visitor in and takes
+// valid. The check answers 204 with no data to cache, so it calls the SDK
+// directly rather than going through ensureQueryData (ADR-0008). Submitting signs the visitor in and takes
 // them home.
 export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
   loader: async ({ params }) => {
@@ -42,7 +41,6 @@ function Edit() {
   const { locale, token } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
     ...updatePasswordMutation(),
@@ -57,9 +55,7 @@ function Edit() {
       // or it was already used from another tab.
       if (isAxiosError(error) && error.response?.status === 404) {
         navigate(refusedLink(locale));
-        return;
       }
-      setServerError(t(($) => $.common.errors.network));
     },
   });
 
@@ -67,7 +63,6 @@ function Edit() {
     defaultValues: { password: "" },
     validators: { onSubmit: zResetPasswordInput },
     onSubmit: async ({ value }) => {
-      setServerError(null);
       await mutation.mutateAsync({ path: { token }, body: value });
     },
   });
@@ -87,7 +82,7 @@ function Edit() {
               form.handleSubmit();
             }}
           >
-            {serverError && <Alert color="red">{serverError}</Alert>}
+            {mutation.isError && <Alert color="red">{t(($) => $.common.errors.network)}</Alert>}
 
             <form.AppField name="password">
               {(field) => (
