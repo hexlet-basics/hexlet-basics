@@ -14,6 +14,8 @@ import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$local
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
+import { Route as Char123LocaleChar125Magic_linksTokenRouteImport } from './routes/{-$locale}/magic_links/$token'
+import { Route as Char123LocaleChar125Magic_linksNewRouteImport } from './routes/{-$locale}/magic_links/new'
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
 import { Route as Char123LocaleChar125AdminBannersIndexRouteImport } from './routes/{-$locale}/admin/banners/index'
@@ -79,6 +81,18 @@ const Char123LocaleChar125LanguagesIndexRoute =
   Char123LocaleChar125LanguagesIndexRouteImport.update({
     id: '/languages/',
     path: '/languages/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125Magic_linksTokenRoute =
+  Char123LocaleChar125Magic_linksTokenRouteImport.update({
+    id: '/magic_links/$token',
+    path: '/magic_links/$token',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125Magic_linksNewRoute =
+  Char123LocaleChar125Magic_linksNewRouteImport.update({
+    id: '/magic_links/new',
+    path: '/magic_links/new',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125SessionNewRoute =
@@ -308,6 +322,8 @@ export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
+  '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
@@ -350,6 +366,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
+  '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminIndexRoute
@@ -395,6 +413,8 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
+  '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
@@ -441,6 +461,8 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/'
+    | '/{-$locale}/magic_links/$token'
+    | '/{-$locale}/magic_links/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
@@ -483,6 +505,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$locale}'
+    | '/{-$locale}/magic_links/$token'
+    | '/{-$locale}/magic_links/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin'
@@ -527,6 +551,8 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/'
+    | '/{-$locale}/magic_links/$token'
+    | '/{-$locale}/magic_links/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
@@ -607,6 +633,20 @@ declare module '@tanstack/react-router' {
       path: '/languages'
       fullPath: '/{-$locale}/languages/'
       preLoaderRoute: typeof Char123LocaleChar125LanguagesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/magic_links/$token': {
+      id: '/{-$locale}/magic_links/$token'
+      path: '/magic_links/$token'
+      fullPath: '/{-$locale}/magic_links/$token'
+      preLoaderRoute: typeof Char123LocaleChar125Magic_linksTokenRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/magic_links/new': {
+      id: '/{-$locale}/magic_links/new'
+      path: '/magic_links/new'
+      fullPath: '/{-$locale}/magic_links/new'
+      preLoaderRoute: typeof Char123LocaleChar125Magic_linksNewRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/session/new': {
@@ -987,6 +1027,8 @@ const Char123LocaleChar125AdminRouteWithChildren =
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  Char123LocaleChar125Magic_linksTokenRoute: typeof Char123LocaleChar125Magic_linksTokenRoute
+  Char123LocaleChar125Magic_linksNewRoute: typeof Char123LocaleChar125Magic_linksNewRoute
   Char123LocaleChar125SessionNewRoute: typeof Char123LocaleChar125SessionNewRoute
   Char123LocaleChar125UsersNewRoute: typeof Char123LocaleChar125UsersNewRoute
   Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
@@ -997,6 +1039,10 @@ interface Char123LocaleChar125RouteChildren {
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
+  Char123LocaleChar125Magic_linksTokenRoute:
+    Char123LocaleChar125Magic_linksTokenRoute,
+  Char123LocaleChar125Magic_linksNewRoute:
+    Char123LocaleChar125Magic_linksNewRoute,
   Char123LocaleChar125SessionNewRoute: Char123LocaleChar125SessionNewRoute,
   Char123LocaleChar125UsersNewRoute: Char123LocaleChar125UsersNewRoute,
   Char123LocaleChar125LanguagesIndexRoute:

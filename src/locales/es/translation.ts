@@ -921,6 +921,14 @@ export default {
             "Заявка отправлена! Свяжемся с вами в течение одного-двух рабочих дней. Или напишите нам в <a>телеграм</a> чтобы получить помощь быстрее",
         },
       },
+      magic_links: {
+        create: {
+          success: "Si existe una cuenta con este email, te hemos enviado un enlace de acceso.",
+        },
+        show: {
+          error: "Este enlace de acceso no es válido o ha caducado.",
+        },
+      },
       passwords: {
         update: {
           success: "Password has been changed. Please, login with your new password.",

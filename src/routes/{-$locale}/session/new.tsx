@@ -8,9 +8,9 @@ import { zSessionInput } from "@/client/zod.gen";
 import { currentPasswordInputProps, loginEmailInputProps } from "@/lib/authFieldProps";
 import { useAppForm } from "@/lib/form";
 
-// Login page, ported from legacy sessions/new. Email + password only; the
-// legacy phone / magic-link / passkey / GitHub options are deferred until their
-// backends and routes land. Submits through the generated `createSession`
+// Login page, ported from legacy sessions/new. Email + password, with a link to
+// the Magic Link request form; the legacy phone / passkey / GitHub options are
+// deferred until their backends and routes land. Submits through the generated `createSession`
 // mutation, which sets the JWT cookie server-side; validation reuses the
 // generated `zSessionInput` schema.
 export const Route = createFileRoute("/{-$locale}/session/new")({
@@ -81,6 +81,10 @@ function New() {
             <Button type="submit" fullWidth loading={mutation.isPending}>
               {t(($) => $.helpers.submit.user_sign_in_form.create)}
             </Button>
+
+            <Anchor component={Link} to="/magic_links/new" ta="center">
+              {t(($) => $.sessions.new.sign_in_with_magic_link)}
+            </Anchor>
           </Stack>
         </Card>
 
