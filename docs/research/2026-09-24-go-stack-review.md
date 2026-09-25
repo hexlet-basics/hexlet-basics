@@ -482,8 +482,10 @@ Router v7 и Next.js заменили бы роутер и модель загр
 2. ~~**Убрать multipart-обход ogen через TypeSpec**~~ — сделано (см. §1.3):
    `HttpPart<bytes>`, `ogen.yml` удалён, загрузка идёт через сгенерированный
    `SecurityHandler`. `attachments.go` остался только ради `GET /storage/{key}`.
-3. **Привести ADR и тулчейн в соответствие с фактами**, пока соответствующий
-   код не написан:
+3. ~~**Привести ADR и тулчейн в соответствие с фактами**~~ — сделано:
+   ADR-0002/0003/0005/0006 поправлены, Atlas переведён на
+   `atlas-community` 1.3.0 и записан в ADR-0014, ссылка на `docs/STACK.md`
+   из `AGENTS.md` убрана. Исходный список:
    - ADR-0006: `service/sesv2` вместо `service/ses`;
    - ADR-0002: `x/crypto/bcrypt` вместо `go-crypt`;
    - ADR-0003: формулировка про `DirectHandler`;

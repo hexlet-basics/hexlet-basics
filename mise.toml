@@ -19,5 +19,8 @@ kiota = "1.34.1"
 # Cannot become a `go tool`: the public `ariga.io/atlas/cmd/atlas` module is
 # frozen at a 2024-11 snapshot of the 0.13.x CLI (the library kept moving to
 # 1.x), and even that snapshot refuses to install because its go.mod carries
-# replace directives.
-atlas = "1.2.0"
+# replace directives. Community build (Apache-2.0, built from the OSS repo)
+# rather than the default MSA-licensed one: `migrate new/hash/apply/diff` are all
+# there and no Pro feature is used — see docs/adr/0014. Ariga drops release
+# binaries after ~6 months, so this pin must keep moving or `mise install` breaks.
+atlas-community = "1.3.0"

@@ -18,9 +18,8 @@ Prefer these instructions over generic Go or React defaults.
 
 The plan of record is **hard cutover at parity** (no long side-by-side run),
 keeping backward-compat only on bcrypt passwords and URL routes. See
-`docs/STACK.md` for the dependency plan and `docs/adr/0001`–`0008` for the
-binding architecture decisions. **Read the relevant ADR before changing how a
-subsystem works** — they are the source of truth for why each library was
+`docs/adr/` (0001–0014) for the binding architecture decisions. **Read the
+relevant ADR before changing how a subsystem works** — they are the source of truth for why each library was
 chosen, and several decisions (contract-first, hard cutover) constrain how you
 should implement.
 
@@ -108,8 +107,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - Go tooling that is cheap to build is pinned by `tool` directives in `go.mod`
   and invoked as `go tool <name>` (air, ent, ogen, goverter, goi18n) — add new
   ones with `go get -tool`, never by hand. `mise.toml` pins the rest: the go
-  toolchain, kiota (.NET, no Go module), atlas (its public CLI module is frozen
-  at a 2024-11 0.13.x snapshot and will not install — its go.mod has replace
+  toolchain, kiota (.NET, no Go module), atlas as the Apache-2.0
+  `atlas-community` build (ADR-0014; its public CLI module is frozen at a
+  2024-11 0.13.x snapshot and will not install — its go.mod has replace
   directives), and golangci-lint (a tool directive would drag its whole
   analyzer tree into go.mod to rebuild what mise fetches as a binary).
   Use `pnpm`, never `npm`/`npx` directly for JS deps.
