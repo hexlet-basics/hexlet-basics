@@ -7,6 +7,7 @@
   "auth.password_processing_failed": "Could not process the password",
   "auth.wrong_credentials": "Wrong email or password",
   "courses.not_found": "course not found",
+  "emails.link_invalid": "This link is no longer valid. Request a new one.",
   "emails.magic_link.action": "Sign in",
   "emails.magic_link.ignore": "If you did not request this, just ignore this email.",
   "emails.magic_link.intro": "You requested a sign-in link for code-basics.com. Follow this link or use the button below to sign in.",

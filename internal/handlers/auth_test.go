@@ -36,7 +36,8 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
 	handler := handlers.NewServer(
 		db,
-		&config.Config{JWTSecret: "test-secret"},
+		&config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"},
+		enqueuer,
 		enqueuer,
 		enqueuer,
 		// The real progress module: the check is a public operation, so these

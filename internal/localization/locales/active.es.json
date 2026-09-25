@@ -31,5 +31,6 @@
   "emails.password_reset.intro": { "other": "Solicitaste un enlace para restablecer tu contraseña en code-basics.com. Abre el enlace o pulsa el botón de abajo para elegir una nueva contraseña." },
   "emails.password_reset.action": { "other": "Cambiar contraseña" },
   "emails.password_reset.link_label": { "other": "Enlace para restablecer la contraseña en code-basics.com" },
-  "emails.password_reset.ignore": { "other": "Si no solicitaste restablecer la contraseña, ignora este correo. Tu contraseña no cambiará hasta que abras el enlace y elijas una nueva." }
+  "emails.password_reset.ignore": { "other": "Si no solicitaste restablecer la contraseña, ignora este correo. Tu contraseña no cambiará hasta que abras el enlace y elijas una nueva." },
+  "emails.link_invalid": { "other": "Este enlace ya no es válido. Solicita uno nuevo." }
 }

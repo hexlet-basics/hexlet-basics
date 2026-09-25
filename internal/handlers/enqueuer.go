@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/emailtokens"
 )
 
 // VersionBuildStarter is the atomic operation handlers need: create a course
@@ -18,4 +19,12 @@ type VersionBuildStarter interface {
 // production, a recording adapter in tests).
 type LessonReviewEnqueuer interface {
 	EnqueueLessonReviews(ctx context.Context, lessonInfoIDs []int) error
+}
+
+// AccountEmailEnqueuer schedules a Magic Link or Password Reset email for the
+// worker to render and send (accountemails.Enqueuer in production, a recording
+// adapter in tests). A request repeated within the cooldown is skipped, not
+// refused.
+type AccountEmailEnqueuer interface {
+	EnqueueAccountEmail(ctx context.Context, purpose emailtokens.Purpose, userID int, locale string) error
 }

@@ -64,11 +64,12 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
-	cfg := &config.Config{JWTSecret: "test-secret"}
+	cfg := &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
 	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
 	handler := handlers.NewServer(
 		db,
 		cfg,
+		enqueuer,
 		enqueuer,
 		enqueuer,
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),

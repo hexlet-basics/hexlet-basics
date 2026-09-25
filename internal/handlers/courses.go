@@ -50,6 +50,7 @@ func NewServer(
 	cfg *config.Config,
 	starter VersionBuildStarter,
 	reviews LessonReviewEnqueuer,
+	emails AccountEmailEnqueuer,
 	tracker progress.Tracker,
 	assets *assetstore.Store,
 	registrar accounts.UserRegistrar,
@@ -65,7 +66,7 @@ func NewServer(
 		reviews:  reviews,
 		progress: tracker,
 		assets:   assets,
-		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker),
+		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker, emails),
 		i18n:     translator,
 		errors:   errorHandler,
 	}

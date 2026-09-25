@@ -24,6 +24,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/localization"
@@ -70,6 +71,10 @@ type AuthHandler struct {
 	guests   progress.Tracker
 	guestJar *progress.GuestCodec
 	secure   bool
+	// emails schedules Magic Link and Password Reset emails; emailTokens
+	// verifies the links they carry.
+	emails      AccountEmailEnqueuer
+	emailTokens *emailtokens.Tokens
 }
 
 // NewAuthHandler builds the auth implementation used by the ogen handlers.
@@ -81,6 +86,7 @@ func NewAuthHandler(
 	registrar accounts.UserRegistrar,
 	eventPublisher events.StandalonePublisher,
 	tracker progress.Tracker,
+	emails AccountEmailEnqueuer,
 ) *AuthHandler {
 	tokenOpts := token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
@@ -119,6 +125,9 @@ func NewAuthHandler(
 		guests:   tracker,
 		guestJar: progress.NewGuestCodec(cfg.JWTSecret),
 		secure:   strings.HasPrefix(cfg.PublicURL, "https://"),
+
+		emails:      emails,
+		emailTokens: emailtokens.New(cfg.EmailTokenSecret),
 	}
 }
 
@@ -332,6 +341,13 @@ func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) 
 	if err != nil {
 		return nil, err
 	}
+	return h.signIn(ctx, u)
+}
+
+// signIn is what every way of proving who you are ends in — password, Magic
+// Link, Password Reset — so none of them can skip recording the sign-in or
+// crediting the visitor's guest progress to the account.
+func (h *AuthHandler) signIn(ctx context.Context, u *ent.User) (*api.UserHeaders, error) {
 	if err := h.events.PublishStandalone(ctx, events.UserSignedIn{
 		UserID:          u.ID,
 		OccurrenceCount: -1,

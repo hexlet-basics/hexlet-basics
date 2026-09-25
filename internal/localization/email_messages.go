@@ -7,6 +7,13 @@ import "github.com/nicksnyder/go-i18n/v2/i18n"
 // clients that drop buttons, and what to do if it was not asked for — so the
 // template stays one and only these strings differ.
 var (
+	// EmailLinkInvalid answers every refused Magic Link or Password Reset link
+	// alike: expired, forged and outlived links are not told apart.
+	EmailLinkInvalid = Message{value: i18n.Message{
+		ID:    "emails.link_invalid",
+		Other: "This link is no longer valid. Request a new one.",
+	}}
+
 	MagicLinkSubject = Message{value: i18n.Message{
 		ID:    "emails.magic_link.subject",
 		Other: "Your sign-in link",

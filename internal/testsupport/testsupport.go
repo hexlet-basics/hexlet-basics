@@ -34,6 +34,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
@@ -50,7 +51,15 @@ var testConfig = &config.Config{
 	AppHost:           "code-basics.com",
 	PublicURL:         "http://localhost:3001",
 	JWTSecret:         "test-secret",
+	EmailTokenSecret:  "test-email-secret",
 	CourseRepoBaseURL: "https://github.com/hexlet-basics",
+}
+
+// EmailTokens signs Magic Link and Password Reset tokens the handlers under
+// test accept, so a test can follow a link without a mailbox. Options such as
+// emailtokens.WithClock issue one that has already expired.
+func EmailTokens(opts ...emailtokens.Option) *emailtokens.Tokens {
+	return emailtokens.New(testConfig.EmailTokenSecret, opts...)
 }
 
 // NewClient opens an ent client bound to a fresh sql.Tx that is rolled back when
@@ -185,7 +194,7 @@ func NewHarness(t *testing.T) *Harness {
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, translator, errorHandler)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
@@ -487,6 +496,34 @@ func (e *RecordingEnqueuer) EnqueueLessonReviews(_ context.Context, lessonInfoID
 		e.Inserted = append(e.Inserted, jobs.ReviewLessonArgs{LessonInfoID: id})
 	}
 	return nil
+}
+
+// EnqueueAccountEmail records the job and applies the same one-minute
+// uniqueness River does, so a test sees a repeated request skipped.
+func (e *RecordingEnqueuer) EnqueueAccountEmail(
+	_ context.Context,
+	purpose emailtokens.Purpose,
+	userID int,
+	locale string,
+) error {
+	for _, inserted := range e.Inserted {
+		if prior, ok := inserted.(jobs.AccountEmailArgs); ok && prior.Purpose == purpose && prior.UserID == userID {
+			return nil
+		}
+	}
+	e.Inserted = append(e.Inserted, jobs.AccountEmailArgs{Purpose: purpose, UserID: userID, Locale: locale})
+	return nil
+}
+
+// AccountEmails returns the account email jobs recorded so far.
+func (e *RecordingEnqueuer) AccountEmails() []jobs.AccountEmailArgs {
+	var found []jobs.AccountEmailArgs
+	for _, inserted := range e.Inserted {
+		if args, ok := inserted.(jobs.AccountEmailArgs); ok {
+			found = append(found, args)
+		}
+	}
+	return found
 }
 
 // Start mirrors the production operation's visible result.

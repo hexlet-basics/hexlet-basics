@@ -13,6 +13,7 @@ import (
 	"go.opentelemetry.io/contrib/otelconf"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/accountemails"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
@@ -132,6 +133,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
 		assets, err := do.Invoke[*assetstore.Store](i)
 		if err != nil {
 			return nil, err
@@ -161,6 +166,7 @@ var serverPackage = do.Package(
 			cfg,
 			starter,
 			reviews,
+			accountemails.NewEnqueuer(riverClient),
 			tracker,
 			assets,
 			registrar,
