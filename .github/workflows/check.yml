@@ -24,19 +24,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 26
-          cache: pnpm
-
-      # Installs Go + golangci-lint pinned in mise.toml (single source of truth
-      # with local dev), and caches them between runs.
+      # Installs the toolchain pinned in mise.toml (go, node, pnpm,
+      # golangci-lint — single source of truth with local dev), and caches it
+      # between runs.
       - uses: jdx/mise-action@v2
+
+      # mise-action does not cache the pnpm store (setup-node used to); keyed on
+      # the lockfile the same way the Go cache is keyed on go.sum.
+      - id: pnpm-store
+        run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
 
       # Neither job had a Go cache, so every run recompiled the dependency tree
       # from scratch. Keyed on go.sum: a dependency bump invalidates it, the
@@ -59,15 +60,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11
+      # node + pnpm pinned in mise.toml, same as local dev.
+      - uses: jdx/mise-action@v2
 
-      - uses: actions/setup-node@v7
+      # mise-action does not cache the pnpm store (setup-node used to); keyed on
+      # the lockfile the same way the Go cache is keyed on go.sum.
+      - id: pnpm-store
+        run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
         with:
-          node-version: 26
-          cache: pnpm
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
 
       - run: pnpm install
 

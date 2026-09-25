@@ -15,7 +15,7 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## prepare: install the mise-pinned toolchain (go, golangci-lint, kiota, atlas)
+## prepare: install the mise-pinned toolchain (go, node, pnpm, golangci-lint, kiota, atlas)
 prepare:
 	mise install
 

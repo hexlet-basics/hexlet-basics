@@ -18,10 +18,9 @@ with its own README and Makefile.
 
 - `make`, `docker`
 - [`mise`](https://mise.jdx.dev) — provisions the pinned toolchain from
-  `mise.toml` (`go`, `golangci-lint`, `atlas`). Run `mise install`.
-- `node` = 26.5.0 and [`pnpm`](https://pnpm.io)
-- [`air`](https://github.com/air-verse/air) for API live-reload:
-  `go install github.com/air-verse/air@latest`
+  `mise.toml` (`go`, `node`, `pnpm`, `golangci-lint`, `kiota`, `atlas`);
+  `make setup` runs `mise install` for you. Go codegen/dev tools (`air`, `ent`,
+  `ogen`, …) come from `go.mod` `tool` directives — nothing to install.
 
 ### Run
 

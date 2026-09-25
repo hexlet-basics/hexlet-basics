@@ -3,6 +3,10 @@
 # goi18n) and is invoked as `go tool <name>`.
 [tools]
 go = "1.26.5"
+# node + pnpm: the frontend and the TypeSpec/openapi-ts tooling share the root
+# package.json. Pinned here so local dev and CI run the same versions.
+node = "26.8.2"
+pnpm = "12.6.0"
 # golangci-lint: deliberately NOT a `go tool`. It is a Go module and works that
 # way, but a tool directive means building the linter and its whole analyzer
 # tree from source (~590 lines of go.mod/go.sum, a multi-minute cold build)
