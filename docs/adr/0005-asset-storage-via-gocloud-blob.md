@@ -7,8 +7,10 @@ mirrors the ActiveStorage per-environment service split we had, and uses
 `aws-sdk-go-v2` under the hood for S3.
 
 `gocloud.dev/blob` is chosen over a bare `aws-sdk-go-v2/service/s3` client for
-the dev-local backend swap, and over MinIO/minio-go, which entered maintenance
-in Dec 2025 and was archived Feb 2026.
+the dev-local backend swap. MinIO was ruled out as the dev backend because the
+`minio/minio` server entered maintenance in Dec 2025 and was archived Feb 2026;
+the `minio-go` client itself is still maintained, it just adds nothing over
+`s3blob`.
 
 ## Consequences
 

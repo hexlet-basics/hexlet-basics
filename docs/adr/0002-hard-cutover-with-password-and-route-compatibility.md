@@ -8,7 +8,7 @@ Two backward-compatibility constraints survive the cutover:
 
 - **Passwords** — existing bcrypt password hashes must keep working, so users
   sign in with their current passwords without a reset (verified via
-  `go-crypt/crypt`).
+  `golang.org/x/crypto/bcrypt`).
 - **URL routes** — existing public URLs must not break (bookmarks, SEO). This is
   why the API keeps legacy paths such as `/languages` even though the domain
   concept is `Course`.

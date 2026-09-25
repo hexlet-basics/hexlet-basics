@@ -20,8 +20,11 @@ defense-in-depth rather than the primary CSRF control.
 
 - **Email + password** — the auth module loads the user through ent, verifies
   the existing bcrypt hash, and passes that same user to `token.Service` for JWT
-  issuance. The library's `direct` provider is not used because its HTTP-only
-  interface would add an internal HTTP round-trip at the ogen handler seam.
+  issuance. The library's `direct` provider does not handle sign-in: its
+  HTTP-only login endpoint would add an internal round-trip at the ogen handler
+  seam, so it is never mounted. A `provider.DirectHandler` named `password` is
+  still registered with `middleware.Authenticator`, only because the middleware
+  rejects tokens whose provider name is not in its `Providers` allow-list.
 - **Google / GitHub / Facebook** — built-in OAuth2 providers.
 - **Passkey (WebAuthn)** — verified with `go-webauthn/webauthn` (added to the
   stack; it was missing from the reference lib set), then a go-pkgz/auth token is

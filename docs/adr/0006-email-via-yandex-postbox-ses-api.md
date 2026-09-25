@@ -1,8 +1,10 @@
 # Email via Yandex Postbox over its SES-compatible API
 
 Transactional email is sent through **Yandex Cloud Postbox** using its
-**AWS SES-compatible API**, called with `aws-sdk-go-v2/service/ses` pointed at
-the Postbox endpoint. Despite the AWS SDK dependency, we are NOT on AWS — Postbox
+**AWS SES-compatible API**, called with `aws-sdk-go-v2/service/sesv2` pointed
+at the Postbox endpoint. Postbox implements the SES **v2** REST API
+(`POST /v2/email/outbound-emails`), not the v1 Query API that
+`service/ses` speaks. Despite the AWS SDK dependency, we are NOT on AWS — Postbox
 merely emulates the SES API. Templates use Go `html/template`.
 
 Postbox exposes both an SES-compatible API and an SMTP gateway; we pick the SES
