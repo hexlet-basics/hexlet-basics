@@ -78,7 +78,7 @@ goose, fx), по этому критерию проигрывают: они тр
 | 16 | Тесты | testcontainers-go 0.44 + testfixtures v3.19 + testify 1.12 | общая тестовая БД; txdb | **оставить** |
 | 17 | Live reload | air 1.67.4 (`go tool`) | watchexec; reflex | **оставить** |
 | 18 | Клиент amoCRM | kiota 1.34.1 (.NET-бинарь) + 3 рантайм-модуля kiota | ogen в режиме клиента | **пересмотреть** (низкий приоритет) |
-| 19 | LLM-клиент | openai-go **v1.12.0** | openai-go v3.x | **пересмотреть** (два мажора позади) |
+| 19 | LLM-клиент | openai-go **v1.12.0** | openai-go v3.x | ~~**пересмотреть**~~ — сделано в `7b8e753a` |
 | 20 | Фронтенд SSR | TanStack Start 1.168.58 (статус RC) | React Router v7; Next.js | **оставить** (учитывать RC) |
 
 Ниже — обоснование каждой строки с источниками.
@@ -450,6 +450,10 @@ ariga.io/atlas/cmd/atlas` действительно заканчивается 
   kiota не блокирует паритет.
 
 ## 19. openai-go — пересмотреть
+
+> Сделано в `7b8e753a`: `github.com/openai/openai-go/v3 v3.66.0`, код вызова
+> не менялся. Для порта ассистента: v3 рекомендует Responses API вместо Chat
+> Completions для новых проектов — выбрать при порте.
 
 В `go.mod` — `github.com/openai/openai-go v1.12.0`, а актуальная ветка —
 [v3.66.0](https://github.com/openai/openai-go/releases/tag/v3.66.0)
