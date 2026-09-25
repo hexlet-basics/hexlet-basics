@@ -10,15 +10,19 @@ import (
 	"go.opentelemetry.io/contrib/otelconf"
 
 	"hexletbasics/ent"
+	"hexletbasics/internal/accountemails"
 	"hexletbasics/internal/amocrm"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/courseloader"
+	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/eventhandlers"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/lessonreviews"
+	"hexletbasics/internal/localization"
+	"hexletbasics/internal/mailer"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
 )
@@ -91,6 +95,40 @@ var workerPackage = do.Package(
 		// runs a submission. Wiring a real runner here would suggest otherwise.
 		return progress.New(db, txStore, publisher, progress.UnavailableRunner{}), nil
 	}),
+	// Account email is delivered only here: the HTTP process enqueues intent and
+	// never talks to the mail provider.
+	do.Lazy[mailer.Mailer](func(i do.Injector) (mailer.Mailer, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		logger, err := do.Invoke[*slog.Logger](i)
+		if err != nil {
+			return nil, err
+		}
+		return mailer.New(cfg.Mail, logger), nil
+	}),
+	do.Lazy[*accountemails.Sender](func(i do.Injector) (*accountemails.Sender, error) {
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		mail, err := do.Invoke[mailer.Mailer](i)
+		if err != nil {
+			return nil, err
+		}
+		translator, err := do.Invoke[*localization.Translator](i)
+		if err != nil {
+			return nil, err
+		}
+		return accountemails.NewSender(
+			db, emailtokens.New(cfg.EmailTokenSecret), mail, translator, cfg.SiteURL,
+		), nil
+	}),
 	do.Lazy[*amocrm.Client](func(i do.Injector) (*amocrm.Client, error) {
 		cfg, err := do.Invoke[*config.Config](i)
 		if err != nil {
@@ -131,6 +169,10 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		emailSender, err := do.Invoke[*accountemails.Sender](i)
+		if err != nil {
+			return nil, err
+		}
 		// Without OpenAI credentials the reviewer stays unregistered: enqueued
 		// review jobs wait in the queue instead of failing against a dead client.
 		var reviewer jobs.LessonReviewer
@@ -145,6 +187,7 @@ var workerPackage = do.Package(
 			loader,
 			amoCRMClient,
 			reviewer,
+			emailSender,
 			logger,
 			jobs.NewErrorHandler(sentryClient),
 			otelSDK.TracerProvider(),

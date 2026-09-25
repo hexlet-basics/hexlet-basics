@@ -61,3 +61,11 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 
 	assert.Equal(t, "No encontrado", rec.Body.String())
 }
+
+func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+
+	assert.Equal(t, "Ссылка для входа", translator.TextIn("ru", localization.MagicLinkSubject))
+	assert.Equal(t, "Restablecer contraseña", translator.TextIn("es", localization.PasswordResetSubject))
+}

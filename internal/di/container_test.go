@@ -24,6 +24,7 @@ func configureTestEnvironment(t *testing.T) {
 	t.Setenv("DATABASE_URL", testdb.DatabaseURL())
 	t.Setenv("BLOB_BUCKET_URL", "file://"+t.TempDir())
 	t.Setenv("JWT_SECRET", "test-secret")
+	t.Setenv("EMAIL_TOKEN_SECRET", "test-email-secret")
 }
 
 // TestServerContainerResolvesHTTPWithoutAsyncRuntime proves that the synchronous

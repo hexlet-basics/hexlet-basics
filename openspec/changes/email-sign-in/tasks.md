@@ -7,11 +7,11 @@
 
 ## 2. Mail foundation
 
-- [ ] 2.1 Add config for `EMAIL_TOKEN_SECRET` (required, production must differ from the dev default, like `JWT_SECRET`), Postbox endpoint/credentials and `MAIL_FROM`; verify `go test ./internal/config/`
-- [ ] 2.2 Add the mailer package: `Mailer` port, Postbox adapter on `aws-sdk-go-v2/service/sesv2` (`go get`), `slog` adapter, in-memory recorder; wire the adapter choice in `internal/di`; verify `go build ./...` and that the worker starts with no Postbox credentials using the log adapter
-- [ ] 2.3 Add email-token issue/verify on `golang-jwt/jwt/v5` with purpose, user id, fifteen-minute expiry and fingerprint (email hash / password-digest hash); verified through the flow tests in groups 3 and 4
-- [ ] 2.4 Add ru/es subject and body strings for both emails to `internal/localization/locales` and the `html/template` templates, porting the legacy `ru.mailers.yml` wording; account emails fall back to `ru` for any other locale; verify the go-i18n bundle loads in `go test ./internal/localization/`
-- [ ] 2.5 Add the `AccountEmailArgs{Kind, UserID, Locale}` River job (unique by kind+user for one minute, locale excluded) and its worker that loads the User, issues the token, renders and sends; register it in the worker graph; verify with a jobs test that the recorder receives a Russian email with a `/magic_links/<token>` link and that a second insert within the minute is skipped
+- [x] 2.1 Add config for `EMAIL_TOKEN_SECRET` (required, production must differ from the dev default, like `JWT_SECRET`), Postbox endpoint/credentials and `MAIL_FROM`; verify `go test ./internal/config/`
+- [x] 2.2 Add the mailer package: `Mailer` port, Postbox adapter on `aws-sdk-go-v2/service/sesv2` (`go get`), `slog` adapter, in-memory recorder; wire the adapter choice in `internal/di`; verify `go build ./...` and that the worker starts with no Postbox credentials using the log adapter
+- [x] 2.3 Add email-token issue/verify on `golang-jwt/jwt/v5` with purpose, user id, fifteen-minute expiry and fingerprint (email hash / password-digest hash); verified through the flow tests in groups 3 and 4
+- [x] 2.4 Add ru/es subject and body strings for both emails to `internal/localization/locales` and the `html/template` templates, porting the legacy `ru.mailers.yml` wording; account emails fall back to `ru` for any other locale; verify the go-i18n bundle loads in `go test ./internal/localization/`
+- [x] 2.5 Add the `AccountEmailArgs{Kind, UserID, Locale}` River job (unique by kind+user for one minute, locale excluded) and its worker that loads the User, issues the token, renders and sends; register it in the worker graph; verify with a jobs test that the recorder receives a Russian email with a `/magic_links/<token>` link and that a second insert within the minute is skipped
 
 ## 3. Magic Link
 

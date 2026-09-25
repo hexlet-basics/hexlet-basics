@@ -46,8 +46,15 @@ func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { retur
 // loader is supplied; a nil loader (insert-only clients that never Start) skips
 // it, since only the worker process needs the loader's db/blob dependencies.
 // The lesson reviewer is likewise nil-skipped when no LLM credentials are
-// configured — its jobs then wait in the queue for a configured worker.
-func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer, reviewer LessonReviewer) *river.Workers {
+// configured — its jobs then wait in the queue for a configured worker. The
+// account email sender is nil-skipped the same way for clients that never
+// Start.
+func Workers(
+	loader *courseloader.Loader,
+	leadSyncer LeadSyncer,
+	reviewer LessonReviewer,
+	emailSender AccountEmailSender,
+) *river.Workers {
 	w := river.NewWorkers()
 	river.AddWorker(w, &pingWorker{})
 	if loader != nil {
@@ -58,6 +65,9 @@ func Workers(loader *courseloader.Loader, leadSyncer LeadSyncer, reviewer Lesson
 	}
 	if reviewer != nil {
 		river.AddWorker(w, &reviewLessonWorker{reviewer: reviewer})
+	}
+	if emailSender != nil {
+		river.AddWorker(w, &accountEmailWorker{sender: emailSender})
 	}
 	return w
 }
@@ -86,6 +96,7 @@ func NewWorkerClient(
 	loader *courseloader.Loader,
 	leadSyncer LeadSyncer,
 	reviewer LessonReviewer,
+	emailSender AccountEmailSender,
 	logger *slog.Logger,
 	errorHandler *ErrorHandler,
 	tracerProvider trace.TracerProvider,
@@ -98,7 +109,7 @@ func NewWorkerClient(
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
-		Workers: Workers(loader, leadSyncer, reviewer),
+		Workers: Workers(loader, leadSyncer, reviewer, emailSender),
 	})
 }
 

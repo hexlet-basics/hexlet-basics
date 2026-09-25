@@ -95,7 +95,17 @@ func (t *Translator) Text(ctx context.Context, message Message) string {
 	if !ok {
 		localizer = i18n.NewLocalizer(t.bundle, language.English.String())
 	}
+	return localize(localizer, message)
+}
 
+// TextIn translates message for an explicit locale. Work that runs outside the
+// request that asked for it — a River job rendering an email — carries the
+// locale along instead of a request context.
+func (t *Translator) TextIn(locale string, message Message) string {
+	return localize(i18n.NewLocalizer(t.bundle, locale), message)
+}
+
+func localize(localizer *i18n.Localizer, message Message) string {
 	text, err := localizer.Localize(&i18n.LocalizeConfig{
 		MessageID:      message.value.ID,
 		DefaultMessage: &message.value,

@@ -7,7 +7,10 @@ import (
 	"github.com/samber/oops"
 )
 
-const developmentJWTSecret = "dev-insecure-jwt-secret-change-me"
+const (
+	developmentJWTSecret        = "dev-insecure-jwt-secret-change-me"
+	developmentEmailTokenSecret = "dev-insecure-email-token-secret-change-me"
+)
 
 // Config holds the runtime configuration for the server. Fields are populated
 // from environment variables (12-factor); defaults keep local dev zero-config.
@@ -22,6 +25,10 @@ type Config struct {
 	// blog post's `url`), mirroring legacy AppHost.canonical. HTTPS is assumed in
 	// prod; the default matches the legacy default.
 	AppHost string `env:"APP_HOST" envDefault:"code-basics.com"`
+	// SiteURL is the origin of the public site that emailed links open. Unlike
+	// AppHost (canonical URLs, always the production host) it points at the
+	// local frontend in development, so a developer can follow the link.
+	SiteURL string `env:"SITE_URL" envDefault:"https://code-basics.com"`
 	// PublicURL is this server's own public origin, used to build absolute asset
 	// URLs it serves itself (the `/storage/{key}` blob read path). Separate from
 	// AppHost because the API may sit on a different host than the site.
@@ -56,6 +63,12 @@ type Config struct {
 	// committed .env.example supplies a development value, while deployments
 	// must provide a non-empty secret explicitly.
 	JWTSecret string `env:"JWT_SECRET,required,notEmpty"`
+	// EmailTokenSecret signs the Magic Link and Password Reset tokens. It is kept
+	// apart from JWTSecret so rotating one never invalidates the other: a
+	// leaked email token secret must not force every learner to sign in again.
+	EmailTokenSecret string `env:"EMAIL_TOKEN_SECRET,required,notEmpty"`
+	// Mail configures account email (ADR-0006).
+	Mail MailConfig `envPrefix:"MAIL_"`
 	// ExerciseRunner bounds what a learner's submission may do to the host
 	// (ADR-0013). Every limit is settable because the defaults tighten what the
 	// legacy runner allowed, and a course that turns out to need more room must
@@ -101,6 +114,23 @@ type ExerciseRunnerConfig struct {
 	ImageTag string `env:"IMAGE_TAG" envDefault:"latest"`
 }
 
+// MailConfig selects where account email goes. Postbox is used only when its
+// access key is set, so development and CI log email instead of sending it.
+type MailConfig struct {
+	// From is the sender address; the legacy app sent from the same one, whose
+	// domain Postbox must have verified.
+	From string `env:"FROM" envDefault:"support@hexlet.io"`
+	// PostboxEndpoint and PostboxRegion point the SES v2 client at Yandex Cloud
+	// Postbox rather than AWS.
+	PostboxEndpoint        string `env:"POSTBOX_ENDPOINT" envDefault:"https://postbox.cloud.yandex.net"`
+	PostboxRegion          string `env:"POSTBOX_REGION" envDefault:"ru-central1"`
+	PostboxAccessKeyID     string `env:"POSTBOX_ACCESS_KEY_ID"`
+	PostboxSecretAccessKey string `env:"POSTBOX_SECRET_ACCESS_KEY"`
+}
+
+// PostboxEnabled reports whether real delivery is configured.
+func (c MailConfig) PostboxEnabled() bool { return c.PostboxAccessKeyID != "" }
+
 // Load reads configuration from environment variables, applying defaults.
 // A local .env is loaded first if present; it only fills variables that are not
 // already set in the real environment (godotenv never overrides), so exported
@@ -123,8 +153,17 @@ func Load() (*Config, error) {
 // env decoding. The development secret is committed for local convenience and
 // therefore must never be accepted as a session-signing key in production.
 func validateProduction(cfg *Config) error {
-	if cfg.SentryEnvironment == "production" && cfg.JWTSecret == developmentJWTSecret {
+	if cfg.SentryEnvironment != "production" {
+		return nil
+	}
+	if cfg.JWTSecret == developmentJWTSecret {
 		return oops.Errorf("JWT_SECRET must differ from the public development value")
+	}
+	if cfg.EmailTokenSecret == developmentEmailTokenSecret {
+		return oops.Errorf("EMAIL_TOKEN_SECRET must differ from the public development value")
+	}
+	if !cfg.Mail.PostboxEnabled() {
+		return oops.Errorf("MAIL_POSTBOX_ACCESS_KEY_ID is required in production")
 	}
 	return nil
 }
