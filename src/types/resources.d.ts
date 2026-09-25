@@ -1038,6 +1038,9 @@ export default interface Resources {
         };
       };
       passwords: {
+        edit: {
+          error: "Ссылка для восстановления пароля недействительна или устарела.";
+        };
         update: {
           success: "Пароль изменен. Можете входить с вашим новым паролем.";
         };
@@ -1045,7 +1048,7 @@ export default interface Resources {
       remind_passwords: {
         create: {
           error: "В форме есть ошибки";
-          success: "Мы отправили вам письмо с инструкциями по восстановлению пароля";
+          success: "Если аккаунт с таким email существует, мы отправили ссылку для восстановления пароля.";
         };
       };
       sessions: {
@@ -1994,6 +1997,8 @@ export default interface Resources {
       edit: {
         meta_description: "Установить новый пароль на Code Basics";
         new_password: "Новый пароль";
+        password_hint: "Не меньше 6 символов";
+        submit: "Сохранить пароль";
         title: "Смена пароля";
       };
     };

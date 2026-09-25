@@ -930,6 +930,9 @@ export default {
         },
       },
       passwords: {
+        edit: {
+          error: "Este enlace para restablecer la contraseña no es válido o ha caducado.",
+        },
         update: {
           success: "Password has been changed. Please, login with your new password.",
         },
@@ -937,7 +940,8 @@ export default {
       remind_passwords: {
         create: {
           error: "В форме есть ошибки",
-          success: "A password recovery instruction was sent to your email.",
+          success:
+            "Si existe una cuenta con este email, te hemos enviado un enlace para restablecer la contraseña.",
         },
       },
       sessions: {
@@ -979,7 +983,7 @@ export default {
           create: "Search",
         },
         remind_password_form: {
-          create: "Reset password",
+          create: "Restablecer contraseña",
         },
         replace: "Change",
         save: "Save",
@@ -2105,8 +2109,10 @@ export default {
     },
     passwords: {
       edit: {
-        meta_description: "Set a new password on Code Basics",
-        new_password: "New password",
+        meta_description: "Establece una nueva contraseña en Code Basics",
+        new_password: "Nueva contraseña",
+        password_hint: "Al menos 6 caracteres",
+        submit: "Guardar contraseña",
         title: "Change password",
       },
     },
@@ -2198,13 +2204,13 @@ export default {
     },
     remind_passwords: {
       new: {
-        dont_have_account: "New to Code-Basics?",
-        forgot_password: "Forgot password?",
-        login: "Sign in",
-        meta_description: "Restore Code Basics password",
-        register: "Sign up",
-        title: "Remind password",
-        trying_to_login: "Trying to login?",
+        dont_have_account: "¿Nuevo en Code Basics?",
+        forgot_password: "¿Olvidaste tu contraseña?",
+        login: "Iniciar sesión",
+        meta_description: "Recupera tu contraseña de Code Basics",
+        register: "Registrarse",
+        title: "Recuperar contraseña",
+        trying_to_login: "¿Intentas iniciar sesión?",
       },
     },
     reviews: {
@@ -2223,7 +2229,7 @@ export default {
       new: {
         dont_have_account: "New to Code-Basics?",
         email: "Email",
-        forgot_password: "Forgot password?",
+        forgot_password: "¿Olvidaste tu contraseña?",
         meta: {
           description: "Войти на Code Basics",
         },

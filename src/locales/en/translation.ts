@@ -930,6 +930,9 @@ export default {
         },
       },
       passwords: {
+        edit: {
+          error: "This password reset link is invalid or has expired.",
+        },
         update: {
           success: "Password has been changed. Please, login with your new password.",
         },
@@ -937,7 +940,7 @@ export default {
       remind_passwords: {
         create: {
           error: "В форме есть ошибки",
-          success: "A password recovery instruction was sent to your email.",
+          success: "If an account exists for this email, we've sent a password reset link.",
         },
       },
       sessions: {
@@ -2107,6 +2110,8 @@ export default {
       edit: {
         meta_description: "Set a new password on Code Basics",
         new_password: "New password",
+        password_hint: "At least 6 characters",
+        submit: "Save password",
         title: "Change password",
       },
     },

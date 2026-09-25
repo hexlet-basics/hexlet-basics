@@ -16,6 +16,7 @@ import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
 import { Route as Char123LocaleChar125Magic_linksTokenRouteImport } from './routes/{-$locale}/magic_links/$token'
 import { Route as Char123LocaleChar125Magic_linksNewRouteImport } from './routes/{-$locale}/magic_links/new'
+import { Route as Char123LocaleChar125Remind_passwordNewRouteImport } from './routes/{-$locale}/remind_password/new'
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
 import { Route as Char123LocaleChar125AdminBannersIndexRouteImport } from './routes/{-$locale}/admin/banners/index'
@@ -44,6 +45,7 @@ import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './route
 import { Route as Char123LocaleChar125AdminUsersIdRouteImport } from './routes/{-$locale}/admin/users/$id'
 import { Route as Char123LocaleChar125AdminUsersNewRouteImport } from './routes/{-$locale}/admin/users/new'
 import { Route as Char123LocaleChar125LanguagesSlugIndexRouteImport } from './routes/{-$locale}/languages/$slug/index'
+import { Route as Char123LocaleChar125PasswordTokenEditRouteImport } from './routes/{-$locale}/password/$token/edit'
 import { Route as Char123LocaleChar125AdminManagementRolesIndexRouteImport } from './routes/{-$locale}/admin/management/roles/index'
 import { Route as Char123LocaleChar125AdminManagementRolesIdRouteImport } from './routes/{-$locale}/admin/management/roles/$id'
 import { Route as Char123LocaleChar125AdminManagementRolesNewRouteImport } from './routes/{-$locale}/admin/management/roles/new'
@@ -93,6 +95,12 @@ const Char123LocaleChar125Magic_linksNewRoute =
   Char123LocaleChar125Magic_linksNewRouteImport.update({
     id: '/magic_links/new',
     path: '/magic_links/new',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125Remind_passwordNewRoute =
+  Char123LocaleChar125Remind_passwordNewRouteImport.update({
+    id: '/remind_password/new',
+    path: '/remind_password/new',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125SessionNewRoute =
@@ -263,6 +271,12 @@ const Char123LocaleChar125LanguagesSlugIndexRoute =
     path: '/languages/$slug/',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125PasswordTokenEditRoute =
+  Char123LocaleChar125PasswordTokenEditRouteImport.update({
+    id: '/password/$token/edit',
+    path: '/password/$token/edit',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125AdminManagementRolesIndexRoute =
   Char123LocaleChar125AdminManagementRolesIndexRouteImport.update({
     id: '/management/roles/',
@@ -324,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
+  '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
@@ -342,6 +357,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -368,6 +384,7 @@ export interface FileRoutesByTo {
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
+  '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminIndexRoute
@@ -386,6 +403,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -415,6 +433,7 @@ export interface FileRoutesById {
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
+  '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
@@ -433,6 +452,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
   '/{-$locale}/admin/course_categories/': typeof Char123LocaleChar125AdminCourse_categoriesIndexRoute
@@ -463,6 +483,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
+    | '/{-$locale}/remind_password/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
@@ -481,6 +502,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
     | '/{-$locale}/admin/course_categories/'
@@ -507,6 +529,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
+    | '/{-$locale}/remind_password/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin'
@@ -525,6 +548,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners'
     | '/{-$locale}/admin/blog_posts'
     | '/{-$locale}/admin/course_categories'
@@ -553,6 +577,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
+    | '/{-$locale}/remind_password/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
@@ -571,6 +596,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
     | '/{-$locale}/admin/course_categories/'
@@ -647,6 +673,13 @@ declare module '@tanstack/react-router' {
       path: '/magic_links/new'
       fullPath: '/{-$locale}/magic_links/new'
       preLoaderRoute: typeof Char123LocaleChar125Magic_linksNewRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/remind_password/new': {
+      id: '/{-$locale}/remind_password/new'
+      path: '/remind_password/new'
+      fullPath: '/{-$locale}/remind_password/new'
+      preLoaderRoute: typeof Char123LocaleChar125Remind_passwordNewRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/session/new': {
@@ -845,6 +878,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugIndexRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/password/$token/edit': {
+      id: '/{-$locale}/password/$token/edit'
+      path: '/password/$token/edit'
+      fullPath: '/{-$locale}/password/$token/edit'
+      preLoaderRoute: typeof Char123LocaleChar125PasswordTokenEditRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/admin/management/roles/': {
       id: '/{-$locale}/admin/management/roles/'
       path: '/management/roles'
@@ -1029,9 +1069,11 @@ interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
   Char123LocaleChar125Magic_linksTokenRoute: typeof Char123LocaleChar125Magic_linksTokenRoute
   Char123LocaleChar125Magic_linksNewRoute: typeof Char123LocaleChar125Magic_linksNewRoute
+  Char123LocaleChar125Remind_passwordNewRoute: typeof Char123LocaleChar125Remind_passwordNewRoute
   Char123LocaleChar125SessionNewRoute: typeof Char123LocaleChar125SessionNewRoute
   Char123LocaleChar125UsersNewRoute: typeof Char123LocaleChar125UsersNewRoute
   Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
+  Char123LocaleChar125PasswordTokenEditRoute: typeof Char123LocaleChar125PasswordTokenEditRoute
   Char123LocaleChar125LanguagesSlugIndexRoute: typeof Char123LocaleChar125LanguagesSlugIndexRoute
   Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute: typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
 }
@@ -1043,10 +1085,14 @@ const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
     Char123LocaleChar125Magic_linksTokenRoute,
   Char123LocaleChar125Magic_linksNewRoute:
     Char123LocaleChar125Magic_linksNewRoute,
+  Char123LocaleChar125Remind_passwordNewRoute:
+    Char123LocaleChar125Remind_passwordNewRoute,
   Char123LocaleChar125SessionNewRoute: Char123LocaleChar125SessionNewRoute,
   Char123LocaleChar125UsersNewRoute: Char123LocaleChar125UsersNewRoute,
   Char123LocaleChar125LanguagesIndexRoute:
     Char123LocaleChar125LanguagesIndexRoute,
+  Char123LocaleChar125PasswordTokenEditRoute:
+    Char123LocaleChar125PasswordTokenEditRoute,
   Char123LocaleChar125LanguagesSlugIndexRoute:
     Char123LocaleChar125LanguagesSlugIndexRoute,
   Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute:

@@ -24,7 +24,8 @@ against `ent/schema/`.
 | Learner progress (start, check, dashboard, guest) | done | done | none |
 | Blog, categories, reviews, pages, sitemap | done | none | none |
 | Auth (login/signup) | done | done | done |
-| Auth (magic link, password reset, phone, passkeys) | done | none | none |
+| Auth (magic link, password reset) | done | done | done |
+| Auth (phone, passkeys) | done | none | none |
 | User area (`/my`) | done | done | dashboard only |
 | Profile, locale, account deletion | done | none | none |
 | Cases, book download, feeds, error pages | **absent** | none | none |
@@ -69,11 +70,25 @@ What is left here is the frontend: the whole
 `src/routes/…/languages/$slug/lessons/$slug` player, which now has a complete
 contract to build against.
 
-### 3. No mailer (ADR-0006 unimplemented)
+### 3. Mailer — **done** (ADR-0006)
 
-No Postbox/SES code exists. Blocks: `createMagicLink`, `consumeMagicLink`,
-`createPasswordReminder`, `checkPasswordResetToken`, `updatePassword`. Legacy
-equivalents are `UserMailer#magic_link` / `#reset_password`.
+Account email goes through Postbox from a River job (`internal/mailer`,
+`internal/accountemails`), and both email sign-in flows are built end to end:
+Magic Link (`createMagicLink`, `consumeMagicLink`) and Password Reset
+(`createPasswordReminder`, `checkPasswordResetToken`, `updatePassword`), with
+their pages. Unlike legacy, the Password Reset form no longer reports an
+unknown email. Links the Rails app emailed before cutover are refused, since
+the tokens are signed differently.
+
+A deployment needs these variables that legacy did not:
+
+- `EMAIL_TOKEN_SECRET` — required; signs Magic Link and Password Reset tokens,
+  kept apart from `JWT_SECRET` so either can be rotated alone
+- `MAIL_POSTBOX_ACCESS_KEY_ID`, `MAIL_POSTBOX_SECRET_ACCESS_KEY` — without the
+  key, email is written to the worker log instead of sent
+- `SITE_URL` — the host the emailed links open
+- optional: `MAIL_FROM` (default `support@hexlet.io`), `MAIL_POSTBOX_ENDPOINT`,
+  `MAIL_POSTBOX_REGION` (default Yandex Cloud `ru-central1`)
 
 ### 4. No SMS sender
 
@@ -181,7 +196,7 @@ Classified so the raw count does not mislead:
 2. ~~Build the exercise runner~~ — done. Next is the lesson player frontend on
    top of the contract that now exists, plus the course page: the backend of
    the product's core loop is complete and nothing renders it.
-3. Mailer, then the four email-based auth flows.
+3. ~~Mailer, then the email-based auth flows~~ — done.
 4. The blocker-free public reads (#10) and their pages — blog, reviews,
    categories, sitemap, static pages.
 5. In-lesson assistant (needs the SSE schema designed first).
