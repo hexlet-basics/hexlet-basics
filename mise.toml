@@ -12,8 +12,6 @@ pnpm = "12.6.0"
 # tree from source (~590 lines of go.mod/go.sum, a multi-minute cold build)
 # where mise just fetches the released binary.
 golangci-lint = "2.13.2"
-# kiota: .NET binary, no Go module exists.
-kiota = "1.34.1"
 # atlas: owns the DB schema going forward (versioned migrations). Tests apply
 # migrations through the Atlas Go library; new changes = atlas migrate new.
 # Cannot become a `go tool`: the public `ariga.io/atlas/cmd/atlas` module is

@@ -107,7 +107,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - Go tooling that is cheap to build is pinned by `tool` directives in `go.mod`
   and invoked as `go tool <name>` (air, ent, ogen, goverter, goi18n) — add new
   ones with `go get -tool`, never by hand. `mise.toml` pins the rest: the go
-  toolchain, kiota (.NET, no Go module), atlas as the Apache-2.0
+  toolchain, atlas as the Apache-2.0
   `atlas-community` build (ADR-0014; its public CLI module is frozen at a
   2024-11 0.13.x snapshot and will not install — its go.mod has replace
   directives), and golangci-lint (a tool directive would drag its whole
@@ -170,8 +170,8 @@ Change the source, run the generator, commit the output. Never hand-edit or
 
 - `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `make gen-spec`.
 - `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `make gen-api`.
-- `internal/amocrm/generated/**` (Kiota client) ← the pinned amoCRM OpenAPI via
-  `make gen-amocrm`.
+- `internal/amocrm/generated/**` (ogen client) ← the pinned amoCRM OpenAPI via
+  `make gen-amocrm` (`go:generate` in `internal/amocrm/gen.go`).
 - `src/client/**` (hey-api TS client + Query hooks) ← OpenAPI via `make gen-client`.
 - `ent/**` (except `ent/schema/`) ← `ent/schema` via `make gen-ent`.
 - `internal/apiconv/apiconv.gen.go` — generated converter.

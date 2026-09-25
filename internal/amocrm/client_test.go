@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 	"testing"
 	"time"
 
@@ -99,6 +100,59 @@ func TestCreateLeadReturnsRemoteError(t *testing.T) {
 			assert.Equal(t, tt.retryable, classified.Retryable())
 		})
 	}
+}
+
+func TestCreateLeadClassifiesNonProblemErrorByStatus(t *testing.T) {
+	tests := []struct {
+		name      string
+		status    int
+		retryable bool
+	}{
+		{name: "unauthorized", status: http.StatusUnauthorized, retryable: false},
+		{name: "bad gateway", status: http.StatusBadGateway, retryable: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := NewClient("https://example.amocrm.test", "secret", "")
+			client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
+				const body = "<html>upstream failure</html>"
+				return &http.Response{
+					StatusCode:    tt.status,
+					Body:          io.NopCloser(bytes.NewBufferString(body)),
+					ContentLength: int64(len(body)),
+					Header:        http.Header{"Content-Type": []string{"text/html"}},
+				}, nil
+			})
+
+			err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+
+			require.ErrorContains(t, err, strconv.Itoa(tt.status))
+			var classified interface{ Retryable() bool }
+			require.True(t, errors.As(err, &classified))
+			assert.Equal(t, tt.retryable, classified.Retryable())
+		})
+	}
+}
+
+func TestCreateLeadDoesNotRetryUnreadableSuccess(t *testing.T) {
+	requests := 0
+	client := NewClient("https://example.amocrm.test", "secret", "")
+	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
+		requests++
+		return &http.Response{
+			StatusCode: http.StatusNoContent,
+			Body:       io.NopCloser(bytes.NewBufferString("")),
+			Header:     http.Header{},
+		}, nil
+	})
+
+	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+
+	require.Error(t, err)
+	assert.Equal(t, 1, requests)
+	var classified interface{ Retryable() bool }
+	require.True(t, errors.As(err, &classified))
+	assert.False(t, classified.Retryable(), "amoCRM accepted the lead; a retry would duplicate it")
 }
 
 func TestCreateLeadReturnsRetryableTransportError(t *testing.T) {

@@ -18,7 +18,7 @@ with its own README and Makefile.
 
 - `make`, `docker`
 - [`mise`](https://mise.jdx.dev) — provisions the pinned toolchain from
-  `mise.toml` (`go`, `node`, `pnpm`, `golangci-lint`, `kiota`, `atlas`);
+  `mise.toml` (`go`, `node`, `pnpm`, `golangci-lint`, `atlas`);
   `make setup` runs `mise install` for you. Go codegen/dev tools (`air`, `ent`,
   `ogen`, …) come from `go.mod` `tool` directives — nothing to install.
 

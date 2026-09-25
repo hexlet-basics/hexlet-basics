@@ -1,0 +1,9 @@
+# ogen config for the amoCRM client: client code only, narrowed to the one
+# operation the lead sync calls (the upstream contract covers all of v4).
+generator:
+  features:
+    enable: [paths/client]
+    disable: [paths/server, webhooks/server, webhooks/client]
+  filters:
+    path_regex: '^/api/v4/leads/unsorted/forms$'
+    methods: [POST]

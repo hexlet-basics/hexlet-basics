@@ -34,7 +34,6 @@ dist/
 .tanstack/
 .kube/
 stats.html
-internal/amocrm/generated/.kiota.log
 
 # NOTE: generated pipeline artifacts are intentionally tracked so contract
 # changes are reviewable in diffs and reproducible without running generators:

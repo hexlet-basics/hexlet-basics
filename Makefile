@@ -2,8 +2,6 @@
 # Rails lives in legacy/ with its own Makefile. Run these from the repo root.
 
 DATABASE_PORT ?= 54330
-AMOCRM_API_REF := 5a24b11242c66c5b64e4a0d1c107a45ee9dfbab3
-AMOCRM_OPENAPI := https://raw.githubusercontent.com/Hexlet/amocrm-api/$(AMOCRM_API_REF)/tsp-output/schema/openapi.yaml
 
 .DEFAULT_GOAL := help
 
@@ -15,7 +13,7 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## prepare: install the mise-pinned toolchain (go, node, pnpm, golangci-lint, kiota, atlas)
+## prepare: install the mise-pinned toolchain (go, node, pnpm, golangci-lint, atlas)
 prepare:
 	mise install
 
@@ -97,22 +95,7 @@ gen-locales:
 
 ## gen-amocrm: generate the typed amoCRM client from the pinned upstream contract
 gen-amocrm:
-	kiota generate \
-		--language Go \
-		--class-name APIClient \
-		--namespace-name hexletbasics/internal/amocrm/generated \
-		--openapi $(AMOCRM_OPENAPI) \
-		--output internal/amocrm/generated \
-		--include-path '/api/v4/leads/unsorted/forms#POST' \
-		--serializer github.com/microsoft/kiota-serialization-json-go.JsonSerializationWriterFactory \
-		--deserializer github.com/microsoft/kiota-serialization-json-go.JsonParseNodeFactory \
-		--structured-mime-types application/json \
-		--structured-mime-types application/hal+json \
-		--structured-mime-types application/problem+json \
-		--exclude-backward-compatible \
-		--clean-output
-	gofmt -w internal/amocrm/generated
-	pnpm exec oxfmt internal/amocrm/generated/kiota-lock.json
+	go generate ./internal/amocrm
 
 ## gen-ent: regenerate the ent ORM from ent/schema
 gen-ent:
