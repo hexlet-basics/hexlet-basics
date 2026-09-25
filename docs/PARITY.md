@@ -131,6 +131,13 @@ Invisible to the operation diff — these are not in TypeSpec yet:
   out in legacy routes; confirm whether it is live in production)
 - `admin/flipper` (Flipper UI) and the SolidQueue monitor
 
+## Open decision: dropping the English locale
+
+The rewrite drops `en`, leaving `ru` (the new default) and `es`. Legacy serves
+`en` on unprefixed URLs, so this touches the `Locale` enum, the Go fallback
+locale and the URL compatibility promised by ADR-0002. It needs its own
+interview and ADR before implementation.
+
 ## Async / jobs
 
 `internal/jobs` has `exercise_loader`, `review_lesson`, `amocrm_lead`.

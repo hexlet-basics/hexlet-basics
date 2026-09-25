@@ -37,6 +37,20 @@ The first successful creation of a User account through public registration.
 Later sign-ins, profile changes, and administrator-created users are not
 sign-ups.
 
+**Magic Link**:
+An emailed link that signs an existing User in without a password. It lives
+fifteen minutes, is bound to the User's email so it dies if the email changes,
+and may be followed more than once while it lives. It never creates an account,
+and asking for one reveals nothing about whether the email is registered.
+_ru_: ссылка для входа · _es_: enlace de acceso
+
+**Password Reset**:
+Replacing a forgotten password through an emailed link. The link lives fifteen
+minutes and dies the moment the password changes; following it through signs
+the User in. Asking for one reveals nothing about whether the email is
+registered.
+_ru_: восстановление пароля · _es_: restablecimiento de contraseña
+
 ### Learning
 
 **Enrollment**:
