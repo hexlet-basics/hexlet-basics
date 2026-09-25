@@ -30,7 +30,7 @@ test("creates a banner with the default enum selections", async () => {
 
   const { navigate } = await renderWithRouter(<NewBanner />);
 
-  await page.getByLabelText("Text (Markdown)").fill("Promo");
+  await page.getByLabelText("Text (Markdown) *").fill("Promo");
   await page.getByRole("button", { name: "Create" }).click();
 
   await expect.element(page.getByText("Record created")).toBeVisible();

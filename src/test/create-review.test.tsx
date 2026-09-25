@@ -36,7 +36,7 @@ test("creates a review", async () => {
 
   await page.getByLabelText("Course").fill("42");
   await page.getByLabelText("First name").fill("Eva");
-  await page.getByLabelText("Review").fill("Great course");
+  await page.getByLabelText("Review *").fill("Great course");
   await page.getByRole("button", { name: "Create" }).click();
 
   await expect.element(page.getByText("Record created")).toBeVisible();

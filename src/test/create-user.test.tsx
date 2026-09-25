@@ -25,7 +25,7 @@ test("creates a user", async () => {
 
   const { navigate } = await renderWithRouter(<NewUser />);
 
-  await page.getByLabelText("Email").fill("dora@example.com");
+  await page.getByLabelText("Email *").fill("dora@example.com");
   await page.getByLabelText("First name").fill("Dora");
   await page.getByLabelText("Admin?").click();
   await page.getByRole("button", { name: "Create" }).click();

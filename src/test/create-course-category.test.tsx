@@ -30,9 +30,9 @@ test("creates a course category", async () => {
 
   const { navigate } = await renderWithRouter(<NewCourseCategory />);
 
-  await page.getByLabelText("Name").fill("Frontend");
-  await page.getByLabelText("Header").fill("Frontend courses");
-  await page.getByLabelText("Slug").fill("frontend");
+  await page.getByLabelText("Name *").fill("Frontend");
+  await page.getByLabelText("Header *").fill("Frontend courses");
+  await page.getByLabelText("Slug *").fill("frontend");
   await page.getByRole("button", { name: "Create" }).click();
 
   await expect.element(page.getByText("Record created")).toBeVisible();

@@ -171,7 +171,7 @@ test("renders the lesson a learner reads, titled from the course's landing copy"
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
   await expect.element(page.getByText("A variable is a name bound to a value.")).toBeVisible();
   await expect.element(page.getByRole("heading", { name: "Instructions" })).toBeVisible();
-  await expect.element(page.getByText("Assign the string")).toBeVisible();
+  await expect.element(page.getByText("Assign the string hello to greeting.")).toBeVisible();
   await expect.element(page.getByRole("heading", { name: "Tips" })).toBeVisible();
   await expect.element(page.getByText("Names are case sensitive")).toBeVisible();
 
@@ -216,7 +216,7 @@ test("lists every lesson in course order, marking finished and locked ones", asy
 
   // Locked stays clickable: theory is public, only the exercise is gated.
   await expect
-    .element(page.getByRole("link", { name: "Strings" }))
+    .element(page.getByRole("link", { name: "Locked Strings" }))
     .toHaveAttribute("href", "/languages/javascript/lessons/strings");
 });
 
@@ -259,7 +259,7 @@ test("starts nothing by loading the page", async () => {
   await renderPlayer("variables");
   await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
   await page.getByRole("tab", { name: "Navigation" }).click();
-  await expect.element(page.getByRole("link", { name: "Strings" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
 
   // The router preloads on hover, so a read that started a lesson would enroll a
   // learner in every lesson they pointed at (ADR-0012).
@@ -381,7 +381,13 @@ test("asks before resetting, and restores the starter code", async () => {
   await page.getByRole("button", { name: "Reset" }).click();
 
   // One misclick must not cost a learner their work.
-  await expect.element(page.getByText("You want to reset the exercise progress.")).toBeVisible();
+  await expect
+    .element(
+      page.getByText(
+        "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
+      ),
+    )
+    .toBeVisible();
   await page.getByRole("button", { name: "No", exact: true }).click();
   expect(editorText()).toContain("let greeting = 'mess';");
 
@@ -392,27 +398,23 @@ test("asks before resetting, and restores the starter code", async () => {
 });
 
 test("tells the learner about autocomplete once", async () => {
+  const autocompleteHint =
+    "The editor suggests commands as you type. Press Tab to accept a suggestion and use the ↑ and ↓ keys to move through the list.";
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
   );
 
   const { screen } = await renderPlayer("variables");
-  await expect
-    .element(page.getByText("The editor suggests commands as you type"), editorLoad)
-    .toBeVisible();
+  await expect.element(page.getByText(autocompleteHint), editorLoad).toBeVisible();
 
   await page.getByRole("button", { name: "Dismiss" }).click();
-  await expect
-    .element(page.getByText("The editor suggests commands as you type"))
-    .not.toBeInTheDocument();
+  await expect.element(page.getByText(autocompleteHint)).not.toBeInTheDocument();
 
   // And it stays dismissed for the next lesson, and the next visit.
   await screen.unmount();
   await renderPlayer("variables");
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
-  await expect
-    .element(page.getByText("The editor suggests commands as you type"))
-    .not.toBeInTheDocument();
+  await expect.element(page.getByText(autocompleteHint)).not.toBeInTheDocument();
 });
 
 // A completed run, as the server reports one.
@@ -579,13 +581,17 @@ test("keeps the reference solution behind a wait until the lesson is passed", as
 
   // How long is left of the wait, so a stuck learner knows whether to keep at it.
   await expect.element(page.getByText(/^\d\d:\d\d$/)).toBeVisible();
-  await expect.element(page.getByText("the author's answer")).not.toBeInTheDocument();
+  await expect
+    .element(page.getByText("let greeting = 'hello'; // the author's answer"))
+    .not.toBeInTheDocument();
 
   // Passing opens it, next to the learner's own code.
   await page.getByRole("button", { name: "Run" }).click();
   await expect.element(page.getByText("Tests passed")).toBeVisible();
   await page.getByRole("tab", { name: "Solution" }).click();
-  await expect.element(page.getByText("the author's answer")).toBeVisible();
+  await expect
+    .element(page.getByText("let greeting = 'hello'; // the author's answer"))
+    .toBeVisible();
   // The learner's own code, beside the author's, so the comparison is on one
   // screen — and it is the buffer, not the editor's copy of it.
   await expect
@@ -614,7 +620,9 @@ test("opens the reference solution straight away on a lesson already finished", 
   await renderPlayer("variables");
   await page.getByRole("tab", { name: "Solution" }).click();
 
-  await expect.element(page.getByText("the author's answer")).toBeVisible();
+  await expect
+    .element(page.getByText("let greeting = 'hello'; // the author's answer"))
+    .toBeVisible();
 });
 
 test("gives a signed-in learner the same run a guest gets", async () => {
