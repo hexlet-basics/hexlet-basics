@@ -1923,7 +1923,7 @@ func (s *ResetPasswordInput) Validate() error {
 	var failures []validate.FieldError
 	if err := func() error {
 		if err := (validate.String{
-			MinLength:     1,
+			MinLength:     6,
 			MinLengthSet:  true,
 			MaxLength:     0,
 			MaxLengthSet:  false,
@@ -2301,7 +2301,7 @@ func (s *SignUpInput) Validate() error {
 	}
 	if err := func() error {
 		if err := (validate.String{
-			MinLength:     1,
+			MinLength:     6,
 			MinLengthSet:  true,
 			MaxLength:     0,
 			MaxLengthSet:  false,

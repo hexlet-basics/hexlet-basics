@@ -4852,7 +4852,8 @@ export type ConsumeMagicLinkError = ConsumeMagicLinkErrors[keyof ConsumeMagicLin
 
 export type ConsumeMagicLinkResponses = {
   /**
-   * The request has succeeded.
+   * A successful sign-in. Cookie headers are part of the HTTP contract so the
+   * implementation stays behind the generated ogen seam.
    */
   200: User;
 };
@@ -5057,6 +5058,10 @@ export type UpdatePasswordData = {
 
 export type UpdatePasswordErrors = {
   /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
    * Field-level validation errors, keyed by field name (each value is the list
    * of messages for that field). Returned when a write fails validation —
    * including constraints the schema cannot express, like uniqueness.
@@ -5075,9 +5080,10 @@ export type UpdatePasswordError = UpdatePasswordErrors[keyof UpdatePasswordError
 
 export type UpdatePasswordResponses = {
   /**
-   * Empty 204 response for deletes and other content-less successes.
+   * A successful sign-in. Cookie headers are part of the HTTP contract so the
+   * implementation stays behind the generated ogen seam.
    */
-  204: void;
+  200: User;
 };
 
 export type UpdatePasswordResponse = UpdatePasswordResponses[keyof UpdatePasswordResponses];

@@ -697,7 +697,7 @@ export const zQnaItemInput = z.object({
  * Password reset submission (legacy: `UserPassword`).
  */
 export const zResetPasswordInput = z.object({
-  password: z.string().min(1)
+  password: z.string().min(6)
 });
 
 /**
@@ -761,7 +761,7 @@ export const zSessionInput = z.object({
 export const zSignUpInput = z.object({
   firstName: z.string().nullable(),
   email: z.email(),
-  password: z.string().min(1)
+  password: z.string().min(6)
 });
 
 /**
@@ -1897,7 +1897,8 @@ export const zConsumeMagicLinkPath = z.object({
 });
 
 /**
- * The request has succeeded.
+ * A successful sign-in. Cookie headers are part of the HTTP contract so the
+ * implementation stays behind the generated ogen seam.
  */
 export const zConsumeMagicLinkResponse = zUser;
 
@@ -1948,9 +1949,10 @@ export const zUpdatePasswordPath = z.object({
 });
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * A successful sign-in. Cookie headers are part of the HTTP contract so the
+ * implementation stays behind the generated ogen seam.
  */
-export const zUpdatePasswordResponse = z.void();
+export const zUpdatePasswordResponse = zUser;
 
 export const zCheckPasswordResetTokenPath = z.object({
   token: z.string()

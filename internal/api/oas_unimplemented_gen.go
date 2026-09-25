@@ -928,7 +928,7 @@ func (UnimplementedHandler) SwitchLocale(ctx context.Context, params SwitchLocal
 
 // UpdatePassword implements updatePassword operation.
 //
-// Set a new password using a reset token.
+// Set a new password using a reset token; signs the user in.
 //
 // PATCH /password/{token}
 func (UnimplementedHandler) UpdatePassword(ctx context.Context, req *ResetPasswordInput, params UpdatePasswordParams) (r UpdatePasswordRes, _ error) {

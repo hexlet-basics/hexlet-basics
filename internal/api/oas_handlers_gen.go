@@ -21218,7 +21218,7 @@ func (s *Server) handleSwitchLocaleRequest(args [0]string, argsEscaped bool, w h
 
 // handleUpdatePasswordRequest handles updatePassword operation.
 //
-// Set a new password using a reset token.
+// Set a new password using a reset token; signs the user in.
 //
 // PATCH /password/{token}
 func (s *Server) handleUpdatePasswordRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

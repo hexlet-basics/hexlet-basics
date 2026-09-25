@@ -325,3 +325,18 @@ func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 		body.Errors["password"],
 	)
 }
+
+func TestSignUpRejectsShortPassword(t *testing.T) {
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	router := newAuthRouterWithDB(t, db, transactor)
+
+	resp := do(t, router, http.MethodPost, "/users",
+		`{"firstName":null,"email":"short-password@example.com","password":"12345"}`, nil)
+
+	// The contract's minLength is enforced by the generated server, which
+	// rejects it as a bad request like any other contract constraint.
+	require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	exists, err := db.User.Query().Where(user.Email("short-password@example.com")).Exist(t.Context())
+	require.NoError(t, err)
+	assert.False(t, exists)
+}

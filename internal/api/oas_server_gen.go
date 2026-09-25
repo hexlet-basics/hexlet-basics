@@ -605,7 +605,7 @@ type Handler interface {
 	SwitchLocale(ctx context.Context, params SwitchLocaleParams) error
 	// UpdatePassword implements updatePassword operation.
 	//
-	// Set a new password using a reset token.
+	// Set a new password using a reset token; signs the user in.
 	//
 	// PATCH /password/{token}
 	UpdatePassword(ctx context.Context, req *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error)

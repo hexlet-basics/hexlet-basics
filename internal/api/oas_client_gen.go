@@ -626,7 +626,7 @@ type Invoker interface {
 	SwitchLocale(ctx context.Context, params SwitchLocaleParams) error
 	// UpdatePassword invokes updatePassword operation.
 	//
-	// Set a new password using a reset token.
+	// Set a new password using a reset token; signs the user in.
 	//
 	// PATCH /password/{token}
 	UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error)
@@ -14819,7 +14819,7 @@ func (c *Client) sendSwitchLocale(ctx context.Context, params SwitchLocaleParams
 
 // UpdatePassword invokes updatePassword operation.
 //
-// Set a new password using a reset token.
+// Set a new password using a reset token; signs the user in.
 //
 // PATCH /password/{token}
 func (c *Client) UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error) {

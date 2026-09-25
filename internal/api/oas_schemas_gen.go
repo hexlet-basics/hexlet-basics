@@ -5634,6 +5634,7 @@ func (*NotFoundError) getPageRes()                  {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
 func (*NotFoundError) startLessonRes()              {}
+func (*NotFoundError) updatePasswordRes()           {}
 
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
@@ -7435,11 +7436,6 @@ func (s *StaffRolePermission) SetCanDestroy(val bool) {
 // SwitchLocaleNoContent is response for SwitchLocale operation.
 type SwitchLocaleNoContent struct{}
 
-// UpdatePasswordNoContent is response for UpdatePassword operation.
-type UpdatePasswordNoContent struct{}
-
-func (*UpdatePasswordNoContent) updatePasswordRes() {}
-
 // A user (legacy: `User`). Passwords are never part of a response.
 // Ref: #/components/schemas/User
 type User struct {
@@ -7567,7 +7563,6 @@ func (s *User) SetType(val UserType) {
 }
 
 func (*User) confirmPhoneAuthRes()     {}
-func (*User) consumeMagicLinkRes()     {}
 func (*User) createPasskeySessionRes() {}
 func (*User) getProfileRes()           {}
 func (*User) updateProfileRes()        {}
@@ -7760,8 +7755,10 @@ func (s *UserHeaders) SetResponse(val User) {
 	s.Response = val
 }
 
-func (*UserHeaders) createSessionRes() {}
-func (*UserHeaders) createUserRes()    {}
+func (*UserHeaders) consumeMagicLinkRes() {}
+func (*UserHeaders) createSessionRes()    {}
+func (*UserHeaders) createUserRes()       {}
+func (*UserHeaders) updatePasswordRes()   {}
 
 // Ref: #/components/schemas/UserInput
 type UserInput struct {

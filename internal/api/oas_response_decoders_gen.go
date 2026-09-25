@@ -11208,7 +11208,60 @@ func decodeConsumeMagicLinkResponse(resp *http.Response) (res ConsumeMagicLinkRe
 			}(); err != nil {
 				return res, errors.Wrap(err, "validate")
 			}
-			return &response, nil
+			var wrapper UserHeaders
+			wrapper.Response = response
+			h := uri.NewHeaderDecoder(resp.Header)
+			// Parse "Set-Cookie" header.
+			{
+				cfg := uri.HeaderParameterDecodingConfig{
+					Name:    "Set-Cookie",
+					Explode: false,
+				}
+				if err := func() error {
+					if err := h.HasParam(cfg); err == nil {
+						if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+							wrapper.SetCookie = nil
+							return d.DecodeArray(func(d uri.Decoder) error {
+								var wrapperDotSetCookieVal string
+								if err := func() error {
+									val, err := d.DecodeValue()
+									if err != nil {
+										return err
+									}
+
+									c, err := conv.ToString(val)
+									if err != nil {
+										return err
+									}
+
+									wrapperDotSetCookieVal = c
+									return nil
+								}(); err != nil {
+									return err
+								}
+								wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+								return nil
+							})
+						}); err != nil {
+							return err
+						}
+						if err := func() error {
+							if wrapper.SetCookie == nil {
+								return errors.New("nil is invalid value")
+							}
+							return nil
+						}(); err != nil {
+							return err
+						}
+					} else {
+						return err
+					}
+					return nil
+				}(); err != nil {
+					return res, errors.Wrap(err, "parse Set-Cookie header")
+				}
+			}
+			return &wrapper, nil
 		default:
 			return res, validate.InvalidContentType(ct)
 		}
@@ -15401,9 +15454,138 @@ func decodeSwitchLocaleResponse(resp *http.Response) (res *SwitchLocaleNoContent
 
 func decodeUpdatePasswordResponse(resp *http.Response) (res UpdatePasswordRes, _ error) {
 	switch resp.StatusCode {
-	case 204:
-		// Code 204.
-		return &UpdatePasswordNoContent{}, nil
+	case 200:
+		// Code 200.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response User
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			// Validate response.
+			if err := func() error {
+				if err := response.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "validate")
+			}
+			var wrapper UserHeaders
+			wrapper.Response = response
+			h := uri.NewHeaderDecoder(resp.Header)
+			// Parse "Set-Cookie" header.
+			{
+				cfg := uri.HeaderParameterDecodingConfig{
+					Name:    "Set-Cookie",
+					Explode: false,
+				}
+				if err := func() error {
+					if err := h.HasParam(cfg); err == nil {
+						if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+							wrapper.SetCookie = nil
+							return d.DecodeArray(func(d uri.Decoder) error {
+								var wrapperDotSetCookieVal string
+								if err := func() error {
+									val, err := d.DecodeValue()
+									if err != nil {
+										return err
+									}
+
+									c, err := conv.ToString(val)
+									if err != nil {
+										return err
+									}
+
+									wrapperDotSetCookieVal = c
+									return nil
+								}(); err != nil {
+									return err
+								}
+								wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+								return nil
+							})
+						}); err != nil {
+							return err
+						}
+						if err := func() error {
+							if wrapper.SetCookie == nil {
+								return errors.New("nil is invalid value")
+							}
+							return nil
+						}(); err != nil {
+							return err
+						}
+					} else {
+						return err
+					}
+					return nil
+				}(); err != nil {
+					return res, errors.Wrap(err, "parse Set-Cookie header")
+				}
+			}
+			return &wrapper, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
+	case 404:
+		// Code 404.
+		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
+		if err != nil {
+			return res, errors.Wrap(err, "parse media type")
+		}
+		switch {
+		case ct == "application/json":
+			buf, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return res, err
+			}
+			d := jx.DecodeBytes(buf)
+
+			var response NotFoundError
+			if err := func() error {
+				if err := response.Decode(d); err != nil {
+					return err
+				}
+				if err := d.Skip(); err != io.EOF {
+					return errors.New("unexpected trailing data")
+				}
+				return nil
+			}(); err != nil {
+				err = &ogenerrors.DecodeBodyError{
+					ContentType: ct,
+					Body:        buf,
+					Err:         err,
+				}
+				return res, err
+			}
+			return &response, nil
+		default:
+			return res, validate.InvalidContentType(ct)
+		}
 	case 422:
 		// Code 422.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))

@@ -4103,7 +4103,16 @@ paths:
             type: string
       responses:
         '200':
-          description: The request has succeeded.
+          description: |-
+            A successful sign-in. Cookie headers are part of the HTTP contract so the
+            implementation stays behind the generated ogen seam.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: array
+                items:
+                  type: string
           content:
             application/json:
               schema:
@@ -4312,7 +4321,7 @@ paths:
   /password/{token}:
     patch:
       operationId: updatePassword
-      description: Set a new password using a reset token.
+      description: Set a new password using a reset token; signs the user in.
       parameters:
         - name: token
           in: path
@@ -4320,8 +4329,27 @@ paths:
           schema:
             type: string
       responses:
-        '204':
-          description: Empty 204 response for deletes and other content-less successes.
+        '200':
+          description: |-
+            A successful sign-in. Cookie headers are part of the HTTP contract so the
+            implementation stays behind the generated ogen seam.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: array
+                items:
+                  type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
         '422':
           description: |-
             Field-level validation errors, keyed by field name (each value is the list
@@ -6406,7 +6434,7 @@ components:
       properties:
         password:
           type: string
-          minLength: 1
+          minLength: 6
       description: 'Password reset submission (legacy: `UserPassword`).'
     Review:
       type: object
@@ -6613,7 +6641,7 @@ components:
           format: email
         password:
           type: string
-          minLength: 1
+          minLength: 6
       description: 'Sign-up form (legacy: `UserSignUpForm`).'
     Sitemap:
       type: object

@@ -22,7 +22,7 @@ namespace HexletBasics;
 model SignUpInput {
   firstName: string | null;
   @format("email") email: string;
-  @minLength(1) password: string;
+  @minLength(6) password: string;
 }
 
 /** Email + password login. */
@@ -39,7 +39,7 @@ model ProfileInput {
 
 /** Password reset submission (legacy: `UserPassword`). */
 model ResetPasswordInput {
-  @minLength(1) password: string;
+  @minLength(6) password: string;
 }
 
 model EmailInput {
@@ -171,7 +171,7 @@ interface MagicLinks {
   @get
   @route("/{token}")
   @operationId("consumeMagicLink")
-  consume(@path token: string): User | NotFoundError | ApiError;
+  consume(@path token: string): SessionResponse | NotFoundError | ApiError;
 }
 
 @route("/remind_password")
@@ -192,11 +192,14 @@ interface PasswordReset {
   @operationId("checkPasswordResetToken")
   check(@path token: string): NoContent | NotFoundError | ApiError;
 
-  /** Set a new password using a reset token. */
+  /** Set a new password using a reset token; signs the user in. */
   @patch
   @route("/{token}")
   @operationId("updatePassword")
-  update(@path token: string, @body body: ResetPasswordInput): NoContent | ValidationError | ApiError;
+  update(
+    @path token: string,
+    @body body: ResetPasswordInput,
+  ): SessionResponse | NotFoundError | ValidationError | ApiError;
 }
 
 @route("/phone_auth")

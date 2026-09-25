@@ -1442,9 +1442,10 @@ export const newPasskeySession = <ThrowOnError extends boolean = false>(options?
 });
 
 /**
- * Set a new password using a reset token.
+ * Set a new password using a reset token; signs the user in.
  */
 export const updatePassword = <ThrowOnError extends boolean = false>(options: Options<UpdatePasswordData, ThrowOnError>): RequestResult<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError> => (options.client ?? client).patch<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError>({
+  responseType: 'json',
   url: '/password/{token}',
   ...options,
   headers: {

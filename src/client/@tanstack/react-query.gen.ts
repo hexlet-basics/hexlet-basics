@@ -2172,7 +2172,7 @@ export const newPasskeySessionOptions = (options?: Options<NewPasskeySessionData
 });
 
 /**
- * Set a new password using a reset token.
+ * Set a new password using a reset token; signs the user in.
  */
 export const updatePasswordMutation = (options?: Partial<Options<UpdatePasswordData>>): UseMutationOptions<UpdatePasswordResponse, AxiosError<UpdatePasswordError>, Options<UpdatePasswordData>> => {
   const mutationOptions: UseMutationOptions<UpdatePasswordResponse, AxiosError<UpdatePasswordError>, Options<UpdatePasswordData>> = {
