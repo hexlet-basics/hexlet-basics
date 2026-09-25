@@ -23,6 +23,10 @@ export default defineConfig({
       provider: playwright(),
       instances: [{ browser: "chromium" }],
       headless: true,
+      // Vitest 5 flipped locators to exact-by-default. The tests look up
+      // partial text, and Mantine renders a required field's label as
+      // "Name *", so keep substring matching.
+      locators: { exact: false },
     },
   },
 });
