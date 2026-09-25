@@ -308,3 +308,7 @@ func (c *Client) AdminListLeads(ctx context.Context, params api.AdminListLeadsPa
 func (c *Client) AdminListMessages(ctx context.Context, params api.AdminListMessagesParams) (*api.LessonAssistantMessagePage, error) {
 	return success[api.LessonAssistantMessagePage](c.Client.AdminListMessages(ctx, params))
 }
+
+func (c *Client) AdminUploadAttachment(ctx context.Context, request *api.AttachmentUploadFormMultipart) (*api.Attachment, error) {
+	return success[api.Attachment](c.Client.AdminUploadAttachment(ctx, request))
+}

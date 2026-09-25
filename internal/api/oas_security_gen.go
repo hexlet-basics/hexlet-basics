@@ -105,6 +105,7 @@ var operationRolesAdminSession = map[string][]string{
 	AdminUpdateRolePermissionsOperation:     []string{},
 	AdminUpdateStaffMemberOperation:         []string{},
 	AdminUpdateUserOperation:                []string{},
+	AdminUploadAttachmentOperation:          []string{},
 }
 
 // GetRolesForAdminSession returns the required roles for the given operation.
@@ -207,6 +208,7 @@ var operationRolesXsrfToken = map[string][]string{
 	AdminUpdateRolePermissionsOperation:     []string{},
 	AdminUpdateStaffMemberOperation:         []string{},
 	AdminUpdateUserOperation:                []string{},
+	AdminUploadAttachmentOperation:          []string{},
 	CreateAssistantMessageOperation:         []string{},
 	CreateBookRequestOperation:              []string{},
 	CreateLeadOperation:                     []string{},

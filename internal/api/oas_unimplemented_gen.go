@@ -556,6 +556,15 @@ func (UnimplementedHandler) AdminUpdateUser(ctx context.Context, req *UserInput,
 	return r, ht.ErrNotImplemented
 }
 
+// AdminUploadAttachment implements adminUploadAttachment operation.
+//
+// Upload a file; returns the attachment to reference from a form.
+//
+// POST /admin/attachments
+func (UnimplementedHandler) AdminUploadAttachment(ctx context.Context, req *AttachmentUploadFormMultipart) (r AdminUploadAttachmentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // CheckLesson implements checkLesson operation.
 //
 // Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +

@@ -1,5 +1,4 @@
 {
-  "attachments.file_required": "a file part is required",
   "attachments.file_too_large": "file is too large",
   "attachments.read_failed": "failed to read file",
   "attachments.store_failed": "failed to store file",

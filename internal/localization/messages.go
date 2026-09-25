@@ -47,12 +47,6 @@ var (
 			Other: "file is too large",
 		},
 	}
-	FileRequired = Message{
-		value: i18n.Message{
-			ID:    "attachments.file_required",
-			Other: "a file part is required",
-		},
-	}
 	UnsupportedFileType = Message{
 		value: i18n.Message{
 			ID:    "attachments.unsupported_file_type",

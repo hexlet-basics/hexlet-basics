@@ -11,6 +11,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/localization"
@@ -35,9 +36,12 @@ type Server struct {
 	reviews LessonReviewEnqueuer
 	// progress owns sequential progression; handlers never evaluate the gate.
 	progress progress.Tracker
-	auth     *AuthHandler
-	i18n     *localization.Translator
-	errors   *APIErrorHandler
+	// assets owns upload policy (MIME allowlist, size cap) and persistence;
+	// the upload operation only translates its outcome to the contract.
+	assets *assetstore.Store
+	auth   *AuthHandler
+	i18n   *localization.Translator
+	errors *APIErrorHandler
 }
 
 // NewServer wires the handler to its dependencies.
@@ -47,6 +51,7 @@ func NewServer(
 	starter VersionBuildStarter,
 	reviews LessonReviewEnqueuer,
 	tracker progress.Tracker,
+	assets *assetstore.Store,
 	registrar accounts.UserRegistrar,
 	eventPublisher events.StandalonePublisher,
 	translator *localization.Translator,
@@ -59,6 +64,7 @@ func NewServer(
 		starter:  starter,
 		reviews:  reviews,
 		progress: tracker,
+		assets:   assets,
 		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker),
 		i18n:     translator,
 		errors:   errorHandler,

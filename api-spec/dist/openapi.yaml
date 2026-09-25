@@ -624,9 +624,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/AttachmentUploadForm'
-            encoding:
-              file:
-                contentType: '*/*'
       security:
         - AdminSession: []
           XsrfToken: []

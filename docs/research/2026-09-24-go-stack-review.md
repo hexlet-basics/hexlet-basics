@@ -163,6 +163,16 @@ TS 7 так и не будет, запасной вариант —
 
 ## 1.3 ogen — оставить; multipart чинится в TypeSpec, а не в Go
 
+**Обновление 2026-09-24.** Сделано: `HttpPart<bytes>` в `api-spec/admin.tsp`,
+`internal/apigen/ogen.yml` удалён, загрузка — сгенерированная операция
+`AdminUploadAttachment`. Тесты в `internal/handlers/attachments_test.go` шлют настоящее multipart-тело
+через `NewRouter` и сгенерированный декодер с `SecurityHandler` (in-process,
+`httptest`; живой сервер и фронтенд не проверялись).
+`internal/handlers/attachments.go` остался ради `GET /storage/{key}` — этого
+маршрута нет в контракте. Ограничение размера тела держит `http.MaxBytesHandler`
+в роутере. Изменилось поведение: форма без файла и слишком большое тело теперь
+дают 400 `problem+json` от декодера, а не 422.
+
 **Состояние.** ogen v1.24.0 (2026-08-07), Apache-2.0, активные коммиты после
 релиза ([releases](https://github.com/ogen-go/ogen/releases/tag/v1.24.0)).
 Задача про `requestBody.encoding` всё ещё открыта:
@@ -469,12 +479,9 @@ Router v7 и Next.js заменили бы роутер и модель загр
    `d593d116` (`0.0.0-next-20260824173136`, `make gen-client` проверен).
    Стабильную `0.99.0` не брать, пока открыт
    [#4235](https://github.com/hey-api/hey-api/issues/4235).
-2. **Убрать multipart-обход ogen через TypeSpec**: `HttpPart<File>` →
-   `HttpPart<bytes>` в `api-spec/admin.tsp`, удалить `ignore_not_implemented`
-   из `internal/apigen/ogen.yml` и ручной адаптер `attachments.go`. Все операции окажутся под
-   сгенерированным `SecurityHandler` (ADR-0011), и больше не придётся ждать
-   [ogen#1159](https://github.com/ogen-go/ogen/issues/1159). Схема поля и
-   TS-тип (`Blob | File`) не меняются.
+2. ~~**Убрать multipart-обход ogen через TypeSpec**~~ — сделано (см. §1.3):
+   `HttpPart<bytes>`, `ogen.yml` удалён, загрузка идёт через сгенерированный
+   `SecurityHandler`. `attachments.go` остался только ради `GET /storage/{key}`.
 3. **Привести ADR и тулчейн в соответствие с фактами**, пока соответствующий
    код не написан:
    - ADR-0006: `service/sesv2` вместо `service/ses`;

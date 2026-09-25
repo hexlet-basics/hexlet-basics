@@ -73,6 +73,7 @@ const (
 	AdminUpdateRolePermissionsOperation     OperationName = "AdminUpdateRolePermissions"
 	AdminUpdateStaffMemberOperation         OperationName = "AdminUpdateStaffMember"
 	AdminUpdateUserOperation                OperationName = "AdminUpdateUser"
+	AdminUploadAttachmentOperation          OperationName = "AdminUploadAttachment"
 	CheckLessonOperation                    OperationName = "CheckLesson"
 	CheckPasswordResetTokenOperation        OperationName = "CheckPasswordResetToken"
 	ConfirmPhoneAuthOperation               OperationName = "ConfirmPhoneAuth"

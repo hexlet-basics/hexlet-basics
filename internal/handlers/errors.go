@@ -33,16 +33,6 @@ type APIErrorHandler struct {
 	logger     *slog.Logger
 }
 
-// fieldValidationError carries a declared field-error response through the same
-// writer as transport and application failures.
-type fieldValidationError struct {
-	errors api.ValidationErrorErrors
-}
-
-func (e *fieldValidationError) Error() string {
-	return "request validation failed"
-}
-
 // statusError assigns an expected HTTP status without teaching the central
 // writer about an adapter's dependency-specific sentinel errors.
 type statusError struct {
@@ -60,12 +50,6 @@ func (e *statusError) Unwrap() error {
 
 func (e *statusError) HTTPStatus() int {
 	return e.status
-}
-
-func newValidationError(field, message string) error {
-	return &fieldValidationError{
-		errors: api.ValidationErrorErrors{field: {message}},
-	}
 }
 
 func withHTTPStatus(status int, err error) error {
@@ -103,19 +87,6 @@ func (s *Server) NewError(ctx context.Context, err error) *api.ProblemDetailsSta
 // handler runs. ogen's generated convenient-error encoder owns handler-returned
 // errors; this hook covers decode, security, and response-encoding errors.
 func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *http.Request, err error) {
-	var validation *fieldValidationError
-	if errors.As(err, &validation) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		encoder := new(jx.Encoder)
-		response := api.ValidationError{Errors: validation.errors}
-		response.Encode(encoder)
-		if _, writeErr := encoder.WriteTo(w); writeErr != nil {
-			h.logger.ErrorContext(ctx, "writing validation error response", "err", writeErr)
-		}
-		return
-	}
-
 	status := errorStatus(err)
 	h.report(ctx, r, status, err)
 

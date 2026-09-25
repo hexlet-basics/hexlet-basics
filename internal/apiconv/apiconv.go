@@ -15,6 +15,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/progress"
 )
 
@@ -78,6 +79,8 @@ type Converter interface {
 	ToCourseCategories(source []*ent.CourseCategory) []api.CourseCategory
 
 	ToBanner(source *ent.Banner) api.Banner
+
+	ToAttachment(source assetstore.Attachment) api.Attachment
 
 	ToBanners(source []*ent.Banner) []api.Banner
 

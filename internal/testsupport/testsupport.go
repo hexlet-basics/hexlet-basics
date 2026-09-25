@@ -25,12 +25,14 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/riverqueue/river"
 	"github.com/samber/lo"
+	"gocloud.dev/blob/memblob"
 	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/handlers"
@@ -178,7 +180,12 @@ func NewHarness(t *testing.T) *Harness {
 	// exists to keep out of the tests.
 	runner := NewStubExerciseRunner()
 	tracker := progress.New(db, transactor, eventPublisher, runner)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, tracker, registrar, eventPublisher, translator, errorHandler)
+	// An in-memory bucket keeps uploads off disk and out of the network while
+	// the attachment metadata still lands in the test's transaction.
+	bucket := memblob.OpenBucket(nil)
+	t.Cleanup(func() { _ = bucket.Close() })
+	assets := assetstore.New(db, bucket, testConfig.PublicURL)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
@@ -532,6 +539,12 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	}
 	if d.locale != "" {
 		r.Header.Set("Accept-Language", d.locale)
+	}
+	// A streamed body (the generated multipart encoder writes through a pipe)
+	// has no length on the client side; over a socket net/http sends it chunked
+	// and the server sees -1 (unknown), never 0, which it would read as empty.
+	if r.Body != nil && r.Body != http.NoBody && r.ContentLength == 0 {
+		r.ContentLength = -1
 	}
 	rec := httptest.NewRecorder()
 	d.server.ServeHTTP(rec, r)

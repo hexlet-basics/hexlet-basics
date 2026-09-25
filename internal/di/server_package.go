@@ -132,6 +132,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		assets, err := do.Invoke[*assetstore.Store](i)
+		if err != nil {
+			return nil, err
+		}
 		registrar, err := do.Invoke[*accounts.Registrar](i)
 		if err != nil {
 			return nil, err
@@ -158,6 +162,7 @@ var serverPackage = do.Package(
 			starter,
 			reviews,
 			tracker,
+			assets,
 			registrar,
 			publisher,
 			translator,
@@ -230,15 +235,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		translator, err := do.Invoke[*localization.Translator](i)
-		if err != nil {
-			return nil, err
-		}
 		errorHandler, err := do.Invoke[*handlers.APIErrorHandler](i)
 		if err != nil {
 			return nil, err
 		}
-		return handlers.NewAttachmentHandler(assets, translator, errorHandler), nil
+		return handlers.NewAttachmentHandler(assets, errorHandler), nil
 	}),
 	do.Lazy[*handlers.GitHubWebhookHandler](func(i do.Injector) (*handlers.GitHubWebhookHandler, error) {
 		db, err := do.Invoke[*ent.Client](i)

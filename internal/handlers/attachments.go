@@ -1,100 +1,56 @@
 package handlers
 
 import (
-	"encoding/json"
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 
+	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/localization"
 )
 
-// multipartOverheadBytes leaves room for the multipart envelope while the
-// asset store independently enforces the exact file-byte limit.
-const multipartOverheadBytes = 1 << 20
+// AdminUploadAttachment implements `POST /admin/attachments`: store the single
+// multipart `file` part in the bucket under a fresh key, record its metadata,
+// and return the Attachment the admin form references by id. ogen decodes the
+// form and enforces admin+XSRF before this runs; the router caps the body size.
+// The part's declared Content-Type is ignored on purpose — assetstore derives
+// the stored type from the bytes.
+func (s *Server) AdminUploadAttachment(
+	ctx context.Context,
+	req *api.AttachmentUploadFormMultipart,
+) (api.AdminUploadAttachmentRes, error) {
+	att, err := s.assets.Put(ctx, assetstore.Upload{
+		Filename: req.File.Name,
+		Body:     req.File.File,
+	})
+	switch {
+	case errors.Is(err, assetstore.ErrUnsupportedMediaType):
+		return validationError("file", s.i18n.Text(ctx, localization.UnsupportedFileType)), nil
+	case errors.Is(err, assetstore.ErrTooLarge):
+		return validationError("file", s.i18n.Text(ctx, localization.FileTooLarge)), nil
+	case err != nil:
+		return nil, fmt.Errorf("store uploaded attachment: %w", err)
+	}
+	attachment := s.conv.ToAttachment(att)
+	return &attachment, nil
+}
 
-// AttachmentHandler serves the multipart upload + blob read path that lives
-// OUTSIDE the ogen-generated router. ogen supports multipart uploads, but 1.23
-// cannot generate the OpenAPI requestBody Encoding Object that TypeSpec emits
-// for HttpPart<File> (see internal/apigen/ogen.yml). Consequently,
-// `POST /admin/attachments` temporarily remains a plain net/http adapter;
-// `GET /storage/{key}` is the read-back path mounted alongside the generated
-// api.Server by NewRouter. Asset lifecycle invariants live in assetstore.Store
-// rather than in this transport adapter.
+// AttachmentHandler serves the blob read path, `GET /storage/{key}`, mounted
+// alongside the generated api.Server by NewRouter. It is not a contract
+// operation: it streams stored bytes with standard conditional and range
+// semantics, which http.ServeContent provides and a JSON contract cannot
+// describe. Uploads are the generated adminUploadAttachment operation, and
+// asset lifecycle invariants live in assetstore.Store rather than here.
 type AttachmentHandler struct {
 	assets *assetstore.Store
-	i18n   *localization.Translator
 	errors *APIErrorHandler
 }
 
-// NewAttachmentHandler wires the HTTP adapter to the shared asset store.
-func NewAttachmentHandler(
-	assets *assetstore.Store,
-	translator *localization.Translator,
-	errorHandler *APIErrorHandler,
-) *AttachmentHandler {
-	return &AttachmentHandler{assets: assets, i18n: translator, errors: errorHandler}
-}
-
-// attachmentResponse mirrors the OpenAPI `Attachment` schema exactly (camelCase,
-// int64 byteSize). It is hand-serialized because the endpoint is outside the
-// generated layer — a field-name drift here would silently break the hey-api
-// client, so the tags are the contract.
-type attachmentResponse struct {
-	ID          int    `json:"id"`
-	URL         string `json:"url"`
-	Filename    string `json:"filename"`
-	ContentType string `json:"contentType"`
-	ByteSize    int64  `json:"byteSize"`
-}
-
-// Upload handles `POST /admin/attachments`: read the single multipart `file`
-// part, store its bytes in the bucket under a fresh key, record the metadata in
-// ent, and return the 201 Attachment the admin form references by id.
-func (h *AttachmentHandler) Upload(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	// Bound the body before parsing so a huge upload can't be buffered whole.
-	r.Body = http.MaxBytesReader(w, r.Body, assetstore.MaxUploadBytes+multipartOverheadBytes)
-
-	file, header, err := r.FormFile("file")
-	if err != nil {
-		// A body over the limit surfaces here as *http.MaxBytesError.
-		var tooBig *http.MaxBytesError
-		if errors.As(err, &tooBig) {
-			h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.FileTooLarge)))
-			return
-		}
-		h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.FileRequired)))
-		return
-	}
-	defer func() { _ = file.Close() }()
-
-	att, err := h.assets.Put(ctx, assetstore.Upload{
-		Filename: header.Filename,
-		Body:     file,
-	})
-	if errors.Is(err, assetstore.ErrUnsupportedMediaType) {
-		h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.UnsupportedFileType)))
-		return
-	}
-	if errors.Is(err, assetstore.ErrTooLarge) {
-		h.errors.Write(ctx, w, r, newValidationError("file", h.i18n.Text(ctx, localization.FileTooLarge)))
-		return
-	}
-	if err != nil {
-		h.errors.Write(ctx, w, r, fmt.Errorf("store uploaded attachment: %w", err))
-		return
-	}
-
-	writeJSON(w, http.StatusCreated, attachmentResponse{
-		ID:          att.ID,
-		URL:         att.URL,
-		Filename:    att.Filename,
-		ContentType: att.ContentType,
-		ByteSize:    att.ByteSize,
-	})
+// NewAttachmentHandler wires the blob read route to the shared asset store.
+func NewAttachmentHandler(assets *assetstore.Store, errorHandler *APIErrorHandler) *AttachmentHandler {
+	return &AttachmentHandler{assets: assets, errors: errorHandler}
 }
 
 // Download handles `GET /storage/{key}`: serve the stored bytes with standard
@@ -124,10 +80,4 @@ func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {
 	// upload allowlist).
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	http.ServeContent(w, r, key, reader.ModTime, reader)
-}
-
-func writeJSON(w http.ResponseWriter, status int, body any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(body)
 }

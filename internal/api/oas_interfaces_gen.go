@@ -269,6 +269,10 @@ type AdminUpdateUserRes interface {
 	adminUpdateUserRes()
 }
 
+type AdminUploadAttachmentRes interface {
+	adminUploadAttachmentRes()
+}
+
 type CheckLessonRes interface {
 	checkLessonRes()
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	ht "github.com/ogen-go/ogen/http"
 )
 
 func (s *ProblemDetailsStatusCode) Error() string {
@@ -646,6 +647,14 @@ type AdminUpdateUserUnauthorized ProblemDetails
 
 func (*AdminUpdateUserUnauthorized) adminUpdateUserRes() {}
 
+type AdminUploadAttachmentForbidden ProblemDetails
+
+func (*AdminUploadAttachmentForbidden) adminUploadAttachmentRes() {}
+
+type AdminUploadAttachmentUnauthorized ProblemDetails
+
+func (*AdminUploadAttachmentUnauthorized) adminUploadAttachmentRes() {}
+
 // A prompt to the in-lesson assistant, carrying the editor context.
 // Ref: #/components/schemas/AssistantMessageInput
 type AssistantMessageInput struct {
@@ -682,6 +691,83 @@ func (s *AssistantMessageInput) SetOutput(val NilString) {
 // SetUserCode sets the value of UserCode.
 func (s *AssistantMessageInput) SetUserCode(val NilString) {
 	s.UserCode = val
+}
+
+// A stored blob (cover image, outcomes image) returned by the uploader.
+// Ref: #/components/schemas/Attachment
+type Attachment struct {
+	ID          int32  `json:"id"`
+	URL         string `json:"url"`
+	Filename    string `json:"filename"`
+	ContentType string `json:"contentType"`
+	ByteSize    int64  `json:"byteSize"`
+}
+
+// GetID returns the value of ID.
+func (s *Attachment) GetID() int32 {
+	return s.ID
+}
+
+// GetURL returns the value of URL.
+func (s *Attachment) GetURL() string {
+	return s.URL
+}
+
+// GetFilename returns the value of Filename.
+func (s *Attachment) GetFilename() string {
+	return s.Filename
+}
+
+// GetContentType returns the value of ContentType.
+func (s *Attachment) GetContentType() string {
+	return s.ContentType
+}
+
+// GetByteSize returns the value of ByteSize.
+func (s *Attachment) GetByteSize() int64 {
+	return s.ByteSize
+}
+
+// SetID sets the value of ID.
+func (s *Attachment) SetID(val int32) {
+	s.ID = val
+}
+
+// SetURL sets the value of URL.
+func (s *Attachment) SetURL(val string) {
+	s.URL = val
+}
+
+// SetFilename sets the value of Filename.
+func (s *Attachment) SetFilename(val string) {
+	s.Filename = val
+}
+
+// SetContentType sets the value of ContentType.
+func (s *Attachment) SetContentType(val string) {
+	s.ContentType = val
+}
+
+// SetByteSize sets the value of ByteSize.
+func (s *Attachment) SetByteSize(val int64) {
+	s.ByteSize = val
+}
+
+func (*Attachment) adminUploadAttachmentRes() {}
+
+// Ref: #/components/schemas/AttachmentUploadForm
+type AttachmentUploadFormMultipart struct {
+	File ht.MultipartFile `json:"file"`
+}
+
+// GetFile returns the value of File.
+func (s *AttachmentUploadFormMultipart) GetFile() ht.MultipartFile {
+	return s.File
+}
+
+// SetFile sets the value of File.
+func (s *AttachmentUploadFormMultipart) SetFile(val ht.MultipartFile) {
+	s.File = val
 }
 
 // A site banner (legacy: `Banner`).
@@ -7805,6 +7891,7 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 func (*ValidationError) adminCreateBlogPostRes()            {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
+func (*ValidationError) adminUploadAttachmentRes()          {}
 func (*ValidationError) checkLessonRes()                    {}
 func (*ValidationError) confirmPhoneAuthRes()               {}
 func (*ValidationError) createBookRequestRes()              {}

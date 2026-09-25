@@ -350,6 +350,12 @@ type Handler interface {
 	//
 	// PUT /admin/api/users/{id}
 	AdminUpdateUser(ctx context.Context, req *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
+	// AdminUploadAttachment implements adminUploadAttachment operation.
+	//
+	// Upload a file; returns the attachment to reference from a form.
+	//
+	// POST /admin/attachments
+	AdminUploadAttachment(ctx context.Context, req *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
 	// CheckLesson implements checkLesson operation.
 	//
 	// Run a submitted solution and record progress. Synchronous to match legacy; revisit as submit +

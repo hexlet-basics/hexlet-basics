@@ -46,10 +46,11 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   interface. Until you implement it, the embedded `api.UnimplementedHandler`
   keeps it compiling as "not implemented" — so the build never breaks on a
   contract addition; you fill in the handler after.
-- ogen 1.24 generates multipart uploads, but not OpenAPI `requestBody.encoding`.
-  TypeSpec currently emits `encoding.file.contentType: "*/*"` for
-  `HttpPart<File>`, so that upload operation is skipped in `ogen.yml` and
-  temporarily handled outside the generated layer.
+- ogen generates multipart uploads, but not OpenAPI `requestBody.encoding`
+  ([ogen#1159](https://github.com/ogen-go/ogen/issues/1159)). TypeSpec emits
+  that block for `HttpPart<File>`, so declare file parts as `HttpPart<bytes>`
+  (same `format: binary` schema, no encoding block) and ogen generates the
+  operation with an `ht.MultipartFile` field.
 - **`@hey-api/openapi-ts` must stay on the `next` channel** while `typescript`
   is 7.x: the stable releases call the TypeScript compiler API (`ts.SyntaxKind`),
   which the native TS 7 package no longer exposes, so `gen-client` dies with

@@ -6,10 +6,20 @@ package apiconv
 import (
 	ent "hexletbasics/ent"
 	api "hexletbasics/internal/api"
+	assetstore "hexletbasics/internal/assetstore"
 )
 
 type ConverterImpl struct{}
 
+func (c *ConverterImpl) ToAttachment(source assetstore.Attachment) api.Attachment {
+	var apiAttachment api.Attachment
+	apiAttachment.ID = Int32FromInt(source.ID)
+	apiAttachment.URL = source.URL
+	apiAttachment.Filename = source.Filename
+	apiAttachment.ContentType = source.ContentType
+	apiAttachment.ByteSize = source.ByteSize
+	return apiAttachment
+}
 func (c *ConverterImpl) ToBanner(source *ent.Banner) api.Banner {
 	var apiBanner api.Banner
 	if source != nil {

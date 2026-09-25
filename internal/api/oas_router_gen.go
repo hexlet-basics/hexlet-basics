@@ -11,13 +11,13 @@ import (
 )
 
 var (
-	rn81AllowedHeaders = map[string]string{
+	rn83AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn91AllowedHeaders = map[string]string{
+	rn93AllowedHeaders = map[string]string{
 		"DELETE": "X-Xsrf-Token",
 	}
-	rn89AllowedHeaders = map[string]string{
+	rn91AllowedHeaders = map[string]string{
 		"DELETE": "X-Xsrf-Token",
 		"PATCH":  "Content-Type,X-Xsrf-Token",
 	}
@@ -27,6 +27,9 @@ var (
 	rn39AllowedHeaders = map[string]string{
 		"DELETE": "X-Xsrf-Token",
 		"PUT":    "Content-Type,X-Xsrf-Token",
+	}
+	rn63AllowedHeaders = map[string]string{
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn1AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
@@ -115,47 +118,47 @@ var (
 		"DELETE": "X-Xsrf-Token",
 		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
-	rn76AllowedHeaders = map[string]string{
+	rn78AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn114AllowedHeaders = map[string]string{
+	rn116AllowedHeaders = map[string]string{
 		"POST": "X-Xsrf-Token",
-	}
-	rn77AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn79AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn65AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
-	}
-	rn80AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
-	}
-	rn101AllowedHeaders = map[string]string{
-		"GET": "Cookie",
-	}
-	rn83AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
+	rn81AllowedHeaders = map[string]string{
+		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn67AllowedHeaders = map[string]string{
-		"PATCH": "Content-Type",
+		"POST": "Content-Type",
+	}
+	rn82AllowedHeaders = map[string]string{
+		"POST": "Content-Type",
+	}
+	rn103AllowedHeaders = map[string]string{
+		"GET": "Cookie",
 	}
 	rn85AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
-	rn70AllowedHeaders = map[string]string{
+	rn69AllowedHeaders = map[string]string{
+		"PATCH": "Content-Type",
+	}
+	rn87AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
-	rn84AllowedHeaders = map[string]string{
+	rn72AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
 	rn86AllowedHeaders = map[string]string{
+		"POST": "Content-Type",
+	}
+	rn88AllowedHeaders = map[string]string{
 		"DELETE": "X-Xsrf-Token",
 		"POST":   "Content-Type",
 	}
-	rn87AllowedHeaders = map[string]string{
+	rn89AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
 )
@@ -252,7 +255,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "GET,POST",
-									allowedHeaders: rn81AllowedHeaders,
+									allowedHeaders: rn83AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -319,7 +322,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								default:
 									s.notAllowed(w, r, notAllowedParams{
 										allowedMethods: "DELETE",
-										allowedHeaders: rn91AllowedHeaders,
+										allowedHeaders: rn93AllowedHeaders,
 										acceptPost:     "",
 										acceptPatch:    "",
 									})
@@ -347,7 +350,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "DELETE,PATCH",
-									allowedHeaders: rn89AllowedHeaders,
+									allowedHeaders: rn91AllowedHeaders,
 									acceptPost:     "",
 									acceptPatch:    "application/json",
 								})
@@ -397,61 +400,111 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						break
 					}
 					switch elem[0] {
-					case 'a': // Prefix: "api/users"
+					case 'a': // Prefix: "a"
 
-						if l := len("api/users"); len(elem) >= l && elem[0:l] == "api/users" {
+						if l := len("a"); len(elem) >= l && elem[0:l] == "a" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
-							switch r.Method {
-							case "GET":
-								s.handleAdminListUsersRequest([0]string{}, elemIsEscaped, w, r)
-							case "POST":
-								s.handleAdminCreateUserRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, notAllowedParams{
-									allowedMethods: "GET,POST",
-									allowedHeaders: rn23AllowedHeaders,
-									acceptPost:     "application/json",
-									acceptPatch:    "",
-								})
-							}
-
-							return
+							break
 						}
 						switch elem[0] {
-						case '/': // Prefix: "/"
+						case 'p': // Prefix: "pi/users"
 
-							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							if l := len("pi/users"); len(elem) >= l && elem[0:l] == "pi/users" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								break
+								switch r.Method {
+								case "GET":
+									s.handleAdminListUsersRequest([0]string{}, elemIsEscaped, w, r)
+								case "POST":
+									s.handleAdminCreateUserRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, notAllowedParams{
+										allowedMethods: "GET,POST",
+										allowedHeaders: rn23AllowedHeaders,
+										acceptPost:     "application/json",
+										acceptPatch:    "",
+									})
+								}
+
+								return
 							}
 							switch elem[0] {
-							case 's': // Prefix: "search"
-								origElem := elem
-								if l := len("search"); len(elem) >= l && elem[0:l] == "search" {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 									elem = elem[l:]
 								} else {
 									break
 								}
 
 								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 's': // Prefix: "search"
+									origElem := elem
+									if l := len("search"); len(elem) >= l && elem[0:l] == "search" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch r.Method {
+										case "GET":
+											s.handleAdminSearchUsersRequest([0]string{}, elemIsEscaped, w, r)
+										default:
+											s.notAllowed(w, r, notAllowedParams{
+												allowedMethods: "GET",
+												allowedHeaders: nil,
+												acceptPost:     "",
+												acceptPatch:    "",
+											})
+										}
+
+										return
+									}
+
+									elem = origElem
+								}
+								// Param: "id"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
 									// Leaf node.
 									switch r.Method {
+									case "DELETE":
+										s.handleAdminDeleteUserRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
 									case "GET":
-										s.handleAdminSearchUsersRequest([0]string{}, elemIsEscaped, w, r)
+										s.handleAdminGetUserRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
+									case "PUT":
+										s.handleAdminUpdateUserRequest([1]string{
+											args[0],
+										}, elemIsEscaped, w, r)
 									default:
 										s.notAllowed(w, r, notAllowedParams{
-											allowedMethods: "GET",
-											allowedHeaders: nil,
+											allowedMethods: "DELETE,GET,PUT",
+											allowedHeaders: rn39AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -460,37 +513,26 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									return
 								}
 
-								elem = origElem
 							}
-							// Param: "id"
-							// Leaf parameter, slashes are prohibited
-							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
+
+						case 't': // Prefix: "ttachments"
+
+							if l := len("ttachments"); len(elem) >= l && elem[0:l] == "ttachments" {
+								elem = elem[l:]
+							} else {
 								break
 							}
-							args[0] = elem
-							elem = ""
 
 							if len(elem) == 0 {
 								// Leaf node.
 								switch r.Method {
-								case "DELETE":
-									s.handleAdminDeleteUserRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
-								case "GET":
-									s.handleAdminGetUserRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
-								case "PUT":
-									s.handleAdminUpdateUserRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
+								case "POST":
+									s.handleAdminUploadAttachmentRequest([0]string{}, elemIsEscaped, w, r)
 								default:
 									s.notAllowed(w, r, notAllowedParams{
-										allowedMethods: "DELETE,GET,PUT",
-										allowedHeaders: rn39AllowedHeaders,
-										acceptPost:     "",
+										allowedMethods: "POST",
+										allowedHeaders: rn63AllowedHeaders,
+										acceptPost:     "multipart/form-data",
 										acceptPatch:    "",
 									})
 								}
@@ -1772,7 +1814,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "GET,POST",
-									allowedHeaders: rn76AllowedHeaders,
+									allowedHeaders: rn78AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -1886,7 +1928,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn114AllowedHeaders,
+											allowedHeaders: rn116AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -1944,7 +1986,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "POST",
-								allowedHeaders: rn77AllowedHeaders,
+								allowedHeaders: rn79AllowedHeaders,
 								acceptPost:     "application/json",
 								acceptPatch:    "",
 							})
@@ -2171,7 +2213,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn79AllowedHeaders,
+									allowedHeaders: rn81AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -2231,7 +2273,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn65AllowedHeaders,
+											allowedHeaders: rn67AllowedHeaders,
 											acceptPost:     "application/json",
 											acceptPatch:    "",
 										})
@@ -2339,7 +2381,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn80AllowedHeaders,
+									allowedHeaders: rn82AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -2429,7 +2471,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "GET",
-								allowedHeaders: rn101AllowedHeaders,
+								allowedHeaders: rn103AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "",
 							})
@@ -2552,7 +2594,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								default:
 									s.notAllowed(w, r, notAllowedParams{
 										allowedMethods: "POST",
-										allowedHeaders: rn83AllowedHeaders,
+										allowedHeaders: rn85AllowedHeaders,
 										acceptPost:     "application/json",
 										acceptPatch:    "",
 									})
@@ -2614,7 +2656,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								default:
 									s.notAllowed(w, r, notAllowedParams{
 										allowedMethods: "PATCH",
-										allowedHeaders: rn67AllowedHeaders,
+										allowedHeaders: rn69AllowedHeaders,
 										acceptPost:     "",
 										acceptPatch:    "application/json",
 									})
@@ -2671,7 +2713,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "POST",
-								allowedHeaders: rn85AllowedHeaders,
+								allowedHeaders: rn87AllowedHeaders,
 								acceptPost:     "application/json",
 								acceptPatch:    "",
 							})
@@ -2696,7 +2738,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							default:
 								s.notAllowed(w, r, notAllowedParams{
 									allowedMethods: "POST",
-									allowedHeaders: rn70AllowedHeaders,
+									allowedHeaders: rn72AllowedHeaders,
 									acceptPost:     "application/json",
 									acceptPatch:    "",
 								})
@@ -2737,7 +2779,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "POST",
-								allowedHeaders: rn84AllowedHeaders,
+								allowedHeaders: rn86AllowedHeaders,
 								acceptPost:     "application/json",
 								acceptPatch:    "",
 							})
@@ -2791,7 +2833,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "DELETE,POST",
-							allowedHeaders: rn86AllowedHeaders,
+							allowedHeaders: rn88AllowedHeaders,
 							acceptPost:     "application/json",
 							acceptPatch:    "",
 						})
@@ -2816,7 +2858,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "POST",
-							allowedHeaders: rn87AllowedHeaders,
+							allowedHeaders: rn89AllowedHeaders,
 							acceptPost:     "application/json",
 							acceptPatch:    "",
 						})
@@ -3123,116 +3165,155 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						break
 					}
 					switch elem[0] {
-					case 'a': // Prefix: "api/users"
+					case 'a': // Prefix: "a"
 
-						if l := len("api/users"); len(elem) >= l && elem[0:l] == "api/users" {
+						if l := len("a"); len(elem) >= l && elem[0:l] == "a" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
-							switch method {
-							case "GET":
-								r.name = AdminListUsersOperation
-								r.summary = ""
-								r.operationID = "adminListUsers"
-								r.operationGroup = ""
-								r.pathPattern = "/admin/api/users"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "POST":
-								r.name = AdminCreateUserOperation
-								r.summary = ""
-								r.operationID = "adminCreateUser"
-								r.operationGroup = ""
-								r.pathPattern = "/admin/api/users"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
+							break
 						}
 						switch elem[0] {
-						case '/': // Prefix: "/"
+						case 'p': // Prefix: "pi/users"
 
-							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							if l := len("pi/users"); len(elem) >= l && elem[0:l] == "pi/users" {
 								elem = elem[l:]
 							} else {
 								break
 							}
 
 							if len(elem) == 0 {
-								break
+								switch method {
+								case "GET":
+									r.name = AdminListUsersOperation
+									r.summary = ""
+									r.operationID = "adminListUsers"
+									r.operationGroup = ""
+									r.pathPattern = "/admin/api/users"
+									r.args = args
+									r.count = 0
+									return r, true
+								case "POST":
+									r.name = AdminCreateUserOperation
+									r.summary = ""
+									r.operationID = "adminCreateUser"
+									r.operationGroup = ""
+									r.pathPattern = "/admin/api/users"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
 							}
 							switch elem[0] {
-							case 's': // Prefix: "search"
-								origElem := elem
-								if l := len("search"); len(elem) >= l && elem[0:l] == "search" {
+							case '/': // Prefix: "/"
+
+								if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 									elem = elem[l:]
 								} else {
 									break
 								}
 
 								if len(elem) == 0 {
+									break
+								}
+								switch elem[0] {
+								case 's': // Prefix: "search"
+									origElem := elem
+									if l := len("search"); len(elem) >= l && elem[0:l] == "search" {
+										elem = elem[l:]
+									} else {
+										break
+									}
+
+									if len(elem) == 0 {
+										// Leaf node.
+										switch method {
+										case "GET":
+											r.name = AdminSearchUsersOperation
+											r.summary = ""
+											r.operationID = "adminSearchUsers"
+											r.operationGroup = ""
+											r.pathPattern = "/admin/api/users/search"
+											r.args = args
+											r.count = 0
+											return r, true
+										default:
+											return
+										}
+									}
+
+									elem = origElem
+								}
+								// Param: "id"
+								// Leaf parameter, slashes are prohibited
+								idx := strings.IndexByte(elem, '/')
+								if idx >= 0 {
+									break
+								}
+								args[0] = elem
+								elem = ""
+
+								if len(elem) == 0 {
 									// Leaf node.
 									switch method {
-									case "GET":
-										r.name = AdminSearchUsersOperation
+									case "DELETE":
+										r.name = AdminDeleteUserOperation
 										r.summary = ""
-										r.operationID = "adminSearchUsers"
+										r.operationID = "adminDeleteUser"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/api/users/search"
+										r.pathPattern = "/admin/api/users/{id}"
 										r.args = args
-										r.count = 0
+										r.count = 1
+										return r, true
+									case "GET":
+										r.name = AdminGetUserOperation
+										r.summary = ""
+										r.operationID = "adminGetUser"
+										r.operationGroup = ""
+										r.pathPattern = "/admin/api/users/{id}"
+										r.args = args
+										r.count = 1
+										return r, true
+									case "PUT":
+										r.name = AdminUpdateUserOperation
+										r.summary = ""
+										r.operationID = "adminUpdateUser"
+										r.operationGroup = ""
+										r.pathPattern = "/admin/api/users/{id}"
+										r.args = args
+										r.count = 1
 										return r, true
 									default:
 										return
 									}
 								}
 
-								elem = origElem
 							}
-							// Param: "id"
-							// Leaf parameter, slashes are prohibited
-							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
+
+						case 't': // Prefix: "ttachments"
+
+							if l := len("ttachments"); len(elem) >= l && elem[0:l] == "ttachments" {
+								elem = elem[l:]
+							} else {
 								break
 							}
-							args[0] = elem
-							elem = ""
 
 							if len(elem) == 0 {
 								// Leaf node.
 								switch method {
-								case "DELETE":
-									r.name = AdminDeleteUserOperation
+								case "POST":
+									r.name = AdminUploadAttachmentOperation
 									r.summary = ""
-									r.operationID = "adminDeleteUser"
+									r.operationID = "adminUploadAttachment"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/api/users/{id}"
+									r.pathPattern = "/admin/attachments"
 									r.args = args
-									r.count = 1
-									return r, true
-								case "GET":
-									r.name = AdminGetUserOperation
-									r.summary = ""
-									r.operationID = "adminGetUser"
-									r.operationGroup = ""
-									r.pathPattern = "/admin/api/users/{id}"
-									r.args = args
-									r.count = 1
-									return r, true
-								case "PUT":
-									r.name = AdminUpdateUserOperation
-									r.summary = ""
-									r.operationID = "adminUpdateUser"
-									r.operationGroup = ""
-									r.pathPattern = "/admin/api/users/{id}"
-									r.args = args
-									r.count = 1
+									r.count = 0
 									return r, true
 								default:
 									return

@@ -36,7 +36,10 @@ model Attachment {
 
 /** Multipart form for a single file upload. */
 model AttachmentUploadForm {
-  file: HttpPart<File>;
+  // `bytes`, not `File`: HttpPart<File> emits a requestBody Encoding Object
+  // (`contentType: "*/*"`) that ogen cannot generate. The field schema is the
+  // same binary string either way; the stored type is sniffed from the bytes.
+  file: HttpPart<bytes>;
 }
 
 @route("/admin/attachments")

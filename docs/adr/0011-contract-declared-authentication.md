@@ -37,10 +37,9 @@ go-pkgz/auth's optional `Trace` middleware remains outside the generated server
 to support the library's sliding cookie refresh and anonymous `/me` behavior;
 it does not choose which routes require authentication.
 
-The multipart attachment upload remains a temporary manual adapter because ogen
-cannot generate its OpenAPI encoding. Only the exact
-`POST /admin/attachments` route is wrapped, using the same JWT, database-admin,
-XSRF, context, and Problem Details implementation as generated operations.
+The multipart attachment upload is a generated operation too: its file part is
+declared as `HttpPart<bytes>`, which omits the OpenAPI encoding block ogen
+cannot generate, so no operation sits outside the generated security layer.
 
 ### Optional identity on public operations
 

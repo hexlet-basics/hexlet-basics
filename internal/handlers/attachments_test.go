@@ -8,23 +8,23 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/textproto"
-	"os"
 	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
+	ht "github.com/ogen-go/ogen/http"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
-	"gopkg.in/yaml.v3"
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
+	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -52,37 +52,43 @@ func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	h.next.ServeHTTP(w, r)
 }
 
-// newAttachmentRouter builds the real router over an in-memory blob bucket and a
-// transaction-bound ent client. The api side is a stub — these tests exercise the
-// temporary upload adapter and blob read route outside the generated server.
+// newAttachmentRouterStack builds the real router over an in-memory blob
+// bucket and a transaction-bound ent client. Uploads run through the generated
+// ogen server — its multipart decoder and SecurityHandler — exactly as in
+// production; downloads use the blob read route mounted beside it.
 func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.Cookie, string) {
 	t.Helper()
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
-	att := handlers.NewAttachmentHandler(
-		assets,
-		translator,
-		errorHandler,
-	)
-	gh := handlers.NewGitHubWebhookHandler(db, &testsupport.RecordingEnqueuer{}, "", translator)
-	apiStub := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-	})
 	cfg := &config.Config{JWTSecret: "test-secret"}
-	auth := handlers.NewAuthHandler(
+	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
+	handler := handlers.NewServer(
 		db,
 		cfg,
-		translator,
-		errorHandler,
+		enqueuer,
+		enqueuer,
+		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
+		assets,
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
-		nil, // the upload path carries no guest progress
+		translator,
+		errorHandler,
 	)
-	router := translator.Middleware(handlers.NewRouter(apiStub, att, gh, auth))
+	apiServer, err := api.NewServer(
+		handler,
+		handler.AuthHandler(),
+		api.WithErrorHandler(errorHandler.Write),
+		api.WithNotFound(handlers.NewNotFoundHandler(translator)),
+		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
+	)
+	require.NoError(t, err)
+	att := handlers.NewAttachmentHandler(assets, errorHandler)
+	gh := handlers.NewGitHubWebhookHandler(db, enqueuer, "", translator)
+	router := translator.Middleware(handlers.NewRouter(apiServer, att, gh, handler.AuthHandler()))
 
 	jti := ids.New()
 	rec := httptest.NewRecorder()
@@ -160,7 +166,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "application/octet-stream", tinyPNG))
 
 	require.Equal(t, http.StatusCreated, rec.Code)
-	assert.Equal(t, "application/json", rec.Header().Get("Content-Type"))
+	assert.Equal(t, "application/json; charset=utf-8", rec.Header().Get("Content-Type"))
 
 	var att struct {
 		ID          int    `json:"id"`
@@ -193,6 +199,27 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	got, err := io.ReadAll(dl.Body)
 	require.NoError(t, err)
 	assert.Equal(t, tinyPNG, got)
+}
+
+// TestAdminUploadAttachmentThroughGeneratedClient drives the upload with the
+// generated client, so the generated multipart encoder and decoder meet over
+// the contract and the stored row is what the response names.
+func TestAdminUploadAttachmentThroughGeneratedClient(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+
+	att, err := h.Client.AdminUploadAttachment(ctx, &api.AttachmentUploadFormMultipart{
+		File: ht.MultipartFile{Name: "cover.png", File: bytes.NewReader(tinyPNG), Size: int64(len(tinyPNG))},
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusCreated, h.LastStatus())
+
+	assert.Equal(t, "cover.png", att.Filename)
+	assert.Equal(t, "image/png", att.ContentType)
+	assert.Equal(t, int64(len(tinyPNG)), att.ByteSize)
+	stored, err := h.DB.Attachment.Get(ctx, int(att.ID))
+	require.NoError(t, err)
+	assert.Equal(t, "cover.png", stored.Filename)
 }
 
 func TestUploadAttachmentUsesExactContractAuthentication(t *testing.T) {
@@ -312,37 +339,9 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	})
 }
 
-func TestUploadAttachmentResponseMatchesOpenAPIContract(t *testing.T) {
-	router := newAttachmentRouter(t)
-	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, uploadRequest(t, "cover.png", "image/png", tinyPNG))
-	require.Equal(t, http.StatusCreated, rec.Code)
-
-	var response map[string]json.RawMessage
-	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &response))
-
-	specData, err := os.ReadFile("../../api-spec/dist/openapi.yaml")
-	require.NoError(t, err)
-	var spec struct {
-		Components struct {
-			Schemas map[string]struct {
-				Required   []string               `yaml:"required"`
-				Properties map[string]interface{} `yaml:"properties"`
-			} `yaml:"schemas"`
-		} `yaml:"components"`
-	}
-	require.NoError(t, yaml.Unmarshal(specData, &spec))
-
-	attachment, ok := spec.Components.Schemas["Attachment"]
-	require.True(t, ok, "OpenAPI must define the Attachment response schema")
-	assert.ElementsMatch(t, attachment.Required, mapKeys(response))
-	assert.ElementsMatch(t, mapKeys(attachment.Properties), mapKeys(response),
-		"the manual JSON adapter must emit exactly the OpenAPI Attachment properties")
-}
-
 func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
 	router := newAttachmentRouter(t)
-	req := httptest.NewRequest(http.MethodPost, "/admin/attachments", nil)
+	req := uploadRequest(t, "notes.png", "image/png", []byte("hello"))
 	req.Header.Set("Accept-Language", "es")
 	rec := httptest.NewRecorder()
 
@@ -351,7 +350,7 @@ func TestUploadValidationErrorUsesRequestLocale(t *testing.T) {
 	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
 	var body api.ValidationError
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
-	assert.Equal(t, []string{"Se requiere un archivo"}, body.Errors["file"])
+	assert.Equal(t, []string{"Tipo de archivo no compatible"}, body.Errors["file"])
 }
 
 func TestUploadAttachmentRejectsUnsupportedType(t *testing.T) {
@@ -381,7 +380,10 @@ func TestUploadAttachmentRequiresFilePart(t *testing.T) {
 	rec := httptest.NewRecorder()
 	router.ServeHTTP(rec, req)
 
-	assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+	// A form without the required part is malformed per the contract, so the
+	// generated decoder rejects it like any other undecodable request.
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))
 }
 
 func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
@@ -399,10 +401,30 @@ func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
 	}`, rec.Body.String())
 }
 
-func mapKeys[V any](values map[string]V) []string {
-	keys := make([]string, 0, len(values))
-	for key := range values {
-		keys = append(keys, key)
-	}
-	return keys
+func TestUploadAttachmentRejectsOversizedBody(t *testing.T) {
+	router := newAttachmentRouter(t)
+	// Valid PNG bytes padded past the whole-body cap, so only the router can stop
+	// it before the bytes reach the bucket.
+	data := append(append([]byte{}, tinyPNG...), make([]byte, handlers.UploadBodyLimit)...)
+
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, uploadRequest(t, "huge.png", "image/png", data))
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))
+}
+
+func TestUploadAttachmentRejectsFileOverAssetLimit(t *testing.T) {
+	router := newAttachmentRouter(t)
+	// Over the file limit but inside the body cap's envelope allowance, so the
+	// request reaches assetstore and fails as a field error, not a transport one.
+	data := append(append([]byte{}, tinyPNG...), make([]byte, assetstore.MaxUploadBytes)...)
+
+	rec := httptest.NewRecorder()
+	router.ServeHTTP(rec, uploadRequest(t, "large.png", "image/png", data))
+
+	require.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+	var body api.ValidationError
+	require.NoError(t, json.NewDecoder(rec.Body).Decode(&body))
+	assert.NotEmpty(t, body.Errors["file"])
 }

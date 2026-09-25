@@ -5,7 +5,6 @@
   "courses.not_found": { "other": "Курс не найден" },
   "lessons.not_found": { "other": "Урок не найден" },
   "attachments.file_too_large": { "other": "Файл слишком большой" },
-  "attachments.file_required": { "other": "Необходимо приложить файл" },
   "attachments.unsupported_file_type": { "other": "Неподдерживаемый тип файла" },
   "attachments.store_failed": { "other": "Не удалось сохранить файл" },
   "attachments.read_failed": { "other": "Не удалось прочитать файл" },
