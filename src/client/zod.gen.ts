@@ -581,7 +581,7 @@ export const zLessonProgressPage = z.object({
 });
 
 /**
- * UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+ * UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
  */
 export const zLocale = z.enum([
   'ru',

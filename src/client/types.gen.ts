@@ -781,7 +781,7 @@ export type LessonProgressPage = {
 };
 
 /**
- * UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+ * UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
  */
 export type Locale = 'ru' | 'en' | 'es';
 

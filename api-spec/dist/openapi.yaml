@@ -6221,7 +6221,7 @@ components:
         - ru
         - en
         - es
-      description: UI locale. Mirrors the frontend `Locale` union and the legacy locale set.
+      description: UI locale (the legacy locale set). The frontend `Locale` type is generated from this.
     MyDashboard:
       type: object
       required:

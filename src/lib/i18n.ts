@@ -1,11 +1,14 @@
 import type { i18n as I18n } from "i18next";
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
+import type { Locale } from "@/client";
+import { zLocale } from "@/client/zod.gen";
 import en from "@/locales/en/translation";
 import es from "@/locales/es/translation";
 import ru from "@/locales/ru/translation";
 
-export type Locale = "en" | "ru" | "es";
+// The locale set is owned by the contract (`enum Locale` in api-spec/common.tsp).
+export type { Locale };
 
 // `en` is the default and is served unprefixed; `ru`/`es` live behind a path
 // prefix (legacy `scope "(:suffix)", suffix: /es|ru/`, ADR-0002 / ADR-0008).
@@ -14,7 +17,7 @@ export const DEFAULT_LOCALE: Locale = "en";
 export const PREFIXED_LOCALES = ["ru", "es"] as const;
 
 export function isLocale(value: string): value is Locale {
-  return value === "en" || value === "ru" || value === "es";
+  return zLocale.safeParse(value).success;
 }
 
 // One i18next instance per request (created in getRouter), never a module

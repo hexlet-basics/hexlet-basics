@@ -45,7 +45,7 @@ model XsrfToken {
 // and hey-api (TS client + zod). Keep response shapes uniform.
 // ---------------------------------------------------------------------------
 
-/** UI locale. Mirrors the frontend `Locale` union and the legacy locale set. */
+/** UI locale (the legacy locale set). The frontend `Locale` type is generated from this. */
 enum Locale {
   ru: "ru",
   en: "en",
