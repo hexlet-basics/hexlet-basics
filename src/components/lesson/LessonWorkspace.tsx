@@ -1,9 +1,10 @@
-import { Box, ScrollArea, Stack, Tabs } from "@mantine/core";
+import { Box, Center, ScrollArea, Stack, Tabs } from "@mantine/core";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClientOnly } from "@tanstack/react-router";
-import { lazy, Suspense, useState } from "react";
+import { IconBook } from "@tabler/icons-react";
+import { lazy, type ReactNode, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { checkLessonMutation, getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView, LessonCheckingResponse } from "@/client/types.gen";
@@ -12,6 +13,7 @@ import LessonEditor from "@/components/lesson/LessonEditor";
 import LessonOutput from "@/components/lesson/LessonOutput";
 import LessonSolution from "@/components/lesson/LessonSolution";
 import LessonTests from "@/components/lesson/LessonTests";
+import LessonTheory from "@/components/lesson/LessonTheory";
 import { hasPreview } from "@/lib/editor-languages";
 
 // Only the markup courses show a preview, so every other course is spared the
@@ -26,7 +28,20 @@ const LessonPreview = lazy(() => import("@/components/lesson/LessonPreview"));
 //
 // The tabs keep every pane mounted: switching to the output and back must not
 // remount the editor, which would cost the learner what they had typed.
-export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
+//
+// On a phone this pane also carries the theory as a tab of its own, as legacy
+// does, so re-reading the task never means leaving the editor's side.
+export default function LessonWorkspace({
+  view,
+  phone,
+  burger,
+}: {
+  view: CourseLessonView;
+  // Whether the page is laid out for a phone, one pane at a time.
+  phone: boolean;
+  // The pane switch at the head of the tab strip; see LessonPage.
+  burger: ReactNode;
+}) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
@@ -96,18 +111,38 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
   return (
     <Stack h="100%" gap={0}>
       <Tabs
-        value={tab}
+        // A phone turned into a desktop loses the theory tab; the editor takes
+        // its place rather than leaving the pane blank.
+        value={!phone && tab === "lesson" ? "editor" : tab}
         onChange={setTab}
         display="flex"
         style={{ flexDirection: "column", flexGrow: 1, minHeight: 0 }}
         keepMountedMode="display-none"
       >
         <Tabs.List grow>
+          {burger}
+          {phone && (
+            <Tabs.Tab value="lesson" aria-label={t(($) => $.courses.lessons.show.lesson)}>
+              <Center>
+                <IconBook size={14} />
+              </Center>
+            </Tabs.Tab>
+          )}
           <Tabs.Tab value="editor">{t(($) => $.courses.lessons.show.editor)}</Tabs.Tab>
           <Tabs.Tab value="output">{t(($) => $.courses.lessons.show.output)}</Tabs.Tab>
           <Tabs.Tab value="tests">{t(($) => $.courses.lessons.show.tests)}</Tabs.Tab>
           <Tabs.Tab value="solution">{t(($) => $.courses.lessons.show.solution)}</Tabs.Tab>
         </Tabs.List>
+
+        {/* Only on a phone: the theory then renders twice, once per pane, as it
+            does in legacy — and a desktop is spared a second, hidden copy. */}
+        {phone && (
+          <Tabs.Panel value="lesson" h="100%" mih={0}>
+            <ScrollArea h="100%">
+              <LessonTheory view={view} />
+            </ScrollArea>
+          </Tabs.Panel>
+        )}
 
         <Tabs.Panel value="editor" h="100%" mih={0}>
           <Stack h="100%" gap={0}>

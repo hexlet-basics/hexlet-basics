@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import { afterEach, expect, test } from "vitest";
+import { afterAll, afterEach, beforeEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import type {
   Course,
@@ -135,14 +135,27 @@ const learner: AuthUser = {
 //
 // The player needs a container with a real height: the two panes divide the
 // space they are given, and a zero-height box renders nothing a learner sees.
-function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
+function renderPlayer(lessonSlug: string, user: AuthUser | null = null, screenSize = desktop) {
   return renderRoute(lessonRoute, {
     path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
     initialPath: `/languages/javascript/lessons/${lessonSlug}`,
     user,
-    wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+    wrap: (element) => (
+      <div style={{ height: `${screenSize.height}px`, width: `${screenSize.width}px` }}>
+        {element}
+      </div>
+    ),
   });
 }
+
+// The layout switches on the viewport, not on the container, so each test sets
+// the viewport it means: a desktop unless it says otherwise, and the viewport
+// the suite was started with once the file is done.
+const desktop = { width: 1200, height: 800 };
+const phone = { width: 375, height: 667 };
+const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+beforeEach(() => page.viewport(desktop.width, desktop.height));
+afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 // What monaco has painted, with the non-breaking spaces it renders text with
 // turned back into ordinary ones so assertions read like the code does.
@@ -855,4 +868,132 @@ test("offers a guest sign-up in place of Next, and tells them it keeps their pro
 
   // A guest's Next starts nothing: it leads to sign-up, not to the next lesson.
   expect(started).toBe(0);
+});
+
+// ---- On a phone ------------------------------------------------------------
+
+// The player at a phone's viewport, in a container of the same size.
+async function renderOnPhone(lessonSlug: string, user: AuthUser | null = null) {
+  await page.viewport(phone.width, phone.height);
+  return renderPlayer(lessonSlug, user, phone);
+}
+
+// The two panes — theory and navigation, then the workspace — as locators, and
+// how wide each is drawn: on a phone one fills the screen and the other is
+// folded to nothing.
+function panes() {
+  const [theory, workspace] = Array.from(
+    document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"),
+    (el) => page.elementLocator(el),
+  );
+  if (!theory || !workspace) throw new Error("the player has no panes");
+  return { theory, workspace };
+}
+function paneWidths() {
+  return Array.from(document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"), (el) =>
+    Math.round(el.getBoundingClientRect().width),
+  );
+}
+
+test("on a phone, fills the screen with one pane and swaps them with the burger", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables");
+  await expect.element(page.getByRole("tab", { name: "Editor" })).toBeVisible();
+
+  // The workspace first: it is where the learner acts.
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+
+  await panes().workspace.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([phone.width, 0]);
+  await expect
+    .element(panes().theory.getByRole("heading", { name: "JavaScript: Variables" }))
+    .toBeInViewport();
+
+  // The theory pane has a burger of its own, which swaps back.
+  await panes().theory.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+  await expect.element(page.getByRole("tab", { name: "Editor" })).toBeInViewport();
+});
+
+test("on a phone, keeps what the learner typed across a pane swap and the theory tab", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  const editor = document.querySelector(".monaco-editor");
+
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("// mine");
+  await expect.poll(editorText).toContain("// mine");
+
+  // To the theory pane and back.
+  await panes().workspace.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([phone.width, 0]);
+  await panes().theory.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+  await expect.poll(editorText).toContain("// mine");
+
+  // The theory without leaving the editor's side: the workspace's own tab.
+  await panes().workspace.getByRole("tab", { name: "Lesson" }).click();
+  await expect
+    .element(panes().workspace.getByRole("heading", { name: "JavaScript: Variables" }))
+    .toBeInViewport();
+  await panes().workspace.getByRole("tab", { name: "Editor" }).click();
+  await expect.element(page.getByLabelText("Code editor")).toBeVisible();
+  await expect.poll(editorText).toContain("// mine");
+
+  // The same editor all along, never remounted.
+  expect(document.querySelector(".monaco-editor")).toBe(editor);
+});
+
+test("on a phone, keeps Run, Previous and Next on the screen", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables", learner);
+
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeInViewport({ ratio: 1 });
+  await expect.element(page.getByRole("link", { name: "← Previous" })).toBeInViewport({ ratio: 1 });
+  await expect.element(page.getByRole("button", { name: "Next →" })).toBeInViewport({ ratio: 1 });
+});
+
+test("on a phone, has no divider to drag", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables");
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+
+  // No grip to take hold of, and the keys that move a desktop's divider move
+  // nothing here.
+  expect(document.querySelector(".mantine-Splitter-thumb")).toBeNull();
+  document.querySelector<HTMLElement>(".mantine-Splitter-handle")?.focus();
+  await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowLeft}");
+  expect(paneWidths()).toEqual([0, phone.width]);
+});
+
+test("on a phone, fits the theory to the screen, wide code and all", async () => {
+  const wide = lessonView({
+    lesson: {
+      ...lesson,
+      theory: `A long line:\n\n\`\`\`js\nconst x = '${"a".repeat(200)}';\n\`\`\``,
+    },
+  });
+  worker.use(http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(wide)));
+
+  await renderOnPhone("variables");
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+  await panes().workspace.getByRole("tab", { name: "Lesson" }).click();
+  await expect.element(panes().workspace.getByText("A long line:")).toBeInViewport();
+
+  // The page itself never scrolls sideways: the wide block scrolls inside its
+  // own box, so the prose around it reads at the screen's width.
+  expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(phone.width);
 });
