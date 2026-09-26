@@ -61,24 +61,14 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
     if (!loaderData) return {};
     const { i18n } = match.context;
     const { course, landingPage } = loaderData;
-    const image = course.coverListVariant;
-    const head = seoHead({
+    return seoHead({
       i18n,
       title: landingPage?.metaTitle ?? course.name ?? course.slug,
       description: landingPage?.metaDescription ?? "",
       canonicalPath: match.pathname,
-      image,
+      image: course.coverListVariant,
+      openGraph: { type: "website", locale: i18n.language },
     });
-    const url = head.links[0]?.href;
-    return {
-      meta: [
-        ...head.meta,
-        { property: "og:type", content: "website" },
-        { property: "og:locale", content: i18n.language },
-        ...(url ? [{ property: "og:url", content: url }] : []),
-      ],
-      links: [...head.links, ...(image ? [{ rel: "image_src", href: image }] : [])],
-    };
   },
   component: Show,
 });
