@@ -1360,7 +1360,7 @@ export const consumeMagicLink = <ThrowOnError extends boolean = false>(options: 
 });
 
 /**
- * Everything the sitemap generator needs.
+ * Everything the sitemap page lists, across the ru and en locales.
  */
 export const getSitemap = <ThrowOnError extends boolean = false>(options?: Options<GetSitemapData, ThrowOnError>): RequestResult<GetSitemapResponses, GetSitemapErrors, ThrowOnError> => (options?.client ?? client).get<GetSitemapResponses, GetSitemapErrors, ThrowOnError>({
   responseType: 'json',

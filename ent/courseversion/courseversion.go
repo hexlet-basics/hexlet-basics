@@ -42,6 +42,8 @@ const (
 	FieldCourseID = "language_id"
 	// EdgeCurrentCourses holds the string denoting the current_courses edge name in mutations.
 	EdgeCurrentCourses = "current_courses"
+	// EdgeLessonTranslations holds the string denoting the lesson_translations edge name in mutations.
+	EdgeLessonTranslations = "lesson_translations"
 	// Table holds the table name of the courseversion in the database.
 	Table = "language_versions"
 	// CurrentCoursesTable is the table that holds the current_courses relation/edge.
@@ -51,6 +53,13 @@ const (
 	CurrentCoursesInverseTable = "languages"
 	// CurrentCoursesColumn is the table column denoting the current_courses relation/edge.
 	CurrentCoursesColumn = "current_version_id"
+	// LessonTranslationsTable is the table that holds the lesson_translations relation/edge.
+	LessonTranslationsTable = "language_lesson_version_infos"
+	// LessonTranslationsInverseTable is the table name for the CourseLessonTranslation entity.
+	// It exists in this package in order to avoid circular dependency with the "courselessontranslation" package.
+	LessonTranslationsInverseTable = "language_lesson_version_infos"
+	// LessonTranslationsColumn is the table column denoting the lesson_translations relation/edge.
+	LessonTranslationsColumn = "language_version_id"
 )
 
 // Columns holds all SQL columns for courseversion fields.
@@ -178,10 +187,31 @@ func ByCurrentCourses(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCurrentCoursesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByLessonTranslationsCount orders the results by lesson_translations count.
+func ByLessonTranslationsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newLessonTranslationsStep(), opts...)
+	}
+}
+
+// ByLessonTranslations orders the results by lesson_translations terms.
+func ByLessonTranslations(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLessonTranslationsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newCurrentCoursesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CurrentCoursesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, CurrentCoursesTable, CurrentCoursesColumn),
+	)
+}
+func newLessonTranslationsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LessonTranslationsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, LessonTranslationsTable, LessonTranslationsColumn),
 	)
 }

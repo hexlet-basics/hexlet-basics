@@ -523,7 +523,7 @@ type Invoker interface {
 	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error)
 	// GetSitemap invokes getSitemap operation.
 	//
-	// Everything the sitemap generator needs.
+	// Everything the sitemap page lists, across the ru and en locales.
 	//
 	// GET /api/map
 	GetSitemap(ctx context.Context) (*Sitemap, error)
@@ -13039,7 +13039,7 @@ func (c *Client) sendGetPublicCourseCategory(ctx context.Context, params GetPubl
 
 // GetSitemap invokes getSitemap operation.
 //
-// Everything the sitemap generator needs.
+// Everything the sitemap page lists, across the ru and en locales.
 //
 // GET /api/map
 func (c *Client) GetSitemap(ctx context.Context) (*Sitemap, error) {

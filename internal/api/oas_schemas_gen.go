@@ -6973,12 +6973,17 @@ func (s *SignUpInput) SetPassword(val string) {
 	s.Password = val
 }
 
-// Aggregated data for the XML sitemap / SEO index.
+// The rows behind the HTML sitemap page (legacy `HomeController#sitemap`, `/ru/map`). Flat lists
+// carrying their own locale; the page groups them.
+//
+// Landing pages come already narrowed to those whose course has lessons in the page's locale: legacy
+// sent the lessons only for that check (their list on the page was commented out), so the filter runs
+// in SQL instead of shipping every lesson.
 // Ref: #/components/schemas/Sitemap
 type Sitemap struct {
 	LandingPages []SitemapCourseLandingPage `json:"landingPages"`
-	Lessons      []SitemapCourseLesson      `json:"lessons"`
 	BlogPosts    []SitemapBlogPost          `json:"blogPosts"`
+	Categories   []CourseCategory           `json:"categories"`
 }
 
 // GetLandingPages returns the value of LandingPages.
@@ -6986,14 +6991,14 @@ func (s *Sitemap) GetLandingPages() []SitemapCourseLandingPage {
 	return s.LandingPages
 }
 
-// GetLessons returns the value of Lessons.
-func (s *Sitemap) GetLessons() []SitemapCourseLesson {
-	return s.Lessons
-}
-
 // GetBlogPosts returns the value of BlogPosts.
 func (s *Sitemap) GetBlogPosts() []SitemapBlogPost {
 	return s.BlogPosts
+}
+
+// GetCategories returns the value of Categories.
+func (s *Sitemap) GetCategories() []CourseCategory {
+	return s.Categories
 }
 
 // SetLandingPages sets the value of LandingPages.
@@ -7001,14 +7006,14 @@ func (s *Sitemap) SetLandingPages(val []SitemapCourseLandingPage) {
 	s.LandingPages = val
 }
 
-// SetLessons sets the value of Lessons.
-func (s *Sitemap) SetLessons(val []SitemapCourseLesson) {
-	s.Lessons = val
-}
-
 // SetBlogPosts sets the value of BlogPosts.
 func (s *Sitemap) SetBlogPosts(val []SitemapBlogPost) {
 	s.BlogPosts = val
+}
+
+// SetCategories sets the value of Categories.
+func (s *Sitemap) SetCategories(val []CourseCategory) {
+	s.Categories = val
 }
 
 // Minimal blog-post row for the sitemap (legacy: `SitemapBlogPost`).
@@ -7117,77 +7122,6 @@ func (s *SitemapCourseLandingPage) SetHeader(val string) {
 
 // SetLocale sets the value of Locale.
 func (s *SitemapCourseLandingPage) SetLocale(val Locale) {
-	s.Locale = val
-}
-
-// Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).
-// Ref: #/components/schemas/SitemapCourseLesson
-type SitemapCourseLesson struct {
-	ID           int32  `json:"id"`
-	CourseId     int32  `json:"courseId"`
-	Name         string `json:"name"`
-	Slug         string `json:"slug"`
-	NaturalOrder int32  `json:"naturalOrder"`
-	Locale       Locale `json:"locale"`
-}
-
-// GetID returns the value of ID.
-func (s *SitemapCourseLesson) GetID() int32 {
-	return s.ID
-}
-
-// GetCourseId returns the value of CourseId.
-func (s *SitemapCourseLesson) GetCourseId() int32 {
-	return s.CourseId
-}
-
-// GetName returns the value of Name.
-func (s *SitemapCourseLesson) GetName() string {
-	return s.Name
-}
-
-// GetSlug returns the value of Slug.
-func (s *SitemapCourseLesson) GetSlug() string {
-	return s.Slug
-}
-
-// GetNaturalOrder returns the value of NaturalOrder.
-func (s *SitemapCourseLesson) GetNaturalOrder() int32 {
-	return s.NaturalOrder
-}
-
-// GetLocale returns the value of Locale.
-func (s *SitemapCourseLesson) GetLocale() Locale {
-	return s.Locale
-}
-
-// SetID sets the value of ID.
-func (s *SitemapCourseLesson) SetID(val int32) {
-	s.ID = val
-}
-
-// SetCourseId sets the value of CourseId.
-func (s *SitemapCourseLesson) SetCourseId(val int32) {
-	s.CourseId = val
-}
-
-// SetName sets the value of Name.
-func (s *SitemapCourseLesson) SetName(val string) {
-	s.Name = val
-}
-
-// SetSlug sets the value of Slug.
-func (s *SitemapCourseLesson) SetSlug(val string) {
-	s.Slug = val
-}
-
-// SetNaturalOrder sets the value of NaturalOrder.
-func (s *SitemapCourseLesson) SetNaturalOrder(val int32) {
-	s.NaturalOrder = val
-}
-
-// SetLocale sets the value of Locale.
-func (s *SitemapCourseLesson) SetLocale(val Locale) {
 	s.Locale = val
 }
 

@@ -4120,7 +4120,7 @@ paths:
   /api/map:
     get:
       operationId: getSitemap
-      description: Everything the sitemap generator needs.
+      description: Everything the sitemap page lists, across the ru and en locales.
       parameters: []
       responses:
         '200':
@@ -6480,22 +6480,29 @@ components:
       type: object
       required:
         - landingPages
-        - lessons
         - blogPosts
+        - categories
       properties:
         landingPages:
           type: array
           items:
             $ref: '#/components/schemas/SitemapCourseLandingPage'
-        lessons:
-          type: array
-          items:
-            $ref: '#/components/schemas/SitemapCourseLesson'
         blogPosts:
           type: array
           items:
             $ref: '#/components/schemas/SitemapBlogPost'
-      description: Aggregated data for the XML sitemap / SEO index.
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseCategory'
+      description: |-
+        The rows behind the HTML sitemap page (legacy `HomeController#sitemap`,
+        `/ru/map`). Flat lists carrying their own locale; the page groups them.
+
+        Landing pages come already narrowed to those whose course has lessons in
+        the page's locale: legacy sent the lessons only for that check (their list
+        on the page was commented out), so the filter runs in SQL instead of
+        shipping every lesson.
     SitemapBlogPost:
       type: object
       required:
@@ -6536,32 +6543,6 @@ components:
         locale:
           $ref: '#/components/schemas/Locale'
       description: 'Minimal landing-page row for the sitemap (legacy: `LanguageSitemapLandingPage`).'
-    SitemapCourseLesson:
-      type: object
-      required:
-        - id
-        - courseId
-        - name
-        - slug
-        - naturalOrder
-        - locale
-      properties:
-        id:
-          type: integer
-          format: int32
-        courseId:
-          type: integer
-          format: int32
-        name:
-          type: string
-        slug:
-          type: string
-        naturalOrder:
-          type: integer
-          format: int32
-        locale:
-          $ref: '#/components/schemas/Locale'
-      description: 'Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).'
     StaffMember:
       type: object
       required:

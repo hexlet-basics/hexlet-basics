@@ -274,17 +274,25 @@ interface Book {
 
 // ---- Sitemap --------------------------------------------------------------
 
-/** Aggregated data for the XML sitemap / SEO index. */
+/**
+ * The rows behind the HTML sitemap page (legacy `HomeController#sitemap`,
+ * `/ru/map`). Flat lists carrying their own locale; the page groups them.
+ *
+ * Landing pages come already narrowed to those whose course has lessons in
+ * the page's locale: legacy sent the lessons only for that check (their list
+ * on the page was commented out), so the filter runs in SQL instead of
+ * shipping every lesson.
+ */
 model Sitemap {
   landingPages: SitemapCourseLandingPage[];
-  lessons: SitemapCourseLesson[];
   blogPosts: SitemapBlogPost[];
+  categories: CourseCategory[];
 }
 
 @route("/map")
 @tag("Sitemap")
 interface SitemapFeed {
-  /** Everything the sitemap generator needs. */
+  /** Everything the sitemap page lists, across the ru and en locales. */
   @get
   @operationId("getSitemap")
   get(): Sitemap | ApiError;

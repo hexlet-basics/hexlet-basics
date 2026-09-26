@@ -17667,17 +17667,17 @@ func (s *Sitemap) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		e.FieldStart("lessons")
+		e.FieldStart("blogPosts")
 		e.ArrStart()
-		for _, elem := range s.Lessons {
+		for _, elem := range s.BlogPosts {
 			elem.Encode(e)
 		}
 		e.ArrEnd()
 	}
 	{
-		e.FieldStart("blogPosts")
+		e.FieldStart("categories")
 		e.ArrStart()
-		for _, elem := range s.BlogPosts {
+		for _, elem := range s.Categories {
 			elem.Encode(e)
 		}
 		e.ArrEnd()
@@ -17686,8 +17686,8 @@ func (s *Sitemap) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfSitemap = [3]string{
 	0: "landingPages",
-	1: "lessons",
-	2: "blogPosts",
+	1: "blogPosts",
+	2: "categories",
 }
 
 // Decode decodes Sitemap from json.
@@ -17717,26 +17717,8 @@ func (s *Sitemap) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"landingPages\"")
 			}
-		case "lessons":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				s.Lessons = make([]SitemapCourseLesson, 0)
-				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem SitemapCourseLesson
-					if err := elem.Decode(d); err != nil {
-						return err
-					}
-					s.Lessons = append(s.Lessons, elem)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"lessons\"")
-			}
 		case "blogPosts":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				s.BlogPosts = make([]SitemapBlogPost, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -17752,6 +17734,24 @@ func (s *Sitemap) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"blogPosts\"")
+			}
+		case "categories":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				s.Categories = make([]CourseCategory, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem CourseCategory
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Categories = append(s.Categories, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"categories\"")
 			}
 		default:
 			return d.Skip()
@@ -18112,185 +18112,6 @@ func (s *SitemapCourseLandingPage) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SitemapCourseLandingPage) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *SitemapCourseLesson) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *SitemapCourseLesson) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("id")
-		e.Int32(s.ID)
-	}
-	{
-		e.FieldStart("courseId")
-		e.Int32(s.CourseId)
-	}
-	{
-		e.FieldStart("name")
-		e.Str(s.Name)
-	}
-	{
-		e.FieldStart("slug")
-		e.Str(s.Slug)
-	}
-	{
-		e.FieldStart("naturalOrder")
-		e.Int32(s.NaturalOrder)
-	}
-	{
-		e.FieldStart("locale")
-		s.Locale.Encode(e)
-	}
-}
-
-var jsonFieldsNameOfSitemapCourseLesson = [6]string{
-	0: "id",
-	1: "courseId",
-	2: "name",
-	3: "slug",
-	4: "naturalOrder",
-	5: "locale",
-}
-
-// Decode decodes SitemapCourseLesson from json.
-func (s *SitemapCourseLesson) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode SitemapCourseLesson to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "id":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Int32()
-				s.ID = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"id\"")
-			}
-		case "courseId":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Int32()
-				s.CourseId = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"courseId\"")
-			}
-		case "name":
-			requiredBitSet[0] |= 1 << 2
-			if err := func() error {
-				v, err := d.Str()
-				s.Name = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"name\"")
-			}
-		case "slug":
-			requiredBitSet[0] |= 1 << 3
-			if err := func() error {
-				v, err := d.Str()
-				s.Slug = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"slug\"")
-			}
-		case "naturalOrder":
-			requiredBitSet[0] |= 1 << 4
-			if err := func() error {
-				v, err := d.Int32()
-				s.NaturalOrder = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"naturalOrder\"")
-			}
-		case "locale":
-			requiredBitSet[0] |= 1 << 5
-			if err := func() error {
-				if err := s.Locale.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"locale\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode SitemapCourseLesson")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00111111,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfSitemapCourseLesson) {
-					name = jsonFieldsNameOfSitemapCourseLesson[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *SitemapCourseLesson) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *SitemapCourseLesson) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

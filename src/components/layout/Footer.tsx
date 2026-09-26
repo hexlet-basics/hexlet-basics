@@ -32,9 +32,6 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
 // hey-api generated `listCourses` hook and link to the real course route.
-// Legacy also linked out to the map page; it isn't ported to the Go stack
-// yet, so its link is added back when its route lands (no hardcoded hrefs, no
-// placeholder pages).
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
@@ -53,6 +50,12 @@ export default function Footer() {
               <Text fz="sm" fw="bold">
                 {t(($) => $.layouts.shared.footer.codebasics)}
               </Text>
+              {/* The sitemap exists on the ru site only, as in legacy. */}
+              {i18n.language === "ru" && (
+                <Anchor component={Link} to="/{-$locale}/map" fz="sm">
+                  {t(($) => $.layouts.shared.footer.sitemap)}
+                </Anchor>
+              )}
               <PageLink id="about">{t(($) => $.layouts.shared.footer.about)}</PageLink>
               <Anchor component={Link} to="/{-$locale}/blog_posts" fz="sm">
                 {t(($) => $.layouts.shared.footer.blog)}

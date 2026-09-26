@@ -1034,12 +1034,18 @@ export type SignUpInput = {
 };
 
 /**
- * Aggregated data for the XML sitemap / SEO index.
+ * The rows behind the HTML sitemap page (legacy `HomeController#sitemap`,
+ * `/ru/map`). Flat lists carrying their own locale; the page groups them.
+ *
+ * Landing pages come already narrowed to those whose course has lessons in
+ * the page's locale: legacy sent the lessons only for that check (their list
+ * on the page was commented out), so the filter runs in SQL instead of
+ * shipping every lesson.
  */
 export type Sitemap = {
   landingPages: Array<SitemapCourseLandingPage>;
-  lessons: Array<SitemapCourseLesson>;
   blogPosts: Array<SitemapBlogPost>;
+  categories: Array<CourseCategory>;
 };
 
 /**
@@ -1060,18 +1066,6 @@ export type SitemapCourseLandingPage = {
   courseId: number;
   slug: string;
   header: string;
-  locale: Locale;
-};
-
-/**
- * Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).
- */
-export type SitemapCourseLesson = {
-  id: number;
-  courseId: number;
-  name: string;
-  slug: string;
-  naturalOrder: number;
   locale: Locale;
 };
 

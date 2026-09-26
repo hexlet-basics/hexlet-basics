@@ -13,6 +13,7 @@ import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125BookRouteImport } from './routes/{-$locale}/book'
+import { Route as Char123LocaleChar125MapRouteImport } from './routes/{-$locale}/map'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
 import { Route as Char123LocaleChar125Blog_postsIndexRouteImport } from './routes/{-$locale}/blog_posts/index'
 import { Route as Char123LocaleChar125Blog_postsSlugRouteImport } from './routes/{-$locale}/blog_posts/$slug'
@@ -91,6 +92,11 @@ const Char123LocaleChar125BookRoute =
     path: '/book',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125MapRoute = Char123LocaleChar125MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => Char123LocaleChar125Route,
+} as any)
 const Char123LocaleChar125AdminIndexRoute =
   Char123LocaleChar125AdminIndexRouteImport.update({
     id: '/',
@@ -420,6 +426,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
@@ -478,6 +485,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
@@ -539,6 +547,7 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
@@ -601,6 +610,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/book'
+    | '/{-$locale}/map'
     | '/{-$locale}/'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/cases/for_teachers'
@@ -659,6 +669,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$locale}/book'
+    | '/{-$locale}/map'
     | '/{-$locale}'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/cases/for_teachers'
@@ -719,6 +730,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/book'
+    | '/{-$locale}/map'
     | '/{-$locale}/'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/cases/for_teachers'
@@ -808,6 +820,13 @@ declare module '@tanstack/react-router' {
       path: '/book'
       fullPath: '/{-$locale}/book'
       preLoaderRoute: typeof Char123LocaleChar125BookRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/map': {
+      id: '/{-$locale}/map'
+      path: '/map'
+      fullPath: '/{-$locale}/map'
+      preLoaderRoute: typeof Char123LocaleChar125MapRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/admin/': {
@@ -1307,6 +1326,7 @@ const Char123LocaleChar125AdminRouteWithChildren =
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125BookRoute: typeof Char123LocaleChar125BookRoute
+  Char123LocaleChar125MapRoute: typeof Char123LocaleChar125MapRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
   Char123LocaleChar125Blog_postsSlugRoute: typeof Char123LocaleChar125Blog_postsSlugRoute
   Char123LocaleChar125CasesFor_teachersRoute: typeof Char123LocaleChar125CasesFor_teachersRoute
@@ -1333,6 +1353,7 @@ interface Char123LocaleChar125RouteChildren {
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125BookRoute: Char123LocaleChar125BookRoute,
+  Char123LocaleChar125MapRoute: Char123LocaleChar125MapRoute,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
   Char123LocaleChar125Blog_postsSlugRoute:
     Char123LocaleChar125Blog_postsSlugRoute,

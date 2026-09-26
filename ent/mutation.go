@@ -17231,31 +17231,34 @@ func (m *CourseModuleVersionMutation) ResetEdge(name string) error {
 // CourseVersionMutation represents an operation that mutates the CourseVersion nodes in the graph.
 type CourseVersionMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *int
-	created_at             *time.Time
-	updated_at             *time.Time
-	result                 *string
-	state                  *string
-	name                   *string
-	progress               *string
-	learn_as               *string
-	extension              *string
-	docker_image           *string
-	exercise_filename      *string
-	exercise_test_filename *string
-	lessons_count          *int
-	addlessons_count       *int
-	course_id              *int
-	addcourse_id           *int
-	clearedFields          map[string]struct{}
-	current_courses        map[int]struct{}
-	removedcurrent_courses map[int]struct{}
-	clearedcurrent_courses bool
-	done                   bool
-	oldValue               func(context.Context) (*CourseVersion, error)
-	predicates             []predicate.CourseVersion
+	op                         Op
+	typ                        string
+	id                         *int
+	created_at                 *time.Time
+	updated_at                 *time.Time
+	result                     *string
+	state                      *string
+	name                       *string
+	progress                   *string
+	learn_as                   *string
+	extension                  *string
+	docker_image               *string
+	exercise_filename          *string
+	exercise_test_filename     *string
+	lessons_count              *int
+	addlessons_count           *int
+	course_id                  *int
+	addcourse_id               *int
+	clearedFields              map[string]struct{}
+	current_courses            map[int]struct{}
+	removedcurrent_courses     map[int]struct{}
+	clearedcurrent_courses     bool
+	lesson_translations        map[int]struct{}
+	removedlesson_translations map[int]struct{}
+	clearedlesson_translations bool
+	done                       bool
+	oldValue                   func(context.Context) (*CourseVersion, error)
+	predicates                 []predicate.CourseVersion
 }
 
 var _ ent.Mutation = (*CourseVersionMutation)(nil)
@@ -18035,6 +18038,60 @@ func (m *CourseVersionMutation) ResetCurrentCourses() {
 	m.removedcurrent_courses = nil
 }
 
+// AddLessonTranslationIDs adds the "lesson_translations" edge to the CourseLessonTranslation entity by ids.
+func (m *CourseVersionMutation) AddLessonTranslationIDs(ids ...int) {
+	if m.lesson_translations == nil {
+		m.lesson_translations = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.lesson_translations[ids[i]] = struct{}{}
+	}
+}
+
+// ClearLessonTranslations clears the "lesson_translations" edge to the CourseLessonTranslation entity.
+func (m *CourseVersionMutation) ClearLessonTranslations() {
+	m.clearedlesson_translations = true
+}
+
+// LessonTranslationsCleared reports if the "lesson_translations" edge to the CourseLessonTranslation entity was cleared.
+func (m *CourseVersionMutation) LessonTranslationsCleared() bool {
+	return m.clearedlesson_translations
+}
+
+// RemoveLessonTranslationIDs removes the "lesson_translations" edge to the CourseLessonTranslation entity by IDs.
+func (m *CourseVersionMutation) RemoveLessonTranslationIDs(ids ...int) {
+	if m.removedlesson_translations == nil {
+		m.removedlesson_translations = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.lesson_translations, ids[i])
+		m.removedlesson_translations[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedLessonTranslations returns the removed IDs of the "lesson_translations" edge to the CourseLessonTranslation entity.
+func (m *CourseVersionMutation) RemovedLessonTranslationsIDs() (ids []int) {
+	for id := range m.removedlesson_translations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// LessonTranslationsIDs returns the "lesson_translations" edge IDs in the mutation.
+func (m *CourseVersionMutation) LessonTranslationsIDs() (ids []int) {
+	for id := range m.lesson_translations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetLessonTranslations resets all changes to the "lesson_translations" edge.
+func (m *CourseVersionMutation) ResetLessonTranslations() {
+	m.lesson_translations = nil
+	m.clearedlesson_translations = false
+	m.removedlesson_translations = nil
+}
+
 // Where appends a list predicates to the CourseVersionMutation builder.
 func (m *CourseVersionMutation) Where(ps ...predicate.CourseVersion) {
 	m.predicates = append(m.predicates, ps...)
@@ -18456,9 +18513,12 @@ func (m *CourseVersionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CourseVersionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.current_courses != nil {
 		edges = append(edges, courseversion.EdgeCurrentCourses)
+	}
+	if m.lesson_translations != nil {
+		edges = append(edges, courseversion.EdgeLessonTranslations)
 	}
 	return edges
 }
@@ -18473,15 +18533,24 @@ func (m *CourseVersionMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case courseversion.EdgeLessonTranslations:
+		ids := make([]ent.Value, 0, len(m.lesson_translations))
+		for id := range m.lesson_translations {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CourseVersionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedcurrent_courses != nil {
 		edges = append(edges, courseversion.EdgeCurrentCourses)
+	}
+	if m.removedlesson_translations != nil {
+		edges = append(edges, courseversion.EdgeLessonTranslations)
 	}
 	return edges
 }
@@ -18496,15 +18565,24 @@ func (m *CourseVersionMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case courseversion.EdgeLessonTranslations:
+		ids := make([]ent.Value, 0, len(m.removedlesson_translations))
+		for id := range m.removedlesson_translations {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CourseVersionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedcurrent_courses {
 		edges = append(edges, courseversion.EdgeCurrentCourses)
+	}
+	if m.clearedlesson_translations {
+		edges = append(edges, courseversion.EdgeLessonTranslations)
 	}
 	return edges
 }
@@ -18515,6 +18593,8 @@ func (m *CourseVersionMutation) EdgeCleared(name string) bool {
 	switch name {
 	case courseversion.EdgeCurrentCourses:
 		return m.clearedcurrent_courses
+	case courseversion.EdgeLessonTranslations:
+		return m.clearedlesson_translations
 	}
 	return false
 }
@@ -18533,6 +18613,9 @@ func (m *CourseVersionMutation) ResetEdge(name string) error {
 	switch name {
 	case courseversion.EdgeCurrentCourses:
 		m.ResetCurrentCourses()
+		return nil
+	case courseversion.EdgeLessonTranslations:
+		m.ResetLessonTranslations()
 		return nil
 	}
 	return fmt.Errorf("unknown CourseVersion edge %s", name)
