@@ -102,6 +102,13 @@ enum PermissionResource {
 /** A build/version of a course's exercises (legacy `LanguageVersion`). */
 model CourseVersion {
   id: int32;
+
+  /**
+   * The name the course's spec gives this build (e.g. "JavaScript"). Legacy's
+   * lesson page opens its meta description with it, in brackets.
+   */
+  name: string | null;
+
   result: string | null;
   state: string | null;
   createdAt: utcDateTime;
@@ -296,6 +303,19 @@ model CourseLessonListItem {
   name: string | null;
   description: string | null;
   slug: string;
+}
+
+/** A module of a course version in one locale (legacy:
+`Language::Module::Version::Info`, as `Language::ModuleResource` served it). */
+model CourseModuleListItem {
+  /** The module's stable id, as legacy's resource exposed it. */
+  id: int32;
+
+  name: string | null;
+  description: string | null;
+
+  /** The module's lessons in this version, in course order, by slug. */
+  lessonSlugs: string[];
 }
 
 /** A learner's progress through one lesson (legacy: `LanguageLessonMember`,

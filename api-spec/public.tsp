@@ -22,6 +22,18 @@ model CourseView {
   landingPage: CourseLandingPage | null;
   lessons: CourseLessonListItem[];
 
+  /**
+   * The modules of the course's current version in the request locale, in
+   * course order — the learning program's accordion. Each names its lessons by
+   * slug, joined to `lessons` for names, so the flat list stays the one source
+   * of lesson rows the page and the player share.
+   */
+  modules: CourseModuleListItem[];
+
+  /** The landing page's questions and answers, oldest first; empty without a
+      landing page. */
+  qnaItems: QnaItem[];
+
   /** The current user's enrollment, when signed in. */
   enrollment: Enrollment | null;
 

@@ -13,6 +13,7 @@ import {
 } from "@/lib/authFieldProps";
 import { TextLink } from "@/components/RouterLink";
 import { useAppForm } from "@/lib/form";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 // Registration page, ported from legacy users/new + SignUpFormBlock. Submits
 // through the generated `createUser` mutation, which creates the account and
@@ -21,7 +22,16 @@ import { useAppForm } from "@/lib/form";
 // the empty-string default validates instead of the contract's nullable form.
 const signUpFormSchema = zSignUpInput.extend({ firstName: z.string() });
 
+// Where to go once the account exists. The lesson player sends a guest here with
+// the lesson they were on, so signing up does not lose their place. Only a path
+// on this site is honoured — anything else is dropped rather than followed, so
+// the page cannot be used to bounce a new account off to another origin.
+const signUpSearchSchema = z.object({
+  redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
+});
+
 export const Route = createFileRoute("/{-$locale}/users/new")({
+  validateSearch: signUpSearchSchema,
   component: New,
 });
 
@@ -29,13 +39,23 @@ function New() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { redirect } = Route.useSearch();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
     ...createUserMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
-      navigate({ to: "/{-$locale}" });
+    onSuccess: async () => {
+      // Everything read as a guest describes the guest. The course and lesson
+      // reads carry progress, which the sign-up has just merged into the new
+      // account — so the lesson a guest is sent back to must be read again,
+      // not served from the cache with the guest's locks. They are dropped
+      // rather than invalidated: an inactive query is only marked stale by an
+      // invalidation, and a loader's ensureQueryData serves stale data.
+      queryClient.removeQueries({ queryKey: [{ _id: "getCourse" }] });
+      queryClient.removeQueries({ queryKey: [{ _id: "getCourseLesson" }] });
+      await queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+      if (redirect) await navigate({ href: redirect });
+      else await navigate({ to: "/{-$locale}" });
     },
     onError: () => setServerError(t(($) => $.flash.users.create.error)),
   });

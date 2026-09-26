@@ -5651,6 +5651,32 @@ components:
 
             Null only for a course with no built version.
       description: 'The lesson page: the lesson itself, and where the visitor stands in it.'
+    CourseModuleListItem:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - lessonSlugs
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: The module's stable id, as legacy's resource exposed it.
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        lessonSlugs:
+          type: array
+          items:
+            type: string
+          description: The module's lessons in this version, in course order, by slug.
+      description: |-
+        A module of a course version in one locale (legacy:
+        `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
     CoursePage:
       type: object
       required:
@@ -5724,6 +5750,7 @@ components:
       type: object
       required:
         - id
+        - name
         - result
         - state
         - createdAt
@@ -5731,6 +5758,12 @@ components:
         id:
           type: integer
           format: int32
+        name:
+          type: string
+          nullable: true
+          description: |-
+            The name the course's spec gives this build (e.g. "JavaScript"). Legacy's
+            lesson page opens its meta description with it, in brackets.
         result:
           type: string
           nullable: true
@@ -5747,6 +5780,8 @@ components:
         - course
         - landingPage
         - lessons
+        - modules
+        - qnaItems
         - enrollment
         - progress
       properties:
@@ -5761,6 +5796,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CourseLessonListItem'
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseModuleListItem'
+          description: |-
+            The modules of the course's current version in the request locale, in
+            course order — the learning program's accordion. Each names its lessons by
+            slug, joined to `lessons` for names, so the flat list stays the one source
+            of lesson rows the page and the player share.
+        qnaItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/QnaItem'
+          description: |-
+            The landing page's questions and answers, oldest first; empty without a
+                  landing page.
         enrollment:
           type: object
           allOf:

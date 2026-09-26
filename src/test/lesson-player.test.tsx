@@ -1,15 +1,19 @@
 import { http, HttpResponse } from "msw";
-import { afterEach, expect, test } from "vitest";
+import { afterAll, afterEach, beforeEach, expect, test } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import type {
   Course,
   CourseLandingPage,
   CourseLesson,
   CourseLessonView,
+  CourseView,
+  EnrollmentState,
   LessonCheckingResponse,
 } from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
+import { getCourseQueryKey } from "@/client/@tanstack/react-query.gen";
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
+import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/success";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
@@ -135,14 +139,27 @@ const learner: AuthUser = {
 //
 // The player needs a container with a real height: the two panes divide the
 // space they are given, and a zero-height box renders nothing a learner sees.
-function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
+function renderPlayer(lessonSlug: string, user: AuthUser | null = null, screenSize = desktop) {
   return renderRoute(lessonRoute, {
     path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
     initialPath: `/languages/javascript/lessons/${lessonSlug}`,
     user,
-    wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+    wrap: (element) => (
+      <div style={{ height: `${screenSize.height}px`, width: `${screenSize.width}px` }}>
+        {element}
+      </div>
+    ),
   });
 }
+
+// The layout switches on the viewport, not on the container, so each test sets
+// the viewport it means: a desktop unless it says otherwise, and the viewport
+// the suite was started with once the file is done.
+const desktop = { width: 1200, height: 800 };
+const phone = { width: 375, height: 667 };
+const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+beforeEach(() => page.viewport(desktop.width, desktop.height));
+afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
 
 // What monaco has painted, with the non-breaking spaces it renders text with
 // turned back into ordinary ones so assertions read like the code does.
@@ -198,7 +215,8 @@ test("lists every lesson in course order, marking finished and locked ones", asy
   await renderPlayer("variables");
   await page.getByRole("tab", { name: "Navigation" }).click();
 
-  const links = page.getByRole("link").elements();
+  // The list itself — the control bar's Previous links to a lesson too.
+  const links = page.getByRole("tabpanel", { name: "Navigation" }).getByRole("link").elements();
   const lessonLinks = links.filter((el) => el.getAttribute("href")?.includes("/lessons/"));
   expect(lessonLinks.map((el) => el.textContent?.trim())).toEqual([
     "Hello, World!",
@@ -641,4 +659,428 @@ test("gives a signed-in learner the same run a guest gets", async () => {
 
   await expect.element(page.getByText("Tests passed")).toBeVisible();
   expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
+});
+
+// A markup course: the exercise is a page, and the learner watches it take shape.
+function htmlLessonView(): CourseLessonView {
+  return lessonView({
+    landingPage: { ...landingPage, courseSlug: "html", slug: "html-ru", name: "HTML" },
+    lesson: {
+      ...lesson,
+      course: { ...course, slug: "html", name: "html" },
+      name: "Headings",
+      slug: "headings",
+      preparedCode: "<h1>Hello</h1>\n",
+    },
+  });
+}
+
+test("previews a markup course's page under the editor, as the learner writes it", async () => {
+  worker.use(
+    http.get("*/languages/html/lessons/headings", () => HttpResponse.json(htmlLessonView())),
+  );
+
+  await renderRoute(lessonRoute, {
+    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+    initialPath: "/languages/html/lessons/headings",
+    wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+  });
+
+  const preview = page.getByTitle("Preview");
+  await expect.element(preview, editorLoad).toBeVisible();
+  await expect.element(preview).toHaveAttribute("srcdoc", "<h1>Hello</h1>\n");
+
+  // The learner's markup cannot reach the page around it: no scripts, and an
+  // opaque origin whose document the page cannot open either.
+  const frame = preview.element() as HTMLIFrameElement;
+  expect(frame.getAttribute("sandbox")).toBe("");
+  expect(frame.contentDocument).toBeNull();
+
+  // It follows the buffer, not the starter code it opened with.
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("{Control>}{End}{/Control}mine");
+
+  await expect.poll(() => frame.getAttribute("srcdoc")).toContain("mine");
+});
+
+test("leaves a program course's editor without a preview", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  expect(document.querySelector("iframe")).toBeNull();
+});
+
+// ---- Progression -----------------------------------------------------------
+
+// The last lesson of the course, which the learner has reached but not passed.
+function lastLessonView(): CourseLessonView {
+  return lessonView({
+    lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings" },
+    progress: {
+      state: "started",
+      completion: 66,
+      nextLessonSlug: "strings",
+      furthestFinishedPosition: 2,
+      lessons: [
+        { slug: "hello-world", position: 1, finished: true, available: true },
+        { slug: "variables", position: 2, finished: true, available: true },
+        { slug: "strings", position: 3, finished: false, available: true },
+      ],
+    },
+  });
+}
+
+test("carries reset, Previous, Run and Next under the editor, in legacy's order", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables", learner);
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeVisible();
+
+  const bar = page.getByRole("button", { name: "Run" }).element().parentElement;
+  const controls = Array.from(bar?.children ?? []).map(
+    (el) => el.getAttribute("aria-label") ?? el.textContent?.trim(),
+  );
+  expect(controls).toEqual(["Reset", "← Previous", "Run", "Next →"]);
+});
+
+test("goes back with a plain link, and has nowhere to go back to on the first lesson", async () => {
+  const first = lessonView({
+    lesson: { ...lesson, id: 1001, name: "Hello, World!", slug: "hello-world" },
+  });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/languages/javascript/lessons/hello-world", () => HttpResponse.json(first)),
+  );
+
+  const { screen } = await renderPlayer("variables", learner);
+  await expect
+    .element(page.getByRole("link", { name: "← Previous" }))
+    .toHaveAttribute("href", "/languages/javascript/lessons/hello-world");
+
+  await screen.unmount();
+  await renderPlayer("hello-world", learner);
+  await expect.element(page.getByRole("button", { name: "← Previous" })).toBeDisabled();
+});
+
+test("moves a learner on: Next waits for the pass, then starts the next lesson before going there", async () => {
+  const strings = lessonView({
+    lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings", preparedCode: "// strings\n" },
+  });
+  const requests: string[] = [];
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
+    http.post("*/lessons/:id/start", ({ params }) => {
+      requests.push(`start ${String(params.id)}`);
+      return HttpResponse.json(strings.progress);
+    }),
+    http.get("*/languages/javascript/lessons/strings", () => {
+      requests.push("read strings");
+      return HttpResponse.json(strings);
+    }),
+  );
+
+  const { router } = await renderPlayer("variables", learner);
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  // The button says what is expected: pass first.
+  const next = page.getByRole("button", { name: "Next →" });
+  await expect.element(next).toBeDisabled();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await expect.element(next).toBeEnabled();
+
+  await next.click();
+
+  await expect.element(page.getByRole("heading", { name: "JavaScript: Strings" })).toBeVisible();
+  expect(router.state.location.pathname).toBe("/languages/javascript/lessons/strings");
+  // Started exactly once, and before the page it leads to was read (ADR-0012).
+  expect(requests).toEqual(["start 1003", "read strings"]);
+});
+
+test("lets a learner revisiting a finished lesson move on straight away", async () => {
+  const finished = lessonView({ progress: lastLessonView().progress });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
+  );
+
+  await renderPlayer("variables", learner);
+
+  // Revisiting is not the same as being stuck: no run needed.
+  await expect.element(page.getByRole("button", { name: "Next →" })).toBeEnabled();
+});
+
+// The course read for a learner whose Enrollment is in `state` — what the
+// completion page checks before it congratulates anyone.
+function courseView(state: EnrollmentState): CourseView {
+  const progress = lastLessonView().progress ?? null;
+  return {
+    course,
+    landingPage,
+    lessons: [],
+    modules: [],
+    qnaItems: [],
+    enrollment: progress && {
+      id: 5,
+      userId: learner.id,
+      courseId: course.id,
+      state,
+      completion: progress.completion,
+      nextLessonName: null,
+      progress,
+    },
+    progress,
+  };
+}
+
+test("says so on the last lesson, and leads to the completion page", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
+    http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
+    // The pass has finished the Enrollment on the server.
+    http.get("*/api/languages/javascript", () => HttpResponse.json(courseView("finished"))),
+  );
+
+  const { router, queryClient } = await renderRoute(lessonRoute, {
+    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+    initialPath: "/languages/javascript/lessons/strings",
+    user: learner,
+    also: [{ route: successRoute, path: "/{-$locale}/languages/$slug/success" }],
+    wrap: (element) => (
+      <div style={{ height: `${desktop.height}px`, width: `${desktop.width}px` }}>{element}</div>
+    ),
+  });
+  // A course read left from an earlier visit to the Course page, taken before
+  // the pass: served as it is, it would bounce the learner back as unfinished.
+  queryClient.setQueryData(
+    getCourseQueryKey({ path: { slug: "javascript" } }),
+    courseView("started"),
+  );
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  await expect.element(page.getByRole("button", { name: "Finish" })).toBeDisabled();
+  await expect.element(page.getByRole("button", { name: "Next →" })).not.toBeInTheDocument();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+
+  const finish = page.getByRole("link", { name: "Finish" });
+  await expect.element(finish).toHaveAttribute("href", "/languages/javascript/success");
+  await finish.click();
+
+  await expect
+    .element(page.getByRole("heading", { name: "Congratulations, you completed the course!" }))
+    .toBeVisible();
+  expect(router.state.location.pathname).toBe("/languages/javascript/success");
+});
+
+test("offers a guest sign-up rather than Finish on the last lesson", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
+    http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
+  );
+
+  await renderPlayer("strings");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+
+  // The completion page needs a session, so a guest is asked to sign up first.
+  await expect.element(page.getByRole("link", { name: "Finish" })).not.toBeInTheDocument();
+  await expect
+    .element(page.getByRole("link", { name: "Next →", exact: true }))
+    .toHaveAttribute("href", expect.stringContaining("/users/new"));
+});
+
+test("offers a guest sign-up in place of Next, and tells them it keeps their progress", async () => {
+  let started = 0;
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
+    http.post("*/lessons/:id/start", () => {
+      started += 1;
+      return HttpResponse.json({});
+    }),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  const prompt = "Be sure to register to ensure you don't lose the results you've achieved";
+  await expect.element(page.getByRole("button", { name: "Next →" })).toBeDisabled();
+  await expect.element(page.getByText(prompt)).not.toBeInTheDocument();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await expect.element(page.getByText(prompt)).toBeVisible();
+
+  // Both lead to sign-up and carry the way back to this lesson. The merge that
+  // credits what was passed is the server's, and is covered by its tests.
+  for (const name of ["Next →", "register"]) {
+    const href = page.getByRole("link", { name, exact: true }).element().getAttribute("href");
+    const url = new URL(href ?? "", location.origin);
+    expect(url.pathname).toBe("/users/new");
+    expect(url.searchParams.get("redirect")).toBe("/languages/javascript/lessons/variables");
+  }
+
+  // A guest's Next starts nothing: it leads to sign-up, not to the next lesson.
+  expect(started).toBe(0);
+});
+
+test("tells a guest nothing on a lesson they finished before, but lets them sign up", async () => {
+  const finished = lessonView({ progress: lastLessonView().progress });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  // The way on is open, as it is for a learner revisiting a finished lesson…
+  await expect
+    .element(page.getByRole("link", { name: "Next →", exact: true }))
+    .toHaveAttribute("href", expect.stringContaining("/users/new"));
+  // …but the prompt is about a pass just achieved, and there has been none.
+  await expect
+    .element(
+      page.getByText("Be sure to register to ensure you don't lose the results you've achieved"),
+    )
+    .not.toBeInTheDocument();
+});
+
+// ---- On a phone ------------------------------------------------------------
+
+// The player at a phone's viewport, in a container of the same size.
+async function renderOnPhone(lessonSlug: string, user: AuthUser | null = null) {
+  await page.viewport(phone.width, phone.height);
+  return renderPlayer(lessonSlug, user, phone);
+}
+
+// The two panes — theory and navigation, then the workspace — as locators, and
+// how wide each is drawn: on a phone one fills the screen and the other is
+// folded to nothing.
+function panes() {
+  const [theory, workspace] = Array.from(
+    document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"),
+    (el) => page.elementLocator(el),
+  );
+  if (!theory || !workspace) throw new Error("the player has no panes");
+  return { theory, workspace };
+}
+function paneWidths() {
+  return Array.from(document.querySelectorAll<HTMLElement>(".mantine-Splitter-pane"), (el) =>
+    Math.round(el.getBoundingClientRect().width),
+  );
+}
+
+test("on a phone, fills the screen with one pane and swaps them with the burger", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables");
+  await expect.element(page.getByRole("tab", { name: "Editor" })).toBeVisible();
+
+  // The workspace first: it is where the learner acts.
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+
+  await panes().workspace.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([phone.width, 0]);
+  await expect
+    .element(panes().theory.getByRole("heading", { name: "JavaScript: Variables" }))
+    .toBeInViewport();
+
+  // The theory pane has a burger of its own, which swaps back.
+  await panes().theory.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+  await expect.element(page.getByRole("tab", { name: "Editor" })).toBeInViewport();
+});
+
+test("on a phone, keeps what the learner typed across a pane swap and the theory tab", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  const editor = document.querySelector(".monaco-editor");
+
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("// mine");
+  await expect.poll(editorText).toContain("// mine");
+
+  // To the theory pane and back.
+  await panes().workspace.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([phone.width, 0]);
+  await panes().theory.getByRole("button", { name: "Navigation" }).click();
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+  await expect.poll(editorText).toContain("// mine");
+
+  // The theory without leaving the editor's side: the workspace's own tab.
+  await panes().workspace.getByRole("tab", { name: "Lesson" }).click();
+  await expect
+    .element(panes().workspace.getByRole("heading", { name: "JavaScript: Variables" }))
+    .toBeInViewport();
+  await panes().workspace.getByRole("tab", { name: "Editor" }).click();
+  await expect.element(page.getByLabelText("Code editor")).toBeVisible();
+  await expect.poll(editorText).toContain("// mine");
+
+  // The same editor all along, never remounted.
+  expect(document.querySelector(".monaco-editor")).toBe(editor);
+});
+
+test("on a phone, keeps Run, Previous and Next on the screen", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables", learner);
+
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeInViewport({ ratio: 1 });
+  await expect.element(page.getByRole("link", { name: "← Previous" })).toBeInViewport({ ratio: 1 });
+  await expect.element(page.getByRole("button", { name: "Next →" })).toBeInViewport({ ratio: 1 });
+});
+
+test("on a phone, has no divider to drag", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderOnPhone("variables");
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+
+  // No grip to take hold of, and the keys that move a desktop's divider move
+  // nothing here.
+  expect(document.querySelector(".mantine-Splitter-thumb")).toBeNull();
+  document.querySelector<HTMLElement>(".mantine-Splitter-handle")?.focus();
+  await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowLeft}");
+  expect(paneWidths()).toEqual([0, phone.width]);
+});
+
+test("on a phone, fits the theory to the screen, wide code and all", async () => {
+  const wide = lessonView({
+    lesson: {
+      ...lesson,
+      theory: `A long line:\n\n\`\`\`js\nconst x = '${"a".repeat(200)}';\n\`\`\``,
+    },
+  });
+  worker.use(http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(wide)));
+
+  await renderOnPhone("variables");
+  await expect.poll(paneWidths).toEqual([0, phone.width]);
+  await panes().workspace.getByRole("tab", { name: "Lesson" }).click();
+  await expect.element(panes().workspace.getByText("A long line:")).toBeInViewport();
+
+  // The page itself never scrolls sideways: the wide block scrolls inside its
+  // own box, so the prose around it reads at the screen's width.
+  expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(phone.width);
 });

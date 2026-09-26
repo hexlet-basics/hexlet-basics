@@ -189,6 +189,15 @@ type Converter interface {
 
 	ToCourseLessonListItems(source []*ent.CourseLessonTranslation) []api.CourseLessonListItem
 
+	// Module rows are version infos with their module version, its lesson
+	// versions and their lessons loaded (WithVersion → WithLessonVersions →
+	// WithLesson), the lesson versions already in course order.
+	// goverter:map Edges.Version.ModuleID ID
+	// goverter:map . LessonSlugs | moduleLessonSlugs
+	ToCourseModuleListItem(source *ent.CourseModuleTranslation) api.CourseModuleListItem
+
+	ToCourseModuleListItems(source []*ent.CourseModuleTranslation) []api.CourseModuleListItem
+
 	// Lesson progress projections require WithCourse and WithLesson; the lesson
 	// query additionally eager-loads locale-filtered infos in ascending id order.
 	// goverter:map UserID UserId
@@ -379,6 +388,21 @@ func EnrollmentStateFromPtr(v *string) api.EnrollmentState {
 	return api.EnrollmentState(*v)
 }
 
+// moduleLessonSlugs lists a module's lessons by slug, in the order the query
+// loaded its lesson versions. A lesson with no slug has no URL to link, so it
+// is left out rather than listed as an empty string.
+func moduleLessonSlugs(source *ent.CourseModuleTranslation) []string {
+	if source == nil || source.Edges.Version == nil {
+		return []string{}
+	}
+	return lo.FilterMap(source.Edges.Version.Edges.LessonVersions, func(v *ent.CourseLessonVersion, _ int) (string, bool) {
+		if v.Edges.Lesson == nil || v.Edges.Lesson.Slug == nil {
+			return "", false
+		}
+		return *v.Edges.Lesson.Slug, true
+	})
+}
+
 // lessonProgressLessonName reads the first eager-loaded localized info. The
 // handler orders the edge by id so "first" is deterministic and matches the
 // legacy Lesson#localed_info convention.
@@ -562,7 +586,7 @@ func landingOutcomesImageNull(*ent.LandingPage) api.NilString {
 }
 
 // NilCourseVersionFromEnt bridges the current_version association to ogen's
-// NilCourseVersion. The four exposed fields are mapped inline: constructing the
+// NilCourseVersion. The exposed fields are mapped inline: constructing the
 // Nil wrapper is the irreducible part goverter cannot infer, so hand-mapping the
 // small CourseVersion body alongside it keeps the whole bridge in one place.
 func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
@@ -578,6 +602,7 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 func CourseVersionFromEnt(v *ent.CourseVersion) api.CourseVersion {
 	return api.CourseVersion{
 		ID:        int32(v.ID),
+		Name:      NilStringFromPtr(v.Name),
 		Result:    NilStringFromPtr(v.Result),
 		State:     NilStringFromPtr(v.State),
 		CreatedAt: v.CreatedAt,
