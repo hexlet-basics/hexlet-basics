@@ -14,6 +14,7 @@ import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$local
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
+import { Route as Char123LocaleChar125LeadsNewRouteImport } from './routes/{-$locale}/leads/new'
 import { Route as Char123LocaleChar125Magic_linksTokenRouteImport } from './routes/{-$locale}/magic_links/$token'
 import { Route as Char123LocaleChar125Magic_linksNewRouteImport } from './routes/{-$locale}/magic_links/new'
 import { Route as Char123LocaleChar125Remind_passwordNewRouteImport } from './routes/{-$locale}/remind_password/new'
@@ -83,6 +84,12 @@ const Char123LocaleChar125LanguagesIndexRoute =
   Char123LocaleChar125LanguagesIndexRouteImport.update({
     id: '/languages/',
     path: '/languages/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125LeadsNewRoute =
+  Char123LocaleChar125LeadsNewRouteImport.update({
+    id: '/leads/new',
+    path: '/leads/new',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125Magic_linksTokenRoute =
@@ -336,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
   '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
@@ -382,6 +390,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
   '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
@@ -431,6 +440,7 @@ export interface FileRoutesById {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
   '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
@@ -481,6 +491,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/'
+    | '/{-$locale}/leads/new'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
     | '/{-$locale}/remind_password/new'
@@ -527,6 +538,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/{-$locale}'
+    | '/{-$locale}/leads/new'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
     | '/{-$locale}/remind_password/new'
@@ -575,6 +587,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/'
+    | '/{-$locale}/leads/new'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
     | '/{-$locale}/remind_password/new'
@@ -659,6 +672,13 @@ declare module '@tanstack/react-router' {
       path: '/languages'
       fullPath: '/{-$locale}/languages/'
       preLoaderRoute: typeof Char123LocaleChar125LanguagesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/leads/new': {
+      id: '/{-$locale}/leads/new'
+      path: '/leads/new'
+      fullPath: '/{-$locale}/leads/new'
+      preLoaderRoute: typeof Char123LocaleChar125LeadsNewRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/magic_links/$token': {
@@ -1067,6 +1087,7 @@ const Char123LocaleChar125AdminRouteWithChildren =
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  Char123LocaleChar125LeadsNewRoute: typeof Char123LocaleChar125LeadsNewRoute
   Char123LocaleChar125Magic_linksTokenRoute: typeof Char123LocaleChar125Magic_linksTokenRoute
   Char123LocaleChar125Magic_linksNewRoute: typeof Char123LocaleChar125Magic_linksNewRoute
   Char123LocaleChar125Remind_passwordNewRoute: typeof Char123LocaleChar125Remind_passwordNewRoute
@@ -1081,6 +1102,7 @@ interface Char123LocaleChar125RouteChildren {
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
+  Char123LocaleChar125LeadsNewRoute: Char123LocaleChar125LeadsNewRoute,
   Char123LocaleChar125Magic_linksTokenRoute:
     Char123LocaleChar125Magic_linksTokenRoute,
   Char123LocaleChar125Magic_linksNewRoute:
