@@ -46,6 +46,17 @@ func (User) Fields() []ent.Field {
 		field.Bool("admin").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		field.Int("assistant_messages_count").Optional().Nillable(),
+		// Legacy AASM state: active (also NULL, the initial state),
+		// waiting_confirmation or removed. A string rather than an ent enum so a
+		// value written by legacy that is not listed here never breaks a scan.
+		field.String("state").Optional().Nillable(),
+		// The UI locale the user last switched to.
+		field.String("locale").Optional().Nillable(),
+		// Mapped so removing an account can clear them, as legacy clean_fields
+		// did; nothing else reads them yet.
+		field.String("nickname").Optional().Nillable(),
+		field.String("phone").Optional().Nillable(),
+		field.String("confirmation_token").Optional().Nillable().Sensitive(),
 	}
 }
 

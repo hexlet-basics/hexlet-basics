@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -29,8 +30,17 @@ const (
 	FieldCourseVersionID = "language_version_id"
 	// FieldVersionID holds the string denoting the version_id field in the database.
 	FieldVersionID = "version_id"
+	// EdgeVersion holds the string denoting the version edge name in mutations.
+	EdgeVersion = "version"
 	// Table holds the table name of the coursemoduletranslation in the database.
 	Table = "language_module_version_infos"
+	// VersionTable is the table that holds the version relation/edge.
+	VersionTable = "language_module_version_infos"
+	// VersionInverseTable is the table name for the CourseModuleVersion entity.
+	// It exists in this package in order to avoid circular dependency with the "coursemoduleversion" package.
+	VersionInverseTable = "language_module_versions"
+	// VersionColumn is the table column denoting the version relation/edge.
+	VersionColumn = "version_id"
 )
 
 // Columns holds all SQL columns for coursemoduletranslation fields.
@@ -111,4 +121,18 @@ func ByCourseVersionID(opts ...sql.OrderTermOption) OrderOption {
 // ByVersionID orders the results by the version_id field.
 func ByVersionID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVersionID, opts...).ToFunc()
+}
+
+// ByVersionField orders the results by version field.
+func ByVersionField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newVersionStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newVersionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(VersionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, VersionTable, VersionColumn),
+	)
 }

@@ -1,0 +1,39 @@
+# syntax=docker/dockerfile:1
+
+# The SSR image (ADR-0008): the TanStack Start build served by srvx, the
+# production server Start's own output is written for (dist/server/server.js
+# is a fetch handler, not a listening server).
+#
+# node and pnpm must match mise.toml; move them together.
+
+FROM node:26.8.2-slim AS base
+ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH
+# Node 25+ no longer bundles corepack, so pnpm comes from the registry.
+RUN npm install --global pnpm@12.6.0
+WORKDIR /app
+
+FROM base AS build
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# --ignore-scripts: `prepare` installs git hooks, which a build has no use for.
+RUN --mount=type=cache,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+COPY . .
+RUN pnpm build
+
+# The server bundle imports react, the router and friends at runtime, so the
+# production dependency tree ships beside dist/.
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=cache,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
+
+FROM node:26.8.2-slim
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY package.json ./
+USER node
+EXPOSE 3000
+# Absolute paths: srvx resolves a relative --static against the entry's
+# directory, not the working directory.
+CMD ["node_modules/.bin/srvx", "serve", "--prod", "--port", "3000", \
+     "--entry", "/app/dist/server/server.js", "--static", "/app/dist/client"]

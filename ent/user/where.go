@@ -94,6 +94,31 @@ func AssistantMessagesCount(v int) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldAssistantMessagesCount, v))
 }
 
+// State applies equality check predicate on the "state" field. It's identical to StateEQ.
+func State(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldState, v))
+}
+
+// Locale applies equality check predicate on the "locale" field. It's identical to LocaleEQ.
+func Locale(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldLocale, v))
+}
+
+// Nickname applies equality check predicate on the "nickname" field. It's identical to NicknameEQ.
+func Nickname(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldNickname, v))
+}
+
+// Phone applies equality check predicate on the "phone" field. It's identical to PhoneEQ.
+func Phone(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPhone, v))
+}
+
+// ConfirmationToken applies equality check predicate on the "confirmation_token" field. It's identical to ConfirmationTokenEQ.
+func ConfirmationToken(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldConfirmationToken, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedAt, v))
@@ -542,6 +567,381 @@ func AssistantMessagesCountIsNil() predicate.User {
 // AssistantMessagesCountNotNil applies the NotNil predicate on the "assistant_messages_count" field.
 func AssistantMessagesCountNotNil() predicate.User {
 	return predicate.User(sql.FieldNotNull(FieldAssistantMessagesCount))
+}
+
+// StateEQ applies the EQ predicate on the "state" field.
+func StateEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldState, v))
+}
+
+// StateNEQ applies the NEQ predicate on the "state" field.
+func StateNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldState, v))
+}
+
+// StateIn applies the In predicate on the "state" field.
+func StateIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldState, vs...))
+}
+
+// StateNotIn applies the NotIn predicate on the "state" field.
+func StateNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldState, vs...))
+}
+
+// StateGT applies the GT predicate on the "state" field.
+func StateGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldState, v))
+}
+
+// StateGTE applies the GTE predicate on the "state" field.
+func StateGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldState, v))
+}
+
+// StateLT applies the LT predicate on the "state" field.
+func StateLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldState, v))
+}
+
+// StateLTE applies the LTE predicate on the "state" field.
+func StateLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldState, v))
+}
+
+// StateContains applies the Contains predicate on the "state" field.
+func StateContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldState, v))
+}
+
+// StateHasPrefix applies the HasPrefix predicate on the "state" field.
+func StateHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldState, v))
+}
+
+// StateHasSuffix applies the HasSuffix predicate on the "state" field.
+func StateHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldState, v))
+}
+
+// StateIsNil applies the IsNil predicate on the "state" field.
+func StateIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldState))
+}
+
+// StateNotNil applies the NotNil predicate on the "state" field.
+func StateNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldState))
+}
+
+// StateEqualFold applies the EqualFold predicate on the "state" field.
+func StateEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldState, v))
+}
+
+// StateContainsFold applies the ContainsFold predicate on the "state" field.
+func StateContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldState, v))
+}
+
+// LocaleEQ applies the EQ predicate on the "locale" field.
+func LocaleEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldLocale, v))
+}
+
+// LocaleNEQ applies the NEQ predicate on the "locale" field.
+func LocaleNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldLocale, v))
+}
+
+// LocaleIn applies the In predicate on the "locale" field.
+func LocaleIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldLocale, vs...))
+}
+
+// LocaleNotIn applies the NotIn predicate on the "locale" field.
+func LocaleNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldLocale, vs...))
+}
+
+// LocaleGT applies the GT predicate on the "locale" field.
+func LocaleGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldLocale, v))
+}
+
+// LocaleGTE applies the GTE predicate on the "locale" field.
+func LocaleGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldLocale, v))
+}
+
+// LocaleLT applies the LT predicate on the "locale" field.
+func LocaleLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldLocale, v))
+}
+
+// LocaleLTE applies the LTE predicate on the "locale" field.
+func LocaleLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldLocale, v))
+}
+
+// LocaleContains applies the Contains predicate on the "locale" field.
+func LocaleContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldLocale, v))
+}
+
+// LocaleHasPrefix applies the HasPrefix predicate on the "locale" field.
+func LocaleHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldLocale, v))
+}
+
+// LocaleHasSuffix applies the HasSuffix predicate on the "locale" field.
+func LocaleHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldLocale, v))
+}
+
+// LocaleIsNil applies the IsNil predicate on the "locale" field.
+func LocaleIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldLocale))
+}
+
+// LocaleNotNil applies the NotNil predicate on the "locale" field.
+func LocaleNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldLocale))
+}
+
+// LocaleEqualFold applies the EqualFold predicate on the "locale" field.
+func LocaleEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldLocale, v))
+}
+
+// LocaleContainsFold applies the ContainsFold predicate on the "locale" field.
+func LocaleContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldLocale, v))
+}
+
+// NicknameEQ applies the EQ predicate on the "nickname" field.
+func NicknameEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldNickname, v))
+}
+
+// NicknameNEQ applies the NEQ predicate on the "nickname" field.
+func NicknameNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldNickname, v))
+}
+
+// NicknameIn applies the In predicate on the "nickname" field.
+func NicknameIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldNickname, vs...))
+}
+
+// NicknameNotIn applies the NotIn predicate on the "nickname" field.
+func NicknameNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldNickname, vs...))
+}
+
+// NicknameGT applies the GT predicate on the "nickname" field.
+func NicknameGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldNickname, v))
+}
+
+// NicknameGTE applies the GTE predicate on the "nickname" field.
+func NicknameGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldNickname, v))
+}
+
+// NicknameLT applies the LT predicate on the "nickname" field.
+func NicknameLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldNickname, v))
+}
+
+// NicknameLTE applies the LTE predicate on the "nickname" field.
+func NicknameLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldNickname, v))
+}
+
+// NicknameContains applies the Contains predicate on the "nickname" field.
+func NicknameContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldNickname, v))
+}
+
+// NicknameHasPrefix applies the HasPrefix predicate on the "nickname" field.
+func NicknameHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldNickname, v))
+}
+
+// NicknameHasSuffix applies the HasSuffix predicate on the "nickname" field.
+func NicknameHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldNickname, v))
+}
+
+// NicknameIsNil applies the IsNil predicate on the "nickname" field.
+func NicknameIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldNickname))
+}
+
+// NicknameNotNil applies the NotNil predicate on the "nickname" field.
+func NicknameNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldNickname))
+}
+
+// NicknameEqualFold applies the EqualFold predicate on the "nickname" field.
+func NicknameEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldNickname, v))
+}
+
+// NicknameContainsFold applies the ContainsFold predicate on the "nickname" field.
+func NicknameContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldNickname, v))
+}
+
+// PhoneEQ applies the EQ predicate on the "phone" field.
+func PhoneEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPhone, v))
+}
+
+// PhoneNEQ applies the NEQ predicate on the "phone" field.
+func PhoneNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPhone, v))
+}
+
+// PhoneIn applies the In predicate on the "phone" field.
+func PhoneIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPhone, vs...))
+}
+
+// PhoneNotIn applies the NotIn predicate on the "phone" field.
+func PhoneNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPhone, vs...))
+}
+
+// PhoneGT applies the GT predicate on the "phone" field.
+func PhoneGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPhone, v))
+}
+
+// PhoneGTE applies the GTE predicate on the "phone" field.
+func PhoneGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPhone, v))
+}
+
+// PhoneLT applies the LT predicate on the "phone" field.
+func PhoneLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPhone, v))
+}
+
+// PhoneLTE applies the LTE predicate on the "phone" field.
+func PhoneLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPhone, v))
+}
+
+// PhoneContains applies the Contains predicate on the "phone" field.
+func PhoneContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPhone, v))
+}
+
+// PhoneHasPrefix applies the HasPrefix predicate on the "phone" field.
+func PhoneHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPhone, v))
+}
+
+// PhoneHasSuffix applies the HasSuffix predicate on the "phone" field.
+func PhoneHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPhone, v))
+}
+
+// PhoneIsNil applies the IsNil predicate on the "phone" field.
+func PhoneIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPhone))
+}
+
+// PhoneNotNil applies the NotNil predicate on the "phone" field.
+func PhoneNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPhone))
+}
+
+// PhoneEqualFold applies the EqualFold predicate on the "phone" field.
+func PhoneEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPhone, v))
+}
+
+// PhoneContainsFold applies the ContainsFold predicate on the "phone" field.
+func PhoneContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPhone, v))
+}
+
+// ConfirmationTokenEQ applies the EQ predicate on the "confirmation_token" field.
+func ConfirmationTokenEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenNEQ applies the NEQ predicate on the "confirmation_token" field.
+func ConfirmationTokenNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenIn applies the In predicate on the "confirmation_token" field.
+func ConfirmationTokenIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldConfirmationToken, vs...))
+}
+
+// ConfirmationTokenNotIn applies the NotIn predicate on the "confirmation_token" field.
+func ConfirmationTokenNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldConfirmationToken, vs...))
+}
+
+// ConfirmationTokenGT applies the GT predicate on the "confirmation_token" field.
+func ConfirmationTokenGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenGTE applies the GTE predicate on the "confirmation_token" field.
+func ConfirmationTokenGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenLT applies the LT predicate on the "confirmation_token" field.
+func ConfirmationTokenLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenLTE applies the LTE predicate on the "confirmation_token" field.
+func ConfirmationTokenLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenContains applies the Contains predicate on the "confirmation_token" field.
+func ConfirmationTokenContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenHasPrefix applies the HasPrefix predicate on the "confirmation_token" field.
+func ConfirmationTokenHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenHasSuffix applies the HasSuffix predicate on the "confirmation_token" field.
+func ConfirmationTokenHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenIsNil applies the IsNil predicate on the "confirmation_token" field.
+func ConfirmationTokenIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldConfirmationToken))
+}
+
+// ConfirmationTokenNotNil applies the NotNil predicate on the "confirmation_token" field.
+func ConfirmationTokenNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldConfirmationToken))
+}
+
+// ConfirmationTokenEqualFold applies the EqualFold predicate on the "confirmation_token" field.
+func ConfirmationTokenEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldConfirmationToken, v))
+}
+
+// ConfirmationTokenContainsFold applies the ContainsFold predicate on the "confirmation_token" field.
+func ConfirmationTokenContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldConfirmationToken, v))
 }
 
 // And groups predicates with the AND operator between them.

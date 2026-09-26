@@ -4,6 +4,9 @@ export default {
       profiles: {
         edit: {
           delete: "Удалить аккаунт",
+          meta: {
+            description: "Здесь меняются личные данные",
+          },
           passkeys: {
             add: "Добавить passkey",
             already_registered: "Этот passkey уже добавлен.",
@@ -248,6 +251,8 @@ export default {
       blogPosts: {
         likes: "Лайки",
         relatedCourses: "Связанные курсы",
+        suggestQueued: "Подбор курсов запущен — обновите страницу чуть позже",
+        suggestRelatedCourses: "Подобрать курсы",
       },
       courses: {
         edit: {
@@ -913,6 +918,7 @@ export default {
         },
         success: {
           error: "В этом курсе есть уроки, которые вы не завершили",
+          warning: "В этом курсе ещё есть незавершённые уроки. Пройдите их, чтобы завершить курс!",
         },
       },
       leads: {
@@ -1379,9 +1385,19 @@ export default {
         "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
       hexlet_awesome_text_structure:
         "https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link",
+      hexlet_b2b: "https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral",
       hexlet_blog:
         "https://ru.hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=blog&utm_content=lesson",
+      hexlet_career: "https://career.hexlet.io?utm_source=code-basics&utm_medium=referral",
       hexlet_courses: "https://ru.hexlet.io/courses",
+      hexlet_courses_for_beginners:
+        "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral",
+      hexlet_courses_for_beginners_after_course:
+        "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page",
+      hexlet_courses_for_programmers:
+        "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral",
+      hexlet_courses_for_programmers_after_course:
+        "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page",
       hexlet_facebook: "https://www.facebook.com/codebasicsru",
       hexlet_frontend:
         "https://ru.hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=body&promo_type=link&utm_source=code-basics&utm_medium=referral&utm_campaign=programs&utm_content=frontend-course",
@@ -1407,7 +1423,10 @@ export default {
       hexlet_telegram: "https://t.me/hexlet_ru",
       hexlet_telegram_volunteers: "https://t.me/hexletcommunity/12",
       hexlet_twitter: "https://twitter.com/HexletHQ",
+      hexlet_twitter_handle: "@hexlethq",
       hexlet_youtube: "https://www.youtube.com/user/HexletUniversity",
+      hexly: "https://hexly.ru?utm_source=code-basics&utm_medium=referral",
+      reviews_taplink: "https://taplink.cc/codebasics_reviews",
     },
     magic_links: {
       new: {

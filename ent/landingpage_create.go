@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/landingpage"
 	"time"
 
@@ -295,6 +296,20 @@ func (_c *LandingPageCreate) SetNillableFooterName(v *string) *LandingPageCreate
 	return _c
 }
 
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (_c *LandingPageCreate) SetLanguageCategoryID(v int) *LandingPageCreate {
+	_c.mutation.SetLanguageCategoryID(v)
+	return _c
+}
+
+// SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
+func (_c *LandingPageCreate) SetNillableLanguageCategoryID(v *int) *LandingPageCreate {
+	if v != nil {
+		_c.SetLanguageCategoryID(*v)
+	}
+	return _c
+}
+
 // SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
 func (_c *LandingPageCreate) SetLandingPageToRedirectID(v int) *LandingPageCreate {
 	_c.mutation.SetLandingPageToRedirectID(v)
@@ -312,6 +327,21 @@ func (_c *LandingPageCreate) SetNillableLandingPageToRedirectID(v *int) *Landing
 // SetCourse sets the "course" edge to the Course entity.
 func (_c *LandingPageCreate) SetCourse(v *Course) *LandingPageCreate {
 	return _c.SetCourseID(v.ID)
+}
+
+// AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by IDs.
+func (_c *LandingPageCreate) AddCategoryItemIDs(ids ...int) *LandingPageCreate {
+	_c.mutation.AddCategoryItemIDs(ids...)
+	return _c
+}
+
+// AddCategoryItems adds the "category_items" edges to the CourseCategoryItem entity.
+func (_c *LandingPageCreate) AddCategoryItems(v ...*CourseCategoryItem) *LandingPageCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddCategoryItemIDs(ids...)
 }
 
 // Mutation returns the LandingPageMutation object of the builder.
@@ -476,6 +506,10 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 		_spec.SetField(landingpage.FieldFooterName, field.TypeString, value)
 		_node.FooterName = &value
 	}
+	if value, ok := _c.mutation.LanguageCategoryID(); ok {
+		_spec.SetField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+		_node.LanguageCategoryID = &value
+	}
 	if value, ok := _c.mutation.LandingPageToRedirectID(); ok {
 		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
 		_node.LandingPageToRedirectID = &value
@@ -495,6 +529,22 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.CourseID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CategoryItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -876,6 +926,30 @@ func (u *LandingPageUpsert) UpdateFooterName() *LandingPageUpsert {
 // ClearFooterName clears the value of the "footer_name" field.
 func (u *LandingPageUpsert) ClearFooterName() *LandingPageUpsert {
 	u.SetNull(landingpage.FieldFooterName)
+	return u
+}
+
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (u *LandingPageUpsert) SetLanguageCategoryID(v int) *LandingPageUpsert {
+	u.Set(landingpage.FieldLanguageCategoryID, v)
+	return u
+}
+
+// UpdateLanguageCategoryID sets the "language_category_id" field to the value that was provided on create.
+func (u *LandingPageUpsert) UpdateLanguageCategoryID() *LandingPageUpsert {
+	u.SetExcluded(landingpage.FieldLanguageCategoryID)
+	return u
+}
+
+// AddLanguageCategoryID adds v to the "language_category_id" field.
+func (u *LandingPageUpsert) AddLanguageCategoryID(v int) *LandingPageUpsert {
+	u.Add(landingpage.FieldLanguageCategoryID, v)
+	return u
+}
+
+// ClearLanguageCategoryID clears the value of the "language_category_id" field.
+func (u *LandingPageUpsert) ClearLanguageCategoryID() *LandingPageUpsert {
+	u.SetNull(landingpage.FieldLanguageCategoryID)
 	return u
 }
 
@@ -1330,6 +1404,34 @@ func (u *LandingPageUpsertOne) UpdateFooterName() *LandingPageUpsertOne {
 func (u *LandingPageUpsertOne) ClearFooterName() *LandingPageUpsertOne {
 	return u.Update(func(s *LandingPageUpsert) {
 		s.ClearFooterName()
+	})
+}
+
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (u *LandingPageUpsertOne) SetLanguageCategoryID(v int) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLanguageCategoryID(v)
+	})
+}
+
+// AddLanguageCategoryID adds v to the "language_category_id" field.
+func (u *LandingPageUpsertOne) AddLanguageCategoryID(v int) *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.AddLanguageCategoryID(v)
+	})
+}
+
+// UpdateLanguageCategoryID sets the "language_category_id" field to the value that was provided on create.
+func (u *LandingPageUpsertOne) UpdateLanguageCategoryID() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLanguageCategoryID()
+	})
+}
+
+// ClearLanguageCategoryID clears the value of the "language_category_id" field.
+func (u *LandingPageUpsertOne) ClearLanguageCategoryID() *LandingPageUpsertOne {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearLanguageCategoryID()
 	})
 }
 
@@ -1954,6 +2056,34 @@ func (u *LandingPageUpsertBulk) UpdateFooterName() *LandingPageUpsertBulk {
 func (u *LandingPageUpsertBulk) ClearFooterName() *LandingPageUpsertBulk {
 	return u.Update(func(s *LandingPageUpsert) {
 		s.ClearFooterName()
+	})
+}
+
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (u *LandingPageUpsertBulk) SetLanguageCategoryID(v int) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.SetLanguageCategoryID(v)
+	})
+}
+
+// AddLanguageCategoryID adds v to the "language_category_id" field.
+func (u *LandingPageUpsertBulk) AddLanguageCategoryID(v int) *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.AddLanguageCategoryID(v)
+	})
+}
+
+// UpdateLanguageCategoryID sets the "language_category_id" field to the value that was provided on create.
+func (u *LandingPageUpsertBulk) UpdateLanguageCategoryID() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.UpdateLanguageCategoryID()
+	})
+}
+
+// ClearLanguageCategoryID clears the value of the "language_category_id" field.
+func (u *LandingPageUpsertBulk) ClearLanguageCategoryID() *LandingPageUpsertBulk {
+	return u.Update(func(s *LandingPageUpsert) {
+		s.ClearLanguageCategoryID()
 	})
 }
 

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -24,6 +25,12 @@ type BlogPostLikeUpdate struct {
 // Where appends a list predicates to the BlogPostLikeUpdate builder.
 func (_u *BlogPostLikeUpdate) Where(ps ...predicate.BlogPostLike) *BlogPostLikeUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *BlogPostLikeUpdate) SetUpdatedAt(v time.Time) *BlogPostLikeUpdate {
+	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -48,6 +55,33 @@ func (_u *BlogPostLikeUpdate) AddBlogPostID(v int) *BlogPostLikeUpdate {
 	return _u
 }
 
+// SetUserID sets the "user_id" field.
+func (_u *BlogPostLikeUpdate) SetUserID(v int) *BlogPostLikeUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *BlogPostLikeUpdate) SetNillableUserID(v *int) *BlogPostLikeUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
+	}
+	return _u
+}
+
+// AddUserID adds value to the "user_id" field.
+func (_u *BlogPostLikeUpdate) AddUserID(v int) *BlogPostLikeUpdate {
+	_u.mutation.AddUserID(v)
+	return _u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (_u *BlogPostLikeUpdate) ClearUserID() *BlogPostLikeUpdate {
+	_u.mutation.ClearUserID()
+	return _u
+}
+
 // Mutation returns the BlogPostLikeMutation object of the builder.
 func (_u *BlogPostLikeUpdate) Mutation() *BlogPostLikeMutation {
 	return _u.mutation
@@ -55,6 +89,7 @@ func (_u *BlogPostLikeUpdate) Mutation() *BlogPostLikeMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *BlogPostLikeUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -80,6 +115,14 @@ func (_u *BlogPostLikeUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *BlogPostLikeUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := blogpostlike.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (_u *BlogPostLikeUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(blogpostlike.Table, blogpostlike.Columns, sqlgraph.NewFieldSpec(blogpostlike.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -89,11 +132,23 @@ func (_u *BlogPostLikeUpdate) sqlSave(ctx context.Context) (_node int, err error
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(blogpostlike.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.BlogPostID(); ok {
 		_spec.SetField(blogpostlike.FieldBlogPostID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.AddedBlogPostID(); ok {
 		_spec.AddField(blogpostlike.FieldBlogPostID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(blogpostlike.FieldUserID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(blogpostlike.FieldUserID, field.TypeInt, value)
+	}
+	if _u.mutation.UserIDCleared() {
+		_spec.ClearField(blogpostlike.FieldUserID, field.TypeInt)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -113,6 +168,12 @@ type BlogPostLikeUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *BlogPostLikeMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *BlogPostLikeUpdateOne) SetUpdatedAt(v time.Time) *BlogPostLikeUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetBlogPostID sets the "blog_post_id" field.
@@ -136,6 +197,33 @@ func (_u *BlogPostLikeUpdateOne) AddBlogPostID(v int) *BlogPostLikeUpdateOne {
 	return _u
 }
 
+// SetUserID sets the "user_id" field.
+func (_u *BlogPostLikeUpdateOne) SetUserID(v int) *BlogPostLikeUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *BlogPostLikeUpdateOne) SetNillableUserID(v *int) *BlogPostLikeUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
+	}
+	return _u
+}
+
+// AddUserID adds value to the "user_id" field.
+func (_u *BlogPostLikeUpdateOne) AddUserID(v int) *BlogPostLikeUpdateOne {
+	_u.mutation.AddUserID(v)
+	return _u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (_u *BlogPostLikeUpdateOne) ClearUserID() *BlogPostLikeUpdateOne {
+	_u.mutation.ClearUserID()
+	return _u
+}
+
 // Mutation returns the BlogPostLikeMutation object of the builder.
 func (_u *BlogPostLikeUpdateOne) Mutation() *BlogPostLikeMutation {
 	return _u.mutation
@@ -156,6 +244,7 @@ func (_u *BlogPostLikeUpdateOne) Select(field string, fields ...string) *BlogPos
 
 // Save executes the query and returns the updated BlogPostLike entity.
 func (_u *BlogPostLikeUpdateOne) Save(ctx context.Context) (*BlogPostLike, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -178,6 +267,14 @@ func (_u *BlogPostLikeUpdateOne) Exec(ctx context.Context) error {
 func (_u *BlogPostLikeUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *BlogPostLikeUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := blogpostlike.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -207,11 +304,23 @@ func (_u *BlogPostLikeUpdateOne) sqlSave(ctx context.Context) (_node *BlogPostLi
 			}
 		}
 	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(blogpostlike.FieldUpdatedAt, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.BlogPostID(); ok {
 		_spec.SetField(blogpostlike.FieldBlogPostID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.AddedBlogPostID(); ok {
 		_spec.AddField(blogpostlike.FieldBlogPostID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(blogpostlike.FieldUserID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(blogpostlike.FieldUserID, field.TypeInt, value)
+	}
+	if _u.mutation.UserIDCleared() {
+		_spec.ClearField(blogpostlike.FieldUserID, field.TypeInt)
 	}
 	_node = &BlogPostLike{config: _u.config}
 	_spec.Assign = _node.assignValues

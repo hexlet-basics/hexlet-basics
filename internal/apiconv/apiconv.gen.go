@@ -397,6 +397,47 @@ func (c *ConverterImpl) ToReviews(source []*ent.Review) []api.Review {
 	}
 	return apiReviewList
 }
+func (c *ConverterImpl) ToSitemapBlogPost(source *ent.BlogPost) api.SitemapBlogPost {
+	var apiSitemapBlogPost api.SitemapBlogPost
+	if source != nil {
+		apiSitemapBlogPost.ID = Int32FromInt((*source).ID)
+		apiSitemapBlogPost.Name = StringFromPtr((*source).Name)
+		apiSitemapBlogPost.Slug = StringFromPtr((*source).Slug)
+		apiSitemapBlogPost.Locale = LocaleFromPtr((*source).Locale)
+	}
+	return apiSitemapBlogPost
+}
+func (c *ConverterImpl) ToSitemapBlogPosts(source []*ent.BlogPost) []api.SitemapBlogPost {
+	var apiSitemapBlogPostList []api.SitemapBlogPost
+	if source != nil {
+		apiSitemapBlogPostList = make([]api.SitemapBlogPost, len(source))
+		for i := 0; i < len(source); i++ {
+			apiSitemapBlogPostList[i] = c.ToSitemapBlogPost(source[i])
+		}
+	}
+	return apiSitemapBlogPostList
+}
+func (c *ConverterImpl) ToSitemapCourseLandingPage(source *ent.LandingPage) api.SitemapCourseLandingPage {
+	var apiSitemapCourseLandingPage api.SitemapCourseLandingPage
+	if source != nil {
+		apiSitemapCourseLandingPage.ID = Int32FromInt((*source).ID)
+		apiSitemapCourseLandingPage.CourseId = Int32FromInt((*source).CourseID)
+		apiSitemapCourseLandingPage.Slug = StringFromPtr((*source).Slug)
+		apiSitemapCourseLandingPage.Header = StringFromPtr((*source).Header)
+		apiSitemapCourseLandingPage.Locale = LocaleFromPtr((*source).Locale)
+	}
+	return apiSitemapCourseLandingPage
+}
+func (c *ConverterImpl) ToSitemapCourseLandingPages(source []*ent.LandingPage) []api.SitemapCourseLandingPage {
+	var apiSitemapCourseLandingPageList []api.SitemapCourseLandingPage
+	if source != nil {
+		apiSitemapCourseLandingPageList = make([]api.SitemapCourseLandingPage, len(source))
+		for i := 0; i < len(source); i++ {
+			apiSitemapCourseLandingPageList[i] = c.ToSitemapCourseLandingPage(source[i])
+		}
+	}
+	return apiSitemapCourseLandingPageList
+}
 func (c *ConverterImpl) ToStaffMember(source *ent.StaffMember) api.StaffMember {
 	var apiStaffMember api.StaffMember
 	if source != nil {

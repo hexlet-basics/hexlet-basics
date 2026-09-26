@@ -1,0 +1,44 @@
+# Fixtures for `language_module_versions`, HAND-CURATED (see
+# language_modules.yml for why). Module version 1 is the one every lesson
+# version in language_lesson_versions.yml already points at.
+#
+# The ids deliberately disagree with `order` on JavaScript's current version
+# (965227298): id 2 is ordered last. The feed orders its plan by `order`, and
+# this is what lets the golden file prove it.
+- id: 1
+  language_id: 82481401
+  language_version_id: 965227298
+  module_id: 1
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 2
+  language_id: 82481401
+  language_version_id: 965227298
+  module_id: 3
+  order: 30
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3
+  language_id: 82481401
+  language_version_id: 965227298
+  module_id: 2
+  order: 20
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 4
+  language_id: 207281424
+  language_version_id: 207281424
+  module_id: 4
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+# JavaScript's retired version (545350298) had its own snapshot of module 1;
+# it has no infos, so no read picks it up.
+- id: 5
+  language_id: 82481401
+  language_version_id: 545350298
+  module_id: 1
+  order: 10
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

@@ -6,7 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonversion"
+	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/predicate"
 	"time"
 
@@ -212,7 +214,6 @@ func (_u *CourseLessonVersionUpdate) AddCourseVersionID(v int) *CourseLessonVers
 
 // SetLessonID sets the "lesson_id" field.
 func (_u *CourseLessonVersionUpdate) SetLessonID(v int) *CourseLessonVersionUpdate {
-	_u.mutation.ResetLessonID()
 	_u.mutation.SetLessonID(v)
 	return _u
 }
@@ -225,15 +226,8 @@ func (_u *CourseLessonVersionUpdate) SetNillableLessonID(v *int) *CourseLessonVe
 	return _u
 }
 
-// AddLessonID adds value to the "lesson_id" field.
-func (_u *CourseLessonVersionUpdate) AddLessonID(v int) *CourseLessonVersionUpdate {
-	_u.mutation.AddLessonID(v)
-	return _u
-}
-
 // SetModuleVersionID sets the "module_version_id" field.
 func (_u *CourseLessonVersionUpdate) SetModuleVersionID(v int) *CourseLessonVersionUpdate {
-	_u.mutation.ResetModuleVersionID()
 	_u.mutation.SetModuleVersionID(v)
 	return _u
 }
@@ -246,15 +240,31 @@ func (_u *CourseLessonVersionUpdate) SetNillableModuleVersionID(v *int) *CourseL
 	return _u
 }
 
-// AddModuleVersionID adds value to the "module_version_id" field.
-func (_u *CourseLessonVersionUpdate) AddModuleVersionID(v int) *CourseLessonVersionUpdate {
-	_u.mutation.AddModuleVersionID(v)
-	return _u
+// SetModuleVersion sets the "module_version" edge to the CourseModuleVersion entity.
+func (_u *CourseLessonVersionUpdate) SetModuleVersion(v *CourseModuleVersion) *CourseLessonVersionUpdate {
+	return _u.SetModuleVersionID(v.ID)
+}
+
+// SetLesson sets the "lesson" edge to the CourseLesson entity.
+func (_u *CourseLessonVersionUpdate) SetLesson(v *CourseLesson) *CourseLessonVersionUpdate {
+	return _u.SetLessonID(v.ID)
 }
 
 // Mutation returns the CourseLessonVersionMutation object of the builder.
 func (_u *CourseLessonVersionUpdate) Mutation() *CourseLessonVersionMutation {
 	return _u.mutation
+}
+
+// ClearModuleVersion clears the "module_version" edge to the CourseModuleVersion entity.
+func (_u *CourseLessonVersionUpdate) ClearModuleVersion() *CourseLessonVersionUpdate {
+	_u.mutation.ClearModuleVersion()
+	return _u
+}
+
+// ClearLesson clears the "lesson" edge to the CourseLesson entity.
+func (_u *CourseLessonVersionUpdate) ClearLesson() *CourseLessonVersionUpdate {
+	_u.mutation.ClearLesson()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -293,7 +303,21 @@ func (_u *CourseLessonVersionUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *CourseLessonVersionUpdate) check() error {
+	if _u.mutation.ModuleVersionCleared() && len(_u.mutation.ModuleVersionIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "CourseLessonVersion.module_version"`)
+	}
+	if _u.mutation.LessonCleared() && len(_u.mutation.LessonIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "CourseLessonVersion.lesson"`)
+	}
+	return nil
+}
+
 func (_u *CourseLessonVersionUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(courselessonversion.Table, courselessonversion.Columns, sqlgraph.NewFieldSpec(courselessonversion.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -359,17 +383,63 @@ func (_u *CourseLessonVersionUpdate) sqlSave(ctx context.Context) (_node int, er
 	if value, ok := _u.mutation.AddedCourseVersionID(); ok {
 		_spec.AddField(courselessonversion.FieldCourseVersionID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LessonID(); ok {
-		_spec.SetField(courselessonversion.FieldLessonID, field.TypeInt, value)
+	if _u.mutation.ModuleVersionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   courselessonversion.ModuleVersionTable,
+			Columns: []string{courselessonversion.ModuleVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursemoduleversion.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedLessonID(); ok {
-		_spec.AddField(courselessonversion.FieldLessonID, field.TypeInt, value)
+	if nodes := _u.mutation.ModuleVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   courselessonversion.ModuleVersionTable,
+			Columns: []string{courselessonversion.ModuleVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursemoduleversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if value, ok := _u.mutation.ModuleVersionID(); ok {
-		_spec.SetField(courselessonversion.FieldModuleVersionID, field.TypeInt, value)
+	if _u.mutation.LessonCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   courselessonversion.LessonTable,
+			Columns: []string{courselessonversion.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselesson.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedModuleVersionID(); ok {
-		_spec.AddField(courselessonversion.FieldModuleVersionID, field.TypeInt, value)
+	if nodes := _u.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   courselessonversion.LessonTable,
+			Columns: []string{courselessonversion.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -575,7 +645,6 @@ func (_u *CourseLessonVersionUpdateOne) AddCourseVersionID(v int) *CourseLessonV
 
 // SetLessonID sets the "lesson_id" field.
 func (_u *CourseLessonVersionUpdateOne) SetLessonID(v int) *CourseLessonVersionUpdateOne {
-	_u.mutation.ResetLessonID()
 	_u.mutation.SetLessonID(v)
 	return _u
 }
@@ -588,15 +657,8 @@ func (_u *CourseLessonVersionUpdateOne) SetNillableLessonID(v *int) *CourseLesso
 	return _u
 }
 
-// AddLessonID adds value to the "lesson_id" field.
-func (_u *CourseLessonVersionUpdateOne) AddLessonID(v int) *CourseLessonVersionUpdateOne {
-	_u.mutation.AddLessonID(v)
-	return _u
-}
-
 // SetModuleVersionID sets the "module_version_id" field.
 func (_u *CourseLessonVersionUpdateOne) SetModuleVersionID(v int) *CourseLessonVersionUpdateOne {
-	_u.mutation.ResetModuleVersionID()
 	_u.mutation.SetModuleVersionID(v)
 	return _u
 }
@@ -609,15 +671,31 @@ func (_u *CourseLessonVersionUpdateOne) SetNillableModuleVersionID(v *int) *Cour
 	return _u
 }
 
-// AddModuleVersionID adds value to the "module_version_id" field.
-func (_u *CourseLessonVersionUpdateOne) AddModuleVersionID(v int) *CourseLessonVersionUpdateOne {
-	_u.mutation.AddModuleVersionID(v)
-	return _u
+// SetModuleVersion sets the "module_version" edge to the CourseModuleVersion entity.
+func (_u *CourseLessonVersionUpdateOne) SetModuleVersion(v *CourseModuleVersion) *CourseLessonVersionUpdateOne {
+	return _u.SetModuleVersionID(v.ID)
+}
+
+// SetLesson sets the "lesson" edge to the CourseLesson entity.
+func (_u *CourseLessonVersionUpdateOne) SetLesson(v *CourseLesson) *CourseLessonVersionUpdateOne {
+	return _u.SetLessonID(v.ID)
 }
 
 // Mutation returns the CourseLessonVersionMutation object of the builder.
 func (_u *CourseLessonVersionUpdateOne) Mutation() *CourseLessonVersionMutation {
 	return _u.mutation
+}
+
+// ClearModuleVersion clears the "module_version" edge to the CourseModuleVersion entity.
+func (_u *CourseLessonVersionUpdateOne) ClearModuleVersion() *CourseLessonVersionUpdateOne {
+	_u.mutation.ClearModuleVersion()
+	return _u
+}
+
+// ClearLesson clears the "lesson" edge to the CourseLesson entity.
+func (_u *CourseLessonVersionUpdateOne) ClearLesson() *CourseLessonVersionUpdateOne {
+	_u.mutation.ClearLesson()
+	return _u
 }
 
 // Where appends a list predicates to the CourseLessonVersionUpdate builder.
@@ -669,7 +747,21 @@ func (_u *CourseLessonVersionUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (_u *CourseLessonVersionUpdateOne) check() error {
+	if _u.mutation.ModuleVersionCleared() && len(_u.mutation.ModuleVersionIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "CourseLessonVersion.module_version"`)
+	}
+	if _u.mutation.LessonCleared() && len(_u.mutation.LessonIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "CourseLessonVersion.lesson"`)
+	}
+	return nil
+}
+
 func (_u *CourseLessonVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseLessonVersion, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(courselessonversion.Table, courselessonversion.Columns, sqlgraph.NewFieldSpec(courselessonversion.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
@@ -752,17 +844,63 @@ func (_u *CourseLessonVersionUpdateOne) sqlSave(ctx context.Context) (_node *Cou
 	if value, ok := _u.mutation.AddedCourseVersionID(); ok {
 		_spec.AddField(courselessonversion.FieldCourseVersionID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.LessonID(); ok {
-		_spec.SetField(courselessonversion.FieldLessonID, field.TypeInt, value)
+	if _u.mutation.ModuleVersionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   courselessonversion.ModuleVersionTable,
+			Columns: []string{courselessonversion.ModuleVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursemoduleversion.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedLessonID(); ok {
-		_spec.AddField(courselessonversion.FieldLessonID, field.TypeInt, value)
+	if nodes := _u.mutation.ModuleVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   courselessonversion.ModuleVersionTable,
+			Columns: []string{courselessonversion.ModuleVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursemoduleversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if value, ok := _u.mutation.ModuleVersionID(); ok {
-		_spec.SetField(courselessonversion.FieldModuleVersionID, field.TypeInt, value)
+	if _u.mutation.LessonCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   courselessonversion.LessonTable,
+			Columns: []string{courselessonversion.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselesson.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedModuleVersionID(); ok {
-		_spec.AddField(courselessonversion.FieldModuleVersionID, field.TypeInt, value)
+	if nodes := _u.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   courselessonversion.LessonTable,
+			Columns: []string{courselessonversion.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &CourseLessonVersion{config: _u.config}
 	_spec.Assign = _node.assignValues

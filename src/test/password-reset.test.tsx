@@ -26,6 +26,9 @@ function openLink(token: string) {
   return renderRoute(editRoute, {
     path: "/{-$locale}/password/$token/edit",
     initialPath: `/ru/password/${token}/edit`,
+    // The /ru prefix is what the redirect must keep; the copy asserted here is
+    // the English one.
+    locale: "en",
   });
 }
 

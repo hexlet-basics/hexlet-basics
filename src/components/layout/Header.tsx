@@ -22,6 +22,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
+  IconBlocks,
   IconChevronDown,
   IconChevronRight,
   IconGitBranch,
@@ -33,6 +34,7 @@ import {
   IconSun,
   IconTarget,
   IconUser,
+  IconUserCog,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
@@ -44,15 +46,16 @@ import {
   getCurrentUserQueryKey,
   listCoursesOptions,
 } from "@/client/@tanstack/react-query.gen";
-import type { CourseCatalogItem, User } from "@/client/types.gen";
+import { switchLocale } from "@/client/sdk.gen";
+import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
 
 // Header, ported from legacy NavbarBlock. Data comes from the hey-api generated
 // Query hooks — the current user from `GET /me` (getCurrentUserOptions) and the
 // courses menu from `listCourses` — never hand-written fetches. Navigation uses
 // the typed TanStack Router `Link`; the optional `{-$locale}` prefix is
 // preserved automatically, so links carry no explicit locale. Links point only
-// at routes that exist today; auth-gated destinations (profile, dashboard) are
-// added as those pages are ported.
+// at routes that exist today; auth-gated destinations (dashboard) are added as
+// those pages are ported.
 export default function Header() {
   const { i18n } = useTranslation();
   const [opened, { toggle }] = useDisclosure();
@@ -216,6 +219,12 @@ function AuthLinks() {
             </Text>
           </Menu.Label>
         )}
+        <Menu.Item
+          leftSection={<IconUserCog size={14} />}
+          renderRoot={(props) => <Link to="/{-$locale}/account/profile/edit" {...props} />}
+        >
+          {t(($) => $.layouts.shared.nav.profile)}
+        </Menu.Item>
         <Menu.Item leftSection={<IconLogout2 size={14} />} onClick={() => logout({})}>
           {t(($) => $.layouts.shared.nav.sign_out)}
         </Menu.Item>
@@ -224,9 +233,12 @@ function AuthLinks() {
   );
 }
 
-// Locale switcher. The locale is a pure URL prefix (`/`, `/ru`, `/es`), so we
-// rewrite the current pathname and navigate with a plain anchor, preserving the
-// page the user is on (the same behaviour legacy's `switch_locale_path` gave).
+// Locale switcher (legacy LocalesController#switch). The choice is stored
+// first — on the signed-in user, and in the cookie the site root reads — then
+// the browser loads the same page, query included, under the new prefix (`/`,
+// `/ru`, `/es`), as legacy's redirect did. The load happens even if storing
+// failed: legacy redirected whatever happened. The href stays on the anchor so
+// the menu is still a set of links to the other locales.
 const LOCALES = [
   { code: "en", label: "English" },
   { code: "ru", label: "Русский" },
@@ -235,11 +247,17 @@ const LOCALES = [
 
 function LocaleSwitcher() {
   const { i18n } = useTranslation();
-  const { pathname } = useLocation();
+  const { pathname, searchStr } = useLocation();
 
   // Strip any existing locale prefix; `en` is served unprefixed.
   const base = pathname.replace(/^\/(ru|es)(?=\/|$)/, "") || "/";
-  const hrefFor = (code: string) => (code === "en" ? base : `/${code}${base === "/" ? "" : base}`);
+  const hrefFor = (code: Locale) =>
+    (code === "en" ? base : `/${code}${base === "/" ? "" : base}`) + searchStr;
+  const switchTo = (code: Locale) => {
+    void switchLocale({ query: { locale: code } }).finally(() =>
+      window.location.assign(hrefFor(code)),
+    );
+  };
 
   const current = LOCALES.find((l) => l.code === i18n.language) ?? LOCALES[0];
 
@@ -255,7 +273,15 @@ function LocaleSwitcher() {
       </Menu.Target>
       <Menu.Dropdown>
         {LOCALES.map((locale) => (
-          <Menu.Item key={locale.code} component="a" href={hrefFor(locale.code)}>
+          <Menu.Item
+            key={locale.code}
+            component="a"
+            href={hrefFor(locale.code)}
+            onClick={(event) => {
+              event.preventDefault();
+              switchTo(locale.code);
+            }}
+          >
             {locale.label}
           </Menu.Item>
         ))}
@@ -281,10 +307,10 @@ export function ThemeSwitcher() {
   );
 }
 
-// Marketing "solutions" menu, ru-only, ported from legacy. Every target is an
-// external Hexlet URL, so it needs no local route. The legacy `for_teachers`
-// item pointed at an internal route that doesn't exist in the Go stack yet, so
-// it is omitted until that page lands.
+// Marketing "solutions" menu, ru-only, ported from legacy. Every target but
+// the teachers' case is an external Hexlet URL, kept in the locale files' links;
+// that one is a local route.
+// Legacy opened each in a new tab.
 function SolutionsMenu() {
   const { t } = useTranslation();
 
@@ -293,31 +319,37 @@ function SolutionsMenu() {
       icon: IconTarget,
       title: t(($) => $.layouts.shared.nav.courses_with_employement),
       description: t(($) => $.layouts.shared.nav.courses_with_employement_description),
-      href: "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_courses_for_beginners),
     },
     {
       icon: IconRocket,
       title: t(($) => $.layouts.shared.nav.career),
       description: t(($) => $.layouts.shared.nav.career_description),
-      href: "https://career.hexlet.io?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_career),
     },
     {
       icon: IconGitBranch,
       title: t(($) => $.layouts.shared.nav.upskilling),
       description: t(($) => $.layouts.shared.nav.upskilling_description),
-      href: "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_courses_for_programmers),
     },
     {
       icon: IconHeartHandshake,
       title: t(($) => $.layouts.shared.nav.business),
       description: t(($) => $.layouts.shared.nav.business_description),
-      href: "https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_b2b),
+    },
+    {
+      icon: IconBlocks,
+      title: t(($) => $.layouts.shared.nav.for_teachers),
+      description: t(($) => $.layouts.shared.nav.for_teachers_description),
+      to: "/{-$locale}/cases/for_teachers" as const,
     },
     {
       icon: IconSchool,
       title: t(($) => $.layouts.shared.nav.hexly),
       description: t(($) => $.layouts.shared.nav.hexly_description),
-      href: "https://hexly.ru?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexly),
     },
   ];
 
@@ -328,11 +360,19 @@ function SolutionsMenu() {
           <item.icon size={22} />
         </ThemeIcon>
         <Box>
-          <Anchor href={item.href} target="_blank" rel="noreferrer">
-            <Text fz="sm" fw="bold">
-              {item.title}
-            </Text>
-          </Anchor>
+          {"to" in item ? (
+            <Anchor component={Link} to={item.to} target="_blank" rel="noreferrer">
+              <Text fz="sm" fw="bold">
+                {item.title}
+              </Text>
+            </Anchor>
+          ) : (
+            <Anchor href={item.href} target="_blank" rel="noreferrer">
+              <Text fz="sm" fw="bold">
+                {item.title}
+              </Text>
+            </Anchor>
+          )}
           <Text fz="xs" c="dimmed">
             {item.description}
           </Text>

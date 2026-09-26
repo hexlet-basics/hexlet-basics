@@ -21,6 +21,8 @@ import (
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
+	"hexletbasics/ent/user"
+	"hexletbasics/internal/accounts"
 )
 
 // Lifetime is how long an emailed link stays valid. Legacy used the same
@@ -105,7 +107,11 @@ func (t *Tokens) Verify(ctx context.Context, db *ent.Client, purpose Purpose, ra
 	if err != nil {
 		return nil, ErrInvalid
 	}
-	u, err := db.User.Get(ctx, id)
+	// A removed account takes its links with it. Nulling the email and the
+	// digest already breaks most fingerprints, but not a Password Reset issued
+	// to a user who never had a password: its bound value was empty before and
+	// is empty after.
+	u, err := db.User.Query().Where(user.ID(id), accounts.NotRemoved()).Only(ctx)
 	if ent.IsNotFound(err) {
 		return nil, ErrInvalid
 	}

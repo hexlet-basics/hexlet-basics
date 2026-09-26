@@ -27,6 +27,13 @@ using OpenAPI;
  * `Language`; we keep `Language` ONLY in URL paths (e.g. `/languages`) for
  * backward compatibility (ADR-0002), but every type/operation/schema uses
  * `Course`. The full model/enum set lives in `models.tsp`.
+ *
+ * Every operation is served under `/api` on the site's own host (ADR-0015):
+ * the ingress routes `/api/*` to Go and the rest to the SSR server, so the
+ * contract never collides with a page path and needs no CORS. The prefix is
+ * set once here, on the namespace every file reopens, so the operation routes
+ * below keep the legacy paths they mirror.
  */
 @service(#{ title: "Hexlet Basics API" })
+@route("/api")
 namespace HexletBasics;

@@ -58,14 +58,16 @@ type authenticatedUserContextKey struct{}
 // response models declared in TypeSpec, so the public HTTP seam remains the
 // generated contract.
 type AuthHandler struct {
-	db     *ent.Client
-	conv   apiconv.Converter
-	jwt    *token.Service
-	auth   authmiddleware.Authenticator
-	i18n   *localization.Translator
-	users  accounts.UserRegistrar
-	events events.StandalonePublisher
-	errors *APIErrorHandler
+	db    *ent.Client
+	conv  apiconv.Converter
+	jwt   *token.Service
+	auth  authmiddleware.Authenticator
+	i18n  *localization.Translator
+	users accounts.UserRegistrar
+	// remover deletes the signed-in user's account.
+	remover accounts.AccountRemover
+	events  events.StandalonePublisher
+	errors  *APIErrorHandler
 	// guests carries the visitor progress a new session inherits, and the codec
 	// that reads and clears its cookie.
 	guests   progress.Tracker
@@ -84,6 +86,7 @@ func NewAuthHandler(
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 	registrar accounts.UserRegistrar,
+	remover accounts.AccountRemover,
 	eventPublisher events.StandalonePublisher,
 	tracker progress.Tracker,
 	emails AccountEmailEnqueuer,
@@ -120,6 +123,7 @@ func NewAuthHandler(
 		},
 		i18n:     translator,
 		users:    registrar,
+		remover:  remover,
 		events:   eventPublisher,
 		errors:   errorHandler,
 		guests:   tracker,
@@ -316,7 +320,9 @@ func (h *AuthHandler) loadAuthenticatedUser(ctx context.Context, rawJWT string) 
 	if err != nil {
 		return ctx, errUnauthenticated
 	}
-	u, err := h.db.User.Get(ctx, userID)
+	// A removed account is signed out everywhere at once: the JWT is stateless
+	// and lives on after the account, so the row decides, not the token.
+	u, err := h.db.User.Query().Where(user.ID(userID), accounts.NotRemoved()).Only(ctx)
 	if ent.IsNotFound(err) {
 		return ctx, errUnauthenticated
 	}
@@ -429,7 +435,7 @@ func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentU
 		return anonymousCurrentUser(), nil
 	}
 
-	u, err := h.db.User.Get(ctx, userID)
+	u, err := h.db.User.Query().Where(user.ID(userID), accounts.NotRemoved()).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return anonymousCurrentUser(), nil
@@ -440,7 +446,8 @@ func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentU
 }
 
 func (h *AuthHandler) authenticate(ctx context.Context, email, password string) (*ent.User, error) {
-	u, err := h.db.User.Query().Where(user.Email(email)).Only(ctx)
+	// Legacy kept only an active? user after authenticate_by.
+	u, err := h.db.User.Query().Where(user.Email(email), accounts.NotRemoved()).Only(ctx)
 	if ent.IsNotFound(err) {
 		return nil, errInvalidCredentials
 	}

@@ -978,6 +978,29 @@ func HasCurrentCoursesWith(preds ...predicate.Course) predicate.CourseVersion {
 	})
 }
 
+// HasLessonTranslations applies the HasEdge predicate on the "lesson_translations" edge.
+func HasLessonTranslations() predicate.CourseVersion {
+	return predicate.CourseVersion(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, LessonTranslationsTable, LessonTranslationsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLessonTranslationsWith applies the HasEdge predicate on the "lesson_translations" edge with a given conditions (other predicates).
+func HasLessonTranslationsWith(preds ...predicate.CourseLessonTranslation) predicate.CourseVersion {
+	return predicate.CourseVersion(func(s *sql.Selector) {
+		step := newLessonTranslationsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.CourseVersion) predicate.CourseVersion {
 	return predicate.CourseVersion(sql.AndPredicates(predicates...))

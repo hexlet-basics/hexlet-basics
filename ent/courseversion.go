@@ -53,9 +53,11 @@ type CourseVersion struct {
 type CourseVersionEdges struct {
 	// CurrentCourses holds the value of the current_courses edge.
 	CurrentCourses []*Course `json:"current_courses,omitempty"`
+	// LessonTranslations holds the value of the lesson_translations edge.
+	LessonTranslations []*CourseLessonTranslation `json:"lesson_translations,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // CurrentCoursesOrErr returns the CurrentCourses value or an error if the edge
@@ -65,6 +67,15 @@ func (e CourseVersionEdges) CurrentCoursesOrErr() ([]*Course, error) {
 		return e.CurrentCourses, nil
 	}
 	return nil, &NotLoadedError{edge: "current_courses"}
+}
+
+// LessonTranslationsOrErr returns the LessonTranslations value or an error if the edge
+// was not loaded in eager-loading.
+func (e CourseVersionEdges) LessonTranslationsOrErr() ([]*CourseLessonTranslation, error) {
+	if e.loadedTypes[1] {
+		return e.LessonTranslations, nil
+	}
+	return nil, &NotLoadedError{edge: "lesson_translations"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -202,6 +213,11 @@ func (_m *CourseVersion) Value(name string) (ent.Value, error) {
 // QueryCurrentCourses queries the "current_courses" edge of the CourseVersion entity.
 func (_m *CourseVersion) QueryCurrentCourses() *CourseQuery {
 	return NewCourseVersionClient(_m.config).QueryCurrentCourses(_m)
+}
+
+// QueryLessonTranslations queries the "lesson_translations" edge of the CourseVersion entity.
+func (_m *CourseVersion) QueryLessonTranslations() *CourseLessonTranslationQuery {
+	return NewCourseVersionClient(_m.config).QueryLessonTranslations(_m)
 }
 
 // Update returns a builder for updating this CourseVersion.

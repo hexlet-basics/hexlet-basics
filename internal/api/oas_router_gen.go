@@ -11,13 +11,7 @@ import (
 )
 
 var (
-	rn83AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
-	}
-	rn93AllowedHeaders = map[string]string{
-		"DELETE": "X-Xsrf-Token",
-	}
-	rn91AllowedHeaders = map[string]string{
+	rn86AllowedHeaders = map[string]string{
 		"DELETE": "X-Xsrf-Token",
 		"PATCH":  "Content-Type,X-Xsrf-Token",
 	}
@@ -28,7 +22,7 @@ var (
 		"DELETE": "X-Xsrf-Token",
 		"PUT":    "Content-Type,X-Xsrf-Token",
 	}
-	rn63AllowedHeaders = map[string]string{
+	rn65AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
 	rn1AllowedHeaders = map[string]string{
@@ -47,6 +41,9 @@ var (
 	}
 	rn61AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
+	}
+	rn63AllowedHeaders = map[string]string{
+		"POST": "X-Xsrf-Token",
 	}
 	rn10AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
@@ -121,44 +118,35 @@ var (
 	rn78AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn116AllowedHeaders = map[string]string{
+	rn111AllowedHeaders = map[string]string{
 		"POST": "X-Xsrf-Token",
 	}
 	rn79AllowedHeaders = map[string]string{
-		"POST": "Content-Type,X-Xsrf-Token",
+		"POST": "X-Xsrf-Token",
 	}
 	rn81AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn67AllowedHeaders = map[string]string{
+	rn69AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
 	rn82AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
-	rn103AllowedHeaders = map[string]string{
+	rn99AllowedHeaders = map[string]string{
 		"GET": "Cookie",
 	}
-	rn85AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
-	}
-	rn69AllowedHeaders = map[string]string{
+	rn71AllowedHeaders = map[string]string{
 		"PATCH": "Content-Type",
 	}
-	rn87AllowedHeaders = map[string]string{
+	rn83AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
-	rn72AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
-	}
-	rn86AllowedHeaders = map[string]string{
-		"POST": "Content-Type",
-	}
-	rn88AllowedHeaders = map[string]string{
+	rn84AllowedHeaders = map[string]string{
 		"DELETE": "X-Xsrf-Token",
 		"POST":   "Content-Type",
 	}
-	rn89AllowedHeaders = map[string]string{
+	rn85AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
 )
@@ -202,9 +190,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/"
+		case '/': // Prefix: "/api/"
 
-			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+			if l := len("/api/"); len(elem) >= l && elem[0:l] == "/api/" {
 				elem = elem[l:]
 			} else {
 				break
@@ -226,164 +214,55 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				switch elem[0] {
-				case 'c': // Prefix: "ccount/p"
+				case 'c': // Prefix: "ccount/profile"
 
-					if l := len("ccount/p"); len(elem) >= l && elem[0:l] == "ccount/p" {
+					if l := len("ccount/profile"); len(elem) >= l && elem[0:l] == "ccount/profile" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						break
+						switch r.Method {
+						case "DELETE":
+							s.handleDeleteAccountRequest([0]string{}, elemIsEscaped, w, r)
+						case "PATCH":
+							s.handleUpdateProfileRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "DELETE,PATCH",
+								allowedHeaders: rn86AllowedHeaders,
+								acceptPost:     "",
+								acceptPatch:    "application/json",
+							})
+						}
+
+						return
 					}
 					switch elem[0] {
-					case 'a': // Prefix: "asskeys"
+					case '/': // Prefix: "/edit"
 
-						if l := len("asskeys"); len(elem) >= l && elem[0:l] == "asskeys" {
+						if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch r.Method {
 							case "GET":
-								s.handleListPasskeysRequest([0]string{}, elemIsEscaped, w, r)
-							case "POST":
-								s.handleCreatePasskeyRequest([0]string{}, elemIsEscaped, w, r)
+								s.handleGetProfileRequest([0]string{}, elemIsEscaped, w, r)
 							default:
 								s.notAllowed(w, r, notAllowedParams{
-									allowedMethods: "GET,POST",
-									allowedHeaders: rn83AllowedHeaders,
-									acceptPost:     "application/json",
+									allowedMethods: "GET",
+									allowedHeaders: nil,
+									acceptPost:     "",
 									acceptPatch:    "",
 								})
 							}
 
 							return
-						}
-						switch elem[0] {
-						case '/': // Prefix: "/"
-
-							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								break
-							}
-							switch elem[0] {
-							case 'n': // Prefix: "new"
-								origElem := elem
-								if l := len("new"); len(elem) >= l && elem[0:l] == "new" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch r.Method {
-									case "GET":
-										s.handleNewPasskeyRequest([0]string{}, elemIsEscaped, w, r)
-									default:
-										s.notAllowed(w, r, notAllowedParams{
-											allowedMethods: "GET",
-											allowedHeaders: nil,
-											acceptPost:     "",
-											acceptPatch:    "",
-										})
-									}
-
-									return
-								}
-
-								elem = origElem
-							}
-							// Param: "id"
-							// Leaf parameter, slashes are prohibited
-							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
-								break
-							}
-							args[0] = elem
-							elem = ""
-
-							if len(elem) == 0 {
-								// Leaf node.
-								switch r.Method {
-								case "DELETE":
-									s.handleDeletePasskeyRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, notAllowedParams{
-										allowedMethods: "DELETE",
-										allowedHeaders: rn93AllowedHeaders,
-										acceptPost:     "",
-										acceptPatch:    "",
-									})
-								}
-
-								return
-							}
-
-						}
-
-					case 'r': // Prefix: "rofile"
-
-						if l := len("rofile"); len(elem) >= l && elem[0:l] == "rofile" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							switch r.Method {
-							case "DELETE":
-								s.handleDeleteAccountRequest([0]string{}, elemIsEscaped, w, r)
-							case "PATCH":
-								s.handleUpdateProfileRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, notAllowedParams{
-									allowedMethods: "DELETE,PATCH",
-									allowedHeaders: rn91AllowedHeaders,
-									acceptPost:     "",
-									acceptPatch:    "application/json",
-								})
-							}
-
-							return
-						}
-						switch elem[0] {
-						case '/': // Prefix: "/edit"
-
-							if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								// Leaf node.
-								switch r.Method {
-								case "GET":
-									s.handleGetProfileRequest([0]string{}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, notAllowedParams{
-										allowedMethods: "GET",
-										allowedHeaders: nil,
-										acceptPost:     "",
-										acceptPatch:    "",
-									})
-								}
-
-								return
-							}
-
 						}
 
 					}
@@ -531,7 +410,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								default:
 									s.notAllowed(w, r, notAllowedParams{
 										allowedMethods: "POST",
-										allowedHeaders: rn63AllowedHeaders,
+										allowedHeaders: rn65AllowedHeaders,
 										acceptPost:     "multipart/form-data",
 										acceptPatch:    "",
 									})
@@ -695,31 +574,72 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									return
 								}
 								switch elem[0] {
-								case '/': // Prefix: "/related_courses"
+								case '/': // Prefix: "/"
 
-									if l := len("/related_courses"); len(elem) >= l && elem[0:l] == "/related_courses" {
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 										elem = elem[l:]
 									} else {
 										break
 									}
 
 									if len(elem) == 0 {
-										// Leaf node.
-										switch r.Method {
-										case "POST":
-											s.handleAdminSetBlogPostRelatedCoursesRequest([1]string{
-												args[0],
-											}, elemIsEscaped, w, r)
-										default:
-											s.notAllowed(w, r, notAllowedParams{
-												allowedMethods: "POST",
-												allowedHeaders: rn61AllowedHeaders,
-												acceptPost:     "application/json",
-												acceptPatch:    "",
-											})
+										break
+									}
+									switch elem[0] {
+									case 'r': // Prefix: "related_courses"
+
+										if l := len("related_courses"); len(elem) >= l && elem[0:l] == "related_courses" {
+											elem = elem[l:]
+										} else {
+											break
 										}
 
-										return
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "POST":
+												s.handleAdminSetBlogPostRelatedCoursesRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, notAllowedParams{
+													allowedMethods: "POST",
+													allowedHeaders: rn61AllowedHeaders,
+													acceptPost:     "application/json",
+													acceptPatch:    "",
+												})
+											}
+
+											return
+										}
+
+									case 's': // Prefix: "suggest_related_courses"
+
+										if l := len("suggest_related_courses"); len(elem) >= l && elem[0:l] == "suggest_related_courses" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch r.Method {
+											case "POST":
+												s.handleAdminSuggestBlogPostRelatedCoursesRequest([1]string{
+													args[0],
+												}, elemIsEscaped, w, r)
+											default:
+												s.notAllowed(w, r, notAllowedParams{
+													allowedMethods: "POST",
+													allowedHeaders: rn63AllowedHeaders,
+													acceptPost:     "",
+													acceptPatch:    "",
+												})
+											}
+
+											return
+										}
+
 									}
 
 								}
@@ -1928,7 +1848,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn116AllowedHeaders,
+											allowedHeaders: rn111AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -1970,9 +1890,125 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-				case 'o': // Prefix: "ook/create_request"
+				case 'o': // Prefix: "ook"
 
-					if l := len("ook/create_request"); len(elem) >= l && elem[0:l] == "ook/create_request" {
+					if l := len("ook"); len(elem) >= l && elem[0:l] == "ook" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch r.Method {
+						case "GET":
+							s.handleGetBookRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET",
+								allowedHeaders: nil,
+								acceptPost:     "",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'c': // Prefix: "create_request"
+
+							if l := len("create_request"); len(elem) >= l && elem[0:l] == "create_request" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "POST":
+									s.handleCreateBookRequestRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, notAllowedParams{
+										allowedMethods: "POST",
+										allowedHeaders: rn79AllowedHeaders,
+										acceptPost:     "",
+										acceptPatch:    "",
+									})
+								}
+
+								return
+							}
+
+						case 'd': // Prefix: "download"
+
+							if l := len("download"); len(elem) >= l && elem[0:l] == "download" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "GET":
+									s.handleDownloadBookRequest([0]string{}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, notAllowedParams{
+										allowedMethods: "GET",
+										allowedHeaders: nil,
+										acceptPost:     "",
+										acceptPatch:    "",
+									})
+								}
+
+								return
+							}
+
+						}
+
+					}
+
+				}
+
+			case 'f': // Prefix: "feeds/yandex_courses"
+
+				if l := len("feeds/yandex_courses"); len(elem) >= l && elem[0:l] == "feeds/yandex_courses" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleGetYandexCoursesFeedRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET",
+							allowedHeaders: nil,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '.': // Prefix: ".xml"
+
+					if l := len(".xml"); len(elem) >= l && elem[0:l] == ".xml" {
 						elem = elem[l:]
 					} else {
 						break
@@ -1981,13 +2017,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					if len(elem) == 0 {
 						// Leaf node.
 						switch r.Method {
-						case "POST":
-							s.handleCreateBookRequestRequest([0]string{}, elemIsEscaped, w, r)
+						case "GET":
+							s.handleGetYandexCoursesFeedXmlRequest([0]string{}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, notAllowedParams{
-								allowedMethods: "POST",
-								allowedHeaders: rn79AllowedHeaders,
-								acceptPost:     "application/json",
+								allowedMethods: "GET",
+								allowedHeaders: nil,
+								acceptPost:     "",
 								acceptPatch:    "",
 							})
 						}
@@ -2273,7 +2309,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn67AllowedHeaders,
+											allowedHeaders: rn69AllowedHeaders,
 											acceptPost:     "application/json",
 											acceptPatch:    "",
 										})
@@ -2471,7 +2507,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "GET",
-								allowedHeaders: rn103AllowedHeaders,
+								allowedHeaders: rn99AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "",
 							})
@@ -2507,246 +2543,66 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-			case 'p': // Prefix: "p"
+			case 'p': // Prefix: "password/"
 
-				if l := len("p"); len(elem) >= l && elem[0:l] == "p" {
+				if l := len("password/"); len(elem) >= l && elem[0:l] == "password/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
+				// Param: "token"
+				// Match until "/"
+				idx := strings.IndexByte(elem, '/')
+				if idx < 0 {
+					idx = len(elem)
+				}
+				args[0] = elem[:idx]
+				elem = elem[idx:]
+
 				if len(elem) == 0 {
-					break
+					switch r.Method {
+					case "PATCH":
+						s.handleUpdatePasswordRequest([1]string{
+							args[0],
+						}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "PATCH",
+							allowedHeaders: rn71AllowedHeaders,
+							acceptPost:     "",
+							acceptPatch:    "application/json",
+						})
+					}
+
+					return
 				}
 				switch elem[0] {
-				case 'a': // Prefix: "a"
+				case '/': // Prefix: "/edit"
 
-					if l := len("a"); len(elem) >= l && elem[0:l] == "a" {
+					if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						break
-					}
-					switch elem[0] {
-					case 'g': // Prefix: "ges/"
-
-						if l := len("ges/"); len(elem) >= l && elem[0:l] == "ges/" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						// Param: "slug"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "GET":
-								s.handleGetPageRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, notAllowedParams{
-									allowedMethods: "GET",
-									allowedHeaders: nil,
-									acceptPost:     "",
-									acceptPatch:    "",
-								})
-							}
-
-							return
-						}
-
-					case 's': // Prefix: "ss"
-
-						if l := len("ss"); len(elem) >= l && elem[0:l] == "ss" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							break
-						}
-						switch elem[0] {
-						case 'k': // Prefix: "key_session"
-
-							if l := len("key_session"); len(elem) >= l && elem[0:l] == "key_session" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								switch r.Method {
-								case "POST":
-									s.handleCreatePasskeySessionRequest([0]string{}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, notAllowedParams{
-										allowedMethods: "POST",
-										allowedHeaders: rn85AllowedHeaders,
-										acceptPost:     "application/json",
-										acceptPatch:    "",
-									})
-								}
-
-								return
-							}
-							switch elem[0] {
-							case '/': // Prefix: "/new"
-
-								if l := len("/new"); len(elem) >= l && elem[0:l] == "/new" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch r.Method {
-									case "GET":
-										s.handleNewPasskeySessionRequest([0]string{}, elemIsEscaped, w, r)
-									default:
-										s.notAllowed(w, r, notAllowedParams{
-											allowedMethods: "GET",
-											allowedHeaders: nil,
-											acceptPost:     "",
-											acceptPatch:    "",
-										})
-									}
-
-									return
-								}
-
-							}
-
-						case 'w': // Prefix: "word/"
-
-							if l := len("word/"); len(elem) >= l && elem[0:l] == "word/" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							// Param: "token"
-							// Match until "/"
-							idx := strings.IndexByte(elem, '/')
-							if idx < 0 {
-								idx = len(elem)
-							}
-							args[0] = elem[:idx]
-							elem = elem[idx:]
-
-							if len(elem) == 0 {
-								switch r.Method {
-								case "PATCH":
-									s.handleUpdatePasswordRequest([1]string{
-										args[0],
-									}, elemIsEscaped, w, r)
-								default:
-									s.notAllowed(w, r, notAllowedParams{
-										allowedMethods: "PATCH",
-										allowedHeaders: rn69AllowedHeaders,
-										acceptPost:     "",
-										acceptPatch:    "application/json",
-									})
-								}
-
-								return
-							}
-							switch elem[0] {
-							case '/': // Prefix: "/edit"
-
-								if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch r.Method {
-									case "GET":
-										s.handleCheckPasswordResetTokenRequest([1]string{
-											args[0],
-										}, elemIsEscaped, w, r)
-									default:
-										s.notAllowed(w, r, notAllowedParams{
-											allowedMethods: "GET",
-											allowedHeaders: nil,
-											acceptPost:     "",
-											acceptPatch:    "",
-										})
-									}
-
-									return
-								}
-
-							}
-
-						}
-
-					}
-
-				case 'h': // Prefix: "hone_auth"
-
-					if l := len("hone_auth"); len(elem) >= l && elem[0:l] == "hone_auth" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
+						// Leaf node.
 						switch r.Method {
-						case "POST":
-							s.handleCreatePhoneAuthRequest([0]string{}, elemIsEscaped, w, r)
+						case "GET":
+							s.handleCheckPasswordResetTokenRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
 						default:
 							s.notAllowed(w, r, notAllowedParams{
-								allowedMethods: "POST",
-								allowedHeaders: rn87AllowedHeaders,
-								acceptPost:     "application/json",
+								allowedMethods: "GET",
+								allowedHeaders: nil,
+								acceptPost:     "",
 								acceptPatch:    "",
 							})
 						}
 
 						return
-					}
-					switch elem[0] {
-					case '/': // Prefix: "/confirm"
-
-						if l := len("/confirm"); len(elem) >= l && elem[0:l] == "/confirm" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch r.Method {
-							case "POST":
-								s.handleConfirmPhoneAuthRequest([0]string{}, elemIsEscaped, w, r)
-							default:
-								s.notAllowed(w, r, notAllowedParams{
-									allowedMethods: "POST",
-									allowedHeaders: rn72AllowedHeaders,
-									acceptPost:     "application/json",
-									acceptPatch:    "",
-								})
-							}
-
-							return
-						}
-
 					}
 
 				}
@@ -2779,7 +2635,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "POST",
-								allowedHeaders: rn86AllowedHeaders,
+								allowedHeaders: rn83AllowedHeaders,
 								acceptPost:     "application/json",
 								acceptPatch:    "",
 							})
@@ -2833,7 +2689,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "DELETE,POST",
-							allowedHeaders: rn88AllowedHeaders,
+							allowedHeaders: rn84AllowedHeaders,
 							acceptPost:     "application/json",
 							acceptPatch:    "",
 						})
@@ -2858,7 +2714,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					default:
 						s.notAllowed(w, r, notAllowedParams{
 							allowedMethods: "POST",
-							allowedHeaders: rn89AllowedHeaders,
+							allowedHeaders: rn85AllowedHeaders,
 							acceptPost:     "application/json",
 							acceptPatch:    "",
 						})
@@ -2955,9 +2811,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/"
+		case '/': // Prefix: "/api/"
 
-			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+			if l := len("/api/"); len(elem) >= l && elem[0:l] == "/api/" {
 				elem = elem[l:]
 			} else {
 				break
@@ -2979,176 +2835,62 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					break
 				}
 				switch elem[0] {
-				case 'c': // Prefix: "ccount/p"
+				case 'c': // Prefix: "ccount/profile"
 
-					if l := len("ccount/p"); len(elem) >= l && elem[0:l] == "ccount/p" {
+					if l := len("ccount/profile"); len(elem) >= l && elem[0:l] == "ccount/profile" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						break
+						switch method {
+						case "DELETE":
+							r.name = DeleteAccountOperation
+							r.summary = ""
+							r.operationID = "deleteAccount"
+							r.operationGroup = ""
+							r.pathPattern = "/api/account/profile"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "PATCH":
+							r.name = UpdateProfileOperation
+							r.summary = ""
+							r.operationID = "updateProfile"
+							r.operationGroup = ""
+							r.pathPattern = "/api/account/profile"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
 					}
 					switch elem[0] {
-					case 'a': // Prefix: "asskeys"
+					case '/': // Prefix: "/edit"
 
-						if l := len("asskeys"); len(elem) >= l && elem[0:l] == "asskeys" {
+						if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
 						if len(elem) == 0 {
+							// Leaf node.
 							switch method {
 							case "GET":
-								r.name = ListPasskeysOperation
+								r.name = GetProfileOperation
 								r.summary = ""
-								r.operationID = "listPasskeys"
+								r.operationID = "getProfile"
 								r.operationGroup = ""
-								r.pathPattern = "/account/passkeys"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "POST":
-								r.name = CreatePasskeyOperation
-								r.summary = ""
-								r.operationID = "createPasskey"
-								r.operationGroup = ""
-								r.pathPattern = "/account/passkeys"
+								r.pathPattern = "/api/account/profile/edit"
 								r.args = args
 								r.count = 0
 								return r, true
 							default:
 								return
 							}
-						}
-						switch elem[0] {
-						case '/': // Prefix: "/"
-
-							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								break
-							}
-							switch elem[0] {
-							case 'n': // Prefix: "new"
-								origElem := elem
-								if l := len("new"); len(elem) >= l && elem[0:l] == "new" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch method {
-									case "GET":
-										r.name = NewPasskeyOperation
-										r.summary = ""
-										r.operationID = "newPasskey"
-										r.operationGroup = ""
-										r.pathPattern = "/account/passkeys/new"
-										r.args = args
-										r.count = 0
-										return r, true
-									default:
-										return
-									}
-								}
-
-								elem = origElem
-							}
-							// Param: "id"
-							// Leaf parameter, slashes are prohibited
-							idx := strings.IndexByte(elem, '/')
-							if idx >= 0 {
-								break
-							}
-							args[0] = elem
-							elem = ""
-
-							if len(elem) == 0 {
-								// Leaf node.
-								switch method {
-								case "DELETE":
-									r.name = DeletePasskeyOperation
-									r.summary = ""
-									r.operationID = "deletePasskey"
-									r.operationGroup = ""
-									r.pathPattern = "/account/passkeys/{id}"
-									r.args = args
-									r.count = 1
-									return r, true
-								default:
-									return
-								}
-							}
-
-						}
-
-					case 'r': // Prefix: "rofile"
-
-						if l := len("rofile"); len(elem) >= l && elem[0:l] == "rofile" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							switch method {
-							case "DELETE":
-								r.name = DeleteAccountOperation
-								r.summary = ""
-								r.operationID = "deleteAccount"
-								r.operationGroup = ""
-								r.pathPattern = "/account/profile"
-								r.args = args
-								r.count = 0
-								return r, true
-							case "PATCH":
-								r.name = UpdateProfileOperation
-								r.summary = ""
-								r.operationID = "updateProfile"
-								r.operationGroup = ""
-								r.pathPattern = "/account/profile"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-						switch elem[0] {
-						case '/': // Prefix: "/edit"
-
-							if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								// Leaf node.
-								switch method {
-								case "GET":
-									r.name = GetProfileOperation
-									r.summary = ""
-									r.operationID = "getProfile"
-									r.operationGroup = ""
-									r.pathPattern = "/account/profile/edit"
-									r.args = args
-									r.count = 0
-									return r, true
-								default:
-									return
-								}
-							}
-
 						}
 
 					}
@@ -3192,7 +2934,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListUsers"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/api/users"
+									r.pathPattern = "/api/admin/api/users"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3201,7 +2943,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminCreateUser"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/api/users"
+									r.pathPattern = "/api/admin/api/users"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3238,7 +2980,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminSearchUsers"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/api/users/search"
+											r.pathPattern = "/api/admin/api/users/search"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -3266,7 +3008,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminDeleteUser"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/api/users/{id}"
+										r.pathPattern = "/api/admin/api/users/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3275,7 +3017,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminGetUser"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/api/users/{id}"
+										r.pathPattern = "/api/admin/api/users/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3284,7 +3026,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminUpdateUser"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/api/users/{id}"
+										r.pathPattern = "/api/admin/api/users/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3311,7 +3053,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminUploadAttachment"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/attachments"
+									r.pathPattern = "/api/admin/attachments"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3349,7 +3091,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListBanners"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/banners"
+									r.pathPattern = "/api/admin/banners"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3358,7 +3100,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminCreateBanner"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/banners"
+									r.pathPattern = "/api/admin/banners"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3392,7 +3134,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminDeleteBanner"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/banners/{id}"
+										r.pathPattern = "/api/admin/banners/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3401,7 +3143,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminGetBanner"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/banners/{id}"
+										r.pathPattern = "/api/admin/banners/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3410,7 +3152,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminUpdateBanner"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/banners/{id}"
+										r.pathPattern = "/api/admin/banners/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3436,7 +3178,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListBlogPosts"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/blog_posts"
+									r.pathPattern = "/api/admin/blog_posts"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3445,7 +3187,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminCreateBlogPost"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/blog_posts"
+									r.pathPattern = "/api/admin/blog_posts"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -3478,7 +3220,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminDeleteBlogPost"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/blog_posts/{id}"
+										r.pathPattern = "/api/admin/blog_posts/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3487,7 +3229,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminGetBlogPost"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/blog_posts/{id}"
+										r.pathPattern = "/api/admin/blog_posts/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3496,7 +3238,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminUpdateBlogPost"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/blog_posts/{id}"
+										r.pathPattern = "/api/admin/blog_posts/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -3505,29 +3247,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									}
 								}
 								switch elem[0] {
-								case '/': // Prefix: "/related_courses"
+								case '/': // Prefix: "/"
 
-									if l := len("/related_courses"); len(elem) >= l && elem[0:l] == "/related_courses" {
+									if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 										elem = elem[l:]
 									} else {
 										break
 									}
 
 									if len(elem) == 0 {
-										// Leaf node.
-										switch method {
-										case "POST":
-											r.name = AdminSetBlogPostRelatedCoursesOperation
-											r.summary = ""
-											r.operationID = "adminSetBlogPostRelatedCourses"
-											r.operationGroup = ""
-											r.pathPattern = "/admin/blog_posts/{id}/related_courses"
-											r.args = args
-											r.count = 1
-											return r, true
-										default:
-											return
+										break
+									}
+									switch elem[0] {
+									case 'r': // Prefix: "related_courses"
+
+										if l := len("related_courses"); len(elem) >= l && elem[0:l] == "related_courses" {
+											elem = elem[l:]
+										} else {
+											break
 										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "POST":
+												r.name = AdminSetBlogPostRelatedCoursesOperation
+												r.summary = ""
+												r.operationID = "adminSetBlogPostRelatedCourses"
+												r.operationGroup = ""
+												r.pathPattern = "/api/admin/blog_posts/{id}/related_courses"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
+									case 's': // Prefix: "suggest_related_courses"
+
+										if l := len("suggest_related_courses"); len(elem) >= l && elem[0:l] == "suggest_related_courses" {
+											elem = elem[l:]
+										} else {
+											break
+										}
+
+										if len(elem) == 0 {
+											// Leaf node.
+											switch method {
+											case "POST":
+												r.name = AdminSuggestBlogPostRelatedCoursesOperation
+												r.summary = ""
+												r.operationID = "adminSuggestBlogPostRelatedCourses"
+												r.operationGroup = ""
+												r.pathPattern = "/api/admin/blog_posts/{id}/suggest_related_courses"
+												r.args = args
+												r.count = 1
+												return r, true
+											default:
+												return
+											}
+										}
+
 									}
 
 								}
@@ -3575,7 +3356,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminListCourseCategories"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/course_categories"
+										r.pathPattern = "/api/admin/course_categories"
 										r.args = args
 										r.count = 0
 										return r, true
@@ -3584,7 +3365,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminCreateCourseCategory"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/course_categories"
+										r.pathPattern = "/api/admin/course_categories"
 										r.args = args
 										r.count = 0
 										return r, true
@@ -3617,7 +3398,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminDeleteCourseCategory"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/course_categories/{id}"
+											r.pathPattern = "/api/admin/course_categories/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -3626,7 +3407,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminGetCourseCategory"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/course_categories/{id}"
+											r.pathPattern = "/api/admin/course_categories/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -3635,7 +3416,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminUpdateCourseCategory"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/course_categories/{id}"
+											r.pathPattern = "/api/admin/course_categories/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -3659,7 +3440,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminListCategoryQnaItems"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_categories/{categoryId}/qna_items"
+												r.pathPattern = "/api/admin/course_categories/{categoryId}/qna_items"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -3668,7 +3449,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminCreateCategoryQnaItem"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_categories/{categoryId}/qna_items"
+												r.pathPattern = "/api/admin/course_categories/{categoryId}/qna_items"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -3702,7 +3483,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.summary = ""
 													r.operationID = "adminDeleteCategoryQnaItem"
 													r.operationGroup = ""
-													r.pathPattern = "/admin/course_categories/{categoryId}/qna_items/{id}"
+													r.pathPattern = "/api/admin/course_categories/{categoryId}/qna_items/{id}"
 													r.args = args
 													r.count = 2
 													return r, true
@@ -3711,7 +3492,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.summary = ""
 													r.operationID = "adminUpdateCategoryQnaItem"
 													r.operationGroup = ""
-													r.pathPattern = "/admin/course_categories/{categoryId}/qna_items/{id}"
+													r.pathPattern = "/api/admin/course_categories/{categoryId}/qna_items/{id}"
 													r.args = args
 													r.count = 2
 													return r, true
@@ -3753,7 +3534,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminListCourseLandingPages"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/course_landing_pages"
+											r.pathPattern = "/api/admin/course_landing_pages"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -3762,7 +3543,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminCreateCourseLandingPage"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/course_landing_pages"
+											r.pathPattern = "/api/admin/course_landing_pages"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -3795,7 +3576,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminDeleteCourseLandingPage"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_landing_pages/{id}"
+												r.pathPattern = "/api/admin/course_landing_pages/{id}"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -3804,7 +3585,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminGetCourseLandingPage"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_landing_pages/{id}"
+												r.pathPattern = "/api/admin/course_landing_pages/{id}"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -3813,7 +3594,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminUpdateCourseLandingPage"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_landing_pages/{id}"
+												r.pathPattern = "/api/admin/course_landing_pages/{id}"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -3837,7 +3618,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.summary = ""
 													r.operationID = "adminListLandingPageQnaItems"
 													r.operationGroup = ""
-													r.pathPattern = "/admin/course_landing_pages/{landingPageId}/qna_items"
+													r.pathPattern = "/api/admin/course_landing_pages/{landingPageId}/qna_items"
 													r.args = args
 													r.count = 1
 													return r, true
@@ -3846,7 +3627,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 													r.summary = ""
 													r.operationID = "adminCreateLandingPageQnaItem"
 													r.operationGroup = ""
-													r.pathPattern = "/admin/course_landing_pages/{landingPageId}/qna_items"
+													r.pathPattern = "/api/admin/course_landing_pages/{landingPageId}/qna_items"
 													r.args = args
 													r.count = 1
 													return r, true
@@ -3880,7 +3661,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 														r.summary = ""
 														r.operationID = "adminDeleteLandingPageQnaItem"
 														r.operationGroup = ""
-														r.pathPattern = "/admin/course_landing_pages/{landingPageId}/qna_items/{id}"
+														r.pathPattern = "/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}"
 														r.args = args
 														r.count = 2
 														return r, true
@@ -3889,7 +3670,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 														r.summary = ""
 														r.operationID = "adminUpdateLandingPageQnaItem"
 														r.operationGroup = ""
-														r.pathPattern = "/admin/course_landing_pages/{landingPageId}/qna_items/{id}"
+														r.pathPattern = "/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}"
 														r.args = args
 														r.count = 2
 														return r, true
@@ -3932,7 +3713,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminListCourseLessonReviews"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_lesson_reviews"
+												r.pathPattern = "/api/admin/course_lesson_reviews"
 												r.args = args
 												r.count = 0
 												return r, true
@@ -3956,7 +3737,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminListCourseLessons"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/course_lessons"
+												r.pathPattern = "/api/admin/course_lessons"
 												r.args = args
 												r.count = 0
 												return r, true
@@ -4002,7 +3783,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 														r.summary = ""
 														r.operationID = "adminReviewCourseLesson"
 														r.operationGroup = ""
-														r.pathPattern = "/admin/course_lessons/{id}/review"
+														r.pathPattern = "/api/admin/course_lessons/{id}/review"
 														r.args = args
 														r.count = 1
 														return r, true
@@ -4036,7 +3817,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListCourses"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/courses"
+									r.pathPattern = "/api/admin/courses"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -4045,7 +3826,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminCreateCourse"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/courses"
+									r.pathPattern = "/api/admin/courses"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -4078,7 +3859,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminGetCourse"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/courses/{id}"
+										r.pathPattern = "/api/admin/courses/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -4087,7 +3868,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminUpdateCourse"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/courses/{id}"
+										r.pathPattern = "/api/admin/courses/{id}"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -4124,7 +3905,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminReviewCourse"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/courses/{id}/review"
+												r.pathPattern = "/api/admin/courses/{id}/review"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -4149,7 +3930,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminCreateCourseVersion"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/courses/{id}/versions"
+												r.pathPattern = "/api/admin/courses/{id}/versions"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -4194,7 +3975,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListLeads"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/leads"
+									r.pathPattern = "/api/admin/leads"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -4219,7 +4000,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListLessonProgress"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/lesson_progress"
+									r.pathPattern = "/api/admin/lesson_progress"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -4291,7 +4072,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminGetRolePermissions"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/role_permissions/{roleId}"
+											r.pathPattern = "/api/admin/management/role_permissions/{roleId}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4300,7 +4081,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminUpdateRolePermissions"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/role_permissions/{roleId}"
+											r.pathPattern = "/api/admin/management/role_permissions/{roleId}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4324,7 +4105,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminListRoles"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/roles"
+											r.pathPattern = "/api/admin/management/roles"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -4333,7 +4114,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminCreateRole"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/roles"
+											r.pathPattern = "/api/admin/management/roles"
 											r.args = args
 											r.count = 0
 											return r, true
@@ -4367,7 +4148,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminDeleteRole"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/management/roles/{id}"
+												r.pathPattern = "/api/admin/management/roles/{id}"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -4376,7 +4157,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminGetRole"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/management/roles/{id}"
+												r.pathPattern = "/api/admin/management/roles/{id}"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -4385,7 +4166,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 												r.summary = ""
 												r.operationID = "adminUpdateRole"
 												r.operationGroup = ""
-												r.pathPattern = "/admin/management/roles/{id}"
+												r.pathPattern = "/api/admin/management/roles/{id}"
 												r.args = args
 												r.count = 1
 												return r, true
@@ -4413,7 +4194,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminListStaffMembers"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/management/staff_members"
+										r.pathPattern = "/api/admin/management/staff_members"
 										r.args = args
 										r.count = 0
 										return r, true
@@ -4422,7 +4203,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminCreateStaffMember"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/management/staff_members"
+										r.pathPattern = "/api/admin/management/staff_members"
 										r.args = args
 										r.count = 0
 										return r, true
@@ -4456,7 +4237,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminDeleteStaffMember"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/staff_members/{id}"
+											r.pathPattern = "/api/admin/management/staff_members/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4465,7 +4246,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminGetStaffMember"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/staff_members/{id}"
+											r.pathPattern = "/api/admin/management/staff_members/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4474,7 +4255,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminUpdateStaffMember"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/staff_members/{id}"
+											r.pathPattern = "/api/admin/management/staff_members/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4500,7 +4281,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "adminListManagementUsers"
 										r.operationGroup = ""
-										r.pathPattern = "/admin/management/users"
+										r.pathPattern = "/api/admin/management/users"
 										r.args = args
 										r.count = 0
 										return r, true
@@ -4534,7 +4315,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminGetManagementUser"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/users/{id}"
+											r.pathPattern = "/api/admin/management/users/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4543,7 +4324,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 											r.summary = ""
 											r.operationID = "adminUpdateManagementUser"
 											r.operationGroup = ""
-											r.pathPattern = "/admin/management/users/{id}"
+											r.pathPattern = "/api/admin/management/users/{id}"
 											r.args = args
 											r.count = 1
 											return r, true
@@ -4572,7 +4353,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminListMessages"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/messages"
+									r.pathPattern = "/api/admin/messages"
 									r.args = args
 									r.count = 0
 									return r, true
@@ -4598,7 +4379,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "adminListReviews"
 								r.operationGroup = ""
-								r.pathPattern = "/admin/reviews"
+								r.pathPattern = "/api/admin/reviews"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -4607,7 +4388,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "adminCreateReview"
 								r.operationGroup = ""
-								r.pathPattern = "/admin/reviews"
+								r.pathPattern = "/api/admin/reviews"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -4641,7 +4422,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminDeleteReview"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/reviews/{id}"
+									r.pathPattern = "/api/admin/reviews/{id}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -4650,7 +4431,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminGetReview"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/reviews/{id}"
+									r.pathPattern = "/api/admin/reviews/{id}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -4659,7 +4440,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "adminUpdateReview"
 									r.operationGroup = ""
-									r.pathPattern = "/admin/reviews/{id}"
+									r.pathPattern = "/api/admin/reviews/{id}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -4709,7 +4490,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "listAssistantMessages"
 								r.operationGroup = ""
-								r.pathPattern = "/ai/lessons/{lessonId}/messages"
+								r.pathPattern = "/api/ai/lessons/{lessonId}/messages"
 								r.args = args
 								r.count = 1
 								return r, true
@@ -4718,7 +4499,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "createAssistantMessage"
 								r.operationGroup = ""
-								r.pathPattern = "/ai/lessons/{lessonId}/messages"
+								r.pathPattern = "/api/ai/lessons/{lessonId}/messages"
 								r.args = args
 								r.count = 1
 								return r, true
@@ -4758,7 +4539,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = ""
 							r.operationID = "listBlogPosts"
 							r.operationGroup = ""
-							r.pathPattern = "/blog_posts"
+							r.pathPattern = "/api/blog_posts"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -4791,7 +4572,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "getBlogPost"
 								r.operationGroup = ""
-								r.pathPattern = "/blog_posts/{slug}"
+								r.pathPattern = "/api/blog_posts/{slug}"
 								r.args = args
 								r.count = 1
 								return r, true
@@ -4828,7 +4609,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "likeBlogPost"
 										r.operationGroup = ""
-										r.pathPattern = "/blog_posts/{id}/likes"
+										r.pathPattern = "/api/blog_posts/{id}/likes"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -4853,7 +4634,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "getNextBlogPost"
 										r.operationGroup = ""
-										r.pathPattern = "/blog_posts/{id}/next"
+										r.pathPattern = "/api/blog_posts/{id}/next"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -4868,9 +4649,125 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 					}
 
-				case 'o': // Prefix: "ook/create_request"
+				case 'o': // Prefix: "ook"
 
-					if l := len("ook/create_request"); len(elem) >= l && elem[0:l] == "ook/create_request" {
+					if l := len("ook"); len(elem) >= l && elem[0:l] == "ook" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						switch method {
+						case "GET":
+							r.name = GetBookOperation
+							r.summary = ""
+							r.operationID = "getBook"
+							r.operationGroup = ""
+							r.pathPattern = "/api/book"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/"
+
+						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							break
+						}
+						switch elem[0] {
+						case 'c': // Prefix: "create_request"
+
+							if l := len("create_request"); len(elem) >= l && elem[0:l] == "create_request" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "POST":
+									r.name = CreateBookRequestOperation
+									r.summary = ""
+									r.operationID = "createBookRequest"
+									r.operationGroup = ""
+									r.pathPattern = "/api/book/create_request"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						case 'd': // Prefix: "download"
+
+							if l := len("download"); len(elem) >= l && elem[0:l] == "download" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "GET":
+									r.name = DownloadBookOperation
+									r.summary = ""
+									r.operationID = "downloadBook"
+									r.operationGroup = ""
+									r.pathPattern = "/api/book/download"
+									r.args = args
+									r.count = 0
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					}
+
+				}
+
+			case 'f': // Prefix: "feeds/yandex_courses"
+
+				if l := len("feeds/yandex_courses"); len(elem) >= l && elem[0:l] == "feeds/yandex_courses" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = GetYandexCoursesFeedOperation
+						r.summary = ""
+						r.operationID = "getYandexCoursesFeed"
+						r.operationGroup = ""
+						r.pathPattern = "/api/feeds/yandex_courses"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '.': // Prefix: ".xml"
+
+					if l := len(".xml"); len(elem) >= l && elem[0:l] == ".xml" {
 						elem = elem[l:]
 					} else {
 						break
@@ -4879,12 +4776,12 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					if len(elem) == 0 {
 						// Leaf node.
 						switch method {
-						case "POST":
-							r.name = CreateBookRequestOperation
+						case "GET":
+							r.name = GetYandexCoursesFeedXmlOperation
 							r.summary = ""
-							r.operationID = "createBookRequest"
+							r.operationID = "getYandexCoursesFeedXml"
 							r.operationGroup = ""
-							r.pathPattern = "/book/create_request"
+							r.pathPattern = "/api/feeds/yandex_courses.xml"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -4934,7 +4831,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "listPublicCourseCategories"
 								r.operationGroup = ""
-								r.pathPattern = "/language_categories"
+								r.pathPattern = "/api/language_categories"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -4968,7 +4865,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "getPublicCourseCategory"
 									r.operationGroup = ""
-									r.pathPattern = "/language_categories/{slug}"
+									r.pathPattern = "/api/language_categories/{slug}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -4994,7 +4891,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "listCourses"
 								r.operationGroup = ""
-								r.pathPattern = "/languages"
+								r.pathPattern = "/api/languages"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -5027,7 +4924,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "getCourse"
 									r.operationGroup = ""
-									r.pathPattern = "/languages/{slug}"
+									r.pathPattern = "/api/languages/{slug}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -5061,7 +4958,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "getCourseLesson"
 										r.operationGroup = ""
-										r.pathPattern = "/languages/{courseSlug}/lessons/{slug}"
+										r.pathPattern = "/api/languages/{courseSlug}/lessons/{slug}"
 										r.args = args
 										r.count = 2
 										return r, true
@@ -5104,7 +5001,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "createLead"
 								r.operationGroup = ""
-								r.pathPattern = "/leads"
+								r.pathPattern = "/api/leads"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -5162,7 +5059,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "checkLesson"
 										r.operationGroup = ""
-										r.pathPattern = "/lessons/{id}/check"
+										r.pathPattern = "/api/lessons/{id}/check"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -5187,7 +5084,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 										r.summary = ""
 										r.operationID = "startLesson"
 										r.operationGroup = ""
-										r.pathPattern = "/lessons/{id}/start"
+										r.pathPattern = "/api/lessons/{id}/start"
 										r.args = args
 										r.count = 1
 										return r, true
@@ -5218,7 +5115,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = ""
 							r.operationID = "switchLocale"
 							r.operationGroup = ""
-							r.pathPattern = "/locale/switch"
+							r.pathPattern = "/api/locale/switch"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -5268,7 +5165,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "createMagicLink"
 								r.operationGroup = ""
-								r.pathPattern = "/magic_links"
+								r.pathPattern = "/api/magic_links"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -5302,7 +5199,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.summary = ""
 									r.operationID = "consumeMagicLink"
 									r.operationGroup = ""
-									r.pathPattern = "/magic_links/{token}"
+									r.pathPattern = "/api/magic_links/{token}"
 									r.args = args
 									r.count = 1
 									return r, true
@@ -5329,7 +5226,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.summary = ""
 								r.operationID = "getSitemap"
 								r.operationGroup = ""
-								r.pathPattern = "/map"
+								r.pathPattern = "/api/map"
 								r.args = args
 								r.count = 0
 								return r, true
@@ -5356,7 +5253,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = ""
 							r.operationID = "getCurrentUser"
 							r.operationGroup = ""
-							r.pathPattern = "/me"
+							r.pathPattern = "/api/me"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -5381,7 +5278,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = ""
 							r.operationID = "getMyDashboard"
 							r.operationGroup = ""
-							r.pathPattern = "/my"
+							r.pathPattern = "/api/my"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -5392,240 +5289,62 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 				}
 
-			case 'p': // Prefix: "p"
+			case 'p': // Prefix: "password/"
 
-				if l := len("p"); len(elem) >= l && elem[0:l] == "p" {
+				if l := len("password/"); len(elem) >= l && elem[0:l] == "password/" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
+				// Param: "token"
+				// Match until "/"
+				idx := strings.IndexByte(elem, '/')
+				if idx < 0 {
+					idx = len(elem)
+				}
+				args[0] = elem[:idx]
+				elem = elem[idx:]
+
 				if len(elem) == 0 {
-					break
+					switch method {
+					case "PATCH":
+						r.name = UpdatePasswordOperation
+						r.summary = ""
+						r.operationID = "updatePassword"
+						r.operationGroup = ""
+						r.pathPattern = "/api/password/{token}"
+						r.args = args
+						r.count = 1
+						return r, true
+					default:
+						return
+					}
 				}
 				switch elem[0] {
-				case 'a': // Prefix: "a"
+				case '/': // Prefix: "/edit"
 
-					if l := len("a"); len(elem) >= l && elem[0:l] == "a" {
+					if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						break
-					}
-					switch elem[0] {
-					case 'g': // Prefix: "ges/"
-
-						if l := len("ges/"); len(elem) >= l && elem[0:l] == "ges/" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						// Param: "slug"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "GET":
-								r.name = GetPageOperation
-								r.summary = ""
-								r.operationID = "getPage"
-								r.operationGroup = ""
-								r.pathPattern = "/pages/{slug}"
-								r.args = args
-								r.count = 1
-								return r, true
-							default:
-								return
-							}
-						}
-
-					case 's': // Prefix: "ss"
-
-						if l := len("ss"); len(elem) >= l && elem[0:l] == "ss" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							break
-						}
-						switch elem[0] {
-						case 'k': // Prefix: "key_session"
-
-							if l := len("key_session"); len(elem) >= l && elem[0:l] == "key_session" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							if len(elem) == 0 {
-								switch method {
-								case "POST":
-									r.name = CreatePasskeySessionOperation
-									r.summary = ""
-									r.operationID = "createPasskeySession"
-									r.operationGroup = ""
-									r.pathPattern = "/passkey_session"
-									r.args = args
-									r.count = 0
-									return r, true
-								default:
-									return
-								}
-							}
-							switch elem[0] {
-							case '/': // Prefix: "/new"
-
-								if l := len("/new"); len(elem) >= l && elem[0:l] == "/new" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch method {
-									case "GET":
-										r.name = NewPasskeySessionOperation
-										r.summary = ""
-										r.operationID = "newPasskeySession"
-										r.operationGroup = ""
-										r.pathPattern = "/passkey_session/new"
-										r.args = args
-										r.count = 0
-										return r, true
-									default:
-										return
-									}
-								}
-
-							}
-
-						case 'w': // Prefix: "word/"
-
-							if l := len("word/"); len(elem) >= l && elem[0:l] == "word/" {
-								elem = elem[l:]
-							} else {
-								break
-							}
-
-							// Param: "token"
-							// Match until "/"
-							idx := strings.IndexByte(elem, '/')
-							if idx < 0 {
-								idx = len(elem)
-							}
-							args[0] = elem[:idx]
-							elem = elem[idx:]
-
-							if len(elem) == 0 {
-								switch method {
-								case "PATCH":
-									r.name = UpdatePasswordOperation
-									r.summary = ""
-									r.operationID = "updatePassword"
-									r.operationGroup = ""
-									r.pathPattern = "/password/{token}"
-									r.args = args
-									r.count = 1
-									return r, true
-								default:
-									return
-								}
-							}
-							switch elem[0] {
-							case '/': // Prefix: "/edit"
-
-								if l := len("/edit"); len(elem) >= l && elem[0:l] == "/edit" {
-									elem = elem[l:]
-								} else {
-									break
-								}
-
-								if len(elem) == 0 {
-									// Leaf node.
-									switch method {
-									case "GET":
-										r.name = CheckPasswordResetTokenOperation
-										r.summary = ""
-										r.operationID = "checkPasswordResetToken"
-										r.operationGroup = ""
-										r.pathPattern = "/password/{token}/edit"
-										r.args = args
-										r.count = 1
-										return r, true
-									default:
-										return
-									}
-								}
-
-							}
-
-						}
-
-					}
-
-				case 'h': // Prefix: "hone_auth"
-
-					if l := len("hone_auth"); len(elem) >= l && elem[0:l] == "hone_auth" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
+						// Leaf node.
 						switch method {
-						case "POST":
-							r.name = CreatePhoneAuthOperation
+						case "GET":
+							r.name = CheckPasswordResetTokenOperation
 							r.summary = ""
-							r.operationID = "createPhoneAuth"
+							r.operationID = "checkPasswordResetToken"
 							r.operationGroup = ""
-							r.pathPattern = "/phone_auth"
+							r.pathPattern = "/api/password/{token}/edit"
 							r.args = args
-							r.count = 0
+							r.count = 1
 							return r, true
 						default:
 							return
 						}
-					}
-					switch elem[0] {
-					case '/': // Prefix: "/confirm"
-
-						if l := len("/confirm"); len(elem) >= l && elem[0:l] == "/confirm" {
-							elem = elem[l:]
-						} else {
-							break
-						}
-
-						if len(elem) == 0 {
-							// Leaf node.
-							switch method {
-							case "POST":
-								r.name = ConfirmPhoneAuthOperation
-								r.summary = ""
-								r.operationID = "confirmPhoneAuth"
-								r.operationGroup = ""
-								r.pathPattern = "/phone_auth/confirm"
-								r.args = args
-								r.count = 0
-								return r, true
-							default:
-								return
-							}
-						}
-
 					}
 
 				}
@@ -5658,7 +5377,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = ""
 							r.operationID = "createPasswordReminder"
 							r.operationGroup = ""
-							r.pathPattern = "/remind_password"
+							r.pathPattern = "/api/remind_password"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -5683,7 +5402,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.summary = ""
 							r.operationID = "listPublicReviews"
 							r.operationGroup = ""
-							r.pathPattern = "/reviews"
+							r.pathPattern = "/api/reviews"
 							r.args = args
 							r.count = 0
 							return r, true
@@ -5710,7 +5429,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.summary = ""
 						r.operationID = "deleteSession"
 						r.operationGroup = ""
-						r.pathPattern = "/session"
+						r.pathPattern = "/api/session"
 						r.args = args
 						r.count = 0
 						return r, true
@@ -5719,7 +5438,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.summary = ""
 						r.operationID = "createSession"
 						r.operationGroup = ""
-						r.pathPattern = "/session"
+						r.pathPattern = "/api/session"
 						r.args = args
 						r.count = 0
 						return r, true
@@ -5744,7 +5463,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.summary = ""
 						r.operationID = "createUser"
 						r.operationGroup = ""
-						r.pathPattern = "/users"
+						r.pathPattern = "/api/users"
 						r.args = args
 						r.count = 0
 						return r, true

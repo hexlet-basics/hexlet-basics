@@ -1,5 +1,5 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
+import { getCookie, getRequestHeader } from "@tanstack/react-start/server";
 import { isLocale, type Locale } from "@/lib/i18n";
 
 // First app-supported locale in Accept-Language (region stripped), mirroring
@@ -14,14 +14,21 @@ function localeFromAcceptLanguage(header: string | undefined): Locale | undefine
 }
 
 // Locale to redirect the unprefixed root to, or undefined to stay on `en`.
-// Parity with legacy `prepare_locale_settings`: send a Russian-preferring
-// browser to `/ru`. Runs server-side only (the client impl is a no-op, so the
-// server-only header import is stripped from the browser bundle).
+// Parity with legacy `prepare_locale_settings`: a locale the visitor switched
+// to (the `locale` cookie switchLocale sets, legacy `session[:locale]`) wins,
+// so choosing English keeps a Russian-preferring browser on `/`; without one,
+// a Russian-preferring browser goes to `/ru`. Runs server-side only (the
+// client impl is a no-op, so the server-only imports are stripped from the
+// browser bundle).
 //
-// Stubbed until their backends land: remembered `session[:locale]` (auth),
-// country-by-IP via getRequestIP → "RU", and skip-redirect-for-bots (SEO).
+// Still stubbed: country-by-IP via getRequestIP → "RU", skip-redirect-for-bots
+// (SEO), and legacy's remembering of the locale on every non-root visit.
 export const detectRootLocale = createIsomorphicFn()
   .server((): Locale | undefined => {
+    const remembered = getCookie("locale");
+    if (remembered && isLocale(remembered)) {
+      return remembered === "en" ? undefined : remembered;
+    }
     const fromHeader = localeFromAcceptLanguage(getRequestHeader("accept-language"));
     return fromHeader === "ru" ? "ru" : undefined;
   })

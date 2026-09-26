@@ -15,9 +15,11 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
+	"hexletbasics/ent/bookrequest"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -35,7 +37,10 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/tag"
+	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
+	"hexletbasics/ent/useraccount"
 	"reflect"
 	"sync"
 
@@ -111,9 +116,11 @@ func checkColumn(t, c string) error {
 			blogpost.Table:                  blogpost.ValidColumn,
 			blogpostlike.Table:              blogpostlike.ValidColumn,
 			blogpostrelatedcourseitem.Table: blogpostrelatedcourseitem.ValidColumn,
+			bookrequest.Table:               bookrequest.ValidColumn,
 			categoryqnaitem.Table:           categoryqnaitem.ValidColumn,
 			course.Table:                    course.ValidColumn,
 			coursecategory.Table:            coursecategory.ValidColumn,
+			coursecategoryitem.Table:        coursecategoryitem.ValidColumn,
 			courselesson.Table:              courselesson.ValidColumn,
 			courselessonreview.Table:        courselessonreview.ValidColumn,
 			courselessontranslation.Table:   courselessontranslation.ValidColumn,
@@ -131,7 +138,10 @@ func checkColumn(t, c string) error {
 			staffmember.Table:               staffmember.ValidColumn,
 			staffrole.Table:                 staffrole.ValidColumn,
 			staffrolepermission.Table:       staffrolepermission.ValidColumn,
+			tag.Table:                       tag.ValidColumn,
+			tagging.Table:                   tagging.ValidColumn,
 			user.Table:                      user.ValidColumn,
+			useraccount.Table:               useraccount.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

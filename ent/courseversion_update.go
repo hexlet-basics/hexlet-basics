@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
 	"time"
@@ -272,6 +273,21 @@ func (_u *CourseVersionUpdate) AddCurrentCourses(v ...*Course) *CourseVersionUpd
 	return _u.AddCurrentCourseIDs(ids...)
 }
 
+// AddLessonTranslationIDs adds the "lesson_translations" edge to the CourseLessonTranslation entity by IDs.
+func (_u *CourseVersionUpdate) AddLessonTranslationIDs(ids ...int) *CourseVersionUpdate {
+	_u.mutation.AddLessonTranslationIDs(ids...)
+	return _u
+}
+
+// AddLessonTranslations adds the "lesson_translations" edges to the CourseLessonTranslation entity.
+func (_u *CourseVersionUpdate) AddLessonTranslations(v ...*CourseLessonTranslation) *CourseVersionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddLessonTranslationIDs(ids...)
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_u *CourseVersionUpdate) Mutation() *CourseVersionMutation {
 	return _u.mutation
@@ -296,6 +312,27 @@ func (_u *CourseVersionUpdate) RemoveCurrentCourses(v ...*Course) *CourseVersion
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveCurrentCourseIDs(ids...)
+}
+
+// ClearLessonTranslations clears all "lesson_translations" edges to the CourseLessonTranslation entity.
+func (_u *CourseVersionUpdate) ClearLessonTranslations() *CourseVersionUpdate {
+	_u.mutation.ClearLessonTranslations()
+	return _u
+}
+
+// RemoveLessonTranslationIDs removes the "lesson_translations" edge to CourseLessonTranslation entities by IDs.
+func (_u *CourseVersionUpdate) RemoveLessonTranslationIDs(ids ...int) *CourseVersionUpdate {
+	_u.mutation.RemoveLessonTranslationIDs(ids...)
+	return _u
+}
+
+// RemoveLessonTranslations removes "lesson_translations" edges to CourseLessonTranslation entities.
+func (_u *CourseVersionUpdate) RemoveLessonTranslations(v ...*CourseLessonTranslation) *CourseVersionUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveLessonTranslationIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -450,6 +487,51 @@ func (_u *CourseVersionUpdate) sqlSave(ctx context.Context) (_node int, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.LessonTranslationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.LessonTranslationsTable,
+			Columns: []string{courseversion.LessonTranslationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessontranslation.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedLessonTranslationsIDs(); len(nodes) > 0 && !_u.mutation.LessonTranslationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.LessonTranslationsTable,
+			Columns: []string{courseversion.LessonTranslationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessontranslation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.LessonTranslationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.LessonTranslationsTable,
+			Columns: []string{courseversion.LessonTranslationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessontranslation.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -720,6 +802,21 @@ func (_u *CourseVersionUpdateOne) AddCurrentCourses(v ...*Course) *CourseVersion
 	return _u.AddCurrentCourseIDs(ids...)
 }
 
+// AddLessonTranslationIDs adds the "lesson_translations" edge to the CourseLessonTranslation entity by IDs.
+func (_u *CourseVersionUpdateOne) AddLessonTranslationIDs(ids ...int) *CourseVersionUpdateOne {
+	_u.mutation.AddLessonTranslationIDs(ids...)
+	return _u
+}
+
+// AddLessonTranslations adds the "lesson_translations" edges to the CourseLessonTranslation entity.
+func (_u *CourseVersionUpdateOne) AddLessonTranslations(v ...*CourseLessonTranslation) *CourseVersionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddLessonTranslationIDs(ids...)
+}
+
 // Mutation returns the CourseVersionMutation object of the builder.
 func (_u *CourseVersionUpdateOne) Mutation() *CourseVersionMutation {
 	return _u.mutation
@@ -744,6 +841,27 @@ func (_u *CourseVersionUpdateOne) RemoveCurrentCourses(v ...*Course) *CourseVers
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveCurrentCourseIDs(ids...)
+}
+
+// ClearLessonTranslations clears all "lesson_translations" edges to the CourseLessonTranslation entity.
+func (_u *CourseVersionUpdateOne) ClearLessonTranslations() *CourseVersionUpdateOne {
+	_u.mutation.ClearLessonTranslations()
+	return _u
+}
+
+// RemoveLessonTranslationIDs removes the "lesson_translations" edge to CourseLessonTranslation entities by IDs.
+func (_u *CourseVersionUpdateOne) RemoveLessonTranslationIDs(ids ...int) *CourseVersionUpdateOne {
+	_u.mutation.RemoveLessonTranslationIDs(ids...)
+	return _u
+}
+
+// RemoveLessonTranslations removes "lesson_translations" edges to CourseLessonTranslation entities.
+func (_u *CourseVersionUpdateOne) RemoveLessonTranslations(v ...*CourseLessonTranslation) *CourseVersionUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveLessonTranslationIDs(ids...)
 }
 
 // Where appends a list predicates to the CourseVersionUpdate builder.
@@ -928,6 +1046,51 @@ func (_u *CourseVersionUpdateOne) sqlSave(ctx context.Context) (_node *CourseVer
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.LessonTranslationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.LessonTranslationsTable,
+			Columns: []string{courseversion.LessonTranslationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessontranslation.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedLessonTranslationsIDs(); len(nodes) > 0 && !_u.mutation.LessonTranslationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.LessonTranslationsTable,
+			Columns: []string{courseversion.LessonTranslationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessontranslation.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.LessonTranslationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   courseversion.LessonTranslationsTable,
+			Columns: []string{courseversion.LessonTranslationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessontranslation.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

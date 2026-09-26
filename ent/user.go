@@ -33,7 +33,17 @@ type User struct {
 	Admin *bool `json:"admin,omitempty"`
 	// AssistantMessagesCount holds the value of the "assistant_messages_count" field.
 	AssistantMessagesCount *int `json:"assistant_messages_count,omitempty"`
-	selectValues           sql.SelectValues
+	// State holds the value of the "state" field.
+	State *string `json:"state,omitempty"`
+	// Locale holds the value of the "locale" field.
+	Locale *string `json:"locale,omitempty"`
+	// Nickname holds the value of the "nickname" field.
+	Nickname *string `json:"nickname,omitempty"`
+	// Phone holds the value of the "phone" field.
+	Phone *string `json:"phone,omitempty"`
+	// ConfirmationToken holds the value of the "confirmation_token" field.
+	ConfirmationToken *string `json:"-"`
+	selectValues      sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -45,7 +55,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case user.FieldID, user.FieldAssistantMessagesCount:
 			values[i] = new(sql.NullInt64)
-		case user.FieldEmail, user.FieldPasswordDigest, user.FieldFirstName, user.FieldLastName:
+		case user.FieldEmail, user.FieldPasswordDigest, user.FieldFirstName, user.FieldLastName, user.FieldState, user.FieldLocale, user.FieldNickname, user.FieldPhone, user.FieldConfirmationToken:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -124,6 +134,41 @@ func (_m *User) assignValues(columns []string, values []any) error {
 				_m.AssistantMessagesCount = new(int)
 				*_m.AssistantMessagesCount = int(value.Int64)
 			}
+		case user.FieldState:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field state", values[i])
+			} else if value.Valid {
+				_m.State = new(string)
+				*_m.State = value.String
+			}
+		case user.FieldLocale:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field locale", values[i])
+			} else if value.Valid {
+				_m.Locale = new(string)
+				*_m.Locale = value.String
+			}
+		case user.FieldNickname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field nickname", values[i])
+			} else if value.Valid {
+				_m.Nickname = new(string)
+				*_m.Nickname = value.String
+			}
+		case user.FieldPhone:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field phone", values[i])
+			} else if value.Valid {
+				_m.Phone = new(string)
+				*_m.Phone = value.String
+			}
+		case user.FieldConfirmationToken:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field confirmation_token", values[i])
+			} else if value.Valid {
+				_m.ConfirmationToken = new(string)
+				*_m.ConfirmationToken = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -192,6 +237,28 @@ func (_m *User) String() string {
 		builder.WriteString("assistant_messages_count=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	if v := _m.State; v != nil {
+		builder.WriteString("state=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Locale; v != nil {
+		builder.WriteString("locale=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Nickname; v != nil {
+		builder.WriteString("nickname=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.Phone; v != nil {
+		builder.WriteString("phone=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("confirmation_token=<sensitive>")
 	builder.WriteByte(')')
 	return builder.String()
 }

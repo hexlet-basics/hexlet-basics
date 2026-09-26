@@ -16,7 +16,8 @@
         { "type": "revert", "section": "Reverts" },
         { "type": "chore", "section": "Miscellaneous" },
         { "type": "build", "section": "Build System" }
-      ]
+      ],
+      "extra-files": ["k8s/app-chart/Chart.yaml"]
     }
   }
 }

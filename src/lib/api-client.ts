@@ -17,19 +17,16 @@ const getRequestLocale = createIsomorphicFn()
   .server(() => localeFromPathname(new URL(getRequest().url).pathname))
   .client(() => localeFromPathname(window.location.pathname));
 
-// The generated hey-api client is a singleton. During SSR the Node process
-// reaches Go over the internal network (API_URL); in the browser it uses the
-// public origin (VITE_API_URL). The dead branch is stripped per build target,
-// so `process` never leaks into the client bundle.
+// The generated hey-api client is a singleton, and every contract path starts
+// with `/api` (ADR-0015). In the browser the API is the site's own origin — the
+// ingress routes `/api/*` to Go in production and the Vite proxy does it in
+// development — so the base URL is empty. During SSR the Node process reaches
+// Go over the internal network (API_URL). The dead branch is stripped per build
+// target, so `process` never leaks into the client bundle.
 client.setConfig({
-  baseURL: import.meta.env.SSR
-    ? (process.env.API_URL ?? "http://localhost:3001")
-    : (import.meta.env.VITE_API_URL ?? "http://localhost:3001"),
-  // Axios owns the browser-side XSRF protocol. Its defaults match
-  // go-pkgz/auth; withXSRFToken opts the dev cross-origin API into the same
-  // built-in behavior used for same-origin requests.
-  withCredentials: true,
-  withXSRFToken: true,
+  baseURL: import.meta.env.SSR ? (process.env.API_URL ?? "http://localhost:3001") : "",
+  // Axios owns the browser-side XSRF protocol: on a same-origin request it
+  // copies the cookie into the header by default, matching go-pkgz/auth.
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
 });

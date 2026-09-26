@@ -155,7 +155,8 @@ interface AdminBanners {
 }
 
 // ---------------------------------------------------------------------------
-// Blog posts (legacy `/admin/blog_posts`) — full CRUD + related_courses.
+// Blog posts (legacy `/admin/blog_posts`) — full CRUD + related courses (set
+// by hand or suggested by the AI job).
 // ---------------------------------------------------------------------------
 
 model BlogPostInput {
@@ -195,9 +196,15 @@ interface AdminBlogPosts {
 
   @delete @useAuth([AdminSession, XsrfToken]) @route("/{id}") @operationId("adminDeleteBlogPost") delete(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 
-  /** Set the related/promoted courses for a post. */
+  /** Set the related/promoted courses for a post by hand. */
   @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/related_courses") @operationId("adminSetBlogPostRelatedCourses")
   relatedCourses(@path id: int32, @body body: BlogPostRelatedCoursesInput): BlogPost | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Enqueue the AI pick of the post's related courses (legacy
+      FindRelatedCoursesForBlogPostJob); the job replaces the set when done.
+      A missing id surfaces as 404 via the central ent-error handler. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/suggest_related_courses") @operationId("adminSuggestBlogPostRelatedCourses")
+  suggestRelatedCourses(@path id: int32): NoContent | UnauthorizedError | ForbiddenError | ApiError;
 }
 
 // ---------------------------------------------------------------------------

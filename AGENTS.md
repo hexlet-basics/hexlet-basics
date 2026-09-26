@@ -240,5 +240,9 @@ Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See
 
 ## Ops
 
-- Infra (`k8s/`, `terraform/`) currently lives under `legacy/`. If you touch it,
-  call out the change clearly in handoff notes. Never commit secrets.
+- The Go stack deploys with `k8s/app-chart` (Helm, `k8s/Makefile`) from the
+  images built by `Dockerfile` (server, worker, atlas) and `Dockerfile.web`
+  (SSR); `release-please.yml` publishes them to GHCR on release. The sops
+  secrets file and `terraform/` still live under `legacy/k8s` and
+  `legacy/terraform`. If you touch any of it, call out the change clearly in
+  handoff notes. Never commit secrets.

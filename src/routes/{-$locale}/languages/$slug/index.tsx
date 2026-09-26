@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Center,
@@ -19,6 +20,7 @@ import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
 import { getCourseOptions, startLessonMutation } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
@@ -39,7 +41,12 @@ import { NavLink } from "@/components/RouterLink";
 // copy is in the server-rendered HTML (ADR-0008). Loading this page starts
 // nothing: the router preloads on hover, so progress begins only when the
 // button is pressed (ADR-0012).
+//
+// `unfinished` is set by the completion page when it bounces a learner whose
+// Enrollment is not finished: legacy's flash warning, carried in the URL so it
+// survives a server-side redirect.
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
+  validateSearch: z.object({ unfinished: z.boolean().optional() }),
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(getCourseOptions({ path: { slug: params.slug } })),
   component: Show,
@@ -48,6 +55,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
 function Show() {
   const { slug } = Route.useParams();
   const { t, i18n } = useTranslation();
+  const { unfinished } = Route.useSearch();
   const { data: view, isPending, isError } = useQuery(getCourseOptions({ path: { slug } }));
 
   if (isPending) {
@@ -77,6 +85,11 @@ function Show() {
 
   return (
     <Container size="lg">
+      {unfinished && (
+        <Alert color="yellow" mb="md">
+          {t(($) => $.flash.courses.success.warning)}
+        </Alert>
+      )}
       <Box mb="lg">
         <Breadcrumbs homeLabel={t(($) => $.courses.show.to_home_title)}>
           <CurrentCrumb>{header}</CurrentCrumb>

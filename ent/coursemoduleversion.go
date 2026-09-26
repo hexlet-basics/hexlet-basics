@@ -28,8 +28,29 @@ type CourseModuleVersion struct {
 	// CourseVersionID holds the value of the "course_version_id" field.
 	CourseVersionID int `json:"course_version_id,omitempty"`
 	// ModuleID holds the value of the "module_id" field.
-	ModuleID     int `json:"module_id,omitempty"`
+	ModuleID int `json:"module_id,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CourseModuleVersionQuery when eager-loading is set.
+	Edges        CourseModuleVersionEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// CourseModuleVersionEdges holds the relations/edges for other nodes in the graph.
+type CourseModuleVersionEdges struct {
+	// LessonVersions holds the value of the lesson_versions edge.
+	LessonVersions []*CourseLessonVersion `json:"lesson_versions,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// LessonVersionsOrErr returns the LessonVersions value or an error if the edge
+// was not loaded in eager-loading.
+func (e CourseModuleVersionEdges) LessonVersionsOrErr() ([]*CourseLessonVersion, error) {
+	if e.loadedTypes[0] {
+		return e.LessonVersions, nil
+	}
+	return nil, &NotLoadedError{edge: "lesson_versions"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -110,6 +131,11 @@ func (_m *CourseModuleVersion) assignValues(columns []string, values []any) erro
 // This includes values selected through modifiers, order, etc.
 func (_m *CourseModuleVersion) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryLessonVersions queries the "lesson_versions" edge of the CourseModuleVersion entity.
+func (_m *CourseModuleVersion) QueryLessonVersions() *CourseLessonVersionQuery {
+	return NewCourseModuleVersionClient(_m.config).QueryLessonVersions(_m)
 }
 
 // Update returns a builder for updating this CourseModuleVersion.

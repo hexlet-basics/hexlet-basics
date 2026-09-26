@@ -33,14 +33,18 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -53,6 +57,8 @@ var testConfig = &config.Config{
 	JWTSecret:         "test-secret",
 	EmailTokenSecret:  "test-email-secret",
 	CourseRepoBaseURL: "https://github.com/hexlet-basics",
+	SiteURL:           "https://code-basics.com",
+	BookBlobKey:       "book.pdf",
 }
 
 // EmailTokens signs Magic Link and Password Reset tokens the handlers under
@@ -194,7 +200,32 @@ func NewHarness(t *testing.T) *Harness {
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, translator, errorHandler)
+	// The real lead recorder too: a lead test asserts the stored row and the
+	// published fact, and both go through the test's transaction.
+	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
+	handler := handlers.NewServer(handlers.Deps{
+		DB:             db,
+		Config:         testConfig,
+		Starter:        enqueuer,
+		Reviews:        enqueuer,
+		RelatedCourses: enqueuer,
+		// The real replacer over the savepoint transactor, so a failed replace
+		// rolls back exactly as it does in production.
+		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
+		Emails:            enqueuer,
+		Progress:          tracker,
+		Assets:            assets,
+		Registrar:         registrar,
+		// The real remover, over the savepoint transactor: what a test asserts
+		// about a removed account is what production does to one.
+		Remover:    accounts.NewRemover(transactor),
+		Events:     eventPublisher,
+		Leads:      leadRecorder,
+		Books:      books.NewRecorder(transactor, eventPublisher),
+		I18n:       translator,
+		Errors:     errorHandler,
+		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
+	})
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
@@ -208,9 +239,9 @@ func NewHarness(t *testing.T) *Harness {
 
 	security := newHarnessSecurity(t, db)
 	doer := &inProcessDoer{
-		server: translator.Middleware(handler.AuthHandler().Trace(
+		server: translator.Middleware(handler.AuthHandler().Trace(handlers.WithClientIP(
 			handler.AuthHandler().Identify(handler.AuthHandler().CarryGuestProgress(srv)),
-		)),
+		))),
 		jwt: security.jwt,
 	}
 	client, err := api.NewClient("http://test", security, api.WithClient(doer))
@@ -323,6 +354,12 @@ func NewVisitorHarness(t *testing.T, guest progress.GuestProgress) *Harness {
 // and the locale decides which translation of a lesson is served.
 func SpeakTo(h *Harness, locale string) {
 	h.doer.locale = locale
+}
+
+// ArriveFrom makes every following request come through the ingress on
+// behalf of a client at ip, the way production sees a browser.
+func ArriveFrom(h *Harness, ip string) {
+	h.doer.realIP = ip
 }
 
 // ForgeGuestCookie makes the harness carry progress signed with the wrong
@@ -482,7 +519,8 @@ func (r *RecordingRegistrar) Register(
 }
 
 // RecordingEnqueuer is a test adapter for the handlers' job seams
-// (VersionBuildStarter, LessonReviewEnqueuer). It performs the visible DB
+// (VersionBuildStarter, LessonReviewEnqueuer, RelatedCoursesSuggestionEnqueuer,
+// AccountEmailEnqueuer). It performs the visible DB
 // writes through the harness's rollback-only ent client and records the job
 // args without touching River.
 type RecordingEnqueuer struct {
@@ -495,6 +533,12 @@ func (e *RecordingEnqueuer) EnqueueLessonReviews(_ context.Context, lessonInfoID
 	for _, id := range lessonInfoIDs {
 		e.Inserted = append(e.Inserted, jobs.ReviewLessonArgs{LessonInfoID: id})
 	}
+	return nil
+}
+
+// EnqueueRelatedCoursesSuggestion records the post's suggestion job.
+func (e *RecordingEnqueuer) EnqueueRelatedCoursesSuggestion(_ context.Context, blogPostID int) error {
+	e.Inserted = append(e.Inserted, jobs.SuggestRelatedCoursesArgs{BlogPostID: blogPostID})
 	return nil
 }
 
@@ -557,6 +601,8 @@ type inProcessDoer struct {
 	guest string
 	// locale is the Accept-Language a browser would send.
 	locale string
+	// realIP is the client address the ingress would forward.
+	realIP string
 	// setCookies are the raw Set-Cookie headers of the last response.
 	setCookies []string
 }
@@ -576,6 +622,9 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	}
 	if d.locale != "" {
 		r.Header.Set("Accept-Language", d.locale)
+	}
+	if d.realIP != "" {
+		r.Header.Set("X-Real-IP", d.realIP)
 	}
 	// A streamed body (the generated multipart encoder writes through a pipe)
 	// has no length on the client side; over a socket net/http sends it chunked

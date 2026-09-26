@@ -1,0 +1,102 @@
+---
+
+# The Go API again, on the role=service nodes that run a Docker daemon: the only
+# pod that grades solutions and the only one with the Docker socket, which is
+# host root (ADR-0013). The ingress sends it the solution check alone. Same
+# model as the legacy web-check deployment.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-api-check-deployment"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ .Release.Name }}-api-check-pod"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-api-check-pod"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+        codebasics/pod: "{{ .Release.Name }}-{{ .Chart.Version }}-api-check-pod"
+    spec:
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
+
+      affinity:
+        {{- include "codebasics.nodeAffinity" "service" | nindent 8 }}
+
+      # The image runs as a non-root user; the host's docker group is what
+      # grants it the socket.
+      securityContext:
+        supplementalGroups:
+          - {{ .Values.dockerGroupId }}
+
+      # No hostPath for solution code: the runner copies the files into the
+      # container (CopyToContainer) and gives it a tmpfs /tmp, so the legacy
+      # /tmp/hexlet-basics mount and its chown DaemonSet are gone. No registry
+      # config either: the runner pulls through the Docker API, which never
+      # reads a client-side ~/.docker/config.json.
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+
+      # preStop sleep + the server's 15s graceful shutdown; a check runs for at
+      # most CHECK_TIMEOUT_SECONDS + CHECK_GRACE_SECONDS inside that window.
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: api
+          imagePullPolicy: IfNotPresent
+          image: {{ include "codebasics.goImage" . }}
+          command: ["/server"]
+          ports:
+            - containerPort: 3001
+          startupProbe:
+            tcpSocket:
+              port: 3001
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            tcpSocket:
+              port: 3001
+            periodSeconds: 8
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: 3001
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "50m"
+            limits:
+              memory: "512Mi"
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+          {{- include "codebasics.goEnv" . | nindent 10 }}
+            {{- range $key, $value := .Values.checkEnv }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          # The built-in sleep action (Kubernetes 1.30+): the images have no
+          # `sleep` binary for an exec hook.
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 10

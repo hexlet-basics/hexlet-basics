@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -332,6 +333,29 @@ func ModuleIDLT(v int) predicate.CourseModuleVersion {
 // ModuleIDLTE applies the LTE predicate on the "module_id" field.
 func ModuleIDLTE(v int) predicate.CourseModuleVersion {
 	return predicate.CourseModuleVersion(sql.FieldLTE(FieldModuleID, v))
+}
+
+// HasLessonVersions applies the HasEdge predicate on the "lesson_versions" edge.
+func HasLessonVersions() predicate.CourseModuleVersion {
+	return predicate.CourseModuleVersion(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, LessonVersionsTable, LessonVersionsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasLessonVersionsWith applies the HasEdge predicate on the "lesson_versions" edge with a given conditions (other predicates).
+func HasLessonVersionsWith(preds ...predicate.CourseLessonVersion) predicate.CourseModuleVersion {
+	return predicate.CourseModuleVersion(func(s *sql.Selector) {
+		step := newLessonVersionsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

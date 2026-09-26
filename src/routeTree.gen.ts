@@ -12,13 +12,25 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
+import { Route as Char123LocaleChar125BookRouteImport } from './routes/{-$locale}/book'
+import { Route as Char123LocaleChar125MapRouteImport } from './routes/{-$locale}/map'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
+import { Route as Char123LocaleChar125Blog_postsIndexRouteImport } from './routes/{-$locale}/blog_posts/index'
+import { Route as Char123LocaleChar125Blog_postsSlugRouteImport } from './routes/{-$locale}/blog_posts/$slug'
+import { Route as Char123LocaleChar125CasesIndexRouteImport } from './routes/{-$locale}/cases/index'
+import { Route as Char123LocaleChar125CasesFor_teachersRouteImport } from './routes/{-$locale}/cases/for_teachers'
+import { Route as Char123LocaleChar125Language_categoriesIndexRouteImport } from './routes/{-$locale}/language_categories/index'
+import { Route as Char123LocaleChar125Language_categoriesSlugRouteImport } from './routes/{-$locale}/language_categories/$slug'
 import { Route as Char123LocaleChar125LanguagesIndexRouteImport } from './routes/{-$locale}/languages/index'
+import { Route as Char123LocaleChar125LeadsNewRouteImport } from './routes/{-$locale}/leads/new'
 import { Route as Char123LocaleChar125Magic_linksTokenRouteImport } from './routes/{-$locale}/magic_links/$token'
 import { Route as Char123LocaleChar125Magic_linksNewRouteImport } from './routes/{-$locale}/magic_links/new'
+import { Route as Char123LocaleChar125PagesIdRouteImport } from './routes/{-$locale}/pages/$id'
 import { Route as Char123LocaleChar125Remind_passwordNewRouteImport } from './routes/{-$locale}/remind_password/new'
+import { Route as Char123LocaleChar125ReviewsIndexRouteImport } from './routes/{-$locale}/reviews/index'
 import { Route as Char123LocaleChar125SessionNewRouteImport } from './routes/{-$locale}/session/new'
 import { Route as Char123LocaleChar125UsersNewRouteImport } from './routes/{-$locale}/users/new'
+import { Route as Char123LocaleChar125AccountProfileEditRouteImport } from './routes/{-$locale}/account/profile/edit'
 import { Route as Char123LocaleChar125AdminBannersIndexRouteImport } from './routes/{-$locale}/admin/banners/index'
 import { Route as Char123LocaleChar125AdminBannersIdRouteImport } from './routes/{-$locale}/admin/banners/$id'
 import { Route as Char123LocaleChar125AdminBannersNewRouteImport } from './routes/{-$locale}/admin/banners/new'
@@ -45,6 +57,7 @@ import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './route
 import { Route as Char123LocaleChar125AdminUsersIdRouteImport } from './routes/{-$locale}/admin/users/$id'
 import { Route as Char123LocaleChar125AdminUsersNewRouteImport } from './routes/{-$locale}/admin/users/new'
 import { Route as Char123LocaleChar125LanguagesSlugIndexRouteImport } from './routes/{-$locale}/languages/$slug/index'
+import { Route as Char123LocaleChar125LanguagesSlugSuccessRouteImport } from './routes/{-$locale}/languages/$slug/success'
 import { Route as Char123LocaleChar125PasswordTokenEditRouteImport } from './routes/{-$locale}/password/$token/edit'
 import { Route as Char123LocaleChar125AdminManagementRolesIndexRouteImport } from './routes/{-$locale}/admin/management/roles/index'
 import { Route as Char123LocaleChar125AdminManagementRolesIdRouteImport } from './routes/{-$locale}/admin/management/roles/$id'
@@ -73,16 +86,69 @@ const Char123LocaleChar125AdminRoute =
     path: '/admin',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125BookRoute =
+  Char123LocaleChar125BookRouteImport.update({
+    id: '/book',
+    path: '/book',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125MapRoute = Char123LocaleChar125MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => Char123LocaleChar125Route,
+} as any)
 const Char123LocaleChar125AdminIndexRoute =
   Char123LocaleChar125AdminIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
+const Char123LocaleChar125Blog_postsIndexRoute =
+  Char123LocaleChar125Blog_postsIndexRouteImport.update({
+    id: '/blog_posts/',
+    path: '/blog_posts/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125Blog_postsSlugRoute =
+  Char123LocaleChar125Blog_postsSlugRouteImport.update({
+    id: '/blog_posts/$slug',
+    path: '/blog_posts/$slug',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125CasesIndexRoute =
+  Char123LocaleChar125CasesIndexRouteImport.update({
+    id: '/cases/',
+    path: '/cases/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125CasesFor_teachersRoute =
+  Char123LocaleChar125CasesFor_teachersRouteImport.update({
+    id: '/cases/for_teachers',
+    path: '/cases/for_teachers',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125Language_categoriesIndexRoute =
+  Char123LocaleChar125Language_categoriesIndexRouteImport.update({
+    id: '/language_categories/',
+    path: '/language_categories/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125Language_categoriesSlugRoute =
+  Char123LocaleChar125Language_categoriesSlugRouteImport.update({
+    id: '/language_categories/$slug',
+    path: '/language_categories/$slug',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125LanguagesIndexRoute =
   Char123LocaleChar125LanguagesIndexRouteImport.update({
     id: '/languages/',
     path: '/languages/',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125LeadsNewRoute =
+  Char123LocaleChar125LeadsNewRouteImport.update({
+    id: '/leads/new',
+    path: '/leads/new',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125Magic_linksTokenRoute =
@@ -97,10 +163,22 @@ const Char123LocaleChar125Magic_linksNewRoute =
     path: '/magic_links/new',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125PagesIdRoute =
+  Char123LocaleChar125PagesIdRouteImport.update({
+    id: '/pages/$id',
+    path: '/pages/$id',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125Remind_passwordNewRoute =
   Char123LocaleChar125Remind_passwordNewRouteImport.update({
     id: '/remind_password/new',
     path: '/remind_password/new',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125ReviewsIndexRoute =
+  Char123LocaleChar125ReviewsIndexRouteImport.update({
+    id: '/reviews/',
+    path: '/reviews/',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125SessionNewRoute =
@@ -113,6 +191,12 @@ const Char123LocaleChar125UsersNewRoute =
   Char123LocaleChar125UsersNewRouteImport.update({
     id: '/users/new',
     path: '/users/new',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AccountProfileEditRoute =
+  Char123LocaleChar125AccountProfileEditRouteImport.update({
+    id: '/account/profile/edit',
+    path: '/account/profile/edit',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125AdminBannersIndexRoute =
@@ -271,6 +355,12 @@ const Char123LocaleChar125LanguagesSlugIndexRoute =
     path: '/languages/$slug/',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125LanguagesSlugSuccessRoute =
+  Char123LocaleChar125LanguagesSlugSuccessRouteImport.update({
+    id: '/languages/$slug/success',
+    path: '/languages/$slug/success',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125PasswordTokenEditRoute =
   Char123LocaleChar125PasswordTokenEditRouteImport.update({
     id: '/password/$token/edit',
@@ -335,14 +425,26 @@ const Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute =
 export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
+  '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
+  '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
+  '/{-$locale}/language_categories/$slug': typeof Char123LocaleChar125Language_categoriesSlugRoute
+  '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
+  '/{-$locale}/pages/$id': typeof Char123LocaleChar125PagesIdRoute
   '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
+  '/{-$locale}/blog_posts/': typeof Char123LocaleChar125Blog_postsIndexRoute
+  '/{-$locale}/cases/': typeof Char123LocaleChar125CasesIndexRoute
+  '/{-$locale}/language_categories/': typeof Char123LocaleChar125Language_categoriesIndexRoute
   '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
+  '/{-$locale}/reviews/': typeof Char123LocaleChar125ReviewsIndexRoute
+  '/{-$locale}/account/profile/edit': typeof Char123LocaleChar125AccountProfileEditRoute
   '/{-$locale}/admin/banners/$id': typeof Char123LocaleChar125AdminBannersIdRoute
   '/{-$locale}/admin/banners/new': typeof Char123LocaleChar125AdminBannersNewRoute
   '/{-$locale}/admin/blog_posts/$id': typeof Char123LocaleChar125AdminBlog_postsIdRoute
@@ -357,6 +459,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
@@ -381,14 +484,26 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/management/users/': typeof Char123LocaleChar125AdminManagementUsersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
+  '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
+  '/{-$locale}/language_categories/$slug': typeof Char123LocaleChar125Language_categoriesSlugRoute
+  '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
+  '/{-$locale}/pages/$id': typeof Char123LocaleChar125PagesIdRoute
   '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminIndexRoute
+  '/{-$locale}/blog_posts': typeof Char123LocaleChar125Blog_postsIndexRoute
+  '/{-$locale}/cases': typeof Char123LocaleChar125CasesIndexRoute
+  '/{-$locale}/language_categories': typeof Char123LocaleChar125Language_categoriesIndexRoute
   '/{-$locale}/languages': typeof Char123LocaleChar125LanguagesIndexRoute
+  '/{-$locale}/reviews': typeof Char123LocaleChar125ReviewsIndexRoute
+  '/{-$locale}/account/profile/edit': typeof Char123LocaleChar125AccountProfileEditRoute
   '/{-$locale}/admin/banners/$id': typeof Char123LocaleChar125AdminBannersIdRoute
   '/{-$locale}/admin/banners/new': typeof Char123LocaleChar125AdminBannersNewRoute
   '/{-$locale}/admin/blog_posts/$id': typeof Char123LocaleChar125AdminBlog_postsIdRoute
@@ -403,6 +518,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
@@ -430,14 +546,26 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
+  '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125MapRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
+  '/{-$locale}/cases/for_teachers': typeof Char123LocaleChar125CasesFor_teachersRoute
+  '/{-$locale}/language_categories/$slug': typeof Char123LocaleChar125Language_categoriesSlugRoute
+  '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
   '/{-$locale}/magic_links/$token': typeof Char123LocaleChar125Magic_linksTokenRoute
   '/{-$locale}/magic_links/new': typeof Char123LocaleChar125Magic_linksNewRoute
+  '/{-$locale}/pages/$id': typeof Char123LocaleChar125PagesIdRoute
   '/{-$locale}/remind_password/new': typeof Char123LocaleChar125Remind_passwordNewRoute
   '/{-$locale}/session/new': typeof Char123LocaleChar125SessionNewRoute
   '/{-$locale}/users/new': typeof Char123LocaleChar125UsersNewRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
+  '/{-$locale}/blog_posts/': typeof Char123LocaleChar125Blog_postsIndexRoute
+  '/{-$locale}/cases/': typeof Char123LocaleChar125CasesIndexRoute
+  '/{-$locale}/language_categories/': typeof Char123LocaleChar125Language_categoriesIndexRoute
   '/{-$locale}/languages/': typeof Char123LocaleChar125LanguagesIndexRoute
+  '/{-$locale}/reviews/': typeof Char123LocaleChar125ReviewsIndexRoute
+  '/{-$locale}/account/profile/edit': typeof Char123LocaleChar125AccountProfileEditRoute
   '/{-$locale}/admin/banners/$id': typeof Char123LocaleChar125AdminBannersIdRoute
   '/{-$locale}/admin/banners/new': typeof Char123LocaleChar125AdminBannersNewRoute
   '/{-$locale}/admin/blog_posts/$id': typeof Char123LocaleChar125AdminBlog_postsIdRoute
@@ -452,6 +580,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
@@ -480,14 +609,26 @@ export interface FileRouteTypes {
   fullPaths:
     | '/{-$locale}'
     | '/{-$locale}/admin'
+    | '/{-$locale}/book'
+    | '/{-$locale}/map'
     | '/{-$locale}/'
+    | '/{-$locale}/blog_posts/$slug'
+    | '/{-$locale}/cases/for_teachers'
+    | '/{-$locale}/language_categories/$slug'
+    | '/{-$locale}/leads/new'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
+    | '/{-$locale}/pages/$id'
     | '/{-$locale}/remind_password/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
+    | '/{-$locale}/blog_posts/'
+    | '/{-$locale}/cases/'
+    | '/{-$locale}/language_categories/'
     | '/{-$locale}/languages/'
+    | '/{-$locale}/reviews/'
+    | '/{-$locale}/account/profile/edit'
     | '/{-$locale}/admin/banners/$id'
     | '/{-$locale}/admin/banners/new'
     | '/{-$locale}/admin/blog_posts/$id'
@@ -502,6 +643,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
@@ -526,14 +668,26 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/management/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/{-$locale}/book'
+    | '/{-$locale}/map'
     | '/{-$locale}'
+    | '/{-$locale}/blog_posts/$slug'
+    | '/{-$locale}/cases/for_teachers'
+    | '/{-$locale}/language_categories/$slug'
+    | '/{-$locale}/leads/new'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
+    | '/{-$locale}/pages/$id'
     | '/{-$locale}/remind_password/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin'
+    | '/{-$locale}/blog_posts'
+    | '/{-$locale}/cases'
+    | '/{-$locale}/language_categories'
     | '/{-$locale}/languages'
+    | '/{-$locale}/reviews'
+    | '/{-$locale}/account/profile/edit'
     | '/{-$locale}/admin/banners/$id'
     | '/{-$locale}/admin/banners/new'
     | '/{-$locale}/admin/blog_posts/$id'
@@ -548,6 +702,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners'
     | '/{-$locale}/admin/blog_posts'
@@ -574,14 +729,26 @@ export interface FileRouteTypes {
     | '__root__'
     | '/{-$locale}'
     | '/{-$locale}/admin'
+    | '/{-$locale}/book'
+    | '/{-$locale}/map'
     | '/{-$locale}/'
+    | '/{-$locale}/blog_posts/$slug'
+    | '/{-$locale}/cases/for_teachers'
+    | '/{-$locale}/language_categories/$slug'
+    | '/{-$locale}/leads/new'
     | '/{-$locale}/magic_links/$token'
     | '/{-$locale}/magic_links/new'
+    | '/{-$locale}/pages/$id'
     | '/{-$locale}/remind_password/new'
     | '/{-$locale}/session/new'
     | '/{-$locale}/users/new'
     | '/{-$locale}/admin/'
+    | '/{-$locale}/blog_posts/'
+    | '/{-$locale}/cases/'
+    | '/{-$locale}/language_categories/'
     | '/{-$locale}/languages/'
+    | '/{-$locale}/reviews/'
+    | '/{-$locale}/account/profile/edit'
     | '/{-$locale}/admin/banners/$id'
     | '/{-$locale}/admin/banners/new'
     | '/{-$locale}/admin/blog_posts/$id'
@@ -596,6 +763,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
@@ -647,6 +815,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/book': {
+      id: '/{-$locale}/book'
+      path: '/book'
+      fullPath: '/{-$locale}/book'
+      preLoaderRoute: typeof Char123LocaleChar125BookRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/map': {
+      id: '/{-$locale}/map'
+      path: '/map'
+      fullPath: '/{-$locale}/map'
+      preLoaderRoute: typeof Char123LocaleChar125MapRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/admin/': {
       id: '/{-$locale}/admin/'
       path: '/'
@@ -654,11 +836,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
+    '/{-$locale}/blog_posts/': {
+      id: '/{-$locale}/blog_posts/'
+      path: '/blog_posts'
+      fullPath: '/{-$locale}/blog_posts/'
+      preLoaderRoute: typeof Char123LocaleChar125Blog_postsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/blog_posts/$slug': {
+      id: '/{-$locale}/blog_posts/$slug'
+      path: '/blog_posts/$slug'
+      fullPath: '/{-$locale}/blog_posts/$slug'
+      preLoaderRoute: typeof Char123LocaleChar125Blog_postsSlugRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/cases/': {
+      id: '/{-$locale}/cases/'
+      path: '/cases'
+      fullPath: '/{-$locale}/cases/'
+      preLoaderRoute: typeof Char123LocaleChar125CasesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/cases/for_teachers': {
+      id: '/{-$locale}/cases/for_teachers'
+      path: '/cases/for_teachers'
+      fullPath: '/{-$locale}/cases/for_teachers'
+      preLoaderRoute: typeof Char123LocaleChar125CasesFor_teachersRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/language_categories/': {
+      id: '/{-$locale}/language_categories/'
+      path: '/language_categories'
+      fullPath: '/{-$locale}/language_categories/'
+      preLoaderRoute: typeof Char123LocaleChar125Language_categoriesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/language_categories/$slug': {
+      id: '/{-$locale}/language_categories/$slug'
+      path: '/language_categories/$slug'
+      fullPath: '/{-$locale}/language_categories/$slug'
+      preLoaderRoute: typeof Char123LocaleChar125Language_categoriesSlugRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/languages/': {
       id: '/{-$locale}/languages/'
       path: '/languages'
       fullPath: '/{-$locale}/languages/'
       preLoaderRoute: typeof Char123LocaleChar125LanguagesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/leads/new': {
+      id: '/{-$locale}/leads/new'
+      path: '/leads/new'
+      fullPath: '/{-$locale}/leads/new'
+      preLoaderRoute: typeof Char123LocaleChar125LeadsNewRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/magic_links/$token': {
@@ -675,11 +906,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125Magic_linksNewRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/pages/$id': {
+      id: '/{-$locale}/pages/$id'
+      path: '/pages/$id'
+      fullPath: '/{-$locale}/pages/$id'
+      preLoaderRoute: typeof Char123LocaleChar125PagesIdRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/remind_password/new': {
       id: '/{-$locale}/remind_password/new'
       path: '/remind_password/new'
       fullPath: '/{-$locale}/remind_password/new'
       preLoaderRoute: typeof Char123LocaleChar125Remind_passwordNewRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/reviews/': {
+      id: '/{-$locale}/reviews/'
+      path: '/reviews'
+      fullPath: '/{-$locale}/reviews/'
+      preLoaderRoute: typeof Char123LocaleChar125ReviewsIndexRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/session/new': {
@@ -694,6 +939,13 @@ declare module '@tanstack/react-router' {
       path: '/users/new'
       fullPath: '/{-$locale}/users/new'
       preLoaderRoute: typeof Char123LocaleChar125UsersNewRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/account/profile/edit': {
+      id: '/{-$locale}/account/profile/edit'
+      path: '/account/profile/edit'
+      fullPath: '/{-$locale}/account/profile/edit'
+      preLoaderRoute: typeof Char123LocaleChar125AccountProfileEditRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/admin/banners/': {
@@ -876,6 +1128,13 @@ declare module '@tanstack/react-router' {
       path: '/languages/$slug'
       fullPath: '/{-$locale}/languages/$slug/'
       preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/languages/$slug/success': {
+      id: '/{-$locale}/languages/$slug/success'
+      path: '/languages/$slug/success'
+      fullPath: '/{-$locale}/languages/$slug/success'
+      preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugSuccessRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/password/$token/edit': {
@@ -1066,13 +1325,26 @@ const Char123LocaleChar125AdminRouteWithChildren =
 
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
+  Char123LocaleChar125BookRoute: typeof Char123LocaleChar125BookRoute
+  Char123LocaleChar125MapRoute: typeof Char123LocaleChar125MapRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  Char123LocaleChar125Blog_postsSlugRoute: typeof Char123LocaleChar125Blog_postsSlugRoute
+  Char123LocaleChar125CasesFor_teachersRoute: typeof Char123LocaleChar125CasesFor_teachersRoute
+  Char123LocaleChar125Language_categoriesSlugRoute: typeof Char123LocaleChar125Language_categoriesSlugRoute
+  Char123LocaleChar125LeadsNewRoute: typeof Char123LocaleChar125LeadsNewRoute
   Char123LocaleChar125Magic_linksTokenRoute: typeof Char123LocaleChar125Magic_linksTokenRoute
   Char123LocaleChar125Magic_linksNewRoute: typeof Char123LocaleChar125Magic_linksNewRoute
+  Char123LocaleChar125PagesIdRoute: typeof Char123LocaleChar125PagesIdRoute
   Char123LocaleChar125Remind_passwordNewRoute: typeof Char123LocaleChar125Remind_passwordNewRoute
   Char123LocaleChar125SessionNewRoute: typeof Char123LocaleChar125SessionNewRoute
   Char123LocaleChar125UsersNewRoute: typeof Char123LocaleChar125UsersNewRoute
+  Char123LocaleChar125Blog_postsIndexRoute: typeof Char123LocaleChar125Blog_postsIndexRoute
+  Char123LocaleChar125CasesIndexRoute: typeof Char123LocaleChar125CasesIndexRoute
+  Char123LocaleChar125Language_categoriesIndexRoute: typeof Char123LocaleChar125Language_categoriesIndexRoute
   Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
+  Char123LocaleChar125ReviewsIndexRoute: typeof Char123LocaleChar125ReviewsIndexRoute
+  Char123LocaleChar125AccountProfileEditRoute: typeof Char123LocaleChar125AccountProfileEditRoute
+  Char123LocaleChar125LanguagesSlugSuccessRoute: typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   Char123LocaleChar125PasswordTokenEditRoute: typeof Char123LocaleChar125PasswordTokenEditRoute
   Char123LocaleChar125LanguagesSlugIndexRoute: typeof Char123LocaleChar125LanguagesSlugIndexRoute
   Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute: typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
@@ -1080,17 +1352,37 @@ interface Char123LocaleChar125RouteChildren {
 
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
+  Char123LocaleChar125BookRoute: Char123LocaleChar125BookRoute,
+  Char123LocaleChar125MapRoute: Char123LocaleChar125MapRoute,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
+  Char123LocaleChar125Blog_postsSlugRoute:
+    Char123LocaleChar125Blog_postsSlugRoute,
+  Char123LocaleChar125CasesFor_teachersRoute:
+    Char123LocaleChar125CasesFor_teachersRoute,
+  Char123LocaleChar125Language_categoriesSlugRoute:
+    Char123LocaleChar125Language_categoriesSlugRoute,
+  Char123LocaleChar125LeadsNewRoute: Char123LocaleChar125LeadsNewRoute,
   Char123LocaleChar125Magic_linksTokenRoute:
     Char123LocaleChar125Magic_linksTokenRoute,
   Char123LocaleChar125Magic_linksNewRoute:
     Char123LocaleChar125Magic_linksNewRoute,
+  Char123LocaleChar125PagesIdRoute: Char123LocaleChar125PagesIdRoute,
   Char123LocaleChar125Remind_passwordNewRoute:
     Char123LocaleChar125Remind_passwordNewRoute,
   Char123LocaleChar125SessionNewRoute: Char123LocaleChar125SessionNewRoute,
   Char123LocaleChar125UsersNewRoute: Char123LocaleChar125UsersNewRoute,
+  Char123LocaleChar125Blog_postsIndexRoute:
+    Char123LocaleChar125Blog_postsIndexRoute,
+  Char123LocaleChar125CasesIndexRoute: Char123LocaleChar125CasesIndexRoute,
+  Char123LocaleChar125Language_categoriesIndexRoute:
+    Char123LocaleChar125Language_categoriesIndexRoute,
   Char123LocaleChar125LanguagesIndexRoute:
     Char123LocaleChar125LanguagesIndexRoute,
+  Char123LocaleChar125ReviewsIndexRoute: Char123LocaleChar125ReviewsIndexRoute,
+  Char123LocaleChar125AccountProfileEditRoute:
+    Char123LocaleChar125AccountProfileEditRoute,
+  Char123LocaleChar125LanguagesSlugSuccessRoute:
+    Char123LocaleChar125LanguagesSlugSuccessRoute,
   Char123LocaleChar125PasswordTokenEditRoute:
     Char123LocaleChar125PasswordTokenEditRoute,
   Char123LocaleChar125LanguagesSlugIndexRoute:

@@ -7,6 +7,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/predicate"
 	"math"
@@ -20,11 +21,12 @@ import (
 // CourseVersionQuery is the builder for querying CourseVersion entities.
 type CourseVersionQuery struct {
 	config
-	ctx                *QueryContext
-	order              []courseversion.OrderOption
-	inters             []Interceptor
-	predicates         []predicate.CourseVersion
-	withCurrentCourses *CourseQuery
+	ctx                    *QueryContext
+	order                  []courseversion.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.CourseVersion
+	withCurrentCourses     *CourseQuery
+	withLessonTranslations *CourseLessonTranslationQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -76,6 +78,28 @@ func (_q *CourseVersionQuery) QueryCurrentCourses() *CourseQuery {
 			sqlgraph.From(courseversion.Table, courseversion.FieldID, selector),
 			sqlgraph.To(course.Table, course.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, courseversion.CurrentCoursesTable, courseversion.CurrentCoursesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryLessonTranslations chains the current query on the "lesson_translations" edge.
+func (_q *CourseVersionQuery) QueryLessonTranslations() *CourseLessonTranslationQuery {
+	query := (&CourseLessonTranslationClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courseversion.Table, courseversion.FieldID, selector),
+			sqlgraph.To(courselessontranslation.Table, courselessontranslation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, courseversion.LessonTranslationsTable, courseversion.LessonTranslationsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -270,12 +294,13 @@ func (_q *CourseVersionQuery) Clone() *CourseVersionQuery {
 		return nil
 	}
 	return &CourseVersionQuery{
-		config:             _q.config,
-		ctx:                _q.ctx.Clone(),
-		order:              append([]courseversion.OrderOption{}, _q.order...),
-		inters:             append([]Interceptor{}, _q.inters...),
-		predicates:         append([]predicate.CourseVersion{}, _q.predicates...),
-		withCurrentCourses: _q.withCurrentCourses.Clone(),
+		config:                 _q.config,
+		ctx:                    _q.ctx.Clone(),
+		order:                  append([]courseversion.OrderOption{}, _q.order...),
+		inters:                 append([]Interceptor{}, _q.inters...),
+		predicates:             append([]predicate.CourseVersion{}, _q.predicates...),
+		withCurrentCourses:     _q.withCurrentCourses.Clone(),
+		withLessonTranslations: _q.withLessonTranslations.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -290,6 +315,17 @@ func (_q *CourseVersionQuery) WithCurrentCourses(opts ...func(*CourseQuery)) *Co
 		opt(query)
 	}
 	_q.withCurrentCourses = query
+	return _q
+}
+
+// WithLessonTranslations tells the query-builder to eager-load the nodes that are connected to
+// the "lesson_translations" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *CourseVersionQuery) WithLessonTranslations(opts ...func(*CourseLessonTranslationQuery)) *CourseVersionQuery {
+	query := (&CourseLessonTranslationClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withLessonTranslations = query
 	return _q
 }
 
@@ -371,8 +407,9 @@ func (_q *CourseVersionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	var (
 		nodes       = []*CourseVersion{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withCurrentCourses != nil,
+			_q.withLessonTranslations != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -397,6 +434,15 @@ func (_q *CourseVersionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 		if err := _q.loadCurrentCourses(ctx, query, nodes,
 			func(n *CourseVersion) { n.Edges.CurrentCourses = []*Course{} },
 			func(n *CourseVersion, e *Course) { n.Edges.CurrentCourses = append(n.Edges.CurrentCourses, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withLessonTranslations; query != nil {
+		if err := _q.loadLessonTranslations(ctx, query, nodes,
+			func(n *CourseVersion) { n.Edges.LessonTranslations = []*CourseLessonTranslation{} },
+			func(n *CourseVersion, e *CourseLessonTranslation) {
+				n.Edges.LessonTranslations = append(n.Edges.LessonTranslations, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -431,6 +477,36 @@ func (_q *CourseVersionQuery) loadCurrentCourses(ctx context.Context, query *Cou
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "current_version_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *CourseVersionQuery) loadLessonTranslations(ctx context.Context, query *CourseLessonTranslationQuery, nodes []*CourseVersion, init func(*CourseVersion), assign func(*CourseVersion, *CourseLessonTranslation)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*CourseVersion)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(courselessontranslation.FieldCourseVersionID)
+	}
+	query.Where(predicate.CourseLessonTranslation(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(courseversion.LessonTranslationsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.CourseVersionID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "course_version_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

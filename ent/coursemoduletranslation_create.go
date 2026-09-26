@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/coursemoduletranslation"
+	"hexletbasics/ent/coursemoduleversion"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -110,6 +111,11 @@ func (_c *CourseModuleTranslationCreate) SetVersionID(v int) *CourseModuleTransl
 	return _c
 }
 
+// SetVersion sets the "version" edge to the CourseModuleVersion entity.
+func (_c *CourseModuleTranslationCreate) SetVersion(v *CourseModuleVersion) *CourseModuleTranslationCreate {
+	return _c.SetVersionID(v.ID)
+}
+
 // Mutation returns the CourseModuleTranslationMutation object of the builder.
 func (_c *CourseModuleTranslationCreate) Mutation() *CourseModuleTranslationMutation {
 	return _c.mutation
@@ -172,6 +178,9 @@ func (_c *CourseModuleTranslationCreate) check() error {
 	if _, ok := _c.mutation.VersionID(); !ok {
 		return &ValidationError{Name: "version_id", err: errors.New(`ent: missing required field "CourseModuleTranslation.version_id"`)}
 	}
+	if len(_c.mutation.VersionIDs()) == 0 {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required edge "CourseModuleTranslation.version"`)}
+	}
 	return nil
 }
 
@@ -227,9 +236,22 @@ func (_c *CourseModuleTranslationCreate) createSpec() (*CourseModuleTranslation,
 		_spec.SetField(coursemoduletranslation.FieldCourseVersionID, field.TypeInt, value)
 		_node.CourseVersionID = value
 	}
-	if value, ok := _c.mutation.VersionID(); ok {
-		_spec.SetField(coursemoduletranslation.FieldVersionID, field.TypeInt, value)
-		_node.VersionID = value
+	if nodes := _c.mutation.VersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   coursemoduletranslation.VersionTable,
+			Columns: []string{coursemoduletranslation.VersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursemoduleversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.VersionID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -394,12 +416,6 @@ func (u *CourseModuleTranslationUpsert) SetVersionID(v int) *CourseModuleTransla
 // UpdateVersionID sets the "version_id" field to the value that was provided on create.
 func (u *CourseModuleTranslationUpsert) UpdateVersionID() *CourseModuleTranslationUpsert {
 	u.SetExcluded(coursemoduletranslation.FieldVersionID)
-	return u
-}
-
-// AddVersionID adds v to the "version_id" field.
-func (u *CourseModuleTranslationUpsert) AddVersionID(v int) *CourseModuleTranslationUpsert {
-	u.Add(coursemoduletranslation.FieldVersionID, v)
 	return u
 }
 
@@ -571,13 +587,6 @@ func (u *CourseModuleTranslationUpsertOne) UpdateCourseVersionID() *CourseModule
 func (u *CourseModuleTranslationUpsertOne) SetVersionID(v int) *CourseModuleTranslationUpsertOne {
 	return u.Update(func(s *CourseModuleTranslationUpsert) {
 		s.SetVersionID(v)
-	})
-}
-
-// AddVersionID adds v to the "version_id" field.
-func (u *CourseModuleTranslationUpsertOne) AddVersionID(v int) *CourseModuleTranslationUpsertOne {
-	return u.Update(func(s *CourseModuleTranslationUpsert) {
-		s.AddVersionID(v)
 	})
 }
 
@@ -922,13 +931,6 @@ func (u *CourseModuleTranslationUpsertBulk) UpdateCourseVersionID() *CourseModul
 func (u *CourseModuleTranslationUpsertBulk) SetVersionID(v int) *CourseModuleTranslationUpsertBulk {
 	return u.Update(func(s *CourseModuleTranslationUpsert) {
 		s.SetVersionID(v)
-	})
-}
-
-// AddVersionID adds v to the "version_id" field.
-func (u *CourseModuleTranslationUpsertBulk) AddVersionID(v int) *CourseModuleTranslationUpsertBulk {
-	return u.Update(func(s *CourseModuleTranslationUpsert) {
-		s.AddVersionID(v)
 	})
 }
 

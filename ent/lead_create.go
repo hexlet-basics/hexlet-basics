@@ -22,6 +22,34 @@ type LeadCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *LeadCreate) SetCreatedAt(v time.Time) *LeadCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *LeadCreate) SetNillableCreatedAt(v *time.Time) *LeadCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *LeadCreate) SetUpdatedAt(v time.Time) *LeadCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *LeadCreate) SetNillableUpdatedAt(v *time.Time) *LeadCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetUserID sets the "user_id" field.
 func (_c *LeadCreate) SetUserID(v int) *LeadCreate {
 	_c.mutation.SetUserID(v)
@@ -112,9 +140,17 @@ func (_c *LeadCreate) SetNillableCoursesData(v *string) *LeadCreate {
 	return _c
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (_c *LeadCreate) SetCreatedAt(v time.Time) *LeadCreate {
-	_c.mutation.SetCreatedAt(v)
+// SetYmClientID sets the "ym_client_id" field.
+func (_c *LeadCreate) SetYmClientID(v string) *LeadCreate {
+	_c.mutation.SetYmClientID(v)
+	return _c
+}
+
+// SetNillableYmClientID sets the "ym_client_id" field if the given value is not nil.
+func (_c *LeadCreate) SetNillableYmClientID(v *string) *LeadCreate {
+	if v != nil {
+		_c.SetYmClientID(*v)
+	}
 	return _c
 }
 
@@ -125,6 +161,7 @@ func (_c *LeadCreate) Mutation() *LeadMutation {
 
 // Save creates the Lead in the database.
 func (_c *LeadCreate) Save(ctx context.Context) (*Lead, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -150,13 +187,28 @@ func (_c *LeadCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *LeadCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := lead.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := lead.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *LeadCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Lead.user_id"`)}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Lead.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Lead.updated_at"`)}
+	}
+	if _, ok := _c.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Lead.user_id"`)}
 	}
 	return nil
 }
@@ -185,6 +237,14 @@ func (_c *LeadCreate) createSpec() (*Lead, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(lead.Table, sqlgraph.NewFieldSpec(lead.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(lead.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(lead.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(lead.FieldUserID, field.TypeInt, value)
 		_node.UserID = value
@@ -213,9 +273,9 @@ func (_c *LeadCreate) createSpec() (*Lead, *sqlgraph.CreateSpec) {
 		_spec.SetField(lead.FieldCoursesData, field.TypeString, value)
 		_node.CoursesData = &value
 	}
-	if value, ok := _c.mutation.CreatedAt(); ok {
-		_spec.SetField(lead.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
+	if value, ok := _c.mutation.YmClientID(); ok {
+		_spec.SetField(lead.FieldYmClientID, field.TypeString, value)
+		_node.YmClientID = &value
 	}
 	return _node, _spec
 }
@@ -224,7 +284,7 @@ func (_c *LeadCreate) createSpec() (*Lead, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Lead.Create().
-//		SetUserID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -233,7 +293,7 @@ func (_c *LeadCreate) createSpec() (*Lead, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LeadUpsert) {
-//			SetUserID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LeadCreate) OnConflict(opts ...sql.ConflictOption) *LeadUpsertOne {
@@ -268,6 +328,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LeadUpsert) SetUpdatedAt(v time.Time) *LeadUpsert {
+	u.Set(lead.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateUpdatedAt() *LeadUpsert {
+	u.SetExcluded(lead.FieldUpdatedAt)
+	return u
+}
 
 // SetUserID sets the "user_id" field.
 func (u *LeadUpsert) SetUserID(v int) *LeadUpsert {
@@ -395,6 +467,24 @@ func (u *LeadUpsert) ClearCoursesData() *LeadUpsert {
 	return u
 }
 
+// SetYmClientID sets the "ym_client_id" field.
+func (u *LeadUpsert) SetYmClientID(v string) *LeadUpsert {
+	u.Set(lead.FieldYmClientID, v)
+	return u
+}
+
+// UpdateYmClientID sets the "ym_client_id" field to the value that was provided on create.
+func (u *LeadUpsert) UpdateYmClientID() *LeadUpsert {
+	u.SetExcluded(lead.FieldYmClientID)
+	return u
+}
+
+// ClearYmClientID clears the value of the "ym_client_id" field.
+func (u *LeadUpsert) ClearYmClientID() *LeadUpsert {
+	u.SetNull(lead.FieldYmClientID)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -438,6 +528,20 @@ func (u *LeadUpsertOne) Update(set func(*LeadUpsert)) *LeadUpsertOne {
 		set(&LeadUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LeadUpsertOne) SetUpdatedAt(v time.Time) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateUpdatedAt() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetUserID sets the "user_id" field.
@@ -587,6 +691,27 @@ func (u *LeadUpsertOne) ClearCoursesData() *LeadUpsertOne {
 	})
 }
 
+// SetYmClientID sets the "ym_client_id" field.
+func (u *LeadUpsertOne) SetYmClientID(v string) *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetYmClientID(v)
+	})
+}
+
+// UpdateYmClientID sets the "ym_client_id" field to the value that was provided on create.
+func (u *LeadUpsertOne) UpdateYmClientID() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateYmClientID()
+	})
+}
+
+// ClearYmClientID clears the value of the "ym_client_id" field.
+func (u *LeadUpsertOne) ClearYmClientID() *LeadUpsertOne {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearYmClientID()
+	})
+}
+
 // Exec executes the query.
 func (u *LeadUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -639,6 +764,7 @@ func (_c *LeadCreateBulk) Save(ctx context.Context) ([]*Lead, error) {
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*LeadMutation)
 				if !ok {
@@ -721,7 +847,7 @@ func (_c *LeadCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.LeadUpsert) {
-//			SetUserID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *LeadCreateBulk) OnConflict(opts ...sql.ConflictOption) *LeadUpsertBulk {
@@ -795,6 +921,20 @@ func (u *LeadUpsertBulk) Update(set func(*LeadUpsert)) *LeadUpsertBulk {
 		set(&LeadUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *LeadUpsertBulk) SetUpdatedAt(v time.Time) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateUpdatedAt() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateUpdatedAt()
+	})
 }
 
 // SetUserID sets the "user_id" field.
@@ -941,6 +1081,27 @@ func (u *LeadUpsertBulk) UpdateCoursesData() *LeadUpsertBulk {
 func (u *LeadUpsertBulk) ClearCoursesData() *LeadUpsertBulk {
 	return u.Update(func(s *LeadUpsert) {
 		s.ClearCoursesData()
+	})
+}
+
+// SetYmClientID sets the "ym_client_id" field.
+func (u *LeadUpsertBulk) SetYmClientID(v string) *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.SetYmClientID(v)
+	})
+}
+
+// UpdateYmClientID sets the "ym_client_id" field to the value that was provided on create.
+func (u *LeadUpsertBulk) UpdateYmClientID() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.UpdateYmClientID()
+	})
+}
+
+// ClearYmClientID clears the value of the "ym_client_id" field.
+func (u *LeadUpsertBulk) ClearYmClientID() *LeadUpsertBulk {
+	return u.Update(func(s *LeadUpsert) {
+		s.ClearYmClientID()
 	})
 }
 

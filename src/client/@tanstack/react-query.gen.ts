@@ -4,111 +4,8 @@ import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutation
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { adminCreateBanner, adminCreateBlogPost, adminCreateCategoryQnaItem, adminCreateCourse, adminCreateCourseCategory, adminCreateCourseLandingPage, adminCreateCourseVersion, adminCreateLandingPageQnaItem, adminCreateReview, adminCreateRole, adminCreateStaffMember, adminCreateUser, adminDeleteBanner, adminDeleteBlogPost, adminDeleteCategoryQnaItem, adminDeleteCourseCategory, adminDeleteCourseLandingPage, adminDeleteLandingPageQnaItem, adminDeleteReview, adminDeleteRole, adminDeleteStaffMember, adminDeleteUser, adminGetBanner, adminGetBlogPost, adminGetCourse, adminGetCourseCategory, adminGetCourseLandingPage, adminGetManagementUser, adminGetReview, adminGetRole, adminGetRolePermissions, adminGetStaffMember, adminGetUser, adminListBanners, adminListBlogPosts, adminListCategoryQnaItems, adminListCourseCategories, adminListCourseLandingPages, adminListCourseLessonReviews, adminListCourseLessons, adminListCourses, adminListLandingPageQnaItems, adminListLeads, adminListLessonProgress, adminListManagementUsers, adminListMessages, adminListReviews, adminListRoles, adminListStaffMembers, adminListUsers, adminReviewCourse, adminReviewCourseLesson, adminSearchUsers, adminSetBlogPostRelatedCourses, adminUpdateBanner, adminUpdateBlogPost, adminUpdateCategoryQnaItem, adminUpdateCourse, adminUpdateCourseCategory, adminUpdateCourseLandingPage, adminUpdateLandingPageQnaItem, adminUpdateManagementUser, adminUpdateReview, adminUpdateRole, adminUpdateRolePermissions, adminUpdateStaffMember, adminUpdateUser, adminUploadAttachment, checkLesson, checkPasswordResetToken, confirmPhoneAuth, consumeMagicLink, createAssistantMessage, createBookRequest, createLead, createMagicLink, createPasskey, createPasskeySession, createPasswordReminder, createPhoneAuth, createSession, createUser, deleteAccount, deletePasskey, deleteSession, getBlogPost, getCourse, getCourseLesson, getCurrentUser, getMyDashboard, getNextBlogPost, getPage, getProfile, getPublicCourseCategory, getSitemap, likeBlogPost, listAssistantMessages, listBlogPosts, listCourses, listPasskeys, listPublicCourseCategories, listPublicReviews, newPasskey, newPasskeySession, type Options, startLesson, switchLocale, updatePassword, updateProfile } from '../sdk.gen';
-import type { AdminCreateBannerData, AdminCreateBannerError, AdminCreateBannerResponse, AdminCreateBlogPostData, AdminCreateBlogPostError, AdminCreateBlogPostResponse, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemError, AdminCreateCategoryQnaItemResponse, AdminCreateCourseCategoryData, AdminCreateCourseCategoryError, AdminCreateCourseCategoryResponse, AdminCreateCourseData, AdminCreateCourseError, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageError, AdminCreateCourseLandingPageResponse, AdminCreateCourseResponse, AdminCreateCourseVersionData, AdminCreateCourseVersionError, AdminCreateCourseVersionResponse, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemError, AdminCreateLandingPageQnaItemResponse, AdminCreateReviewData, AdminCreateReviewError, AdminCreateReviewResponse, AdminCreateRoleData, AdminCreateRoleError, AdminCreateRoleResponse, AdminCreateStaffMemberData, AdminCreateStaffMemberError, AdminCreateStaffMemberResponse, AdminCreateUserData, AdminCreateUserError, AdminCreateUserResponse, AdminDeleteBannerData, AdminDeleteBannerError, AdminDeleteBannerResponse, AdminDeleteBlogPostData, AdminDeleteBlogPostError, AdminDeleteBlogPostResponse, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemError, AdminDeleteCategoryQnaItemResponse, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryError, AdminDeleteCourseCategoryResponse, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageError, AdminDeleteCourseLandingPageResponse, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemError, AdminDeleteLandingPageQnaItemResponse, AdminDeleteReviewData, AdminDeleteReviewError, AdminDeleteReviewResponse, AdminDeleteRoleData, AdminDeleteRoleError, AdminDeleteRoleResponse, AdminDeleteStaffMemberData, AdminDeleteStaffMemberError, AdminDeleteStaffMemberResponse, AdminDeleteUserData, AdminDeleteUserError, AdminDeleteUserResponse, AdminGetBannerData, AdminGetBannerError, AdminGetBannerResponse, AdminGetBlogPostData, AdminGetBlogPostError, AdminGetBlogPostResponse, AdminGetCourseCategoryData, AdminGetCourseCategoryError, AdminGetCourseCategoryResponse, AdminGetCourseData, AdminGetCourseError, AdminGetCourseLandingPageData, AdminGetCourseLandingPageError, AdminGetCourseLandingPageResponse, AdminGetCourseResponse, AdminGetManagementUserData, AdminGetManagementUserError, AdminGetManagementUserResponse, AdminGetReviewData, AdminGetReviewError, AdminGetReviewResponse, AdminGetRoleData, AdminGetRoleError, AdminGetRolePermissionsData, AdminGetRolePermissionsError, AdminGetRolePermissionsResponse, AdminGetRoleResponse, AdminGetStaffMemberData, AdminGetStaffMemberError, AdminGetStaffMemberResponse, AdminGetUserData, AdminGetUserError, AdminGetUserResponse, AdminListBannersData, AdminListBannersError, AdminListBannersResponse, AdminListBlogPostsData, AdminListBlogPostsError, AdminListBlogPostsResponse, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsError, AdminListCategoryQnaItemsResponse, AdminListCourseCategoriesData, AdminListCourseCategoriesError, AdminListCourseCategoriesResponse, AdminListCourseLandingPagesData, AdminListCourseLandingPagesError, AdminListCourseLandingPagesResponse, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsError, AdminListCourseLessonReviewsResponse, AdminListCourseLessonsData, AdminListCourseLessonsError, AdminListCourseLessonsResponse, AdminListCoursesData, AdminListCoursesError, AdminListCoursesResponse, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsError, AdminListLandingPageQnaItemsResponse, AdminListLeadsData, AdminListLeadsError, AdminListLeadsResponse, AdminListLessonProgressData, AdminListLessonProgressError, AdminListLessonProgressResponse, AdminListManagementUsersData, AdminListManagementUsersError, AdminListManagementUsersResponse, AdminListMessagesData, AdminListMessagesError, AdminListMessagesResponse, AdminListReviewsData, AdminListReviewsError, AdminListReviewsResponse, AdminListRolesData, AdminListRolesError, AdminListRolesResponse, AdminListStaffMembersData, AdminListStaffMembersError, AdminListStaffMembersResponse, AdminListUsersData, AdminListUsersError, AdminListUsersResponse, AdminReviewCourseData, AdminReviewCourseError, AdminReviewCourseLessonData, AdminReviewCourseLessonError, AdminReviewCourseLessonResponse, AdminReviewCourseResponse, AdminSearchUsersData, AdminSearchUsersError, AdminSearchUsersResponse, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesError, AdminSetBlogPostRelatedCoursesResponse, AdminUpdateBannerData, AdminUpdateBannerError, AdminUpdateBannerResponse, AdminUpdateBlogPostData, AdminUpdateBlogPostError, AdminUpdateBlogPostResponse, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemError, AdminUpdateCategoryQnaItemResponse, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryError, AdminUpdateCourseCategoryResponse, AdminUpdateCourseData, AdminUpdateCourseError, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageError, AdminUpdateCourseLandingPageResponse, AdminUpdateCourseResponse, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemError, AdminUpdateLandingPageQnaItemResponse, AdminUpdateManagementUserData, AdminUpdateManagementUserError, AdminUpdateManagementUserResponse, AdminUpdateReviewData, AdminUpdateReviewError, AdminUpdateReviewResponse, AdminUpdateRoleData, AdminUpdateRoleError, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsError, AdminUpdateRolePermissionsResponse, AdminUpdateRoleResponse, AdminUpdateStaffMemberData, AdminUpdateStaffMemberError, AdminUpdateStaffMemberResponse, AdminUpdateUserData, AdminUpdateUserError, AdminUpdateUserResponse, AdminUploadAttachmentData, AdminUploadAttachmentError, AdminUploadAttachmentResponse, CheckLessonData, CheckLessonError, CheckLessonResponse, CheckPasswordResetTokenData, CheckPasswordResetTokenError, CheckPasswordResetTokenResponse, ConfirmPhoneAuthData, ConfirmPhoneAuthError, ConfirmPhoneAuthResponse, ConsumeMagicLinkData, ConsumeMagicLinkError, ConsumeMagicLinkResponse, CreateAssistantMessageData, CreateAssistantMessageError, CreateBookRequestData, CreateBookRequestError, CreateBookRequestResponse, CreateLeadData, CreateLeadError, CreateLeadResponse, CreateMagicLinkData, CreateMagicLinkError, CreateMagicLinkResponse, CreatePasskeyData, CreatePasskeyError, CreatePasskeyResponse, CreatePasskeySessionData, CreatePasskeySessionError, CreatePasskeySessionResponse, CreatePasswordReminderData, CreatePasswordReminderError, CreatePasswordReminderResponse, CreatePhoneAuthData, CreatePhoneAuthError, CreatePhoneAuthResponse, CreateSessionData, CreateSessionError, CreateSessionResponse, CreateUserData, CreateUserError, CreateUserResponse, DeleteAccountData, DeleteAccountError, DeleteAccountResponse, DeletePasskeyData, DeletePasskeyError, DeletePasskeyResponse, DeleteSessionData, DeleteSessionError, DeleteSessionResponse, GetBlogPostData, GetBlogPostError, GetBlogPostResponse, GetCourseData, GetCourseError, GetCourseLessonData, GetCourseLessonError, GetCourseLessonResponse, GetCourseResponse, GetCurrentUserData, GetCurrentUserError, GetCurrentUserResponse, GetMyDashboardData, GetMyDashboardError, GetMyDashboardResponse, GetNextBlogPostData, GetNextBlogPostError, GetNextBlogPostResponse, GetPageData, GetPageError, GetPageResponse, GetProfileData, GetProfileError, GetProfileResponse, GetPublicCourseCategoryData, GetPublicCourseCategoryError, GetPublicCourseCategoryResponse, GetSitemapData, GetSitemapError, GetSitemapResponse, LikeBlogPostData, LikeBlogPostError, LikeBlogPostResponse, ListAssistantMessagesData, ListAssistantMessagesError, ListAssistantMessagesResponse, ListBlogPostsData, ListBlogPostsError, ListBlogPostsResponse, ListCoursesData, ListCoursesError, ListCoursesResponse, ListPasskeysData, ListPasskeysError, ListPasskeysResponse, ListPublicCourseCategoriesData, ListPublicCourseCategoriesError, ListPublicCourseCategoriesResponse, ListPublicReviewsData, ListPublicReviewsError, ListPublicReviewsResponse, NewPasskeyData, NewPasskeyError, NewPasskeyResponse, NewPasskeySessionData, NewPasskeySessionError, NewPasskeySessionResponse, StartLessonData, StartLessonError, StartLessonResponse, SwitchLocaleData, SwitchLocaleError, SwitchLocaleResponse, UpdatePasswordData, UpdatePasswordError, UpdatePasswordResponse, UpdateProfileData, UpdateProfileError, UpdateProfileResponse } from '../types.gen';
-
-export type QueryKey<TOptions extends Options> = [
-  Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
-    _id: string;
-    _infinite?: boolean;
-    tags?: ReadonlyArray<string>;
-  }
-];
-
-const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions, infinite?: boolean, tags?: ReadonlyArray<string>): [
-  QueryKey<TOptions>[0]
-] => {
-  const params: QueryKey<TOptions>[0] = { _id: id, baseURL: options?.baseURL || (options?.client ?? client).getConfig().baseURL } as QueryKey<TOptions>[0];
-  if (infinite) {
-    params._infinite = infinite;
-  }
-  if (tags) {
-    params.tags = tags;
-  }
-  if (options?.body) {
-    params.body = options.body;
-  }
-  if (options?.headers) {
-    params.headers = options.headers;
-  }
-  if (options?.path) {
-    params.path = options.path;
-  }
-  if (options?.query) {
-    params.query = options.query;
-  }
-  return [params];
-};
-
-export const listPasskeysQueryKey = (options?: Options<ListPasskeysData>) => createQueryKey('listPasskeys', options);
-
-/**
- * List the current user's passkeys.
- */
-export const listPasskeysOptions = (options?: Options<ListPasskeysData>) => queryOptions<ListPasskeysResponse, AxiosError<ListPasskeysError>, ListPasskeysResponse, ReturnType<typeof listPasskeysQueryKey>>({
-  queryFn: async ({ queryKey, signal }) => {
-    const { data } = await listPasskeys({
-      ...options,
-      ...queryKey[0],
-      signal,
-      throwOnError: true
-    });
-    return data;
-  },
-  queryKey: listPasskeysQueryKey(options)
-});
-
-/**
- * Register a new passkey for the current user.
- */
-export const createPasskeyMutation = (options?: Partial<Options<CreatePasskeyData>>): UseMutationOptions<CreatePasskeyResponse, AxiosError<CreatePasskeyError>, Options<CreatePasskeyData>> => {
-  const mutationOptions: UseMutationOptions<CreatePasskeyResponse, AxiosError<CreatePasskeyError>, Options<CreatePasskeyData>> = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await createPasskey({
-        ...options,
-        ...fnOptions,
-        throwOnError: true
-      });
-      return data;
-    }
-  };
-  return mutationOptions;
-};
-
-export const newPasskeyQueryKey = (options?: Options<NewPasskeyData>) => createQueryKey('newPasskey', options);
-
-/**
- * Begin a passkey registration ceremony.
- */
-export const newPasskeyOptions = (options?: Options<NewPasskeyData>) => queryOptions<NewPasskeyResponse, AxiosError<NewPasskeyError>, NewPasskeyResponse, ReturnType<typeof newPasskeyQueryKey>>({
-  queryFn: async ({ queryKey, signal }) => {
-    const { data } = await newPasskey({
-      ...options,
-      ...queryKey[0],
-      signal,
-      throwOnError: true
-    });
-    return data;
-  },
-  queryKey: newPasskeyQueryKey(options)
-});
-
-/**
- * Remove a passkey.
- */
-export const deletePasskeyMutation = (options?: Partial<Options<DeletePasskeyData>>): UseMutationOptions<DeletePasskeyResponse, AxiosError<DeletePasskeyError>, Options<DeletePasskeyData>> => {
-  const mutationOptions: UseMutationOptions<DeletePasskeyResponse, AxiosError<DeletePasskeyError>, Options<DeletePasskeyData>> = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await deletePasskey({
-        ...options,
-        ...fnOptions,
-        throwOnError: true
-      });
-      return data;
-    }
-  };
-  return mutationOptions;
-};
+import { adminCreateBanner, adminCreateBlogPost, adminCreateCategoryQnaItem, adminCreateCourse, adminCreateCourseCategory, adminCreateCourseLandingPage, adminCreateCourseVersion, adminCreateLandingPageQnaItem, adminCreateReview, adminCreateRole, adminCreateStaffMember, adminCreateUser, adminDeleteBanner, adminDeleteBlogPost, adminDeleteCategoryQnaItem, adminDeleteCourseCategory, adminDeleteCourseLandingPage, adminDeleteLandingPageQnaItem, adminDeleteReview, adminDeleteRole, adminDeleteStaffMember, adminDeleteUser, adminGetBanner, adminGetBlogPost, adminGetCourse, adminGetCourseCategory, adminGetCourseLandingPage, adminGetManagementUser, adminGetReview, adminGetRole, adminGetRolePermissions, adminGetStaffMember, adminGetUser, adminListBanners, adminListBlogPosts, adminListCategoryQnaItems, adminListCourseCategories, adminListCourseLandingPages, adminListCourseLessonReviews, adminListCourseLessons, adminListCourses, adminListLandingPageQnaItems, adminListLeads, adminListLessonProgress, adminListManagementUsers, adminListMessages, adminListReviews, adminListRoles, adminListStaffMembers, adminListUsers, adminReviewCourse, adminReviewCourseLesson, adminSearchUsers, adminSetBlogPostRelatedCourses, adminSuggestBlogPostRelatedCourses, adminUpdateBanner, adminUpdateBlogPost, adminUpdateCategoryQnaItem, adminUpdateCourse, adminUpdateCourseCategory, adminUpdateCourseLandingPage, adminUpdateLandingPageQnaItem, adminUpdateManagementUser, adminUpdateReview, adminUpdateRole, adminUpdateRolePermissions, adminUpdateStaffMember, adminUpdateUser, adminUploadAttachment, checkLesson, checkPasswordResetToken, consumeMagicLink, createAssistantMessage, createBookRequest, createLead, createMagicLink, createPasswordReminder, createSession, createUser, deleteAccount, deleteSession, downloadBook, getBlogPost, getBook, getCourse, getCourseLesson, getCurrentUser, getMyDashboard, getNextBlogPost, getProfile, getPublicCourseCategory, getSitemap, getYandexCoursesFeed, getYandexCoursesFeedXml, likeBlogPost, listAssistantMessages, listBlogPosts, listCourses, listPublicCourseCategories, listPublicReviews, type Options, startLesson, switchLocale, updatePassword, updateProfile } from '../sdk.gen';
+import type { AdminCreateBannerData, AdminCreateBannerError, AdminCreateBannerResponse, AdminCreateBlogPostData, AdminCreateBlogPostError, AdminCreateBlogPostResponse, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemError, AdminCreateCategoryQnaItemResponse, AdminCreateCourseCategoryData, AdminCreateCourseCategoryError, AdminCreateCourseCategoryResponse, AdminCreateCourseData, AdminCreateCourseError, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageError, AdminCreateCourseLandingPageResponse, AdminCreateCourseResponse, AdminCreateCourseVersionData, AdminCreateCourseVersionError, AdminCreateCourseVersionResponse, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemError, AdminCreateLandingPageQnaItemResponse, AdminCreateReviewData, AdminCreateReviewError, AdminCreateReviewResponse, AdminCreateRoleData, AdminCreateRoleError, AdminCreateRoleResponse, AdminCreateStaffMemberData, AdminCreateStaffMemberError, AdminCreateStaffMemberResponse, AdminCreateUserData, AdminCreateUserError, AdminCreateUserResponse, AdminDeleteBannerData, AdminDeleteBannerError, AdminDeleteBannerResponse, AdminDeleteBlogPostData, AdminDeleteBlogPostError, AdminDeleteBlogPostResponse, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemError, AdminDeleteCategoryQnaItemResponse, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryError, AdminDeleteCourseCategoryResponse, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageError, AdminDeleteCourseLandingPageResponse, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemError, AdminDeleteLandingPageQnaItemResponse, AdminDeleteReviewData, AdminDeleteReviewError, AdminDeleteReviewResponse, AdminDeleteRoleData, AdminDeleteRoleError, AdminDeleteRoleResponse, AdminDeleteStaffMemberData, AdminDeleteStaffMemberError, AdminDeleteStaffMemberResponse, AdminDeleteUserData, AdminDeleteUserError, AdminDeleteUserResponse, AdminGetBannerData, AdminGetBannerError, AdminGetBannerResponse, AdminGetBlogPostData, AdminGetBlogPostError, AdminGetBlogPostResponse, AdminGetCourseCategoryData, AdminGetCourseCategoryError, AdminGetCourseCategoryResponse, AdminGetCourseData, AdminGetCourseError, AdminGetCourseLandingPageData, AdminGetCourseLandingPageError, AdminGetCourseLandingPageResponse, AdminGetCourseResponse, AdminGetManagementUserData, AdminGetManagementUserError, AdminGetManagementUserResponse, AdminGetReviewData, AdminGetReviewError, AdminGetReviewResponse, AdminGetRoleData, AdminGetRoleError, AdminGetRolePermissionsData, AdminGetRolePermissionsError, AdminGetRolePermissionsResponse, AdminGetRoleResponse, AdminGetStaffMemberData, AdminGetStaffMemberError, AdminGetStaffMemberResponse, AdminGetUserData, AdminGetUserError, AdminGetUserResponse, AdminListBannersData, AdminListBannersError, AdminListBannersResponse, AdminListBlogPostsData, AdminListBlogPostsError, AdminListBlogPostsResponse, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsError, AdminListCategoryQnaItemsResponse, AdminListCourseCategoriesData, AdminListCourseCategoriesError, AdminListCourseCategoriesResponse, AdminListCourseLandingPagesData, AdminListCourseLandingPagesError, AdminListCourseLandingPagesResponse, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsError, AdminListCourseLessonReviewsResponse, AdminListCourseLessonsData, AdminListCourseLessonsError, AdminListCourseLessonsResponse, AdminListCoursesData, AdminListCoursesError, AdminListCoursesResponse, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsError, AdminListLandingPageQnaItemsResponse, AdminListLeadsData, AdminListLeadsError, AdminListLeadsResponse, AdminListLessonProgressData, AdminListLessonProgressError, AdminListLessonProgressResponse, AdminListManagementUsersData, AdminListManagementUsersError, AdminListManagementUsersResponse, AdminListMessagesData, AdminListMessagesError, AdminListMessagesResponse, AdminListReviewsData, AdminListReviewsError, AdminListReviewsResponse, AdminListRolesData, AdminListRolesError, AdminListRolesResponse, AdminListStaffMembersData, AdminListStaffMembersError, AdminListStaffMembersResponse, AdminListUsersData, AdminListUsersError, AdminListUsersResponse, AdminReviewCourseData, AdminReviewCourseError, AdminReviewCourseLessonData, AdminReviewCourseLessonError, AdminReviewCourseLessonResponse, AdminReviewCourseResponse, AdminSearchUsersData, AdminSearchUsersError, AdminSearchUsersResponse, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesError, AdminSetBlogPostRelatedCoursesResponse, AdminSuggestBlogPostRelatedCoursesData, AdminSuggestBlogPostRelatedCoursesError, AdminSuggestBlogPostRelatedCoursesResponse, AdminUpdateBannerData, AdminUpdateBannerError, AdminUpdateBannerResponse, AdminUpdateBlogPostData, AdminUpdateBlogPostError, AdminUpdateBlogPostResponse, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemError, AdminUpdateCategoryQnaItemResponse, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryError, AdminUpdateCourseCategoryResponse, AdminUpdateCourseData, AdminUpdateCourseError, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageError, AdminUpdateCourseLandingPageResponse, AdminUpdateCourseResponse, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemError, AdminUpdateLandingPageQnaItemResponse, AdminUpdateManagementUserData, AdminUpdateManagementUserError, AdminUpdateManagementUserResponse, AdminUpdateReviewData, AdminUpdateReviewError, AdminUpdateReviewResponse, AdminUpdateRoleData, AdminUpdateRoleError, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsError, AdminUpdateRolePermissionsResponse, AdminUpdateRoleResponse, AdminUpdateStaffMemberData, AdminUpdateStaffMemberError, AdminUpdateStaffMemberResponse, AdminUpdateUserData, AdminUpdateUserError, AdminUpdateUserResponse, AdminUploadAttachmentData, AdminUploadAttachmentError, AdminUploadAttachmentResponse, CheckLessonData, CheckLessonError, CheckLessonResponse, CheckPasswordResetTokenData, CheckPasswordResetTokenError, CheckPasswordResetTokenResponse, ConsumeMagicLinkData, ConsumeMagicLinkError, ConsumeMagicLinkResponse, CreateAssistantMessageData, CreateAssistantMessageError, CreateBookRequestData, CreateBookRequestError, CreateBookRequestResponse, CreateLeadData, CreateLeadError, CreateLeadResponse, CreateMagicLinkData, CreateMagicLinkError, CreateMagicLinkResponse, CreatePasswordReminderData, CreatePasswordReminderError, CreatePasswordReminderResponse, CreateSessionData, CreateSessionError, CreateSessionResponse, CreateUserData, CreateUserError, CreateUserResponse, DeleteAccountData, DeleteAccountError, DeleteAccountResponse, DeleteSessionData, DeleteSessionError, DeleteSessionResponse, DownloadBookData, DownloadBookError, DownloadBookResponse, GetBlogPostData, GetBlogPostError, GetBlogPostResponse, GetBookData, GetBookError, GetBookResponse, GetCourseData, GetCourseError, GetCourseLessonData, GetCourseLessonError, GetCourseLessonResponse, GetCourseResponse, GetCurrentUserData, GetCurrentUserError, GetCurrentUserResponse, GetMyDashboardData, GetMyDashboardError, GetMyDashboardResponse, GetNextBlogPostData, GetNextBlogPostError, GetNextBlogPostResponse, GetProfileData, GetProfileError, GetProfileResponse, GetPublicCourseCategoryData, GetPublicCourseCategoryError, GetPublicCourseCategoryResponse, GetSitemapData, GetSitemapError, GetSitemapResponse, GetYandexCoursesFeedData, GetYandexCoursesFeedError, GetYandexCoursesFeedResponse, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlError, GetYandexCoursesFeedXmlResponse, LikeBlogPostData, LikeBlogPostError, LikeBlogPostResponse, ListAssistantMessagesData, ListAssistantMessagesError, ListAssistantMessagesResponse, ListBlogPostsData, ListBlogPostsError, ListBlogPostsResponse, ListCoursesData, ListCoursesError, ListCoursesResponse, ListPublicCourseCategoriesData, ListPublicCourseCategoriesError, ListPublicCourseCategoriesResponse, ListPublicReviewsData, ListPublicReviewsError, ListPublicReviewsResponse, StartLessonData, StartLessonError, StartLessonResponse, SwitchLocaleData, SwitchLocaleError, SwitchLocaleResponse, UpdatePasswordData, UpdatePasswordError, UpdatePasswordResponse, UpdateProfileData, UpdateProfileError, UpdateProfileResponse } from '../types.gen';
 
 /**
  * Delete the current user's account.
@@ -142,6 +39,39 @@ export const updateProfileMutation = (options?: Partial<Options<UpdateProfileDat
     }
   };
   return mutationOptions;
+};
+
+export type QueryKey<TOptions extends Options> = [
+  Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
+    _id: string;
+    _infinite?: boolean;
+    tags?: ReadonlyArray<string>;
+  }
+];
+
+const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions, infinite?: boolean, tags?: ReadonlyArray<string>): [
+  QueryKey<TOptions>[0]
+] => {
+  const params: QueryKey<TOptions>[0] = { _id: id, baseURL: options?.baseURL || (options?.client ?? client).getConfig().baseURL } as QueryKey<TOptions>[0];
+  if (infinite) {
+    params._infinite = infinite;
+  }
+  if (tags) {
+    params.tags = tags;
+  }
+  if (options?.body) {
+    params.body = options.body;
+  }
+  if (options?.headers) {
+    params.headers = options.headers;
+  }
+  if (options?.path) {
+    params.path = options.path;
+  }
+  if (options?.query) {
+    params.query = options.query;
+  }
+  return [params];
 };
 
 export const getProfileQueryKey = (options?: Options<GetProfileData>) => createQueryKey('getProfile', options);
@@ -557,12 +487,31 @@ export const adminUpdateBlogPostMutation = (options?: Partial<Options<AdminUpdat
 };
 
 /**
- * Set the related/promoted courses for a post.
+ * Set the related/promoted courses for a post by hand.
  */
 export const adminSetBlogPostRelatedCoursesMutation = (options?: Partial<Options<AdminSetBlogPostRelatedCoursesData>>): UseMutationOptions<AdminSetBlogPostRelatedCoursesResponse, AxiosError<AdminSetBlogPostRelatedCoursesError>, Options<AdminSetBlogPostRelatedCoursesData>> => {
   const mutationOptions: UseMutationOptions<AdminSetBlogPostRelatedCoursesResponse, AxiosError<AdminSetBlogPostRelatedCoursesError>, Options<AdminSetBlogPostRelatedCoursesData>> = {
     mutationFn: async (fnOptions) => {
       const { data } = await adminSetBlogPostRelatedCourses({
+        ...options,
+        ...fnOptions,
+        throwOnError: true
+      });
+      return data;
+    }
+  };
+  return mutationOptions;
+};
+
+/**
+ * Enqueue the AI pick of the post's related courses (legacy
+ *       FindRelatedCoursesForBlogPostJob); the job replaces the set when done.
+ *       A missing id surfaces as 404 via the central ent-error handler.
+ */
+export const adminSuggestBlogPostRelatedCoursesMutation = (options?: Partial<Options<AdminSuggestBlogPostRelatedCoursesData>>): UseMutationOptions<AdminSuggestBlogPostRelatedCoursesResponse, AxiosError<AdminSuggestBlogPostRelatedCoursesError>, Options<AdminSuggestBlogPostRelatedCoursesData>> => {
+  const mutationOptions: UseMutationOptions<AdminSuggestBlogPostRelatedCoursesResponse, AxiosError<AdminSuggestBlogPostRelatedCoursesError>, Options<AdminSuggestBlogPostRelatedCoursesData>> = {
+    mutationFn: async (fnOptions) => {
+      const { data } = await adminSuggestBlogPostRelatedCourses({
         ...options,
         ...fnOptions,
         throwOnError: true
@@ -1780,7 +1729,7 @@ export const listBlogPostsInfiniteOptions = (options?: Options<ListBlogPostsData
 };
 
 /**
- * Like a post (idempotent per visitor).
+ * Like a post once per signed-in user; a repeat like changes nothing.
  */
 export const likeBlogPostMutation = (options?: Partial<Options<LikeBlogPostData>>): UseMutationOptions<LikeBlogPostResponse, AxiosError<LikeBlogPostError>, Options<LikeBlogPostData>> => {
   const mutationOptions: UseMutationOptions<LikeBlogPostResponse, AxiosError<LikeBlogPostError>, Options<LikeBlogPostData>> = {
@@ -1799,7 +1748,8 @@ export const likeBlogPostMutation = (options?: Partial<Options<LikeBlogPostData>
 export const getNextBlogPostQueryKey = (options: Options<GetNextBlogPostData>) => createQueryKey('getNextBlogPost', options);
 
 /**
- * The next post to read after this one.
+ * The next post to read after this one: the next older published post in
+ *       the request locale.
  */
 export const getNextBlogPostOptions = (options: Options<GetNextBlogPostData>) => queryOptions<GetNextBlogPostResponse, AxiosError<GetNextBlogPostError>, GetNextBlogPostResponse, ReturnType<typeof getNextBlogPostQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -1817,7 +1767,7 @@ export const getNextBlogPostOptions = (options: Options<GetNextBlogPostData>) =>
 export const getBlogPostQueryKey = (options: Options<GetBlogPostData>) => createQueryKey('getBlogPost', options);
 
 /**
- * A single blog post by slug.
+ * A published post in the request locale, by slug, with its page data.
  */
 export const getBlogPostOptions = (options: Options<GetBlogPostData>) => queryOptions<GetBlogPostResponse, AxiosError<GetBlogPostError>, GetBlogPostResponse, ReturnType<typeof getBlogPostQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -1832,8 +1782,26 @@ export const getBlogPostOptions = (options: Options<GetBlogPostData>) => queryOp
   queryKey: getBlogPostQueryKey(options)
 });
 
+export const getBookQueryKey = (options?: Options<GetBookData>) => createQueryKey('getBook', options);
+
 /**
- * Request the book download link by email.
+ * The book page's state for whoever is visiting; a visitor is answered too.
+ */
+export const getBookOptions = (options?: Options<GetBookData>) => queryOptions<GetBookResponse, AxiosError<GetBookError>, GetBookResponse, ReturnType<typeof getBookQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getBook({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getBookQueryKey(options)
+});
+
+/**
+ * Request the book for the signed-in user. A repeat request changes nothing.
  */
 export const createBookRequestMutation = (options?: Partial<Options<CreateBookRequestData>>): UseMutationOptions<CreateBookRequestResponse, AxiosError<CreateBookRequestError>, Options<CreateBookRequestData>> => {
   const mutationOptions: UseMutationOptions<CreateBookRequestResponse, AxiosError<CreateBookRequestError>, Options<CreateBookRequestData>> = {
@@ -1849,10 +1817,69 @@ export const createBookRequestMutation = (options?: Partial<Options<CreateBookRe
   return mutationOptions;
 };
 
+export const downloadBookQueryKey = (options?: Options<DownloadBookData>) => createQueryKey('downloadBook', options);
+
+/**
+ * Download the book: mark the request downloaded and redirect to the PDF in
+ * blob storage, or back to the book page when there is no request yet. The
+ * browser follows it as a link, so only the session cookie is required — a
+ * navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+ */
+export const downloadBookOptions = (options?: Options<DownloadBookData>) => queryOptions<DownloadBookResponse, AxiosError<DownloadBookError>, DownloadBookResponse, ReturnType<typeof downloadBookQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await downloadBook({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: downloadBookQueryKey(options)
+});
+
+export const getYandexCoursesFeedQueryKey = (options?: Options<GetYandexCoursesFeedData>) => createQueryKey('getYandexCoursesFeed', options);
+
+/**
+ * The same feed at the path the legacy route declares.
+ */
+export const getYandexCoursesFeedOptions = (options?: Options<GetYandexCoursesFeedData>) => queryOptions<GetYandexCoursesFeedResponse, AxiosError<GetYandexCoursesFeedError>, GetYandexCoursesFeedResponse, ReturnType<typeof getYandexCoursesFeedQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getYandexCoursesFeed({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getYandexCoursesFeedQueryKey(options)
+});
+
+export const getYandexCoursesFeedXmlQueryKey = (options?: Options<GetYandexCoursesFeedXmlData>) => createQueryKey('getYandexCoursesFeedXml', options);
+
+/**
+ * The feed at the address production actually answers on. Legacy routes
+ * `/api` with a JSON default format and the action only knows XML, so the
+ * bare path has always answered 406 and Yandex reads this one.
+ */
+export const getYandexCoursesFeedXmlOptions = (options?: Options<GetYandexCoursesFeedXmlData>) => queryOptions<GetYandexCoursesFeedXmlResponse, AxiosError<GetYandexCoursesFeedXmlError>, GetYandexCoursesFeedXmlResponse, ReturnType<typeof getYandexCoursesFeedXmlQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await getYandexCoursesFeedXml({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: getYandexCoursesFeedXmlQueryKey(options)
+});
+
 export const listPublicCourseCategoriesQueryKey = (options?: Options<ListPublicCourseCategoriesData>) => createQueryKey('listPublicCourseCategories', options);
 
 /**
- * List published categories.
+ * List the categories of the request locale.
  */
 export const listPublicCourseCategoriesOptions = (options?: Options<ListPublicCourseCategoriesData>) => queryOptions<ListPublicCourseCategoriesResponse, AxiosError<ListPublicCourseCategoriesError>, ListPublicCourseCategoriesResponse, ReturnType<typeof listPublicCourseCategoriesQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -2014,7 +2041,9 @@ export const startLessonMutation = (options?: Partial<Options<StartLessonData>>)
 export const switchLocaleQueryKey = (options: Options<SwitchLocaleData>) => createQueryKey('switchLocale', options);
 
 /**
- * Persist the preferred UI locale on the session.
+ * Remember the chosen UI locale: on the signed-in user, and in a cookie the
+ * site root reads to pick the locale it redirects to. The page navigates
+ * itself afterwards.
  */
 export const switchLocaleOptions = (options: Options<SwitchLocaleData>) => queryOptions<SwitchLocaleResponse, AxiosError<SwitchLocaleError>, SwitchLocaleResponse, ReturnType<typeof switchLocaleQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -2067,7 +2096,7 @@ export const consumeMagicLinkOptions = (options: Options<ConsumeMagicLinkData>) 
 export const getSitemapQueryKey = (options?: Options<GetSitemapData>) => createQueryKey('getSitemap', options);
 
 /**
- * Everything the sitemap generator needs.
+ * Everything the sitemap page lists, across the ru and en locales.
  */
 export const getSitemapOptions = (options?: Options<GetSitemapData>) => queryOptions<GetSitemapResponse, AxiosError<GetSitemapError>, GetSitemapResponse, ReturnType<typeof getSitemapQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -2118,59 +2147,6 @@ export const getMyDashboardOptions = (options?: Options<GetMyDashboardData>) => 
   queryKey: getMyDashboardQueryKey(options)
 });
 
-export const getPageQueryKey = (options: Options<GetPageData>) => createQueryKey('getPage', options);
-
-/**
- * A static content page by slug.
- */
-export const getPageOptions = (options: Options<GetPageData>) => queryOptions<GetPageResponse, AxiosError<GetPageError>, GetPageResponse, ReturnType<typeof getPageQueryKey>>({
-  queryFn: async ({ queryKey, signal }) => {
-    const { data } = await getPage({
-      ...options,
-      ...queryKey[0],
-      signal,
-      throwOnError: true
-    });
-    return data;
-  },
-  queryKey: getPageQueryKey(options)
-});
-
-/**
- * Complete a passkey login; sets the JWT cookie.
- */
-export const createPasskeySessionMutation = (options?: Partial<Options<CreatePasskeySessionData>>): UseMutationOptions<CreatePasskeySessionResponse, AxiosError<CreatePasskeySessionError>, Options<CreatePasskeySessionData>> => {
-  const mutationOptions: UseMutationOptions<CreatePasskeySessionResponse, AxiosError<CreatePasskeySessionError>, Options<CreatePasskeySessionData>> = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await createPasskeySession({
-        ...options,
-        ...fnOptions,
-        throwOnError: true
-      });
-      return data;
-    }
-  };
-  return mutationOptions;
-};
-
-export const newPasskeySessionQueryKey = (options?: Options<NewPasskeySessionData>) => createQueryKey('newPasskeySession', options);
-
-/**
- * Begin a passkey login ceremony.
- */
-export const newPasskeySessionOptions = (options?: Options<NewPasskeySessionData>) => queryOptions<NewPasskeySessionResponse, AxiosError<NewPasskeySessionError>, NewPasskeySessionResponse, ReturnType<typeof newPasskeySessionQueryKey>>({
-  queryFn: async ({ queryKey, signal }) => {
-    const { data } = await newPasskeySession({
-      ...options,
-      ...queryKey[0],
-      signal,
-      throwOnError: true
-    });
-    return data;
-  },
-  queryKey: newPasskeySessionQueryKey(options)
-});
-
 /**
  * Set a new password using a reset token; signs the user in.
  */
@@ -2205,40 +2181,6 @@ export const checkPasswordResetTokenOptions = (options: Options<CheckPasswordRes
   },
   queryKey: checkPasswordResetTokenQueryKey(options)
 });
-
-/**
- * Send an SMS verification code.
- */
-export const createPhoneAuthMutation = (options?: Partial<Options<CreatePhoneAuthData>>): UseMutationOptions<CreatePhoneAuthResponse, AxiosError<CreatePhoneAuthError>, Options<CreatePhoneAuthData>> => {
-  const mutationOptions: UseMutationOptions<CreatePhoneAuthResponse, AxiosError<CreatePhoneAuthError>, Options<CreatePhoneAuthData>> = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await createPhoneAuth({
-        ...options,
-        ...fnOptions,
-        throwOnError: true
-      });
-      return data;
-    }
-  };
-  return mutationOptions;
-};
-
-/**
- * Confirm the SMS code; sets the JWT cookie.
- */
-export const confirmPhoneAuthMutation = (options?: Partial<Options<ConfirmPhoneAuthData>>): UseMutationOptions<ConfirmPhoneAuthResponse, AxiosError<ConfirmPhoneAuthError>, Options<ConfirmPhoneAuthData>> => {
-  const mutationOptions: UseMutationOptions<ConfirmPhoneAuthResponse, AxiosError<ConfirmPhoneAuthError>, Options<ConfirmPhoneAuthData>> = {
-    mutationFn: async (fnOptions) => {
-      const { data } = await confirmPhoneAuth({
-        ...options,
-        ...fnOptions,
-        throwOnError: true
-      });
-      return data;
-    }
-  };
-  return mutationOptions;
-};
 
 /**
  * Email a password-reset link.

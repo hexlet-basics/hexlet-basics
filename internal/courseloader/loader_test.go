@@ -119,7 +119,7 @@ func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
 	require.Len(t, infos, 3)
 	en := lessonInfoByLocale(t, infos, "en")
 	assert.Equal(t, "Hello, World!", derefStr(en.Name))
-	assert.Contains(t, derefStr(en.Theory), "http://localhost:3001/storage/")
+	assert.Contains(t, derefStr(en.Theory), "http://localhost:3001/api/storage/")
 	assert.NotContains(t, derefStr(en.Theory), "./assets/")
 }
 
