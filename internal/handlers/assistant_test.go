@@ -174,7 +174,7 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
-	askedAt(t, h, lesson, assistant.DailyQuota, time.Now())
+	askedAt(t, h, lesson, assistant.DailyQuota, time.Now().UTC())
 	messages := h.DB.AiMessage.Query().CountX(ctx)
 
 	res, err := h.Client.CreateAssistantMessage(ctx,
@@ -320,7 +320,8 @@ func hasLessonProgress(t *testing.T, h *testsupport.Harness, lesson *ent.CourseL
 		ExistX(t.Context())
 }
 
-// askedAt records n questions by the acting learner at the given time.
+// askedAt records n questions by the acting learner at the given time, which
+// is stored as its wall clock: pass UTC, as the chat writes it.
 func askedAt(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson, n int, at time.Time) {
 	t.Helper()
 	chat := chatFor(t, h, lesson)

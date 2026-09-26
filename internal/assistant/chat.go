@@ -299,11 +299,14 @@ func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID in
 		}
 		chatID = chat.ID
 
+		now := c.now().UTC()
 		if err := db.AiMessage.Create().
 			SetAiChatID(chat.ID).
 			SetRole(RoleUser).
 			SetContent(q.Message).
 			SetUserID(q.UserID).
+			SetCreatedAt(now).
+			SetUpdatedAt(now).
 			Exec(ctx); err != nil {
 			return oops.Wrapf(err, "store assistant question")
 		}
@@ -317,6 +320,7 @@ func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID in
 
 // saveAnswer records a completed answer with its token usage.
 func (c *Chat) saveAnswer(ctx context.Context, chatID int, answer string, usage Usage) error {
+	now := c.now().UTC()
 	return oops.Wrapf(
 		c.db.AiMessage.Create().
 			SetAiChatID(chatID).
@@ -324,6 +328,8 @@ func (c *Chat) saveAnswer(ctx context.Context, chatID int, answer string, usage 
 			SetContent(answer).
 			SetInputTokens(usage.InputTokens).
 			SetOutputTokens(usage.OutputTokens).
+			SetCreatedAt(now).
+			SetUpdatedAt(now).
 			Exec(ctx),
 		"store assistant answer",
 	)
@@ -342,7 +348,11 @@ func (c *Chat) conversation(chat predicate.AiChat) *ent.AiMessageQuery {
 }
 
 // askedToday counts the learner's questions since the start of the UTC day —
-// legacy's Date.current under the default UTC time zone.
+// legacy's Date.current under the default UTC time zone. The columns are
+// `timestamp` without a zone, holding UTC wall-clock time as Rails wrote it,
+// which is why the rows above are stamped in UTC explicitly: the mixin's
+// time.Now default would store the process's local wall clock, and a question
+// asked late in the evening west of Greenwich would land on yesterday.
 func (c *Chat) askedToday(ctx context.Context, userID int) (int, error) {
 	dayStart := c.now().UTC().Truncate(24 * time.Hour)
 	count, err := c.db.AiMessage.Query().
