@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { truncate } from "es-toolkit/compat";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView } from "@/client/types.gen";
 import LessonPage, { LessonMissing } from "@/components/lesson/LessonPage";
@@ -72,22 +73,16 @@ function LessonRoute() {
 // Legacy's description: `[<version name>] — <lesson> — <theory>`, cut by Rails'
 // `truncate(length: 220)` — 217 characters and an ellipsis, mid-word — and then
 // whitespace-squashed by meta-tags. The theory is the raw markdown, as legacy
-// used it, and characters are counted as code points, the way Ruby counts them.
-const DESCRIPTION_LENGTH = 220;
-const OMISSION = "...";
-
+// used it. es-toolkit's truncate counts code points once a string holds any
+// astral or combining character, the way Ruby counts characters.
 function lessonDescription({ lesson }: CourseLessonView): string {
   const version = lesson.course.currentVersion?.name ?? "";
   const text = `[${version}] — ${lesson.name ?? ""} — ${lesson.theory ?? ""}`;
-  const chars = Array.from(text);
-  const truncated =
-    chars.length > DESCRIPTION_LENGTH
-      ? chars.slice(0, DESCRIPTION_LENGTH - OMISSION.length).join("") + OMISSION
-      : text;
-  return squish(truncated);
+  return squish(truncate(text, { length: 220 }));
 }
 
 // Rails' `squish`: every whitespace run to one space, both ends trimmed.
+// es-toolkit has no counterpart, so this one line stays.
 function squish(text: string): string {
   return text.replace(/\s+/g, " ").trim();
 }
