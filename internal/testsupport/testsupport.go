@@ -194,7 +194,10 @@ func NewHarness(t *testing.T) *Harness {
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, translator, errorHandler)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar,
+		// The real remover, over the savepoint transactor: what a test asserts
+		// about a removed account is what production does to one.
+		accounts.NewRemover(transactor), eventPublisher, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),

@@ -13,6 +13,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
@@ -45,6 +46,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
 		nil, // no upload runs through the auth router
 		testsupport.NewRecordingRegistrar(db),
+		accounts.NewRemover(transactor),
 		&testsupport.RecordingEventPublisher{},
 		translator,
 		errorHandler,
@@ -340,4 +342,41 @@ func TestSignUpRejectsShortPassword(t *testing.T) {
 	exists, err := db.User.Query().Where(user.Email("short-password@example.com")).Exist(t.Context())
 	require.NoError(t, err)
 	assert.False(t, exists)
+}
+
+// The profile's name rules are contract constraints: the generated server
+// refuses them as a bad request, and only a valid name is saved. Raw HTTP, so
+// the bodies are exactly what a client that skips the form could send.
+func TestUpdateProfileRejectsInvalidNames(t *testing.T) {
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	router := newAuthRouterWithDB(t, db, transactor)
+	const email = "profile-validation@example.com"
+
+	resp := do(t, router, http.MethodPost, "/api/users",
+		`{"firstName":"Ada","email":"`+email+`","password":"s3cret-pass"}`, nil)
+	require.Equal(t, http.StatusCreated, resp.StatusCode)
+	jwt := jwtCookie(resp)
+	xsrf := xsrfCookieFromResponse(resp)
+	require.NotNil(t, jwt)
+	require.NotNil(t, xsrf)
+
+	for _, body := range []string{
+		`{"firstName":"` + strings.Repeat("a", 41) + `","lastName":null}`,
+		`{"firstName":"Ada","lastName":"Love@lace"}`,
+		`{"firstName":"Ada+","lastName":null}`,
+	} {
+		resp = doWithXSRF(t, router, http.MethodPatch, "/api/account/profile", body, jwt, xsrf.Value)
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode, body)
+	}
+	u := db.User.Query().Where(user.Email(email)).OnlyX(t.Context())
+	assert.Equal(t, "Ada", *u.FirstName)
+	assert.Nil(t, u.LastName)
+
+	// Forty characters, and a blank last name, are both allowed.
+	resp = doWithXSRF(t, router, http.MethodPatch, "/api/account/profile",
+		`{"firstName":"`+strings.Repeat("a", 40)+`","lastName":""}`, jwt, xsrf.Value)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	u = db.User.GetX(t.Context(), u.ID)
+	assert.Equal(t, strings.Repeat("a", 40), *u.FirstName)
+	assert.Empty(t, *u.LastName)
 }

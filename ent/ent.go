@@ -36,6 +36,7 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
+	"hexletbasics/ent/useraccount"
 	"reflect"
 	"sync"
 
@@ -132,6 +133,7 @@ func checkColumn(t, c string) error {
 			staffrole.Table:                 staffrole.ValidColumn,
 			staffrolepermission.Table:       staffrolepermission.ValidColumn,
 			user.Table:                      user.ValidColumn,
+			useraccount.Table:               useraccount.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

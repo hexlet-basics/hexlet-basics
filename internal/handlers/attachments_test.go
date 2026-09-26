@@ -19,6 +19,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
 
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
@@ -75,6 +76,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
 		assets,
 		testsupport.NewRecordingRegistrar(db),
+		accounts.NewRemover(transactor),
 		&testsupport.RecordingEventPublisher{},
 		translator,
 		errorHandler,

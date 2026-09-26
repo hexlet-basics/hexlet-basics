@@ -4,6 +4,9 @@ export default {
       profiles: {
         edit: {
           delete: "Delete account",
+          meta: {
+            description: "Profile",
+          },
           passkeys: {
             add: "Añadir una passkey",
             already_registered: "Esta passkey ya está registrada.",

@@ -545,10 +545,11 @@ type Handler interface {
 	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
 	// SwitchLocale implements switchLocale operation.
 	//
-	// Persist the preferred UI locale on the session.
+	// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+	// the locale it redirects to. The page navigates itself afterwards.
 	//
 	// GET /api/locale/switch
-	SwitchLocale(ctx context.Context, params SwitchLocaleParams) error
+	SwitchLocale(ctx context.Context, params SwitchLocaleParams) (*SwitchLocaleNoContent, error)
 	// UpdatePassword implements updatePassword operation.
 	//
 	// Set a new password using a reset token; signs the user in.

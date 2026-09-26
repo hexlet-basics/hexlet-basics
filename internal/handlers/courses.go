@@ -54,6 +54,7 @@ func NewServer(
 	tracker progress.Tracker,
 	assets *assetstore.Store,
 	registrar accounts.UserRegistrar,
+	remover accounts.AccountRemover,
 	eventPublisher events.StandalonePublisher,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
@@ -66,7 +67,7 @@ func NewServer(
 		reviews:  reviews,
 		progress: tracker,
 		assets:   assets,
-		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker, emails),
+		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, remover, eventPublisher, tracker, emails),
 		i18n:     translator,
 		errors:   errorHandler,
 	}
