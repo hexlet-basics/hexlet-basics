@@ -1,7 +1,6 @@
-import { Box, Center, rem } from "@mantine/core";
-import { IconCircleCheck, IconLock } from "@tabler/icons-react";
-import { useTranslation } from "react-i18next";
+import { Box } from "@mantine/core";
 import type { CourseLessonView } from "@/client/types.gen";
+import LessonMark from "@/components/lesson/LessonMark";
 import { NavLink } from "@/components/RouterLink";
 
 // The course's lessons, in course order, with the current one marked. Legacy's
@@ -13,7 +12,6 @@ import { NavLink } from "@/components/RouterLink";
 // this" — it is the editor's actions that are gated, and the server decides
 // that, not this list.
 export default function LessonNavigation({ view }: { view: CourseLessonView }) {
-  const { t } = useTranslation();
   const courseSlug = view.lesson.course.slug;
 
   // Names and order come from `lessons`, checks and locks from `progress`, joined
@@ -34,19 +32,7 @@ export default function LessonNavigation({ view }: { view: CourseLessonView }) {
             label={item.name}
             active={current}
             aria-current={current ? "page" : undefined}
-            leftSection={
-              state?.finished ? (
-                <Center c="green" aria-label={t(($) => $.courses.lessons.show.finished)}>
-                  <IconCircleCheck size={16} />
-                </Center>
-              ) : state && !state.available ? (
-                <Center c="dimmed" aria-label={t(($) => $.courses.lessons.show.locked)}>
-                  <IconLock size={16} />
-                </Center>
-              ) : (
-                <Box w={rem(16)} aria-hidden="true" />
-              )
-            }
+            leftSection={<LessonMark state={state} />}
           />
         );
       })}
