@@ -2408,34 +2408,6 @@ func (s *Sitemap) Validate() error {
 		})
 	}
 	if err := func() error {
-		if s.Lessons == nil {
-			return errors.New("nil is invalid value")
-		}
-		var failures []validate.FieldError
-		for i, elem := range s.Lessons {
-			if err := func() error {
-				if err := elem.Validate(); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				failures = append(failures, validate.FieldError{
-					Name:  fmt.Sprintf("[%d]", i),
-					Error: err,
-				})
-			}
-		}
-		if len(failures) > 0 {
-			return &validate.Error{Fields: failures}
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "lessons",
-			Error: err,
-		})
-	}
-	if err := func() error {
 		if s.BlogPosts == nil {
 			return errors.New("nil is invalid value")
 		}
@@ -2460,6 +2432,17 @@ func (s *Sitemap) Validate() error {
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
 			Name:  "blogPosts",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if s.Categories == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "categories",
 			Error: err,
 		})
 	}
@@ -2493,29 +2476,6 @@ func (s *SitemapBlogPost) Validate() error {
 }
 
 func (s *SitemapCourseLandingPage) Validate() error {
-	if s == nil {
-		return validate.ErrNilPointer
-	}
-
-	var failures []validate.FieldError
-	if err := func() error {
-		if err := s.Locale.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "locale",
-			Error: err,
-		})
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-	return nil
-}
-
-func (s *SitemapCourseLesson) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}

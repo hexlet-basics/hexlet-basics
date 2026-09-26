@@ -502,7 +502,7 @@ type Handler interface {
 	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error)
 	// GetSitemap implements getSitemap operation.
 	//
-	// Everything the sitemap generator needs.
+	// Everything the sitemap page lists, across the ru and en locales.
 	//
 	// GET /api/map
 	GetSitemap(ctx context.Context) (*Sitemap, error)

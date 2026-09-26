@@ -18496,7 +18496,7 @@ func (s *Server) handleGetPublicCourseCategoryRequest(args [1]string, argsEscape
 
 // handleGetSitemapRequest handles getSitemap operation.
 //
-// Everything the sitemap generator needs.
+// Everything the sitemap page lists, across the ru and en locales.
 //
 // GET /api/map
 func (s *Server) handleGetSitemapRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

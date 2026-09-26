@@ -777,7 +777,7 @@ func (UnimplementedHandler) GetPublicCourseCategory(ctx context.Context, params 
 
 // GetSitemap implements getSitemap operation.
 //
-// Everything the sitemap generator needs.
+// Everything the sitemap page lists, across the ru and en locales.
 //
 // GET /api/map
 func (UnimplementedHandler) GetSitemap(ctx context.Context) (r *Sitemap, _ error) {

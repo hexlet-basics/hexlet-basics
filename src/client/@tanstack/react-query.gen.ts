@@ -2077,7 +2077,7 @@ export const consumeMagicLinkOptions = (options: Options<ConsumeMagicLinkData>) 
 export const getSitemapQueryKey = (options?: Options<GetSitemapData>) => createQueryKey('getSitemap', options);
 
 /**
- * Everything the sitemap generator needs.
+ * Everything the sitemap page lists, across the ru and en locales.
  */
 export const getSitemapOptions = (options?: Options<GetSitemapData>) => queryOptions<GetSitemapResponse, AxiosError<GetSitemapError>, GetSitemapResponse, ReturnType<typeof getSitemapQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {

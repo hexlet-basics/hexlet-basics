@@ -772,24 +772,18 @@ export const zSitemapCourseLandingPage = z.object({
 });
 
 /**
- * Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).
- */
-export const zSitemapCourseLesson = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  name: z.string(),
-  slug: z.string(),
-  naturalOrder: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  locale: zLocale
-});
-
-/**
- * Aggregated data for the XML sitemap / SEO index.
+ * The rows behind the HTML sitemap page (legacy `HomeController#sitemap`,
+ * `/ru/map`). Flat lists carrying their own locale; the page groups them.
+ *
+ * Landing pages come already narrowed to those whose course has lessons in
+ * the page's locale: legacy sent the lessons only for that check (their list
+ * on the page was commented out), so the filter runs in SQL instead of
+ * shipping every lesson.
  */
 export const zSitemap = z.object({
   landingPages: z.array(zSitemapCourseLandingPage),
-  lessons: z.array(zSitemapCourseLesson),
-  blogPosts: z.array(zSitemapBlogPost)
+  blogPosts: z.array(zSitemapBlogPost),
+  categories: z.array(zCourseCategory)
 });
 
 export const zStaffMemberInput = z.object({

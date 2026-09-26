@@ -476,16 +476,6 @@ model SitemapCourseLandingPage {
   locale: Locale;
 }
 
-/** Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`). */
-model SitemapCourseLesson {
-  id: int32;
-  courseId: int32;
-  name: string;
-  slug: string;
-  naturalOrder: int32;
-  locale: Locale;
-}
-
 /** Minimal blog-post row for the sitemap (legacy: `SitemapBlogPost`). */
 model SitemapBlogPost {
   id: int32;
