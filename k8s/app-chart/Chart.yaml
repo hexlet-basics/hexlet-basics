@@ -1,0 +1,15 @@
+apiVersion: v2
+# Same chart and release name as the legacy chart (legacy/k8s/app-chart): the
+# cutover is `helm upgrade codebasics` over the running release, so Helm
+# replaces the Rails workloads in place and `helm rollback` restores them for
+# the rollback window (ADR-0015). Renaming it would mean a second release
+# fighting the first over the same Services and ingress.
+name: codebasics
+description: The Go API, async worker and SSR frontend of code-basics.com
+type: application
+# The image tag everywhere. release-please bumps it with package.json
+# (release-please-config.json extra-files, the generic updater keyed on the
+# x-release-please-version marker so these comments survive), so a release
+# commit is a deployable chart.
+version: 0.1.3 # x-release-please-version
+icon: https://code-basics.com/favicon.ico

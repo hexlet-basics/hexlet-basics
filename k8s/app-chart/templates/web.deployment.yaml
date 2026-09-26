@@ -1,0 +1,99 @@
+---
+
+# The SSR frontend (ADR-0008). It keeps the legacy deployment name and
+# selector: selector labels are immutable, and keeping them lets the cutover
+# upgrade roll these pods over the Rails web pods instead of failing. It holds
+# no secret and no Docker socket.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-web-deployment"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.web.replicas }}
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-web-pod"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+        codebasics/pod: "{{ .Release.Name }}-{{ .Chart.Version }}-web-pod"
+    spec:
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "codebasics/pod"
+                    operator: In
+                    values:
+                      - "{{ .Release.Name }}-{{ .Chart.Version }}-web-pod"
+              topologyKey: "kubernetes.io/hostname"
+        {{- include "codebasics.nodeAffinity" "web" | nindent 8 }}
+
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: web
+          imagePullPolicy: IfNotPresent
+          image: {{ include "codebasics.webImage" . }}
+          ports:
+            - containerPort: 3000
+          # A static file srvx serves itself: it proves the Node process is up
+          # without rendering a page, which would call the API and tie this
+          # pod's health to Go's.
+          startupProbe:
+            httpGet:
+              path: /favicon.svg
+              port: 3000
+            periodSeconds: 5
+            failureThreshold: 12
+          readinessProbe:
+            httpGet:
+              path: /favicon.svg
+              port: 3000
+            periodSeconds: 8
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /favicon.svg
+              port: 3000
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+          env:
+            # SSR reaches Go over the cluster network; the contract paths carry
+            # the /api prefix themselves, so this is the bare service origin.
+            - name: API_URL
+              value: "http://{{ .Release.Name }}-api-service"
+            # Heap cap carried over from the legacy SSR container.
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=256"
+          # The built-in sleep action (Kubernetes 1.30+): the images have no
+          # `sleep` binary for an exec hook.
+          lifecycle:
+            preStop:
+              sleep:
+                seconds: 10
