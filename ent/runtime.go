@@ -23,6 +23,7 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
+	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
@@ -30,6 +31,7 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
+	"hexletbasics/ent/useraccount"
 	"time"
 )
 
@@ -360,6 +362,21 @@ func init() {
 	landingpageqnaitem.DefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.Default.(func() time.Time)
 	// landingpageqnaitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	landingpageqnaitem.UpdateDefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
+	leadMixin := schema.Lead{}.Mixin()
+	leadMixinFields0 := leadMixin[0].Fields()
+	_ = leadMixinFields0
+	leadFields := schema.Lead{}.Fields()
+	_ = leadFields
+	// leadDescCreatedAt is the schema descriptor for created_at field.
+	leadDescCreatedAt := leadMixinFields0[0].Descriptor()
+	// lead.DefaultCreatedAt holds the default value on creation for the created_at field.
+	lead.DefaultCreatedAt = leadDescCreatedAt.Default.(func() time.Time)
+	// leadDescUpdatedAt is the schema descriptor for updated_at field.
+	leadDescUpdatedAt := leadMixinFields0[1].Descriptor()
+	// lead.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	lead.DefaultUpdatedAt = leadDescUpdatedAt.Default.(func() time.Time)
+	// lead.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	lead.UpdateDefaultUpdatedAt = leadDescUpdatedAt.UpdateDefault.(func() time.Time)
 	lessonprogressMixin := schema.LessonProgress{}.Mixin()
 	lessonprogressMixinFields0 := lessonprogressMixin[0].Fields()
 	_ = lessonprogressMixinFields0
@@ -466,4 +483,19 @@ func init() {
 	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
 	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
+	useraccountMixin := schema.UserAccount{}.Mixin()
+	useraccountMixinFields0 := useraccountMixin[0].Fields()
+	_ = useraccountMixinFields0
+	useraccountFields := schema.UserAccount{}.Fields()
+	_ = useraccountFields
+	// useraccountDescCreatedAt is the schema descriptor for created_at field.
+	useraccountDescCreatedAt := useraccountMixinFields0[0].Descriptor()
+	// useraccount.DefaultCreatedAt holds the default value on creation for the created_at field.
+	useraccount.DefaultCreatedAt = useraccountDescCreatedAt.Default.(func() time.Time)
+	// useraccountDescUpdatedAt is the schema descriptor for updated_at field.
+	useraccountDescUpdatedAt := useraccountMixinFields0[1].Descriptor()
+	// useraccount.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	useraccount.DefaultUpdatedAt = useraccountDescUpdatedAt.Default.(func() time.Time)
+	// useraccount.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	useraccount.UpdateDefaultUpdatedAt = useraccountDescUpdatedAt.UpdateDefault.(func() time.Time)
 }

@@ -29,9 +29,11 @@ type Config struct {
 	// AppHost (canonical URLs, always the production host) it points at the
 	// local frontend in development, so a developer can follow the link.
 	SiteURL string `env:"SITE_URL" envDefault:"https://code-basics.com"`
-	// PublicURL is this server's own public origin, used to build absolute asset
-	// URLs it serves itself (the `/storage/{key}` blob read path). Separate from
-	// AppHost because the API may sit on a different host than the site.
+	// PublicURL is the public origin this server is reached at, used to build
+	// absolute asset URLs it serves itself (the `/api/storage/{key}` blob read
+	// path). In production it is the site's own origin, since the ingress routes
+	// `/api/*` to Go (ADR-0015); the dev default reaches Go directly. Separate
+	// from AppHost, which is always the canonical production host.
 	PublicURL string `env:"PUBLIC_URL" envDefault:"http://localhost:3001"`
 	// CourseRepoBaseURL is the GitHub org base under which each course's exercises
 	// repo lives: the loader clones `<base>/exercises-<slug>.git`. The default

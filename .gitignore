@@ -44,3 +44,4 @@ stats.html
 # Vitest browser-mode failure artifacts
 .vitest-attachments/
 **/__screenshots__/
+.vitest/

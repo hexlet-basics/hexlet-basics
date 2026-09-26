@@ -61,7 +61,7 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 
 	handler := handlers.NewAPIErrorHandler(translator, logger)
 	recorder := httptest.NewRecorder()
-	request := httptest.NewRequest(http.MethodPost, "/admin/courses", nil).WithContext(ctx)
+	request := httptest.NewRequest(http.MethodPost, "/api/admin/courses", nil).WithContext(ctx)
 	cause := errors.New("database unavailable")
 	handler.Write(ctx, recorder, request, cause)
 
@@ -74,7 +74,7 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 	}`, recorder.Body.String())
 	assert.Contains(t, logs.String(), `"msg":"request failed"`)
 	assert.Contains(t, logs.String(), `"method":"POST"`)
-	assert.Contains(t, logs.String(), `"path":"/admin/courses"`)
+	assert.Contains(t, logs.String(), `"path":"/api/admin/courses"`)
 	assert.Contains(t, logs.String(), `"trace_id":"`+span.SpanContext().TraceID().String()+`"`)
 
 	events := transport.Events()
@@ -159,7 +159,7 @@ func TestGeneratedClientDecodesCentralErrorsAsProblemDetails(t *testing.T) {
 	events := transport.Events()
 	require.Len(t, events, 1)
 	assert.Equal(t, http.MethodGet, events[0].Request.Method)
-	assert.Equal(t, "http://test/languages", events[0].Request.URL)
+	assert.Equal(t, "http://test/api/languages", events[0].Request.URL)
 }
 
 var _ trace.TracerProvider = (*sdktrace.TracerProvider)(nil)

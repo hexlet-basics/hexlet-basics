@@ -17,6 +17,10 @@ type Lead struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID int `json:"user_id,omitempty"`
 	// Email holds the value of the "email" field.
@@ -31,8 +35,8 @@ type Lead struct {
 	SurveyAnswersData *string `json:"survey_answers_data,omitempty"`
 	// CoursesData holds the value of the "courses_data" field.
 	CoursesData *string `json:"courses_data,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt    time.Time `json:"created_at,omitempty"`
+	// YmClientID holds the value of the "ym_client_id" field.
+	YmClientID   *string `json:"ym_client_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -43,9 +47,9 @@ func (*Lead) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case lead.FieldID, lead.FieldUserID:
 			values[i] = new(sql.NullInt64)
-		case lead.FieldEmail, lead.FieldPhone, lead.FieldWhatsapp, lead.FieldTelegram, lead.FieldSurveyAnswersData, lead.FieldCoursesData:
+		case lead.FieldEmail, lead.FieldPhone, lead.FieldWhatsapp, lead.FieldTelegram, lead.FieldSurveyAnswersData, lead.FieldCoursesData, lead.FieldYmClientID:
 			values[i] = new(sql.NullString)
-		case lead.FieldCreatedAt:
+		case lead.FieldCreatedAt, lead.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -68,6 +72,18 @@ func (_m *Lead) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case lead.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case lead.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case lead.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
@@ -116,11 +132,12 @@ func (_m *Lead) assignValues(columns []string, values []any) error {
 				_m.CoursesData = new(string)
 				*_m.CoursesData = value.String
 			}
-		case lead.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+		case lead.FieldYmClientID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field ym_client_id", values[i])
 			} else if value.Valid {
-				_m.CreatedAt = value.Time
+				_m.YmClientID = new(string)
+				*_m.YmClientID = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -158,6 +175,12 @@ func (_m *Lead) String() string {
 	var builder strings.Builder
 	builder.WriteString("Lead(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
@@ -191,8 +214,10 @@ func (_m *Lead) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	builder.WriteString("created_at=")
-	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	if v := _m.YmClientID; v != nil {
+		builder.WriteString("ym_client_id=")
+		builder.WriteString(*v)
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

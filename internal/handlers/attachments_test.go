@@ -19,6 +19,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob/memblob"
 
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
@@ -75,7 +76,9 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
 		assets,
 		testsupport.NewRecordingRegistrar(db),
+		accounts.NewRemover(transactor),
 		&testsupport.RecordingEventPublisher{},
+		nil, // no lead is submitted here
 		translator,
 		errorHandler,
 	)
@@ -140,7 +143,7 @@ func uploadRequest(t *testing.T, filename, contentType string, data []byte) *htt
 	require.NoError(t, err)
 	require.NoError(t, mw.Close())
 
-	req := httptest.NewRequest(http.MethodPost, "/admin/attachments", &body)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/attachments", &body)
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 	return req
 }
@@ -184,7 +187,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 	assert.Equal(t, int64(len(tinyPNG)), att.ByteSize)
 	// The configured public origin is canonical even when the request arrived
 	// through a different host or proxy.
-	assert.True(t, strings.HasPrefix(att.URL, "http://assets.example.test/storage/"),
+	assert.True(t, strings.HasPrefix(att.URL, "http://assets.example.test/api/storage/"),
 		"url must use the configured public origin, got %q", att.URL)
 	assert.Contains(t, att.URL, ".png", "the read URL uses the detected image extension")
 
@@ -375,7 +378,7 @@ func TestUploadAttachmentRequiresFilePart(t *testing.T) {
 	mw := multipart.NewWriter(&body)
 	require.NoError(t, mw.WriteField("other", "x"))
 	require.NoError(t, mw.Close())
-	req := httptest.NewRequest(http.MethodPost, "/admin/attachments", &body)
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/attachments", &body)
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 
 	rec := httptest.NewRecorder()
@@ -391,7 +394,7 @@ func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/storage/does-not-exist.png", nil))
+	router.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/storage/does-not-exist.png", nil))
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
 	assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))

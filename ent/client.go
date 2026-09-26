@@ -41,6 +41,7 @@ import (
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/user"
+	"hexletbasics/ent/useraccount"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -113,6 +114,8 @@ type Client struct {
 	StaffRolePermission *StaffRolePermissionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAccount is the client for interacting with the UserAccount builders.
+	UserAccount *UserAccountClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -154,6 +157,7 @@ func (c *Client) init() {
 	c.StaffRole = NewStaffRoleClient(c.config)
 	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.UserAccount = NewUserAccountClient(c.config)
 }
 
 type (
@@ -276,6 +280,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
 		User:                      NewUserClient(cfg),
+		UserAccount:               NewUserAccountClient(cfg),
 	}, nil
 }
 
@@ -325,6 +330,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
 		User:                      NewUserClient(cfg),
+		UserAccount:               NewUserAccountClient(cfg),
 	}, nil
 }
 
@@ -361,7 +367,7 @@ func (c *Client) Use(hooks ...Hook) {
 		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
 		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
 		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User,
+		c.StaffRole, c.StaffRolePermission, c.User, c.UserAccount,
 	} {
 		n.Use(hooks...)
 	}
@@ -378,7 +384,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
 		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
 		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User,
+		c.StaffRole, c.StaffRolePermission, c.User, c.UserAccount,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -447,6 +453,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.StaffRolePermission.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
+	case *UserAccountMutation:
+		return c.UserAccount.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -2795,6 +2803,38 @@ func (c *CourseLessonVersionClient) GetX(ctx context.Context, id int) *CourseLes
 	return obj
 }
 
+// QueryModuleVersion queries the module_version edge of a CourseLessonVersion.
+func (c *CourseLessonVersionClient) QueryModuleVersion(_m *CourseLessonVersion) *CourseModuleVersionQuery {
+	query := (&CourseModuleVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessonversion.Table, courselessonversion.FieldID, id),
+			sqlgraph.To(coursemoduleversion.Table, coursemoduleversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, courselessonversion.ModuleVersionTable, courselessonversion.ModuleVersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLesson queries the lesson edge of a CourseLessonVersion.
+func (c *CourseLessonVersionClient) QueryLesson(_m *CourseLessonVersion) *CourseLessonQuery {
+	query := (&CourseLessonClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessonversion.Table, courselessonversion.FieldID, id),
+			sqlgraph.To(courselesson.Table, courselesson.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, courselessonversion.LessonTable, courselessonversion.LessonColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseLessonVersionClient) Hooks() []Hook {
 	return c.hooks.CourseLessonVersion
@@ -3061,6 +3101,22 @@ func (c *CourseModuleTranslationClient) GetX(ctx context.Context, id int) *Cours
 	return obj
 }
 
+// QueryVersion queries the version edge of a CourseModuleTranslation.
+func (c *CourseModuleTranslationClient) QueryVersion(_m *CourseModuleTranslation) *CourseModuleVersionQuery {
+	query := (&CourseModuleVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursemoduletranslation.Table, coursemoduletranslation.FieldID, id),
+			sqlgraph.To(coursemoduleversion.Table, coursemoduleversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, coursemoduletranslation.VersionTable, coursemoduletranslation.VersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseModuleTranslationClient) Hooks() []Hook {
 	return c.hooks.CourseModuleTranslation
@@ -3192,6 +3248,22 @@ func (c *CourseModuleVersionClient) GetX(ctx context.Context, id int) *CourseMod
 		panic(err)
 	}
 	return obj
+}
+
+// QueryLessonVersions queries the lesson_versions edge of a CourseModuleVersion.
+func (c *CourseModuleVersionClient) QueryLessonVersions(_m *CourseModuleVersion) *CourseLessonVersionQuery {
+	query := (&CourseLessonVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursemoduleversion.Table, coursemoduleversion.FieldID, id),
+			sqlgraph.To(courselessonversion.Table, courselessonversion.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, coursemoduleversion.LessonVersionsTable, coursemoduleversion.LessonVersionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -4906,6 +4978,139 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 	}
 }
 
+// UserAccountClient is a client for the UserAccount schema.
+type UserAccountClient struct {
+	config
+}
+
+// NewUserAccountClient returns a client for the UserAccount from the given config.
+func NewUserAccountClient(c config) *UserAccountClient {
+	return &UserAccountClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `useraccount.Hooks(f(g(h())))`.
+func (c *UserAccountClient) Use(hooks ...Hook) {
+	c.hooks.UserAccount = append(c.hooks.UserAccount, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `useraccount.Intercept(f(g(h())))`.
+func (c *UserAccountClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserAccount = append(c.inters.UserAccount, interceptors...)
+}
+
+// Create returns a builder for creating a UserAccount entity.
+func (c *UserAccountClient) Create() *UserAccountCreate {
+	mutation := newUserAccountMutation(c.config, OpCreate)
+	return &UserAccountCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserAccount entities.
+func (c *UserAccountClient) CreateBulk(builders ...*UserAccountCreate) *UserAccountCreateBulk {
+	return &UserAccountCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserAccountClient) MapCreateBulk(slice any, setFunc func(*UserAccountCreate, int)) *UserAccountCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserAccountCreateBulk{err: fmt.Errorf("calling to UserAccountClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserAccountCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserAccountCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserAccount.
+func (c *UserAccountClient) Update() *UserAccountUpdate {
+	mutation := newUserAccountMutation(c.config, OpUpdate)
+	return &UserAccountUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserAccountClient) UpdateOne(_m *UserAccount) *UserAccountUpdateOne {
+	mutation := newUserAccountMutation(c.config, OpUpdateOne, withUserAccount(_m))
+	return &UserAccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserAccountClient) UpdateOneID(id int) *UserAccountUpdateOne {
+	mutation := newUserAccountMutation(c.config, OpUpdateOne, withUserAccountID(id))
+	return &UserAccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserAccount.
+func (c *UserAccountClient) Delete() *UserAccountDelete {
+	mutation := newUserAccountMutation(c.config, OpDelete)
+	return &UserAccountDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserAccountClient) DeleteOne(_m *UserAccount) *UserAccountDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserAccountClient) DeleteOneID(id int) *UserAccountDeleteOne {
+	builder := c.Delete().Where(useraccount.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserAccountDeleteOne{builder}
+}
+
+// Query returns a query builder for UserAccount.
+func (c *UserAccountClient) Query() *UserAccountQuery {
+	return &UserAccountQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserAccount},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserAccount entity by its id.
+func (c *UserAccountClient) Get(ctx context.Context, id int) (*UserAccount, error) {
+	return c.Query().Where(useraccount.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserAccountClient) GetX(ctx context.Context, id int) *UserAccount {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *UserAccountClient) Hooks() []Hook {
+	return c.hooks.UserAccount
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserAccountClient) Interceptors() []Interceptor {
+	return c.inters.UserAccount
+}
+
+func (c *UserAccountClient) mutate(ctx context.Context, m *UserAccountMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserAccountCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserAccountUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserAccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserAccountDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserAccount mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
@@ -4915,7 +5120,7 @@ type (
 		CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
-		StaffRole, StaffRolePermission, User []ent.Hook
+		StaffRole, StaffRolePermission, User, UserAccount []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
@@ -4924,6 +5129,6 @@ type (
 		CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
-		StaffRole, StaffRolePermission, User []ent.Interceptor
+		StaffRole, StaffRolePermission, User, UserAccount []ent.Interceptor
 	}
 )

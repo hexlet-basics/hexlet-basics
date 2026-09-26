@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListLessonProgressData, AdminListLessonProgressErrors, AdminListLessonProgressResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConfirmPhoneAuthData, ConfirmPhoneAuthErrors, ConfirmPhoneAuthResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasskeyData, CreatePasskeyErrors, CreatePasskeyResponses, CreatePasskeySessionData, CreatePasskeySessionErrors, CreatePasskeySessionResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreatePhoneAuthData, CreatePhoneAuthErrors, CreatePhoneAuthResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeletePasskeyData, DeletePasskeyErrors, DeletePasskeyResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetPageData, GetPageErrors, GetPageResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPasskeysData, ListPasskeysErrors, ListPasskeysResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, NewPasskeyData, NewPasskeyErrors, NewPasskeyResponses, NewPasskeySessionData, NewPasskeySessionErrors, NewPasskeySessionResponses, StartLessonData, StartLessonErrors, StartLessonResponses, SwitchLocaleData, SwitchLocaleErrors, SwitchLocaleResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
+import type { AdminCreateBannerData, AdminCreateBannerErrors, AdminCreateBannerResponses, AdminCreateBlogPostData, AdminCreateBlogPostErrors, AdminCreateBlogPostResponses, AdminCreateCategoryQnaItemData, AdminCreateCategoryQnaItemErrors, AdminCreateCategoryQnaItemResponses, AdminCreateCourseCategoryData, AdminCreateCourseCategoryErrors, AdminCreateCourseCategoryResponses, AdminCreateCourseData, AdminCreateCourseErrors, AdminCreateCourseLandingPageData, AdminCreateCourseLandingPageErrors, AdminCreateCourseLandingPageResponses, AdminCreateCourseResponses, AdminCreateCourseVersionData, AdminCreateCourseVersionErrors, AdminCreateCourseVersionResponses, AdminCreateLandingPageQnaItemData, AdminCreateLandingPageQnaItemErrors, AdminCreateLandingPageQnaItemResponses, AdminCreateReviewData, AdminCreateReviewErrors, AdminCreateReviewResponses, AdminCreateRoleData, AdminCreateRoleErrors, AdminCreateRoleResponses, AdminCreateStaffMemberData, AdminCreateStaffMemberErrors, AdminCreateStaffMemberResponses, AdminCreateUserData, AdminCreateUserErrors, AdminCreateUserResponses, AdminDeleteBannerData, AdminDeleteBannerErrors, AdminDeleteBannerResponses, AdminDeleteBlogPostData, AdminDeleteBlogPostErrors, AdminDeleteBlogPostResponses, AdminDeleteCategoryQnaItemData, AdminDeleteCategoryQnaItemErrors, AdminDeleteCategoryQnaItemResponses, AdminDeleteCourseCategoryData, AdminDeleteCourseCategoryErrors, AdminDeleteCourseCategoryResponses, AdminDeleteCourseLandingPageData, AdminDeleteCourseLandingPageErrors, AdminDeleteCourseLandingPageResponses, AdminDeleteLandingPageQnaItemData, AdminDeleteLandingPageQnaItemErrors, AdminDeleteLandingPageQnaItemResponses, AdminDeleteReviewData, AdminDeleteReviewErrors, AdminDeleteReviewResponses, AdminDeleteRoleData, AdminDeleteRoleErrors, AdminDeleteRoleResponses, AdminDeleteStaffMemberData, AdminDeleteStaffMemberErrors, AdminDeleteStaffMemberResponses, AdminDeleteUserData, AdminDeleteUserErrors, AdminDeleteUserResponses, AdminGetBannerData, AdminGetBannerErrors, AdminGetBannerResponses, AdminGetBlogPostData, AdminGetBlogPostErrors, AdminGetBlogPostResponses, AdminGetCourseCategoryData, AdminGetCourseCategoryErrors, AdminGetCourseCategoryResponses, AdminGetCourseData, AdminGetCourseErrors, AdminGetCourseLandingPageData, AdminGetCourseLandingPageErrors, AdminGetCourseLandingPageResponses, AdminGetCourseResponses, AdminGetManagementUserData, AdminGetManagementUserErrors, AdminGetManagementUserResponses, AdminGetReviewData, AdminGetReviewErrors, AdminGetReviewResponses, AdminGetRoleData, AdminGetRoleErrors, AdminGetRolePermissionsData, AdminGetRolePermissionsErrors, AdminGetRolePermissionsResponses, AdminGetRoleResponses, AdminGetStaffMemberData, AdminGetStaffMemberErrors, AdminGetStaffMemberResponses, AdminGetUserData, AdminGetUserErrors, AdminGetUserResponses, AdminListBannersData, AdminListBannersErrors, AdminListBannersResponses, AdminListBlogPostsData, AdminListBlogPostsErrors, AdminListBlogPostsResponses, AdminListCategoryQnaItemsData, AdminListCategoryQnaItemsErrors, AdminListCategoryQnaItemsResponses, AdminListCourseCategoriesData, AdminListCourseCategoriesErrors, AdminListCourseCategoriesResponses, AdminListCourseLandingPagesData, AdminListCourseLandingPagesErrors, AdminListCourseLandingPagesResponses, AdminListCourseLessonReviewsData, AdminListCourseLessonReviewsErrors, AdminListCourseLessonReviewsResponses, AdminListCourseLessonsData, AdminListCourseLessonsErrors, AdminListCourseLessonsResponses, AdminListCoursesData, AdminListCoursesErrors, AdminListCoursesResponses, AdminListLandingPageQnaItemsData, AdminListLandingPageQnaItemsErrors, AdminListLandingPageQnaItemsResponses, AdminListLeadsData, AdminListLeadsErrors, AdminListLeadsResponses, AdminListLessonProgressData, AdminListLessonProgressErrors, AdminListLessonProgressResponses, AdminListManagementUsersData, AdminListManagementUsersErrors, AdminListManagementUsersResponses, AdminListMessagesData, AdminListMessagesErrors, AdminListMessagesResponses, AdminListReviewsData, AdminListReviewsErrors, AdminListReviewsResponses, AdminListRolesData, AdminListRolesErrors, AdminListRolesResponses, AdminListStaffMembersData, AdminListStaffMembersErrors, AdminListStaffMembersResponses, AdminListUsersData, AdminListUsersErrors, AdminListUsersResponses, AdminReviewCourseData, AdminReviewCourseErrors, AdminReviewCourseLessonData, AdminReviewCourseLessonErrors, AdminReviewCourseLessonResponses, AdminReviewCourseResponses, AdminSearchUsersData, AdminSearchUsersErrors, AdminSearchUsersResponses, AdminSetBlogPostRelatedCoursesData, AdminSetBlogPostRelatedCoursesErrors, AdminSetBlogPostRelatedCoursesResponses, AdminUpdateBannerData, AdminUpdateBannerErrors, AdminUpdateBannerResponses, AdminUpdateBlogPostData, AdminUpdateBlogPostErrors, AdminUpdateBlogPostResponses, AdminUpdateCategoryQnaItemData, AdminUpdateCategoryQnaItemErrors, AdminUpdateCategoryQnaItemResponses, AdminUpdateCourseCategoryData, AdminUpdateCourseCategoryErrors, AdminUpdateCourseCategoryResponses, AdminUpdateCourseData, AdminUpdateCourseErrors, AdminUpdateCourseLandingPageData, AdminUpdateCourseLandingPageErrors, AdminUpdateCourseLandingPageResponses, AdminUpdateCourseResponses, AdminUpdateLandingPageQnaItemData, AdminUpdateLandingPageQnaItemErrors, AdminUpdateLandingPageQnaItemResponses, AdminUpdateManagementUserData, AdminUpdateManagementUserErrors, AdminUpdateManagementUserResponses, AdminUpdateReviewData, AdminUpdateReviewErrors, AdminUpdateReviewResponses, AdminUpdateRoleData, AdminUpdateRoleErrors, AdminUpdateRolePermissionsData, AdminUpdateRolePermissionsErrors, AdminUpdateRolePermissionsResponses, AdminUpdateRoleResponses, AdminUpdateStaffMemberData, AdminUpdateStaffMemberErrors, AdminUpdateStaffMemberResponses, AdminUpdateUserData, AdminUpdateUserErrors, AdminUpdateUserResponses, AdminUploadAttachmentData, AdminUploadAttachmentErrors, AdminUploadAttachmentResponses, CheckLessonData, CheckLessonErrors, CheckLessonResponses, CheckPasswordResetTokenData, CheckPasswordResetTokenErrors, CheckPasswordResetTokenResponses, ConsumeMagicLinkData, ConsumeMagicLinkErrors, ConsumeMagicLinkResponses, CreateAssistantMessageData, CreateAssistantMessageErrors, CreateAssistantMessageResponses, CreateBookRequestData, CreateBookRequestErrors, CreateBookRequestResponses, CreateLeadData, CreateLeadErrors, CreateLeadResponses, CreateMagicLinkData, CreateMagicLinkErrors, CreateMagicLinkResponses, CreatePasswordReminderData, CreatePasswordReminderErrors, CreatePasswordReminderResponses, CreateSessionData, CreateSessionErrors, CreateSessionResponses, CreateUserData, CreateUserErrors, CreateUserResponses, DeleteAccountData, DeleteAccountErrors, DeleteAccountResponses, DeleteSessionData, DeleteSessionErrors, DeleteSessionResponses, GetBlogPostData, GetBlogPostErrors, GetBlogPostResponses, GetCourseData, GetCourseErrors, GetCourseLessonData, GetCourseLessonErrors, GetCourseLessonResponses, GetCourseResponses, GetCurrentUserData, GetCurrentUserErrors, GetCurrentUserResponses, GetMyDashboardData, GetMyDashboardErrors, GetMyDashboardResponses, GetNextBlogPostData, GetNextBlogPostErrors, GetNextBlogPostResponses, GetProfileData, GetProfileErrors, GetProfileResponses, GetPublicCourseCategoryData, GetPublicCourseCategoryErrors, GetPublicCourseCategoryResponses, GetSitemapData, GetSitemapErrors, GetSitemapResponses, GetYandexCoursesFeedData, GetYandexCoursesFeedErrors, GetYandexCoursesFeedResponses, GetYandexCoursesFeedXmlData, GetYandexCoursesFeedXmlErrors, GetYandexCoursesFeedXmlResponses, LikeBlogPostData, LikeBlogPostErrors, LikeBlogPostResponses, ListAssistantMessagesData, ListAssistantMessagesErrors, ListAssistantMessagesResponses, ListBlogPostsData, ListBlogPostsErrors, ListBlogPostsResponses, ListCoursesData, ListCoursesErrors, ListCoursesResponses, ListPublicCourseCategoriesData, ListPublicCourseCategoriesErrors, ListPublicCourseCategoriesResponses, ListPublicReviewsData, ListPublicReviewsErrors, ListPublicReviewsResponses, StartLessonData, StartLessonErrors, StartLessonResponses, SwitchLocaleData, SwitchLocaleErrors, SwitchLocaleResponses, UpdatePasswordData, UpdatePasswordErrors, UpdatePasswordResponses, UpdateProfileData, UpdateProfileErrors, UpdateProfileResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
   /**
@@ -19,69 +19,6 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 /**
- * List the current user's passkeys.
- */
-export const listPasskeys = <ThrowOnError extends boolean = false>(options?: Options<ListPasskeysData, ThrowOnError>): RequestResult<ListPasskeysResponses, ListPasskeysErrors, ThrowOnError> => (options?.client ?? client).get<ListPasskeysResponses, ListPasskeysErrors, ThrowOnError>({
-  responseType: 'json',
-  security: [{
-      key: 'UserSession',
-      in: 'cookie',
-      name: 'JWT',
-      type: 'apiKey'
-    }],
-  url: '/account/passkeys',
-  ...options
-});
-
-/**
- * Register a new passkey for the current user.
- */
-export const createPasskey = <ThrowOnError extends boolean = false>(options: Options<CreatePasskeyData, ThrowOnError>): RequestResult<CreatePasskeyResponses, CreatePasskeyErrors, ThrowOnError> => (options.client ?? client).post<CreatePasskeyResponses, CreatePasskeyErrors, ThrowOnError>({
-  responseType: 'json',
-  security: [{
-      key: 'UserSession',
-      in: 'cookie',
-      name: 'JWT',
-      type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/account/passkeys',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
-});
-
-/**
- * Begin a passkey registration ceremony.
- */
-export const newPasskey = <ThrowOnError extends boolean = false>(options?: Options<NewPasskeyData, ThrowOnError>): RequestResult<NewPasskeyResponses, NewPasskeyErrors, ThrowOnError> => (options?.client ?? client).get<NewPasskeyResponses, NewPasskeyErrors, ThrowOnError>({
-  responseType: 'json',
-  security: [{
-      key: 'UserSession',
-      in: 'cookie',
-      name: 'JWT',
-      type: 'apiKey'
-    }],
-  url: '/account/passkeys/new',
-  ...options
-});
-
-/**
- * Remove a passkey.
- */
-export const deletePasskey = <ThrowOnError extends boolean = false>(options: Options<DeletePasskeyData, ThrowOnError>): RequestResult<DeletePasskeyResponses, DeletePasskeyErrors, ThrowOnError> => (options.client ?? client).delete<DeletePasskeyResponses, DeletePasskeyErrors, ThrowOnError>({
-  security: [{
-      key: 'UserSession',
-      in: 'cookie',
-      name: 'JWT',
-      type: 'apiKey'
-    }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/account/passkeys/{id}',
-  ...options
-});
-
-/**
  * Delete the current user's account.
  */
 export const deleteAccount = <ThrowOnError extends boolean = false>(options?: Options<DeleteAccountData, ThrowOnError>): RequestResult<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError> => (options?.client ?? client).delete<DeleteAccountResponses, DeleteAccountErrors, ThrowOnError>({
@@ -91,7 +28,7 @@ export const deleteAccount = <ThrowOnError extends boolean = false>(options?: Op
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/account/profile',
+  url: '/api/account/profile',
   ...options
 });
 
@@ -106,7 +43,7 @@ export const updateProfile = <ThrowOnError extends boolean = false>(options: Opt
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/account/profile',
+  url: '/api/account/profile',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -125,7 +62,7 @@ export const getProfile = <ThrowOnError extends boolean = false>(options?: Optio
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/account/profile/edit',
+  url: '/api/account/profile/edit',
   ...options
 });
 
@@ -137,7 +74,7 @@ export const adminListUsers = <ThrowOnError extends boolean = false>(options?: O
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/api/users',
+  url: '/api/admin/api/users',
   ...options
 });
 
@@ -153,7 +90,7 @@ export const adminCreateUser = <ThrowOnError extends boolean = false>(options: O
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/api/users',
+  url: '/api/admin/api/users',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -172,7 +109,7 @@ export const adminSearchUsers = <ThrowOnError extends boolean = false>(options: 
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/api/users/search',
+  url: '/api/admin/api/users/search',
   ...options
 });
 
@@ -183,7 +120,7 @@ export const adminDeleteUser = <ThrowOnError extends boolean = false>(options: O
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/api/users/{id}',
+  url: '/api/admin/api/users/{id}',
   ...options
 });
 
@@ -199,7 +136,7 @@ export const adminGetUser = <ThrowOnError extends boolean = false>(options: Opti
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/api/users/{id}',
+  url: '/api/admin/api/users/{id}',
   ...options
 });
 
@@ -215,7 +152,7 @@ export const adminUpdateUser = <ThrowOnError extends boolean = false>(options: O
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/api/users/{id}',
+  url: '/api/admin/api/users/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -235,7 +172,7 @@ export const adminUploadAttachment = <ThrowOnError extends boolean = false>(opti
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/attachments',
+  url: '/api/admin/attachments',
   ...options,
   headers: {
     'Content-Type': null,
@@ -254,7 +191,7 @@ export const adminListBanners = <ThrowOnError extends boolean = false>(options?:
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/banners',
+  url: '/api/admin/banners',
   ...options
 });
 
@@ -271,7 +208,7 @@ export const adminCreateBanner = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/banners',
+  url: '/api/admin/banners',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -289,7 +226,7 @@ export const adminDeleteBanner = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/banners/{id}',
+  url: '/api/admin/banners/{id}',
   ...options
 });
 
@@ -305,7 +242,7 @@ export const adminGetBanner = <ThrowOnError extends boolean = false>(options: Op
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/banners/{id}',
+  url: '/api/admin/banners/{id}',
   ...options
 });
 
@@ -320,7 +257,7 @@ export const adminUpdateBanner = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/banners/{id}',
+  url: '/api/admin/banners/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -336,7 +273,7 @@ export const adminListBlogPosts = <ThrowOnError extends boolean = false>(options
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/blog_posts',
+  url: '/api/admin/blog_posts',
   ...options
 });
 
@@ -348,7 +285,7 @@ export const adminCreateBlogPost = <ThrowOnError extends boolean = false>(option
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/blog_posts',
+  url: '/api/admin/blog_posts',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -363,7 +300,7 @@ export const adminDeleteBlogPost = <ThrowOnError extends boolean = false>(option
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/blog_posts/{id}',
+  url: '/api/admin/blog_posts/{id}',
   ...options
 });
 
@@ -375,7 +312,7 @@ export const adminGetBlogPost = <ThrowOnError extends boolean = false>(options: 
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/blog_posts/{id}',
+  url: '/api/admin/blog_posts/{id}',
   ...options
 });
 
@@ -387,7 +324,7 @@ export const adminUpdateBlogPost = <ThrowOnError extends boolean = false>(option
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/blog_posts/{id}',
+  url: '/api/admin/blog_posts/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -406,7 +343,7 @@ export const adminSetBlogPostRelatedCourses = <ThrowOnError extends boolean = fa
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/blog_posts/{id}/related_courses',
+  url: '/api/admin/blog_posts/{id}/related_courses',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -425,7 +362,7 @@ export const adminListCourseCategories = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_categories',
+  url: '/api/admin/course_categories',
   ...options
 });
 
@@ -441,7 +378,7 @@ export const adminCreateCourseCategory = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_categories',
+  url: '/api/admin/course_categories',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -457,7 +394,7 @@ export const adminListCategoryQnaItems = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_categories/{categoryId}/qna_items',
+  url: '/api/admin/course_categories/{categoryId}/qna_items',
   ...options
 });
 
@@ -469,7 +406,7 @@ export const adminCreateCategoryQnaItem = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_categories/{categoryId}/qna_items',
+  url: '/api/admin/course_categories/{categoryId}/qna_items',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -484,7 +421,7 @@ export const adminDeleteCategoryQnaItem = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_categories/{categoryId}/qna_items/{id}',
+  url: '/api/admin/course_categories/{categoryId}/qna_items/{id}',
   ...options
 });
 
@@ -500,7 +437,7 @@ export const adminUpdateCategoryQnaItem = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_categories/{categoryId}/qna_items/{id}',
+  url: '/api/admin/course_categories/{categoryId}/qna_items/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -518,7 +455,7 @@ export const adminDeleteCourseCategory = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_categories/{id}',
+  url: '/api/admin/course_categories/{id}',
   ...options
 });
 
@@ -534,7 +471,7 @@ export const adminGetCourseCategory = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_categories/{id}',
+  url: '/api/admin/course_categories/{id}',
   ...options
 });
 
@@ -550,7 +487,7 @@ export const adminUpdateCourseCategory = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_categories/{id}',
+  url: '/api/admin/course_categories/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -566,7 +503,7 @@ export const adminListCourseLandingPages = <ThrowOnError extends boolean = false
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_landing_pages',
+  url: '/api/admin/course_landing_pages',
   ...options
 });
 
@@ -578,7 +515,7 @@ export const adminCreateCourseLandingPage = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_landing_pages',
+  url: '/api/admin/course_landing_pages',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -593,7 +530,7 @@ export const adminDeleteCourseLandingPage = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_landing_pages/{id}',
+  url: '/api/admin/course_landing_pages/{id}',
   ...options
 });
 
@@ -609,7 +546,7 @@ export const adminGetCourseLandingPage = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_landing_pages/{id}',
+  url: '/api/admin/course_landing_pages/{id}',
   ...options
 });
 
@@ -625,7 +562,7 @@ export const adminUpdateCourseLandingPage = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_landing_pages/{id}',
+  url: '/api/admin/course_landing_pages/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -641,7 +578,7 @@ export const adminListLandingPageQnaItems = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items',
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items',
   ...options
 });
 
@@ -653,7 +590,7 @@ export const adminCreateLandingPageQnaItem = <ThrowOnError extends boolean = fal
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items',
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -668,7 +605,7 @@ export const adminDeleteLandingPageQnaItem = <ThrowOnError extends boolean = fal
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}',
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}',
   ...options
 });
 
@@ -684,7 +621,7 @@ export const adminUpdateLandingPageQnaItem = <ThrowOnError extends boolean = fal
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}',
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -700,7 +637,7 @@ export const adminListCourseLessonReviews = <ThrowOnError extends boolean = fals
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_lesson_reviews',
+  url: '/api/admin/course_lesson_reviews',
   ...options
 });
 
@@ -712,7 +649,7 @@ export const adminListCourseLessons = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/course_lessons',
+  url: '/api/admin/course_lessons',
   ...options
 });
 
@@ -726,7 +663,7 @@ export const adminReviewCourseLesson = <ThrowOnError extends boolean = false>(op
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/course_lessons/{id}/review',
+  url: '/api/admin/course_lessons/{id}/review',
   ...options
 });
 
@@ -738,7 +675,7 @@ export const adminListCourses = <ThrowOnError extends boolean = false>(options?:
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/courses',
+  url: '/api/admin/courses',
   ...options
 });
 
@@ -750,7 +687,7 @@ export const adminCreateCourse = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/courses',
+  url: '/api/admin/courses',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -770,7 +707,7 @@ export const adminGetCourse = <ThrowOnError extends boolean = false>(options: Op
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/courses/{id}',
+  url: '/api/admin/courses/{id}',
   ...options
 });
 
@@ -782,7 +719,7 @@ export const adminUpdateCourse = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/courses/{id}',
+  url: '/api/admin/courses/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -800,7 +737,7 @@ export const adminReviewCourse = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/courses/{id}/review',
+  url: '/api/admin/courses/{id}/review',
   ...options
 });
 
@@ -815,7 +752,7 @@ export const adminCreateCourseVersion = <ThrowOnError extends boolean = false>(o
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/courses/{id}/versions',
+  url: '/api/admin/courses/{id}/versions',
   ...options
 });
 
@@ -827,7 +764,7 @@ export const adminListLeads = <ThrowOnError extends boolean = false>(options?: O
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/leads',
+  url: '/api/admin/leads',
   ...options
 });
 
@@ -839,7 +776,7 @@ export const adminListLessonProgress = <ThrowOnError extends boolean = false>(op
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/lesson_progress',
+  url: '/api/admin/lesson_progress',
   ...options
 });
 
@@ -854,7 +791,7 @@ export const adminGetRolePermissions = <ThrowOnError extends boolean = false>(op
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/role_permissions/{roleId}',
+  url: '/api/admin/management/role_permissions/{roleId}',
   ...options
 });
 
@@ -869,7 +806,7 @@ export const adminUpdateRolePermissions = <ThrowOnError extends boolean = false>
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/role_permissions/{roleId}',
+  url: '/api/admin/management/role_permissions/{roleId}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -885,7 +822,7 @@ export const adminListRoles = <ThrowOnError extends boolean = false>(options?: O
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/roles',
+  url: '/api/admin/management/roles',
   ...options
 });
 
@@ -901,7 +838,7 @@ export const adminCreateRole = <ThrowOnError extends boolean = false>(options: O
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/roles',
+  url: '/api/admin/management/roles',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -916,7 +853,7 @@ export const adminDeleteRole = <ThrowOnError extends boolean = false>(options: O
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/roles/{id}',
+  url: '/api/admin/management/roles/{id}',
   ...options
 });
 
@@ -932,7 +869,7 @@ export const adminGetRole = <ThrowOnError extends boolean = false>(options: Opti
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/roles/{id}',
+  url: '/api/admin/management/roles/{id}',
   ...options
 });
 
@@ -944,7 +881,7 @@ export const adminUpdateRole = <ThrowOnError extends boolean = false>(options: O
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/roles/{id}',
+  url: '/api/admin/management/roles/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -960,7 +897,7 @@ export const adminListStaffMembers = <ThrowOnError extends boolean = false>(opti
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/staff_members',
+  url: '/api/admin/management/staff_members',
   ...options
 });
 
@@ -972,7 +909,7 @@ export const adminCreateStaffMember = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/staff_members',
+  url: '/api/admin/management/staff_members',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -987,7 +924,7 @@ export const adminDeleteStaffMember = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/staff_members/{id}',
+  url: '/api/admin/management/staff_members/{id}',
   ...options
 });
 
@@ -999,7 +936,7 @@ export const adminGetStaffMember = <ThrowOnError extends boolean = false>(option
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/staff_members/{id}',
+  url: '/api/admin/management/staff_members/{id}',
   ...options
 });
 
@@ -1011,7 +948,7 @@ export const adminUpdateStaffMember = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/staff_members/{id}',
+  url: '/api/admin/management/staff_members/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1027,7 +964,7 @@ export const adminListManagementUsers = <ThrowOnError extends boolean = false>(o
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/users',
+  url: '/api/admin/management/users',
   ...options
 });
 
@@ -1043,7 +980,7 @@ export const adminGetManagementUser = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/management/users/{id}',
+  url: '/api/admin/management/users/{id}',
   ...options
 });
 
@@ -1055,7 +992,7 @@ export const adminUpdateManagementUser = <ThrowOnError extends boolean = false>(
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/management/users/{id}',
+  url: '/api/admin/management/users/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1071,7 +1008,7 @@ export const adminListMessages = <ThrowOnError extends boolean = false>(options?
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/messages',
+  url: '/api/admin/messages',
   ...options
 });
 
@@ -1083,7 +1020,7 @@ export const adminListReviews = <ThrowOnError extends boolean = false>(options?:
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/reviews',
+  url: '/api/admin/reviews',
   ...options
 });
 
@@ -1095,7 +1032,7 @@ export const adminCreateReview = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/reviews',
+  url: '/api/admin/reviews',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1110,7 +1047,7 @@ export const adminDeleteReview = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/reviews/{id}',
+  url: '/api/admin/reviews/{id}',
   ...options
 });
 
@@ -1126,7 +1063,7 @@ export const adminGetReview = <ThrowOnError extends boolean = false>(options: Op
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/admin/reviews/{id}',
+  url: '/api/admin/reviews/{id}',
   ...options
 });
 
@@ -1142,7 +1079,7 @@ export const adminUpdateReview = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/admin/reviews/{id}',
+  url: '/api/admin/reviews/{id}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1161,7 +1098,7 @@ export const listAssistantMessages = <ThrowOnError extends boolean = false>(opti
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/ai/lessons/{lessonId}/messages',
+  url: '/api/ai/lessons/{lessonId}/messages',
   ...options
 });
 
@@ -1176,7 +1113,7 @@ export const createAssistantMessage = <ThrowOnError extends boolean = false>(opt
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/ai/lessons/{lessonId}/messages',
+  url: '/api/ai/lessons/{lessonId}/messages',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1189,7 +1126,7 @@ export const createAssistantMessage = <ThrowOnError extends boolean = false>(opt
  */
 export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Options<ListBlogPostsData, ThrowOnError>): RequestResult<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError> => (options?.client ?? client).get<ListBlogPostsResponses, ListBlogPostsErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/blog_posts',
+  url: '/api/blog_posts',
   ...options
 });
 
@@ -1204,7 +1141,7 @@ export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Opti
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/blog_posts/{id}/likes',
+  url: '/api/blog_posts/{id}/likes',
   ...options
 });
 
@@ -1213,7 +1150,7 @@ export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Opti
  */
 export const getNextBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetNextBlogPostData, ThrowOnError>): RequestResult<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/blog_posts/{id}/next',
+  url: '/api/blog_posts/{id}/next',
   ...options
 });
 
@@ -1222,7 +1159,7 @@ export const getNextBlogPost = <ThrowOnError extends boolean = false>(options: O
  */
 export const getBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetBlogPostData, ThrowOnError>): RequestResult<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/blog_posts/{slug}',
+  url: '/api/blog_posts/{slug}',
   ...options
 });
 
@@ -1236,7 +1173,7 @@ export const createBookRequest = <ThrowOnError extends boolean = false>(options:
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/book/create_request',
+  url: '/api/book/create_request',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1245,11 +1182,31 @@ export const createBookRequest = <ThrowOnError extends boolean = false>(options:
 });
 
 /**
+ * The same feed at the path the legacy route declares.
+ */
+export const getYandexCoursesFeed = <ThrowOnError extends boolean = false>(options?: Options<GetYandexCoursesFeedData, ThrowOnError>): RequestResult<GetYandexCoursesFeedResponses, GetYandexCoursesFeedErrors, ThrowOnError> => (options?.client ?? client).get<GetYandexCoursesFeedResponses, GetYandexCoursesFeedErrors, ThrowOnError>({
+  responseType: 'blob',
+  url: '/api/feeds/yandex_courses',
+  ...options
+});
+
+/**
+ * The feed at the address production actually answers on. Legacy routes
+ * `/api` with a JSON default format and the action only knows XML, so the
+ * bare path has always answered 406 and Yandex reads this one.
+ */
+export const getYandexCoursesFeedXml = <ThrowOnError extends boolean = false>(options?: Options<GetYandexCoursesFeedXmlData, ThrowOnError>): RequestResult<GetYandexCoursesFeedXmlResponses, GetYandexCoursesFeedXmlErrors, ThrowOnError> => (options?.client ?? client).get<GetYandexCoursesFeedXmlResponses, GetYandexCoursesFeedXmlErrors, ThrowOnError>({
+  responseType: 'blob',
+  url: '/api/feeds/yandex_courses.xml',
+  ...options
+});
+
+/**
  * List published categories.
  */
 export const listPublicCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<ListPublicCourseCategoriesData, ThrowOnError>): RequestResult<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/language_categories',
+  url: '/api/language_categories',
   ...options
 });
 
@@ -1258,7 +1215,7 @@ export const listPublicCourseCategories = <ThrowOnError extends boolean = false>
  */
 export const getPublicCourseCategory = <ThrowOnError extends boolean = false>(options: Options<GetPublicCourseCategoryData, ThrowOnError>): RequestResult<GetPublicCourseCategoryResponses, GetPublicCourseCategoryErrors, ThrowOnError> => (options.client ?? client).get<GetPublicCourseCategoryResponses, GetPublicCourseCategoryErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/language_categories/{slug}',
+  url: '/api/language_categories/{slug}',
   ...options
 });
 
@@ -1267,7 +1224,7 @@ export const getPublicCourseCategory = <ThrowOnError extends boolean = false>(op
  */
 export const listCourses = <ThrowOnError extends boolean = false>(options?: Options<ListCoursesData, ThrowOnError>): RequestResult<ListCoursesResponses, ListCoursesErrors, ThrowOnError> => (options?.client ?? client).get<ListCoursesResponses, ListCoursesErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/languages',
+  url: '/api/languages',
   ...options
 });
 
@@ -1282,7 +1239,7 @@ export const listCourses = <ThrowOnError extends boolean = false>(options?: Opti
  */
 export const getCourseLesson = <ThrowOnError extends boolean = false>(options: Options<GetCourseLessonData, ThrowOnError>): RequestResult<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError> => (options.client ?? client).get<GetCourseLessonResponses, GetCourseLessonErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/languages/{courseSlug}/lessons/{slug}',
+  url: '/api/languages/{courseSlug}/lessons/{slug}',
   ...options
 });
 
@@ -1291,7 +1248,7 @@ export const getCourseLesson = <ThrowOnError extends boolean = false>(options: O
  */
 export const getCourse = <ThrowOnError extends boolean = false>(options: Options<GetCourseData, ThrowOnError>): RequestResult<GetCourseResponses, GetCourseErrors, ThrowOnError> => (options.client ?? client).get<GetCourseResponses, GetCourseErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/languages/{slug}',
+  url: '/api/languages/{slug}',
   ...options
 });
 
@@ -1306,7 +1263,7 @@ export const createLead = <ThrowOnError extends boolean = false>(options: Option
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/leads',
+  url: '/api/leads',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1324,7 +1281,7 @@ export const createLead = <ThrowOnError extends boolean = false>(options: Option
  */
 export const checkLesson = <ThrowOnError extends boolean = false>(options: Options<CheckLessonData, ThrowOnError>): RequestResult<CheckLessonResponses, CheckLessonErrors, ThrowOnError> => (options.client ?? client).post<CheckLessonResponses, CheckLessonErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/lessons/{id}/check',
+  url: '/api/lessons/{id}/check',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1347,20 +1304,22 @@ export const checkLesson = <ThrowOnError extends boolean = false>(options: Optio
  */
 export const startLesson = <ThrowOnError extends boolean = false>(options: Options<StartLessonData, ThrowOnError>): RequestResult<StartLessonResponses, StartLessonErrors, ThrowOnError> => (options.client ?? client).post<StartLessonResponses, StartLessonErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/lessons/{id}/start',
+  url: '/api/lessons/{id}/start',
   ...options
 });
 
 /**
- * Persist the preferred UI locale on the session.
+ * Remember the chosen UI locale: on the signed-in user, and in a cookie the
+ * site root reads to pick the locale it redirects to. The page navigates
+ * itself afterwards.
  */
-export const switchLocale = <ThrowOnError extends boolean = false>(options: Options<SwitchLocaleData, ThrowOnError>): RequestResult<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError> => (options.client ?? client).get<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError>({ url: '/locale/switch', ...options });
+export const switchLocale = <ThrowOnError extends boolean = false>(options: Options<SwitchLocaleData, ThrowOnError>): RequestResult<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError> => (options.client ?? client).get<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError>({ url: '/api/locale/switch', ...options });
 
 /**
  * Email a one-time sign-in link.
  */
 export const createMagicLink = <ThrowOnError extends boolean = false>(options: Options<CreateMagicLinkData, ThrowOnError>): RequestResult<CreateMagicLinkResponses, CreateMagicLinkErrors, ThrowOnError> => (options.client ?? client).post<CreateMagicLinkResponses, CreateMagicLinkErrors, ThrowOnError>({
-  url: '/magic_links',
+  url: '/api/magic_links',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1373,7 +1332,7 @@ export const createMagicLink = <ThrowOnError extends boolean = false>(options: O
  */
 export const consumeMagicLink = <ThrowOnError extends boolean = false>(options: Options<ConsumeMagicLinkData, ThrowOnError>): RequestResult<ConsumeMagicLinkResponses, ConsumeMagicLinkErrors, ThrowOnError> => (options.client ?? client).get<ConsumeMagicLinkResponses, ConsumeMagicLinkErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/magic_links/{token}',
+  url: '/api/magic_links/{token}',
   ...options
 });
 
@@ -1382,7 +1341,7 @@ export const consumeMagicLink = <ThrowOnError extends boolean = false>(options: 
  */
 export const getSitemap = <ThrowOnError extends boolean = false>(options?: Options<GetSitemapData, ThrowOnError>): RequestResult<GetSitemapResponses, GetSitemapErrors, ThrowOnError> => (options?.client ?? client).get<GetSitemapResponses, GetSitemapErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/map',
+  url: '/api/map',
   ...options
 });
 
@@ -1391,7 +1350,7 @@ export const getSitemap = <ThrowOnError extends boolean = false>(options?: Optio
  */
 export const getCurrentUser = <ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserData, ThrowOnError>): RequestResult<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError> => (options?.client ?? client).get<GetCurrentUserResponses, GetCurrentUserErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/me',
+  url: '/api/me',
   ...options
 });
 
@@ -1406,38 +1365,7 @@ export const getMyDashboard = <ThrowOnError extends boolean = false>(options?: O
       name: 'JWT',
       type: 'apiKey'
     }],
-  url: '/my',
-  ...options
-});
-
-/**
- * A static content page by slug.
- */
-export const getPage = <ThrowOnError extends boolean = false>(options: Options<GetPageData, ThrowOnError>): RequestResult<GetPageResponses, GetPageErrors, ThrowOnError> => (options.client ?? client).get<GetPageResponses, GetPageErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/pages/{slug}',
-  ...options
-});
-
-/**
- * Complete a passkey login; sets the JWT cookie.
- */
-export const createPasskeySession = <ThrowOnError extends boolean = false>(options: Options<CreatePasskeySessionData, ThrowOnError>): RequestResult<CreatePasskeySessionResponses, CreatePasskeySessionErrors, ThrowOnError> => (options.client ?? client).post<CreatePasskeySessionResponses, CreatePasskeySessionErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/passkey_session',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
-});
-
-/**
- * Begin a passkey login ceremony.
- */
-export const newPasskeySession = <ThrowOnError extends boolean = false>(options?: Options<NewPasskeySessionData, ThrowOnError>): RequestResult<NewPasskeySessionResponses, NewPasskeySessionErrors, ThrowOnError> => (options?.client ?? client).get<NewPasskeySessionResponses, NewPasskeySessionErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/passkey_session/new',
+  url: '/api/my',
   ...options
 });
 
@@ -1446,7 +1374,7 @@ export const newPasskeySession = <ThrowOnError extends boolean = false>(options?
  */
 export const updatePassword = <ThrowOnError extends boolean = false>(options: Options<UpdatePasswordData, ThrowOnError>): RequestResult<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError> => (options.client ?? client).patch<UpdatePasswordResponses, UpdatePasswordErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/password/{token}',
+  url: '/api/password/{token}',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1457,38 +1385,13 @@ export const updatePassword = <ThrowOnError extends boolean = false>(options: Op
 /**
  * Validate a reset token before showing the form.
  */
-export const checkPasswordResetToken = <ThrowOnError extends boolean = false>(options: Options<CheckPasswordResetTokenData, ThrowOnError>): RequestResult<CheckPasswordResetTokenResponses, CheckPasswordResetTokenErrors, ThrowOnError> => (options.client ?? client).get<CheckPasswordResetTokenResponses, CheckPasswordResetTokenErrors, ThrowOnError>({ url: '/password/{token}/edit', ...options });
-
-/**
- * Send an SMS verification code.
- */
-export const createPhoneAuth = <ThrowOnError extends boolean = false>(options: Options<CreatePhoneAuthData, ThrowOnError>): RequestResult<CreatePhoneAuthResponses, CreatePhoneAuthErrors, ThrowOnError> => (options.client ?? client).post<CreatePhoneAuthResponses, CreatePhoneAuthErrors, ThrowOnError>({
-  url: '/phone_auth',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
-});
-
-/**
- * Confirm the SMS code; sets the JWT cookie.
- */
-export const confirmPhoneAuth = <ThrowOnError extends boolean = false>(options: Options<ConfirmPhoneAuthData, ThrowOnError>): RequestResult<ConfirmPhoneAuthResponses, ConfirmPhoneAuthErrors, ThrowOnError> => (options.client ?? client).post<ConfirmPhoneAuthResponses, ConfirmPhoneAuthErrors, ThrowOnError>({
-  responseType: 'json',
-  url: '/phone_auth/confirm',
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    ...options.headers
-  }
-});
+export const checkPasswordResetToken = <ThrowOnError extends boolean = false>(options: Options<CheckPasswordResetTokenData, ThrowOnError>): RequestResult<CheckPasswordResetTokenResponses, CheckPasswordResetTokenErrors, ThrowOnError> => (options.client ?? client).get<CheckPasswordResetTokenResponses, CheckPasswordResetTokenErrors, ThrowOnError>({ url: '/api/password/{token}/edit', ...options });
 
 /**
  * Email a password-reset link.
  */
 export const createPasswordReminder = <ThrowOnError extends boolean = false>(options: Options<CreatePasswordReminderData, ThrowOnError>): RequestResult<CreatePasswordReminderResponses, CreatePasswordReminderErrors, ThrowOnError> => (options.client ?? client).post<CreatePasswordReminderResponses, CreatePasswordReminderErrors, ThrowOnError>({
-  url: '/remind_password',
+  url: '/api/remind_password',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1501,7 +1404,7 @@ export const createPasswordReminder = <ThrowOnError extends boolean = false>(opt
  */
 export const listPublicReviews = <ThrowOnError extends boolean = false>(options?: Options<ListPublicReviewsData, ThrowOnError>): RequestResult<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicReviewsResponses, ListPublicReviewsErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/reviews',
+  url: '/api/reviews',
   ...options
 });
 
@@ -1515,7 +1418,7 @@ export const deleteSession = <ThrowOnError extends boolean = false>(options?: Op
       name: 'JWT',
       type: 'apiKey'
     }, { name: 'X-XSRF-TOKEN', type: 'apiKey' }],
-  url: '/session',
+  url: '/api/session',
   ...options
 });
 
@@ -1524,7 +1427,7 @@ export const deleteSession = <ThrowOnError extends boolean = false>(options?: Op
  */
 export const createSession = <ThrowOnError extends boolean = false>(options: Options<CreateSessionData, ThrowOnError>): RequestResult<CreateSessionResponses, CreateSessionErrors, ThrowOnError> => (options.client ?? client).post<CreateSessionResponses, CreateSessionErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/session',
+  url: '/api/session',
   ...options,
   headers: {
     'Content-Type': 'application/json',
@@ -1537,7 +1440,7 @@ export const createSession = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const createUser = <ThrowOnError extends boolean = false>(options: Options<CreateUserData, ThrowOnError>): RequestResult<CreateUserResponses, CreateUserErrors, ThrowOnError> => (options.client ?? client).post<CreateUserResponses, CreateUserErrors, ThrowOnError>({
   responseType: 'json',
-  url: '/users',
+  url: '/api/users',
   ...options,
   headers: {
     'Content-Type': 'application/json',

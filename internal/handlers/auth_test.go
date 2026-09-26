@@ -13,6 +13,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/handlers"
@@ -45,7 +46,9 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
 		nil, // no upload runs through the auth router
 		testsupport.NewRecordingRegistrar(db),
+		accounts.NewRemover(transactor),
 		&testsupport.RecordingEventPublisher{},
+		nil, // no lead is submitted here
 		translator,
 		errorHandler,
 	)
@@ -112,7 +115,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	const password = "s3cret-pass"
 
 	// Register sets the cookie and echoes the created user.
-	resp := do(t, router, http.MethodPost, "/users",
+	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":"Ada","email":"`+email+`","password":"`+password+`"}`, nil)
 	if resp.StatusCode != http.StatusCreated {
 		var failure any
@@ -136,7 +139,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	assert.Equal(t, email, created.Email)
 
 	// The cookie resolves the current user via /me.
-	resp = do(t, router, http.MethodGet, "/me", "", cookie)
+	resp = do(t, router, http.MethodGet, "/api/me", "", cookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 	var me struct {
 		User *struct {
@@ -148,7 +151,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	assert.Equal(t, email, me.User.Email)
 
 	// Without the cookie, /me is anonymous, not an error.
-	resp = do(t, router, http.MethodGet, "/me", "", nil)
+	resp = do(t, router, http.MethodGet, "/api/me", "", nil)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 	var anon struct {
 		User *struct{} `json:"user"`
@@ -165,7 +168,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	}))
 
 	// Login with the registered credentials succeeds and re-issues the cookie.
-	resp = do(t, router, http.MethodPost, "/session",
+	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"`+email+`","password":"`+password+`"}`, nil)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 	loginCookie := jwtCookie(resp)
@@ -173,21 +176,21 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	assert.Equal(t, 1, userQueries, "login must load the user only once")
 
 	// Login and signup issue equivalent cookies that resolve through /me.
-	resp = do(t, router, http.MethodGet, "/me", "", loginCookie)
+	resp = do(t, router, http.MethodGet, "/api/me", "", loginCookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&me))
 	require.NotNil(t, me.User)
 	assert.Equal(t, email, me.User.Email)
 
 	// A wrong password is rejected with a 422 validation error.
-	resp = do(t, router, http.MethodPost, "/session",
+	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"`+email+`","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
 	var wrongPassword api.ValidationError
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&wrongPassword))
 
 	// Unknown users produce the same response and cannot be enumerated.
-	resp = do(t, router, http.MethodPost, "/session",
+	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"missing-auth-flow@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
 	var missingUser api.ValidationError
@@ -198,7 +201,7 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	// credentials rather than causing a panic or exposing account state.
 	_, err := db.User.Create().SetEmail("passwordless-auth-flow@example.com").Save(t.Context())
 	require.NoError(t, err)
-	resp = do(t, router, http.MethodPost, "/session",
+	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"passwordless-auth-flow@example.com","password":"wrong"}`, nil)
 	require.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
 	var passwordlessUser api.ValidationError
@@ -212,7 +215,7 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 	const oldEmail = "jwt-old-email@example.com"
 	const newEmail = "jwt-new-email@example.com"
 
-	resp := do(t, router, http.MethodPost, "/users",
+	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":"Ada","email":"`+oldEmail+`","password":"s3cret-pass"}`, nil)
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	cookie := jwtCookie(resp)
@@ -225,7 +228,7 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 	_, err := db.User.UpdateOneID(int(created.ID)).SetEmail(newEmail).Save(t.Context())
 	require.NoError(t, err)
 
-	resp = do(t, router, http.MethodGet, "/me", "", cookie)
+	resp = do(t, router, http.MethodGet, "/api/me", "", cookie)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 	var me struct {
 		User *struct {
@@ -240,7 +243,7 @@ func TestCurrentUserSurvivesEmailChange(t *testing.T) {
 func TestAuthLogoutClearsCookie(t *testing.T) {
 	router := newAuthRouter(t)
 
-	resp := do(t, router, http.MethodPost, "/users",
+	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":"Ada","email":"logout-auth-flow@example.com","password":"s3cret-pass"}`, nil)
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	jwt := jwtCookie(resp)
@@ -248,13 +251,13 @@ func TestAuthLogoutClearsCookie(t *testing.T) {
 	require.NotNil(t, jwt)
 	require.NotNil(t, xsrf)
 
-	resp = do(t, router, http.MethodDelete, "/session", "", jwt)
+	resp = do(t, router, http.MethodDelete, "/api/session", "", jwt)
 	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 
-	resp = doWithXSRF(t, router, http.MethodDelete, "/session", "", jwt, "wrong")
+	resp = doWithXSRF(t, router, http.MethodDelete, "/api/session", "", jwt, "wrong")
 	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 
-	resp = doWithXSRF(t, router, http.MethodDelete, "/session", "", jwt, xsrf.Value)
+	resp = doWithXSRF(t, router, http.MethodDelete, "/api/session", "", jwt, xsrf.Value)
 	require.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 	// Reset writes expired JWT and XSRF cookies so the browser drops both.
@@ -271,11 +274,11 @@ func TestAuthLogoutClearsCookie(t *testing.T) {
 func TestContractSecurityProtectsParityRoutesAndKeepsLessonCheckPublic(t *testing.T) {
 	router := newAuthRouter(t)
 
-	resp := do(t, router, http.MethodPost, "/leads",
+	resp := do(t, router, http.MethodPost, "/api/leads",
 		`{"contactMethod":"phone","contactValue":"+10000000000","ymClientId":null}`, nil)
 	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
 
-	resp = do(t, router, http.MethodPost, "/lessons/1/check",
+	resp = do(t, router, http.MethodPost, "/api/lessons/1/check",
 		`{"code":"puts 1","versionId":1}`, nil)
 	assert.NotEqual(t, http.StatusUnauthorized, resp.StatusCode)
 }
@@ -285,7 +288,7 @@ func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
 	router := newAuthRouterWithDB(t, db, transactor)
 	const email = "admin-revocation@example.com"
 
-	resp := do(t, router, http.MethodPost, "/users",
+	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":"Ada","email":"`+email+`","password":"s3cret-pass"}`, nil)
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 	jwt := jwtCookie(resp)
@@ -294,23 +297,23 @@ func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
 	u, err := db.User.Query().Where(user.Email(email)).Only(t.Context())
 	require.NoError(t, err)
 
-	resp = do(t, router, http.MethodGet, "/admin/course_categories", "", jwt)
+	resp = do(t, router, http.MethodGet, "/api/admin/course_categories", "", jwt)
 	require.Equal(t, http.StatusForbidden, resp.StatusCode)
 
 	_, err = db.User.UpdateOneID(u.ID).SetAdmin(true).Save(t.Context())
 	require.NoError(t, err)
-	resp = do(t, router, http.MethodGet, "/admin/course_categories", "", jwt)
+	resp = do(t, router, http.MethodGet, "/api/admin/course_categories", "", jwt)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
 	_, err = db.User.UpdateOneID(u.ID).SetAdmin(false).Save(t.Context())
 	require.NoError(t, err)
-	resp = do(t, router, http.MethodGet, "/admin/course_categories", "", jwt)
+	resp = do(t, router, http.MethodGet, "/api/admin/course_categories", "", jwt)
 	require.Equal(t, http.StatusForbidden, resp.StatusCode)
 }
 
 func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 	router := newAuthRouter(t)
-	req := httptest.NewRequest(http.MethodPost, "/session",
+	req := httptest.NewRequest(http.MethodPost, "/api/session",
 		strings.NewReader(`{"email":"missing@example.com","password":"wrong"}`))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept-Language", "ru-RU")
@@ -331,7 +334,7 @@ func TestSignUpRejectsShortPassword(t *testing.T) {
 	db, transactor := testsupport.NewClientWithTransactor(t)
 	router := newAuthRouterWithDB(t, db, transactor)
 
-	resp := do(t, router, http.MethodPost, "/users",
+	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":null,"email":"short-password@example.com","password":"12345"}`, nil)
 
 	// The contract's minLength is enforced by the generated server, which
@@ -340,4 +343,41 @@ func TestSignUpRejectsShortPassword(t *testing.T) {
 	exists, err := db.User.Query().Where(user.Email("short-password@example.com")).Exist(t.Context())
 	require.NoError(t, err)
 	assert.False(t, exists)
+}
+
+// The profile's name rules are contract constraints: the generated server
+// refuses them as a bad request, and only a valid name is saved. Raw HTTP, so
+// the bodies are exactly what a client that skips the form could send.
+func TestUpdateProfileRejectsInvalidNames(t *testing.T) {
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	router := newAuthRouterWithDB(t, db, transactor)
+	const email = "profile-validation@example.com"
+
+	resp := do(t, router, http.MethodPost, "/api/users",
+		`{"firstName":"Ada","email":"`+email+`","password":"s3cret-pass"}`, nil)
+	require.Equal(t, http.StatusCreated, resp.StatusCode)
+	jwt := jwtCookie(resp)
+	xsrf := xsrfCookieFromResponse(resp)
+	require.NotNil(t, jwt)
+	require.NotNil(t, xsrf)
+
+	for _, body := range []string{
+		`{"firstName":"` + strings.Repeat("a", 41) + `","lastName":null}`,
+		`{"firstName":"Ada","lastName":"Love@lace"}`,
+		`{"firstName":"Ada+","lastName":null}`,
+	} {
+		resp = doWithXSRF(t, router, http.MethodPatch, "/api/account/profile", body, jwt, xsrf.Value)
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode, body)
+	}
+	u := db.User.Query().Where(user.Email(email)).OnlyX(t.Context())
+	assert.Equal(t, "Ada", *u.FirstName)
+	assert.Nil(t, u.LastName)
+
+	// Forty characters, and a blank last name, are both allowed.
+	resp = doWithXSRF(t, router, http.MethodPatch, "/api/account/profile",
+		`{"firstName":"`+strings.Repeat("a", 40)+`","lastName":""}`, jwt, xsrf.Value)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	u = db.User.GetX(t.Context(), u.ID)
+	assert.Equal(t, strings.Repeat("a", 40), *u.FirstName)
+	assert.Empty(t, *u.LastName)
 }

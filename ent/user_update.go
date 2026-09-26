@@ -161,6 +161,106 @@ func (_u *UserUpdate) ClearAssistantMessagesCount() *UserUpdate {
 	return _u
 }
 
+// SetState sets the "state" field.
+func (_u *UserUpdate) SetState(v string) *UserUpdate {
+	_u.mutation.SetState(v)
+	return _u
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableState(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetState(*v)
+	}
+	return _u
+}
+
+// ClearState clears the value of the "state" field.
+func (_u *UserUpdate) ClearState() *UserUpdate {
+	_u.mutation.ClearState()
+	return _u
+}
+
+// SetLocale sets the "locale" field.
+func (_u *UserUpdate) SetLocale(v string) *UserUpdate {
+	_u.mutation.SetLocale(v)
+	return _u
+}
+
+// SetNillableLocale sets the "locale" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableLocale(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetLocale(*v)
+	}
+	return _u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (_u *UserUpdate) ClearLocale() *UserUpdate {
+	_u.mutation.ClearLocale()
+	return _u
+}
+
+// SetNickname sets the "nickname" field.
+func (_u *UserUpdate) SetNickname(v string) *UserUpdate {
+	_u.mutation.SetNickname(v)
+	return _u
+}
+
+// SetNillableNickname sets the "nickname" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableNickname(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetNickname(*v)
+	}
+	return _u
+}
+
+// ClearNickname clears the value of the "nickname" field.
+func (_u *UserUpdate) ClearNickname() *UserUpdate {
+	_u.mutation.ClearNickname()
+	return _u
+}
+
+// SetPhone sets the "phone" field.
+func (_u *UserUpdate) SetPhone(v string) *UserUpdate {
+	_u.mutation.SetPhone(v)
+	return _u
+}
+
+// SetNillablePhone sets the "phone" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePhone(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPhone(*v)
+	}
+	return _u
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (_u *UserUpdate) ClearPhone() *UserUpdate {
+	_u.mutation.ClearPhone()
+	return _u
+}
+
+// SetConfirmationToken sets the "confirmation_token" field.
+func (_u *UserUpdate) SetConfirmationToken(v string) *UserUpdate {
+	_u.mutation.SetConfirmationToken(v)
+	return _u
+}
+
+// SetNillableConfirmationToken sets the "confirmation_token" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableConfirmationToken(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetConfirmationToken(*v)
+	}
+	return _u
+}
+
+// ClearConfirmationToken clears the value of the "confirmation_token" field.
+func (_u *UserUpdate) ClearConfirmationToken() *UserUpdate {
+	_u.mutation.ClearConfirmationToken()
+	return _u
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
@@ -252,6 +352,36 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.AssistantMessagesCountCleared() {
 		_spec.ClearField(user.FieldAssistantMessagesCount, field.TypeInt)
+	}
+	if value, ok := _u.mutation.State(); ok {
+		_spec.SetField(user.FieldState, field.TypeString, value)
+	}
+	if _u.mutation.StateCleared() {
+		_spec.ClearField(user.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.Locale(); ok {
+		_spec.SetField(user.FieldLocale, field.TypeString, value)
+	}
+	if _u.mutation.LocaleCleared() {
+		_spec.ClearField(user.FieldLocale, field.TypeString)
+	}
+	if value, ok := _u.mutation.Nickname(); ok {
+		_spec.SetField(user.FieldNickname, field.TypeString, value)
+	}
+	if _u.mutation.NicknameCleared() {
+		_spec.ClearField(user.FieldNickname, field.TypeString)
+	}
+	if value, ok := _u.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+	}
+	if _u.mutation.PhoneCleared() {
+		_spec.ClearField(user.FieldPhone, field.TypeString)
+	}
+	if value, ok := _u.mutation.ConfirmationToken(); ok {
+		_spec.SetField(user.FieldConfirmationToken, field.TypeString, value)
+	}
+	if _u.mutation.ConfirmationTokenCleared() {
+		_spec.ClearField(user.FieldConfirmationToken, field.TypeString)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -406,6 +536,106 @@ func (_u *UserUpdateOne) ClearAssistantMessagesCount() *UserUpdateOne {
 	return _u
 }
 
+// SetState sets the "state" field.
+func (_u *UserUpdateOne) SetState(v string) *UserUpdateOne {
+	_u.mutation.SetState(v)
+	return _u
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableState(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetState(*v)
+	}
+	return _u
+}
+
+// ClearState clears the value of the "state" field.
+func (_u *UserUpdateOne) ClearState() *UserUpdateOne {
+	_u.mutation.ClearState()
+	return _u
+}
+
+// SetLocale sets the "locale" field.
+func (_u *UserUpdateOne) SetLocale(v string) *UserUpdateOne {
+	_u.mutation.SetLocale(v)
+	return _u
+}
+
+// SetNillableLocale sets the "locale" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableLocale(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetLocale(*v)
+	}
+	return _u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (_u *UserUpdateOne) ClearLocale() *UserUpdateOne {
+	_u.mutation.ClearLocale()
+	return _u
+}
+
+// SetNickname sets the "nickname" field.
+func (_u *UserUpdateOne) SetNickname(v string) *UserUpdateOne {
+	_u.mutation.SetNickname(v)
+	return _u
+}
+
+// SetNillableNickname sets the "nickname" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableNickname(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetNickname(*v)
+	}
+	return _u
+}
+
+// ClearNickname clears the value of the "nickname" field.
+func (_u *UserUpdateOne) ClearNickname() *UserUpdateOne {
+	_u.mutation.ClearNickname()
+	return _u
+}
+
+// SetPhone sets the "phone" field.
+func (_u *UserUpdateOne) SetPhone(v string) *UserUpdateOne {
+	_u.mutation.SetPhone(v)
+	return _u
+}
+
+// SetNillablePhone sets the "phone" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePhone(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPhone(*v)
+	}
+	return _u
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (_u *UserUpdateOne) ClearPhone() *UserUpdateOne {
+	_u.mutation.ClearPhone()
+	return _u
+}
+
+// SetConfirmationToken sets the "confirmation_token" field.
+func (_u *UserUpdateOne) SetConfirmationToken(v string) *UserUpdateOne {
+	_u.mutation.SetConfirmationToken(v)
+	return _u
+}
+
+// SetNillableConfirmationToken sets the "confirmation_token" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableConfirmationToken(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetConfirmationToken(*v)
+	}
+	return _u
+}
+
+// ClearConfirmationToken clears the value of the "confirmation_token" field.
+func (_u *UserUpdateOne) ClearConfirmationToken() *UserUpdateOne {
+	_u.mutation.ClearConfirmationToken()
+	return _u
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
@@ -527,6 +757,36 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.AssistantMessagesCountCleared() {
 		_spec.ClearField(user.FieldAssistantMessagesCount, field.TypeInt)
+	}
+	if value, ok := _u.mutation.State(); ok {
+		_spec.SetField(user.FieldState, field.TypeString, value)
+	}
+	if _u.mutation.StateCleared() {
+		_spec.ClearField(user.FieldState, field.TypeString)
+	}
+	if value, ok := _u.mutation.Locale(); ok {
+		_spec.SetField(user.FieldLocale, field.TypeString, value)
+	}
+	if _u.mutation.LocaleCleared() {
+		_spec.ClearField(user.FieldLocale, field.TypeString)
+	}
+	if value, ok := _u.mutation.Nickname(); ok {
+		_spec.SetField(user.FieldNickname, field.TypeString, value)
+	}
+	if _u.mutation.NicknameCleared() {
+		_spec.ClearField(user.FieldNickname, field.TypeString)
+	}
+	if value, ok := _u.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+	}
+	if _u.mutation.PhoneCleared() {
+		_spec.ClearField(user.FieldPhone, field.TypeString)
+	}
+	if value, ok := _u.mutation.ConfirmationToken(); ok {
+		_spec.SetField(user.FieldConfirmationToken, field.TypeString, value)
+	}
+	if _u.mutation.ConfirmationTokenCleared() {
+		_spec.ClearField(user.FieldConfirmationToken, field.TypeString)
 	}
 	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues

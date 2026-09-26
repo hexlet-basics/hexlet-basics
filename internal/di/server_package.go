@@ -8,7 +8,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
-	"github.com/rs/cors"
 	"github.com/samber/do/v2"
 	"go.opentelemetry.io/contrib/otelconf"
 
@@ -22,6 +21,7 @@ import (
 	"hexletbasics/internal/exerciserunner"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/leads"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
@@ -77,6 +77,24 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return accounts.NewRegistrar(db, publisher), nil
+	}),
+	do.Lazy[*leads.Recorder](func(i do.Injector) (*leads.Recorder, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		return leads.NewRecorder(db, publisher), nil
+	}),
+	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return accounts.NewRemover(db), nil
 	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		db, err := do.Invoke[*sql.DB](i)
@@ -145,7 +163,15 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		remover, err := do.Invoke[*accounts.Remover](i)
+		if err != nil {
+			return nil, err
+		}
 		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		leadRecorder, err := do.Invoke[*leads.Recorder](i)
 		if err != nil {
 			return nil, err
 		}
@@ -170,7 +196,9 @@ var serverPackage = do.Package(
 			tracker,
 			assets,
 			registrar,
+			remover,
 			publisher,
+			leadRecorder,
 			translator,
 			errorHandler,
 		), nil
@@ -306,24 +334,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// Dev CORS lets the Vite frontend (on any localhost port) call both
-		// the generated API and the hand-mounted routes.
+		// No CORS: the browser reaches the API on the site's own origin under
+		// `/api` (ADR-0015), through the ingress in production and the Vite
+		// proxy in development.
 		localized := translator.Middleware(router)
-		corsHandler := cors.New(cors.Options{
-			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
-			AllowedMethods: []string{
-				http.MethodGet,
-				http.MethodHead,
-				http.MethodPost,
-				http.MethodPut,
-				http.MethodPatch,
-				http.MethodDelete,
-				http.MethodOptions,
-			},
-			AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
-			AllowCredentials: true,
-		}).Handler(localized)
-		return telemetry.NewSentryHTTPHandler(sentryClient, corsHandler), nil
+		return telemetry.NewSentryHTTPHandler(sentryClient, localized), nil
 	}),
 	// The process lifecycle coordinator starts and gracefully stops this
 	// server. Keeping the provider on the vendor type avoids coupling DI to

@@ -38,14 +38,14 @@ func (c *codeRecorder) Unwrap() http.ResponseWriter {
 // Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
 // handler; banners carry no uniqueness constraint, so there is no 409 path.
 //
-// POST /admin/banners
+// POST /api/admin/banners
 func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/banners"),
+		semconv.HTTPRouteKey.String("/api/admin/banners"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -254,14 +254,14 @@ func (s *Server) handleAdminCreateBannerRequest(args [0]string, argsEscaped bool
 
 // handleAdminCreateBlogPostRequest handles adminCreateBlogPost operation.
 //
-// POST /admin/blog_posts
+// POST /api/admin/blog_posts
 func (s *Server) handleAdminCreateBlogPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/blog_posts"),
+		semconv.HTTPRouteKey.String("/api/admin/blog_posts"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -470,14 +470,14 @@ func (s *Server) handleAdminCreateBlogPostRequest(args [0]string, argsEscaped bo
 
 // handleAdminCreateCategoryQnaItemRequest handles adminCreateCategoryQnaItem operation.
 //
-// POST /admin/course_categories/{categoryId}/qna_items
+// POST /api/admin/course_categories/{categoryId}/qna_items
 func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{categoryId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -701,14 +701,14 @@ func (s *Server) handleAdminCreateCategoryQnaItemRequest(args [1]string, argsEsc
 
 // handleAdminCreateCourseRequest handles adminCreateCourse operation.
 //
-// POST /admin/courses
+// POST /api/admin/courses
 func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/courses"),
+		semconv.HTTPRouteKey.String("/api/admin/courses"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -920,14 +920,14 @@ func (s *Server) handleAdminCreateCourseRequest(args [0]string, argsEscaped bool
 // Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 // 409 by the central ent-error handler.
 //
-// POST /admin/course_categories
+// POST /api/admin/course_categories
 func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/course_categories"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1136,14 +1136,14 @@ func (s *Server) handleAdminCreateCourseCategoryRequest(args [0]string, argsEsca
 
 // handleAdminCreateCourseLandingPageRequest handles adminCreateCourseLandingPage operation.
 //
-// POST /admin/course_landing_pages
+// POST /api/admin/course_landing_pages
 func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1354,14 +1354,14 @@ func (s *Server) handleAdminCreateCourseLandingPageRequest(args [0]string, argsE
 //
 // Build a new version of the course exercises.
 //
-// POST /admin/courses/{id}/versions
+// POST /api/admin/courses/{id}/versions
 func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseVersion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/courses/{id}/versions"),
+		semconv.HTTPRouteKey.String("/api/admin/courses/{id}/versions"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1570,14 +1570,14 @@ func (s *Server) handleAdminCreateCourseVersionRequest(args [1]string, argsEscap
 
 // handleAdminCreateLandingPageQnaItemRequest handles adminCreateLandingPageQnaItem operation.
 //
-// POST /admin/course_landing_pages/{landingPageId}/qna_items
+// POST /api/admin/course_landing_pages/{landingPageId}/qna_items
 func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -1801,14 +1801,14 @@ func (s *Server) handleAdminCreateLandingPageQnaItemRequest(args [1]string, args
 
 // handleAdminCreateReviewRequest handles adminCreateReview operation.
 //
-// POST /admin/reviews
+// POST /api/admin/reviews
 func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/reviews"),
+		semconv.HTTPRouteKey.String("/api/admin/reviews"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -2020,14 +2020,14 @@ func (s *Server) handleAdminCreateReviewRequest(args [0]string, argsEscaped bool
 // Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
 // handler.
 //
-// POST /admin/management/roles
+// POST /api/admin/management/roles
 func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateRole"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/management/roles"),
+		semconv.HTTPRouteKey.String("/api/admin/management/roles"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -2236,14 +2236,14 @@ func (s *Server) handleAdminCreateRoleRequest(args [0]string, argsEscaped bool, 
 
 // handleAdminCreateStaffMemberRequest handles adminCreateStaffMember operation.
 //
-// POST /admin/management/staff_members
+// POST /api/admin/management/staff_members
 func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/management/staff_members"),
+		semconv.HTTPRouteKey.String("/api/admin/management/staff_members"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -2455,14 +2455,14 @@ func (s *Server) handleAdminCreateStaffMemberRequest(args [0]string, argsEscaped
 // Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
 // handler.
 //
-// POST /admin/api/users
+// POST /api/admin/api/users
 func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/api/users"),
+		semconv.HTTPRouteKey.String("/api/admin/api/users"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -2673,14 +2673,14 @@ func (s *Server) handleAdminCreateUserRequest(args [0]string, argsEscaped bool, 
 //
 // Delete a banner.
 //
-// DELETE /admin/banners/{id}
+// DELETE /api/admin/banners/{id}
 func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBanner"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/banners/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/banners/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -2889,14 +2889,14 @@ func (s *Server) handleAdminDeleteBannerRequest(args [1]string, argsEscaped bool
 
 // handleAdminDeleteBlogPostRequest handles adminDeleteBlogPost operation.
 //
-// DELETE /admin/blog_posts/{id}
+// DELETE /api/admin/blog_posts/{id}
 func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBlogPost"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/blog_posts/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/blog_posts/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3105,14 +3105,14 @@ func (s *Server) handleAdminDeleteBlogPostRequest(args [1]string, argsEscaped bo
 
 // handleAdminDeleteCategoryQnaItemRequest handles adminDeleteCategoryQnaItem operation.
 //
-// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
+// DELETE /api/admin/course_categories/{categoryId}/qna_items/{id}
 func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3327,14 +3327,14 @@ func (s *Server) handleAdminDeleteCategoryQnaItemRequest(args [2]string, argsEsc
 //
 // Delete a course category.
 //
-// DELETE /admin/course_categories/{id}
+// DELETE /api/admin/course_categories/{id}
 func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3543,14 +3543,14 @@ func (s *Server) handleAdminDeleteCourseCategoryRequest(args [1]string, argsEsca
 
 // handleAdminDeleteCourseLandingPageRequest handles adminDeleteCourseLandingPage operation.
 //
-// DELETE /admin/course_landing_pages/{id}
+// DELETE /api/admin/course_landing_pages/{id}
 func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3759,14 +3759,14 @@ func (s *Server) handleAdminDeleteCourseLandingPageRequest(args [1]string, argsE
 
 // handleAdminDeleteLandingPageQnaItemRequest handles adminDeleteLandingPageQnaItem operation.
 //
-// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
+// DELETE /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -3979,14 +3979,14 @@ func (s *Server) handleAdminDeleteLandingPageQnaItemRequest(args [2]string, args
 
 // handleAdminDeleteReviewRequest handles adminDeleteReview operation.
 //
-// DELETE /admin/reviews/{id}
+// DELETE /api/admin/reviews/{id}
 func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteReview"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/reviews/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/reviews/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -4195,14 +4195,14 @@ func (s *Server) handleAdminDeleteReviewRequest(args [1]string, argsEscaped bool
 
 // handleAdminDeleteRoleRequest handles adminDeleteRole operation.
 //
-// DELETE /admin/management/roles/{id}
+// DELETE /api/admin/management/roles/{id}
 func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteRole"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/management/roles/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/roles/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -4411,14 +4411,14 @@ func (s *Server) handleAdminDeleteRoleRequest(args [1]string, argsEscaped bool, 
 
 // handleAdminDeleteStaffMemberRequest handles adminDeleteStaffMember operation.
 //
-// DELETE /admin/management/staff_members/{id}
+// DELETE /api/admin/management/staff_members/{id}
 func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteStaffMember"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/management/staff_members/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/staff_members/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -4627,14 +4627,14 @@ func (s *Server) handleAdminDeleteStaffMemberRequest(args [1]string, argsEscaped
 
 // handleAdminDeleteUserRequest handles adminDeleteUser operation.
 //
-// DELETE /admin/api/users/{id}
+// DELETE /api/admin/api/users/{id}
 func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteUser"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/admin/api/users/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/api/users/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -4846,14 +4846,14 @@ func (s *Server) handleAdminDeleteUserRequest(args [1]string, argsEscaped bool, 
 // Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
 // union member.
 //
-// GET /admin/banners/{id}
+// GET /api/admin/banners/{id}
 func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBanner"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/banners/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/banners/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5044,14 +5044,14 @@ func (s *Server) handleAdminGetBannerRequest(args [1]string, argsEscaped bool, w
 
 // handleAdminGetBlogPostRequest handles adminGetBlogPost operation.
 //
-// GET /admin/blog_posts/{id}
+// GET /api/admin/blog_posts/{id}
 func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/blog_posts/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/blog_posts/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5244,14 +5244,14 @@ func (s *Server) handleAdminGetBlogPostRequest(args [1]string, argsEscaped bool,
 //
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/courses/{id}
+// GET /api/admin/courses/{id}
 func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/courses/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/courses/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5445,14 +5445,14 @@ func (s *Server) handleAdminGetCourseRequest(args [1]string, argsEscaped bool, w
 // Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/course_categories/{id}
+// GET /api/admin/course_categories/{id}
 func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5646,14 +5646,14 @@ func (s *Server) handleAdminGetCourseCategoryRequest(args [1]string, argsEscaped
 // Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/course_landing_pages/{id}
+// GET /api/admin/course_landing_pages/{id}
 func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -5846,14 +5846,14 @@ func (s *Server) handleAdminGetCourseLandingPageRequest(args [1]string, argsEsca
 //
 // Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/management/users/{id}
+// GET /api/admin/management/users/{id}
 func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetManagementUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/users/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/users/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -6047,14 +6047,14 @@ func (s *Server) handleAdminGetManagementUserRequest(args [1]string, argsEscaped
 // Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
 // union member.
 //
-// GET /admin/reviews/{id}
+// GET /api/admin/reviews/{id}
 func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetReview"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/reviews/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/reviews/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -6248,14 +6248,14 @@ func (s *Server) handleAdminGetReviewRequest(args [1]string, argsEscaped bool, w
 // Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
 // handler.
 //
-// GET /admin/management/roles/{id}
+// GET /api/admin/management/roles/{id}
 func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRole"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/roles/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/roles/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -6448,14 +6448,14 @@ func (s *Server) handleAdminGetRoleRequest(args [1]string, argsEscaped bool, w h
 //
 // The permission matrix for a role.
 //
-// GET /admin/management/role_permissions/{roleId}
+// GET /api/admin/management/role_permissions/{roleId}
 func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/role_permissions/{roleId}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/role_permissions/{roleId}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -6646,14 +6646,14 @@ func (s *Server) handleAdminGetRolePermissionsRequest(args [1]string, argsEscape
 
 // handleAdminGetStaffMemberRequest handles adminGetStaffMember operation.
 //
-// GET /admin/management/staff_members/{id}
+// GET /api/admin/management/staff_members/{id}
 func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetStaffMember"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/staff_members/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/staff_members/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -6847,14 +6847,14 @@ func (s *Server) handleAdminGetStaffMemberRequest(args [1]string, argsEscaped bo
 // Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
 // member.
 //
-// GET /admin/api/users/{id}
+// GET /api/admin/api/users/{id}
 func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/api/users/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/api/users/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7047,14 +7047,14 @@ func (s *Server) handleAdminGetUserRequest(args [1]string, argsEscaped bool, w h
 //
 // List banners (paginated).
 //
-// GET /admin/banners
+// GET /api/admin/banners
 func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBanners"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/banners"),
+		semconv.HTTPRouteKey.String("/api/admin/banners"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7257,14 +7257,14 @@ func (s *Server) handleAdminListBannersRequest(args [0]string, argsEscaped bool,
 
 // handleAdminListBlogPostsRequest handles adminListBlogPosts operation.
 //
-// GET /admin/blog_posts
+// GET /api/admin/blog_posts
 func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBlogPosts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/blog_posts"),
+		semconv.HTTPRouteKey.String("/api/admin/blog_posts"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7467,14 +7467,14 @@ func (s *Server) handleAdminListBlogPostsRequest(args [0]string, argsEscaped boo
 
 // handleAdminListCategoryQnaItemsRequest handles adminListCategoryQnaItems operation.
 //
-// GET /admin/course_categories/{categoryId}/qna_items
+// GET /api/admin/course_categories/{categoryId}/qna_items
 func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCategoryQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{categoryId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7667,14 +7667,14 @@ func (s *Server) handleAdminListCategoryQnaItemsRequest(args [1]string, argsEsca
 //
 // List course categories (paginated).
 //
-// GET /admin/course_categories
+// GET /api/admin/course_categories
 func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_categories"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -7877,14 +7877,14 @@ func (s *Server) handleAdminListCourseCategoriesRequest(args [0]string, argsEsca
 
 // handleAdminListCourseLandingPagesRequest handles adminListCourseLandingPages operation.
 //
-// GET /admin/course_landing_pages
+// GET /api/admin/course_landing_pages
 func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLandingPages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8087,14 +8087,14 @@ func (s *Server) handleAdminListCourseLandingPagesRequest(args [0]string, argsEs
 
 // handleAdminListCourseLessonReviewsRequest handles adminListCourseLessonReviews operation.
 //
-// GET /admin/course_lesson_reviews
+// GET /api/admin/course_lesson_reviews
 func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_lesson_reviews"),
+		semconv.HTTPRouteKey.String("/api/admin/course_lesson_reviews"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8297,14 +8297,14 @@ func (s *Server) handleAdminListCourseLessonReviewsRequest(args [0]string, argsE
 
 // handleAdminListCourseLessonsRequest handles adminListCourseLessons operation.
 //
-// GET /admin/course_lessons
+// GET /api/admin/course_lessons
 func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessons"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_lessons"),
+		semconv.HTTPRouteKey.String("/api/admin/course_lessons"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8507,14 +8507,14 @@ func (s *Server) handleAdminListCourseLessonsRequest(args [0]string, argsEscaped
 
 // handleAdminListCoursesRequest handles adminListCourses operation.
 //
-// GET /admin/courses
+// GET /api/admin/courses
 func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/courses"),
+		semconv.HTTPRouteKey.String("/api/admin/courses"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8717,14 +8717,14 @@ func (s *Server) handleAdminListCoursesRequest(args [0]string, argsEscaped bool,
 
 // handleAdminListLandingPageQnaItemsRequest handles adminListLandingPageQnaItems operation.
 //
-// GET /admin/course_landing_pages/{landingPageId}/qna_items
+// GET /api/admin/course_landing_pages/{landingPageId}/qna_items
 func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLandingPageQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -8915,14 +8915,14 @@ func (s *Server) handleAdminListLandingPageQnaItemsRequest(args [1]string, argsE
 
 // handleAdminListLeadsRequest handles adminListLeads operation.
 //
-// GET /admin/leads
+// GET /api/admin/leads
 func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLeads"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/leads"),
+		semconv.HTTPRouteKey.String("/api/admin/leads"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -9125,14 +9125,14 @@ func (s *Server) handleAdminListLeadsRequest(args [0]string, argsEscaped bool, w
 
 // handleAdminListLessonProgressRequest handles adminListLessonProgress operation.
 //
-// GET /admin/lesson_progress
+// GET /api/admin/lesson_progress
 func (s *Server) handleAdminListLessonProgressRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLessonProgress"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/lesson_progress"),
+		semconv.HTTPRouteKey.String("/api/admin/lesson_progress"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -9335,14 +9335,14 @@ func (s *Server) handleAdminListLessonProgressRequest(args [0]string, argsEscape
 
 // handleAdminListManagementUsersRequest handles adminListManagementUsers operation.
 //
-// GET /admin/management/users
+// GET /api/admin/management/users
 func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListManagementUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/users"),
+		semconv.HTTPRouteKey.String("/api/admin/management/users"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -9545,14 +9545,14 @@ func (s *Server) handleAdminListManagementUsersRequest(args [0]string, argsEscap
 
 // handleAdminListMessagesRequest handles adminListMessages operation.
 //
-// GET /admin/messages
+// GET /api/admin/messages
 func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/messages"),
+		semconv.HTTPRouteKey.String("/api/admin/messages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -9755,14 +9755,14 @@ func (s *Server) handleAdminListMessagesRequest(args [0]string, argsEscaped bool
 
 // handleAdminListReviewsRequest handles adminListReviews operation.
 //
-// GET /admin/reviews
+// GET /api/admin/reviews
 func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/reviews"),
+		semconv.HTTPRouteKey.String("/api/admin/reviews"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -9965,14 +9965,14 @@ func (s *Server) handleAdminListReviewsRequest(args [0]string, argsEscaped bool,
 
 // handleAdminListRolesRequest handles adminListRoles operation.
 //
-// GET /admin/management/roles
+// GET /api/admin/management/roles
 func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListRoles"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/roles"),
+		semconv.HTTPRouteKey.String("/api/admin/management/roles"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -10175,14 +10175,14 @@ func (s *Server) handleAdminListRolesRequest(args [0]string, argsEscaped bool, w
 
 // handleAdminListStaffMembersRequest handles adminListStaffMembers operation.
 //
-// GET /admin/management/staff_members
+// GET /api/admin/management/staff_members
 func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListStaffMembers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/management/staff_members"),
+		semconv.HTTPRouteKey.String("/api/admin/management/staff_members"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -10385,14 +10385,14 @@ func (s *Server) handleAdminListStaffMembersRequest(args [0]string, argsEscaped 
 
 // handleAdminListUsersRequest handles adminListUsers operation.
 //
-// GET /admin/api/users
+// GET /api/admin/api/users
 func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/api/users"),
+		semconv.HTTPRouteKey.String("/api/admin/api/users"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -10597,14 +10597,14 @@ func (s *Server) handleAdminListUsersRequest(args [0]string, argsEscaped bool, w
 //
 // Enqueue AI re-review of every current lesson version.
 //
-// POST /admin/courses/{id}/review
+// POST /api/admin/courses/{id}/review
 func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/courses/{id}/review"),
+		semconv.HTTPRouteKey.String("/api/admin/courses/{id}/review"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -10815,14 +10815,14 @@ func (s *Server) handleAdminReviewCourseRequest(args [1]string, argsEscaped bool
 //
 // Enqueue AI review for a single lesson.
 //
-// POST /admin/course_lessons/{id}/review
+// POST /api/admin/course_lessons/{id}/review
 func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/course_lessons/{id}/review"),
+		semconv.HTTPRouteKey.String("/api/admin/course_lessons/{id}/review"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -11033,14 +11033,14 @@ func (s *Server) handleAdminReviewCourseLessonRequest(args [1]string, argsEscape
 //
 // Typeahead search by name/email.
 //
-// GET /admin/api/users/search
+// GET /api/admin/api/users/search
 func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSearchUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/admin/api/users/search"),
+		semconv.HTTPRouteKey.String("/api/admin/api/users/search"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -11233,14 +11233,14 @@ func (s *Server) handleAdminSearchUsersRequest(args [0]string, argsEscaped bool,
 //
 // Set the related/promoted courses for a post.
 //
-// POST /admin/blog_posts/{id}/related_courses
+// POST /api/admin/blog_posts/{id}/related_courses
 func (s *Server) handleAdminSetBlogPostRelatedCoursesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSetBlogPostRelatedCourses"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/blog_posts/{id}/related_courses"),
+		semconv.HTTPRouteKey.String("/api/admin/blog_posts/{id}/related_courses"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -11466,14 +11466,14 @@ func (s *Server) handleAdminSetBlogPostRelatedCoursesRequest(args [1]string, arg
 //
 // Update a banner. A missing id surfaces as 404 via the central handler.
 //
-// PUT /admin/banners/{id}
+// PUT /api/admin/banners/{id}
 func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBanner"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/banners/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/banners/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -11697,14 +11697,14 @@ func (s *Server) handleAdminUpdateBannerRequest(args [1]string, argsEscaped bool
 
 // handleAdminUpdateBlogPostRequest handles adminUpdateBlogPost operation.
 //
-// PUT /admin/blog_posts/{id}
+// PUT /api/admin/blog_posts/{id}
 func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBlogPost"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/blog_posts/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/blog_posts/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -11931,14 +11931,14 @@ func (s *Server) handleAdminUpdateBlogPostRequest(args [1]string, argsEscaped bo
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/course_categories/{categoryId}/qna_items/{id}
+// PUT /api/admin/course_categories/{categoryId}/qna_items/{id}
 func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12166,14 +12166,14 @@ func (s *Server) handleAdminUpdateCategoryQnaItemRequest(args [2]string, argsEsc
 
 // handleAdminUpdateCourseRequest handles adminUpdateCourse operation.
 //
-// PUT /admin/courses/{id}
+// PUT /api/admin/courses/{id}
 func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/courses/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/courses/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12400,14 +12400,14 @@ func (s *Server) handleAdminUpdateCourseRequest(args [1]string, argsEscaped bool
 // Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/course_categories/{id}
+// PUT /api/admin/course_categories/{id}
 func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/course_categories/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_categories/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12633,14 +12633,14 @@ func (s *Server) handleAdminUpdateCourseCategoryRequest(args [1]string, argsEsca
 //
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/course_landing_pages/{id}
+// PUT /api/admin/course_landing_pages/{id}
 func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -12867,14 +12867,14 @@ func (s *Server) handleAdminUpdateCourseLandingPageRequest(args [1]string, argsE
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
+// PUT /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -13102,14 +13102,14 @@ func (s *Server) handleAdminUpdateLandingPageQnaItemRequest(args [2]string, args
 
 // handleAdminUpdateManagementUserRequest handles adminUpdateManagementUser operation.
 //
-// PUT /admin/management/users/{id}
+// PUT /api/admin/management/users/{id}
 func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateManagementUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/management/users/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/users/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -13335,14 +13335,14 @@ func (s *Server) handleAdminUpdateManagementUserRequest(args [1]string, argsEsca
 //
 // Update a review. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/reviews/{id}
+// PUT /api/admin/reviews/{id}
 func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateReview"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/reviews/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/reviews/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -13566,14 +13566,14 @@ func (s *Server) handleAdminUpdateReviewRequest(args [1]string, argsEscaped bool
 
 // handleAdminUpdateRoleRequest handles adminUpdateRole operation.
 //
-// PUT /admin/management/roles/{id}
+// PUT /api/admin/management/roles/{id}
 func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRole"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/management/roles/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/roles/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -13799,14 +13799,14 @@ func (s *Server) handleAdminUpdateRoleRequest(args [1]string, argsEscaped bool, 
 //
 // Replace the permission matrix for a role.
 //
-// PUT /admin/management/role_permissions/{roleId}
+// PUT /api/admin/management/role_permissions/{roleId}
 func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/management/role_permissions/{roleId}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/role_permissions/{roleId}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -14030,14 +14030,14 @@ func (s *Server) handleAdminUpdateRolePermissionsRequest(args [1]string, argsEsc
 
 // handleAdminUpdateStaffMemberRequest handles adminUpdateStaffMember operation.
 //
-// PUT /admin/management/staff_members/{id}
+// PUT /api/admin/management/staff_members/{id}
 func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/management/staff_members/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/management/staff_members/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -14264,14 +14264,14 @@ func (s *Server) handleAdminUpdateStaffMemberRequest(args [1]string, argsEscaped
 // Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/api/users/{id}
+// PUT /api/admin/api/users/{id}
 func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.HTTPRouteKey.String("/admin/api/users/{id}"),
+		semconv.HTTPRouteKey.String("/api/admin/api/users/{id}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -14497,14 +14497,14 @@ func (s *Server) handleAdminUpdateUserRequest(args [1]string, argsEscaped bool, 
 //
 // Upload a file; returns the attachment to reference from a form.
 //
-// POST /admin/attachments
+// POST /api/admin/attachments
 func (s *Server) handleAdminUploadAttachmentRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUploadAttachment"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/admin/attachments"),
+		semconv.HTTPRouteKey.String("/api/admin/attachments"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -14720,14 +14720,14 @@ func (s *Server) handleAdminUploadAttachmentRequest(args [0]string, argsEscaped 
 // rather than in rows. 409 when the lesson is beyond the gate — the submission is refused before
 // anything is run.
 //
-// POST /lessons/{id}/check
+// POST /api/lessons/{id}/check
 func (s *Server) handleCheckLessonRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("checkLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/lessons/{id}/check"),
+		semconv.HTTPRouteKey.String("/api/lessons/{id}/check"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -14889,14 +14889,14 @@ func (s *Server) handleCheckLessonRequest(args [1]string, argsEscaped bool, w ht
 //
 // Validate a reset token before showing the form.
 //
-// GET /password/{token}/edit
+// GET /api/password/{token}/edit
 func (s *Server) handleCheckPasswordResetTokenRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("checkPasswordResetToken"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/password/{token}/edit"),
+		semconv.HTTPRouteKey.String("/api/password/{token}/edit"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -15039,172 +15039,18 @@ func (s *Server) handleCheckPasswordResetTokenRequest(args [1]string, argsEscape
 	}
 }
 
-// handleConfirmPhoneAuthRequest handles confirmPhoneAuth operation.
-//
-// Confirm the SMS code; sets the JWT cookie.
-//
-// POST /phone_auth/confirm
-func (s *Server) handleConfirmPhoneAuthRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("confirmPhoneAuth"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/phone_auth/confirm"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), ConfirmPhoneAuthOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: ConfirmPhoneAuthOperation,
-			ID:   "confirmPhoneAuth",
-		}
-	)
-
-	var rawBody []byte
-	request, rawBody, close, err := s.decodeConfirmPhoneAuthRequest(r)
-	if err != nil {
-		err = &ogenerrors.DecodeRequestError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		defer recordError("DecodeRequest", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-	defer func() {
-		if err := close(); err != nil {
-			recordError("CloseRequest", err)
-		}
-	}()
-
-	var response ConfirmPhoneAuthRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    ConfirmPhoneAuthOperation,
-			OperationSummary: "",
-			OperationID:      "confirmPhoneAuth",
-			Body:             request,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = *PhoneConfirmInput
-			Params   = struct{}
-			Response = ConfirmPhoneAuthRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.ConfirmPhoneAuth(ctx, request)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.ConfirmPhoneAuth(ctx, request)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeConfirmPhoneAuthResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleConsumeMagicLinkRequest handles consumeMagicLink operation.
 //
 // Consume a magic link token; sets the JWT cookie.
 //
-// GET /magic_links/{token}
+// GET /api/magic_links/{token}
 func (s *Server) handleConsumeMagicLinkRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("consumeMagicLink"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/magic_links/{token}"),
+		semconv.HTTPRouteKey.String("/api/magic_links/{token}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -15352,14 +15198,14 @@ func (s *Server) handleConsumeMagicLinkRequest(args [1]string, argsEscaped bool,
 // Ask the assistant. Enqueues generation (river job); the reply is delivered out-of-band. 202 =
 // accepted, 429 = rate limited. SSE streaming is TBD.
 //
-// POST /ai/lessons/{lessonId}/messages
+// POST /api/ai/lessons/{lessonId}/messages
 func (s *Server) handleCreateAssistantMessageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createAssistantMessage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/ai/lessons/{lessonId}/messages"),
+		semconv.HTTPRouteKey.String("/api/ai/lessons/{lessonId}/messages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -15585,14 +15431,14 @@ func (s *Server) handleCreateAssistantMessageRequest(args [1]string, argsEscaped
 //
 // Request the book download link by email.
 //
-// POST /book/create_request
+// POST /api/book/create_request
 func (s *Server) handleCreateBookRequestRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createBookRequest"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/book/create_request"),
+		semconv.HTTPRouteKey.String("/api/book/create_request"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -15803,14 +15649,14 @@ func (s *Server) handleCreateBookRequestRequest(args [0]string, argsEscaped bool
 //
 // Submit a contact request.
 //
-// POST /leads
+// POST /api/leads
 func (s *Server) handleCreateLeadRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createLead"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/leads"),
+		semconv.HTTPRouteKey.String("/api/leads"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -16021,14 +15867,14 @@ func (s *Server) handleCreateLeadRequest(args [0]string, argsEscaped bool, w htt
 //
 // Email a one-time sign-in link.
 //
-// POST /magic_links
+// POST /api/magic_links
 func (s *Server) handleCreateMagicLinkRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createMagicLink"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/magic_links"),
+		semconv.HTTPRouteKey.String("/api/magic_links"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -16171,390 +16017,18 @@ func (s *Server) handleCreateMagicLinkRequest(args [0]string, argsEscaped bool, 
 	}
 }
 
-// handleCreatePasskeyRequest handles createPasskey operation.
-//
-// Register a new passkey for the current user.
-//
-// POST /account/passkeys
-func (s *Server) handleCreatePasskeyRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("createPasskey"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/account/passkeys"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), CreatePasskeyOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: CreatePasskeyOperation,
-			ID:   "createPasskey",
-		}
-	)
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			sctx, ok, err := s.securityUserSession(ctx, CreatePasskeyOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "UserSession",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:UserSession", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 0
-				ctx = sctx
-			}
-		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, CreatePasskeyOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000011},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			err = &ogenerrors.SecurityError{
-				OperationContext: opErrContext,
-				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
-			}
-			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-				defer recordError("Security", err)
-			}
-			return
-		}
-	}
-
-	var rawBody []byte
-	request, rawBody, close, err := s.decodeCreatePasskeyRequest(r)
-	if err != nil {
-		err = &ogenerrors.DecodeRequestError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		defer recordError("DecodeRequest", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-	defer func() {
-		if err := close(); err != nil {
-			recordError("CloseRequest", err)
-		}
-	}()
-
-	var response CreatePasskeyRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    CreatePasskeyOperation,
-			OperationSummary: "",
-			OperationID:      "createPasskey",
-			Body:             request,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = *PasskeyRegistrationInput
-			Params   = struct{}
-			Response = CreatePasskeyRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CreatePasskey(ctx, request)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.CreatePasskey(ctx, request)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeCreatePasskeyResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
-// handleCreatePasskeySessionRequest handles createPasskeySession operation.
-//
-// Complete a passkey login; sets the JWT cookie.
-//
-// POST /passkey_session
-func (s *Server) handleCreatePasskeySessionRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("createPasskeySession"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/passkey_session"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), CreatePasskeySessionOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: CreatePasskeySessionOperation,
-			ID:   "createPasskeySession",
-		}
-	)
-
-	var rawBody []byte
-	request, rawBody, close, err := s.decodeCreatePasskeySessionRequest(r)
-	if err != nil {
-		err = &ogenerrors.DecodeRequestError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		defer recordError("DecodeRequest", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-	defer func() {
-		if err := close(); err != nil {
-			recordError("CloseRequest", err)
-		}
-	}()
-
-	var response CreatePasskeySessionRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    CreatePasskeySessionOperation,
-			OperationSummary: "",
-			OperationID:      "createPasskeySession",
-			Body:             request,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = *PasskeyAssertionInput
-			Params   = struct{}
-			Response = CreatePasskeySessionRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CreatePasskeySession(ctx, request)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.CreatePasskeySession(ctx, request)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeCreatePasskeySessionResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleCreatePasswordReminderRequest handles createPasswordReminder operation.
 //
 // Email a password-reset link.
 //
-// POST /remind_password
+// POST /api/remind_password
 func (s *Server) handleCreatePasswordReminderRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createPasswordReminder"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/remind_password"),
+		semconv.HTTPRouteKey.String("/api/remind_password"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -16697,172 +16171,18 @@ func (s *Server) handleCreatePasswordReminderRequest(args [0]string, argsEscaped
 	}
 }
 
-// handleCreatePhoneAuthRequest handles createPhoneAuth operation.
-//
-// Send an SMS verification code.
-//
-// POST /phone_auth
-func (s *Server) handleCreatePhoneAuthRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("createPhoneAuth"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/phone_auth"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), CreatePhoneAuthOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: CreatePhoneAuthOperation,
-			ID:   "createPhoneAuth",
-		}
-	)
-
-	var rawBody []byte
-	request, rawBody, close, err := s.decodeCreatePhoneAuthRequest(r)
-	if err != nil {
-		err = &ogenerrors.DecodeRequestError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		defer recordError("DecodeRequest", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-	defer func() {
-		if err := close(); err != nil {
-			recordError("CloseRequest", err)
-		}
-	}()
-
-	var response CreatePhoneAuthRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    CreatePhoneAuthOperation,
-			OperationSummary: "",
-			OperationID:      "createPhoneAuth",
-			Body:             request,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = *PhoneInput
-			Params   = struct{}
-			Response = CreatePhoneAuthRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.CreatePhoneAuth(ctx, request)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.CreatePhoneAuth(ctx, request)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeCreatePhoneAuthResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleCreateSessionRequest handles createSession operation.
 //
 // Log in with email + password; sets the JWT cookie.
 //
-// POST /session
+// POST /api/session
 func (s *Server) handleCreateSessionRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createSession"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/session"),
+		semconv.HTTPRouteKey.String("/api/session"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -17009,14 +16329,14 @@ func (s *Server) handleCreateSessionRequest(args [0]string, argsEscaped bool, w 
 //
 // Sign up; sets the JWT cookie on success.
 //
-// POST /users
+// POST /api/users
 func (s *Server) handleCreateUserRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/users"),
+		semconv.HTTPRouteKey.String("/api/users"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -17163,14 +16483,14 @@ func (s *Server) handleCreateUserRequest(args [0]string, argsEscaped bool, w htt
 //
 // Delete the current user's account.
 //
-// DELETE /account/profile
+// DELETE /api/account/profile
 func (s *Server) handleDeleteAccountRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteAccount"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/account/profile"),
+		semconv.HTTPRouteKey.String("/api/account/profile"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -17362,236 +16682,18 @@ func (s *Server) handleDeleteAccountRequest(args [0]string, argsEscaped bool, w 
 	}
 }
 
-// handleDeletePasskeyRequest handles deletePasskey operation.
-//
-// Remove a passkey.
-//
-// DELETE /account/passkeys/{id}
-func (s *Server) handleDeletePasskeyRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("deletePasskey"),
-		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/account/passkeys/{id}"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), DeletePasskeyOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: DeletePasskeyOperation,
-			ID:   "deletePasskey",
-		}
-	)
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			sctx, ok, err := s.securityUserSession(ctx, DeletePasskeyOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "UserSession",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:UserSession", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 0
-				ctx = sctx
-			}
-		}
-		{
-			sctx, ok, err := s.securityXsrfToken(ctx, DeletePasskeyOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "XsrfToken",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:XsrfToken", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 1
-				ctx = sctx
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000011},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			err = &ogenerrors.SecurityError{
-				OperationContext: opErrContext,
-				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
-			}
-			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-				defer recordError("Security", err)
-			}
-			return
-		}
-	}
-	params, err := decodeDeletePasskeyParams(args, argsEscaped, r)
-	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		defer recordError("DecodeParams", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	var rawBody []byte
-
-	var response DeletePasskeyRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    DeletePasskeyOperation,
-			OperationSummary: "",
-			OperationID:      "deletePasskey",
-			Body:             nil,
-			RawBody:          rawBody,
-			Params: middleware.Parameters{
-				{
-					Name: "id",
-					In:   "path",
-				}: params.ID,
-			},
-			Raw: r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = DeletePasskeyParams
-			Response = DeletePasskeyRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			unpackDeletePasskeyParams,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.DeletePasskey(ctx, params)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.DeletePasskey(ctx, params)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeDeletePasskeyResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleDeleteSessionRequest handles deleteSession operation.
 //
 // Log out; clears the JWT cookie.
 //
-// DELETE /session
+// DELETE /api/session
 func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteSession"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/session"),
+		semconv.HTTPRouteKey.String("/api/session"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -17787,14 +16889,14 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 //
 // A single blog post by slug.
 //
-// GET /blog_posts/{slug}
+// GET /api/blog_posts/{slug}
 func (s *Server) handleGetBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/blog_posts/{slug}"),
+		semconv.HTTPRouteKey.String("/api/blog_posts/{slug}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -17941,14 +17043,14 @@ func (s *Server) handleGetBlogPostRequest(args [1]string, argsEscaped bool, w ht
 //
 // Course landing page by slug.
 //
-// GET /languages/{slug}
+// GET /api/languages/{slug}
 func (s *Server) handleGetCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/languages/{slug}"),
+		semconv.HTTPRouteKey.String("/api/languages/{slug}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -18099,14 +17201,14 @@ func (s *Server) handleGetCourseRequest(args [1]string, argsEscaped bool, w http
 // would enroll a learner in every lesson they pointed at (ADR-0012). Theory stays public and indexable
 // for everyone, including a lesson the visitor may not take yet.
 //
-// GET /languages/{courseSlug}/lessons/{slug}
+// GET /api/languages/{courseSlug}/lessons/{slug}
 func (s *Server) handleGetCourseLessonRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/languages/{courseSlug}/lessons/{slug}"),
+		semconv.HTTPRouteKey.String("/api/languages/{courseSlug}/lessons/{slug}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -18257,14 +17359,14 @@ func (s *Server) handleGetCourseLessonRequest(args [2]string, argsEscaped bool, 
 //
 // Resolve the current user from the session cookie (for SSR).
 //
-// GET /me
+// GET /api/me
 func (s *Server) handleGetCurrentUserRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCurrentUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/me"),
+		semconv.HTTPRouteKey.String("/api/me"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -18411,14 +17513,14 @@ func (s *Server) handleGetCurrentUserRequest(args [0]string, argsEscaped bool, w
 //
 // The signed-in user's course dashboard.
 //
-// GET /my
+// GET /api/my
 func (s *Server) handleGetMyDashboardRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMyDashboard"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/my"),
+		semconv.HTTPRouteKey.String("/api/my"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -18596,14 +17698,14 @@ func (s *Server) handleGetMyDashboardRequest(args [0]string, argsEscaped bool, w
 //
 // The next post to read after this one.
 //
-// GET /blog_posts/{id}/next
+// GET /api/blog_posts/{id}/next
 func (s *Server) handleGetNextBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getNextBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/blog_posts/{id}/next"),
+		semconv.HTTPRouteKey.String("/api/blog_posts/{id}/next"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -18746,172 +17848,18 @@ func (s *Server) handleGetNextBlogPostRequest(args [1]string, argsEscaped bool, 
 	}
 }
 
-// handleGetPageRequest handles getPage operation.
-//
-// A static content page by slug.
-//
-// GET /pages/{slug}
-func (s *Server) handleGetPageRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getPage"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/pages/{slug}"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), GetPageOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: GetPageOperation,
-			ID:   "getPage",
-		}
-	)
-	params, err := decodeGetPageParams(args, argsEscaped, r)
-	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		defer recordError("DecodeParams", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	var rawBody []byte
-
-	var response GetPageRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    GetPageOperation,
-			OperationSummary: "",
-			OperationID:      "getPage",
-			Body:             nil,
-			RawBody:          rawBody,
-			Params: middleware.Parameters{
-				{
-					Name: "slug",
-					In:   "path",
-				}: params.Slug,
-			},
-			Raw: r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = GetPageParams
-			Response = GetPageRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			unpackGetPageParams,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.GetPage(ctx, params)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.GetPage(ctx, params)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeGetPageResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleGetProfileRequest handles getProfile operation.
 //
 // The editable profile of the current user.
 //
-// GET /account/profile/edit
+// GET /api/account/profile/edit
 func (s *Server) handleGetProfileRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getProfile"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/account/profile/edit"),
+		semconv.HTTPRouteKey.String("/api/account/profile/edit"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -19089,14 +18037,14 @@ func (s *Server) handleGetProfileRequest(args [0]string, argsEscaped bool, w htt
 //
 // A category and the courses it groups.
 //
-// GET /language_categories/{slug}
+// GET /api/language_categories/{slug}
 func (s *Server) handleGetPublicCourseCategoryRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPublicCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/language_categories/{slug}"),
+		semconv.HTTPRouteKey.String("/api/language_categories/{slug}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -19243,14 +18191,14 @@ func (s *Server) handleGetPublicCourseCategoryRequest(args [1]string, argsEscape
 //
 // Everything the sitemap generator needs.
 //
-// GET /map
+// GET /api/map
 func (s *Server) handleGetSitemapRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSitemap"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/map"),
+		semconv.HTTPRouteKey.String("/api/map"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -19374,18 +18322,290 @@ func (s *Server) handleGetSitemapRequest(args [0]string, argsEscaped bool, w htt
 	}
 }
 
+// handleGetYandexCoursesFeedRequest handles getYandexCoursesFeed operation.
+//
+// The same feed at the path the legacy route declares.
+//
+// GET /api/feeds/yandex_courses
+func (s *Server) handleGetYandexCoursesFeedRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getYandexCoursesFeed"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/feeds/yandex_courses"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetYandexCoursesFeedOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err error
+	)
+
+	var rawBody []byte
+
+	var response GetYandexCoursesFeedOK
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    GetYandexCoursesFeedOperation,
+			OperationSummary: "",
+			OperationID:      "getYandexCoursesFeed",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = GetYandexCoursesFeedOK
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.GetYandexCoursesFeed(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.GetYandexCoursesFeed(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeGetYandexCoursesFeedResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
+// handleGetYandexCoursesFeedXmlRequest handles getYandexCoursesFeedXml operation.
+//
+// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+// one.
+//
+// GET /api/feeds/yandex_courses.xml
+func (s *Server) handleGetYandexCoursesFeedXmlRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	statusWriter := &codeRecorder{ResponseWriter: w}
+	w = statusWriter
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getYandexCoursesFeedXml"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/feeds/yandex_courses.xml"),
+	}
+	// Add attributes from config.
+	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), GetYandexCoursesFeedXmlOperation,
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Add Labeler to context.
+	labeler := &Labeler{attrs: otelAttrs}
+	ctx = contextWithLabeler(ctx, labeler)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+
+		attrSet := labeler.AttributeSet()
+		attrs := attrSet.ToSlice()
+		code := statusWriter.status
+		if code != 0 {
+			codeAttr := semconv.HTTPResponseStatusCode(code)
+			attrs = append(attrs, codeAttr)
+			span.SetAttributes(attrs...)
+		}
+		attrOpt := metric.WithAttributes(attrs...)
+
+		// Increment request counter.
+		s.requests.Add(ctx, 1, attrOpt)
+
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
+	}()
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+
+			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
+			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
+			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
+			// max redirects exceeded), in which case status MUST be set to Error.
+			code := statusWriter.status
+			if code < 100 || code >= 500 {
+				span.SetStatus(codes.Error, stage)
+			}
+
+			attrSet := labeler.AttributeSet()
+			attrs := attrSet.ToSlice()
+			if code != 0 {
+				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
+			}
+
+			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
+		}
+		err error
+	)
+
+	var rawBody []byte
+
+	var response GetYandexCoursesFeedXmlOK
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:          ctx,
+			OperationName:    GetYandexCoursesFeedXmlOperation,
+			OperationSummary: "",
+			OperationID:      "getYandexCoursesFeedXml",
+			Body:             nil,
+			RawBody:          rawBody,
+			Params:           middleware.Parameters{},
+			Raw:              r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = struct{}
+			Response = GetYandexCoursesFeedXmlOK
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			nil,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.GetYandexCoursesFeedXml(ctx)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.GetYandexCoursesFeedXml(ctx)
+	}
+	if err != nil {
+		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w, span); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
+			defer recordError("Internal", err)
+		}
+		return
+	}
+
+	if err := encodeGetYandexCoursesFeedXmlResponse(response, w, span); err != nil {
+		defer recordError("EncodeResponse", err)
+		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+		}
+		return
+	}
+}
+
 // handleLikeBlogPostRequest handles likeBlogPost operation.
 //
 // Like a post (idempotent per visitor).
 //
-// POST /blog_posts/{id}/likes
+// POST /api/blog_posts/{id}/likes
 func (s *Server) handleLikeBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("likeBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/blog_posts/{id}/likes"),
+		semconv.HTTPRouteKey.String("/api/blog_posts/{id}/likes"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -19596,14 +18816,14 @@ func (s *Server) handleLikeBlogPostRequest(args [1]string, argsEscaped bool, w h
 //
 // The assistant chat history for the current user in this lesson.
 //
-// GET /ai/lessons/{lessonId}/messages
+// GET /api/ai/lessons/{lessonId}/messages
 func (s *Server) handleListAssistantMessagesRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listAssistantMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/ai/lessons/{lessonId}/messages"),
+		semconv.HTTPRouteKey.String("/api/ai/lessons/{lessonId}/messages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -19796,14 +19016,14 @@ func (s *Server) handleListAssistantMessagesRequest(args [1]string, argsEscaped 
 //
 // Paginated published blog posts.
 //
-// GET /blog_posts
+// GET /api/blog_posts
 func (s *Server) handleListBlogPostsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listBlogPosts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/blog_posts"),
+		semconv.HTTPRouteKey.String("/api/blog_posts"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -19962,14 +19182,14 @@ func (s *Server) handleListBlogPostsRequest(args [0]string, argsEscaped bool, w 
 //
 // List the published course catalog.
 //
-// GET /languages
+// GET /api/languages
 func (s *Server) handleListCoursesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/languages"),
+		semconv.HTTPRouteKey.String("/api/languages"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -20093,203 +19313,18 @@ func (s *Server) handleListCoursesRequest(args [0]string, argsEscaped bool, w ht
 	}
 }
 
-// handleListPasskeysRequest handles listPasskeys operation.
-//
-// List the current user's passkeys.
-//
-// GET /account/passkeys
-func (s *Server) handleListPasskeysRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("listPasskeys"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/account/passkeys"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), ListPasskeysOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: ListPasskeysOperation,
-			ID:   "listPasskeys",
-		}
-	)
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			sctx, ok, err := s.securityUserSession(ctx, ListPasskeysOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "UserSession",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:UserSession", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 0
-				ctx = sctx
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			err = &ogenerrors.SecurityError{
-				OperationContext: opErrContext,
-				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
-			}
-			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-				defer recordError("Security", err)
-			}
-			return
-		}
-	}
-
-	var rawBody []byte
-
-	var response ListPasskeysRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    ListPasskeysOperation,
-			OperationSummary: "",
-			OperationID:      "listPasskeys",
-			Body:             nil,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = struct{}
-			Response = ListPasskeysRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.ListPasskeys(ctx)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.ListPasskeys(ctx)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeListPasskeysResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleListPublicCourseCategoriesRequest handles listPublicCourseCategories operation.
 //
 // List published categories.
 //
-// GET /language_categories
+// GET /api/language_categories
 func (s *Server) handleListPublicCourseCategoriesRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listPublicCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/language_categories"),
+		semconv.HTTPRouteKey.String("/api/language_categories"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -20417,14 +19452,14 @@ func (s *Server) handleListPublicCourseCategoriesRequest(args [0]string, argsEsc
 //
 // Paginated published student reviews.
 //
-// GET /reviews
+// GET /api/reviews
 func (s *Server) handleListPublicReviewsRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listPublicReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/reviews"),
+		semconv.HTTPRouteKey.String("/api/reviews"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -20579,326 +19614,6 @@ func (s *Server) handleListPublicReviewsRequest(args [0]string, argsEscaped bool
 	}
 }
 
-// handleNewPasskeyRequest handles newPasskey operation.
-//
-// Begin a passkey registration ceremony.
-//
-// GET /account/passkeys/new
-func (s *Server) handleNewPasskeyRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("newPasskey"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/account/passkeys/new"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), NewPasskeyOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: NewPasskeyOperation,
-			ID:   "newPasskey",
-		}
-	)
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			sctx, ok, err := s.securityUserSession(ctx, NewPasskeyOperation, r)
-			if err != nil {
-				err = &ogenerrors.SecurityError{
-					OperationContext: opErrContext,
-					Security:         "UserSession",
-					Err:              err,
-				}
-				if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-					defer recordError("Security:UserSession", err)
-				}
-				return
-			}
-			if ok {
-				satisfied[0] |= 1 << 0
-				ctx = sctx
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			err = &ogenerrors.SecurityError{
-				OperationContext: opErrContext,
-				Err:              ogenerrors.ErrSecurityRequirementIsNotSatisfied,
-			}
-			if encodeErr := encodeErrorResponse(s.h.NewError(ctx, err), w, span); encodeErr != nil {
-				defer recordError("Security", err)
-			}
-			return
-		}
-	}
-
-	var rawBody []byte
-
-	var response NewPasskeyRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    NewPasskeyOperation,
-			OperationSummary: "",
-			OperationID:      "newPasskey",
-			Body:             nil,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = struct{}
-			Response = NewPasskeyRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.NewPasskey(ctx)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.NewPasskey(ctx)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeNewPasskeyResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
-// handleNewPasskeySessionRequest handles newPasskeySession operation.
-//
-// Begin a passkey login ceremony.
-//
-// GET /passkey_session/new
-func (s *Server) handleNewPasskeySessionRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	statusWriter := &codeRecorder{ResponseWriter: w}
-	w = statusWriter
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("newPasskeySession"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/passkey_session/new"),
-	}
-	// Add attributes from config.
-	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), NewPasskeySessionOperation,
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Add Labeler to context.
-	labeler := &Labeler{attrs: otelAttrs}
-	ctx = contextWithLabeler(ctx, labeler)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-
-		attrSet := labeler.AttributeSet()
-		attrs := attrSet.ToSlice()
-		code := statusWriter.status
-		if code != 0 {
-			codeAttr := semconv.HTTPResponseStatusCode(code)
-			attrs = append(attrs, codeAttr)
-			span.SetAttributes(attrs...)
-		}
-		attrOpt := metric.WithAttributes(attrs...)
-
-		// Increment request counter.
-		s.requests.Add(ctx, 1, attrOpt)
-
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		s.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), attrOpt)
-	}()
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-
-			// https://opentelemetry.io/docs/specs/semconv/http/http-spans/#status
-			// Span Status MUST be left unset if HTTP status code was in the 1xx, 2xx or 3xx ranges,
-			// unless there was another error (e.g., network error receiving the response body; or 3xx codes with
-			// max redirects exceeded), in which case status MUST be set to Error.
-			code := statusWriter.status
-			if code < 100 || code >= 500 {
-				span.SetStatus(codes.Error, stage)
-			}
-
-			attrSet := labeler.AttributeSet()
-			attrs := attrSet.ToSlice()
-			if code != 0 {
-				attrs = append(attrs, semconv.HTTPResponseStatusCode(code))
-			}
-
-			s.errors.Add(ctx, 1, metric.WithAttributes(attrs...))
-		}
-		err error
-	)
-
-	var rawBody []byte
-
-	var response *PasskeyChallenge
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:          ctx,
-			OperationName:    NewPasskeySessionOperation,
-			OperationSummary: "",
-			OperationID:      "newPasskeySession",
-			Body:             nil,
-			RawBody:          rawBody,
-			Params:           middleware.Parameters{},
-			Raw:              r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = struct{}
-			Response = *PasskeyChallenge
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			nil,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.NewPasskeySession(ctx)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.NewPasskeySession(ctx)
-	}
-	if err != nil {
-		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
-			if err := encodeErrorResponse(errRes, w, span); err != nil {
-				defer recordError("Internal", err)
-			}
-			return
-		}
-		if errors.Is(err, ht.ErrNotImplemented) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-			return
-		}
-		if err := encodeErrorResponse(s.h.NewError(ctx, err), w, span); err != nil {
-			defer recordError("Internal", err)
-		}
-		return
-	}
-
-	if err := encodeNewPasskeySessionResponse(response, w, span); err != nil {
-		defer recordError("EncodeResponse", err)
-		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
-			s.cfg.ErrorHandler(ctx, w, r, err)
-		}
-		return
-	}
-}
-
 // handleStartLessonRequest handles startLesson operation.
 //
 // Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson
@@ -20912,14 +19627,14 @@ func (s *Server) handleNewPasskeySessionRequest(args [0]string, argsEscaped bool
 // their position without storing anything: their state is the signed cookie, and only a check moves
 // it.
 //
-// POST /lessons/{id}/start
+// POST /api/lessons/{id}/start
 func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("startLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/lessons/{id}/start"),
+		semconv.HTTPRouteKey.String("/api/lessons/{id}/start"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -21064,16 +19779,17 @@ func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w ht
 
 // handleSwitchLocaleRequest handles switchLocale operation.
 //
-// Persist the preferred UI locale on the session.
+// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+// the locale it redirects to. The page navigates itself afterwards.
 //
-// GET /locale/switch
+// GET /api/locale/switch
 func (s *Server) handleSwitchLocaleRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("switchLocale"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/locale/switch"),
+		semconv.HTTPRouteKey.String("/api/locale/switch"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -21183,12 +19899,12 @@ func (s *Server) handleSwitchLocaleRequest(args [0]string, argsEscaped bool, w h
 			mreq,
 			unpackSwitchLocaleParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.SwitchLocale(ctx, params)
+				response, err = s.h.SwitchLocale(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.SwitchLocale(ctx, params)
+		response, err = s.h.SwitchLocale(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {
@@ -21220,14 +19936,14 @@ func (s *Server) handleSwitchLocaleRequest(args [0]string, argsEscaped bool, w h
 //
 // Set a new password using a reset token; signs the user in.
 //
-// PATCH /password/{token}
+// PATCH /api/password/{token}
 func (s *Server) handleUpdatePasswordRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("updatePassword"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
-		semconv.HTTPRouteKey.String("/password/{token}"),
+		semconv.HTTPRouteKey.String("/api/password/{token}"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)
@@ -21389,14 +20105,14 @@ func (s *Server) handleUpdatePasswordRequest(args [1]string, argsEscaped bool, w
 //
 // Update the current user's profile.
 //
-// PATCH /account/profile
+// PATCH /api/account/profile
 func (s *Server) handleUpdateProfileRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("updateProfile"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
-		semconv.HTTPRouteKey.String("/account/profile"),
+		semconv.HTTPRouteKey.String("/api/account/profile"),
 	}
 	// Add attributes from config.
 	otelAttrs = append(otelAttrs, s.cfg.Attributes...)

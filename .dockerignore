@@ -1,0 +1,24 @@
+# Build context for Dockerfile (Go) and Dockerfile.web (SSR). Everything the
+# images do not compile from stays out: the legacy Rails app is most of the
+# repository, and local state (.env, storage/, node_modules) must never reach
+# an image layer.
+.git
+.github
+.agents
+.claude
+legacy/
+k8s/
+docs/
+fixtures/
+scripts/
+node_modules/
+dist/
+bin/
+tmp/
+storage/
+.env
+.env.*
+!.env.example
+**/*.tsbuildinfo
+.vitest-attachments/
+**/__screenshots__/

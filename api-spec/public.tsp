@@ -41,13 +41,6 @@ model CourseCategoryView {
   landingPages: CourseCatalogItem[];
 }
 
-/** A static content page (about, authors, privacy, tos, cookie). */
-model PageContent {
-  slug: string;
-  title: string;
-  bodyHtml: string;
-}
-
 @route("/languages")
 @tag("Courses")
 interface Courses {
@@ -176,16 +169,6 @@ interface PublicReviews {
   list(...ListQuery): Page<Review> | ApiError;
 }
 
-@route("/pages")
-@tag("Pages")
-interface Pages {
-  /** A static content page by slug. */
-  @get
-  @route("/{slug}")
-  @operationId("getPage")
-  get(@path slug: string): PageContent | NotFoundError | ApiError;
-}
-
 // ---- Marketing writes -----------------------------------------------------
 
 /** A lead captured from a marketing form (legacy: `LeadCrud`). */
@@ -193,6 +176,25 @@ model LeadInput {
   contactMethod: "telegram" | "phone" | "whatsapp";
   @minLength(1) contactValue: string;
   ymClientId: string | null;
+
+  /**
+   * Where the visitor first came from. Legacy read this off ahoy's visit; ahoy
+   * is not ported (ADR-0015), so the frontend keeps the first visit in a cookie
+   * and sends it with the form. Absent when the browser kept no cookie (blocked or cleared).
+   */
+  firstVisit?: FirstVisit | null;
+}
+
+/** The first visit's traffic source, as recorded by the browser. */
+model FirstVisit {
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  utmContent: string | null;
+  utmTerm: string | null;
+  /** The full URL the visit landed on, query string included. */
+  landingPage: string | null;
+  referrer: string | null;
 }
 
 @route("/leads")
@@ -241,4 +243,44 @@ interface SitemapFeed {
   @get
   @operationId("getSitemap")
   get(): Sitemap | ApiError;
+}
+
+// ---- Feeds ----------------------------------------------------------------
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+model YandexCoursesFeed {
+  @header contentType: "application/xml";
+  @body body: bytes;
+}
+
+/**
+ * Machine-read feeds, at the addresses their consumers are registered with —
+ * the URL is the contract here, so it keeps the legacy path exactly
+ * (ADR-0015).
+ */
+@route("/feeds")
+@tag("Feeds")
+interface Feeds {
+  /**
+   * The feed at the address production actually answers on. Legacy routes
+   * `/api` with a JSON default format and the action only knows XML, so the
+   * bare path has always answered 406 and Yandex reads this one.
+   */
+  @get
+  @route("/yandex_courses.xml")
+  @operationId("getYandexCoursesFeedXml")
+  getXml(): YandexCoursesFeed | ApiError;
+
+  /** The same feed at the path the legacy route declares. */
+  @get
+  @route("/yandex_courses")
+  @operationId("getYandexCoursesFeed")
+  get(): YandexCoursesFeed | ApiError;
 }

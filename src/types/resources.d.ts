@@ -5,6 +5,9 @@ export default interface Resources {
       profiles: {
         edit: {
           delete: "Удалить аккаунт";
+          meta: {
+            description: "Здесь меняются личные данные";
+          };
           passkeys: {
             add: "Добавить passkey";
             already_registered: "Этот passkey уже добавлен.";

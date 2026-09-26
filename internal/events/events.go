@@ -124,21 +124,29 @@ func (EmailConfirmed) eventName() string { return emailConfirmedName }
 
 // LeadCreated is the integration snapshot consumed by the amoCRM handler.
 type LeadCreated struct {
-	LeadID      int       `json:"lead_id"`
-	UserID      int       `json:"user_id"`
-	UserName    string    `json:"user_name"`
-	FirstName   *string   `json:"first_name"`
-	LastName    *string   `json:"last_name"`
-	YMClientID  *string   `json:"ym_client_id"`
-	UTMSource   *string   `json:"utm_source"`
-	UTMMedium   *string   `json:"utm_medium"`
-	UTMCampaign *string   `json:"utm_campaign"`
-	UTMTerm     *string   `json:"utm_term"`
-	UTMContent  *string   `json:"utm_content"`
-	Email       *string   `json:"email"`
-	Phone       *string   `json:"phone"`
-	Telegram    *string   `json:"telegram"`
-	WhatsApp    *string   `json:"whatsapp"`
+	LeadID      int     `json:"lead_id"`
+	UserID      int     `json:"user_id"`
+	UserName    string  `json:"user_name"`
+	FirstName   *string `json:"first_name"`
+	LastName    *string `json:"last_name"`
+	YMClientID  *string `json:"ym_client_id"`
+	UTMSource   *string `json:"utm_source"`
+	UTMMedium   *string `json:"utm_medium"`
+	UTMCampaign *string `json:"utm_campaign"`
+	UTMTerm     *string `json:"utm_term"`
+	UTMContent  *string `json:"utm_content"`
+	Email       *string `json:"email"`
+	Phone       *string `json:"phone"`
+	Telegram    *string `json:"telegram"`
+	WhatsApp    *string `json:"whatsapp"`
+	// LandingPage, Referrer and IP are what the amoCRM payload used to read off
+	// ahoy's visit (form page, referer, IP, and the click ids parsed from the
+	// landing URL). The first two come from the browser's first-visit cookie,
+	// the IP from the request (ADR-0015). IP is the raw client address; the
+	// amoCRM adapter decides what it can send.
+	LandingPage *string   `json:"landing_page"`
+	Referrer    *string   `json:"referrer"`
+	IP          *string   `json:"ip"`
 	OccurredAt  time.Time `json:"occurred_at"`
 }
 

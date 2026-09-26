@@ -45,7 +45,7 @@ func TestPutAndOpen(t *testing.T) {
 	assert.Equal(t, "course-cover.anything", got.Filename)
 	assert.Equal(t, "image/png", got.ContentType)
 	assert.Equal(t, int64(len(data)), got.ByteSize)
-	assert.True(t, strings.HasPrefix(got.URL, "https://assets.example.test/storage/"))
+	assert.True(t, strings.HasPrefix(got.URL, "https://assets.example.test/api/storage/"))
 	assert.True(t, strings.HasSuffix(got.URL, ".png"))
 
 	record := db.Attachment.GetX(ctx, got.ID)

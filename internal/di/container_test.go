@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/getsentry/sentry-go"
@@ -60,30 +59,6 @@ func TestWorkerContainerResolvesAsyncRuntimeWithoutHTTP(t *testing.T) {
 
 	_, err = do.Invoke[*http.Server](injector)
 	require.Error(t, err)
-}
-
-func TestDevCORSAllowsCredentialedXSRFRequests(t *testing.T) {
-	configureTestEnvironment(t)
-
-	injector := newServerContainer()
-	t.Cleanup(func() { _ = injector.Shutdown() })
-
-	srv, err := do.Invoke[*http.Server](injector)
-	require.NoError(t, err)
-
-	req := httptest.NewRequest(http.MethodOptions, "/session", nil)
-	req.Header.Set("Origin", "http://localhost:5173")
-	req.Header.Set("Access-Control-Request-Method", http.MethodDelete)
-	req.Header.Set("Access-Control-Request-Headers", "content-type,x-xsrf-token")
-	rec := httptest.NewRecorder()
-
-	srv.Handler.ServeHTTP(rec, req)
-
-	require.Equal(t, http.StatusNoContent, rec.Code)
-	assert.Equal(t, "http://localhost:5173", rec.Header().Get("Access-Control-Allow-Origin"))
-	assert.Equal(t, "true", rec.Header().Get("Access-Control-Allow-Credentials"))
-	assert.Contains(t, strings.ToLower(rec.Header().Get("Access-Control-Allow-Headers")), "x-xsrf-token")
-	assert.Contains(t, rec.Header().Get("Access-Control-Allow-Methods"), http.MethodDelete)
 }
 
 func TestHTTPHandlerReportsAndRepanics(t *testing.T) {

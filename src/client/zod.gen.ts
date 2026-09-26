@@ -311,6 +311,19 @@ export const zEmailInput = z.object({
 export const zEnrollmentState = z.enum(['started', 'finished']);
 
 /**
+ * The first visit's traffic source, as recorded by the browser.
+ */
+export const zFirstVisit = z.object({
+  utmSource: z.string().nullable(),
+  utmMedium: z.string().nullable(),
+  utmCampaign: z.string().nullable(),
+  utmContent: z.string().nullable(),
+  utmTerm: z.string().nullable(),
+  landingPage: z.string().nullable(),
+  referrer: z.string().nullable()
+});
+
+/**
  * Publication state shared by landing pages.
  */
 export const zLandingPageState = z.enum([
@@ -408,7 +421,8 @@ export const zLeadInput = z.object({
     'whatsapp'
   ]),
   contactValue: z.string().min(1),
-  ymClientId: z.string().nullable()
+  ymClientId: z.string().nullable(),
+  firstVisit: zFirstVisit.nullish()
 });
 
 /**
@@ -606,33 +620,6 @@ export const zNotFoundError = z.object({
 });
 
 /**
- * A static content page (about, authors, privacy, tos, cookie).
- */
-export const zPageContent = z.object({
-  slug: z.string(),
-  title: z.string(),
-  bodyHtml: z.string()
-});
-
-export const zPasskeyAssertionInput = z.object({
-  credential: z.string()
-});
-
-/**
- * A WebAuthn ceremony payload. The challenge/options and the client response
- * are opaque JSON owned by `go-webauthn`; the contract carries them as strings
- * so the browser API round-trips them verbatim.
- */
-export const zPasskeyChallenge = z.object({
-  options: z.string()
-});
-
-export const zPasskeyRegistrationInput = z.object({
-  credential: z.string(),
-  nickname: z.string().nullable()
-});
-
-/**
  * Admin resources a staff role can be granted permissions on.
  */
 export const zPermissionResource = z.enum([
@@ -649,15 +636,6 @@ export const zPermissionResource = z.enum([
   'language_landing_pages'
 ]);
 
-export const zPhoneConfirmInput = z.object({
-  phone: z.string().min(1),
-  code: z.string().min(1)
-});
-
-export const zPhoneInput = z.object({
-  phone: z.string().min(1)
-});
-
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
  * authorization, persistence, or an unexpected server failure prevents an
@@ -672,11 +650,17 @@ export const zProblemDetails = z.object({
 });
 
 /**
+ * A name on the profile (legacy `User` validations on first/last name): at
+ * most 40 characters, none of the characters in the pattern; blank is allowed.
+ */
+export const zProfileName = z.string().max(40).regex(/^[^`!@#$%\^&*+=]*$/);
+
+/**
  * Profile edit form (legacy: `UserProfileForm`).
  */
 export const zProfileInput = z.object({
-  firstName: z.string().nullable(),
-  lastName: z.string().nullable()
+  firstName: zProfileName.nullable(),
+  lastName: zProfileName.nullable()
 });
 
 /**
@@ -969,15 +953,6 @@ export const zStaffMemberPage = z.object({
 });
 
 /**
- * A registered passkey/WebAuthn credential (legacy: `UserCredential`).
- */
-export const zUserCredential = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nickname: z.string().nullable(),
-  createdAt: z.iso.datetime()
-});
-
-/**
  * A user row as shown in admin lists/forms (legacy: `UserCrud`).
  */
 export const zUserCrud = z.object({
@@ -1030,33 +1005,7 @@ export const zListQuerySortField = z.string();
 export const zListQuerySortOrder = z.enum(['asc', 'desc']);
 
 /**
- * The request has succeeded.
- */
-export const zListPasskeysResponse = z.array(zUserCredential);
-
-export const zCreatePasskeyBody = zPasskeyRegistrationInput;
-
-/**
- * The request has succeeded and a new resource has been created as a result.
- */
-export const zCreatePasskeyResponse = zUserCredential;
-
-/**
- * The request has succeeded.
- */
-export const zNewPasskeyResponse = zPasskeyChallenge;
-
-export const zDeletePasskeyPath = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * Empty 204 response for deletes and other content-less successes.
- */
-export const zDeletePasskeyResponse = z.void();
-
-/**
- * Empty 204 response for deletes and other content-less successes.
+ * A successful sign-out with the expired auth cookies.
  */
 export const zDeleteAccountResponse = z.void();
 
@@ -1807,6 +1756,26 @@ export const zCreateBookRequestBody = zBookRequestInput;
 export const zCreateBookRequestResponse = z.void();
 
 /**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+export const zGetYandexCoursesFeedResponse = z.string();
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+export const zGetYandexCoursesFeedXmlResponse = z.string();
+
+/**
  * The request has succeeded.
  */
 export const zListPublicCourseCategoriesResponse = z.array(zCourseCategory);
@@ -1881,7 +1850,7 @@ export const zSwitchLocaleQuery = z.object({
 });
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * A remembered locale choice and the cookie that carries it.
  */
 export const zSwitchLocaleResponse = z.void();
 
@@ -1921,27 +1890,6 @@ export const zGetCurrentUserResponse = zCurrentUser;
  */
 export const zGetMyDashboardResponse = zMyDashboard;
 
-export const zGetPagePath = z.object({
-  slug: z.string()
-});
-
-/**
- * The request has succeeded.
- */
-export const zGetPageResponse = zPageContent;
-
-export const zCreatePasskeySessionBody = zPasskeyAssertionInput;
-
-/**
- * The request has succeeded.
- */
-export const zCreatePasskeySessionResponse = zUser;
-
-/**
- * The request has succeeded.
- */
-export const zNewPasskeySessionResponse = zPasskeyChallenge;
-
 export const zUpdatePasswordBody = zResetPasswordInput;
 
 export const zUpdatePasswordPath = z.object({
@@ -1962,20 +1910,6 @@ export const zCheckPasswordResetTokenPath = z.object({
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zCheckPasswordResetTokenResponse = z.void();
-
-export const zCreatePhoneAuthBody = zPhoneInput;
-
-/**
- * Empty 204 response for deletes and other content-less successes.
- */
-export const zCreatePhoneAuthResponse = z.void();
-
-export const zConfirmPhoneAuthBody = zPhoneConfirmInput;
-
-/**
- * The request has succeeded.
- */
-export const zConfirmPhoneAuthResponse = zUser;
 
 export const zCreatePasswordReminderBody = zEmailInput;
 

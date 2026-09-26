@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/coursemoduleversion"
 	"time"
 
@@ -80,6 +81,21 @@ func (_c *CourseModuleVersionCreate) SetCourseVersionID(v int) *CourseModuleVers
 func (_c *CourseModuleVersionCreate) SetModuleID(v int) *CourseModuleVersionCreate {
 	_c.mutation.SetModuleID(v)
 	return _c
+}
+
+// AddLessonVersionIDs adds the "lesson_versions" edge to the CourseLessonVersion entity by IDs.
+func (_c *CourseModuleVersionCreate) AddLessonVersionIDs(ids ...int) *CourseModuleVersionCreate {
+	_c.mutation.AddLessonVersionIDs(ids...)
+	return _c
+}
+
+// AddLessonVersions adds the "lesson_versions" edges to the CourseLessonVersion entity.
+func (_c *CourseModuleVersionCreate) AddLessonVersions(v ...*CourseLessonVersion) *CourseModuleVersionCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddLessonVersionIDs(ids...)
 }
 
 // Mutation returns the CourseModuleVersionMutation object of the builder.
@@ -194,6 +210,22 @@ func (_c *CourseModuleVersionCreate) createSpec() (*CourseModuleVersion, *sqlgra
 	if value, ok := _c.mutation.ModuleID(); ok {
 		_spec.SetField(coursemoduleversion.FieldModuleID, field.TypeInt, value)
 		_node.ModuleID = value
+	}
+	if nodes := _c.mutation.LessonVersionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   coursemoduleversion.LessonVersionsTable,
+			Columns: []string{coursemoduleversion.LessonVersionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselessonversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

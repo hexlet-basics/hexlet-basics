@@ -1,0 +1,39 @@
+# Fixtures for `language_modules`, HAND-CURATED alongside
+# language_module_versions.yml and language_module_version_infos.yml: the
+# legacy module fixtures use crc32 ids that the hand-curated
+# language_lesson_versions.yml (module_version_id 1) does not join to, and they
+# fill descriptions with Faker, which would change the Yandex feed golden file
+# on every re-export.
+#
+# JavaScript (82481401) gets three modules so its feed offer is emitted; Ruby
+# (207281424) gets one so the feed's "fewer than three modules" skip has a
+# course to skip. Slugs avoid `basics`, which lesson_progress_test seeds for
+# JavaScript at runtime under the (language_id, slug) unique index.
+- id: 1
+  language_id: 82481401
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 2
+  language_id: 82481401
+  slug: 20-arithmetics
+  order: 20
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3
+  language_id: 82481401
+  slug: 30-strings
+  order: 30
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 4
+  language_id: 207281424
+  slug: 10-basics
+  order: 10
+  state: active
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

@@ -1,0 +1,121 @@
+{{/*
+Yandex Cloud ALB routing (ADR-0015): everything Go serves is under /api, the
+rest of the site is the SSR server. Two YC ALB rules shape this file:
+
+- Within one Ingress the FIRST matching path wins (not the longest), so the
+  paths below are ordered from the most specific down to the `/` catch-all.
+- use-regex and prefix-rewrite are per-Ingress annotations, and routes of
+  separate Ingresses in one group are ordered only by group-order (smaller
+  first). The webhook alias therefore lives in its own Ingress, ordered ahead
+  of the main one, whose `/` would otherwise catch it.
+*/}}
+{{- define "codebasics.ingressAnnotations" -}}
+ingress.alb.yc.io/external-ipv4-address: '{{ .Values.ingress.externalIp }}'
+ingress.alb.yc.io/subnets: '{{ .Values.ingress.subnets }}'
+ingress.alb.yc.io/group-name: '{{ .Values.ingress.groupName }}'
+{{- end -}}
+
+{{- define "codebasics.ingressTLS" -}}
+tls:
+  - hosts:
+    {{- range .Values.ingress.tlsHosts }}
+      - {{ . | quote }}
+    {{- end }}
+    secretName: {{ .Values.ingress.tlsSecret | quote }}
+{{- end -}}
+
+{{/*
+full: the solution check to api-check, the rest of /api to api, / to web.
+The check is matched by an RE2 regex on an Exact path (use-regex), so the other
+/api/lessons/{id}/... operations (start, ...) stay on the web-node api pods.
+Fallback if the regex route misbehaves on the ALB: a Prefix /api/lessons/ to
+api-check, which is what the legacy chart did.
+*/}}
+{{- define "codebasics.ingressFullPaths" -}}
+- path: "/api/lessons/[0-9]+/check"
+  pathType: Exact
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-check-service"
+      port:
+        number: 80
+- path: "/api/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-api-service"
+      port:
+        number: 80
+- path: "/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-web-service"
+      port:
+        number: 80
+{{- end -}}
+{{- define "codebasics.ingressRootPath" -}}
+- path: "/"
+  pathType: Prefix
+  backend:
+    service:
+      name: "{{ .Release.Name }}-web-service"
+      port:
+        number: 80
+{{- end -}}
+---
+
+# GitHub still delivers course pushes to /webhooks/github; Go serves the
+# webhook at /api/webhooks/github. prefix-rewrite on an Exact path replaces the
+# whole path.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-webhooks-ingress"
+  namespace: "{{ .Release.Namespace }}"
+  annotations:
+    {{- include "codebasics.ingressAnnotations" . | nindent 4 }}
+    ingress.alb.yc.io/group-order: "10"
+    ingress.alb.yc.io/prefix-rewrite: "/api/webhooks/github"
+
+spec:
+  {{- include "codebasics.ingressTLS" . | nindent 2 }}
+
+  rules:
+    - host: {{ .Values.ingress.webhookHost | quote }}
+      http:
+        paths:
+          - path: "/webhooks/github"
+            pathType: Exact
+            backend:
+              service:
+                name: "{{ .Release.Name }}-api-service"
+                port:
+                  number: 80
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-ingress"
+  namespace: "{{ .Release.Namespace }}"
+  annotations:
+    {{- include "codebasics.ingressAnnotations" . | nindent 4 }}
+    ingress.alb.yc.io/group-order: "20"
+    # Only the Exact check path is a regex; Prefix paths are unaffected.
+    ingress.alb.yc.io/use-regex: "true"
+
+spec:
+  {{- include "codebasics.ingressTLS" . | nindent 2 }}
+
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- if .full }}
+          {{- include "codebasics.ingressFullPaths" $ | nindent 10 }}
+          {{- else }}
+          {{- include "codebasics.ingressRootPath" $ | nindent 10 }}
+          {{- end }}
+    {{- end }}

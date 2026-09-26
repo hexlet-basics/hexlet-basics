@@ -34,348 +34,348 @@ type Invoker interface {
 	// Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
 	// handler; banners carry no uniqueness constraint, so there is no 409 path.
 	//
-	// POST /admin/banners
+	// POST /api/admin/banners
 	AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error)
 	// AdminCreateBlogPost invokes adminCreateBlogPost operation.
 	//
-	// POST /admin/blog_posts
+	// POST /api/admin/blog_posts
 	AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (AdminCreateBlogPostRes, error)
 	// AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 	//
-	// POST /admin/course_categories/{categoryId}/qna_items
+	// POST /api/admin/course_categories/{categoryId}/qna_items
 	AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error)
 	// AdminCreateCourse invokes adminCreateCourse operation.
 	//
-	// POST /admin/courses
+	// POST /api/admin/courses
 	AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error)
 	// AdminCreateCourseCategory invokes adminCreateCourseCategory operation.
 	//
 	// Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 	// 409 by the central ent-error handler.
 	//
-	// POST /admin/course_categories
+	// POST /api/admin/course_categories
 	AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error)
 	// AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 	//
-	// POST /admin/course_landing_pages
+	// POST /api/admin/course_landing_pages
 	AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error)
 	// AdminCreateCourseVersion invokes adminCreateCourseVersion operation.
 	//
 	// Build a new version of the course exercises.
 	//
-	// POST /admin/courses/{id}/versions
+	// POST /api/admin/courses/{id}/versions
 	AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error)
 	// AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 	//
-	// POST /admin/course_landing_pages/{landingPageId}/qna_items
+	// POST /api/admin/course_landing_pages/{landingPageId}/qna_items
 	AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error)
 	// AdminCreateReview invokes adminCreateReview operation.
 	//
-	// POST /admin/reviews
+	// POST /api/admin/reviews
 	AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error)
 	// AdminCreateRole invokes adminCreateRole operation.
 	//
 	// Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
-	// POST /admin/management/roles
+	// POST /api/admin/management/roles
 	AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error)
 	// AdminCreateStaffMember invokes adminCreateStaffMember operation.
 	//
-	// POST /admin/management/staff_members
+	// POST /api/admin/management/staff_members
 	AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error)
 	// AdminCreateUser invokes adminCreateUser operation.
 	//
 	// Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
 	// handler.
 	//
-	// POST /admin/api/users
+	// POST /api/admin/api/users
 	AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error)
 	// AdminDeleteBanner invokes adminDeleteBanner operation.
 	//
 	// Delete a banner.
 	//
-	// DELETE /admin/banners/{id}
+	// DELETE /api/admin/banners/{id}
 	AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error)
 	// AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
 	//
-	// DELETE /admin/blog_posts/{id}
+	// DELETE /api/admin/blog_posts/{id}
 	AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error)
 	// AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 	//
-	// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
+	// DELETE /api/admin/course_categories/{categoryId}/qna_items/{id}
 	AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error)
 	// AdminDeleteCourseCategory invokes adminDeleteCourseCategory operation.
 	//
 	// Delete a course category.
 	//
-	// DELETE /admin/course_categories/{id}
+	// DELETE /api/admin/course_categories/{id}
 	AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error)
 	// AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 	//
-	// DELETE /admin/course_landing_pages/{id}
+	// DELETE /api/admin/course_landing_pages/{id}
 	AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error)
 	// AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 	//
-	// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
+	// DELETE /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
 	AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error)
 	// AdminDeleteReview invokes adminDeleteReview operation.
 	//
-	// DELETE /admin/reviews/{id}
+	// DELETE /api/admin/reviews/{id}
 	AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error)
 	// AdminDeleteRole invokes adminDeleteRole operation.
 	//
-	// DELETE /admin/management/roles/{id}
+	// DELETE /api/admin/management/roles/{id}
 	AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error)
 	// AdminDeleteStaffMember invokes adminDeleteStaffMember operation.
 	//
-	// DELETE /admin/management/staff_members/{id}
+	// DELETE /api/admin/management/staff_members/{id}
 	AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error)
 	// AdminDeleteUser invokes adminDeleteUser operation.
 	//
-	// DELETE /admin/api/users/{id}
+	// DELETE /api/admin/api/users/{id}
 	AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error)
 	// AdminGetBanner invokes adminGetBanner operation.
 	//
 	// Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
-	// GET /admin/banners/{id}
+	// GET /api/admin/banners/{id}
 	AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error)
 	// AdminGetBlogPost invokes adminGetBlogPost operation.
 	//
-	// GET /admin/blog_posts/{id}
+	// GET /api/admin/blog_posts/{id}
 	AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error)
 	// AdminGetCourse invokes adminGetCourse operation.
 	//
 	// Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// GET /admin/courses/{id}
+	// GET /api/admin/courses/{id}
 	AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error)
 	// AdminGetCourseCategory invokes adminGetCourseCategory operation.
 	//
 	// Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
-	// GET /admin/course_categories/{id}
+	// GET /api/admin/course_categories/{id}
 	AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error)
 	// AdminGetCourseLandingPage invokes adminGetCourseLandingPage operation.
 	//
 	// Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 	// typed union member.
 	//
-	// GET /admin/course_landing_pages/{id}
+	// GET /api/admin/course_landing_pages/{id}
 	AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error)
 	// AdminGetManagementUser invokes adminGetManagementUser operation.
 	//
 	// Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// GET /admin/management/users/{id}
+	// GET /api/admin/management/users/{id}
 	AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error)
 	// AdminGetReview invokes adminGetReview operation.
 	//
 	// Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
 	// union member.
 	//
-	// GET /admin/reviews/{id}
+	// GET /api/admin/reviews/{id}
 	AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error)
 	// AdminGetRole invokes adminGetRole operation.
 	//
 	// Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
 	// handler.
 	//
-	// GET /admin/management/roles/{id}
+	// GET /api/admin/management/roles/{id}
 	AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error)
 	// AdminGetRolePermissions invokes adminGetRolePermissions operation.
 	//
 	// The permission matrix for a role.
 	//
-	// GET /admin/management/role_permissions/{roleId}
+	// GET /api/admin/management/role_permissions/{roleId}
 	AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error)
 	// AdminGetStaffMember invokes adminGetStaffMember operation.
 	//
-	// GET /admin/management/staff_members/{id}
+	// GET /api/admin/management/staff_members/{id}
 	AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error)
 	// AdminGetUser invokes adminGetUser operation.
 	//
 	// Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
 	// member.
 	//
-	// GET /admin/api/users/{id}
+	// GET /api/admin/api/users/{id}
 	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
 	// AdminListBanners invokes adminListBanners operation.
 	//
 	// List banners (paginated).
 	//
-	// GET /admin/banners
+	// GET /api/admin/banners
 	AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error)
 	// AdminListBlogPosts invokes adminListBlogPosts operation.
 	//
-	// GET /admin/blog_posts
+	// GET /api/admin/blog_posts
 	AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error)
 	// AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 	//
-	// GET /admin/course_categories/{categoryId}/qna_items
+	// GET /api/admin/course_categories/{categoryId}/qna_items
 	AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error)
 	// AdminListCourseCategories invokes adminListCourseCategories operation.
 	//
 	// List course categories (paginated).
 	//
-	// GET /admin/course_categories
+	// GET /api/admin/course_categories
 	AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error)
 	// AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 	//
-	// GET /admin/course_landing_pages
+	// GET /api/admin/course_landing_pages
 	AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error)
 	// AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 	//
-	// GET /admin/course_lesson_reviews
+	// GET /api/admin/course_lesson_reviews
 	AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error)
 	// AdminListCourseLessons invokes adminListCourseLessons operation.
 	//
-	// GET /admin/course_lessons
+	// GET /api/admin/course_lessons
 	AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error)
 	// AdminListCourses invokes adminListCourses operation.
 	//
-	// GET /admin/courses
+	// GET /api/admin/courses
 	AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error)
 	// AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 	//
-	// GET /admin/course_landing_pages/{landingPageId}/qna_items
+	// GET /api/admin/course_landing_pages/{landingPageId}/qna_items
 	AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error)
 	// AdminListLeads invokes adminListLeads operation.
 	//
-	// GET /admin/leads
+	// GET /api/admin/leads
 	AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error)
 	// AdminListLessonProgress invokes adminListLessonProgress operation.
 	//
-	// GET /admin/lesson_progress
+	// GET /api/admin/lesson_progress
 	AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error)
 	// AdminListManagementUsers invokes adminListManagementUsers operation.
 	//
-	// GET /admin/management/users
+	// GET /api/admin/management/users
 	AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error)
 	// AdminListMessages invokes adminListMessages operation.
 	//
-	// GET /admin/messages
+	// GET /api/admin/messages
 	AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error)
 	// AdminListReviews invokes adminListReviews operation.
 	//
-	// GET /admin/reviews
+	// GET /api/admin/reviews
 	AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error)
 	// AdminListRoles invokes adminListRoles operation.
 	//
-	// GET /admin/management/roles
+	// GET /api/admin/management/roles
 	AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error)
 	// AdminListStaffMembers invokes adminListStaffMembers operation.
 	//
-	// GET /admin/management/staff_members
+	// GET /api/admin/management/staff_members
 	AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error)
 	// AdminListUsers invokes adminListUsers operation.
 	//
-	// GET /admin/api/users
+	// GET /api/admin/api/users
 	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
 	// AdminReviewCourse invokes adminReviewCourse operation.
 	//
 	// Enqueue AI re-review of every current lesson version.
 	//
-	// POST /admin/courses/{id}/review
+	// POST /api/admin/courses/{id}/review
 	AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error)
 	// AdminReviewCourseLesson invokes adminReviewCourseLesson operation.
 	//
 	// Enqueue AI review for a single lesson.
 	//
-	// POST /admin/course_lessons/{id}/review
+	// POST /api/admin/course_lessons/{id}/review
 	AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error)
 	// AdminSearchUsers invokes adminSearchUsers operation.
 	//
 	// Typeahead search by name/email.
 	//
-	// GET /admin/api/users/search
+	// GET /api/admin/api/users/search
 	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error)
 	// AdminSetBlogPostRelatedCourses invokes adminSetBlogPostRelatedCourses operation.
 	//
 	// Set the related/promoted courses for a post.
 	//
-	// POST /admin/blog_posts/{id}/related_courses
+	// POST /api/admin/blog_posts/{id}/related_courses
 	AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
 	// AdminUpdateBanner invokes adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.
 	//
-	// PUT /admin/banners/{id}
+	// PUT /api/admin/banners/{id}
 	AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error)
 	// AdminUpdateBlogPost invokes adminUpdateBlogPost operation.
 	//
-	// PUT /admin/blog_posts/{id}
+	// PUT /api/admin/blog_posts/{id}
 	AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error)
 	// AdminUpdateCategoryQnaItem invokes adminUpdateCategoryQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
-	// PUT /admin/course_categories/{categoryId}/qna_items/{id}
+	// PUT /api/admin/course_categories/{categoryId}/qna_items/{id}
 	AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error)
 	// AdminUpdateCourse invokes adminUpdateCourse operation.
 	//
-	// PUT /admin/courses/{id}
+	// PUT /api/admin/courses/{id}
 	AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error)
 	// AdminUpdateCourseCategory invokes adminUpdateCourseCategory operation.
 	//
 	// Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 	// handler.
 	//
-	// PUT /admin/course_categories/{id}
+	// PUT /api/admin/course_categories/{id}
 	AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error)
 	// AdminUpdateCourseLandingPage invokes adminUpdateCourseLandingPage operation.
 	//
 	// Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// PUT /admin/course_landing_pages/{id}
+	// PUT /api/admin/course_landing_pages/{id}
 	AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error)
 	// AdminUpdateLandingPageQnaItem invokes adminUpdateLandingPageQnaItem operation.
 	//
 	// Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 	// ent-error handler.
 	//
-	// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
+	// PUT /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
 	AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error)
 	// AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 	//
-	// PUT /admin/management/users/{id}
+	// PUT /api/admin/management/users/{id}
 	AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error)
 	// AdminUpdateReview invokes adminUpdateReview operation.
 	//
 	// Update a review. A missing id surfaces as 404 via the central ent-error handler.
 	//
-	// PUT /admin/reviews/{id}
+	// PUT /api/admin/reviews/{id}
 	AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error)
 	// AdminUpdateRole invokes adminUpdateRole operation.
 	//
-	// PUT /admin/management/roles/{id}
+	// PUT /api/admin/management/roles/{id}
 	AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error)
 	// AdminUpdateRolePermissions invokes adminUpdateRolePermissions operation.
 	//
 	// Replace the permission matrix for a role.
 	//
-	// PUT /admin/management/role_permissions/{roleId}
+	// PUT /api/admin/management/role_permissions/{roleId}
 	AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error)
 	// AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 	//
-	// PUT /admin/management/staff_members/{id}
+	// PUT /api/admin/management/staff_members/{id}
 	AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error)
 	// AdminUpdateUser invokes adminUpdateUser operation.
 	//
 	// Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
 	// handler.
 	//
-	// PUT /admin/api/users/{id}
+	// PUT /api/admin/api/users/{id}
 	AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error)
 	// AdminUploadAttachment invokes adminUploadAttachment operation.
 	//
 	// Upload a file; returns the attachment to reference from a form.
 	//
-	// POST /admin/attachments
+	// POST /api/admin/attachments
 	AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error)
 	// CheckLesson invokes checkLesson operation.
 	//
@@ -386,116 +386,86 @@ type Invoker interface {
 	// rather than in rows. 409 when the lesson is beyond the gate — the submission is refused before
 	// anything is run.
 	//
-	// POST /lessons/{id}/check
+	// POST /api/lessons/{id}/check
 	CheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (CheckLessonRes, error)
 	// CheckPasswordResetToken invokes checkPasswordResetToken operation.
 	//
 	// Validate a reset token before showing the form.
 	//
-	// GET /password/{token}/edit
+	// GET /api/password/{token}/edit
 	CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error)
-	// ConfirmPhoneAuth invokes confirmPhoneAuth operation.
-	//
-	// Confirm the SMS code; sets the JWT cookie.
-	//
-	// POST /phone_auth/confirm
-	ConfirmPhoneAuth(ctx context.Context, request *PhoneConfirmInput) (ConfirmPhoneAuthRes, error)
 	// ConsumeMagicLink invokes consumeMagicLink operation.
 	//
 	// Consume a magic link token; sets the JWT cookie.
 	//
-	// GET /magic_links/{token}
+	// GET /api/magic_links/{token}
 	ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error)
 	// CreateAssistantMessage invokes createAssistantMessage operation.
 	//
 	// Ask the assistant. Enqueues generation (river job); the reply is delivered out-of-band. 202 =
 	// accepted, 429 = rate limited. SSE streaming is TBD.
 	//
-	// POST /ai/lessons/{lessonId}/messages
+	// POST /api/ai/lessons/{lessonId}/messages
 	CreateAssistantMessage(ctx context.Context, request *AssistantMessageInput, params CreateAssistantMessageParams) (CreateAssistantMessageRes, error)
 	// CreateBookRequest invokes createBookRequest operation.
 	//
 	// Request the book download link by email.
 	//
-	// POST /book/create_request
+	// POST /api/book/create_request
 	CreateBookRequest(ctx context.Context, request *BookRequestInput) (CreateBookRequestRes, error)
 	// CreateLead invokes createLead operation.
 	//
 	// Submit a contact request.
 	//
-	// POST /leads
+	// POST /api/leads
 	CreateLead(ctx context.Context, request *LeadInput) (CreateLeadRes, error)
 	// CreateMagicLink invokes createMagicLink operation.
 	//
 	// Email a one-time sign-in link.
 	//
-	// POST /magic_links
+	// POST /api/magic_links
 	CreateMagicLink(ctx context.Context, request *EmailInput) (CreateMagicLinkRes, error)
-	// CreatePasskey invokes createPasskey operation.
-	//
-	// Register a new passkey for the current user.
-	//
-	// POST /account/passkeys
-	CreatePasskey(ctx context.Context, request *PasskeyRegistrationInput) (CreatePasskeyRes, error)
-	// CreatePasskeySession invokes createPasskeySession operation.
-	//
-	// Complete a passkey login; sets the JWT cookie.
-	//
-	// POST /passkey_session
-	CreatePasskeySession(ctx context.Context, request *PasskeyAssertionInput) (CreatePasskeySessionRes, error)
 	// CreatePasswordReminder invokes createPasswordReminder operation.
 	//
 	// Email a password-reset link.
 	//
-	// POST /remind_password
+	// POST /api/remind_password
 	CreatePasswordReminder(ctx context.Context, request *EmailInput) (CreatePasswordReminderRes, error)
-	// CreatePhoneAuth invokes createPhoneAuth operation.
-	//
-	// Send an SMS verification code.
-	//
-	// POST /phone_auth
-	CreatePhoneAuth(ctx context.Context, request *PhoneInput) (CreatePhoneAuthRes, error)
 	// CreateSession invokes createSession operation.
 	//
 	// Log in with email + password; sets the JWT cookie.
 	//
-	// POST /session
+	// POST /api/session
 	CreateSession(ctx context.Context, request *SessionInput) (CreateSessionRes, error)
 	// CreateUser invokes createUser operation.
 	//
 	// Sign up; sets the JWT cookie on success.
 	//
-	// POST /users
+	// POST /api/users
 	CreateUser(ctx context.Context, request *SignUpInput) (CreateUserRes, error)
 	// DeleteAccount invokes deleteAccount operation.
 	//
 	// Delete the current user's account.
 	//
-	// DELETE /account/profile
+	// DELETE /api/account/profile
 	DeleteAccount(ctx context.Context) (DeleteAccountRes, error)
-	// DeletePasskey invokes deletePasskey operation.
-	//
-	// Remove a passkey.
-	//
-	// DELETE /account/passkeys/{id}
-	DeletePasskey(ctx context.Context, params DeletePasskeyParams) (DeletePasskeyRes, error)
 	// DeleteSession invokes deleteSession operation.
 	//
 	// Log out; clears the JWT cookie.
 	//
-	// DELETE /session
+	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
 	// GetBlogPost invokes getBlogPost operation.
 	//
 	// A single blog post by slug.
 	//
-	// GET /blog_posts/{slug}
+	// GET /api/blog_posts/{slug}
 	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
 	// GetCourse invokes getCourse operation.
 	//
 	// Course landing page by slug.
 	//
-	// GET /languages/{slug}
+	// GET /api/languages/{slug}
 	GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error)
 	// GetCourseLesson invokes getCourseLesson operation.
 	//
@@ -505,104 +475,94 @@ type Invoker interface {
 	// would enroll a learner in every lesson they pointed at (ADR-0012). Theory stays public and indexable
 	// for everyone, including a lesson the visitor may not take yet.
 	//
-	// GET /languages/{courseSlug}/lessons/{slug}
+	// GET /api/languages/{courseSlug}/lessons/{slug}
 	GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error)
 	// GetCurrentUser invokes getCurrentUser operation.
 	//
 	// Resolve the current user from the session cookie (for SSR).
 	//
-	// GET /me
+	// GET /api/me
 	GetCurrentUser(ctx context.Context, params GetCurrentUserParams) (*CurrentUser, error)
 	// GetMyDashboard invokes getMyDashboard operation.
 	//
 	// The signed-in user's course dashboard.
 	//
-	// GET /my
+	// GET /api/my
 	GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error)
 	// GetNextBlogPost invokes getNextBlogPost operation.
 	//
 	// The next post to read after this one.
 	//
-	// GET /blog_posts/{id}/next
+	// GET /api/blog_posts/{id}/next
 	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
-	// GetPage invokes getPage operation.
-	//
-	// A static content page by slug.
-	//
-	// GET /pages/{slug}
-	GetPage(ctx context.Context, params GetPageParams) (GetPageRes, error)
 	// GetProfile invokes getProfile operation.
 	//
 	// The editable profile of the current user.
 	//
-	// GET /account/profile/edit
+	// GET /api/account/profile/edit
 	GetProfile(ctx context.Context) (GetProfileRes, error)
 	// GetPublicCourseCategory invokes getPublicCourseCategory operation.
 	//
 	// A category and the courses it groups.
 	//
-	// GET /language_categories/{slug}
+	// GET /api/language_categories/{slug}
 	GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error)
 	// GetSitemap invokes getSitemap operation.
 	//
 	// Everything the sitemap generator needs.
 	//
-	// GET /map
+	// GET /api/map
 	GetSitemap(ctx context.Context) (*Sitemap, error)
+	// GetYandexCoursesFeed invokes getYandexCoursesFeed operation.
+	//
+	// The same feed at the path the legacy route declares.
+	//
+	// GET /api/feeds/yandex_courses
+	GetYandexCoursesFeed(ctx context.Context) (GetYandexCoursesFeedOK, error)
+	// GetYandexCoursesFeedXml invokes getYandexCoursesFeedXml operation.
+	//
+	// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+	// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+	// one.
+	//
+	// GET /api/feeds/yandex_courses.xml
+	GetYandexCoursesFeedXml(ctx context.Context) (GetYandexCoursesFeedXmlOK, error)
 	// LikeBlogPost invokes likeBlogPost operation.
 	//
 	// Like a post (idempotent per visitor).
 	//
-	// POST /blog_posts/{id}/likes
+	// POST /api/blog_posts/{id}/likes
 	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error)
 	// ListAssistantMessages invokes listAssistantMessages operation.
 	//
 	// The assistant chat history for the current user in this lesson.
 	//
-	// GET /ai/lessons/{lessonId}/messages
+	// GET /api/ai/lessons/{lessonId}/messages
 	ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (ListAssistantMessagesRes, error)
 	// ListBlogPosts invokes listBlogPosts operation.
 	//
 	// Paginated published blog posts.
 	//
-	// GET /blog_posts
+	// GET /api/blog_posts
 	ListBlogPosts(ctx context.Context, params ListBlogPostsParams) (*BlogPostPage, error)
 	// ListCourses invokes listCourses operation.
 	//
 	// List the published course catalog.
 	//
-	// GET /languages
+	// GET /api/languages
 	ListCourses(ctx context.Context) ([]CourseCatalogItem, error)
-	// ListPasskeys invokes listPasskeys operation.
-	//
-	// List the current user's passkeys.
-	//
-	// GET /account/passkeys
-	ListPasskeys(ctx context.Context) (ListPasskeysRes, error)
 	// ListPublicCourseCategories invokes listPublicCourseCategories operation.
 	//
 	// List published categories.
 	//
-	// GET /language_categories
+	// GET /api/language_categories
 	ListPublicCourseCategories(ctx context.Context) ([]CourseCategory, error)
 	// ListPublicReviews invokes listPublicReviews operation.
 	//
 	// Paginated published student reviews.
 	//
-	// GET /reviews
+	// GET /api/reviews
 	ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (*ReviewPage, error)
-	// NewPasskey invokes newPasskey operation.
-	//
-	// Begin a passkey registration ceremony.
-	//
-	// GET /account/passkeys/new
-	NewPasskey(ctx context.Context) (NewPasskeyRes, error)
-	// NewPasskeySession invokes newPasskeySession operation.
-	//
-	// Begin a passkey login ceremony.
-	//
-	// GET /passkey_session/new
-	NewPasskeySession(ctx context.Context) (*PasskeyChallenge, error)
 	// StartLesson invokes startLesson operation.
 	//
 	// Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson
@@ -616,25 +576,26 @@ type Invoker interface {
 	// their position without storing anything: their state is the signed cookie, and only a check moves
 	// it.
 	//
-	// POST /lessons/{id}/start
+	// POST /api/lessons/{id}/start
 	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
 	// SwitchLocale invokes switchLocale operation.
 	//
-	// Persist the preferred UI locale on the session.
+	// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+	// the locale it redirects to. The page navigates itself afterwards.
 	//
-	// GET /locale/switch
-	SwitchLocale(ctx context.Context, params SwitchLocaleParams) error
+	// GET /api/locale/switch
+	SwitchLocale(ctx context.Context, params SwitchLocaleParams) (*SwitchLocaleNoContent, error)
 	// UpdatePassword invokes updatePassword operation.
 	//
 	// Set a new password using a reset token; signs the user in.
 	//
-	// PATCH /password/{token}
+	// PATCH /api/password/{token}
 	UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error)
 	// UpdateProfile invokes updateProfile operation.
 	//
 	// Update the current user's profile.
 	//
-	// PATCH /account/profile
+	// PATCH /api/account/profile
 	UpdateProfile(ctx context.Context, request *ProfileInput) (UpdateProfileRes, error)
 }
 
@@ -684,7 +645,7 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // Create a banner. A body violating the schema (e.g. an empty `body`) surfaces as 400 via the central
 // handler; banners carry no uniqueness constraint, so there is no 409 path.
 //
-// POST /admin/banners
+// POST /api/admin/banners
 func (c *Client) AdminCreateBanner(ctx context.Context, request *BannerInput) (AdminCreateBannerRes, error) {
 	res, err := c.sendAdminCreateBanner(ctx, request)
 	return res, err
@@ -694,7 +655,7 @@ func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBanner"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/banners"),
+		semconv.URLTemplateKey.String("/api/admin/banners"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -728,7 +689,7 @@ func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/banners"
+	pathParts[0] = "/api/admin/banners"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -809,7 +770,7 @@ func (c *Client) sendAdminCreateBanner(ctx context.Context, request *BannerInput
 
 // AdminCreateBlogPost invokes adminCreateBlogPost operation.
 //
-// POST /admin/blog_posts
+// POST /api/admin/blog_posts
 func (c *Client) AdminCreateBlogPost(ctx context.Context, request *BlogPostInput) (AdminCreateBlogPostRes, error) {
 	res, err := c.sendAdminCreateBlogPost(ctx, request)
 	return res, err
@@ -819,7 +780,7 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/blog_posts"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -853,7 +814,7 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/blog_posts"
+	pathParts[0] = "/api/admin/blog_posts"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -934,7 +895,7 @@ func (c *Client) sendAdminCreateBlogPost(ctx context.Context, request *BlogPostI
 
 // AdminCreateCategoryQnaItem invokes adminCreateCategoryQnaItem operation.
 //
-// POST /admin/course_categories/{categoryId}/qna_items
+// POST /api/admin/course_categories/{categoryId}/qna_items
 func (c *Client) AdminCreateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateCategoryQnaItemParams) (AdminCreateCategoryQnaItemRes, error) {
 	res, err := c.sendAdminCreateCategoryQnaItem(ctx, request, params)
 	return res, err
@@ -944,7 +905,7 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{categoryId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -978,7 +939,7 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1078,7 +1039,7 @@ func (c *Client) sendAdminCreateCategoryQnaItem(ctx context.Context, request *Qn
 
 // AdminCreateCourse invokes adminCreateCourse operation.
 //
-// POST /admin/courses
+// POST /api/admin/courses
 func (c *Client) AdminCreateCourse(ctx context.Context, request *CourseInput) (AdminCreateCourseRes, error) {
 	res, err := c.sendAdminCreateCourse(ctx, request)
 	return res, err
@@ -1088,7 +1049,7 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/courses"),
+		semconv.URLTemplateKey.String("/api/admin/courses"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1122,7 +1083,7 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/courses"
+	pathParts[0] = "/api/admin/courses"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1206,7 +1167,7 @@ func (c *Client) sendAdminCreateCourse(ctx context.Context, request *CourseInput
 // Create a course category. A uniqueness violation (name/header/slug) is a DB constraint, surfaced as
 // 409 by the central ent-error handler.
 //
-// POST /admin/course_categories
+// POST /api/admin/course_categories
 func (c *Client) AdminCreateCourseCategory(ctx context.Context, request *CourseCategoryInput) (AdminCreateCourseCategoryRes, error) {
 	res, err := c.sendAdminCreateCourseCategory(ctx, request)
 	return res, err
@@ -1216,7 +1177,7 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/course_categories"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1250,7 +1211,7 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/course_categories"
+	pathParts[0] = "/api/admin/course_categories"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1331,7 +1292,7 @@ func (c *Client) sendAdminCreateCourseCategory(ctx context.Context, request *Cou
 
 // AdminCreateCourseLandingPage invokes adminCreateCourseLandingPage operation.
 //
-// POST /admin/course_landing_pages
+// POST /api/admin/course_landing_pages
 func (c *Client) AdminCreateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput) (AdminCreateCourseLandingPageRes, error) {
 	res, err := c.sendAdminCreateCourseLandingPage(ctx, request)
 	return res, err
@@ -1341,7 +1302,7 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1375,7 +1336,7 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/course_landing_pages"
+	pathParts[0] = "/api/admin/course_landing_pages"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1458,7 +1419,7 @@ func (c *Client) sendAdminCreateCourseLandingPage(ctx context.Context, request *
 //
 // Build a new version of the course exercises.
 //
-// POST /admin/courses/{id}/versions
+// POST /api/admin/courses/{id}/versions
 func (c *Client) AdminCreateCourseVersion(ctx context.Context, params AdminCreateCourseVersionParams) (AdminCreateCourseVersionRes, error) {
 	res, err := c.sendAdminCreateCourseVersion(ctx, params)
 	return res, err
@@ -1468,7 +1429,7 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateCourseVersion"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/courses/{id}/versions"),
+		semconv.URLTemplateKey.String("/api/admin/courses/{id}/versions"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1502,7 +1463,7 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/courses/"
+	pathParts[0] = "/api/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1599,7 +1560,7 @@ func (c *Client) sendAdminCreateCourseVersion(ctx context.Context, params AdminC
 
 // AdminCreateLandingPageQnaItem invokes adminCreateLandingPageQnaItem operation.
 //
-// POST /admin/course_landing_pages/{landingPageId}/qna_items
+// POST /api/admin/course_landing_pages/{landingPageId}/qna_items
 func (c *Client) AdminCreateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminCreateLandingPageQnaItemParams) (AdminCreateLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminCreateLandingPageQnaItem(ctx, request, params)
 	return res, err
@@ -1609,7 +1570,7 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1643,7 +1604,7 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -1743,7 +1704,7 @@ func (c *Client) sendAdminCreateLandingPageQnaItem(ctx context.Context, request 
 
 // AdminCreateReview invokes adminCreateReview operation.
 //
-// POST /admin/reviews
+// POST /api/admin/reviews
 func (c *Client) AdminCreateReview(ctx context.Context, request *ReviewInput) (AdminCreateReviewRes, error) {
 	res, err := c.sendAdminCreateReview(ctx, request)
 	return res, err
@@ -1753,7 +1714,7 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateReview"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/reviews"),
+		semconv.URLTemplateKey.String("/api/admin/reviews"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1787,7 +1748,7 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/reviews"
+	pathParts[0] = "/api/admin/reviews"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1871,7 +1832,7 @@ func (c *Client) sendAdminCreateReview(ctx context.Context, request *ReviewInput
 // Create a role. A duplicate name is a DB unique constraint, surfaced as 409 by the central ent-error
 // handler.
 //
-// POST /admin/management/roles
+// POST /api/admin/management/roles
 func (c *Client) AdminCreateRole(ctx context.Context, request *RoleInput) (AdminCreateRoleRes, error) {
 	res, err := c.sendAdminCreateRole(ctx, request)
 	return res, err
@@ -1881,7 +1842,7 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateRole"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/management/roles"),
+		semconv.URLTemplateKey.String("/api/admin/management/roles"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -1915,7 +1876,7 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/management/roles"
+	pathParts[0] = "/api/admin/management/roles"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -1996,7 +1957,7 @@ func (c *Client) sendAdminCreateRole(ctx context.Context, request *RoleInput) (r
 
 // AdminCreateStaffMember invokes adminCreateStaffMember operation.
 //
-// POST /admin/management/staff_members
+// POST /api/admin/management/staff_members
 func (c *Client) AdminCreateStaffMember(ctx context.Context, request *StaffMemberInput) (AdminCreateStaffMemberRes, error) {
 	res, err := c.sendAdminCreateStaffMember(ctx, request)
 	return res, err
@@ -2006,7 +1967,7 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/management/staff_members"),
+		semconv.URLTemplateKey.String("/api/admin/management/staff_members"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2040,7 +2001,7 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/management/staff_members"
+	pathParts[0] = "/api/admin/management/staff_members"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -2124,7 +2085,7 @@ func (c *Client) sendAdminCreateStaffMember(ctx context.Context, request *StaffM
 // Create a user. A duplicate email is a DB unique constraint, surfaced as 409 by the central ent-error
 // handler.
 //
-// POST /admin/api/users
+// POST /api/admin/api/users
 func (c *Client) AdminCreateUser(ctx context.Context, request *UserInput) (AdminCreateUserRes, error) {
 	res, err := c.sendAdminCreateUser(ctx, request)
 	return res, err
@@ -2134,7 +2095,7 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminCreateUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/api/users"),
+		semconv.URLTemplateKey.String("/api/admin/api/users"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2168,7 +2129,7 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/api/users"
+	pathParts[0] = "/api/admin/api/users"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -2251,7 +2212,7 @@ func (c *Client) sendAdminCreateUser(ctx context.Context, request *UserInput) (r
 //
 // Delete a banner.
 //
-// DELETE /admin/banners/{id}
+// DELETE /api/admin/banners/{id}
 func (c *Client) AdminDeleteBanner(ctx context.Context, params AdminDeleteBannerParams) (AdminDeleteBannerRes, error) {
 	res, err := c.sendAdminDeleteBanner(ctx, params)
 	return res, err
@@ -2261,7 +2222,7 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBanner"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/banners/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/banners/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2295,7 +2256,7 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/banners/"
+	pathParts[0] = "/api/admin/banners/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2391,7 +2352,7 @@ func (c *Client) sendAdminDeleteBanner(ctx context.Context, params AdminDeleteBa
 
 // AdminDeleteBlogPost invokes adminDeleteBlogPost operation.
 //
-// DELETE /admin/blog_posts/{id}
+// DELETE /api/admin/blog_posts/{id}
 func (c *Client) AdminDeleteBlogPost(ctx context.Context, params AdminDeleteBlogPostParams) (AdminDeleteBlogPostRes, error) {
 	res, err := c.sendAdminDeleteBlogPost(ctx, params)
 	return res, err
@@ -2401,7 +2362,7 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteBlogPost"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/blog_posts/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2435,7 +2396,7 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/blog_posts/"
+	pathParts[0] = "/api/admin/blog_posts/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2531,7 +2492,7 @@ func (c *Client) sendAdminDeleteBlogPost(ctx context.Context, params AdminDelete
 
 // AdminDeleteCategoryQnaItem invokes adminDeleteCategoryQnaItem operation.
 //
-// DELETE /admin/course_categories/{categoryId}/qna_items/{id}
+// DELETE /api/admin/course_categories/{categoryId}/qna_items/{id}
 func (c *Client) AdminDeleteCategoryQnaItem(ctx context.Context, params AdminDeleteCategoryQnaItemParams) (AdminDeleteCategoryQnaItemRes, error) {
 	res, err := c.sendAdminDeleteCategoryQnaItem(ctx, params)
 	return res, err
@@ -2541,7 +2502,7 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2575,7 +2536,7 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2692,7 +2653,7 @@ func (c *Client) sendAdminDeleteCategoryQnaItem(ctx context.Context, params Admi
 //
 // Delete a course category.
 //
-// DELETE /admin/course_categories/{id}
+// DELETE /api/admin/course_categories/{id}
 func (c *Client) AdminDeleteCourseCategory(ctx context.Context, params AdminDeleteCourseCategoryParams) (AdminDeleteCourseCategoryRes, error) {
 	res, err := c.sendAdminDeleteCourseCategory(ctx, params)
 	return res, err
@@ -2702,7 +2663,7 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2736,7 +2697,7 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2832,7 +2793,7 @@ func (c *Client) sendAdminDeleteCourseCategory(ctx context.Context, params Admin
 
 // AdminDeleteCourseLandingPage invokes adminDeleteCourseLandingPage operation.
 //
-// DELETE /admin/course_landing_pages/{id}
+// DELETE /api/admin/course_landing_pages/{id}
 func (c *Client) AdminDeleteCourseLandingPage(ctx context.Context, params AdminDeleteCourseLandingPageParams) (AdminDeleteCourseLandingPageRes, error) {
 	res, err := c.sendAdminDeleteCourseLandingPage(ctx, params)
 	return res, err
@@ -2842,7 +2803,7 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -2876,7 +2837,7 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -2972,7 +2933,7 @@ func (c *Client) sendAdminDeleteCourseLandingPage(ctx context.Context, params Ad
 
 // AdminDeleteLandingPageQnaItem invokes adminDeleteLandingPageQnaItem operation.
 //
-// DELETE /admin/course_landing_pages/{landingPageId}/qna_items/{id}
+// DELETE /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (c *Client) AdminDeleteLandingPageQnaItem(ctx context.Context, params AdminDeleteLandingPageQnaItemParams) (AdminDeleteLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminDeleteLandingPageQnaItem(ctx, params)
 	return res, err
@@ -2982,7 +2943,7 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3016,7 +2977,7 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3131,7 +3092,7 @@ func (c *Client) sendAdminDeleteLandingPageQnaItem(ctx context.Context, params A
 
 // AdminDeleteReview invokes adminDeleteReview operation.
 //
-// DELETE /admin/reviews/{id}
+// DELETE /api/admin/reviews/{id}
 func (c *Client) AdminDeleteReview(ctx context.Context, params AdminDeleteReviewParams) (AdminDeleteReviewRes, error) {
 	res, err := c.sendAdminDeleteReview(ctx, params)
 	return res, err
@@ -3141,7 +3102,7 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteReview"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/reviews/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/reviews/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3175,7 +3136,7 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/reviews/"
+	pathParts[0] = "/api/admin/reviews/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3271,7 +3232,7 @@ func (c *Client) sendAdminDeleteReview(ctx context.Context, params AdminDeleteRe
 
 // AdminDeleteRole invokes adminDeleteRole operation.
 //
-// DELETE /admin/management/roles/{id}
+// DELETE /api/admin/management/roles/{id}
 func (c *Client) AdminDeleteRole(ctx context.Context, params AdminDeleteRoleParams) (AdminDeleteRoleRes, error) {
 	res, err := c.sendAdminDeleteRole(ctx, params)
 	return res, err
@@ -3281,7 +3242,7 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteRole"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/management/roles/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/roles/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3315,7 +3276,7 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/roles/"
+	pathParts[0] = "/api/admin/management/roles/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3411,7 +3372,7 @@ func (c *Client) sendAdminDeleteRole(ctx context.Context, params AdminDeleteRole
 
 // AdminDeleteStaffMember invokes adminDeleteStaffMember operation.
 //
-// DELETE /admin/management/staff_members/{id}
+// DELETE /api/admin/management/staff_members/{id}
 func (c *Client) AdminDeleteStaffMember(ctx context.Context, params AdminDeleteStaffMemberParams) (AdminDeleteStaffMemberRes, error) {
 	res, err := c.sendAdminDeleteStaffMember(ctx, params)
 	return res, err
@@ -3421,7 +3382,7 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteStaffMember"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/management/staff_members/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/staff_members/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3455,7 +3416,7 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/staff_members/"
+	pathParts[0] = "/api/admin/management/staff_members/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3551,7 +3512,7 @@ func (c *Client) sendAdminDeleteStaffMember(ctx context.Context, params AdminDel
 
 // AdminDeleteUser invokes adminDeleteUser operation.
 //
-// DELETE /admin/api/users/{id}
+// DELETE /api/admin/api/users/{id}
 func (c *Client) AdminDeleteUser(ctx context.Context, params AdminDeleteUserParams) (AdminDeleteUserRes, error) {
 	res, err := c.sendAdminDeleteUser(ctx, params)
 	return res, err
@@ -3561,7 +3522,7 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminDeleteUser"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/admin/api/users/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/api/users/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3595,7 +3556,7 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/api/users/"
+	pathParts[0] = "/api/admin/api/users/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3694,7 +3655,7 @@ func (c *Client) sendAdminDeleteUser(ctx context.Context, params AdminDeleteUser
 // Get a single banner. A missing id surfaces as 404 via the central ent-error handler, not a typed
 // union member.
 //
-// GET /admin/banners/{id}
+// GET /api/admin/banners/{id}
 func (c *Client) AdminGetBanner(ctx context.Context, params AdminGetBannerParams) (AdminGetBannerRes, error) {
 	res, err := c.sendAdminGetBanner(ctx, params)
 	return res, err
@@ -3704,7 +3665,7 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBanner"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/banners/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/banners/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3738,7 +3699,7 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/banners/"
+	pathParts[0] = "/api/admin/banners/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3823,7 +3784,7 @@ func (c *Client) sendAdminGetBanner(ctx context.Context, params AdminGetBannerPa
 
 // AdminGetBlogPost invokes adminGetBlogPost operation.
 //
-// GET /admin/blog_posts/{id}
+// GET /api/admin/blog_posts/{id}
 func (c *Client) AdminGetBlogPost(ctx context.Context, params AdminGetBlogPostParams) (AdminGetBlogPostRes, error) {
 	res, err := c.sendAdminGetBlogPost(ctx, params)
 	return res, err
@@ -3833,7 +3794,7 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/blog_posts/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3867,7 +3828,7 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/blog_posts/"
+	pathParts[0] = "/api/admin/blog_posts/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -3954,7 +3915,7 @@ func (c *Client) sendAdminGetBlogPost(ctx context.Context, params AdminGetBlogPo
 //
 // Get a single course. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/courses/{id}
+// GET /api/admin/courses/{id}
 func (c *Client) AdminGetCourse(ctx context.Context, params AdminGetCourseParams) (AdminGetCourseRes, error) {
 	res, err := c.sendAdminGetCourse(ctx, params)
 	return res, err
@@ -3964,7 +3925,7 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/courses/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/courses/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -3998,7 +3959,7 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/courses/"
+	pathParts[0] = "/api/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4086,7 +4047,7 @@ func (c *Client) sendAdminGetCourse(ctx context.Context, params AdminGetCoursePa
 // Get a single course category. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/course_categories/{id}
+// GET /api/admin/course_categories/{id}
 func (c *Client) AdminGetCourseCategory(ctx context.Context, params AdminGetCourseCategoryParams) (AdminGetCourseCategoryRes, error) {
 	res, err := c.sendAdminGetCourseCategory(ctx, params)
 	return res, err
@@ -4096,7 +4057,7 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4130,7 +4091,7 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4218,7 +4179,7 @@ func (c *Client) sendAdminGetCourseCategory(ctx context.Context, params AdminGet
 // Get a single landing page. A missing id surfaces as 404 via the central ent-error handler, not a
 // typed union member.
 //
-// GET /admin/course_landing_pages/{id}
+// GET /api/admin/course_landing_pages/{id}
 func (c *Client) AdminGetCourseLandingPage(ctx context.Context, params AdminGetCourseLandingPageParams) (AdminGetCourseLandingPageRes, error) {
 	res, err := c.sendAdminGetCourseLandingPage(ctx, params)
 	return res, err
@@ -4228,7 +4189,7 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4262,7 +4223,7 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4349,7 +4310,7 @@ func (c *Client) sendAdminGetCourseLandingPage(ctx context.Context, params Admin
 //
 // Get a management user. A missing id surfaces as 404 via the central ent-error handler.
 //
-// GET /admin/management/users/{id}
+// GET /api/admin/management/users/{id}
 func (c *Client) AdminGetManagementUser(ctx context.Context, params AdminGetManagementUserParams) (AdminGetManagementUserRes, error) {
 	res, err := c.sendAdminGetManagementUser(ctx, params)
 	return res, err
@@ -4359,7 +4320,7 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetManagementUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/users/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/users/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4393,7 +4354,7 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/users/"
+	pathParts[0] = "/api/admin/management/users/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4481,7 +4442,7 @@ func (c *Client) sendAdminGetManagementUser(ctx context.Context, params AdminGet
 // Get a single review. A missing id surfaces as 404 via the central ent-error handler, not a typed
 // union member.
 //
-// GET /admin/reviews/{id}
+// GET /api/admin/reviews/{id}
 func (c *Client) AdminGetReview(ctx context.Context, params AdminGetReviewParams) (AdminGetReviewRes, error) {
 	res, err := c.sendAdminGetReview(ctx, params)
 	return res, err
@@ -4491,7 +4452,7 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetReview"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/reviews/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/reviews/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4525,7 +4486,7 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/reviews/"
+	pathParts[0] = "/api/admin/reviews/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4613,7 +4574,7 @@ func (c *Client) sendAdminGetReview(ctx context.Context, params AdminGetReviewPa
 // Get a role with its permission matrix. A missing id surfaces as 404 via the central ent-error
 // handler.
 //
-// GET /admin/management/roles/{id}
+// GET /api/admin/management/roles/{id}
 func (c *Client) AdminGetRole(ctx context.Context, params AdminGetRoleParams) (AdminGetRoleRes, error) {
 	res, err := c.sendAdminGetRole(ctx, params)
 	return res, err
@@ -4623,7 +4584,7 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRole"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/roles/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/roles/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4657,7 +4618,7 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/roles/"
+	pathParts[0] = "/api/admin/management/roles/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4744,7 +4705,7 @@ func (c *Client) sendAdminGetRole(ctx context.Context, params AdminGetRoleParams
 //
 // The permission matrix for a role.
 //
-// GET /admin/management/role_permissions/{roleId}
+// GET /api/admin/management/role_permissions/{roleId}
 func (c *Client) AdminGetRolePermissions(ctx context.Context, params AdminGetRolePermissionsParams) (AdminGetRolePermissionsRes, error) {
 	res, err := c.sendAdminGetRolePermissions(ctx, params)
 	return res, err
@@ -4754,7 +4715,7 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/role_permissions/{roleId}"),
+		semconv.URLTemplateKey.String("/api/admin/management/role_permissions/{roleId}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4788,7 +4749,7 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/role_permissions/"
+	pathParts[0] = "/api/admin/management/role_permissions/"
 	{
 		// Encode "roleId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -4873,7 +4834,7 @@ func (c *Client) sendAdminGetRolePermissions(ctx context.Context, params AdminGe
 
 // AdminGetStaffMember invokes adminGetStaffMember operation.
 //
-// GET /admin/management/staff_members/{id}
+// GET /api/admin/management/staff_members/{id}
 func (c *Client) AdminGetStaffMember(ctx context.Context, params AdminGetStaffMemberParams) (AdminGetStaffMemberRes, error) {
 	res, err := c.sendAdminGetStaffMember(ctx, params)
 	return res, err
@@ -4883,7 +4844,7 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetStaffMember"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/staff_members/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/staff_members/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -4917,7 +4878,7 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/staff_members/"
+	pathParts[0] = "/api/admin/management/staff_members/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5005,7 +4966,7 @@ func (c *Client) sendAdminGetStaffMember(ctx context.Context, params AdminGetSta
 // Get a single user. A missing id surfaces as 404 via the central ent-error handler, not a typed union
 // member.
 //
-// GET /admin/api/users/{id}
+// GET /api/admin/api/users/{id}
 func (c *Client) AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error) {
 	res, err := c.sendAdminGetUser(ctx, params)
 	return res, err
@@ -5015,7 +4976,7 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminGetUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/api/users/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/api/users/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5049,7 +5010,7 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/api/users/"
+	pathParts[0] = "/api/admin/api/users/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5136,7 +5097,7 @@ func (c *Client) sendAdminGetUser(ctx context.Context, params AdminGetUserParams
 //
 // List banners (paginated).
 //
-// GET /admin/banners
+// GET /api/admin/banners
 func (c *Client) AdminListBanners(ctx context.Context, params AdminListBannersParams) (AdminListBannersRes, error) {
 	res, err := c.sendAdminListBanners(ctx, params)
 	return res, err
@@ -5146,7 +5107,7 @@ func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBanne
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBanners"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/banners"),
+		semconv.URLTemplateKey.String("/api/admin/banners"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5180,7 +5141,7 @@ func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBanne
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/banners"
+	pathParts[0] = "/api/admin/banners"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -5319,7 +5280,7 @@ func (c *Client) sendAdminListBanners(ctx context.Context, params AdminListBanne
 
 // AdminListBlogPosts invokes adminListBlogPosts operation.
 //
-// GET /admin/blog_posts
+// GET /api/admin/blog_posts
 func (c *Client) AdminListBlogPosts(ctx context.Context, params AdminListBlogPostsParams) (AdminListBlogPostsRes, error) {
 	res, err := c.sendAdminListBlogPosts(ctx, params)
 	return res, err
@@ -5329,7 +5290,7 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListBlogPosts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/blog_posts"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5363,7 +5324,7 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/blog_posts"
+	pathParts[0] = "/api/admin/blog_posts"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -5502,7 +5463,7 @@ func (c *Client) sendAdminListBlogPosts(ctx context.Context, params AdminListBlo
 
 // AdminListCategoryQnaItems invokes adminListCategoryQnaItems operation.
 //
-// GET /admin/course_categories/{categoryId}/qna_items
+// GET /api/admin/course_categories/{categoryId}/qna_items
 func (c *Client) AdminListCategoryQnaItems(ctx context.Context, params AdminListCategoryQnaItemsParams) (AdminListCategoryQnaItemsRes, error) {
 	res, err := c.sendAdminListCategoryQnaItems(ctx, params)
 	return res, err
@@ -5512,7 +5473,7 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCategoryQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{categoryId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5546,7 +5507,7 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -5634,7 +5595,7 @@ func (c *Client) sendAdminListCategoryQnaItems(ctx context.Context, params Admin
 //
 // List course categories (paginated).
 //
-// GET /admin/course_categories
+// GET /api/admin/course_categories
 func (c *Client) AdminListCourseCategories(ctx context.Context, params AdminListCourseCategoriesParams) (AdminListCourseCategoriesRes, error) {
 	res, err := c.sendAdminListCourseCategories(ctx, params)
 	return res, err
@@ -5644,7 +5605,7 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_categories"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5678,7 +5639,7 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/course_categories"
+	pathParts[0] = "/api/admin/course_categories"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -5817,7 +5778,7 @@ func (c *Client) sendAdminListCourseCategories(ctx context.Context, params Admin
 
 // AdminListCourseLandingPages invokes adminListCourseLandingPages operation.
 //
-// GET /admin/course_landing_pages
+// GET /api/admin/course_landing_pages
 func (c *Client) AdminListCourseLandingPages(ctx context.Context, params AdminListCourseLandingPagesParams) (AdminListCourseLandingPagesRes, error) {
 	res, err := c.sendAdminListCourseLandingPages(ctx, params)
 	return res, err
@@ -5827,7 +5788,7 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLandingPages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -5861,7 +5822,7 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/course_landing_pages"
+	pathParts[0] = "/api/admin/course_landing_pages"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6000,7 +5961,7 @@ func (c *Client) sendAdminListCourseLandingPages(ctx context.Context, params Adm
 
 // AdminListCourseLessonReviews invokes adminListCourseLessonReviews operation.
 //
-// GET /admin/course_lesson_reviews
+// GET /api/admin/course_lesson_reviews
 func (c *Client) AdminListCourseLessonReviews(ctx context.Context, params AdminListCourseLessonReviewsParams) (AdminListCourseLessonReviewsRes, error) {
 	res, err := c.sendAdminListCourseLessonReviews(ctx, params)
 	return res, err
@@ -6010,7 +5971,7 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessonReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_lesson_reviews"),
+		semconv.URLTemplateKey.String("/api/admin/course_lesson_reviews"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6044,7 +6005,7 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/course_lesson_reviews"
+	pathParts[0] = "/api/admin/course_lesson_reviews"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6183,7 +6144,7 @@ func (c *Client) sendAdminListCourseLessonReviews(ctx context.Context, params Ad
 
 // AdminListCourseLessons invokes adminListCourseLessons operation.
 //
-// GET /admin/course_lessons
+// GET /api/admin/course_lessons
 func (c *Client) AdminListCourseLessons(ctx context.Context, params AdminListCourseLessonsParams) (AdminListCourseLessonsRes, error) {
 	res, err := c.sendAdminListCourseLessons(ctx, params)
 	return res, err
@@ -6193,7 +6154,7 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourseLessons"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_lessons"),
+		semconv.URLTemplateKey.String("/api/admin/course_lessons"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6227,7 +6188,7 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/course_lessons"
+	pathParts[0] = "/api/admin/course_lessons"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6366,7 +6327,7 @@ func (c *Client) sendAdminListCourseLessons(ctx context.Context, params AdminLis
 
 // AdminListCourses invokes adminListCourses operation.
 //
-// GET /admin/courses
+// GET /api/admin/courses
 func (c *Client) AdminListCourses(ctx context.Context, params AdminListCoursesParams) (AdminListCoursesRes, error) {
 	res, err := c.sendAdminListCourses(ctx, params)
 	return res, err
@@ -6376,7 +6337,7 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/courses"),
+		semconv.URLTemplateKey.String("/api/admin/courses"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6410,7 +6371,7 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/courses"
+	pathParts[0] = "/api/admin/courses"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6549,7 +6510,7 @@ func (c *Client) sendAdminListCourses(ctx context.Context, params AdminListCours
 
 // AdminListLandingPageQnaItems invokes adminListLandingPageQnaItems operation.
 //
-// GET /admin/course_landing_pages/{landingPageId}/qna_items
+// GET /api/admin/course_landing_pages/{landingPageId}/qna_items
 func (c *Client) AdminListLandingPageQnaItems(ctx context.Context, params AdminListLandingPageQnaItemsParams) (AdminListLandingPageQnaItemsRes, error) {
 	res, err := c.sendAdminListLandingPageQnaItems(ctx, params)
 	return res, err
@@ -6559,7 +6520,7 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLandingPageQnaItems"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6593,7 +6554,7 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -6679,7 +6640,7 @@ func (c *Client) sendAdminListLandingPageQnaItems(ctx context.Context, params Ad
 
 // AdminListLeads invokes adminListLeads operation.
 //
-// GET /admin/leads
+// GET /api/admin/leads
 func (c *Client) AdminListLeads(ctx context.Context, params AdminListLeadsParams) (AdminListLeadsRes, error) {
 	res, err := c.sendAdminListLeads(ctx, params)
 	return res, err
@@ -6689,7 +6650,7 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLeads"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/leads"),
+		semconv.URLTemplateKey.String("/api/admin/leads"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6723,7 +6684,7 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/leads"
+	pathParts[0] = "/api/admin/leads"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -6862,7 +6823,7 @@ func (c *Client) sendAdminListLeads(ctx context.Context, params AdminListLeadsPa
 
 // AdminListLessonProgress invokes adminListLessonProgress operation.
 //
-// GET /admin/lesson_progress
+// GET /api/admin/lesson_progress
 func (c *Client) AdminListLessonProgress(ctx context.Context, params AdminListLessonProgressParams) (AdminListLessonProgressRes, error) {
 	res, err := c.sendAdminListLessonProgress(ctx, params)
 	return res, err
@@ -6872,7 +6833,7 @@ func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminLi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListLessonProgress"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/lesson_progress"),
+		semconv.URLTemplateKey.String("/api/admin/lesson_progress"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -6906,7 +6867,7 @@ func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminLi
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/lesson_progress"
+	pathParts[0] = "/api/admin/lesson_progress"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -7045,7 +7006,7 @@ func (c *Client) sendAdminListLessonProgress(ctx context.Context, params AdminLi
 
 // AdminListManagementUsers invokes adminListManagementUsers operation.
 //
-// GET /admin/management/users
+// GET /api/admin/management/users
 func (c *Client) AdminListManagementUsers(ctx context.Context, params AdminListManagementUsersParams) (AdminListManagementUsersRes, error) {
 	res, err := c.sendAdminListManagementUsers(ctx, params)
 	return res, err
@@ -7055,7 +7016,7 @@ func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminL
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListManagementUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/users"),
+		semconv.URLTemplateKey.String("/api/admin/management/users"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7089,7 +7050,7 @@ func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminL
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/management/users"
+	pathParts[0] = "/api/admin/management/users"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -7228,7 +7189,7 @@ func (c *Client) sendAdminListManagementUsers(ctx context.Context, params AdminL
 
 // AdminListMessages invokes adminListMessages operation.
 //
-// GET /admin/messages
+// GET /api/admin/messages
 func (c *Client) AdminListMessages(ctx context.Context, params AdminListMessagesParams) (AdminListMessagesRes, error) {
 	res, err := c.sendAdminListMessages(ctx, params)
 	return res, err
@@ -7238,7 +7199,7 @@ func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMess
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/messages"),
+		semconv.URLTemplateKey.String("/api/admin/messages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7272,7 +7233,7 @@ func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMess
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/messages"
+	pathParts[0] = "/api/admin/messages"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -7411,7 +7372,7 @@ func (c *Client) sendAdminListMessages(ctx context.Context, params AdminListMess
 
 // AdminListReviews invokes adminListReviews operation.
 //
-// GET /admin/reviews
+// GET /api/admin/reviews
 func (c *Client) AdminListReviews(ctx context.Context, params AdminListReviewsParams) (AdminListReviewsRes, error) {
 	res, err := c.sendAdminListReviews(ctx, params)
 	return res, err
@@ -7421,7 +7382,7 @@ func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListRevie
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/reviews"),
+		semconv.URLTemplateKey.String("/api/admin/reviews"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7455,7 +7416,7 @@ func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListRevie
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/reviews"
+	pathParts[0] = "/api/admin/reviews"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -7594,7 +7555,7 @@ func (c *Client) sendAdminListReviews(ctx context.Context, params AdminListRevie
 
 // AdminListRoles invokes adminListRoles operation.
 //
-// GET /admin/management/roles
+// GET /api/admin/management/roles
 func (c *Client) AdminListRoles(ctx context.Context, params AdminListRolesParams) (AdminListRolesRes, error) {
 	res, err := c.sendAdminListRoles(ctx, params)
 	return res, err
@@ -7604,7 +7565,7 @@ func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListRoles"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/roles"),
+		semconv.URLTemplateKey.String("/api/admin/management/roles"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7638,7 +7599,7 @@ func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/management/roles"
+	pathParts[0] = "/api/admin/management/roles"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -7777,7 +7738,7 @@ func (c *Client) sendAdminListRoles(ctx context.Context, params AdminListRolesPa
 
 // AdminListStaffMembers invokes adminListStaffMembers operation.
 //
-// GET /admin/management/staff_members
+// GET /api/admin/management/staff_members
 func (c *Client) AdminListStaffMembers(ctx context.Context, params AdminListStaffMembersParams) (AdminListStaffMembersRes, error) {
 	res, err := c.sendAdminListStaffMembers(ctx, params)
 	return res, err
@@ -7787,7 +7748,7 @@ func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminList
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListStaffMembers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/management/staff_members"),
+		semconv.URLTemplateKey.String("/api/admin/management/staff_members"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -7821,7 +7782,7 @@ func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminList
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/management/staff_members"
+	pathParts[0] = "/api/admin/management/staff_members"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -7960,7 +7921,7 @@ func (c *Client) sendAdminListStaffMembers(ctx context.Context, params AdminList
 
 // AdminListUsers invokes adminListUsers operation.
 //
-// GET /admin/api/users
+// GET /api/admin/api/users
 func (c *Client) AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error) {
 	res, err := c.sendAdminListUsers(ctx, params)
 	return res, err
@@ -7970,7 +7931,7 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminListUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/api/users"),
+		semconv.URLTemplateKey.String("/api/admin/api/users"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8004,7 +7965,7 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/api/users"
+	pathParts[0] = "/api/admin/api/users"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -8145,7 +8106,7 @@ func (c *Client) sendAdminListUsers(ctx context.Context, params AdminListUsersPa
 //
 // Enqueue AI re-review of every current lesson version.
 //
-// POST /admin/courses/{id}/review
+// POST /api/admin/courses/{id}/review
 func (c *Client) AdminReviewCourse(ctx context.Context, params AdminReviewCourseParams) (AdminReviewCourseRes, error) {
 	res, err := c.sendAdminReviewCourse(ctx, params)
 	return res, err
@@ -8155,7 +8116,7 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourse"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/courses/{id}/review"),
+		semconv.URLTemplateKey.String("/api/admin/courses/{id}/review"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8189,7 +8150,7 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/courses/"
+	pathParts[0] = "/api/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8288,7 +8249,7 @@ func (c *Client) sendAdminReviewCourse(ctx context.Context, params AdminReviewCo
 //
 // Enqueue AI review for a single lesson.
 //
-// POST /admin/course_lessons/{id}/review
+// POST /api/admin/course_lessons/{id}/review
 func (c *Client) AdminReviewCourseLesson(ctx context.Context, params AdminReviewCourseLessonParams) (AdminReviewCourseLessonRes, error) {
 	res, err := c.sendAdminReviewCourseLesson(ctx, params)
 	return res, err
@@ -8298,7 +8259,7 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminReviewCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/course_lessons/{id}/review"),
+		semconv.URLTemplateKey.String("/api/admin/course_lessons/{id}/review"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8332,7 +8293,7 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/course_lessons/"
+	pathParts[0] = "/api/admin/course_lessons/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8431,7 +8392,7 @@ func (c *Client) sendAdminReviewCourseLesson(ctx context.Context, params AdminRe
 //
 // Typeahead search by name/email.
 //
-// GET /admin/api/users/search
+// GET /api/admin/api/users/search
 func (c *Client) AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error) {
 	res, err := c.sendAdminSearchUsers(ctx, params)
 	return res, err
@@ -8441,7 +8402,7 @@ func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUse
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSearchUsers"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/admin/api/users/search"),
+		semconv.URLTemplateKey.String("/api/admin/api/users/search"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8475,7 +8436,7 @@ func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUse
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/api/users/search"
+	pathParts[0] = "/api/admin/api/users/search"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -8562,7 +8523,7 @@ func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUse
 //
 // Set the related/promoted courses for a post.
 //
-// POST /admin/blog_posts/{id}/related_courses
+// POST /api/admin/blog_posts/{id}/related_courses
 func (c *Client) AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error) {
 	res, err := c.sendAdminSetBlogPostRelatedCourses(ctx, request, params)
 	return res, err
@@ -8572,7 +8533,7 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminSetBlogPostRelatedCourses"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/blog_posts/{id}/related_courses"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts/{id}/related_courses"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8606,7 +8567,7 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/admin/blog_posts/"
+	pathParts[0] = "/api/admin/blog_posts/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8708,7 +8669,7 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 //
 // Update a banner. A missing id surfaces as 404 via the central handler.
 //
-// PUT /admin/banners/{id}
+// PUT /api/admin/banners/{id}
 func (c *Client) AdminUpdateBanner(ctx context.Context, request *BannerInput, params AdminUpdateBannerParams) (AdminUpdateBannerRes, error) {
 	res, err := c.sendAdminUpdateBanner(ctx, request, params)
 	return res, err
@@ -8718,7 +8679,7 @@ func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBanner"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/banners/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/banners/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8752,7 +8713,7 @@ func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/banners/"
+	pathParts[0] = "/api/admin/banners/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8851,7 +8812,7 @@ func (c *Client) sendAdminUpdateBanner(ctx context.Context, request *BannerInput
 
 // AdminUpdateBlogPost invokes adminUpdateBlogPost operation.
 //
-// PUT /admin/blog_posts/{id}
+// PUT /api/admin/blog_posts/{id}
 func (c *Client) AdminUpdateBlogPost(ctx context.Context, request *BlogPostInput, params AdminUpdateBlogPostParams) (AdminUpdateBlogPostRes, error) {
 	res, err := c.sendAdminUpdateBlogPost(ctx, request, params)
 	return res, err
@@ -8861,7 +8822,7 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateBlogPost"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/blog_posts/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -8895,7 +8856,7 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/blog_posts/"
+	pathParts[0] = "/api/admin/blog_posts/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -8997,7 +8958,7 @@ func (c *Client) sendAdminUpdateBlogPost(ctx context.Context, request *BlogPostI
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/course_categories/{categoryId}/qna_items/{id}
+// PUT /api/admin/course_categories/{categoryId}/qna_items/{id}
 func (c *Client) AdminUpdateCategoryQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateCategoryQnaItemParams) (AdminUpdateCategoryQnaItemRes, error) {
 	res, err := c.sendAdminUpdateCategoryQnaItem(ctx, request, params)
 	return res, err
@@ -9007,7 +8968,7 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCategoryQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{categoryId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{categoryId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9041,7 +9002,7 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "categoryId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9159,7 +9120,7 @@ func (c *Client) sendAdminUpdateCategoryQnaItem(ctx context.Context, request *Qn
 
 // AdminUpdateCourse invokes adminUpdateCourse operation.
 //
-// PUT /admin/courses/{id}
+// PUT /api/admin/courses/{id}
 func (c *Client) AdminUpdateCourse(ctx context.Context, request *CourseInput, params AdminUpdateCourseParams) (AdminUpdateCourseRes, error) {
 	res, err := c.sendAdminUpdateCourse(ctx, request, params)
 	return res, err
@@ -9169,7 +9130,7 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourse"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/courses/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/courses/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9203,7 +9164,7 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/courses/"
+	pathParts[0] = "/api/admin/courses/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9305,7 +9266,7 @@ func (c *Client) sendAdminUpdateCourse(ctx context.Context, request *CourseInput
 // Update a course category. 404 (missing) and 409 (uniqueness) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/course_categories/{id}
+// PUT /api/admin/course_categories/{id}
 func (c *Client) AdminUpdateCourseCategory(ctx context.Context, request *CourseCategoryInput, params AdminUpdateCourseCategoryParams) (AdminUpdateCourseCategoryRes, error) {
 	res, err := c.sendAdminUpdateCourseCategory(ctx, request, params)
 	return res, err
@@ -9315,7 +9276,7 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/course_categories/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_categories/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9349,7 +9310,7 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/course_categories/"
+	pathParts[0] = "/api/admin/course_categories/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9450,7 +9411,7 @@ func (c *Client) sendAdminUpdateCourseCategory(ctx context.Context, request *Cou
 //
 // Update a landing page. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/course_landing_pages/{id}
+// PUT /api/admin/course_landing_pages/{id}
 func (c *Client) AdminUpdateCourseLandingPage(ctx context.Context, request *CourseLandingPageInput, params AdminUpdateCourseLandingPageParams) (AdminUpdateCourseLandingPageRes, error) {
 	res, err := c.sendAdminUpdateCourseLandingPage(ctx, request, params)
 	return res, err
@@ -9460,7 +9421,7 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateCourseLandingPage"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9494,7 +9455,7 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9596,7 +9557,7 @@ func (c *Client) sendAdminUpdateCourseLandingPage(ctx context.Context, request *
 // Update a QnA item. A missing id (or one under a different parent) surfaces as 404 via the central
 // ent-error handler.
 //
-// PUT /admin/course_landing_pages/{landingPageId}/qna_items/{id}
+// PUT /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}
 func (c *Client) AdminUpdateLandingPageQnaItem(ctx context.Context, request *QnaItemInput, params AdminUpdateLandingPageQnaItemParams) (AdminUpdateLandingPageQnaItemRes, error) {
 	res, err := c.sendAdminUpdateLandingPageQnaItem(ctx, request, params)
 	return res, err
@@ -9606,7 +9567,7 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateLandingPageQnaItem"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9640,7 +9601,7 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/admin/course_landing_pages/"
+	pathParts[0] = "/api/admin/course_landing_pages/"
 	{
 		// Encode "landingPageId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9758,7 +9719,7 @@ func (c *Client) sendAdminUpdateLandingPageQnaItem(ctx context.Context, request 
 
 // AdminUpdateManagementUser invokes adminUpdateManagementUser operation.
 //
-// PUT /admin/management/users/{id}
+// PUT /api/admin/management/users/{id}
 func (c *Client) AdminUpdateManagementUser(ctx context.Context, request *UserInput, params AdminUpdateManagementUserParams) (AdminUpdateManagementUserRes, error) {
 	res, err := c.sendAdminUpdateManagementUser(ctx, request, params)
 	return res, err
@@ -9768,7 +9729,7 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateManagementUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/management/users/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/users/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9802,7 +9763,7 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/users/"
+	pathParts[0] = "/api/admin/management/users/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -9903,7 +9864,7 @@ func (c *Client) sendAdminUpdateManagementUser(ctx context.Context, request *Use
 //
 // Update a review. A missing id surfaces as 404 via the central ent-error handler.
 //
-// PUT /admin/reviews/{id}
+// PUT /api/admin/reviews/{id}
 func (c *Client) AdminUpdateReview(ctx context.Context, request *ReviewInput, params AdminUpdateReviewParams) (AdminUpdateReviewRes, error) {
 	res, err := c.sendAdminUpdateReview(ctx, request, params)
 	return res, err
@@ -9913,7 +9874,7 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateReview"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/reviews/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/reviews/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -9947,7 +9908,7 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/reviews/"
+	pathParts[0] = "/api/admin/reviews/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10046,7 +10007,7 @@ func (c *Client) sendAdminUpdateReview(ctx context.Context, request *ReviewInput
 
 // AdminUpdateRole invokes adminUpdateRole operation.
 //
-// PUT /admin/management/roles/{id}
+// PUT /api/admin/management/roles/{id}
 func (c *Client) AdminUpdateRole(ctx context.Context, request *RoleInput, params AdminUpdateRoleParams) (AdminUpdateRoleRes, error) {
 	res, err := c.sendAdminUpdateRole(ctx, request, params)
 	return res, err
@@ -10056,7 +10017,7 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRole"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/management/roles/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/roles/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10090,7 +10051,7 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/roles/"
+	pathParts[0] = "/api/admin/management/roles/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10191,7 +10152,7 @@ func (c *Client) sendAdminUpdateRole(ctx context.Context, request *RoleInput, pa
 //
 // Replace the permission matrix for a role.
 //
-// PUT /admin/management/role_permissions/{roleId}
+// PUT /api/admin/management/role_permissions/{roleId}
 func (c *Client) AdminUpdateRolePermissions(ctx context.Context, request *RolePermissionsInput, params AdminUpdateRolePermissionsParams) (AdminUpdateRolePermissionsRes, error) {
 	res, err := c.sendAdminUpdateRolePermissions(ctx, request, params)
 	return res, err
@@ -10201,7 +10162,7 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateRolePermissions"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/management/role_permissions/{roleId}"),
+		semconv.URLTemplateKey.String("/api/admin/management/role_permissions/{roleId}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10235,7 +10196,7 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/role_permissions/"
+	pathParts[0] = "/api/admin/management/role_permissions/"
 	{
 		// Encode "roleId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10334,7 +10295,7 @@ func (c *Client) sendAdminUpdateRolePermissions(ctx context.Context, request *Ro
 
 // AdminUpdateStaffMember invokes adminUpdateStaffMember operation.
 //
-// PUT /admin/management/staff_members/{id}
+// PUT /api/admin/management/staff_members/{id}
 func (c *Client) AdminUpdateStaffMember(ctx context.Context, request *StaffMemberInput, params AdminUpdateStaffMemberParams) (AdminUpdateStaffMemberRes, error) {
 	res, err := c.sendAdminUpdateStaffMember(ctx, request, params)
 	return res, err
@@ -10344,7 +10305,7 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateStaffMember"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/management/staff_members/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/management/staff_members/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10378,7 +10339,7 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/management/staff_members/"
+	pathParts[0] = "/api/admin/management/staff_members/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10480,7 +10441,7 @@ func (c *Client) sendAdminUpdateStaffMember(ctx context.Context, request *StaffM
 // Update a user. 404 (missing) and 409 (duplicate email) both flow through the central ent-error
 // handler.
 //
-// PUT /admin/api/users/{id}
+// PUT /api/admin/api/users/{id}
 func (c *Client) AdminUpdateUser(ctx context.Context, request *UserInput, params AdminUpdateUserParams) (AdminUpdateUserRes, error) {
 	res, err := c.sendAdminUpdateUser(ctx, request, params)
 	return res, err
@@ -10490,7 +10451,7 @@ func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, pa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUpdateUser"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
-		semconv.URLTemplateKey.String("/admin/api/users/{id}"),
+		semconv.URLTemplateKey.String("/api/admin/api/users/{id}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10524,7 +10485,7 @@ func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, pa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/admin/api/users/"
+	pathParts[0] = "/api/admin/api/users/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10625,7 +10586,7 @@ func (c *Client) sendAdminUpdateUser(ctx context.Context, request *UserInput, pa
 //
 // Upload a file; returns the attachment to reference from a form.
 //
-// POST /admin/attachments
+// POST /api/admin/attachments
 func (c *Client) AdminUploadAttachment(ctx context.Context, request *AttachmentUploadFormMultipart) (AdminUploadAttachmentRes, error) {
 	res, err := c.sendAdminUploadAttachment(ctx, request)
 	return res, err
@@ -10635,7 +10596,7 @@ func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *Attachm
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("adminUploadAttachment"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/admin/attachments"),
+		semconv.URLTemplateKey.String("/api/admin/attachments"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10669,7 +10630,7 @@ func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *Attachm
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/admin/attachments"
+	pathParts[0] = "/api/admin/attachments"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -10757,7 +10718,7 @@ func (c *Client) sendAdminUploadAttachment(ctx context.Context, request *Attachm
 // rather than in rows. 409 when the lesson is beyond the gate — the submission is refused before
 // anything is run.
 //
-// POST /lessons/{id}/check
+// POST /api/lessons/{id}/check
 func (c *Client) CheckLesson(ctx context.Context, request *CheckLessonInput, params CheckLessonParams) (CheckLessonRes, error) {
 	res, err := c.sendCheckLesson(ctx, request, params)
 	return res, err
@@ -10767,7 +10728,7 @@ func (c *Client) sendCheckLesson(ctx context.Context, request *CheckLessonInput,
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("checkLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/lessons/{id}/check"),
+		semconv.URLTemplateKey.String("/api/lessons/{id}/check"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10801,7 +10762,7 @@ func (c *Client) sendCheckLesson(ctx context.Context, request *CheckLessonInput,
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/lessons/"
+	pathParts[0] = "/api/lessons/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10859,7 +10820,7 @@ func (c *Client) sendCheckLesson(ctx context.Context, request *CheckLessonInput,
 //
 // Validate a reset token before showing the form.
 //
-// GET /password/{token}/edit
+// GET /api/password/{token}/edit
 func (c *Client) CheckPasswordResetToken(ctx context.Context, params CheckPasswordResetTokenParams) (CheckPasswordResetTokenRes, error) {
 	res, err := c.sendCheckPasswordResetToken(ctx, params)
 	return res, err
@@ -10869,7 +10830,7 @@ func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("checkPasswordResetToken"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/password/{token}/edit"),
+		semconv.URLTemplateKey.String("/api/password/{token}/edit"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -10903,7 +10864,7 @@ func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/password/"
+	pathParts[0] = "/api/password/"
 	{
 		// Encode "token" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -10954,94 +10915,11 @@ func (c *Client) sendCheckPasswordResetToken(ctx context.Context, params CheckPa
 	return result, nil
 }
 
-// ConfirmPhoneAuth invokes confirmPhoneAuth operation.
-//
-// Confirm the SMS code; sets the JWT cookie.
-//
-// POST /phone_auth/confirm
-func (c *Client) ConfirmPhoneAuth(ctx context.Context, request *PhoneConfirmInput) (ConfirmPhoneAuthRes, error) {
-	res, err := c.sendConfirmPhoneAuth(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendConfirmPhoneAuth(ctx context.Context, request *PhoneConfirmInput) (res ConfirmPhoneAuthRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("confirmPhoneAuth"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/phone_auth/confirm"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, ConfirmPhoneAuthOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/phone_auth/confirm"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeConfirmPhoneAuthRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeConfirmPhoneAuthResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // ConsumeMagicLink invokes consumeMagicLink operation.
 //
 // Consume a magic link token; sets the JWT cookie.
 //
-// GET /magic_links/{token}
+// GET /api/magic_links/{token}
 func (c *Client) ConsumeMagicLink(ctx context.Context, params ConsumeMagicLinkParams) (ConsumeMagicLinkRes, error) {
 	res, err := c.sendConsumeMagicLink(ctx, params)
 	return res, err
@@ -11051,7 +10929,7 @@ func (c *Client) sendConsumeMagicLink(ctx context.Context, params ConsumeMagicLi
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("consumeMagicLink"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/magic_links/{token}"),
+		semconv.URLTemplateKey.String("/api/magic_links/{token}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11085,7 +10963,7 @@ func (c *Client) sendConsumeMagicLink(ctx context.Context, params ConsumeMagicLi
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/magic_links/"
+	pathParts[0] = "/api/magic_links/"
 	{
 		// Encode "token" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -11140,7 +11018,7 @@ func (c *Client) sendConsumeMagicLink(ctx context.Context, params ConsumeMagicLi
 // Ask the assistant. Enqueues generation (river job); the reply is delivered out-of-band. 202 =
 // accepted, 429 = rate limited. SSE streaming is TBD.
 //
-// POST /ai/lessons/{lessonId}/messages
+// POST /api/ai/lessons/{lessonId}/messages
 func (c *Client) CreateAssistantMessage(ctx context.Context, request *AssistantMessageInput, params CreateAssistantMessageParams) (CreateAssistantMessageRes, error) {
 	res, err := c.sendCreateAssistantMessage(ctx, request, params)
 	return res, err
@@ -11150,7 +11028,7 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createAssistantMessage"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/ai/lessons/{lessonId}/messages"),
+		semconv.URLTemplateKey.String("/api/ai/lessons/{lessonId}/messages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11184,7 +11062,7 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/ai/lessons/"
+	pathParts[0] = "/api/ai/lessons/"
 	{
 		// Encode "lessonId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -11286,7 +11164,7 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 //
 // Request the book download link by email.
 //
-// POST /book/create_request
+// POST /api/book/create_request
 func (c *Client) CreateBookRequest(ctx context.Context, request *BookRequestInput) (CreateBookRequestRes, error) {
 	res, err := c.sendCreateBookRequest(ctx, request)
 	return res, err
@@ -11296,7 +11174,7 @@ func (c *Client) sendCreateBookRequest(ctx context.Context, request *BookRequest
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createBookRequest"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/book/create_request"),
+		semconv.URLTemplateKey.String("/api/book/create_request"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11330,7 +11208,7 @@ func (c *Client) sendCreateBookRequest(ctx context.Context, request *BookRequest
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/book/create_request"
+	pathParts[0] = "/api/book/create_request"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -11413,7 +11291,7 @@ func (c *Client) sendCreateBookRequest(ctx context.Context, request *BookRequest
 //
 // Submit a contact request.
 //
-// POST /leads
+// POST /api/leads
 func (c *Client) CreateLead(ctx context.Context, request *LeadInput) (CreateLeadRes, error) {
 	res, err := c.sendCreateLead(ctx, request)
 	return res, err
@@ -11423,7 +11301,7 @@ func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res Cr
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createLead"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/leads"),
+		semconv.URLTemplateKey.String("/api/leads"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11457,7 +11335,7 @@ func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res Cr
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/leads"
+	pathParts[0] = "/api/leads"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -11540,7 +11418,7 @@ func (c *Client) sendCreateLead(ctx context.Context, request *LeadInput) (res Cr
 //
 // Email a one-time sign-in link.
 //
-// POST /magic_links
+// POST /api/magic_links
 func (c *Client) CreateMagicLink(ctx context.Context, request *EmailInput) (CreateMagicLinkRes, error) {
 	res, err := c.sendCreateMagicLink(ctx, request)
 	return res, err
@@ -11550,7 +11428,7 @@ func (c *Client) sendCreateMagicLink(ctx context.Context, request *EmailInput) (
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createMagicLink"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/magic_links"),
+		semconv.URLTemplateKey.String("/api/magic_links"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11584,7 +11462,7 @@ func (c *Client) sendCreateMagicLink(ctx context.Context, request *EmailInput) (
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/magic_links"
+	pathParts[0] = "/api/magic_links"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -11619,221 +11497,11 @@ func (c *Client) sendCreateMagicLink(ctx context.Context, request *EmailInput) (
 	return result, nil
 }
 
-// CreatePasskey invokes createPasskey operation.
-//
-// Register a new passkey for the current user.
-//
-// POST /account/passkeys
-func (c *Client) CreatePasskey(ctx context.Context, request *PasskeyRegistrationInput) (CreatePasskeyRes, error) {
-	res, err := c.sendCreatePasskey(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendCreatePasskey(ctx context.Context, request *PasskeyRegistrationInput) (res CreatePasskeyRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("createPasskey"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/account/passkeys"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, CreatePasskeyOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/account/passkeys"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreatePasskeyRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:UserSession"
-			switch err := c.securityUserSession(ctx, CreatePasskeyOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"UserSession\"")
-			}
-		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, CreatePasskeyOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000011},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeCreatePasskeyResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// CreatePasskeySession invokes createPasskeySession operation.
-//
-// Complete a passkey login; sets the JWT cookie.
-//
-// POST /passkey_session
-func (c *Client) CreatePasskeySession(ctx context.Context, request *PasskeyAssertionInput) (CreatePasskeySessionRes, error) {
-	res, err := c.sendCreatePasskeySession(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendCreatePasskeySession(ctx context.Context, request *PasskeyAssertionInput) (res CreatePasskeySessionRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("createPasskeySession"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/passkey_session"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, CreatePasskeySessionOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/passkey_session"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreatePasskeySessionRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeCreatePasskeySessionResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // CreatePasswordReminder invokes createPasswordReminder operation.
 //
 // Email a password-reset link.
 //
-// POST /remind_password
+// POST /api/remind_password
 func (c *Client) CreatePasswordReminder(ctx context.Context, request *EmailInput) (CreatePasswordReminderRes, error) {
 	res, err := c.sendCreatePasswordReminder(ctx, request)
 	return res, err
@@ -11843,7 +11511,7 @@ func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailI
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createPasswordReminder"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/remind_password"),
+		semconv.URLTemplateKey.String("/api/remind_password"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -11877,7 +11545,7 @@ func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailI
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/remind_password"
+	pathParts[0] = "/api/remind_password"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -11912,94 +11580,11 @@ func (c *Client) sendCreatePasswordReminder(ctx context.Context, request *EmailI
 	return result, nil
 }
 
-// CreatePhoneAuth invokes createPhoneAuth operation.
-//
-// Send an SMS verification code.
-//
-// POST /phone_auth
-func (c *Client) CreatePhoneAuth(ctx context.Context, request *PhoneInput) (CreatePhoneAuthRes, error) {
-	res, err := c.sendCreatePhoneAuth(ctx, request)
-	return res, err
-}
-
-func (c *Client) sendCreatePhoneAuth(ctx context.Context, request *PhoneInput) (res CreatePhoneAuthRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("createPhoneAuth"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/phone_auth"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, CreatePhoneAuthOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/phone_auth"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreatePhoneAuthRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeCreatePhoneAuthResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // CreateSession invokes createSession operation.
 //
 // Log in with email + password; sets the JWT cookie.
 //
-// POST /session
+// POST /api/session
 func (c *Client) CreateSession(ctx context.Context, request *SessionInput) (CreateSessionRes, error) {
 	res, err := c.sendCreateSession(ctx, request)
 	return res, err
@@ -12009,7 +11594,7 @@ func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createSession"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/session"),
+		semconv.URLTemplateKey.String("/api/session"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12043,7 +11628,7 @@ func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/session"
+	pathParts[0] = "/api/session"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -12082,7 +11667,7 @@ func (c *Client) sendCreateSession(ctx context.Context, request *SessionInput) (
 //
 // Sign up; sets the JWT cookie on success.
 //
-// POST /users
+// POST /api/users
 func (c *Client) CreateUser(ctx context.Context, request *SignUpInput) (CreateUserRes, error) {
 	res, err := c.sendCreateUser(ctx, request)
 	return res, err
@@ -12092,7 +11677,7 @@ func (c *Client) sendCreateUser(ctx context.Context, request *SignUpInput) (res 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createUser"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/users"),
+		semconv.URLTemplateKey.String("/api/users"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12126,7 +11711,7 @@ func (c *Client) sendCreateUser(ctx context.Context, request *SignUpInput) (res 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/users"
+	pathParts[0] = "/api/users"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -12165,7 +11750,7 @@ func (c *Client) sendCreateUser(ctx context.Context, request *SignUpInput) (res 
 //
 // Delete the current user's account.
 //
-// DELETE /account/profile
+// DELETE /api/account/profile
 func (c *Client) DeleteAccount(ctx context.Context) (DeleteAccountRes, error) {
 	res, err := c.sendDeleteAccount(ctx)
 	return res, err
@@ -12175,7 +11760,7 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteAccount"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/account/profile"),
+		semconv.URLTemplateKey.String("/api/account/profile"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12209,7 +11794,7 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/account/profile"
+	pathParts[0] = "/api/account/profile"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -12285,153 +11870,11 @@ func (c *Client) sendDeleteAccount(ctx context.Context) (res DeleteAccountRes, e
 	return result, nil
 }
 
-// DeletePasskey invokes deletePasskey operation.
-//
-// Remove a passkey.
-//
-// DELETE /account/passkeys/{id}
-func (c *Client) DeletePasskey(ctx context.Context, params DeletePasskeyParams) (DeletePasskeyRes, error) {
-	res, err := c.sendDeletePasskey(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendDeletePasskey(ctx context.Context, params DeletePasskeyParams) (res DeletePasskeyRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("deletePasskey"),
-		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/account/passkeys/{id}"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, DeletePasskeyOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/account/passkeys/"
-	{
-		// Encode "id" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "id",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.Int32ToString(params.ID))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:UserSession"
-			switch err := c.securityUserSession(ctx, DeletePasskeyOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"UserSession\"")
-			}
-		}
-		{
-			stage = "Security:XsrfToken"
-			switch err := c.securityXsrfToken(ctx, DeletePasskeyOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 1
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"XsrfToken\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000011},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeDeletePasskeyResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // DeleteSession invokes deleteSession operation.
 //
 // Log out; clears the JWT cookie.
 //
-// DELETE /session
+// DELETE /api/session
 func (c *Client) DeleteSession(ctx context.Context) (DeleteSessionRes, error) {
 	res, err := c.sendDeleteSession(ctx)
 	return res, err
@@ -12441,7 +11884,7 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("deleteSession"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
-		semconv.URLTemplateKey.String("/session"),
+		semconv.URLTemplateKey.String("/api/session"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12475,7 +11918,7 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/session"
+	pathParts[0] = "/api/session"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -12555,7 +11998,7 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 //
 // A single blog post by slug.
 //
-// GET /blog_posts/{slug}
+// GET /api/blog_posts/{slug}
 func (c *Client) GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error) {
 	res, err := c.sendGetBlogPost(ctx, params)
 	return res, err
@@ -12565,7 +12008,7 @@ func (c *Client) sendGetBlogPost(ctx context.Context, params GetBlogPostParams) 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/blog_posts/{slug}"),
+		semconv.URLTemplateKey.String("/api/blog_posts/{slug}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12599,7 +12042,7 @@ func (c *Client) sendGetBlogPost(ctx context.Context, params GetBlogPostParams) 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/blog_posts/"
+	pathParts[0] = "/api/blog_posts/"
 	{
 		// Encode "slug" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -12653,7 +12096,7 @@ func (c *Client) sendGetBlogPost(ctx context.Context, params GetBlogPostParams) 
 //
 // Course landing page by slug.
 //
-// GET /languages/{slug}
+// GET /api/languages/{slug}
 func (c *Client) GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error) {
 	res, err := c.sendGetCourse(ctx, params)
 	return res, err
@@ -12663,7 +12106,7 @@ func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCourse"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/languages/{slug}"),
+		semconv.URLTemplateKey.String("/api/languages/{slug}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12697,7 +12140,7 @@ func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/languages/"
+	pathParts[0] = "/api/languages/"
 	{
 		// Encode "slug" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -12755,7 +12198,7 @@ func (c *Client) sendGetCourse(ctx context.Context, params GetCourseParams) (res
 // would enroll a learner in every lesson they pointed at (ADR-0012). Theory stays public and indexable
 // for everyone, including a lesson the visitor may not take yet.
 //
-// GET /languages/{courseSlug}/lessons/{slug}
+// GET /api/languages/{courseSlug}/lessons/{slug}
 func (c *Client) GetCourseLesson(ctx context.Context, params GetCourseLessonParams) (GetCourseLessonRes, error) {
 	res, err := c.sendGetCourseLesson(ctx, params)
 	return res, err
@@ -12765,7 +12208,7 @@ func (c *Client) sendGetCourseLesson(ctx context.Context, params GetCourseLesson
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCourseLesson"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/languages/{courseSlug}/lessons/{slug}"),
+		semconv.URLTemplateKey.String("/api/languages/{courseSlug}/lessons/{slug}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12799,7 +12242,7 @@ func (c *Client) sendGetCourseLesson(ctx context.Context, params GetCourseLesson
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [4]string
-	pathParts[0] = "/languages/"
+	pathParts[0] = "/api/languages/"
 	{
 		// Encode "courseSlug" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -12872,7 +12315,7 @@ func (c *Client) sendGetCourseLesson(ctx context.Context, params GetCourseLesson
 //
 // Resolve the current user from the session cookie (for SSR).
 //
-// GET /me
+// GET /api/me
 func (c *Client) GetCurrentUser(ctx context.Context, params GetCurrentUserParams) (*CurrentUser, error) {
 	res, err := c.sendGetCurrentUser(ctx, params)
 	return res, err
@@ -12882,7 +12325,7 @@ func (c *Client) sendGetCurrentUser(ctx context.Context, params GetCurrentUserPa
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getCurrentUser"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/me"),
+		semconv.URLTemplateKey.String("/api/me"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -12916,7 +12359,7 @@ func (c *Client) sendGetCurrentUser(ctx context.Context, params GetCurrentUserPa
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/me"
+	pathParts[0] = "/api/me"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -12969,7 +12412,7 @@ func (c *Client) sendGetCurrentUser(ctx context.Context, params GetCurrentUserPa
 //
 // The signed-in user's course dashboard.
 //
-// GET /my
+// GET /api/my
 func (c *Client) GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error) {
 	res, err := c.sendGetMyDashboard(ctx)
 	return res, err
@@ -12979,7 +12422,7 @@ func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes,
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getMyDashboard"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/my"),
+		semconv.URLTemplateKey.String("/api/my"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13013,7 +12456,7 @@ func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes,
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/my"
+	pathParts[0] = "/api/my"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -13082,7 +12525,7 @@ func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes,
 //
 // The next post to read after this one.
 //
-// GET /blog_posts/{id}/next
+// GET /api/blog_posts/{id}/next
 func (c *Client) GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error) {
 	res, err := c.sendGetNextBlogPost(ctx, params)
 	return res, err
@@ -13092,7 +12535,7 @@ func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPost
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getNextBlogPost"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/blog_posts/{id}/next"),
+		semconv.URLTemplateKey.String("/api/blog_posts/{id}/next"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13126,7 +12569,7 @@ func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPost
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/blog_posts/"
+	pathParts[0] = "/api/blog_posts/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -13177,109 +12620,11 @@ func (c *Client) sendGetNextBlogPost(ctx context.Context, params GetNextBlogPost
 	return result, nil
 }
 
-// GetPage invokes getPage operation.
-//
-// A static content page by slug.
-//
-// GET /pages/{slug}
-func (c *Client) GetPage(ctx context.Context, params GetPageParams) (GetPageRes, error) {
-	res, err := c.sendGetPage(ctx, params)
-	return res, err
-}
-
-func (c *Client) sendGetPage(ctx context.Context, params GetPageParams) (res GetPageRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getPage"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/pages/{slug}"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, GetPageOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/pages/"
-	{
-		// Encode "slug" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "slug",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.StringToString(params.Slug))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeGetPageResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // GetProfile invokes getProfile operation.
 //
 // The editable profile of the current user.
 //
-// GET /account/profile/edit
+// GET /api/account/profile/edit
 func (c *Client) GetProfile(ctx context.Context) (GetProfileRes, error) {
 	res, err := c.sendGetProfile(ctx)
 	return res, err
@@ -13289,7 +12634,7 @@ func (c *Client) sendGetProfile(ctx context.Context) (res GetProfileRes, err err
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getProfile"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/account/profile/edit"),
+		semconv.URLTemplateKey.String("/api/account/profile/edit"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13323,7 +12668,7 @@ func (c *Client) sendGetProfile(ctx context.Context) (res GetProfileRes, err err
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/account/profile/edit"
+	pathParts[0] = "/api/account/profile/edit"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -13392,7 +12737,7 @@ func (c *Client) sendGetProfile(ctx context.Context) (res GetProfileRes, err err
 //
 // A category and the courses it groups.
 //
-// GET /language_categories/{slug}
+// GET /api/language_categories/{slug}
 func (c *Client) GetPublicCourseCategory(ctx context.Context, params GetPublicCourseCategoryParams) (GetPublicCourseCategoryRes, error) {
 	res, err := c.sendGetPublicCourseCategory(ctx, params)
 	return res, err
@@ -13402,7 +12747,7 @@ func (c *Client) sendGetPublicCourseCategory(ctx context.Context, params GetPubl
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getPublicCourseCategory"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/language_categories/{slug}"),
+		semconv.URLTemplateKey.String("/api/language_categories/{slug}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13436,7 +12781,7 @@ func (c *Client) sendGetPublicCourseCategory(ctx context.Context, params GetPubl
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/language_categories/"
+	pathParts[0] = "/api/language_categories/"
 	{
 		// Encode "slug" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -13490,7 +12835,7 @@ func (c *Client) sendGetPublicCourseCategory(ctx context.Context, params GetPubl
 //
 // Everything the sitemap generator needs.
 //
-// GET /map
+// GET /api/map
 func (c *Client) GetSitemap(ctx context.Context) (*Sitemap, error) {
 	res, err := c.sendGetSitemap(ctx)
 	return res, err
@@ -13500,7 +12845,7 @@ func (c *Client) sendGetSitemap(ctx context.Context) (res *Sitemap, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("getSitemap"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/map"),
+		semconv.URLTemplateKey.String("/api/map"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13534,7 +12879,7 @@ func (c *Client) sendGetSitemap(ctx context.Context) (res *Sitemap, err error) {
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/map"
+	pathParts[0] = "/api/map"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -13566,11 +12911,173 @@ func (c *Client) sendGetSitemap(ctx context.Context) (res *Sitemap, err error) {
 	return result, nil
 }
 
+// GetYandexCoursesFeed invokes getYandexCoursesFeed operation.
+//
+// The same feed at the path the legacy route declares.
+//
+// GET /api/feeds/yandex_courses
+func (c *Client) GetYandexCoursesFeed(ctx context.Context) (GetYandexCoursesFeedOK, error) {
+	res, err := c.sendGetYandexCoursesFeed(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetYandexCoursesFeed(ctx context.Context) (res GetYandexCoursesFeedOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getYandexCoursesFeed"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/feeds/yandex_courses"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetYandexCoursesFeedOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/feeds/yandex_courses"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetYandexCoursesFeedResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetYandexCoursesFeedXml invokes getYandexCoursesFeedXml operation.
+//
+// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+// one.
+//
+// GET /api/feeds/yandex_courses.xml
+func (c *Client) GetYandexCoursesFeedXml(ctx context.Context) (GetYandexCoursesFeedXmlOK, error) {
+	res, err := c.sendGetYandexCoursesFeedXml(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetYandexCoursesFeedXml(ctx context.Context) (res GetYandexCoursesFeedXmlOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getYandexCoursesFeedXml"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/feeds/yandex_courses.xml"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetYandexCoursesFeedXmlOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/feeds/yandex_courses.xml"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetYandexCoursesFeedXmlResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // LikeBlogPost invokes likeBlogPost operation.
 //
 // Like a post (idempotent per visitor).
 //
-// POST /blog_posts/{id}/likes
+// POST /api/blog_posts/{id}/likes
 func (c *Client) LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error) {
 	res, err := c.sendLikeBlogPost(ctx, params)
 	return res, err
@@ -13580,7 +13087,7 @@ func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("likeBlogPost"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/blog_posts/{id}/likes"),
+		semconv.URLTemplateKey.String("/api/blog_posts/{id}/likes"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13614,7 +13121,7 @@ func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/blog_posts/"
+	pathParts[0] = "/api/blog_posts/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -13713,7 +13220,7 @@ func (c *Client) sendLikeBlogPost(ctx context.Context, params LikeBlogPostParams
 //
 // The assistant chat history for the current user in this lesson.
 //
-// GET /ai/lessons/{lessonId}/messages
+// GET /api/ai/lessons/{lessonId}/messages
 func (c *Client) ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (ListAssistantMessagesRes, error) {
 	res, err := c.sendListAssistantMessages(ctx, params)
 	return res, err
@@ -13723,7 +13230,7 @@ func (c *Client) sendListAssistantMessages(ctx context.Context, params ListAssis
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listAssistantMessages"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/ai/lessons/{lessonId}/messages"),
+		semconv.URLTemplateKey.String("/api/ai/lessons/{lessonId}/messages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13757,7 +13264,7 @@ func (c *Client) sendListAssistantMessages(ctx context.Context, params ListAssis
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/ai/lessons/"
+	pathParts[0] = "/api/ai/lessons/"
 	{
 		// Encode "lessonId" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -13845,7 +13352,7 @@ func (c *Client) sendListAssistantMessages(ctx context.Context, params ListAssis
 //
 // Paginated published blog posts.
 //
-// GET /blog_posts
+// GET /api/blog_posts
 func (c *Client) ListBlogPosts(ctx context.Context, params ListBlogPostsParams) (*BlogPostPage, error) {
 	res, err := c.sendListBlogPosts(ctx, params)
 	return res, err
@@ -13855,7 +13362,7 @@ func (c *Client) sendListBlogPosts(ctx context.Context, params ListBlogPostsPara
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listBlogPosts"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/blog_posts"),
+		semconv.URLTemplateKey.String("/api/blog_posts"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -13889,7 +13396,7 @@ func (c *Client) sendListBlogPosts(ctx context.Context, params ListBlogPostsPara
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/blog_posts"
+	pathParts[0] = "/api/blog_posts"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -13997,7 +13504,7 @@ func (c *Client) sendListBlogPosts(ctx context.Context, params ListBlogPostsPara
 //
 // List the published course catalog.
 //
-// GET /languages
+// GET /api/languages
 func (c *Client) ListCourses(ctx context.Context) ([]CourseCatalogItem, error) {
 	res, err := c.sendListCourses(ctx)
 	return res, err
@@ -14007,7 +13514,7 @@ func (c *Client) sendListCourses(ctx context.Context) (res []CourseCatalogItem, 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listCourses"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/languages"),
+		semconv.URLTemplateKey.String("/api/languages"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14041,7 +13548,7 @@ func (c *Client) sendListCourses(ctx context.Context) (res []CourseCatalogItem, 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/languages"
+	pathParts[0] = "/api/languages"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -14073,124 +13580,11 @@ func (c *Client) sendListCourses(ctx context.Context) (res []CourseCatalogItem, 
 	return result, nil
 }
 
-// ListPasskeys invokes listPasskeys operation.
-//
-// List the current user's passkeys.
-//
-// GET /account/passkeys
-func (c *Client) ListPasskeys(ctx context.Context) (ListPasskeysRes, error) {
-	res, err := c.sendListPasskeys(ctx)
-	return res, err
-}
-
-func (c *Client) sendListPasskeys(ctx context.Context) (res ListPasskeysRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("listPasskeys"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/account/passkeys"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, ListPasskeysOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/account/passkeys"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:UserSession"
-			switch err := c.securityUserSession(ctx, ListPasskeysOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"UserSession\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeListPasskeysResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // ListPublicCourseCategories invokes listPublicCourseCategories operation.
 //
 // List published categories.
 //
-// GET /language_categories
+// GET /api/language_categories
 func (c *Client) ListPublicCourseCategories(ctx context.Context) ([]CourseCategory, error) {
 	res, err := c.sendListPublicCourseCategories(ctx)
 	return res, err
@@ -14200,7 +13594,7 @@ func (c *Client) sendListPublicCourseCategories(ctx context.Context) (res []Cour
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listPublicCourseCategories"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/language_categories"),
+		semconv.URLTemplateKey.String("/api/language_categories"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14234,7 +13628,7 @@ func (c *Client) sendListPublicCourseCategories(ctx context.Context) (res []Cour
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/language_categories"
+	pathParts[0] = "/api/language_categories"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -14270,7 +13664,7 @@ func (c *Client) sendListPublicCourseCategories(ctx context.Context) (res []Cour
 //
 // Paginated published student reviews.
 //
-// GET /reviews
+// GET /api/reviews
 func (c *Client) ListPublicReviews(ctx context.Context, params ListPublicReviewsParams) (*ReviewPage, error) {
 	res, err := c.sendListPublicReviews(ctx, params)
 	return res, err
@@ -14280,7 +13674,7 @@ func (c *Client) sendListPublicReviews(ctx context.Context, params ListPublicRev
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("listPublicReviews"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/reviews"),
+		semconv.URLTemplateKey.String("/api/reviews"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14314,7 +13708,7 @@ func (c *Client) sendListPublicReviews(ctx context.Context, params ListPublicRev
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/reviews"
+	pathParts[0] = "/api/reviews"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -14418,199 +13812,6 @@ func (c *Client) sendListPublicReviews(ctx context.Context, params ListPublicRev
 	return result, nil
 }
 
-// NewPasskey invokes newPasskey operation.
-//
-// Begin a passkey registration ceremony.
-//
-// GET /account/passkeys/new
-func (c *Client) NewPasskey(ctx context.Context) (NewPasskeyRes, error) {
-	res, err := c.sendNewPasskey(ctx)
-	return res, err
-}
-
-func (c *Client) sendNewPasskey(ctx context.Context) (res NewPasskeyRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("newPasskey"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/account/passkeys/new"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, NewPasskeyOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/account/passkeys/new"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:UserSession"
-			switch err := c.securityUserSession(ctx, NewPasskeyOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"UserSession\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeNewPasskeyResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// NewPasskeySession invokes newPasskeySession operation.
-//
-// Begin a passkey login ceremony.
-//
-// GET /passkey_session/new
-func (c *Client) NewPasskeySession(ctx context.Context) (*PasskeyChallenge, error) {
-	res, err := c.sendNewPasskeySession(ctx)
-	return res, err
-}
-
-func (c *Client) sendNewPasskeySession(ctx context.Context) (res *PasskeyChallenge, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("newPasskeySession"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/passkey_session/new"),
-	}
-	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, NewPasskeySessionOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/passkey_session/new"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	body := resp.Body
-	defer func() {
-		// Drain the body to EOF before closing, so the underlying
-		// connection can be reused by the Transport regardless of the
-		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
-		_, _ = io.Copy(io.Discard, body)
-		_ = body.Close()
-	}()
-
-	stage = "DecodeResponse"
-	result, err := decodeNewPasskeySessionResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
 // StartLesson invokes startLesson operation.
 //
 // Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson
@@ -14624,7 +13825,7 @@ func (c *Client) sendNewPasskeySession(ctx context.Context) (res *PasskeyChallen
 // their position without storing anything: their state is the signed cookie, and only a check moves
 // it.
 //
-// POST /lessons/{id}/start
+// POST /api/lessons/{id}/start
 func (c *Client) StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error) {
 	res, err := c.sendStartLesson(ctx, params)
 	return res, err
@@ -14634,7 +13835,7 @@ func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) 
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("startLesson"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.URLTemplateKey.String("/lessons/{id}/start"),
+		semconv.URLTemplateKey.String("/api/lessons/{id}/start"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14668,7 +13869,7 @@ func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [3]string
-	pathParts[0] = "/lessons/"
+	pathParts[0] = "/api/lessons/"
 	{
 		// Encode "id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -14721,19 +13922,20 @@ func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) 
 
 // SwitchLocale invokes switchLocale operation.
 //
-// Persist the preferred UI locale on the session.
+// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+// the locale it redirects to. The page navigates itself afterwards.
 //
-// GET /locale/switch
-func (c *Client) SwitchLocale(ctx context.Context, params SwitchLocaleParams) error {
-	_, err := c.sendSwitchLocale(ctx, params)
-	return err
+// GET /api/locale/switch
+func (c *Client) SwitchLocale(ctx context.Context, params SwitchLocaleParams) (*SwitchLocaleNoContent, error) {
+	res, err := c.sendSwitchLocale(ctx, params)
+	return res, err
 }
 
 func (c *Client) sendSwitchLocale(ctx context.Context, params SwitchLocaleParams) (res *SwitchLocaleNoContent, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("switchLocale"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.URLTemplateKey.String("/locale/switch"),
+		semconv.URLTemplateKey.String("/api/locale/switch"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14767,7 +13969,7 @@ func (c *Client) sendSwitchLocale(ctx context.Context, params SwitchLocaleParams
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/locale/switch"
+	pathParts[0] = "/api/locale/switch"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
@@ -14821,7 +14023,7 @@ func (c *Client) sendSwitchLocale(ctx context.Context, params SwitchLocaleParams
 //
 // Set a new password using a reset token; signs the user in.
 //
-// PATCH /password/{token}
+// PATCH /api/password/{token}
 func (c *Client) UpdatePassword(ctx context.Context, request *ResetPasswordInput, params UpdatePasswordParams) (UpdatePasswordRes, error) {
 	res, err := c.sendUpdatePassword(ctx, request, params)
 	return res, err
@@ -14831,7 +14033,7 @@ func (c *Client) sendUpdatePassword(ctx context.Context, request *ResetPasswordI
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("updatePassword"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
-		semconv.URLTemplateKey.String("/password/{token}"),
+		semconv.URLTemplateKey.String("/api/password/{token}"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14865,7 +14067,7 @@ func (c *Client) sendUpdatePassword(ctx context.Context, request *ResetPasswordI
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/password/"
+	pathParts[0] = "/api/password/"
 	{
 		// Encode "token" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -14922,7 +14124,7 @@ func (c *Client) sendUpdatePassword(ctx context.Context, request *ResetPasswordI
 //
 // Update the current user's profile.
 //
-// PATCH /account/profile
+// PATCH /api/account/profile
 func (c *Client) UpdateProfile(ctx context.Context, request *ProfileInput) (UpdateProfileRes, error) {
 	res, err := c.sendUpdateProfile(ctx, request)
 	return res, err
@@ -14932,7 +14134,7 @@ func (c *Client) sendUpdateProfile(ctx context.Context, request *ProfileInput) (
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("updateProfile"),
 		semconv.HTTPRequestMethodKey.String("PATCH"),
-		semconv.URLTemplateKey.String("/account/profile"),
+		semconv.URLTemplateKey.String("/api/account/profile"),
 	}
 	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
 
@@ -14966,7 +14168,7 @@ func (c *Client) sendUpdateProfile(ctx context.Context, request *ProfileInput) (
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/account/profile"
+	pathParts[0] = "/api/account/profile"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"

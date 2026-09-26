@@ -33,6 +33,7 @@ import {
   IconSun,
   IconTarget,
   IconUser,
+  IconUserCog,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
@@ -44,15 +45,16 @@ import {
   getCurrentUserQueryKey,
   listCoursesOptions,
 } from "@/client/@tanstack/react-query.gen";
-import type { CourseCatalogItem, User } from "@/client/types.gen";
+import { switchLocale } from "@/client/sdk.gen";
+import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
 
 // Header, ported from legacy NavbarBlock. Data comes from the hey-api generated
 // Query hooks — the current user from `GET /me` (getCurrentUserOptions) and the
 // courses menu from `listCourses` — never hand-written fetches. Navigation uses
 // the typed TanStack Router `Link`; the optional `{-$locale}` prefix is
 // preserved automatically, so links carry no explicit locale. Links point only
-// at routes that exist today; auth-gated destinations (profile, dashboard) are
-// added as those pages are ported.
+// at routes that exist today; auth-gated destinations (dashboard) are added as
+// those pages are ported.
 export default function Header() {
   const { i18n } = useTranslation();
   const [opened, { toggle }] = useDisclosure();
@@ -216,6 +218,12 @@ function AuthLinks() {
             </Text>
           </Menu.Label>
         )}
+        <Menu.Item
+          leftSection={<IconUserCog size={14} />}
+          renderRoot={(props) => <Link to="/{-$locale}/account/profile/edit" {...props} />}
+        >
+          {t(($) => $.layouts.shared.nav.profile)}
+        </Menu.Item>
         <Menu.Item leftSection={<IconLogout2 size={14} />} onClick={() => logout({})}>
           {t(($) => $.layouts.shared.nav.sign_out)}
         </Menu.Item>
@@ -224,9 +232,12 @@ function AuthLinks() {
   );
 }
 
-// Locale switcher. The locale is a pure URL prefix (`/`, `/ru`, `/es`), so we
-// rewrite the current pathname and navigate with a plain anchor, preserving the
-// page the user is on (the same behaviour legacy's `switch_locale_path` gave).
+// Locale switcher (legacy LocalesController#switch). The choice is stored
+// first — on the signed-in user, and in the cookie the site root reads — then
+// the browser loads the same page, query included, under the new prefix (`/`,
+// `/ru`, `/es`), as legacy's redirect did. The load happens even if storing
+// failed: legacy redirected whatever happened. The href stays on the anchor so
+// the menu is still a set of links to the other locales.
 const LOCALES = [
   { code: "en", label: "English" },
   { code: "ru", label: "Русский" },
@@ -235,11 +246,17 @@ const LOCALES = [
 
 function LocaleSwitcher() {
   const { i18n } = useTranslation();
-  const { pathname } = useLocation();
+  const { pathname, searchStr } = useLocation();
 
   // Strip any existing locale prefix; `en` is served unprefixed.
   const base = pathname.replace(/^\/(ru|es)(?=\/|$)/, "") || "/";
-  const hrefFor = (code: string) => (code === "en" ? base : `/${code}${base === "/" ? "" : base}`);
+  const hrefFor = (code: Locale) =>
+    (code === "en" ? base : `/${code}${base === "/" ? "" : base}`) + searchStr;
+  const switchTo = (code: Locale) => {
+    void switchLocale({ query: { locale: code } }).finally(() =>
+      window.location.assign(hrefFor(code)),
+    );
+  };
 
   const current = LOCALES.find((l) => l.code === i18n.language) ?? LOCALES[0];
 
@@ -255,7 +272,15 @@ function LocaleSwitcher() {
       </Menu.Target>
       <Menu.Dropdown>
         {LOCALES.map((locale) => (
-          <Menu.Item key={locale.code} component="a" href={hrefFor(locale.code)}>
+          <Menu.Item
+            key={locale.code}
+            component="a"
+            href={hrefFor(locale.code)}
+            onClick={(event) => {
+              event.preventDefault();
+              switchTo(locale.code);
+            }}
+          >
             {locale.label}
           </Menu.Item>
         ))}

@@ -1,0 +1,87 @@
+# Values for the Go stack. Secrets are not here: `helm secrets` layers the
+# sops-encrypted legacy/k8s/secrets.yaml on top (see k8s/Makefile), and its
+# secrets.code_basics.env map becomes the Opaque Secret every Go pod reads with
+# envFrom. Plain settings live below and render as `env:`, which wins over a
+# stale key of the same name left in the secret.
+
+images:
+  # Published by .github/workflows/release-please.yml, tagged with the chart
+  # version. The docker-config pull secret must carry ghcr.io credentials.
+  go:
+    repository: ghcr.io/hexlet-basics/hexlet-basics
+  web:
+    repository: ghcr.io/hexlet-basics/hexlet-basics-web
+
+# Non-secret environment of every Go process (internal/config). Secret keys
+# the operator must have in secrets.code_basics.env: DATABASE_URL, JWT_SECRET,
+# EMAIL_TOKEN_SECRET, MAIL_POSTBOX_ACCESS_KEY_ID, MAIL_POSTBOX_SECRET_ACCESS_KEY,
+# BLOB_BUCKET_URL, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION,
+# GITHUB_WEBHOOK_SECRET, GITHUB_TOKEN, OPENAI_ACCESS_TOKEN, AMOCRM_BASE_URL,
+# AMOCRM_AUTH_TOKEN, YM_COUNTER, SENTRY_DSN, SENTRY_API_TOKEN (notify job).
+goEnv:
+  # `production` also switches on config.validateProduction: the committed
+  # development JWT/email secrets are refused and a Postbox key is required.
+  SENTRY_ENVIRONMENT: production
+  APP_HOST: code-basics.com
+  SITE_URL: https://code-basics.com
+  # Origin only: the blob read route already carries the /api prefix.
+  PUBLIC_URL: https://code-basics.com
+  OPENAI_MODEL: gpt-4o-mini
+  MAIL_FROM: support@hexlet.io
+  MAIL_POSTBOX_ENDPOINT: https://postbox.cloud.yandex.net
+  MAIL_POSTBOX_REGION: ru-central1
+
+# Exercise runner settings, read only by api-check (ADR-0013). Everything else
+# keeps the config defaults.
+checkEnv:
+  # Legacy production graded against the `release` tag of each exercises
+  # image, not `latest` (internal/config CheckConfig.ImageTag).
+  CHECK_IMAGE_TAG: release
+  DOCKER_HOST: unix:///var/run/docker.sock
+
+# Gid of the `docker` group on the role=service nodes that own the socket. The
+# legacy image hard-coded the same 999 (groupadd --gid 999 docker).
+dockerGroupId: 999
+
+api:
+  replicas: 2
+web:
+  replicas: 2
+
+migrate:
+  # One-off first run against the schema Rails left behind: atlas records the
+  # baseline as applied without executing it (ADR-0015, #796). Set it for the
+  # cutover upgrade only, e.g. `--set migrate.baseline=20260727053619`, then
+  # leave it empty so later releases run a plain `migrate apply`.
+  baseline: ""
+
+# ingress: Yandex Cloud ALB (ingress.yaml).
+ingress:
+  # Provider identifiers of the existing load balancer, carried over from the
+  # legacy chart so cutover changes the application and not the address.
+  externalIp: "89.169.182.43"
+  subnets: "e2lfircmrq1atgmlg7ib"
+  groupName: "codebasics-ingress-group"
+  # TLS certificate in YC Certificate Manager.
+  tlsSecret: "yc-certmgr-cert-id-fpqgjl11q387a86d42kn"
+  tlsHosts:
+    - "code-basics.com"
+  # full: /api (Go) + the lesson check (api-check) + / (web); otherwise only /
+  # (web). code-basics.com repeats *.code-basics.com on purpose: without its
+  # own entry YC ALB creates no TLS route for it.
+  hosts:
+    - host: "*.code-basics.com"
+      full: true
+    - host: "code-basics.ru"
+      full: false
+    - host: "code-basics.com"
+      full: true
+  # Host of the GitHub webhook alias (/webhooks/github -> /api/webhooks/github).
+  webhookHost: "code-basics.com"
+
+# sentry registers the deploy (notify.job.yaml).
+sentry:
+  image: getsentry/sentry-cli:2
+  url: https://sentry.hexlet.io/
+  org: hexlet
+  environment: production

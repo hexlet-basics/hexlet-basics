@@ -352,13 +352,6 @@ model UserCrud {
   admin: boolean | null;
 }
 
-/** A registered passkey/WebAuthn credential (legacy: `UserCredential`). */
-model UserCredential {
-  id: int32;
-  nickname: string | null;
-  createdAt: utcDateTime;
-}
-
 /** A staff role (legacy: `StaffRole`). */
 model StaffRole {
   id: int32;

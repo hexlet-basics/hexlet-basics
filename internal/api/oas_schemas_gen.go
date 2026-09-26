@@ -4,6 +4,7 @@ package api
 
 import (
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -3666,11 +3667,6 @@ type CreatePasswordReminderNoContent struct{}
 
 func (*CreatePasswordReminderNoContent) createPasswordReminderRes() {}
 
-// CreatePhoneAuthNoContent is response for CreatePhoneAuth operation.
-type CreatePhoneAuthNoContent struct{}
-
-func (*CreatePhoneAuthNoContent) createPhoneAuthRes() {}
-
 // The current user resolved from the session cookie (null when anonymous).
 // Ref: #/components/schemas/CurrentUser
 type CurrentUser struct {
@@ -3688,14 +3684,21 @@ func (s *CurrentUser) SetUser(val NilUser) {
 }
 
 // DeleteAccountNoContent is response for DeleteAccount operation.
-type DeleteAccountNoContent struct{}
+type DeleteAccountNoContent struct {
+	SetCookie []string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *DeleteAccountNoContent) GetSetCookie() []string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *DeleteAccountNoContent) SetSetCookie(val []string) {
+	s.SetCookie = val
+}
 
 func (*DeleteAccountNoContent) deleteAccountRes() {}
-
-// DeletePasskeyNoContent is response for DeletePasskey operation.
-type DeletePasskeyNoContent struct{}
-
-func (*DeletePasskeyNoContent) deletePasskeyRes() {}
 
 // DeleteSessionNoContent is response for DeleteSession operation.
 type DeleteSessionNoContent struct {
@@ -3854,6 +3857,117 @@ func (s *EnrollmentState) UnmarshalText(data []byte) error {
 	default:
 		return errors.Errorf("invalid value: %q", data)
 	}
+}
+
+// The first visit's traffic source, as recorded by the browser.
+// Ref: #/components/schemas/FirstVisit
+type FirstVisit struct {
+	UtmSource   NilString `json:"utmSource"`
+	UtmMedium   NilString `json:"utmMedium"`
+	UtmCampaign NilString `json:"utmCampaign"`
+	UtmContent  NilString `json:"utmContent"`
+	UtmTerm     NilString `json:"utmTerm"`
+	// The full URL the visit landed on, query string included.
+	LandingPage NilString `json:"landingPage"`
+	Referrer    NilString `json:"referrer"`
+}
+
+// GetUtmSource returns the value of UtmSource.
+func (s *FirstVisit) GetUtmSource() NilString {
+	return s.UtmSource
+}
+
+// GetUtmMedium returns the value of UtmMedium.
+func (s *FirstVisit) GetUtmMedium() NilString {
+	return s.UtmMedium
+}
+
+// GetUtmCampaign returns the value of UtmCampaign.
+func (s *FirstVisit) GetUtmCampaign() NilString {
+	return s.UtmCampaign
+}
+
+// GetUtmContent returns the value of UtmContent.
+func (s *FirstVisit) GetUtmContent() NilString {
+	return s.UtmContent
+}
+
+// GetUtmTerm returns the value of UtmTerm.
+func (s *FirstVisit) GetUtmTerm() NilString {
+	return s.UtmTerm
+}
+
+// GetLandingPage returns the value of LandingPage.
+func (s *FirstVisit) GetLandingPage() NilString {
+	return s.LandingPage
+}
+
+// GetReferrer returns the value of Referrer.
+func (s *FirstVisit) GetReferrer() NilString {
+	return s.Referrer
+}
+
+// SetUtmSource sets the value of UtmSource.
+func (s *FirstVisit) SetUtmSource(val NilString) {
+	s.UtmSource = val
+}
+
+// SetUtmMedium sets the value of UtmMedium.
+func (s *FirstVisit) SetUtmMedium(val NilString) {
+	s.UtmMedium = val
+}
+
+// SetUtmCampaign sets the value of UtmCampaign.
+func (s *FirstVisit) SetUtmCampaign(val NilString) {
+	s.UtmCampaign = val
+}
+
+// SetUtmContent sets the value of UtmContent.
+func (s *FirstVisit) SetUtmContent(val NilString) {
+	s.UtmContent = val
+}
+
+// SetUtmTerm sets the value of UtmTerm.
+func (s *FirstVisit) SetUtmTerm(val NilString) {
+	s.UtmTerm = val
+}
+
+// SetLandingPage sets the value of LandingPage.
+func (s *FirstVisit) SetLandingPage(val NilString) {
+	s.LandingPage = val
+}
+
+// SetReferrer sets the value of Referrer.
+func (s *FirstVisit) SetReferrer(val NilString) {
+	s.Referrer = val
+}
+
+type GetYandexCoursesFeedOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetYandexCoursesFeedOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+type GetYandexCoursesFeedXmlOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s GetYandexCoursesFeedXmlOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
 }
 
 // Publication state shared by landing pages.
@@ -4029,6 +4143,10 @@ type LeadInput struct {
 	ContactMethod LeadInputContactMethod `json:"contactMethod"`
 	ContactValue  string                 `json:"contactValue"`
 	YmClientId    NilString              `json:"ymClientId"`
+	// Where the visitor first came from. Legacy read this off ahoy's visit; ahoy is not ported (ADR-0015),
+	// so the frontend keeps the first visit in a cookie and sends it with the form. Absent when the
+	// browser kept no cookie (blocked or cleared).
+	FirstVisit OptNilFirstVisit `json:"firstVisit"`
 }
 
 // GetContactMethod returns the value of ContactMethod.
@@ -4046,6 +4164,11 @@ func (s *LeadInput) GetYmClientId() NilString {
 	return s.YmClientId
 }
 
+// GetFirstVisit returns the value of FirstVisit.
+func (s *LeadInput) GetFirstVisit() OptNilFirstVisit {
+	return s.FirstVisit
+}
+
 // SetContactMethod sets the value of ContactMethod.
 func (s *LeadInput) SetContactMethod(val LeadInputContactMethod) {
 	s.ContactMethod = val
@@ -4059,6 +4182,11 @@ func (s *LeadInput) SetContactValue(val string) {
 // SetYmClientId sets the value of YmClientId.
 func (s *LeadInput) SetYmClientId(val NilString) {
 	s.YmClientId = val
+}
+
+// SetFirstVisit sets the value of FirstVisit.
+func (s *LeadInput) SetFirstVisit(val OptNilFirstVisit) {
+	s.FirstVisit = val
 }
 
 type LeadInputContactMethod string
@@ -4689,10 +4817,6 @@ func (*LessonProgressPage) adminListLessonProgressRes() {}
 type ListAssistantMessagesOKApplicationJSON []LessonAssistantMessage
 
 func (*ListAssistantMessagesOKApplicationJSON) listAssistantMessagesRes() {}
-
-type ListPasskeysOKApplicationJSON []UserCredential
-
-func (*ListPasskeysOKApplicationJSON) listPasskeysRes() {}
 
 type ListQuerySortOrder string
 
@@ -5423,6 +5547,51 @@ func (o NilLandingPageState) Or(d LandingPageState) LandingPageState {
 	return d
 }
 
+// NewNilProfileName returns new NilProfileName with value set to v.
+func NewNilProfileName(v ProfileName) NilProfileName {
+	return NilProfileName{
+		Value: v,
+	}
+}
+
+// NilProfileName is nullable ProfileName.
+type NilProfileName struct {
+	Value ProfileName
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilProfileName) SetTo(v ProfileName) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilProfileName) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilProfileName) SetToNull() {
+	o.Null = true
+	var v ProfileName
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilProfileName) Get() (v ProfileName, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilProfileName) Or(d ProfileName) ProfileName {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilReviewLocale returns new NilReviewLocale with value set to v.
 func NewNilReviewLocale(v ReviewLocale) NilReviewLocale {
 	return NilReviewLocale{
@@ -5625,12 +5794,10 @@ func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) checkLessonRes()              {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
 func (*NotFoundError) consumeMagicLinkRes()         {}
-func (*NotFoundError) deletePasskeyRes()            {}
 func (*NotFoundError) getBlogPostRes()              {}
 func (*NotFoundError) getCourseLessonRes()          {}
 func (*NotFoundError) getCourseRes()                {}
 func (*NotFoundError) getNextBlogPostRes()          {}
-func (*NotFoundError) getPageRes()                  {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
 func (*NotFoundError) startLessonRes()              {}
@@ -5728,6 +5895,74 @@ func (o OptListQuerySortOrder) Or(d ListQuerySortOrder) ListQuerySortOrder {
 	return d
 }
 
+// NewOptNilFirstVisit returns new OptNilFirstVisit with value set to v.
+func NewOptNilFirstVisit(v FirstVisit) OptNilFirstVisit {
+	return OptNilFirstVisit{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilFirstVisit is optional nullable FirstVisit.
+type OptNilFirstVisit struct {
+	Value FirstVisit
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilFirstVisit was set.
+func (o OptNilFirstVisit) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilFirstVisit) Reset() {
+	var v FirstVisit
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilFirstVisit) SetTo(v FirstVisit) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilFirstVisit) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilFirstVisit) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v FirstVisit
+	o.Value = v
+}
+
+// IsEmpty returns true if the field was omitted from the payload (not Set and not Null).
+func (o OptNilFirstVisit) IsEmpty() bool {
+	return !o.Set && !o.Null
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilFirstVisit) Get() (v FirstVisit, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilFirstVisit) Or(d FirstVisit) FirstVisit {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -5772,109 +6007,6 @@ func (o OptString) Or(d string) string {
 		return v
 	}
 	return d
-}
-
-// A static content page (about, authors, privacy, tos, cookie).
-// Ref: #/components/schemas/PageContent
-type PageContent struct {
-	Slug     string `json:"slug"`
-	Title    string `json:"title"`
-	BodyHtml string `json:"bodyHtml"`
-}
-
-// GetSlug returns the value of Slug.
-func (s *PageContent) GetSlug() string {
-	return s.Slug
-}
-
-// GetTitle returns the value of Title.
-func (s *PageContent) GetTitle() string {
-	return s.Title
-}
-
-// GetBodyHtml returns the value of BodyHtml.
-func (s *PageContent) GetBodyHtml() string {
-	return s.BodyHtml
-}
-
-// SetSlug sets the value of Slug.
-func (s *PageContent) SetSlug(val string) {
-	s.Slug = val
-}
-
-// SetTitle sets the value of Title.
-func (s *PageContent) SetTitle(val string) {
-	s.Title = val
-}
-
-// SetBodyHtml sets the value of BodyHtml.
-func (s *PageContent) SetBodyHtml(val string) {
-	s.BodyHtml = val
-}
-
-func (*PageContent) getPageRes() {}
-
-// Ref: #/components/schemas/PasskeyAssertionInput
-type PasskeyAssertionInput struct {
-	// JSON-encoded assertion credential from `navigator.credentials.get`.
-	Credential string `json:"credential"`
-}
-
-// GetCredential returns the value of Credential.
-func (s *PasskeyAssertionInput) GetCredential() string {
-	return s.Credential
-}
-
-// SetCredential sets the value of Credential.
-func (s *PasskeyAssertionInput) SetCredential(val string) {
-	s.Credential = val
-}
-
-// A WebAuthn ceremony payload. The challenge/options and the client response are opaque JSON owned by
-// `go-webauthn`; the contract carries them as strings so the browser API round-trips them verbatim.
-// Ref: #/components/schemas/PasskeyChallenge
-type PasskeyChallenge struct {
-	// JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
-	Options string `json:"options"`
-}
-
-// GetOptions returns the value of Options.
-func (s *PasskeyChallenge) GetOptions() string {
-	return s.Options
-}
-
-// SetOptions sets the value of Options.
-func (s *PasskeyChallenge) SetOptions(val string) {
-	s.Options = val
-}
-
-func (*PasskeyChallenge) newPasskeyRes() {}
-
-// Ref: #/components/schemas/PasskeyRegistrationInput
-type PasskeyRegistrationInput struct {
-	// JSON-encoded registration credential from `navigator.credentials.create`.
-	Credential string    `json:"credential"`
-	Nickname   NilString `json:"nickname"`
-}
-
-// GetCredential returns the value of Credential.
-func (s *PasskeyRegistrationInput) GetCredential() string {
-	return s.Credential
-}
-
-// GetNickname returns the value of Nickname.
-func (s *PasskeyRegistrationInput) GetNickname() NilString {
-	return s.Nickname
-}
-
-// SetCredential sets the value of Credential.
-func (s *PasskeyRegistrationInput) SetCredential(val string) {
-	s.Credential = val
-}
-
-// SetNickname sets the value of Nickname.
-func (s *PasskeyRegistrationInput) SetNickname(val NilString) {
-	s.Nickname = val
 }
 
 // Admin resources a staff role can be granted permissions on.
@@ -5983,47 +6115,6 @@ func (s *PermissionResource) UnmarshalText(data []byte) error {
 	}
 }
 
-// Ref: #/components/schemas/PhoneConfirmInput
-type PhoneConfirmInput struct {
-	Phone string `json:"phone"`
-	Code  string `json:"code"`
-}
-
-// GetPhone returns the value of Phone.
-func (s *PhoneConfirmInput) GetPhone() string {
-	return s.Phone
-}
-
-// GetCode returns the value of Code.
-func (s *PhoneConfirmInput) GetCode() string {
-	return s.Code
-}
-
-// SetPhone sets the value of Phone.
-func (s *PhoneConfirmInput) SetPhone(val string) {
-	s.Phone = val
-}
-
-// SetCode sets the value of Code.
-func (s *PhoneConfirmInput) SetCode(val string) {
-	s.Code = val
-}
-
-// Ref: #/components/schemas/PhoneInput
-type PhoneInput struct {
-	Phone string `json:"phone"`
-}
-
-// GetPhone returns the value of Phone.
-func (s *PhoneInput) GetPhone() string {
-	return s.Phone
-}
-
-// SetPhone sets the value of Phone.
-func (s *PhoneInput) SetPhone(val string) {
-	s.Phone = val
-}
-
 // RFC 9457 problem details returned by the transport when request decoding, authorization,
 // persistence, or an unexpected server failure prevents an operation from producing its declared
 // domain response.
@@ -6095,16 +6186,12 @@ func (*ProblemDetails) checkLessonRes()            {}
 func (*ProblemDetails) createAssistantMessageRes() {}
 func (*ProblemDetails) createBookRequestRes()      {}
 func (*ProblemDetails) createLeadRes()             {}
-func (*ProblemDetails) createPasskeyRes()          {}
 func (*ProblemDetails) deleteAccountRes()          {}
-func (*ProblemDetails) deletePasskeyRes()          {}
 func (*ProblemDetails) deleteSessionRes()          {}
 func (*ProblemDetails) getMyDashboardRes()         {}
 func (*ProblemDetails) getProfileRes()             {}
 func (*ProblemDetails) likeBlogPostRes()           {}
 func (*ProblemDetails) listAssistantMessagesRes()  {}
-func (*ProblemDetails) listPasskeysRes()           {}
-func (*ProblemDetails) newPasskeyRes()             {}
 func (*ProblemDetails) startLessonRes()            {}
 func (*ProblemDetails) updateProfileRes()          {}
 
@@ -6137,29 +6224,31 @@ func (s *ProblemDetailsStatusCode) SetResponse(val ProblemDetails) {
 // Profile edit form (legacy: `UserProfileForm`).
 // Ref: #/components/schemas/ProfileInput
 type ProfileInput struct {
-	FirstName NilString `json:"firstName"`
-	LastName  NilString `json:"lastName"`
+	FirstName NilProfileName `json:"firstName"`
+	LastName  NilProfileName `json:"lastName"`
 }
 
 // GetFirstName returns the value of FirstName.
-func (s *ProfileInput) GetFirstName() NilString {
+func (s *ProfileInput) GetFirstName() NilProfileName {
 	return s.FirstName
 }
 
 // GetLastName returns the value of LastName.
-func (s *ProfileInput) GetLastName() NilString {
+func (s *ProfileInput) GetLastName() NilProfileName {
 	return s.LastName
 }
 
 // SetFirstName sets the value of FirstName.
-func (s *ProfileInput) SetFirstName(val NilString) {
+func (s *ProfileInput) SetFirstName(val NilProfileName) {
 	s.FirstName = val
 }
 
 // SetLastName sets the value of LastName.
-func (s *ProfileInput) SetLastName(val NilString) {
+func (s *ProfileInput) SetLastName(val NilProfileName) {
 	s.LastName = val
 }
+
+type ProfileName string
 
 // A Q&A entry attached to a category or landing page (legacy QnA item).
 // Ref: #/components/schemas/QnaItem
@@ -7434,7 +7523,19 @@ func (s *StaffRolePermission) SetCanDestroy(val bool) {
 }
 
 // SwitchLocaleNoContent is response for SwitchLocale operation.
-type SwitchLocaleNoContent struct{}
+type SwitchLocaleNoContent struct {
+	SetCookie []string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *SwitchLocaleNoContent) GetSetCookie() []string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *SwitchLocaleNoContent) SetSetCookie(val []string) {
+	s.SetCookie = val
+}
 
 // A user (legacy: `User`). Passwords are never part of a response.
 // Ref: #/components/schemas/User
@@ -7562,50 +7663,8 @@ func (s *User) SetType(val UserType) {
 	s.Type = val
 }
 
-func (*User) confirmPhoneAuthRes()     {}
-func (*User) createPasskeySessionRes() {}
-func (*User) getProfileRes()           {}
-func (*User) updateProfileRes()        {}
-
-// A registered passkey/WebAuthn credential (legacy: `UserCredential`).
-// Ref: #/components/schemas/UserCredential
-type UserCredential struct {
-	ID        int32     `json:"id"`
-	Nickname  NilString `json:"nickname"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-// GetID returns the value of ID.
-func (s *UserCredential) GetID() int32 {
-	return s.ID
-}
-
-// GetNickname returns the value of Nickname.
-func (s *UserCredential) GetNickname() NilString {
-	return s.Nickname
-}
-
-// GetCreatedAt returns the value of CreatedAt.
-func (s *UserCredential) GetCreatedAt() time.Time {
-	return s.CreatedAt
-}
-
-// SetID sets the value of ID.
-func (s *UserCredential) SetID(val int32) {
-	s.ID = val
-}
-
-// SetNickname sets the value of Nickname.
-func (s *UserCredential) SetNickname(val NilString) {
-	s.Nickname = val
-}
-
-// SetCreatedAt sets the value of CreatedAt.
-func (s *UserCredential) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
-}
-
-func (*UserCredential) createPasskeyRes() {}
+func (*User) getProfileRes()    {}
+func (*User) updateProfileRes() {}
 
 // A user row as shown in admin lists/forms (legacy: `UserCrud`).
 // Ref: #/components/schemas/UserCrud
@@ -7890,14 +7949,10 @@ func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUploadAttachmentRes()          {}
 func (*ValidationError) checkLessonRes()                    {}
-func (*ValidationError) confirmPhoneAuthRes()               {}
 func (*ValidationError) createBookRequestRes()              {}
 func (*ValidationError) createLeadRes()                     {}
 func (*ValidationError) createMagicLinkRes()                {}
-func (*ValidationError) createPasskeyRes()                  {}
-func (*ValidationError) createPasskeySessionRes()           {}
 func (*ValidationError) createPasswordReminderRes()         {}
-func (*ValidationError) createPhoneAuthRes()                {}
 func (*ValidationError) createSessionRes()                  {}
 func (*ValidationError) createUserRes()                     {}
 func (*ValidationError) updatePasswordRes()                 {}

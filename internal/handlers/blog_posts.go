@@ -19,7 +19,7 @@ import (
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
 // set action. `rich_body` is trusted editor HTML stored and returned exactly as
 // given (no ActionText compatibility layer). The cover remains the single
-// ActiveStorage blob served through `/storage/{key}` on read; the input's
+// ActiveStorage blob served through `/api/storage/{key}` on read; the input's
 // coverAttachmentId is deferred until blob covers land (same deferral as the
 // course cover).
 
@@ -313,13 +313,13 @@ func nilBlogPostState(v *string) api.NilBlogPostState {
 }
 
 // coverVariant builds the (nullable) cover URL from a blob key. The bytes are
-// served by this server's own `/storage/{key}` path (PublicURL origin); the same
+// served by this server's own `/api/storage/{key}` path (PublicURL origin); the same
 // URL fills all three variant fields until image variants land (ADR-0005).
 func (s *Server) coverVariant(key string) api.NilString {
 	if key == "" {
 		return api.NilString{Null: true}
 	}
-	return api.NewNilString(s.cfg.PublicURL + "/storage/" + key)
+	return api.NewNilString(s.cfg.PublicURL + "/api/storage/" + key)
 }
 
 // blogPostURL mirrors legacy blog_post_url(slug, suffix): the canonical site URL

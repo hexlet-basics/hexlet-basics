@@ -27,7 +27,7 @@ func newWebhookHandler(t *testing.T, enq *testsupport.RecordingEnqueuer, secret 
 }
 
 func rawWebhookRequest(event, body, signature string) *http.Request {
-	req := httptest.NewRequest(http.MethodPost, "/webhooks/github", strings.NewReader(body))
+	req := httptest.NewRequest(http.MethodPost, "/api/webhooks/github", strings.NewReader(body))
 	req.Header.Set("X-GitHub-Event", event)
 	if signature != "" {
 		req.Header.Set("X-Hub-Signature-256", signature)
@@ -35,7 +35,7 @@ func rawWebhookRequest(event, body, signature string) *http.Request {
 	return req
 }
 
-// signedRequest builds a POST /webhooks/github request for the given event and
+// signedRequest builds a POST /api/webhooks/github request for the given event and
 // JSON payload, signed with webhookSecret exactly as GitHub would.
 func signedRequest(t *testing.T, event string, payload any) *http.Request {
 	t.Helper()

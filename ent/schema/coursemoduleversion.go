@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -28,6 +29,14 @@ func (CourseModuleVersion) Fields() []ent.Field {
 		field.Int("course_id").StorageKey("language_id"),
 		field.Int("course_version_id").StorageKey("language_version_id"),
 		field.Int("module_id"),
+	}
+}
+
+// Edges exposes the lesson versions a module version groups, owned by their
+// existing module_version_id column (no migration).
+func (CourseModuleVersion) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("lesson_versions", CourseLessonVersion.Type),
 	}
 }
 

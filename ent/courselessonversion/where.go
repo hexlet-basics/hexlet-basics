@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -694,26 +695,6 @@ func LessonIDNotIn(vs ...int) predicate.CourseLessonVersion {
 	return predicate.CourseLessonVersion(sql.FieldNotIn(FieldLessonID, vs...))
 }
 
-// LessonIDGT applies the GT predicate on the "lesson_id" field.
-func LessonIDGT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGT(FieldLessonID, v))
-}
-
-// LessonIDGTE applies the GTE predicate on the "lesson_id" field.
-func LessonIDGTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGTE(FieldLessonID, v))
-}
-
-// LessonIDLT applies the LT predicate on the "lesson_id" field.
-func LessonIDLT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLT(FieldLessonID, v))
-}
-
-// LessonIDLTE applies the LTE predicate on the "lesson_id" field.
-func LessonIDLTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLTE(FieldLessonID, v))
-}
-
 // ModuleVersionIDEQ applies the EQ predicate on the "module_version_id" field.
 func ModuleVersionIDEQ(v int) predicate.CourseLessonVersion {
 	return predicate.CourseLessonVersion(sql.FieldEQ(FieldModuleVersionID, v))
@@ -734,24 +715,50 @@ func ModuleVersionIDNotIn(vs ...int) predicate.CourseLessonVersion {
 	return predicate.CourseLessonVersion(sql.FieldNotIn(FieldModuleVersionID, vs...))
 }
 
-// ModuleVersionIDGT applies the GT predicate on the "module_version_id" field.
-func ModuleVersionIDGT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGT(FieldModuleVersionID, v))
+// HasModuleVersion applies the HasEdge predicate on the "module_version" edge.
+func HasModuleVersion() predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ModuleVersionTable, ModuleVersionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// ModuleVersionIDGTE applies the GTE predicate on the "module_version_id" field.
-func ModuleVersionIDGTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldGTE(FieldModuleVersionID, v))
+// HasModuleVersionWith applies the HasEdge predicate on the "module_version" edge with a given conditions (other predicates).
+func HasModuleVersionWith(preds ...predicate.CourseModuleVersion) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(func(s *sql.Selector) {
+		step := newModuleVersionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
-// ModuleVersionIDLT applies the LT predicate on the "module_version_id" field.
-func ModuleVersionIDLT(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLT(FieldModuleVersionID, v))
+// HasLesson applies the HasEdge predicate on the "lesson" edge.
+func HasLesson() predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// ModuleVersionIDLTE applies the LTE predicate on the "module_version_id" field.
-func ModuleVersionIDLTE(v int) predicate.CourseLessonVersion {
-	return predicate.CourseLessonVersion(sql.FieldLTE(FieldModuleVersionID, v))
+// HasLessonWith applies the HasEdge predicate on the "lesson" edge with a given conditions (other predicates).
+func HasLessonWith(preds ...predicate.CourseLesson) predicate.CourseLessonVersion {
+	return predicate.CourseLessonVersion(func(s *sql.Selector) {
+		step := newLessonStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.
