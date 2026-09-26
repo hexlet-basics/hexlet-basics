@@ -981,7 +981,7 @@ export default {
       select: {
         prompt: "Please select",
       },
-      send: "Отправить",
+      send: "Send",
       submit: {
         create: "Create",
         q: {
@@ -1087,17 +1087,19 @@ export default {
     courses: {
       lessons: {
         show: {
+          assistant: "Assistant",
           autocomplete_hint:
             "The editor suggests commands as you type. Press Tab to accept a suggestion and use the ↑ and ↓ keys to move through the list.",
           breadcrumb: "breadcrumb",
           chat: {
             community: "Живые люди",
             disabled_html:
-              'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
+              "You have reached today's message limit, so the chat is paused until tomorrow. Our <a>Telegram community</a> is around the clock, come join :)",
             guest:
               "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
             hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
             not_available: "Our AI assistant will be here soon — we're setting things up right now",
+            question: "Your question",
           },
           common_questions: [
             {
