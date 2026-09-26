@@ -273,7 +273,7 @@ function CourseAction({ view }: { view: CourseView }) {
           <Button
             size="lg"
             component="a"
-            href={`${course.hexletProgramLandingPage}?utm_source=code-basics&utm_medium=referral`}
+            href={programLink(course.hexletProgramLandingPage)}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -296,4 +296,17 @@ function CourseAction({ view }: { view: CourseView }) {
         : t(($) => $.courses.show.continue)}
     </Button>
   );
+}
+
+// The Hexlet program the course leads on to, tagged as a referral from here as
+// legacy tagged it. The parameters are set on the parsed URL rather than
+// appended, so a landing address that already carries a query stays well formed.
+function programLink(landingPage: string): string {
+  // An address the admin form let through malformed is linked as written
+  // rather than taking the page down with it.
+  if (!URL.canParse(landingPage)) return landingPage;
+  const url = new URL(landingPage);
+  url.searchParams.set("utm_source", "code-basics");
+  url.searchParams.set("utm_medium", "referral");
+  return url.toString();
 }

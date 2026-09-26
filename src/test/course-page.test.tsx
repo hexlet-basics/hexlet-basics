@@ -228,6 +228,27 @@ test("a finished learner is told so and offered no lesson", async () => {
   expect(page.getByRole("button", { name: "Try It" }).elements()).toHaveLength(0);
 });
 
+test("a finished learner is pointed on to the Hexlet program, tagged as a referral", async () => {
+  const view = courseView(finished);
+  view.course = { ...course, hexletProgramLandingPage: "https://ru.hexlet.io/programs/js?ref=1" };
+  worker.use(http.get("*/languages/javascript", () => HttpResponse.json(view)));
+
+  await renderCourse(learner);
+
+  await expect.element(page.getByRole("link", { name: "Profession and employment" })).toBeVisible();
+  const href = page
+    .getByRole("link", { name: "Profession and employment" })
+    .element()
+    .getAttribute("href");
+  const url = new URL(href ?? "");
+  expect(`${url.origin}${url.pathname}`).toBe("https://ru.hexlet.io/programs/js");
+  expect(Object.fromEntries(url.searchParams)).toEqual({
+    ref: "1",
+    utm_source: "code-basics",
+    utm_medium: "referral",
+  });
+});
+
 test("a guest carrying progress sees the same page and the same action", async () => {
   // The same payload a signed-in learner gets: the guest's position is the
   // cookie, and the page has no reason to know the difference.
