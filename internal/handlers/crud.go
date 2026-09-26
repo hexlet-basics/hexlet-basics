@@ -31,21 +31,41 @@ func listPage[E any, A any, P any, Q pageQuery[E, Q]](
 	conv func([]E) []A,
 	mkPage func(items []A, total, page, perPage int32) P,
 ) (P, error) {
+	return listPageWith(ctx, pageParam, perPageParam, newQuery,
+		func(_ context.Context, rows []E) ([]A, error) { return conv(rows), nil },
+		mkPage,
+	)
+}
+
+// listPageWith is listPage for a read model that needs more than the rows it
+// is handed — a converter that queries (batched covers, like counts) and so can
+// fail. listPage is the pure-converter case layered on top of it.
+func listPageWith[E any, A any, P any, Q pageQuery[E, Q]](
+	ctx context.Context,
+	pageParam, perPageParam api.OptInt32,
+	newQuery func() Q,
+	conv func(context.Context, []E) ([]A, error),
+	mkPage func(items []A, total, page, perPage int32) P,
+) (P, error) {
+	var zero P
 	page := newPagination(pageParam, perPageParam)
 
 	total, err := newQuery().Count(ctx)
 	if err != nil {
-		var zero P
 		return zero, err
 	}
 
 	rows, err := newQuery().Offset(page.Offset()).Limit(page.Limit()).All(ctx)
 	if err != nil {
-		var zero P
 		return zero, err
 	}
 
-	return mkPage(conv(rows), int32(total), page.Page, page.PerPage), nil
+	items, err := conv(ctx, rows)
+	if err != nil {
+		return zero, err
+	}
+
+	return mkPage(items, int32(total), page.Page, page.PerPage), nil
 }
 
 // listAll runs a non-paginated list (a bare array response, e.g. the nested QnA

@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"gocloud.dev/blob"
 	"gocloud.dev/gcerrors"
 
@@ -71,7 +73,7 @@ type Store struct {
 	publicURL string
 }
 
-// New constructs an asset store. publicURL is the origin serving /storage.
+// New constructs an asset store. publicURL is the origin serving /api/storage.
 func New(db *ent.Client, bucket *blob.Bucket, publicURL string) *Store {
 	return &Store{
 		db:        db,
@@ -125,7 +127,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 
 	return Attachment{
 		ID:          record.ID,
-		URL:         s.publicURL + "/storage/" + url.PathEscape(key),
+		URL:         s.publicURL + "/api/storage/" + url.PathEscape(key),
 		Filename:    record.Filename,
 		ContentType: record.ContentType,
 		ByteSize:    record.ByteSize,
@@ -147,6 +149,44 @@ func (s *Store) Open(ctx context.Context, key string) (*Reader, error) {
 		ContentType:    reader.ContentType(),
 		ModTime:        reader.ModTime(),
 	}, nil
+}
+
+// Delivery is how a browser should receive a stored object it is sent to.
+type Delivery struct {
+	ContentType string
+	// ContentDisposition is the full header value, e.g. `inline; filename="x.pdf"`.
+	ContentDisposition string
+	// Expiry bounds how long the URL stays valid.
+	Expiry time.Duration
+}
+
+// DownloadURL returns where to send a browser for a stored object, so large
+// files go straight from the bucket instead of streaming through the API
+// (ADR-0005). On S3 that is a presigned GET that also overrides the response's
+// Content-Type and Content-Disposition, so the object's own metadata does not
+// decide how the browser shows it. Backends that cannot presign (fileblob
+// without a signer in development, memblob in tests) fall back to the
+// `/api/storage/{key}` read route, which streams the same bytes.
+func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) (string, error) {
+	signed, err := s.bucket.SignedURL(ctx, key, &blob.SignedURLOptions{
+		Method: http.MethodGet,
+		Expiry: delivery.Expiry,
+		BeforeSign: func(as func(any) bool) error {
+			var input *s3.GetObjectInput
+			if as(&input) {
+				input.ResponseContentType = aws.String(delivery.ContentType)
+				input.ResponseContentDisposition = aws.String(delivery.ContentDisposition)
+			}
+			return nil
+		},
+	})
+	if gcerrors.Code(err) == gcerrors.Unimplemented {
+		return s.publicURL + "/api/storage/" + url.PathEscape(key), nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("sign download url for %q: %w", key, err)
+	}
+	return signed, nil
 }
 
 func (s *Store) compensate(key string, cause error) error {

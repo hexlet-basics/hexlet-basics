@@ -21,17 +21,23 @@ type Config struct {
 	// (fileblob) in dev, s3blob in prod, chosen by URL scheme. The dev default
 	// writes under ./storage (created on first open) so uploads survive restarts.
 	BlobBucketURL string `env:"BLOB_BUCKET_URL" envDefault:"file://./storage?create_dir=true"`
-	// AppHost is the public site host used to build canonical page URLs (e.g. a
-	// blog post's `url`), mirroring legacy AppHost.canonical. HTTPS is assumed in
+	// BookBlobKey is the bucket key of the free book's PDF (legacy
+	// public/book.pdf). It is uploaded once, out of band, at cutover rather than
+	// shipped in the image: at ~28 MB it has no place in the repo or the build.
+	BookBlobKey string `env:"BOOK_BLOB_KEY" envDefault:"book.pdf"`
+	// AppHost is the canonical public site host the Yandex feed builds its
+	// absolute URLs on, mirroring legacy AppHost.canonical. HTTPS is assumed in
 	// prod; the default matches the legacy default.
 	AppHost string `env:"APP_HOST" envDefault:"code-basics.com"`
 	// SiteURL is the origin of the public site that emailed links open. Unlike
 	// AppHost (canonical URLs, always the production host) it points at the
 	// local frontend in development, so a developer can follow the link.
 	SiteURL string `env:"SITE_URL" envDefault:"https://code-basics.com"`
-	// PublicURL is this server's own public origin, used to build absolute asset
-	// URLs it serves itself (the `/storage/{key}` blob read path). Separate from
-	// AppHost because the API may sit on a different host than the site.
+	// PublicURL is the public origin this server is reached at, used to build
+	// absolute asset URLs it serves itself (the `/api/storage/{key}` blob read
+	// path). In production it is the site's own origin, since the ingress routes
+	// `/api/*` to Go (ADR-0015); the dev default reaches Go directly. Separate
+	// from AppHost, which is always the canonical production host.
 	PublicURL string `env:"PUBLIC_URL" envDefault:"http://localhost:3001"`
 	// CourseRepoBaseURL is the GitHub org base under which each course's exercises
 	// repo lives: the loader clones `<base>/exercises-<slug>.git`. The default

@@ -352,13 +352,6 @@ model UserCrud {
   admin: boolean | null;
 }
 
-/** A registered passkey/WebAuthn credential (legacy: `UserCredential`). */
-model UserCredential {
-  id: int32;
-  nickname: string | null;
-  createdAt: utcDateTime;
-}
-
 /** A staff role (legacy: `StaffRole`). */
 model StaffRole {
   id: int32;
@@ -421,7 +414,6 @@ model BlogPost {
   description: string | null;
   state: BlogPostState | null;
   locale: string | null;
-  url: string;
   richBodyHtml: string;
   readingTime: int32;
   likesCount: int32;
@@ -451,8 +443,8 @@ model Review {
   state: ReviewState | null;
   locale: ReviewLocale | null;
 
-  /** Pinned reviews sort to the top of the public list. Part of the read model
-      so the admin edit form can round-trip the flag it writes. */
+  /** Stored for the admin edit form to round-trip; it does not affect the
+      public list, which legacy ordered newest first only. */
   pinned: boolean | null;
 
   createdAt: utcDateTime;
@@ -480,16 +472,6 @@ model SitemapCourseLandingPage {
   courseId: int32;
   slug: string;
   header: string;
-  locale: Locale;
-}
-
-/** Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`). */
-model SitemapCourseLesson {
-  id: int32;
-  courseId: int32;
-  name: string;
-  slug: string;
-  naturalOrder: int32;
   locale: Locale;
 }
 

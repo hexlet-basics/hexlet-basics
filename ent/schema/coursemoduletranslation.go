@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -31,6 +32,18 @@ func (CourseModuleTranslation) Fields() []ent.Field {
 		field.Int("course_id").StorageKey("language_id"),
 		field.Int("course_version_id").StorageKey("language_version_id"),
 		field.Int("version_id"),
+	}
+}
+
+// Edges lets a read follow a translation to its module version (for the
+// build's ordering and lessons) in one eager-loaded query. The edge owns the
+// existing version_id column, so it needs no migration.
+func (CourseModuleTranslation) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("version", CourseModuleVersion.Type).
+			Field("version_id").
+			Unique().
+			Required(),
 	}
 }
 

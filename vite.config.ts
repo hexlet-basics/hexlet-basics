@@ -8,6 +8,13 @@ import { defineConfig } from "vitest/config";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tanstackStart(), viteReact()],
+  // The browser reaches the Go API on the site's own origin under `/api`
+  // (ADR-0015); in development Vite stands in for the production ingress.
+  server: {
+    proxy: {
+      "/api": "http://localhost:3001",
+    },
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

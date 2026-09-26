@@ -59,6 +59,11 @@ func (CourseVersion) Edges() []ent.Edge {
 		// without first materializing version ids in the handler.
 		edge.From("current_courses", Course.Type).
 			Ref("current_version"),
+		// The lesson translations written for this version. The sitemap reads it
+		// to keep only landing pages whose course's current version has lessons
+		// in the page's locale. Inverse of an existing FK, so no migration.
+		edge.From("lesson_translations", CourseLessonTranslation.Type).
+			Ref("course_version"),
 	}
 }
 

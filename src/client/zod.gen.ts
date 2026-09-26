@@ -111,11 +111,10 @@ export const zBlogPostInput = z.object({
 });
 
 /**
- * A request to download the free book (ru marketing funnel).
+ * The free book page (ru marketing funnel, legacy `books#show`).
  */
-export const zBookRequestInput = z.object({
-  email: z.string().min(1),
-  fullName: z.string().nullable()
+export const zBookView = z.object({
+  requested: z.boolean()
 });
 
 /**
@@ -283,14 +282,6 @@ export const zCourseCatalogItem = z.object({
 });
 
 /**
- * A category page with the courses it groups.
- */
-export const zCourseCategoryView = z.object({
-  category: zCourseCategory,
-  landingPages: z.array(zCourseCatalogItem)
-});
-
-/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -309,6 +300,19 @@ export const zEmailInput = z.object({
  * Enrollment and lesson-progress lifecycle (legacy `MemberState`).
  */
 export const zEnrollmentState = z.enum(['started', 'finished']);
+
+/**
+ * The first visit's traffic source, as recorded by the browser.
+ */
+export const zFirstVisit = z.object({
+  utmSource: z.string().nullable(),
+  utmMedium: z.string().nullable(),
+  utmCampaign: z.string().nullable(),
+  utmContent: z.string().nullable(),
+  utmTerm: z.string().nullable(),
+  landingPage: z.string().nullable(),
+  referrer: z.string().nullable()
+});
 
 /**
  * Publication state shared by landing pages.
@@ -408,7 +412,8 @@ export const zLeadInput = z.object({
     'whatsapp'
   ]),
   contactValue: z.string().min(1),
-  ymClientId: z.string().nullable()
+  ymClientId: z.string().nullable(),
+  firstVisit: zFirstVisit.nullish()
 });
 
 /**
@@ -606,33 +611,6 @@ export const zNotFoundError = z.object({
 });
 
 /**
- * A static content page (about, authors, privacy, tos, cookie).
- */
-export const zPageContent = z.object({
-  slug: z.string(),
-  title: z.string(),
-  bodyHtml: z.string()
-});
-
-export const zPasskeyAssertionInput = z.object({
-  credential: z.string()
-});
-
-/**
- * A WebAuthn ceremony payload. The challenge/options and the client response
- * are opaque JSON owned by `go-webauthn`; the contract carries them as strings
- * so the browser API round-trips them verbatim.
- */
-export const zPasskeyChallenge = z.object({
-  options: z.string()
-});
-
-export const zPasskeyRegistrationInput = z.object({
-  credential: z.string(),
-  nickname: z.string().nullable()
-});
-
-/**
  * Admin resources a staff role can be granted permissions on.
  */
 export const zPermissionResource = z.enum([
@@ -649,15 +627,6 @@ export const zPermissionResource = z.enum([
   'language_landing_pages'
 ]);
 
-export const zPhoneConfirmInput = z.object({
-  phone: z.string().min(1),
-  code: z.string().min(1)
-});
-
-export const zPhoneInput = z.object({
-  phone: z.string().min(1)
-});
-
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
  * authorization, persistence, or an unexpected server failure prevents an
@@ -672,11 +641,17 @@ export const zProblemDetails = z.object({
 });
 
 /**
+ * A name on the profile (legacy `User` validations on first/last name): at
+ * most 40 characters, none of the characters in the pattern; blank is allowed.
+ */
+export const zProfileName = z.string().max(40).regex(/^[^`!@#$%\^&*+=]*$/);
+
+/**
  * Profile edit form (legacy: `UserProfileForm`).
  */
 export const zProfileInput = z.object({
-  firstName: z.string().nullable(),
-  lastName: z.string().nullable()
+  firstName: zProfileName.nullable(),
+  lastName: zProfileName.nullable()
 });
 
 /**
@@ -686,6 +661,15 @@ export const zQnaItem = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   question: z.string(),
   answer: z.string()
+});
+
+/**
+ * A category page with the courses it groups.
+ */
+export const zCourseCategoryView = z.object({
+  category: zCourseCategory,
+  landingPages: z.array(zCourseCatalogItem),
+  qnaItems: z.array(zQnaItem)
 });
 
 export const zQnaItemInput = z.object({
@@ -786,24 +770,18 @@ export const zSitemapCourseLandingPage = z.object({
 });
 
 /**
- * Minimal lesson row for the sitemap (legacy: `LanguageSitemapLesson`).
- */
-export const zSitemapCourseLesson = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  name: z.string(),
-  slug: z.string(),
-  naturalOrder: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  locale: zLocale
-});
-
-/**
- * Aggregated data for the XML sitemap / SEO index.
+ * The rows behind the HTML sitemap page (legacy `HomeController#sitemap`,
+ * `/ru/map`). Flat lists carrying their own locale; the page groups them.
+ *
+ * Landing pages come already narrowed to those whose course has lessons in
+ * the page's locale: legacy sent the lessons only for that check (their list
+ * on the page was commented out), so the filter runs in SQL instead of
+ * shipping every lesson.
  */
 export const zSitemap = z.object({
   landingPages: z.array(zSitemapCourseLandingPage),
-  lessons: z.array(zSitemapCourseLesson),
-  blogPosts: z.array(zSitemapBlogPost)
+  blogPosts: z.array(zSitemapBlogPost),
+  categories: z.array(zCourseCategory)
 });
 
 export const zStaffMemberInput = z.object({
@@ -885,7 +863,6 @@ export const zBlogPost = z.object({
   description: z.string().nullable(),
   state: zBlogPostState.nullable(),
   locale: z.string().nullable(),
-  url: z.string(),
   richBodyHtml: z.string(),
   readingTime: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   likesCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
@@ -906,6 +883,15 @@ export const zBlogPostPage = z.object({
   total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * A blog post page: the post plus what the page shows under it.
+ */
+export const zBlogPostView = z.object({
+  post: zBlogPost,
+  recommendedPosts: z.array(zBlogPost),
+  relatedLandingPages: z.array(zCourseCatalogItem)
 });
 
 /**
@@ -969,15 +955,6 @@ export const zStaffMemberPage = z.object({
 });
 
 /**
- * A registered passkey/WebAuthn credential (legacy: `UserCredential`).
- */
-export const zUserCredential = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nickname: z.string().nullable(),
-  createdAt: z.iso.datetime()
-});
-
-/**
  * A user row as shown in admin lists/forms (legacy: `UserCrud`).
  */
 export const zUserCrud = z.object({
@@ -1030,33 +1007,7 @@ export const zListQuerySortField = z.string();
 export const zListQuerySortOrder = z.enum(['asc', 'desc']);
 
 /**
- * The request has succeeded.
- */
-export const zListPasskeysResponse = z.array(zUserCredential);
-
-export const zCreatePasskeyBody = zPasskeyRegistrationInput;
-
-/**
- * The request has succeeded and a new resource has been created as a result.
- */
-export const zCreatePasskeyResponse = zUserCredential;
-
-/**
- * The request has succeeded.
- */
-export const zNewPasskeyResponse = zPasskeyChallenge;
-
-export const zDeletePasskeyPath = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * Empty 204 response for deletes and other content-less successes.
- */
-export const zDeletePasskeyResponse = z.void();
-
-/**
- * Empty 204 response for deletes and other content-less successes.
+ * A successful sign-out with the expired auth cookies.
  */
 export const zDeleteAccountResponse = z.void();
 
@@ -1242,6 +1193,15 @@ export const zAdminSetBlogPostRelatedCoursesPath = z.object({
  * The request has succeeded.
  */
 export const zAdminSetBlogPostRelatedCoursesResponse = zBlogPost;
+
+export const zAdminSuggestBlogPostRelatedCoursesPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * Empty 204 response for deletes and other content-less successes.
+ */
+export const zAdminSuggestBlogPostRelatedCoursesResponse = z.void();
 
 export const zAdminListCourseCategoriesQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
@@ -1797,14 +1757,45 @@ export const zGetBlogPostPath = z.object({
 /**
  * The request has succeeded.
  */
-export const zGetBlogPostResponse = zBlogPost;
+export const zGetBlogPostResponse = zBlogPostView;
 
-export const zCreateBookRequestBody = zBookRequestInput;
+/**
+ * The request has succeeded.
+ */
+export const zGetBookResponse = zBookView;
 
 /**
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zCreateBookRequestResponse = z.void();
+
+/**
+ * Default error response shared by every operation.
+ *
+ * `@error` emits an OpenAPI `default` response, keeping central transport
+ * failures typed without enumerating every status on every operation.
+ */
+export const zDownloadBookResponse = zProblemDetails;
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+export const zGetYandexCoursesFeedResponse = z.string();
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+export const zGetYandexCoursesFeedXmlResponse = z.string();
 
 /**
  * The request has succeeded.
@@ -1881,7 +1872,7 @@ export const zSwitchLocaleQuery = z.object({
 });
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * A remembered locale choice and the cookie that carries it.
  */
 export const zSwitchLocaleResponse = z.void();
 
@@ -1921,27 +1912,6 @@ export const zGetCurrentUserResponse = zCurrentUser;
  */
 export const zGetMyDashboardResponse = zMyDashboard;
 
-export const zGetPagePath = z.object({
-  slug: z.string()
-});
-
-/**
- * The request has succeeded.
- */
-export const zGetPageResponse = zPageContent;
-
-export const zCreatePasskeySessionBody = zPasskeyAssertionInput;
-
-/**
- * The request has succeeded.
- */
-export const zCreatePasskeySessionResponse = zUser;
-
-/**
- * The request has succeeded.
- */
-export const zNewPasskeySessionResponse = zPasskeyChallenge;
-
 export const zUpdatePasswordBody = zResetPasswordInput;
 
 export const zUpdatePasswordPath = z.object({
@@ -1962,20 +1932,6 @@ export const zCheckPasswordResetTokenPath = z.object({
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zCheckPasswordResetTokenResponse = z.void();
-
-export const zCreatePhoneAuthBody = zPhoneInput;
-
-/**
- * Empty 204 response for deletes and other content-less successes.
- */
-export const zCreatePhoneAuthResponse = z.void();
-
-export const zConfirmPhoneAuthBody = zPhoneConfirmInput;
-
-/**
- * The request has succeeded.
- */
-export const zConfirmPhoneAuthResponse = zUser;
 
 export const zCreatePasswordReminderBody = zEmailInput;
 

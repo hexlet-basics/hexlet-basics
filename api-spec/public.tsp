@@ -38,14 +38,25 @@ model CourseView {
 /** A category page with the courses it groups. */
 model CourseCategoryView {
   category: CourseCategory;
+
+  /** The category's listed, published landing pages in the request locale
+      whose course is completed, in course order. */
   landingPages: CourseCatalogItem[];
+
+  /** The category's questions and answers, oldest first. */
+  qnaItems: QnaItem[];
 }
 
-/** A static content page (about, authors, privacy, tos, cookie). */
-model PageContent {
-  slug: string;
-  title: string;
-  bodyHtml: string;
+/** A blog post page: the post plus what the page shows under it. */
+model BlogPostView {
+  post: BlogPost;
+
+  /** Two other published posts in the request locale, newest first. */
+  recommendedPosts: BlogPost[];
+
+  /** The main landing page, in the request locale, of each course the post
+      promotes, in the post's display order. */
+  relatedLandingPages: CourseCatalogItem[];
 }
 
 @route("/languages")
@@ -124,7 +135,7 @@ interface CourseLessons {
 @route("/language_categories")
 @tag("Course Categories")
 interface PublicCourseCategories {
-  /** List published categories. */
+  /** List the categories of the request locale. */
   @get
   @operationId("listPublicCourseCategories")
   list(): CourseCategory[] | ApiError;
@@ -144,19 +155,20 @@ interface Blog {
   @operationId("listBlogPosts")
   list(...ListQuery): Page<BlogPost> | ApiError;
 
-  /** A single blog post by slug. */
+  /** A published post in the request locale, by slug, with its page data. */
   @get
   @route("/{slug}")
   @operationId("getBlogPost")
-  get(@path slug: string): BlogPost | NotFoundError | ApiError;
+  get(@path slug: string): BlogPostView | NotFoundError | ApiError;
 
-  /** The next post to read after this one. */
+  /** The next post to read after this one: the next older published post in
+      the request locale. */
   @get
   @route("/{id}/next")
   @operationId("getNextBlogPost")
   next(@path id: int32): BlogPost | NotFoundError | ApiError;
 
-  /** Like a post (idempotent per visitor). */
+  /** Like a post once per signed-in user; a repeat like changes nothing. */
   @post
   @useAuth([UserSession, XsrfToken])
   @route("/{id}/likes")
@@ -176,16 +188,6 @@ interface PublicReviews {
   list(...ListQuery): Page<Review> | ApiError;
 }
 
-@route("/pages")
-@tag("Pages")
-interface Pages {
-  /** A static content page by slug. */
-  @get
-  @route("/{slug}")
-  @operationId("getPage")
-  get(@path slug: string): PageContent | NotFoundError | ApiError;
-}
-
 // ---- Marketing writes -----------------------------------------------------
 
 /** A lead captured from a marketing form (legacy: `LeadCrud`). */
@@ -193,6 +195,25 @@ model LeadInput {
   contactMethod: "telegram" | "phone" | "whatsapp";
   @minLength(1) contactValue: string;
   ymClientId: string | null;
+
+  /**
+   * Where the visitor first came from. Legacy read this off ahoy's visit; ahoy
+   * is not ported (ADR-0015), so the frontend keeps the first visit in a cookie
+   * and sends it with the form. Absent when the browser kept no cookie (blocked or cleared).
+   */
+  firstVisit?: FirstVisit | null;
+}
+
+/** The first visit's traffic source, as recorded by the browser. */
+model FirstVisit {
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  utmContent: string | null;
+  utmTerm: string | null;
+  /** The full URL the visit landed on, query string included. */
+  landingPage: string | null;
+  referrer: string | null;
 }
 
 @route("/leads")
@@ -208,37 +229,105 @@ interface PublicLeads {
   } | ValidationError | UnauthorizedError | ApiError;
 }
 
-/** A request to download the free book (ru marketing funnel). */
-model BookRequestInput {
-  @minLength(1) email: string;
-  fullName: string | null;
+/** The free book page (ru marketing funnel, legacy `books#show`). */
+model BookView {
+  /** Whether the signed-in visitor has requested the book, in any state; false for a visitor. */
+  requested: boolean;
 }
 
 @route("/book")
 @tag("Marketing")
-@useAuth([UserSession, XsrfToken])
 interface Book {
-  /** Request the book download link by email. */
+  /** The book page's state for whoever is visiting; a visitor is answered too. */
+  @get
+  @operationId("getBook")
+  get(): BookView | ApiError;
+
+  /** Request the book for the signed-in user. A repeat request changes nothing. */
   @post
+  @useAuth([UserSession, XsrfToken])
   @route("/create_request")
   @operationId("createBookRequest")
-  createRequest(@body body: BookRequestInput): NoContent | ValidationError | UnauthorizedError | ApiError;
+  createRequest(): NoContent | UnauthorizedError | ApiError;
+
+  /**
+   * Download the book: mark the request downloaded and redirect to the PDF in
+   * blob storage, or back to the book page when there is no request yet. The
+   * browser follows it as a link, so only the session cookie is required — a
+   * navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+   */
+  @get
+  @useAuth(UserSession)
+  @route("/download")
+  @operationId("downloadBook")
+  download(): {
+    @statusCode statusCode: 302;
+    @header("Location") location: string;
+  } | UnauthorizedError | ApiError;
 }
 
 // ---- Sitemap --------------------------------------------------------------
 
-/** Aggregated data for the XML sitemap / SEO index. */
+/**
+ * The rows behind the HTML sitemap page (legacy `HomeController#sitemap`,
+ * `/ru/map`). Flat lists carrying their own locale; the page groups them.
+ *
+ * Landing pages come already narrowed to those whose course has lessons in
+ * the page's locale: legacy sent the lessons only for that check (their list
+ * on the page was commented out), so the filter runs in SQL instead of
+ * shipping every lesson.
+ */
 model Sitemap {
   landingPages: SitemapCourseLandingPage[];
-  lessons: SitemapCourseLesson[];
   blogPosts: SitemapBlogPost[];
+  categories: CourseCategory[];
 }
 
 @route("/map")
 @tag("Sitemap")
 interface SitemapFeed {
-  /** Everything the sitemap generator needs. */
+  /** Everything the sitemap page lists, across the ru and en locales. */
   @get
   @operationId("getSitemap")
   get(): Sitemap | ApiError;
+}
+
+// ---- Feeds ----------------------------------------------------------------
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+model YandexCoursesFeed {
+  @header contentType: "application/xml";
+  @body body: bytes;
+}
+
+/**
+ * Machine-read feeds, at the addresses their consumers are registered with —
+ * the URL is the contract here, so it keeps the legacy path exactly
+ * (ADR-0015).
+ */
+@route("/feeds")
+@tag("Feeds")
+interface Feeds {
+  /**
+   * The feed at the address production actually answers on. Legacy routes
+   * `/api` with a JSON default format and the action only knows XML, so the
+   * bare path has always answered 406 and Yandex reads this one.
+   */
+  @get
+  @route("/yandex_courses.xml")
+  @operationId("getYandexCoursesFeedXml")
+  getXml(): YandexCoursesFeed | ApiError;
+
+  /** The same feed at the path the legacy route declares. */
+  @get
+  @route("/yandex_courses")
+  @operationId("getYandexCoursesFeed")
+  get(): YandexCoursesFeed | ApiError;
 }

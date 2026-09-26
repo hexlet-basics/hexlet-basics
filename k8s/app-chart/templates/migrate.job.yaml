@@ -1,0 +1,69 @@
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-migrate-{{ .Chart.Version }}"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+  annotations:
+    # Migrations run once per release, before any pod rolls. Helm waits for the
+    # Job; if it fails the upgrade fails and no pod starts on an unmigrated DB.
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 600
+  # Clean the finished Job up after an hour (before-hook-creation only cleans
+  # on the next release).
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-migrate-pod"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+    spec:
+      restartPolicy: Never
+
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
+
+      affinity:
+        {{- include "codebasics.nodeAffinity" "service" | nindent 8 }}
+
+      containers:
+        - name: migrate
+          imagePullPolicy: IfNotPresent
+          image: {{ include "codebasics.goImage" . }}
+          # atlas owns the schema (migrations/, ADR-0014). The directory is
+          # baked into the Go image, so the migrations always match the code
+          # of the release that ships them.
+          command:
+            - atlas
+            - migrate
+            - apply
+            - --dir
+            - file:///migrations
+            - --url
+            - $(DATABASE_URL)
+            {{- with .Values.migrate.baseline }}
+            - --baseline
+            - {{ . | quote }}
+            {{- end }}
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "256Mi"
+          env:
+            # Named explicitly (not only via envFrom) so the $(DATABASE_URL)
+            # expansion in the command is guaranteed to see it.
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: codebasics-environment-secrets
+                  key: DATABASE_URL

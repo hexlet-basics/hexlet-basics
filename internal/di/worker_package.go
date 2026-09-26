@@ -24,6 +24,7 @@ import (
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mailer"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 )
 
@@ -165,6 +166,10 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
+		if err != nil {
+			return nil, err
+		}
 		entClient, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -173,20 +178,24 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// Without OpenAI credentials the reviewer stays unregistered: enqueued
-		// review jobs wait in the queue instead of failing against a dead client.
-		var reviewer jobs.LessonReviewer
+		// Without OpenAI credentials the LLM workers stay unregistered: enqueued
+		// review and related-courses jobs wait in the queue instead of failing
+		// against a dead client. Both share one client.
+		var (
+			reviewer  jobs.LessonReviewer
+			suggester jobs.RelatedCoursesSuggester
+		)
 		if cfg.OpenAIAccessToken != "" {
-			reviewer = lessonreviews.NewReviewer(
-				entClient,
-				assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel),
-			)
+			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
+			reviewer = lessonreviews.NewReviewer(entClient, llm)
+			suggester = relatedcourses.NewSuggester(entClient, relatedCoursesSet, llm, logger)
 		}
 		return jobs.NewWorkerClient(
 			db,
 			loader,
 			amoCRMClient,
 			reviewer,
+			suggester,
 			emailSender,
 			logger,
 			jobs.NewErrorHandler(sentryClient),

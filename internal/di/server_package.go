@@ -8,7 +8,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
-	"github.com/rs/cors"
 	"github.com/samber/do/v2"
 	"go.opentelemetry.io/contrib/otelconf"
 
@@ -17,14 +16,18 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
+	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/leads"
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
@@ -78,6 +81,35 @@ var serverPackage = do.Package(
 		}
 		return accounts.NewRegistrar(db, publisher), nil
 	}),
+	do.Lazy[*leads.Recorder](func(i do.Injector) (*leads.Recorder, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		return leads.NewRecorder(db, publisher), nil
+	}),
+	do.Lazy[*books.Recorder](func(i do.Injector) (*books.Recorder, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		return books.NewRecorder(db, publisher), nil
+	}),
+	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return accounts.NewRemover(db), nil
+	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		db, err := do.Invoke[*sql.DB](i)
 		if err != nil {
@@ -116,6 +148,32 @@ var serverPackage = do.Package(
 		}
 		return lessonreviews.NewEnqueuer(riverClient), nil
 	}),
+	do.Lazy[*relatedcourses.Enqueuer](func(i do.Injector) (*relatedcourses.Enqueuer, error) {
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+		return relatedcourses.NewEnqueuer(riverClient), nil
+	}),
+	do.Lazy[*accountemails.Enqueuer](func(i do.Injector) (*accountemails.Enqueuer, error) {
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+		return accountemails.NewEnqueuer(riverClient), nil
+	}),
+	// The Yandex feed builds its URLs on the canonical host, not the request's.
+	do.Lazy[*feeds.Yandex](func(i do.Injector) (*feeds.Yandex, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		return feeds.NewYandex(db, cfg.AppHost), nil
+	}),
 	do.Lazy[*handlers.Server](func(i do.Injector) (*handlers.Server, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -133,7 +191,15 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		relatedCourses, err := do.Invoke[*relatedcourses.Enqueuer](i)
+		if err != nil {
+			return nil, err
+		}
+		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
+		if err != nil {
+			return nil, err
+		}
+		emails, err := do.Invoke[*accountemails.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
@@ -145,7 +211,19 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		remover, err := do.Invoke[*accounts.Remover](i)
+		if err != nil {
+			return nil, err
+		}
 		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		leadRecorder, err := do.Invoke[*leads.Recorder](i)
+		if err != nil {
+			return nil, err
+		}
+		bookRecorder, err := do.Invoke[*books.Recorder](i)
 		if err != nil {
 			return nil, err
 		}
@@ -161,19 +239,29 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return handlers.NewServer(
-			db,
-			cfg,
-			starter,
-			reviews,
-			accountemails.NewEnqueuer(riverClient),
-			tracker,
-			assets,
-			registrar,
-			publisher,
-			translator,
-			errorHandler,
-		), nil
+		yandexFeed, err := do.Invoke[*feeds.Yandex](i)
+		if err != nil {
+			return nil, err
+		}
+		return handlers.NewServer(handlers.Deps{
+			DB:                db,
+			Config:            cfg,
+			Starter:           starter,
+			Reviews:           reviews,
+			RelatedCourses:    relatedCourses,
+			RelatedCoursesSet: relatedCoursesSet,
+			Emails:            emails,
+			Progress:          tracker,
+			Assets:            assets,
+			Registrar:         registrar,
+			Remover:           remover,
+			Events:            publisher,
+			Leads:             leadRecorder,
+			Books:             bookRecorder,
+			I18n:              translator,
+			Errors:            errorHandler,
+			YandexFeed:        yandexFeed,
+		}), nil
 	}),
 	// The progress module owns sequential progression. It writes and publishes
 	// through the same transaction seam every other business module uses.
@@ -306,24 +394,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// Dev CORS lets the Vite frontend (on any localhost port) call both
-		// the generated API and the hand-mounted routes.
+		// No CORS: the browser reaches the API on the site's own origin under
+		// `/api` (ADR-0015), through the ingress in production and the Vite
+		// proxy in development.
 		localized := translator.Middleware(router)
-		corsHandler := cors.New(cors.Options{
-			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
-			AllowedMethods: []string{
-				http.MethodGet,
-				http.MethodHead,
-				http.MethodPost,
-				http.MethodPut,
-				http.MethodPatch,
-				http.MethodDelete,
-				http.MethodOptions,
-			},
-			AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
-			AllowCredentials: true,
-		}).Handler(localized)
-		return telemetry.NewSentryHTTPHandler(sentryClient, corsHandler), nil
+		return telemetry.NewSentryHTTPHandler(sentryClient, localized), nil
 	}),
 	// The process lifecycle coordinator starts and gracefully stops this
 	// server. Keeping the provider on the vendor type avoids coupling DI to

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -25,8 +26,17 @@ const (
 	FieldCourseVersionID = "language_version_id"
 	// FieldModuleID holds the string denoting the module_id field in the database.
 	FieldModuleID = "module_id"
+	// EdgeLessonVersions holds the string denoting the lesson_versions edge name in mutations.
+	EdgeLessonVersions = "lesson_versions"
 	// Table holds the table name of the coursemoduleversion in the database.
 	Table = "language_module_versions"
+	// LessonVersionsTable is the table that holds the lesson_versions relation/edge.
+	LessonVersionsTable = "language_lesson_versions"
+	// LessonVersionsInverseTable is the table name for the CourseLessonVersion entity.
+	// It exists in this package in order to avoid circular dependency with the "courselessonversion" package.
+	LessonVersionsInverseTable = "language_lesson_versions"
+	// LessonVersionsColumn is the table column denoting the lesson_versions relation/edge.
+	LessonVersionsColumn = "module_version_id"
 )
 
 // Columns holds all SQL columns for coursemoduleversion fields.
@@ -95,4 +105,25 @@ func ByCourseVersionID(opts ...sql.OrderTermOption) OrderOption {
 // ByModuleID orders the results by the module_id field.
 func ByModuleID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModuleID, opts...).ToFunc()
+}
+
+// ByLessonVersionsCount orders the results by lesson_versions count.
+func ByLessonVersionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newLessonVersionsStep(), opts...)
+	}
+}
+
+// ByLessonVersions orders the results by lesson_versions terms.
+func ByLessonVersions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLessonVersionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newLessonVersionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LessonVersionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, LessonVersionsTable, LessonVersionsColumn),
+	)
 }

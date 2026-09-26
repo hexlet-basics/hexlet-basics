@@ -16,6 +16,28 @@ func withReviewEdges(q *ent.ReviewQuery) *ent.ReviewQuery {
 		WithUser()
 }
 
+// ListPublicReviews is the public reviews page (legacy `Web::ReviewsController
+// #index`): published reviews in the request locale, newest (highest id) first,
+// pagy's 20 per page. `pinned` is deliberately not an ordering key — legacy
+// ordered by id alone. Review locales are ru/en only, so an es request gets an
+// empty page, not an error, as legacy's `with_locale` scope gave it.
+func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
+	return listPage(ctx, params.Page, params.PerPage,
+		func() *ent.ReviewQuery {
+			return withReviewEdges(s.db.Review.Query()).
+				Where(
+					review.StateEQ(string(api.ReviewStatePublished)),
+					review.LocaleEQ(s.i18n.Locale(ctx)),
+				).
+				Order(ent.Desc(review.FieldID))
+		},
+		s.conv.ToReviews,
+		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
+			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
+		},
+	)
+}
+
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (api.AdminListReviewsRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,

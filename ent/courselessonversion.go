@@ -4,7 +4,9 @@ package ent
 
 import (
 	"fmt"
+	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonversion"
+	"hexletbasics/ent/coursemoduleversion"
 	"strings"
 	"time"
 
@@ -41,7 +43,43 @@ type CourseLessonVersion struct {
 	LessonID int `json:"lesson_id,omitempty"`
 	// ModuleVersionID holds the value of the "module_version_id" field.
 	ModuleVersionID int `json:"module_version_id,omitempty"`
-	selectValues    sql.SelectValues
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CourseLessonVersionQuery when eager-loading is set.
+	Edges        CourseLessonVersionEdges `json:"edges"`
+	selectValues sql.SelectValues
+}
+
+// CourseLessonVersionEdges holds the relations/edges for other nodes in the graph.
+type CourseLessonVersionEdges struct {
+	// ModuleVersion holds the value of the module_version edge.
+	ModuleVersion *CourseModuleVersion `json:"module_version,omitempty"`
+	// Lesson holds the value of the lesson edge.
+	Lesson *CourseLesson `json:"lesson,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// ModuleVersionOrErr returns the ModuleVersion value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CourseLessonVersionEdges) ModuleVersionOrErr() (*CourseModuleVersion, error) {
+	if e.ModuleVersion != nil {
+		return e.ModuleVersion, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: coursemoduleversion.Label}
+	}
+	return nil, &NotLoadedError{edge: "module_version"}
+}
+
+// LessonOrErr returns the Lesson value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CourseLessonVersionEdges) LessonOrErr() (*CourseLesson, error) {
+	if e.Lesson != nil {
+		return e.Lesson, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: courselesson.Label}
+	}
+	return nil, &NotLoadedError{edge: "lesson"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -165,6 +203,16 @@ func (_m *CourseLessonVersion) assignValues(columns []string, values []any) erro
 // This includes values selected through modifiers, order, etc.
 func (_m *CourseLessonVersion) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryModuleVersion queries the "module_version" edge of the CourseLessonVersion entity.
+func (_m *CourseLessonVersion) QueryModuleVersion() *CourseModuleVersionQuery {
+	return NewCourseLessonVersionClient(_m.config).QueryModuleVersion(_m)
+}
+
+// QueryLesson queries the "lesson" edge of the CourseLessonVersion entity.
+func (_m *CourseLessonVersion) QueryLesson() *CourseLessonQuery {
+	return NewCourseLessonVersionClient(_m.config).QueryLesson(_m)
 }
 
 // Update returns a builder for updating this CourseLessonVersion.

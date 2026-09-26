@@ -262,12 +262,12 @@ func (_q *BlogPostLikeQuery) Clone() *BlogPostLikeQuery {
 // Example:
 //
 //	var v []struct {
-//		BlogPostID int `json:"blog_post_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.BlogPostLike.Query().
-//		GroupBy(blogpostlike.FieldBlogPostID).
+//		GroupBy(blogpostlike.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *BlogPostLikeQuery) GroupBy(field string, fields ...string) *BlogPostLikeGroupBy {
@@ -285,11 +285,11 @@ func (_q *BlogPostLikeQuery) GroupBy(field string, fields ...string) *BlogPostLi
 // Example:
 //
 //	var v []struct {
-//		BlogPostID int `json:"blog_post_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.BlogPostLike.Query().
-//		Select(blogpostlike.FieldBlogPostID).
+//		Select(blogpostlike.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *BlogPostLikeQuery) Select(fields ...string) *BlogPostLikeSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

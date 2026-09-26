@@ -12,8 +12,8 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// reviews.yml seeds these two.
-const totalReviews = 2
+// reviews.yml seeds these five.
+const totalReviews = 5
 
 // reviewByBody resolves a fixture review by its body (a stable business key).
 func reviewByBody(t *testing.T, h *testsupport.Harness, body string) api.Review {

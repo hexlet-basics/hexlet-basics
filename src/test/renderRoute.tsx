@@ -8,8 +8,10 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import type { AuthUser } from "@/lib/auth";
-import { createI18n } from "@/lib/i18n";
+import { createI18n, type Locale } from "@/lib/i18n";
+import { localeFromPathname } from "@/lib/locale-path";
 import { renderWithProviders } from "./renderWithProviders";
 
 // Mounts a real file route — its loader, its component, its staticData — at a
@@ -30,6 +32,7 @@ export async function renderRoute(
     path,
     initialPath,
     user = null,
+    locale,
     wrap = (element) => element,
   }: {
     // The route's own path pattern, e.g. "/{-$locale}/languages/$slug".
@@ -40,6 +43,10 @@ export async function renderRoute(
     // beforeLoad, which the synthetic root does not run, so a test that cares
     // whether the visitor is a guest says so here. The default is a guest.
     user?: AuthUser | null;
+    // The language the page renders in. The application sets it in the
+    // `{-$locale}` layout's beforeLoad, which the synthetic root does not run;
+    // the default is the unprefixed en.
+    locale?: Locale;
     // Wraps the router, for a page that needs a sized container to render into.
     wrap?: (element: ReactNode) => ReactNode;
   },
@@ -57,15 +64,24 @@ export async function renderRoute(
     path,
   } as never);
 
+  // The locale layout switches the router's i18n to the URL's locale before a
+  // route's head runs; the synthetic root has no such layout, so it is done here.
+  const i18n = createI18n();
+  await i18n.changeLanguage(locale ?? localeFromPathname(initialPath));
+
   const router = createRouter({
     routeTree: rootRoute.addChildren([mounted as never]),
-    context: { queryClient, i18n: createI18n(), user } as never,
+    context: { queryClient, i18n, user } as never,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
+    // The application's error pages, as getRouter sets them.
+    defaultNotFoundComponent: NotFoundPage,
+    defaultErrorComponent: ServerErrorPage,
   });
 
   const screen = await renderWithProviders(
     wrap(<RouterProvider router={router as never} />),
     queryClient,
+    i18n,
   );
 
   return { screen, router, queryClient };

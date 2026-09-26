@@ -30,12 +30,16 @@ type Tx struct {
 	BlogPostLike *BlogPostLikeClient
 	// BlogPostRelatedCourseItem is the client for interacting with the BlogPostRelatedCourseItem builders.
 	BlogPostRelatedCourseItem *BlogPostRelatedCourseItemClient
+	// BookRequest is the client for interacting with the BookRequest builders.
+	BookRequest *BookRequestClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseCategoryItem is the client for interacting with the CourseCategoryItem builders.
+	CourseCategoryItem *CourseCategoryItemClient
 	// CourseLesson is the client for interacting with the CourseLesson builders.
 	CourseLesson *CourseLessonClient
 	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
@@ -70,8 +74,14 @@ type Tx struct {
 	StaffRole *StaffRoleClient
 	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
 	StaffRolePermission *StaffRolePermissionClient
+	// Tag is the client for interacting with the Tag builders.
+	Tag *TagClient
+	// Tagging is the client for interacting with the Tagging builders.
+	Tagging *TaggingClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAccount is the client for interacting with the UserAccount builders.
+	UserAccount *UserAccountClient
 
 	// lazily loaded.
 	client     *Client
@@ -212,9 +222,11 @@ func (tx *Tx) init() {
 	tx.BlogPost = NewBlogPostClient(tx.config)
 	tx.BlogPostLike = NewBlogPostLikeClient(tx.config)
 	tx.BlogPostRelatedCourseItem = NewBlogPostRelatedCourseItemClient(tx.config)
+	tx.BookRequest = NewBookRequestClient(tx.config)
 	tx.CategoryQnaItem = NewCategoryQnaItemClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
+	tx.CourseCategoryItem = NewCourseCategoryItemClient(tx.config)
 	tx.CourseLesson = NewCourseLessonClient(tx.config)
 	tx.CourseLessonReview = NewCourseLessonReviewClient(tx.config)
 	tx.CourseLessonTranslation = NewCourseLessonTranslationClient(tx.config)
@@ -232,7 +244,10 @@ func (tx *Tx) init() {
 	tx.StaffMember = NewStaffMemberClient(tx.config)
 	tx.StaffRole = NewStaffRoleClient(tx.config)
 	tx.StaffRolePermission = NewStaffRolePermissionClient(tx.config)
+	tx.Tag = NewTagClient(tx.config)
+	tx.Tagging = NewTaggingClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserAccount = NewUserAccountClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

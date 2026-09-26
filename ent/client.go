@@ -20,9 +20,11 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
+	"hexletbasics/ent/bookrequest"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -40,7 +42,10 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/tag"
+	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
+	"hexletbasics/ent/useraccount"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -71,12 +76,16 @@ type Client struct {
 	BlogPostLike *BlogPostLikeClient
 	// BlogPostRelatedCourseItem is the client for interacting with the BlogPostRelatedCourseItem builders.
 	BlogPostRelatedCourseItem *BlogPostRelatedCourseItemClient
+	// BookRequest is the client for interacting with the BookRequest builders.
+	BookRequest *BookRequestClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseCategoryItem is the client for interacting with the CourseCategoryItem builders.
+	CourseCategoryItem *CourseCategoryItemClient
 	// CourseLesson is the client for interacting with the CourseLesson builders.
 	CourseLesson *CourseLessonClient
 	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
@@ -111,8 +120,14 @@ type Client struct {
 	StaffRole *StaffRoleClient
 	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
 	StaffRolePermission *StaffRolePermissionClient
+	// Tag is the client for interacting with the Tag builders.
+	Tag *TagClient
+	// Tagging is the client for interacting with the Tagging builders.
+	Tagging *TaggingClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAccount is the client for interacting with the UserAccount builders.
+	UserAccount *UserAccountClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -133,9 +148,11 @@ func (c *Client) init() {
 	c.BlogPost = NewBlogPostClient(c.config)
 	c.BlogPostLike = NewBlogPostLikeClient(c.config)
 	c.BlogPostRelatedCourseItem = NewBlogPostRelatedCourseItemClient(c.config)
+	c.BookRequest = NewBookRequestClient(c.config)
 	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
+	c.CourseCategoryItem = NewCourseCategoryItemClient(c.config)
 	c.CourseLesson = NewCourseLessonClient(c.config)
 	c.CourseLessonReview = NewCourseLessonReviewClient(c.config)
 	c.CourseLessonTranslation = NewCourseLessonTranslationClient(c.config)
@@ -153,7 +170,10 @@ func (c *Client) init() {
 	c.StaffMember = NewStaffMemberClient(c.config)
 	c.StaffRole = NewStaffRoleClient(c.config)
 	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
+	c.Tag = NewTagClient(c.config)
+	c.Tagging = NewTaggingClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.UserAccount = NewUserAccountClient(c.config)
 }
 
 type (
@@ -255,9 +275,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
 		BlogPostRelatedCourseItem: NewBlogPostRelatedCourseItemClient(cfg),
+		BookRequest:               NewBookRequestClient(cfg),
 		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
+		CourseCategoryItem:        NewCourseCategoryItemClient(cfg),
 		CourseLesson:              NewCourseLessonClient(cfg),
 		CourseLessonReview:        NewCourseLessonReviewClient(cfg),
 		CourseLessonTranslation:   NewCourseLessonTranslationClient(cfg),
@@ -275,7 +297,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		Tag:                       NewTagClient(cfg),
+		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
+		UserAccount:               NewUserAccountClient(cfg),
 	}, nil
 }
 
@@ -304,9 +329,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
 		BlogPostRelatedCourseItem: NewBlogPostRelatedCourseItemClient(cfg),
+		BookRequest:               NewBookRequestClient(cfg),
 		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
+		CourseCategoryItem:        NewCourseCategoryItemClient(cfg),
 		CourseLesson:              NewCourseLessonClient(cfg),
 		CourseLessonReview:        NewCourseLessonReviewClient(cfg),
 		CourseLessonTranslation:   NewCourseLessonTranslationClient(cfg),
@@ -324,7 +351,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		Tag:                       NewTagClient(cfg),
+		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
+		UserAccount:               NewUserAccountClient(cfg),
 	}, nil
 }
 
@@ -356,12 +386,13 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
-		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseLesson, c.CourseLessonReview, c.CourseLessonTranslation,
-		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
-		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
-		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User,
+		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
+		c.CourseCategory, c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
+		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
+		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
+		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag, c.Tagging,
+		c.User, c.UserAccount,
 	} {
 		n.Use(hooks...)
 	}
@@ -373,12 +404,13 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
-		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseLesson, c.CourseLessonReview, c.CourseLessonTranslation,
-		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
-		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
-		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User,
+		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
+		c.CourseCategory, c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
+		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
+		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
+		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag, c.Tagging,
+		c.User, c.UserAccount,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -405,12 +437,16 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BlogPostLike.mutate(ctx, m)
 	case *BlogPostRelatedCourseItemMutation:
 		return c.BlogPostRelatedCourseItem.mutate(ctx, m)
+	case *BookRequestMutation:
+		return c.BookRequest.mutate(ctx, m)
 	case *CategoryQnaItemMutation:
 		return c.CategoryQnaItem.mutate(ctx, m)
 	case *CourseMutation:
 		return c.Course.mutate(ctx, m)
 	case *CourseCategoryMutation:
 		return c.CourseCategory.mutate(ctx, m)
+	case *CourseCategoryItemMutation:
+		return c.CourseCategoryItem.mutate(ctx, m)
 	case *CourseLessonMutation:
 		return c.CourseLesson.mutate(ctx, m)
 	case *CourseLessonReviewMutation:
@@ -445,8 +481,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.StaffRole.mutate(ctx, m)
 	case *StaffRolePermissionMutation:
 		return c.StaffRolePermission.mutate(ctx, m)
+	case *TagMutation:
+		return c.Tag.mutate(ctx, m)
+	case *TaggingMutation:
+		return c.Tagging.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
+	case *UserAccountMutation:
+		return c.UserAccount.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -1761,6 +1803,139 @@ func (c *BlogPostRelatedCourseItemClient) mutate(ctx context.Context, m *BlogPos
 	}
 }
 
+// BookRequestClient is a client for the BookRequest schema.
+type BookRequestClient struct {
+	config
+}
+
+// NewBookRequestClient returns a client for the BookRequest from the given config.
+func NewBookRequestClient(c config) *BookRequestClient {
+	return &BookRequestClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `bookrequest.Hooks(f(g(h())))`.
+func (c *BookRequestClient) Use(hooks ...Hook) {
+	c.hooks.BookRequest = append(c.hooks.BookRequest, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `bookrequest.Intercept(f(g(h())))`.
+func (c *BookRequestClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BookRequest = append(c.inters.BookRequest, interceptors...)
+}
+
+// Create returns a builder for creating a BookRequest entity.
+func (c *BookRequestClient) Create() *BookRequestCreate {
+	mutation := newBookRequestMutation(c.config, OpCreate)
+	return &BookRequestCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BookRequest entities.
+func (c *BookRequestClient) CreateBulk(builders ...*BookRequestCreate) *BookRequestCreateBulk {
+	return &BookRequestCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BookRequestClient) MapCreateBulk(slice any, setFunc func(*BookRequestCreate, int)) *BookRequestCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BookRequestCreateBulk{err: fmt.Errorf("calling to BookRequestClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BookRequestCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BookRequestCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BookRequest.
+func (c *BookRequestClient) Update() *BookRequestUpdate {
+	mutation := newBookRequestMutation(c.config, OpUpdate)
+	return &BookRequestUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BookRequestClient) UpdateOne(_m *BookRequest) *BookRequestUpdateOne {
+	mutation := newBookRequestMutation(c.config, OpUpdateOne, withBookRequest(_m))
+	return &BookRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BookRequestClient) UpdateOneID(id int) *BookRequestUpdateOne {
+	mutation := newBookRequestMutation(c.config, OpUpdateOne, withBookRequestID(id))
+	return &BookRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BookRequest.
+func (c *BookRequestClient) Delete() *BookRequestDelete {
+	mutation := newBookRequestMutation(c.config, OpDelete)
+	return &BookRequestDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BookRequestClient) DeleteOne(_m *BookRequest) *BookRequestDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BookRequestClient) DeleteOneID(id int) *BookRequestDeleteOne {
+	builder := c.Delete().Where(bookrequest.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BookRequestDeleteOne{builder}
+}
+
+// Query returns a query builder for BookRequest.
+func (c *BookRequestClient) Query() *BookRequestQuery {
+	return &BookRequestQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBookRequest},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BookRequest entity by its id.
+func (c *BookRequestClient) Get(ctx context.Context, id int) (*BookRequest, error) {
+	return c.Query().Where(bookrequest.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BookRequestClient) GetX(ctx context.Context, id int) *BookRequest {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *BookRequestClient) Hooks() []Hook {
+	return c.hooks.BookRequest
+}
+
+// Interceptors returns the client interceptors.
+func (c *BookRequestClient) Interceptors() []Interceptor {
+	return c.inters.BookRequest
+}
+
+func (c *BookRequestClient) mutate(ctx context.Context, m *BookRequestMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BookRequestCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BookRequestUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BookRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BookRequestDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BookRequest mutation op: %q", m.Op())
+	}
+}
+
 // CategoryQnaItemClient is a client for the CategoryQnaItem schema.
 type CategoryQnaItemClient struct {
 	config
@@ -2189,6 +2364,171 @@ func (c *CourseCategoryClient) mutate(ctx context.Context, m *CourseCategoryMuta
 		return (&CourseCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown CourseCategory mutation op: %q", m.Op())
+	}
+}
+
+// CourseCategoryItemClient is a client for the CourseCategoryItem schema.
+type CourseCategoryItemClient struct {
+	config
+}
+
+// NewCourseCategoryItemClient returns a client for the CourseCategoryItem from the given config.
+func NewCourseCategoryItemClient(c config) *CourseCategoryItemClient {
+	return &CourseCategoryItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coursecategoryitem.Hooks(f(g(h())))`.
+func (c *CourseCategoryItemClient) Use(hooks ...Hook) {
+	c.hooks.CourseCategoryItem = append(c.hooks.CourseCategoryItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `coursecategoryitem.Intercept(f(g(h())))`.
+func (c *CourseCategoryItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CourseCategoryItem = append(c.inters.CourseCategoryItem, interceptors...)
+}
+
+// Create returns a builder for creating a CourseCategoryItem entity.
+func (c *CourseCategoryItemClient) Create() *CourseCategoryItemCreate {
+	mutation := newCourseCategoryItemMutation(c.config, OpCreate)
+	return &CourseCategoryItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CourseCategoryItem entities.
+func (c *CourseCategoryItemClient) CreateBulk(builders ...*CourseCategoryItemCreate) *CourseCategoryItemCreateBulk {
+	return &CourseCategoryItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CourseCategoryItemClient) MapCreateBulk(slice any, setFunc func(*CourseCategoryItemCreate, int)) *CourseCategoryItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CourseCategoryItemCreateBulk{err: fmt.Errorf("calling to CourseCategoryItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CourseCategoryItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CourseCategoryItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CourseCategoryItem.
+func (c *CourseCategoryItemClient) Update() *CourseCategoryItemUpdate {
+	mutation := newCourseCategoryItemMutation(c.config, OpUpdate)
+	return &CourseCategoryItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CourseCategoryItemClient) UpdateOne(_m *CourseCategoryItem) *CourseCategoryItemUpdateOne {
+	mutation := newCourseCategoryItemMutation(c.config, OpUpdateOne, withCourseCategoryItem(_m))
+	return &CourseCategoryItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CourseCategoryItemClient) UpdateOneID(id int) *CourseCategoryItemUpdateOne {
+	mutation := newCourseCategoryItemMutation(c.config, OpUpdateOne, withCourseCategoryItemID(id))
+	return &CourseCategoryItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CourseCategoryItem.
+func (c *CourseCategoryItemClient) Delete() *CourseCategoryItemDelete {
+	mutation := newCourseCategoryItemMutation(c.config, OpDelete)
+	return &CourseCategoryItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CourseCategoryItemClient) DeleteOne(_m *CourseCategoryItem) *CourseCategoryItemDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CourseCategoryItemClient) DeleteOneID(id int) *CourseCategoryItemDeleteOne {
+	builder := c.Delete().Where(coursecategoryitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CourseCategoryItemDeleteOne{builder}
+}
+
+// Query returns a query builder for CourseCategoryItem.
+func (c *CourseCategoryItemClient) Query() *CourseCategoryItemQuery {
+	return &CourseCategoryItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCourseCategoryItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CourseCategoryItem entity by its id.
+func (c *CourseCategoryItemClient) Get(ctx context.Context, id int) (*CourseCategoryItem, error) {
+	return c.Query().Where(coursecategoryitem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CourseCategoryItemClient) GetX(ctx context.Context, id int) *CourseCategoryItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCategory queries the category edge of a CourseCategoryItem.
+func (c *CourseCategoryItemClient) QueryCategory(_m *CourseCategoryItem) *CourseCategoryQuery {
+	query := (&CourseCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursecategoryitem.Table, coursecategoryitem.FieldID, id),
+			sqlgraph.To(coursecategory.Table, coursecategory.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, coursecategoryitem.CategoryTable, coursecategoryitem.CategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLandingPage queries the landing_page edge of a CourseCategoryItem.
+func (c *CourseCategoryItemClient) QueryLandingPage(_m *CourseCategoryItem) *LandingPageQuery {
+	query := (&LandingPageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursecategoryitem.Table, coursecategoryitem.FieldID, id),
+			sqlgraph.To(landingpage.Table, landingpage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, coursecategoryitem.LandingPageTable, coursecategoryitem.LandingPageColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CourseCategoryItemClient) Hooks() []Hook {
+	return c.hooks.CourseCategoryItem
+}
+
+// Interceptors returns the client interceptors.
+func (c *CourseCategoryItemClient) Interceptors() []Interceptor {
+	return c.inters.CourseCategoryItem
+}
+
+func (c *CourseCategoryItemClient) mutate(ctx context.Context, m *CourseCategoryItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CourseCategoryItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CourseCategoryItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CourseCategoryItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CourseCategoryItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CourseCategoryItem mutation op: %q", m.Op())
 	}
 }
 
@@ -2795,6 +3135,38 @@ func (c *CourseLessonVersionClient) GetX(ctx context.Context, id int) *CourseLes
 	return obj
 }
 
+// QueryModuleVersion queries the module_version edge of a CourseLessonVersion.
+func (c *CourseLessonVersionClient) QueryModuleVersion(_m *CourseLessonVersion) *CourseModuleVersionQuery {
+	query := (&CourseModuleVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessonversion.Table, courselessonversion.FieldID, id),
+			sqlgraph.To(coursemoduleversion.Table, coursemoduleversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, courselessonversion.ModuleVersionTable, courselessonversion.ModuleVersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLesson queries the lesson edge of a CourseLessonVersion.
+func (c *CourseLessonVersionClient) QueryLesson(_m *CourseLessonVersion) *CourseLessonQuery {
+	query := (&CourseLessonClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessonversion.Table, courselessonversion.FieldID, id),
+			sqlgraph.To(courselesson.Table, courselesson.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, courselessonversion.LessonTable, courselessonversion.LessonColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseLessonVersionClient) Hooks() []Hook {
 	return c.hooks.CourseLessonVersion
@@ -3061,6 +3433,22 @@ func (c *CourseModuleTranslationClient) GetX(ctx context.Context, id int) *Cours
 	return obj
 }
 
+// QueryVersion queries the version edge of a CourseModuleTranslation.
+func (c *CourseModuleTranslationClient) QueryVersion(_m *CourseModuleTranslation) *CourseModuleVersionQuery {
+	query := (&CourseModuleVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursemoduletranslation.Table, coursemoduletranslation.FieldID, id),
+			sqlgraph.To(coursemoduleversion.Table, coursemoduleversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, coursemoduletranslation.VersionTable, coursemoduletranslation.VersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseModuleTranslationClient) Hooks() []Hook {
 	return c.hooks.CourseModuleTranslation
@@ -3192,6 +3580,22 @@ func (c *CourseModuleVersionClient) GetX(ctx context.Context, id int) *CourseMod
 		panic(err)
 	}
 	return obj
+}
+
+// QueryLessonVersions queries the lesson_versions edge of a CourseModuleVersion.
+func (c *CourseModuleVersionClient) QueryLessonVersions(_m *CourseModuleVersion) *CourseLessonVersionQuery {
+	query := (&CourseLessonVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursemoduleversion.Table, coursemoduleversion.FieldID, id),
+			sqlgraph.To(courselessonversion.Table, courselessonversion.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, coursemoduleversion.LessonVersionsTable, coursemoduleversion.LessonVersionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -3336,6 +3740,22 @@ func (c *CourseVersionClient) QueryCurrentCourses(_m *CourseVersion) *CourseQuer
 			sqlgraph.From(courseversion.Table, courseversion.FieldID, id),
 			sqlgraph.To(course.Table, course.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, courseversion.CurrentCoursesTable, courseversion.CurrentCoursesColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLessonTranslations queries the lesson_translations edge of a CourseVersion.
+func (c *CourseVersionClient) QueryLessonTranslations(_m *CourseVersion) *CourseLessonTranslationQuery {
+	query := (&CourseLessonTranslationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courseversion.Table, courseversion.FieldID, id),
+			sqlgraph.To(courselessontranslation.Table, courselessontranslation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, courseversion.LessonTranslationsTable, courseversion.LessonTranslationsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -3666,6 +4086,22 @@ func (c *LandingPageClient) QueryCourse(_m *LandingPage) *CourseQuery {
 			sqlgraph.From(landingpage.Table, landingpage.FieldID, id),
 			sqlgraph.To(course.Table, course.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, landingpage.CourseTable, landingpage.CourseColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCategoryItems queries the category_items edge of a LandingPage.
+func (c *LandingPageClient) QueryCategoryItems(_m *LandingPage) *CourseCategoryItemQuery {
+	query := (&CourseCategoryItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(landingpage.Table, landingpage.FieldID, id),
+			sqlgraph.To(coursecategoryitem.Table, coursecategoryitem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, landingpage.CategoryItemsTable, landingpage.CategoryItemsColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -4773,6 +5209,272 @@ func (c *StaffRolePermissionClient) mutate(ctx context.Context, m *StaffRolePerm
 	}
 }
 
+// TagClient is a client for the Tag schema.
+type TagClient struct {
+	config
+}
+
+// NewTagClient returns a client for the Tag from the given config.
+func NewTagClient(c config) *TagClient {
+	return &TagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tag.Hooks(f(g(h())))`.
+func (c *TagClient) Use(hooks ...Hook) {
+	c.hooks.Tag = append(c.hooks.Tag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tag.Intercept(f(g(h())))`.
+func (c *TagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Tag = append(c.inters.Tag, interceptors...)
+}
+
+// Create returns a builder for creating a Tag entity.
+func (c *TagClient) Create() *TagCreate {
+	mutation := newTagMutation(c.config, OpCreate)
+	return &TagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Tag entities.
+func (c *TagClient) CreateBulk(builders ...*TagCreate) *TagCreateBulk {
+	return &TagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TagClient) MapCreateBulk(slice any, setFunc func(*TagCreate, int)) *TagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TagCreateBulk{err: fmt.Errorf("calling to TagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Tag.
+func (c *TagClient) Update() *TagUpdate {
+	mutation := newTagMutation(c.config, OpUpdate)
+	return &TagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TagClient) UpdateOne(_m *Tag) *TagUpdateOne {
+	mutation := newTagMutation(c.config, OpUpdateOne, withTag(_m))
+	return &TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TagClient) UpdateOneID(id int) *TagUpdateOne {
+	mutation := newTagMutation(c.config, OpUpdateOne, withTagID(id))
+	return &TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Tag.
+func (c *TagClient) Delete() *TagDelete {
+	mutation := newTagMutation(c.config, OpDelete)
+	return &TagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TagClient) DeleteOne(_m *Tag) *TagDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TagClient) DeleteOneID(id int) *TagDeleteOne {
+	builder := c.Delete().Where(tag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TagDeleteOne{builder}
+}
+
+// Query returns a query builder for Tag.
+func (c *TagClient) Query() *TagQuery {
+	return &TagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Tag entity by its id.
+func (c *TagClient) Get(ctx context.Context, id int) (*Tag, error) {
+	return c.Query().Where(tag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TagClient) GetX(ctx context.Context, id int) *Tag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TagClient) Hooks() []Hook {
+	return c.hooks.Tag
+}
+
+// Interceptors returns the client interceptors.
+func (c *TagClient) Interceptors() []Interceptor {
+	return c.inters.Tag
+}
+
+func (c *TagClient) mutate(ctx context.Context, m *TagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Tag mutation op: %q", m.Op())
+	}
+}
+
+// TaggingClient is a client for the Tagging schema.
+type TaggingClient struct {
+	config
+}
+
+// NewTaggingClient returns a client for the Tagging from the given config.
+func NewTaggingClient(c config) *TaggingClient {
+	return &TaggingClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tagging.Hooks(f(g(h())))`.
+func (c *TaggingClient) Use(hooks ...Hook) {
+	c.hooks.Tagging = append(c.hooks.Tagging, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tagging.Intercept(f(g(h())))`.
+func (c *TaggingClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Tagging = append(c.inters.Tagging, interceptors...)
+}
+
+// Create returns a builder for creating a Tagging entity.
+func (c *TaggingClient) Create() *TaggingCreate {
+	mutation := newTaggingMutation(c.config, OpCreate)
+	return &TaggingCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Tagging entities.
+func (c *TaggingClient) CreateBulk(builders ...*TaggingCreate) *TaggingCreateBulk {
+	return &TaggingCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TaggingClient) MapCreateBulk(slice any, setFunc func(*TaggingCreate, int)) *TaggingCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TaggingCreateBulk{err: fmt.Errorf("calling to TaggingClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TaggingCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TaggingCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Tagging.
+func (c *TaggingClient) Update() *TaggingUpdate {
+	mutation := newTaggingMutation(c.config, OpUpdate)
+	return &TaggingUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TaggingClient) UpdateOne(_m *Tagging) *TaggingUpdateOne {
+	mutation := newTaggingMutation(c.config, OpUpdateOne, withTagging(_m))
+	return &TaggingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TaggingClient) UpdateOneID(id int) *TaggingUpdateOne {
+	mutation := newTaggingMutation(c.config, OpUpdateOne, withTaggingID(id))
+	return &TaggingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Tagging.
+func (c *TaggingClient) Delete() *TaggingDelete {
+	mutation := newTaggingMutation(c.config, OpDelete)
+	return &TaggingDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TaggingClient) DeleteOne(_m *Tagging) *TaggingDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TaggingClient) DeleteOneID(id int) *TaggingDeleteOne {
+	builder := c.Delete().Where(tagging.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TaggingDeleteOne{builder}
+}
+
+// Query returns a query builder for Tagging.
+func (c *TaggingClient) Query() *TaggingQuery {
+	return &TaggingQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTagging},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Tagging entity by its id.
+func (c *TaggingClient) Get(ctx context.Context, id int) (*Tagging, error) {
+	return c.Query().Where(tagging.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TaggingClient) GetX(ctx context.Context, id int) *Tagging {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TaggingClient) Hooks() []Hook {
+	return c.hooks.Tagging
+}
+
+// Interceptors returns the client interceptors.
+func (c *TaggingClient) Interceptors() []Interceptor {
+	return c.inters.Tagging
+}
+
+func (c *TaggingClient) mutate(ctx context.Context, m *TaggingMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TaggingCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TaggingUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TaggingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TaggingDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Tagging mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -4906,24 +5608,158 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 	}
 }
 
+// UserAccountClient is a client for the UserAccount schema.
+type UserAccountClient struct {
+	config
+}
+
+// NewUserAccountClient returns a client for the UserAccount from the given config.
+func NewUserAccountClient(c config) *UserAccountClient {
+	return &UserAccountClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `useraccount.Hooks(f(g(h())))`.
+func (c *UserAccountClient) Use(hooks ...Hook) {
+	c.hooks.UserAccount = append(c.hooks.UserAccount, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `useraccount.Intercept(f(g(h())))`.
+func (c *UserAccountClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserAccount = append(c.inters.UserAccount, interceptors...)
+}
+
+// Create returns a builder for creating a UserAccount entity.
+func (c *UserAccountClient) Create() *UserAccountCreate {
+	mutation := newUserAccountMutation(c.config, OpCreate)
+	return &UserAccountCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserAccount entities.
+func (c *UserAccountClient) CreateBulk(builders ...*UserAccountCreate) *UserAccountCreateBulk {
+	return &UserAccountCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserAccountClient) MapCreateBulk(slice any, setFunc func(*UserAccountCreate, int)) *UserAccountCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserAccountCreateBulk{err: fmt.Errorf("calling to UserAccountClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserAccountCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserAccountCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserAccount.
+func (c *UserAccountClient) Update() *UserAccountUpdate {
+	mutation := newUserAccountMutation(c.config, OpUpdate)
+	return &UserAccountUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserAccountClient) UpdateOne(_m *UserAccount) *UserAccountUpdateOne {
+	mutation := newUserAccountMutation(c.config, OpUpdateOne, withUserAccount(_m))
+	return &UserAccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserAccountClient) UpdateOneID(id int) *UserAccountUpdateOne {
+	mutation := newUserAccountMutation(c.config, OpUpdateOne, withUserAccountID(id))
+	return &UserAccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserAccount.
+func (c *UserAccountClient) Delete() *UserAccountDelete {
+	mutation := newUserAccountMutation(c.config, OpDelete)
+	return &UserAccountDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserAccountClient) DeleteOne(_m *UserAccount) *UserAccountDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserAccountClient) DeleteOneID(id int) *UserAccountDeleteOne {
+	builder := c.Delete().Where(useraccount.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserAccountDeleteOne{builder}
+}
+
+// Query returns a query builder for UserAccount.
+func (c *UserAccountClient) Query() *UserAccountQuery {
+	return &UserAccountQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserAccount},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserAccount entity by its id.
+func (c *UserAccountClient) Get(ctx context.Context, id int) (*UserAccount, error) {
+	return c.Query().Where(useraccount.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserAccountClient) GetX(ctx context.Context, id int) *UserAccount {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *UserAccountClient) Hooks() []Hook {
+	return c.hooks.UserAccount
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserAccountClient) Interceptors() []Interceptor {
+	return c.inters.UserAccount
+}
+
+func (c *UserAccountClient) mutate(ctx context.Context, m *UserAccountMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserAccountCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserAccountUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserAccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserAccountDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserAccount mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
-		Course, CourseCategory, CourseLesson, CourseLessonReview,
-		CourseLessonTranslation, CourseLessonVersion, CourseModule,
+		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
+		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLesson,
+		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
-		StaffRole, StaffRolePermission, User []ent.Hook
+		StaffRole, StaffRolePermission, Tag, Tagging, User, UserAccount []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
-		Course, CourseCategory, CourseLesson, CourseLessonReview,
-		CourseLessonTranslation, CourseLessonVersion, CourseModule,
+		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
+		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLesson,
+		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
-		StaffRole, StaffRolePermission, User []ent.Interceptor
+		StaffRole, StaffRolePermission, Tag, Tagging, User,
+		UserAccount []ent.Interceptor
 	}
 )

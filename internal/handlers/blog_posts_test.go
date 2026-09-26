@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/riverqueue/river"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -13,11 +14,12 @@ import (
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
-// blog_posts.yml seeds these two.
-const totalBlogPosts = 2
+// blog_posts.yml seeds these six (every state and locale: admin lists them all).
+const totalBlogPosts = 6
 
 func TestAdminListBlogPosts(t *testing.T) {
 	h := testsupport.NewHarness(t)
@@ -50,10 +52,9 @@ func TestAdminListBlogPosts(t *testing.T) {
 	assert.Equal(t, int32(0), full.ReadingTime)
 	assert.Equal(t, int32(2), full.LikesCount)
 	assert.Equal(t, int32(3), full.RelatedCourseItemsCount)
-	assert.Equal(t, "https://code-basics.com/ru/blog_posts/hello-world", full.URL)
 	assert.Equal(t, "alice@example.com", full.Creator.Email.Value)
 	require.False(t, full.CoverThumbVariant.Null)
-	assert.Equal(t, "http://localhost:3001/storage/blogcoverkey001", full.CoverThumbVariant.Value)
+	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", full.CoverThumbVariant.Value)
 	// All three variants serve the same URL until image variants land (ADR-0005).
 	assert.Equal(t, full.CoverThumbVariant.Value, full.CoverListVariant.Value)
 	assert.Equal(t, full.CoverThumbVariant.Value, full.CoverMainVariant.Value)
@@ -65,7 +66,6 @@ func TestAdminListBlogPosts(t *testing.T) {
 	assert.Equal(t, "", empty.RichBodyHtml)
 	assert.Equal(t, int32(0), empty.ReadingTime)
 	assert.Equal(t, int32(0), empty.LikesCount)
-	assert.Equal(t, "https://code-basics.com/blog_posts/second-post", empty.URL)
 	assert.True(t, empty.CoverThumbVariant.Null)
 	assert.True(t, empty.CoverListVariant.Null)
 	assert.True(t, empty.CoverMainVariant.Null)
@@ -82,7 +82,7 @@ func TestAdminGetBlogPost(t *testing.T) {
 	assert.Equal(t, int32(6001), post.ID)
 	assert.Equal(t, "hello-world", post.Slug.Value)
 	assert.Equal(t, int32(2), post.LikesCount)
-	assert.Equal(t, "http://localhost:3001/storage/blogcoverkey001", post.CoverMainVariant.Value)
+	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", post.CoverMainVariant.Value)
 	// Promoted-course ids surface in display order (fixture order 0,1,2).
 	assert.Equal(t, []int32{82481401, 207281424, 617920698}, post.RelatedCourseIds)
 }
@@ -238,6 +238,27 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
 }
 
+// An unknown course id fails the insert after the old set was deleted; the
+// replace is one transaction, so the post keeps its previous three courses
+// rather than being left with none, as legacy's bare delete-then-insert was.
+func TestAdminSetBlogPostRelatedCoursesKeepsTheSetOnFailure(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
+		CourseIds: []int32{207281424, 999999}, // ruby, no such course
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 6001})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusConflict, h.LastStatus())
+
+	count, err := h.DB.BlogPostRelatedCourseItem.Query().
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(6001)).
+		Count(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, 3, count)
+	assert.Equal(t, 3, h.DB.BlogPost.GetX(ctx, 6001).RelatedCourseItemsCount)
+}
+
 func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
@@ -247,4 +268,26 @@ func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
 	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+// The AI pick is asynchronous: the action only enqueues one job for the post,
+// leaving its current set in place until the worker replaces it.
+func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 6001})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, h.LastStatus())
+	assert.Equal(t, []river.JobArgs{jobs.SuggestRelatedCoursesArgs{BlogPostID: 6001}}, h.Enqueuer.Inserted)
+}
+
+func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+	assert.Empty(t, h.Enqueuer.Inserted)
 }

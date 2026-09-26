@@ -33,6 +33,9 @@ type BlogPostLike func(*sql.Selector)
 // BlogPostRelatedCourseItem is the predicate function for blogpostrelatedcourseitem builders.
 type BlogPostRelatedCourseItem func(*sql.Selector)
 
+// BookRequest is the predicate function for bookrequest builders.
+type BookRequest func(*sql.Selector)
+
 // CategoryQnaItem is the predicate function for categoryqnaitem builders.
 type CategoryQnaItem func(*sql.Selector)
 
@@ -41,6 +44,9 @@ type Course func(*sql.Selector)
 
 // CourseCategory is the predicate function for coursecategory builders.
 type CourseCategory func(*sql.Selector)
+
+// CourseCategoryItem is the predicate function for coursecategoryitem builders.
+type CourseCategoryItem func(*sql.Selector)
 
 // CourseLesson is the predicate function for courselesson builders.
 type CourseLesson func(*sql.Selector)
@@ -93,5 +99,14 @@ type StaffRole func(*sql.Selector)
 // StaffRolePermission is the predicate function for staffrolepermission builders.
 type StaffRolePermission func(*sql.Selector)
 
+// Tag is the predicate function for tag builders.
+type Tag func(*sql.Selector)
+
+// Tagging is the predicate function for tagging builders.
+type Tagging func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
+
+// UserAccount is the predicate function for useraccount builders.
+type UserAccount func(*sql.Selector)

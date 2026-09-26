@@ -62,6 +62,72 @@ func TestCreateLeadSendsUnsortedForm(t *testing.T) {
 	assertCustomField(t, lead["custom_fields_values"], "_YM_COUNTER", 316_943, "counter")
 }
 
+func TestCreateLeadSendsFirstVisitAttribution(t *testing.T) {
+	landing := "https://code-basics.com/ru/languages/python?from=vk&gclid=g-1&yclid=y-1&fbclid=f-1&ga_utm=ga-1"
+	referrer := "https://ya.ru/"
+	ip := "203.0.113.7"
+
+	body := sendLead(t, events.LeadCreated{
+		LeadID: 10, LandingPage: &landing, Referrer: &referrer, IP: &ip,
+		OccurredAt: time.Unix(123, 0),
+	})
+
+	metadata := requireMap(t, body["metadata"])
+	assert.Equal(t, landing, metadata["form_page"])
+	assert.Equal(t, referrer, metadata["referer"])
+	assert.Equal(t, ip, metadata["ip"])
+
+	fields := requireMap(t, requireSlice(t, requireMap(t, body["_embedded"])["leads"])[0])["custom_fields_values"]
+	assertCustomField(t, fields, "UTM_REFERRER", 316_923, referrer)
+	assertCustomField(t, fields, "REFERRER", 316_927, referrer)
+	assertCustomField(t, fields, "FROM", 316_937, "vk")
+	assertCustomField(t, fields, "GCLID", 316_945, "g-1")
+	assertCustomField(t, fields, "YCLID", 316_947, "y-1")
+	assertCustomField(t, fields, "FBCLID", 316_949, "f-1")
+	assertCustomField(t, fields, "GA_UTM", 957_711, "ga-1")
+	assertCustomFieldByID(t, fields, 936_587, "lead_form")
+}
+
+func TestCreateLeadPrefersTheMetrikaClientIDAsYclid(t *testing.T) {
+	landing := "https://code-basics.com/?yclid=y-1"
+	clientID := "1700000000123456789"
+
+	body := sendLead(t, events.LeadCreated{LeadID: 10, LandingPage: &landing, YMClientID: &clientID})
+
+	fields := requireMap(t, requireSlice(t, requireMap(t, body["_embedded"])["leads"])[0])["custom_fields_values"]
+	assertCustomField(t, fields, "YCLID", 316_947, clientID)
+	assertCustomField(t, fields, "_YM_UID", 316_941, clientID)
+}
+
+func TestCreateLeadDropsAnIPv6Address(t *testing.T) {
+	ip := "2001:db8::1"
+
+	body := sendLead(t, events.LeadCreated{LeadID: 10, IP: &ip})
+
+	assert.NotContains(t, requireMap(t, body["metadata"]), "ip")
+}
+
+// sendLead posts the event through a stubbed transport and returns the one
+// unsorted form it sent.
+func sendLead(t *testing.T, event events.LeadCreated) map[string]any {
+	t.Helper()
+	var body []map[string]any
+	client := NewClient("https://example.amocrm.test", "secret", "counter")
+	client.http.Transport = roundTripFunc(func(r *http.Request) (*http.Response, error) {
+		require.NoError(t, json.NewDecoder(r.Body).Decode(&body))
+		const responseBody = `{"_total_items":1,"_embedded":{"unsorted":[]}}`
+		return &http.Response{
+			StatusCode:    http.StatusOK,
+			Body:          io.NopCloser(bytes.NewBufferString(responseBody)),
+			ContentLength: int64(len(responseBody)),
+			Header:        http.Header{"Content-Type": []string{"application/hal+json"}},
+		}, nil
+	})
+	require.NoError(t, client.CreateLead(t.Context(), event))
+	require.Len(t, body, 1)
+	return body[0]
+}
+
 func TestCreateLeadReturnsRemoteError(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -214,4 +280,19 @@ func assertCustomField(t *testing.T, value any, code string, id int, expected st
 		return
 	}
 	t.Errorf("custom field %q not found", code)
+}
+
+func assertCustomFieldByID(t *testing.T, value any, id int, expected string) {
+	t.Helper()
+	for _, rawField := range requireSlice(t, value) {
+		field := requireMap(t, rawField)
+		if field["field_id"] != float64(id) {
+			continue
+		}
+		assert.NotContains(t, field, "field_code")
+		values := requireSlice(t, field["values"])
+		assert.Equal(t, expected, requireMap(t, values[0])["value"])
+		return
+	}
+	t.Errorf("custom field %d not found", id)
 }

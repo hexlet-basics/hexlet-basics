@@ -43,6 +43,7 @@ import (
 // goverter:extend NilCourseVersionFromEnt
 // goverter:extend TimeIdentity
 // goverter:extend EnrollmentStateFromPtr
+// goverter:extend LocaleFromPtr
 type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
 
@@ -73,6 +74,16 @@ type Converter interface {
 	ToCourse(source *ent.Course) api.Course
 
 	ToCourses(source []*ent.Course) []api.Course
+
+	// The sitemap's slim rows (legacy Sitemap*Resource): only what a link needs.
+	// goverter:map CourseID CourseId
+	ToSitemapCourseLandingPage(source *ent.LandingPage) api.SitemapCourseLandingPage
+
+	ToSitemapCourseLandingPages(source []*ent.LandingPage) []api.SitemapCourseLandingPage
+
+	ToSitemapBlogPost(source *ent.BlogPost) api.SitemapBlogPost
+
+	ToSitemapBlogPosts(source []*ent.BlogPost) []api.SitemapBlogPost
 
 	ToCourseCategory(source *ent.CourseCategory) api.CourseCategory
 
@@ -453,6 +464,12 @@ func NilReviewStateFromPtr(v *string) api.NilReviewState {
 		return api.NilReviewState{Null: true}
 	}
 	return api.NewNilReviewState(api.ReviewState(*v))
+}
+
+// LocaleFromPtr bridges a nullable ent locale column to the required contract
+// Locale. A row without a locale becomes "", which no page section matches.
+func LocaleFromPtr(v *string) api.Locale {
+	return api.Locale(lo.FromPtr(v))
 }
 
 // NilReviewLocaleFromPtr bridges a nullable ent string to ogen's NilReviewLocale.
