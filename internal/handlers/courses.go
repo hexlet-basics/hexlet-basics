@@ -39,6 +39,8 @@ type Server struct {
 	reviews LessonReviewEnqueuer
 	// relatedCourses schedules the AI related-courses pick for blog posts.
 	relatedCourses RelatedCoursesSuggestionEnqueuer
+	// relatedCoursesSet replaces a post's related courses in one transaction.
+	relatedCoursesSet RelatedCoursesReplacer
 	// progress owns sequential progression; handlers never evaluate the gate.
 	progress progress.Tracker
 	// assets owns upload policy (MIME allowlist, size cap) and persistence;
@@ -61,35 +63,37 @@ type Server struct {
 // auth router) simply leaves its field zero instead of passing a labelled nil.
 // Plain fields, no DI tags, so the handlers package stays injector-agnostic.
 type Deps struct {
-	DB             *ent.Client
-	Config         *config.Config
-	Starter        VersionBuildStarter
-	Reviews        LessonReviewEnqueuer
-	RelatedCourses RelatedCoursesSuggestionEnqueuer
-	Emails         AccountEmailEnqueuer
-	Progress       progress.Tracker
-	Assets         *assetstore.Store
-	Registrar      accounts.UserRegistrar
-	Remover        accounts.AccountRemover
-	Events         events.StandalonePublisher
-	Leads          leads.Creator
-	Books          books.Requester
-	I18n           *localization.Translator
-	Errors         *APIErrorHandler
-	YandexFeed     *feeds.Yandex
+	DB                *ent.Client
+	Config            *config.Config
+	Starter           VersionBuildStarter
+	Reviews           LessonReviewEnqueuer
+	RelatedCourses    RelatedCoursesSuggestionEnqueuer
+	RelatedCoursesSet RelatedCoursesReplacer
+	Emails            AccountEmailEnqueuer
+	Progress          progress.Tracker
+	Assets            *assetstore.Store
+	Registrar         accounts.UserRegistrar
+	Remover           accounts.AccountRemover
+	Events            events.StandalonePublisher
+	Leads             leads.Creator
+	Books             books.Requester
+	I18n              *localization.Translator
+	Errors            *APIErrorHandler
+	YandexFeed        *feeds.Yandex
 }
 
 // NewServer wires the handler to its dependencies.
 func NewServer(deps Deps) *Server {
 	return &Server{
-		db:             deps.DB,
-		conv:           &apiconv.ConverterImpl{},
-		cfg:            deps.Config,
-		starter:        deps.Starter,
-		reviews:        deps.Reviews,
-		relatedCourses: deps.RelatedCourses,
-		progress:       deps.Progress,
-		assets:         deps.Assets,
+		db:                deps.DB,
+		conv:              &apiconv.ConverterImpl{},
+		cfg:               deps.Config,
+		starter:           deps.Starter,
+		reviews:           deps.Reviews,
+		relatedCourses:    deps.RelatedCourses,
+		relatedCoursesSet: deps.RelatedCoursesSet,
+		progress:          deps.Progress,
+		assets:            deps.Assets,
 		auth: NewAuthHandler(deps.DB, deps.Config, deps.I18n, deps.Errors, deps.Registrar,
 			deps.Remover, deps.Events, deps.Progress, deps.Emails),
 		i18n:       deps.I18n,

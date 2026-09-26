@@ -21,6 +21,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/store"
 )
 
 // maxTextLength caps the post text in the prompt, counted in runes with the
@@ -37,6 +38,17 @@ const suggestInstructions = `Ты — ассистент, который пом�
 Первыми должны идти наиболее близкие курсы.
 `
 
+// Replacer swaps a post's related-courses set: the admin's hand-picked set and
+// the AI pick both go through it.
+type Replacer struct {
+	store store.Transactor
+}
+
+// NewReplacer builds the replacer over the application's transaction seam.
+func NewReplacer(txStore store.Transactor) *Replacer {
+	return &Replacer{store: txStore}
+}
+
 // Replace swaps the post's related-courses set for courseIDs, keeping their
 // order as the display order and the counter column in sync. Duplicates keep
 // their first position. Order is 0-based (legacy's job wrote 1-based, its
@@ -44,33 +56,36 @@ const suggestInstructions = `Ты — ассистент, который пом�
 // matters. The counter is written outright rather than counted up: legacy's
 // counter_culture drifted because delete_all skips its callbacks.
 //
-// No transaction of its own: the caller's client decides, as in legacy. An
-// unknown course id fails the FK constraint — the admin set surfaces that as
-// 409, and the Suggester passes only the ids it offered.
-func Replace(ctx context.Context, db *ent.Client, postID int, courseIDs []int) error {
-	if _, err := db.BlogPostRelatedCourseItem.Delete().
-		Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
-		return oops.Wrapf(err, "clear related courses of post %d", postID)
-	}
-
+// The delete, the insert and the counter run in one transaction. Legacy ran
+// them bare, so a failed insert (an unknown course id fails the FK) left the
+// post with no related courses at all; here the previous set survives. The
+// admin set surfaces that failure as 409, and the Suggester passes only the
+// ids it offered.
+func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) error {
 	courseIDs = lo.Uniq(courseIDs)
-	builders := make([]*ent.BlogPostRelatedCourseItemCreate, len(courseIDs))
-	for i, courseID := range courseIDs {
-		builders[i] = db.BlogPostRelatedCourseItem.Create().
-			SetBlogPostID(postID).
-			SetCourseID(courseID).
-			SetOrder(i)
-	}
-	if _, err := db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
-		return oops.Wrapf(err, "store related courses of post %d", postID)
-	}
+	return r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		if _, err := db.BlogPostRelatedCourseItem.Delete().
+			Where(blogpostrelatedcourseitem.BlogPostID(postID)).Exec(ctx); err != nil {
+			return oops.Wrapf(err, "clear related courses of post %d", postID)
+		}
 
-	if err := db.BlogPost.UpdateOneID(postID).
-		SetRelatedCourseItemsCount(len(courseIDs)).
-		Exec(ctx); err != nil {
-		return oops.Wrapf(err, "count related courses of post %d", postID)
-	}
-	return nil
+		builders := lo.Map(courseIDs, func(courseID int, i int) *ent.BlogPostRelatedCourseItemCreate {
+			return db.BlogPostRelatedCourseItem.Create().
+				SetBlogPostID(postID).
+				SetCourseID(courseID).
+				SetOrder(i)
+		})
+		if _, err := db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
+			return oops.Wrapf(err, "store related courses of post %d", postID)
+		}
+
+		if err := db.BlogPost.UpdateOneID(postID).
+			SetRelatedCourseItemsCount(len(courseIDs)).
+			Exec(ctx); err != nil {
+			return oops.Wrapf(err, "count related courses of post %d", postID)
+		}
+		return nil
+	})
 }
 
 // Enqueuer schedules the suggestion job from the HTTP process (insert-only
@@ -100,14 +115,15 @@ type Completer interface {
 
 // Suggester performs one suggestion job.
 type Suggester struct {
-	db     *ent.Client
-	llm    Completer
-	logger *slog.Logger
+	db       *ent.Client
+	replacer *Replacer
+	llm      Completer
+	logger   *slog.Logger
 }
 
 // NewSuggester wires the worker-side dependencies.
-func NewSuggester(db *ent.Client, llm Completer, logger *slog.Logger) *Suggester {
-	return &Suggester{db: db, llm: llm, logger: logger}
+func NewSuggester(db *ent.Client, replacer *Replacer, llm Completer, logger *slog.Logger) *Suggester {
+	return &Suggester{db: db, replacer: replacer, llm: llm, logger: logger}
 }
 
 // candidate is one course offered to the LLM, serialized exactly like the
@@ -167,7 +183,7 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 
 	offered := lo.SliceToMap(candidates, func(c candidate) (int, struct{}) { return c.ID, struct{}{} })
 	known := lo.Filter(courseIDs, func(id int, _ int) bool { _, ok := offered[id]; return ok })
-	return Replace(ctx, s.db, blogPostID, known)
+	return s.replacer.Replace(ctx, blogPostID, known)
 }
 
 // suggestPrompt assembles the legacy user message: the truncated plain text,

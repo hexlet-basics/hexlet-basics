@@ -14,7 +14,6 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/htmltext"
-	"hexletbasics/internal/relatedcourses"
 )
 
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
@@ -158,7 +157,7 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 	}
 
 	courseIDs := lo.Map(req.CourseIds, func(courseID int32, _ int) int { return int(courseID) })
-	if err := relatedcourses.Replace(ctx, s.db, id, courseIDs); err != nil {
+	if err := s.relatedCoursesSet.Replace(ctx, id, courseIDs); err != nil {
 		return nil, err
 	}
 

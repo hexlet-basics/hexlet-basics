@@ -240,6 +240,27 @@ func TestAdminSetBlogPostRelatedCourses(t *testing.T) {
 	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
 }
 
+// An unknown course id fails the insert after the old set was deleted; the
+// replace is one transaction, so the post keeps its previous three courses
+// rather than being left with none, as legacy's bare delete-then-insert was.
+func TestAdminSetBlogPostRelatedCoursesKeepsTheSetOnFailure(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSetBlogPostRelatedCourses(ctx, &api.BlogPostRelatedCoursesInput{
+		CourseIds: []int32{207281424, 999999}, // ruby, no such course
+	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 6001})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusConflict, h.LastStatus())
+
+	count, err := h.DB.BlogPostRelatedCourseItem.Query().
+		Where(blogpostrelatedcourseitem.BlogPostIDEQ(6001)).
+		Count(ctx)
+	require.NoError(t, err)
+	assert.Equal(t, 3, count)
+	assert.Equal(t, 3, h.DB.BlogPost.GetX(ctx, 6001).RelatedCourseItemsCount)
+}
+
 func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()

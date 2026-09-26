@@ -14,6 +14,7 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -32,8 +33,9 @@ func (f *fakeCompleter) Complete(_ context.Context, instructions, prompt string)
 	return f.answer, nil
 }
 
-func newSuggester(db *ent.Client, llm *fakeCompleter) *relatedcourses.Suggester {
-	return relatedcourses.NewSuggester(db, llm, slog.New(slog.NewTextHandler(io.Discard, nil)))
+func newSuggester(db *ent.Client, transactor store.Transactor, llm *fakeCompleter) *relatedcourses.Suggester {
+	return relatedcourses.NewSuggester(db, relatedcourses.NewReplacer(transactor), llm,
+		slog.New(slog.NewTextHandler(io.Discard, nil)))
 }
 
 // relatedSlugs is the post's stored related courses in display order, by slug.
@@ -53,10 +55,10 @@ func relatedSlugs(t *testing.T, db *ent.Client, postID int) []string {
 // pre-course (a real course without a landing page, so never offered), python,
 // and ruby again: only the offered ids survive, once each, in the LLM's order.
 func TestSuggestRelatedCoursesReplacesTheSetInOrder(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := &fakeCompleter{answer: "```json\n[207281424, 999999, 596063838, 617920698, 207281424]\n```"}
 
-	require.NoError(t, newSuggester(db, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
 	assert.Equal(t, 1, llm.calls)
 	assert.Equal(t, []string{"ruby", "python"}, relatedSlugs(t, db, 6001))
@@ -66,10 +68,10 @@ func TestSuggestRelatedCoursesReplacesTheSetInOrder(t *testing.T) {
 // The prompt is the legacy one: the post's plain text, then the published main
 // landing pages of the post's locale as {id, name} JSON.
 func TestSuggestRelatedCoursesBuildsTheLegacyPrompt(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := &fakeCompleter{answer: "[]"}
 
-	require.NoError(t, newSuggester(db, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
 	assert.Contains(t, llm.instructions, "Ты — ассистент, который помогает подобрать курсы.")
 	assert.True(t, strings.HasPrefix(llm.prompt, "Текст статьи: Hello world from the blog"), llm.prompt)
@@ -82,21 +84,21 @@ func TestSuggestRelatedCoursesBuildsTheLegacyPrompt(t *testing.T) {
 // Legacy `truncate(2000)`: 1997 characters plus "...", counted in characters,
 // not bytes — the posts are Russian.
 func TestSuggestRelatedCoursesTruncatesTheText(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	db.BlogPost.UpdateOneID(6001).SetRichBody("<p>" + strings.Repeat("я", 3000) + "</p>").ExecX(t.Context())
 	llm := &fakeCompleter{answer: "[]"}
 
-	require.NoError(t, newSuggester(db, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
 	assert.Contains(t, llm.prompt, "Текст статьи: "+strings.Repeat("я", 1997)+"...\n\n")
 }
 
 // An empty answer leaves the fixture set (javascript, ruby, python) untouched.
 func TestSuggestRelatedCoursesKeepsTheSetOnAnEmptyAnswer(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := &fakeCompleter{answer: "```\n[]\n```"}
 
-	require.NoError(t, newSuggester(db, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.NoError(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
 	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
 	assert.Equal(t, 3, db.BlogPost.GetX(t.Context(), 6001).RelatedCourseItemsCount)
@@ -105,10 +107,10 @@ func TestSuggestRelatedCoursesKeepsTheSetOnAnEmptyAnswer(t *testing.T) {
 // An answer that is not a JSON id list fails the job, so River retries it, and
 // nothing is written.
 func TestSuggestRelatedCoursesFailsOnAnUnreadableAnswer(t *testing.T) {
-	db := testsupport.NewClient(t)
+	db, transactor := testsupport.NewClientWithTransactor(t)
 	llm := &fakeCompleter{answer: "Here are the courses: ruby, python"}
 
-	require.Error(t, newSuggester(db, llm).SuggestRelatedCourses(t.Context(), 6001))
+	require.Error(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
 	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
 }

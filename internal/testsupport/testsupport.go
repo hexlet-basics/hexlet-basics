@@ -44,6 +44,7 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -208,10 +209,13 @@ func NewHarness(t *testing.T) *Harness {
 		Starter:        enqueuer,
 		Reviews:        enqueuer,
 		RelatedCourses: enqueuer,
-		Emails:         enqueuer,
-		Progress:       tracker,
-		Assets:         assets,
-		Registrar:      registrar,
+		// The real replacer over the savepoint transactor, so a failed replace
+		// rolls back exactly as it does in production.
+		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
+		Emails:            enqueuer,
+		Progress:          tracker,
+		Assets:            assets,
+		Registrar:         registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
 		Remover:    accounts.NewRemover(transactor),

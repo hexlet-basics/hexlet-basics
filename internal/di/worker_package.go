@@ -166,6 +166,10 @@ var workerPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
+		if err != nil {
+			return nil, err
+		}
 		entClient, err := do.Invoke[*ent.Client](i)
 		if err != nil {
 			return nil, err
@@ -184,7 +188,7 @@ var workerPackage = do.Package(
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
 			reviewer = lessonreviews.NewReviewer(entClient, llm)
-			suggester = relatedcourses.NewSuggester(entClient, llm, logger)
+			suggester = relatedcourses.NewSuggester(entClient, relatedCoursesSet, llm, logger)
 		}
 		return jobs.NewWorkerClient(
 			db,

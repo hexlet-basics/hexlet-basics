@@ -195,6 +195,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
+		if err != nil {
+			return nil, err
+		}
 		emails, err := do.Invoke[*accountemails.Enqueuer](i)
 		if err != nil {
 			return nil, err
@@ -240,22 +244,23 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return handlers.NewServer(handlers.Deps{
-			DB:             db,
-			Config:         cfg,
-			Starter:        starter,
-			Reviews:        reviews,
-			RelatedCourses: relatedCourses,
-			Emails:         emails,
-			Progress:       tracker,
-			Assets:         assets,
-			Registrar:      registrar,
-			Remover:        remover,
-			Events:         publisher,
-			Leads:          leadRecorder,
-			Books:          bookRecorder,
-			I18n:           translator,
-			Errors:         errorHandler,
-			YandexFeed:     yandexFeed,
+			DB:                db,
+			Config:            cfg,
+			Starter:           starter,
+			Reviews:           reviews,
+			RelatedCourses:    relatedCourses,
+			RelatedCoursesSet: relatedCoursesSet,
+			Emails:            emails,
+			Progress:          tracker,
+			Assets:            assets,
+			Registrar:         registrar,
+			Remover:           remover,
+			Events:            publisher,
+			Leads:             leadRecorder,
+			Books:             bookRecorder,
+			I18n:              translator,
+			Errors:            errorHandler,
+			YandexFeed:        yandexFeed,
 		}), nil
 	}),
 	// The progress module owns sequential progression. It writes and publishes

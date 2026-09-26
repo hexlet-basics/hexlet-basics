@@ -15,6 +15,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/logging"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 )
@@ -91,5 +92,14 @@ var commonPackage = do.Package(
 			return nil, err
 		}
 		return assetstore.New(db, bucket, cfg.PublicURL), nil
+	}),
+	// Both processes replace a post's related courses: the admin set in the
+	// HTTP process, the AI pick in the worker.
+	do.Lazy[*relatedcourses.Replacer](func(i do.Injector) (*relatedcourses.Replacer, error) {
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return relatedcourses.NewReplacer(txStore), nil
 	}),
 )
