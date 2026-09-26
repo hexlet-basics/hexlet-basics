@@ -1309,7 +1309,9 @@ export const startLesson = <ThrowOnError extends boolean = false>(options: Optio
 });
 
 /**
- * Persist the preferred UI locale on the session.
+ * Remember the chosen UI locale: on the signed-in user, and in a cookie the
+ * site root reads to pick the locale it redirects to. The page navigates
+ * itself afterwards.
  */
 export const switchLocale = <ThrowOnError extends boolean = false>(options: Options<SwitchLocaleData, ThrowOnError>): RequestResult<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError> => (options.client ?? client).get<SwitchLocaleResponses, SwitchLocaleErrors, ThrowOnError>({ url: '/api/locale/switch', ...options });
 

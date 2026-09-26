@@ -134,6 +134,76 @@ func (_c *UserCreate) SetNillableAssistantMessagesCount(v *int) *UserCreate {
 	return _c
 }
 
+// SetState sets the "state" field.
+func (_c *UserCreate) SetState(v string) *UserCreate {
+	_c.mutation.SetState(v)
+	return _c
+}
+
+// SetNillableState sets the "state" field if the given value is not nil.
+func (_c *UserCreate) SetNillableState(v *string) *UserCreate {
+	if v != nil {
+		_c.SetState(*v)
+	}
+	return _c
+}
+
+// SetLocale sets the "locale" field.
+func (_c *UserCreate) SetLocale(v string) *UserCreate {
+	_c.mutation.SetLocale(v)
+	return _c
+}
+
+// SetNillableLocale sets the "locale" field if the given value is not nil.
+func (_c *UserCreate) SetNillableLocale(v *string) *UserCreate {
+	if v != nil {
+		_c.SetLocale(*v)
+	}
+	return _c
+}
+
+// SetNickname sets the "nickname" field.
+func (_c *UserCreate) SetNickname(v string) *UserCreate {
+	_c.mutation.SetNickname(v)
+	return _c
+}
+
+// SetNillableNickname sets the "nickname" field if the given value is not nil.
+func (_c *UserCreate) SetNillableNickname(v *string) *UserCreate {
+	if v != nil {
+		_c.SetNickname(*v)
+	}
+	return _c
+}
+
+// SetPhone sets the "phone" field.
+func (_c *UserCreate) SetPhone(v string) *UserCreate {
+	_c.mutation.SetPhone(v)
+	return _c
+}
+
+// SetNillablePhone sets the "phone" field if the given value is not nil.
+func (_c *UserCreate) SetNillablePhone(v *string) *UserCreate {
+	if v != nil {
+		_c.SetPhone(*v)
+	}
+	return _c
+}
+
+// SetConfirmationToken sets the "confirmation_token" field.
+func (_c *UserCreate) SetConfirmationToken(v string) *UserCreate {
+	_c.mutation.SetConfirmationToken(v)
+	return _c
+}
+
+// SetNillableConfirmationToken sets the "confirmation_token" field if the given value is not nil.
+func (_c *UserCreate) SetNillableConfirmationToken(v *string) *UserCreate {
+	if v != nil {
+		_c.SetConfirmationToken(*v)
+	}
+	return _c
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_c *UserCreate) Mutation() *UserMutation {
 	return _c.mutation
@@ -245,6 +315,26 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.AssistantMessagesCount(); ok {
 		_spec.SetField(user.FieldAssistantMessagesCount, field.TypeInt, value)
 		_node.AssistantMessagesCount = &value
+	}
+	if value, ok := _c.mutation.State(); ok {
+		_spec.SetField(user.FieldState, field.TypeString, value)
+		_node.State = &value
+	}
+	if value, ok := _c.mutation.Locale(); ok {
+		_spec.SetField(user.FieldLocale, field.TypeString, value)
+		_node.Locale = &value
+	}
+	if value, ok := _c.mutation.Nickname(); ok {
+		_spec.SetField(user.FieldNickname, field.TypeString, value)
+		_node.Nickname = &value
+	}
+	if value, ok := _c.mutation.Phone(); ok {
+		_spec.SetField(user.FieldPhone, field.TypeString, value)
+		_node.Phone = &value
+	}
+	if value, ok := _c.mutation.ConfirmationToken(); ok {
+		_spec.SetField(user.FieldConfirmationToken, field.TypeString, value)
+		_node.ConfirmationToken = &value
 	}
 	return _node, _spec
 }
@@ -421,6 +511,96 @@ func (u *UserUpsert) AddAssistantMessagesCount(v int) *UserUpsert {
 // ClearAssistantMessagesCount clears the value of the "assistant_messages_count" field.
 func (u *UserUpsert) ClearAssistantMessagesCount() *UserUpsert {
 	u.SetNull(user.FieldAssistantMessagesCount)
+	return u
+}
+
+// SetState sets the "state" field.
+func (u *UserUpsert) SetState(v string) *UserUpsert {
+	u.Set(user.FieldState, v)
+	return u
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *UserUpsert) UpdateState() *UserUpsert {
+	u.SetExcluded(user.FieldState)
+	return u
+}
+
+// ClearState clears the value of the "state" field.
+func (u *UserUpsert) ClearState() *UserUpsert {
+	u.SetNull(user.FieldState)
+	return u
+}
+
+// SetLocale sets the "locale" field.
+func (u *UserUpsert) SetLocale(v string) *UserUpsert {
+	u.Set(user.FieldLocale, v)
+	return u
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *UserUpsert) UpdateLocale() *UserUpsert {
+	u.SetExcluded(user.FieldLocale)
+	return u
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *UserUpsert) ClearLocale() *UserUpsert {
+	u.SetNull(user.FieldLocale)
+	return u
+}
+
+// SetNickname sets the "nickname" field.
+func (u *UserUpsert) SetNickname(v string) *UserUpsert {
+	u.Set(user.FieldNickname, v)
+	return u
+}
+
+// UpdateNickname sets the "nickname" field to the value that was provided on create.
+func (u *UserUpsert) UpdateNickname() *UserUpsert {
+	u.SetExcluded(user.FieldNickname)
+	return u
+}
+
+// ClearNickname clears the value of the "nickname" field.
+func (u *UserUpsert) ClearNickname() *UserUpsert {
+	u.SetNull(user.FieldNickname)
+	return u
+}
+
+// SetPhone sets the "phone" field.
+func (u *UserUpsert) SetPhone(v string) *UserUpsert {
+	u.Set(user.FieldPhone, v)
+	return u
+}
+
+// UpdatePhone sets the "phone" field to the value that was provided on create.
+func (u *UserUpsert) UpdatePhone() *UserUpsert {
+	u.SetExcluded(user.FieldPhone)
+	return u
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (u *UserUpsert) ClearPhone() *UserUpsert {
+	u.SetNull(user.FieldPhone)
+	return u
+}
+
+// SetConfirmationToken sets the "confirmation_token" field.
+func (u *UserUpsert) SetConfirmationToken(v string) *UserUpsert {
+	u.Set(user.FieldConfirmationToken, v)
+	return u
+}
+
+// UpdateConfirmationToken sets the "confirmation_token" field to the value that was provided on create.
+func (u *UserUpsert) UpdateConfirmationToken() *UserUpsert {
+	u.SetExcluded(user.FieldConfirmationToken)
+	return u
+}
+
+// ClearConfirmationToken clears the value of the "confirmation_token" field.
+func (u *UserUpsert) ClearConfirmationToken() *UserUpsert {
+	u.SetNull(user.FieldConfirmationToken)
 	return u
 }
 
@@ -613,6 +793,111 @@ func (u *UserUpsertOne) UpdateAssistantMessagesCount() *UserUpsertOne {
 func (u *UserUpsertOne) ClearAssistantMessagesCount() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearAssistantMessagesCount()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *UserUpsertOne) SetState(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateState() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *UserUpsertOne) ClearState() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *UserUpsertOne) SetLocale(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateLocale() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *UserUpsertOne) ClearLocale() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetNickname sets the "nickname" field.
+func (u *UserUpsertOne) SetNickname(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetNickname(v)
+	})
+}
+
+// UpdateNickname sets the "nickname" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateNickname() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateNickname()
+	})
+}
+
+// ClearNickname clears the value of the "nickname" field.
+func (u *UserUpsertOne) ClearNickname() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearNickname()
+	})
+}
+
+// SetPhone sets the "phone" field.
+func (u *UserUpsertOne) SetPhone(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetPhone(v)
+	})
+}
+
+// UpdatePhone sets the "phone" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdatePhone() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdatePhone()
+	})
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (u *UserUpsertOne) ClearPhone() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearPhone()
+	})
+}
+
+// SetConfirmationToken sets the "confirmation_token" field.
+func (u *UserUpsertOne) SetConfirmationToken(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetConfirmationToken(v)
+	})
+}
+
+// UpdateConfirmationToken sets the "confirmation_token" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateConfirmationToken() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateConfirmationToken()
+	})
+}
+
+// ClearConfirmationToken clears the value of the "confirmation_token" field.
+func (u *UserUpsertOne) ClearConfirmationToken() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearConfirmationToken()
 	})
 }
 
@@ -971,6 +1256,111 @@ func (u *UserUpsertBulk) UpdateAssistantMessagesCount() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearAssistantMessagesCount() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearAssistantMessagesCount()
+	})
+}
+
+// SetState sets the "state" field.
+func (u *UserUpsertBulk) SetState(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetState(v)
+	})
+}
+
+// UpdateState sets the "state" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateState() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateState()
+	})
+}
+
+// ClearState clears the value of the "state" field.
+func (u *UserUpsertBulk) ClearState() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearState()
+	})
+}
+
+// SetLocale sets the "locale" field.
+func (u *UserUpsertBulk) SetLocale(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLocale(v)
+	})
+}
+
+// UpdateLocale sets the "locale" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateLocale() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLocale()
+	})
+}
+
+// ClearLocale clears the value of the "locale" field.
+func (u *UserUpsertBulk) ClearLocale() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearLocale()
+	})
+}
+
+// SetNickname sets the "nickname" field.
+func (u *UserUpsertBulk) SetNickname(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetNickname(v)
+	})
+}
+
+// UpdateNickname sets the "nickname" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateNickname() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateNickname()
+	})
+}
+
+// ClearNickname clears the value of the "nickname" field.
+func (u *UserUpsertBulk) ClearNickname() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearNickname()
+	})
+}
+
+// SetPhone sets the "phone" field.
+func (u *UserUpsertBulk) SetPhone(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetPhone(v)
+	})
+}
+
+// UpdatePhone sets the "phone" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdatePhone() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdatePhone()
+	})
+}
+
+// ClearPhone clears the value of the "phone" field.
+func (u *UserUpsertBulk) ClearPhone() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearPhone()
+	})
+}
+
+// SetConfirmationToken sets the "confirmation_token" field.
+func (u *UserUpsertBulk) SetConfirmationToken(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetConfirmationToken(v)
+	})
+}
+
+// UpdateConfirmationToken sets the "confirmation_token" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateConfirmationToken() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateConfirmationToken()
+	})
+}
+
+// ClearConfirmationToken clears the value of the "confirmation_token" field.
+func (u *UserUpsertBulk) ClearConfirmationToken() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearConfirmationToken()
 	})
 }
 

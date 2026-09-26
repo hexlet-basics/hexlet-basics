@@ -89,6 +89,13 @@ var serverPackage = do.Package(
 		}
 		return leads.NewRecorder(db, publisher), nil
 	}),
+	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return accounts.NewRemover(db), nil
+	}),
 	do.Lazy[*river.Client[*sql.Tx]](func(i do.Injector) (*river.Client[*sql.Tx], error) {
 		db, err := do.Invoke[*sql.DB](i)
 		if err != nil {
@@ -156,6 +163,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		remover, err := do.Invoke[*accounts.Remover](i)
+		if err != nil {
+			return nil, err
+		}
 		publisher, err := do.Invoke[*events.Publisher](i)
 		if err != nil {
 			return nil, err
@@ -185,6 +196,7 @@ var serverPackage = do.Package(
 			tracker,
 			assets,
 			registrar,
+			remover,
 			publisher,
 			leadRecorder,
 			translator,

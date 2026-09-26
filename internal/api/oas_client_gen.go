@@ -580,10 +580,11 @@ type Invoker interface {
 	StartLesson(ctx context.Context, params StartLessonParams) (StartLessonRes, error)
 	// SwitchLocale invokes switchLocale operation.
 	//
-	// Persist the preferred UI locale on the session.
+	// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+	// the locale it redirects to. The page navigates itself afterwards.
 	//
 	// GET /api/locale/switch
-	SwitchLocale(ctx context.Context, params SwitchLocaleParams) error
+	SwitchLocale(ctx context.Context, params SwitchLocaleParams) (*SwitchLocaleNoContent, error)
 	// UpdatePassword invokes updatePassword operation.
 	//
 	// Set a new password using a reset token; signs the user in.
@@ -13921,12 +13922,13 @@ func (c *Client) sendStartLesson(ctx context.Context, params StartLessonParams) 
 
 // SwitchLocale invokes switchLocale operation.
 //
-// Persist the preferred UI locale on the session.
+// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+// the locale it redirects to. The page navigates itself afterwards.
 //
 // GET /api/locale/switch
-func (c *Client) SwitchLocale(ctx context.Context, params SwitchLocaleParams) error {
-	_, err := c.sendSwitchLocale(ctx, params)
-	return err
+func (c *Client) SwitchLocale(ctx context.Context, params SwitchLocaleParams) (*SwitchLocaleNoContent, error) {
+	res, err := c.sendSwitchLocale(ctx, params)
+	return res, err
 }
 
 func (c *Client) sendSwitchLocale(ctx context.Context, params SwitchLocaleParams) (res *SwitchLocaleNoContent, err error) {

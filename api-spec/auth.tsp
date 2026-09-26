@@ -32,10 +32,18 @@ model SessionInput {
   @minLength(1) password: string;
 }
 
+/**
+ * A name on the profile (legacy `User` validations on first/last name): at
+ * most 40 characters, none of the characters in the pattern; blank is allowed.
+ */
+@maxLength(40)
+@pattern("^[^`!@#$%\\^&*+=]*$")
+scalar ProfileName extends string;
+
 /** Profile edit form (legacy: `UserProfileForm`). */
 model ProfileInput {
-  firstName: string | null;
-  lastName: string | null;
+  firstName: ProfileName | null;
+  lastName: ProfileName | null;
 }
 
 /** Password reset submission (legacy: `UserPassword`). */
@@ -63,6 +71,12 @@ model SessionResponse {
 
 /** A successful sign-out with the expired auth cookies. */
 model SessionDeleted {
+  @statusCode statusCode: 204;
+  @header("Set-Cookie") setCookie: string[];
+}
+
+/** A remembered locale choice and the cookie that carries it. */
+model LocaleSwitched {
   @statusCode statusCode: 204;
   @header("Set-Cookie") setCookie: string[];
 }
@@ -195,7 +209,7 @@ interface AccountProfile {
   @delete
   @useAuth([UserSession, XsrfToken])
   @operationId("deleteAccount")
-  delete(): NoContent | UnauthorizedError | ApiError;
+  delete(): SessionDeleted | UnauthorizedError | ApiError;
 }
 
 // ---- Locale ---------------------------------------------------------------
@@ -203,9 +217,13 @@ interface AccountProfile {
 @route("/locale")
 @tag("Auth")
 interface LocaleSwitch {
-  /** Persist the preferred UI locale on the session. */
+  /**
+   * Remember the chosen UI locale: on the signed-in user, and in a cookie the
+   * site root reads to pick the locale it redirects to. The page navigates
+   * itself afterwards.
+   */
   @get
   @route("/switch")
   @operationId("switchLocale")
-  switch(@query locale: Locale): NoContent | ApiError;
+  switch(@query locale: Locale): LocaleSwitched | ApiError;
 }

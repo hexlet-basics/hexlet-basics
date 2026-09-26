@@ -29,6 +29,16 @@ const (
 	FieldAdmin = "admin"
 	// FieldAssistantMessagesCount holds the string denoting the assistant_messages_count field in the database.
 	FieldAssistantMessagesCount = "assistant_messages_count"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
+	// FieldLocale holds the string denoting the locale field in the database.
+	FieldLocale = "locale"
+	// FieldNickname holds the string denoting the nickname field in the database.
+	FieldNickname = "nickname"
+	// FieldPhone holds the string denoting the phone field in the database.
+	FieldPhone = "phone"
+	// FieldConfirmationToken holds the string denoting the confirmation_token field in the database.
+	FieldConfirmationToken = "confirmation_token"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -44,6 +54,11 @@ var Columns = []string{
 	FieldLastName,
 	FieldAdmin,
 	FieldAssistantMessagesCount,
+	FieldState,
+	FieldLocale,
+	FieldNickname,
+	FieldPhone,
+	FieldConfirmationToken,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -111,4 +126,29 @@ func ByAdmin(opts ...sql.OrderTermOption) OrderOption {
 // ByAssistantMessagesCount orders the results by the assistant_messages_count field.
 func ByAssistantMessagesCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAssistantMessagesCount, opts...).ToFunc()
+}
+
+// ByState orders the results by the state field.
+func ByState(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldState, opts...).ToFunc()
+}
+
+// ByLocale orders the results by the locale field.
+func ByLocale(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLocale, opts...).ToFunc()
+}
+
+// ByNickname orders the results by the nickname field.
+func ByNickname(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNickname, opts...).ToFunc()
+}
+
+// ByPhone orders the results by the phone field.
+func ByPhone(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPhone, opts...).ToFunc()
+}
+
+// ByConfirmationToken orders the results by the confirmation_token field.
+func ByConfirmationToken(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldConfirmationToken, opts...).ToFunc()
 }

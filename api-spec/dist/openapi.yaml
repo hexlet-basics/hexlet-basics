@@ -101,7 +101,14 @@ paths:
       parameters: []
       responses:
         '204':
-          description: Empty 204 response for deletes and other content-less successes.
+          description: A successful sign-out with the expired auth cookies.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: array
+                items:
+                  type: string
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
@@ -3950,7 +3957,10 @@ paths:
   /api/locale/switch:
     get:
       operationId: switchLocale
-      description: Persist the preferred UI locale on the session.
+      description: |-
+        Remember the chosen UI locale: on the signed-in user, and in a cookie the
+        site root reads to pick the locale it redirects to. The page navigates
+        itself afterwards.
       parameters:
         - name: locale
           in: query
@@ -3960,7 +3970,14 @@ paths:
           explode: false
       responses:
         '204':
-          description: Empty 204 response for deletes and other content-less successes.
+          description: A remembered locale choice and the cookie that carries it.
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: array
+                items:
+                  type: string
         default:
           description: |-
             Default error response shared by every operation.
@@ -6117,11 +6134,22 @@ components:
       properties:
         firstName:
           type: string
+          allOf:
+            - $ref: '#/components/schemas/ProfileName'
           nullable: true
         lastName:
           type: string
+          allOf:
+            - $ref: '#/components/schemas/ProfileName'
           nullable: true
       description: 'Profile edit form (legacy: `UserProfileForm`).'
+    ProfileName:
+      type: string
+      maxLength: 40
+      pattern: ^[^`!@#$%\^&*+=]*$
+      description: |-
+        A name on the profile (legacy `User` validations on first/last name): at
+        most 40 characters, none of the characters in the pattern; blank is allowed.
     QnaItem:
       type: object
       required:

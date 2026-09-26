@@ -12161,7 +12161,59 @@ func decodeDeleteAccountResponse(resp *http.Response) (res DeleteAccountRes, _ e
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		return &DeleteAccountNoContent{}, nil
+		var wrapper DeleteAccountNoContent
+		h := uri.NewHeaderDecoder(resp.Header)
+		// Parse "Set-Cookie" header.
+		{
+			cfg := uri.HeaderParameterDecodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := func() error {
+				if err := h.HasParam(cfg); err == nil {
+					if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+						wrapper.SetCookie = nil
+						return d.DecodeArray(func(d uri.Decoder) error {
+							var wrapperDotSetCookieVal string
+							if err := func() error {
+								val, err := d.DecodeValue()
+								if err != nil {
+									return err
+								}
+
+								c, err := conv.ToString(val)
+								if err != nil {
+									return err
+								}
+
+								wrapperDotSetCookieVal = c
+								return nil
+							}(); err != nil {
+								return err
+							}
+							wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+							return nil
+						})
+					}); err != nil {
+						return err
+					}
+					if err := func() error {
+						if wrapper.SetCookie == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				} else {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "parse Set-Cookie header")
+			}
+		}
+		return &wrapper, nil
 	case 401:
 		// Code 401.
 		ct, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
@@ -14444,7 +14496,59 @@ func decodeSwitchLocaleResponse(resp *http.Response) (res *SwitchLocaleNoContent
 	switch resp.StatusCode {
 	case 204:
 		// Code 204.
-		return &SwitchLocaleNoContent{}, nil
+		var wrapper SwitchLocaleNoContent
+		h := uri.NewHeaderDecoder(resp.Header)
+		// Parse "Set-Cookie" header.
+		{
+			cfg := uri.HeaderParameterDecodingConfig{
+				Name:    "Set-Cookie",
+				Explode: false,
+			}
+			if err := func() error {
+				if err := h.HasParam(cfg); err == nil {
+					if err := h.DecodeParam(cfg, func(d uri.Decoder) error {
+						wrapper.SetCookie = nil
+						return d.DecodeArray(func(d uri.Decoder) error {
+							var wrapperDotSetCookieVal string
+							if err := func() error {
+								val, err := d.DecodeValue()
+								if err != nil {
+									return err
+								}
+
+								c, err := conv.ToString(val)
+								if err != nil {
+									return err
+								}
+
+								wrapperDotSetCookieVal = c
+								return nil
+							}(); err != nil {
+								return err
+							}
+							wrapper.SetCookie = append(wrapper.SetCookie, wrapperDotSetCookieVal)
+							return nil
+						})
+					}); err != nil {
+						return err
+					}
+					if err := func() error {
+						if wrapper.SetCookie == nil {
+							return errors.New("nil is invalid value")
+						}
+						return nil
+					}(); err != nil {
+						return err
+					}
+				} else {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return res, errors.Wrap(err, "parse Set-Cookie header")
+			}
+		}
+		return &wrapper, nil
 	}
 	// Convenient error response.
 	defRes, err := func() (res *ProblemDetailsStatusCode, err error) {

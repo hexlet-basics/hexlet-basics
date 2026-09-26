@@ -650,11 +650,17 @@ export const zProblemDetails = z.object({
 });
 
 /**
+ * A name on the profile (legacy `User` validations on first/last name): at
+ * most 40 characters, none of the characters in the pattern; blank is allowed.
+ */
+export const zProfileName = z.string().max(40).regex(/^[^`!@#$%\^&*+=]*$/);
+
+/**
  * Profile edit form (legacy: `UserProfileForm`).
  */
 export const zProfileInput = z.object({
-  firstName: z.string().nullable(),
-  lastName: z.string().nullable()
+  firstName: zProfileName.nullable(),
+  lastName: zProfileName.nullable()
 });
 
 /**
@@ -999,7 +1005,7 @@ export const zListQuerySortField = z.string();
 export const zListQuerySortOrder = z.enum(['asc', 'desc']);
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * A successful sign-out with the expired auth cookies.
  */
 export const zDeleteAccountResponse = z.void();
 
@@ -1844,7 +1850,7 @@ export const zSwitchLocaleQuery = z.object({
 });
 
 /**
- * Empty 204 response for deletes and other content-less successes.
+ * A remembered locale choice and the cookie that carries it.
  */
 export const zSwitchLocaleResponse = z.void();
 

@@ -198,7 +198,10 @@ func NewHarness(t *testing.T) *Harness {
 	// The real lead recorder too: a lead test asserts the stored row and the
 	// published fact, and both go through the test's transaction.
 	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, leadRecorder, translator, errorHandler)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar,
+		// The real remover, over the savepoint transactor: what a test asserts
+		// about a removed account is what production does to one.
+		accounts.NewRemover(transactor), eventPublisher, leadRecorder, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),

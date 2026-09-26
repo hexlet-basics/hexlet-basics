@@ -19779,7 +19779,8 @@ func (s *Server) handleStartLessonRequest(args [1]string, argsEscaped bool, w ht
 
 // handleSwitchLocaleRequest handles switchLocale operation.
 //
-// Persist the preferred UI locale on the session.
+// Remember the chosen UI locale: on the signed-in user, and in a cookie the site root reads to pick
+// the locale it redirects to. The page navigates itself afterwards.
 //
 // GET /api/locale/switch
 func (s *Server) handleSwitchLocaleRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -19898,12 +19899,12 @@ func (s *Server) handleSwitchLocaleRequest(args [0]string, argsEscaped bool, w h
 			mreq,
 			unpackSwitchLocaleParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.SwitchLocale(ctx, params)
+				response, err = s.h.SwitchLocale(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		err = s.h.SwitchLocale(ctx, params)
+		response, err = s.h.SwitchLocale(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ProblemDetailsStatusCode](err); ok {

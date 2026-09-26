@@ -865,9 +865,15 @@ export type ProblemDetails = {
  * Profile edit form (legacy: `UserProfileForm`).
  */
 export type ProfileInput = {
-  firstName: string | null;
-  lastName: string | null;
+  firstName: ProfileName | null;
+  lastName: ProfileName | null;
 };
+
+/**
+ * A name on the profile (legacy `User` validations on first/last name): at
+ * most 40 characters, none of the characters in the pattern; blank is allowed.
+ */
+export type ProfileName = string;
 
 /**
  * A Q&A entry attached to a category or landing page (legacy QnA item).
@@ -1232,7 +1238,7 @@ export type DeleteAccountError = DeleteAccountErrors[keyof DeleteAccountErrors];
 
 export type DeleteAccountResponses = {
   /**
-   * Empty 204 response for deletes and other content-less successes.
+   * A successful sign-out with the expired auth cookies.
    */
   204: void;
 };
@@ -4678,7 +4684,7 @@ export type SwitchLocaleError = SwitchLocaleErrors[keyof SwitchLocaleErrors];
 
 export type SwitchLocaleResponses = {
   /**
-   * Empty 204 response for deletes and other content-less successes.
+   * A remembered locale choice and the cookie that carries it.
    */
   204: void;
 };

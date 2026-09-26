@@ -3684,7 +3684,19 @@ func (s *CurrentUser) SetUser(val NilUser) {
 }
 
 // DeleteAccountNoContent is response for DeleteAccount operation.
-type DeleteAccountNoContent struct{}
+type DeleteAccountNoContent struct {
+	SetCookie []string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *DeleteAccountNoContent) GetSetCookie() []string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *DeleteAccountNoContent) SetSetCookie(val []string) {
+	s.SetCookie = val
+}
 
 func (*DeleteAccountNoContent) deleteAccountRes() {}
 
@@ -5535,6 +5547,51 @@ func (o NilLandingPageState) Or(d LandingPageState) LandingPageState {
 	return d
 }
 
+// NewNilProfileName returns new NilProfileName with value set to v.
+func NewNilProfileName(v ProfileName) NilProfileName {
+	return NilProfileName{
+		Value: v,
+	}
+}
+
+// NilProfileName is nullable ProfileName.
+type NilProfileName struct {
+	Value ProfileName
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilProfileName) SetTo(v ProfileName) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilProfileName) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilProfileName) SetToNull() {
+	o.Null = true
+	var v ProfileName
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilProfileName) Get() (v ProfileName, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilProfileName) Or(d ProfileName) ProfileName {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilReviewLocale returns new NilReviewLocale with value set to v.
 func NewNilReviewLocale(v ReviewLocale) NilReviewLocale {
 	return NilReviewLocale{
@@ -6167,29 +6224,31 @@ func (s *ProblemDetailsStatusCode) SetResponse(val ProblemDetails) {
 // Profile edit form (legacy: `UserProfileForm`).
 // Ref: #/components/schemas/ProfileInput
 type ProfileInput struct {
-	FirstName NilString `json:"firstName"`
-	LastName  NilString `json:"lastName"`
+	FirstName NilProfileName `json:"firstName"`
+	LastName  NilProfileName `json:"lastName"`
 }
 
 // GetFirstName returns the value of FirstName.
-func (s *ProfileInput) GetFirstName() NilString {
+func (s *ProfileInput) GetFirstName() NilProfileName {
 	return s.FirstName
 }
 
 // GetLastName returns the value of LastName.
-func (s *ProfileInput) GetLastName() NilString {
+func (s *ProfileInput) GetLastName() NilProfileName {
 	return s.LastName
 }
 
 // SetFirstName sets the value of FirstName.
-func (s *ProfileInput) SetFirstName(val NilString) {
+func (s *ProfileInput) SetFirstName(val NilProfileName) {
 	s.FirstName = val
 }
 
 // SetLastName sets the value of LastName.
-func (s *ProfileInput) SetLastName(val NilString) {
+func (s *ProfileInput) SetLastName(val NilProfileName) {
 	s.LastName = val
 }
+
+type ProfileName string
 
 // A Q&A entry attached to a category or landing page (legacy QnA item).
 // Ref: #/components/schemas/QnaItem
@@ -7464,7 +7523,19 @@ func (s *StaffRolePermission) SetCanDestroy(val bool) {
 }
 
 // SwitchLocaleNoContent is response for SwitchLocale operation.
-type SwitchLocaleNoContent struct{}
+type SwitchLocaleNoContent struct {
+	SetCookie []string
+}
+
+// GetSetCookie returns the value of SetCookie.
+func (s *SwitchLocaleNoContent) GetSetCookie() []string {
+	return s.SetCookie
+}
+
+// SetSetCookie sets the value of SetCookie.
+func (s *SwitchLocaleNoContent) SetSetCookie(val []string) {
+	s.SetCookie = val
+}
 
 // A user (legacy: `User`). Passwords are never part of a response.
 // Ref: #/components/schemas/User

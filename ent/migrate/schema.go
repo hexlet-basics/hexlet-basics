@@ -750,12 +750,32 @@ var (
 		{Name: "last_name", Type: field.TypeString, Nullable: true},
 		{Name: "admin", Type: field.TypeBool, Nullable: true},
 		{Name: "assistant_messages_count", Type: field.TypeInt, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "nickname", Type: field.TypeString, Nullable: true},
+		{Name: "phone", Type: field.TypeString, Nullable: true},
+		{Name: "confirmation_token", Type: field.TypeString, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
 		Name:       "users",
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
+	}
+	// UserAccountsColumns holds the columns for the "user_accounts" table.
+	UserAccountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "provider", Type: field.TypeString},
+		{Name: "uid", Type: field.TypeString},
+	}
+	// UserAccountsTable holds the schema information for the "user_accounts" table.
+	UserAccountsTable = &schema.Table{
+		Name:       "user_accounts",
+		Columns:    UserAccountsColumns,
+		PrimaryKey: []*schema.Column{UserAccountsColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
@@ -789,6 +809,7 @@ var (
 		StaffMemberRolesTable,
 		StaffMemberRolePermissionsTable,
 		UsersTable,
+		UserAccountsTable,
 	}
 )
 
@@ -879,5 +900,8 @@ func init() {
 	StaffMemberRolePermissionsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
 	StaffMemberRolePermissionsTable.Annotation = &entsql.Annotation{
 		Table: "staff_member_role_permissions",
+	}
+	UserAccountsTable.Annotation = &entsql.Annotation{
+		Table: "user_accounts",
 	}
 }
