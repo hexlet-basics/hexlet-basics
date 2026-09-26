@@ -3,13 +3,15 @@ import {
   type ActionIconProps,
   Button,
   type ButtonProps,
+  Card,
+  type CardProps,
   NavLink as MantineNavLink,
   type NavLinkProps,
   Text,
   type TextProps,
 } from "@mantine/core";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
-import { forwardRef } from "react";
+import { forwardRef, type PropsWithChildren } from "react";
 
 // Typed TanStack Router links rendered as Mantine controls. Mantine's
 // polymorphic `component={Link}` loses the router's `to`/`params` inference (so a
@@ -66,4 +68,17 @@ const NavLinkCreated = createLink(NavLinkBase);
 // Mantine NavLink as a typed router link — the lesson navigation list.
 export const NavLink: LinkComponent<typeof NavLinkBase> = (props) => (
   <NavLinkCreated preload="intent" {...props} />
+);
+
+type CardLinkProps = PropsWithChildren<Omit<CardProps, "href">>;
+
+const CardLinkBase = forwardRef<HTMLAnchorElement, CardLinkProps>((props, ref) => (
+  <Card ref={ref} component="a" {...props} />
+));
+
+const CardLinkCreated = createLink(CardLinkBase);
+
+// Mantine Card as a typed router link — the whole card is the click target.
+export const CardLink: LinkComponent<typeof CardLinkBase> = (props) => (
+  <CardLinkCreated preload="intent" {...props} />
 );

@@ -681,7 +681,7 @@ func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionR
 
 // GetBlogPost implements getBlogPost operation.
 //
-// A single blog post by slug.
+// A published post in the request locale, by slug, with its page data.
 //
 // GET /api/blog_posts/{slug}
 func (UnimplementedHandler) GetBlogPost(ctx context.Context, params GetBlogPostParams) (r GetBlogPostRes, _ error) {
@@ -730,7 +730,7 @@ func (UnimplementedHandler) GetMyDashboard(ctx context.Context) (r GetMyDashboar
 
 // GetNextBlogPost implements getNextBlogPost operation.
 //
-// The next post to read after this one.
+// The next post to read after this one: the next older published post in the request locale.
 //
 // GET /api/blog_posts/{id}/next
 func (UnimplementedHandler) GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (r GetNextBlogPostRes, _ error) {
@@ -786,7 +786,7 @@ func (UnimplementedHandler) GetYandexCoursesFeedXml(ctx context.Context) (r GetY
 
 // LikeBlogPost implements likeBlogPost operation.
 //
-// Like a post (idempotent per visitor).
+// Like a post once per signed-in user; a repeat like changes nothing.
 //
 // POST /api/blog_posts/{id}/likes
 func (UnimplementedHandler) LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (r LikeBlogPostRes, _ error) {

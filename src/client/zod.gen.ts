@@ -893,6 +893,15 @@ export const zBlogPostPage = z.object({
 });
 
 /**
+ * A blog post page: the post plus what the page shows under it.
+ */
+export const zBlogPostView = z.object({
+  post: zBlogPost,
+  recommendedPosts: z.array(zBlogPost),
+  relatedLandingPages: z.array(zCourseCatalogItem)
+});
+
+/**
  * The current user resolved from the session cookie (null when anonymous).
  */
 export const zCurrentUser = z.object({
@@ -1746,7 +1755,7 @@ export const zGetBlogPostPath = z.object({
 /**
  * The request has succeeded.
  */
-export const zGetBlogPostResponse = zBlogPost;
+export const zGetBlogPostResponse = zBlogPostView;
 
 export const zCreateBookRequestBody = zBookRequestInput;
 

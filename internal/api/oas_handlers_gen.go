@@ -16887,7 +16887,7 @@ func (s *Server) handleDeleteSessionRequest(args [0]string, argsEscaped bool, w 
 
 // handleGetBlogPostRequest handles getBlogPost operation.
 //
-// A single blog post by slug.
+// A published post in the request locale, by slug, with its page data.
 //
 // GET /api/blog_posts/{slug}
 func (s *Server) handleGetBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -17696,7 +17696,7 @@ func (s *Server) handleGetMyDashboardRequest(args [0]string, argsEscaped bool, w
 
 // handleGetNextBlogPostRequest handles getNextBlogPost operation.
 //
-// The next post to read after this one.
+// The next post to read after this one: the next older published post in the request locale.
 //
 // GET /api/blog_posts/{id}/next
 func (s *Server) handleGetNextBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -18596,7 +18596,7 @@ func (s *Server) handleGetYandexCoursesFeedXmlRequest(args [0]string, argsEscape
 
 // handleLikeBlogPostRequest handles likeBlogPost operation.
 //
-// Like a post (idempotent per visitor).
+// Like a post once per signed-in user; a repeat like changes nothing.
 //
 // POST /api/blog_posts/{id}/likes
 func (s *Server) handleLikeBlogPostRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

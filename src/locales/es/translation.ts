@@ -1402,6 +1402,7 @@ export default {
       hexlet_telegram: "https://t.me/hexlet_ru",
       hexlet_telegram_volunteers: "https://t.me/hexletcommunity/12",
       hexlet_twitter: "https://twitter.com/hexlet_io",
+      hexlet_twitter_handle: "@hexlet_io",
       hexlet_youtube: "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ",
     },
     magic_links: {

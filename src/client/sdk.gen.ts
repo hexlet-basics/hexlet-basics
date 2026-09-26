@@ -1131,7 +1131,7 @@ export const listBlogPosts = <ThrowOnError extends boolean = false>(options?: Op
 });
 
 /**
- * Like a post (idempotent per visitor).
+ * Like a post once per signed-in user; a repeat like changes nothing.
  */
 export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Options<LikeBlogPostData, ThrowOnError>): RequestResult<LikeBlogPostResponses, LikeBlogPostErrors, ThrowOnError> => (options.client ?? client).post<LikeBlogPostResponses, LikeBlogPostErrors, ThrowOnError>({
   responseType: 'json',
@@ -1146,7 +1146,8 @@ export const likeBlogPost = <ThrowOnError extends boolean = false>(options: Opti
 });
 
 /**
- * The next post to read after this one.
+ * The next post to read after this one: the next older published post in
+ *       the request locale.
  */
 export const getNextBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetNextBlogPostData, ThrowOnError>): RequestResult<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetNextBlogPostResponses, GetNextBlogPostErrors, ThrowOnError>({
   responseType: 'json',
@@ -1155,7 +1156,7 @@ export const getNextBlogPost = <ThrowOnError extends boolean = false>(options: O
 });
 
 /**
- * A single blog post by slug.
+ * A published post in the request locale, by slug, with its page data.
  */
 export const getBlogPost = <ThrowOnError extends boolean = false>(options: Options<GetBlogPostData, ThrowOnError>): RequestResult<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError> => (options.client ?? client).get<GetBlogPostResponses, GetBlogPostErrors, ThrowOnError>({
   responseType: 'json',

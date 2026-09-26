@@ -8,6 +8,7 @@ import (
 	"hexletbasics/ent/attachment"
 	"hexletbasics/ent/banner"
 	"hexletbasics/ent/blogpost"
+	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
@@ -121,6 +122,21 @@ func init() {
 	blogpostDescRelatedCourseItemsCount := blogpostFields[8].Descriptor()
 	// blogpost.DefaultRelatedCourseItemsCount holds the default value on creation for the related_course_items_count field.
 	blogpost.DefaultRelatedCourseItemsCount = blogpostDescRelatedCourseItemsCount.Default.(int)
+	blogpostlikeMixin := schema.BlogPostLike{}.Mixin()
+	blogpostlikeMixinFields0 := blogpostlikeMixin[0].Fields()
+	_ = blogpostlikeMixinFields0
+	blogpostlikeFields := schema.BlogPostLike{}.Fields()
+	_ = blogpostlikeFields
+	// blogpostlikeDescCreatedAt is the schema descriptor for created_at field.
+	blogpostlikeDescCreatedAt := blogpostlikeMixinFields0[0].Descriptor()
+	// blogpostlike.DefaultCreatedAt holds the default value on creation for the created_at field.
+	blogpostlike.DefaultCreatedAt = blogpostlikeDescCreatedAt.Default.(func() time.Time)
+	// blogpostlikeDescUpdatedAt is the schema descriptor for updated_at field.
+	blogpostlikeDescUpdatedAt := blogpostlikeMixinFields0[1].Descriptor()
+	// blogpostlike.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	blogpostlike.DefaultUpdatedAt = blogpostlikeDescUpdatedAt.Default.(func() time.Time)
+	// blogpostlike.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	blogpostlike.UpdateDefaultUpdatedAt = blogpostlikeDescUpdatedAt.UpdateDefault.(func() time.Time)
 	blogpostrelatedcourseitemMixin := schema.BlogPostRelatedCourseItem{}.Mixin()
 	blogpostrelatedcourseitemMixinFields0 := blogpostrelatedcourseitemMixin[0].Fields()
 	_ = blogpostrelatedcourseitemMixinFields0

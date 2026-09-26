@@ -41,6 +41,18 @@ model CourseCategoryView {
   landingPages: CourseCatalogItem[];
 }
 
+/** A blog post page: the post plus what the page shows under it. */
+model BlogPostView {
+  post: BlogPost;
+
+  /** Two other published posts in the request locale, newest first. */
+  recommendedPosts: BlogPost[];
+
+  /** The main landing page, in the request locale, of each course the post
+      promotes, in the post's display order. */
+  relatedLandingPages: CourseCatalogItem[];
+}
+
 @route("/languages")
 @tag("Courses")
 interface Courses {
@@ -137,19 +149,20 @@ interface Blog {
   @operationId("listBlogPosts")
   list(...ListQuery): Page<BlogPost> | ApiError;
 
-  /** A single blog post by slug. */
+  /** A published post in the request locale, by slug, with its page data. */
   @get
   @route("/{slug}")
   @operationId("getBlogPost")
-  get(@path slug: string): BlogPost | NotFoundError | ApiError;
+  get(@path slug: string): BlogPostView | NotFoundError | ApiError;
 
-  /** The next post to read after this one. */
+  /** The next post to read after this one: the next older published post in
+      the request locale. */
   @get
   @route("/{id}/next")
   @operationId("getNextBlogPost")
   next(@path id: int32): BlogPost | NotFoundError | ApiError;
 
-  /** Like a post (idempotent per visitor). */
+  /** Like a post once per signed-in user; a repeat like changes nothing. */
   @post
   @useAuth([UserSession, XsrfToken])
   @route("/{id}/likes")

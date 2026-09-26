@@ -16,8 +16,8 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// blog_posts.yml seeds these two.
-const totalBlogPosts = 2
+// blog_posts.yml seeds these six (every state and locale: admin lists them all).
+const totalBlogPosts = 6
 
 func TestAdminListBlogPosts(t *testing.T) {
 	h := testsupport.NewHarness(t)

@@ -2,7 +2,10 @@
 # description, locale, state, creator_id (embedded creator from users.yml),
 # related_language_items_count, and the trusted rich_body HTML. Covers and likes
 # live in active_storage_* / blog_post_likes. 6001 is the "full" post (rich body
-# + cover + 2 likes); 6002 has none of those.
+# + cover + 2 likes); 6002 has none of those. The rest shape the public blog:
+# ru published posts are 6003 (newest), 6001 and 5990 (oldest), so the list,
+# next-post and recommended-post orders are all observable; 6004 is ru but
+# archived and 6005 is en, so the locale and state scopes each exclude one.
 - id: 6001
   name: Hello world
   slug: hello-world
@@ -25,3 +28,47 @@
   related_language_items_count: 0
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+- id: 6003
+  name: Learning Ruby
+  slug: learning-ruby
+  description: Why Ruby is a good first language
+  locale: ru
+  state: published
+  rich_body: '<p>Start with Ruby</p>'
+  creator_id: 1002
+  related_language_items_count: 0
+  created_at: '2026-07-27 10:00:00'
+  updated_at: '2026-07-27 10:00:00'
+- id: 5990
+  name: Oldest post
+  slug: oldest-post
+  description: Where the blog began
+  locale: ru
+  state: published
+  rich_body: '<p>The beginning</p>'
+  creator_id: 1001
+  related_language_items_count: 0
+  created_at: '2026-07-20 10:00:00'
+  updated_at: '2026-07-20 10:00:00'
+- id: 6004
+  name: Archived notes
+  slug: archived-notes
+  description: No longer relevant
+  locale: ru
+  state: archived
+  rich_body: '<p>Old news</p>'
+  creator_id: 1001
+  related_language_items_count: 0
+  created_at: '2026-07-27 11:00:00'
+  updated_at: '2026-07-27 11:00:00'
+- id: 6005
+  name: English post
+  slug: english-post
+  description: A post for the English blog
+  locale: en
+  state: published
+  rich_body: '<p>Hello readers</p>'
+  creator_id: 1001
+  related_language_items_count: 0
+  created_at: '2026-07-27 12:00:00'
+  updated_at: '2026-07-27 12:00:00'
