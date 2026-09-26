@@ -41,13 +41,6 @@ model CourseCategoryView {
   landingPages: CourseCatalogItem[];
 }
 
-/** A static content page (about, authors, privacy, tos, cookie). */
-model PageContent {
-  slug: string;
-  title: string;
-  bodyHtml: string;
-}
-
 @route("/languages")
 @tag("Courses")
 interface Courses {
@@ -174,16 +167,6 @@ interface PublicReviews {
   @get
   @operationId("listPublicReviews")
   list(...ListQuery): Page<Review> | ApiError;
-}
-
-@route("/pages")
-@tag("Pages")
-interface Pages {
-  /** A static content page by slug. */
-  @get
-  @route("/{slug}")
-  @operationId("getPage")
-  get(@path slug: string): PageContent | NotFoundError | ApiError;
 }
 
 // ---- Marketing writes -----------------------------------------------------

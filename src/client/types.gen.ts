@@ -807,54 +807,9 @@ export type NotFoundError = {
 };
 
 /**
- * A static content page (about, authors, privacy, tos, cookie).
- */
-export type PageContent = {
-  slug: string;
-  title: string;
-  bodyHtml: string;
-};
-
-export type PasskeyAssertionInput = {
-  /**
-   * JSON-encoded assertion credential from `navigator.credentials.get`.
-   */
-  credential: string;
-};
-
-/**
- * A WebAuthn ceremony payload. The challenge/options and the client response
- * are opaque JSON owned by `go-webauthn`; the contract carries them as strings
- * so the browser API round-trips them verbatim.
- */
-export type PasskeyChallenge = {
-  /**
-   * JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
-   */
-  options: string;
-};
-
-export type PasskeyRegistrationInput = {
-  /**
-   * JSON-encoded registration credential from `navigator.credentials.create`.
-   */
-  credential: string;
-  nickname: string | null;
-};
-
-/**
  * Admin resources a staff role can be granted permissions on.
  */
 export type PermissionResource = 'blog_posts' | 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
-
-export type PhoneConfirmInput = {
-  phone: string;
-  code: string;
-};
-
-export type PhoneInput = {
-  phone: string;
-};
 
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
@@ -1168,15 +1123,6 @@ export type User = {
 };
 
 /**
- * A registered passkey/WebAuthn credential (legacy: `UserCredential`).
- */
-export type UserCredential = {
-  id: number;
-  nickname: string | null;
-  createdAt: string;
-};
-
-/**
  * A user row as shown in admin lists/forms (legacy: `UserCrud`).
  */
 export type UserCrud = {
@@ -1239,151 +1185,11 @@ export type ListQuerySortField = string;
  */
 export type ListQuerySortOrder = 'asc' | 'desc';
 
-export type ListPasskeysData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/account/passkeys';
-};
-
-export type ListPasskeysErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type ListPasskeysError = ListPasskeysErrors[keyof ListPasskeysErrors];
-
-export type ListPasskeysResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: Array<UserCredential>;
-};
-
-export type ListPasskeysResponse = ListPasskeysResponses[keyof ListPasskeysResponses];
-
-export type CreatePasskeyData = {
-  body: PasskeyRegistrationInput;
-  path?: never;
-  query?: never;
-  url: '/account/passkeys';
-};
-
-export type CreatePasskeyErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type CreatePasskeyError = CreatePasskeyErrors[keyof CreatePasskeyErrors];
-
-export type CreatePasskeyResponses = {
-  /**
-   * The request has succeeded and a new resource has been created as a result.
-   */
-  201: UserCredential;
-};
-
-export type CreatePasskeyResponse = CreatePasskeyResponses[keyof CreatePasskeyResponses];
-
-export type NewPasskeyData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/account/passkeys/new';
-};
-
-export type NewPasskeyErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type NewPasskeyError = NewPasskeyErrors[keyof NewPasskeyErrors];
-
-export type NewPasskeyResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: PasskeyChallenge;
-};
-
-export type NewPasskeyResponse = NewPasskeyResponses[keyof NewPasskeyResponses];
-
-export type DeletePasskeyData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/account/passkeys/{id}';
-};
-
-export type DeletePasskeyErrors = {
-  /**
-   * The request is not authenticated (no/invalid session cookie).
-   */
-  401: ProblemDetails;
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type DeletePasskeyError = DeletePasskeyErrors[keyof DeletePasskeyErrors];
-
-export type DeletePasskeyResponses = {
-  /**
-   * Empty 204 response for deletes and other content-less successes.
-   */
-  204: void;
-};
-
-export type DeletePasskeyResponse = DeletePasskeyResponses[keyof DeletePasskeyResponses];
-
 export type DeleteAccountData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/account/profile';
+  url: '/api/account/profile';
 };
 
 export type DeleteAccountErrors = {
@@ -1415,7 +1221,7 @@ export type UpdateProfileData = {
   body: ProfileInput;
   path?: never;
   query?: never;
-  url: '/account/profile';
+  url: '/api/account/profile';
 };
 
 export type UpdateProfileErrors = {
@@ -1453,7 +1259,7 @@ export type GetProfileData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/account/profile/edit';
+  url: '/api/account/profile/edit';
 };
 
 export type GetProfileErrors = {
@@ -1496,7 +1302,7 @@ export type AdminListUsersData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/api/users';
+  url: '/api/admin/api/users';
 };
 
 export type AdminListUsersErrors = {
@@ -1532,7 +1338,7 @@ export type AdminCreateUserData = {
   body: UserInput;
   path?: never;
   query?: never;
-  url: '/admin/api/users';
+  url: '/api/admin/api/users';
 };
 
 export type AdminCreateUserErrors = {
@@ -1570,7 +1376,7 @@ export type AdminSearchUsersData = {
   query: {
     q: string;
   };
-  url: '/admin/api/users/search';
+  url: '/api/admin/api/users/search';
 };
 
 export type AdminSearchUsersErrors = {
@@ -1608,7 +1414,7 @@ export type AdminDeleteUserData = {
     id: number;
   };
   query?: never;
-  url: '/admin/api/users/{id}';
+  url: '/api/admin/api/users/{id}';
 };
 
 export type AdminDeleteUserErrors = {
@@ -1646,7 +1452,7 @@ export type AdminGetUserData = {
     id: number;
   };
   query?: never;
-  url: '/admin/api/users/{id}';
+  url: '/api/admin/api/users/{id}';
 };
 
 export type AdminGetUserErrors = {
@@ -1684,7 +1490,7 @@ export type AdminUpdateUserData = {
     id: number;
   };
   query?: never;
-  url: '/admin/api/users/{id}';
+  url: '/api/admin/api/users/{id}';
 };
 
 export type AdminUpdateUserErrors = {
@@ -1720,7 +1526,7 @@ export type AdminUploadAttachmentData = {
   body: AttachmentUploadForm;
   path?: never;
   query?: never;
-  url: '/admin/attachments';
+  url: '/api/admin/attachments';
 };
 
 export type AdminUploadAttachmentErrors = {
@@ -1773,7 +1579,7 @@ export type AdminListBannersData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/banners';
+  url: '/api/admin/banners';
 };
 
 export type AdminListBannersErrors = {
@@ -1809,7 +1615,7 @@ export type AdminCreateBannerData = {
   body: BannerInput;
   path?: never;
   query?: never;
-  url: '/admin/banners';
+  url: '/api/admin/banners';
 };
 
 export type AdminCreateBannerErrors = {
@@ -1847,7 +1653,7 @@ export type AdminDeleteBannerData = {
     id: number;
   };
   query?: never;
-  url: '/admin/banners/{id}';
+  url: '/api/admin/banners/{id}';
 };
 
 export type AdminDeleteBannerErrors = {
@@ -1885,7 +1691,7 @@ export type AdminGetBannerData = {
     id: number;
   };
   query?: never;
-  url: '/admin/banners/{id}';
+  url: '/api/admin/banners/{id}';
 };
 
 export type AdminGetBannerErrors = {
@@ -1923,7 +1729,7 @@ export type AdminUpdateBannerData = {
     id: number;
   };
   query?: never;
-  url: '/admin/banners/{id}';
+  url: '/api/admin/banners/{id}';
 };
 
 export type AdminUpdateBannerErrors = {
@@ -1970,7 +1776,7 @@ export type AdminListBlogPostsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/blog_posts';
+  url: '/api/admin/blog_posts';
 };
 
 export type AdminListBlogPostsErrors = {
@@ -2006,7 +1812,7 @@ export type AdminCreateBlogPostData = {
   body: BlogPostInput;
   path?: never;
   query?: never;
-  url: '/admin/blog_posts';
+  url: '/api/admin/blog_posts';
 };
 
 export type AdminCreateBlogPostErrors = {
@@ -2050,7 +1856,7 @@ export type AdminDeleteBlogPostData = {
     id: number;
   };
   query?: never;
-  url: '/admin/blog_posts/{id}';
+  url: '/api/admin/blog_posts/{id}';
 };
 
 export type AdminDeleteBlogPostErrors = {
@@ -2088,7 +1894,7 @@ export type AdminGetBlogPostData = {
     id: number;
   };
   query?: never;
-  url: '/admin/blog_posts/{id}';
+  url: '/api/admin/blog_posts/{id}';
 };
 
 export type AdminGetBlogPostErrors = {
@@ -2126,7 +1932,7 @@ export type AdminUpdateBlogPostData = {
     id: number;
   };
   query?: never;
-  url: '/admin/blog_posts/{id}';
+  url: '/api/admin/blog_posts/{id}';
 };
 
 export type AdminUpdateBlogPostErrors = {
@@ -2170,7 +1976,7 @@ export type AdminSetBlogPostRelatedCoursesData = {
     id: number;
   };
   query?: never;
-  url: '/admin/blog_posts/{id}/related_courses';
+  url: '/api/admin/blog_posts/{id}/related_courses';
 };
 
 export type AdminSetBlogPostRelatedCoursesErrors = {
@@ -2223,7 +2029,7 @@ export type AdminListCourseCategoriesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/course_categories';
+  url: '/api/admin/course_categories';
 };
 
 export type AdminListCourseCategoriesErrors = {
@@ -2259,7 +2065,7 @@ export type AdminCreateCourseCategoryData = {
   body: CourseCategoryInput;
   path?: never;
   query?: never;
-  url: '/admin/course_categories';
+  url: '/api/admin/course_categories';
 };
 
 export type AdminCreateCourseCategoryErrors = {
@@ -2297,7 +2103,7 @@ export type AdminListCategoryQnaItemsData = {
     categoryId: number;
   };
   query?: never;
-  url: '/admin/course_categories/{categoryId}/qna_items';
+  url: '/api/admin/course_categories/{categoryId}/qna_items';
 };
 
 export type AdminListCategoryQnaItemsErrors = {
@@ -2335,7 +2141,7 @@ export type AdminCreateCategoryQnaItemData = {
     categoryId: number;
   };
   query?: never;
-  url: '/admin/course_categories/{categoryId}/qna_items';
+  url: '/api/admin/course_categories/{categoryId}/qna_items';
 };
 
 export type AdminCreateCategoryQnaItemErrors = {
@@ -2374,7 +2180,7 @@ export type AdminDeleteCategoryQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_categories/{categoryId}/qna_items/{id}';
+  url: '/api/admin/course_categories/{categoryId}/qna_items/{id}';
 };
 
 export type AdminDeleteCategoryQnaItemErrors = {
@@ -2413,7 +2219,7 @@ export type AdminUpdateCategoryQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_categories/{categoryId}/qna_items/{id}';
+  url: '/api/admin/course_categories/{categoryId}/qna_items/{id}';
 };
 
 export type AdminUpdateCategoryQnaItemErrors = {
@@ -2451,7 +2257,7 @@ export type AdminDeleteCourseCategoryData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_categories/{id}';
+  url: '/api/admin/course_categories/{id}';
 };
 
 export type AdminDeleteCourseCategoryErrors = {
@@ -2489,7 +2295,7 @@ export type AdminGetCourseCategoryData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_categories/{id}';
+  url: '/api/admin/course_categories/{id}';
 };
 
 export type AdminGetCourseCategoryErrors = {
@@ -2527,7 +2333,7 @@ export type AdminUpdateCourseCategoryData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_categories/{id}';
+  url: '/api/admin/course_categories/{id}';
 };
 
 export type AdminUpdateCourseCategoryErrors = {
@@ -2574,7 +2380,7 @@ export type AdminListCourseLandingPagesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/course_landing_pages';
+  url: '/api/admin/course_landing_pages';
 };
 
 export type AdminListCourseLandingPagesErrors = {
@@ -2610,7 +2416,7 @@ export type AdminCreateCourseLandingPageData = {
   body: CourseLandingPageInput;
   path?: never;
   query?: never;
-  url: '/admin/course_landing_pages';
+  url: '/api/admin/course_landing_pages';
 };
 
 export type AdminCreateCourseLandingPageErrors = {
@@ -2648,7 +2454,7 @@ export type AdminDeleteCourseLandingPageData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{id}';
+  url: '/api/admin/course_landing_pages/{id}';
 };
 
 export type AdminDeleteCourseLandingPageErrors = {
@@ -2686,7 +2492,7 @@ export type AdminGetCourseLandingPageData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{id}';
+  url: '/api/admin/course_landing_pages/{id}';
 };
 
 export type AdminGetCourseLandingPageErrors = {
@@ -2724,7 +2530,7 @@ export type AdminUpdateCourseLandingPageData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{id}';
+  url: '/api/admin/course_landing_pages/{id}';
 };
 
 export type AdminUpdateCourseLandingPageErrors = {
@@ -2762,7 +2568,7 @@ export type AdminListLandingPageQnaItemsData = {
     landingPageId: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items';
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items';
 };
 
 export type AdminListLandingPageQnaItemsErrors = {
@@ -2800,7 +2606,7 @@ export type AdminCreateLandingPageQnaItemData = {
     landingPageId: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items';
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items';
 };
 
 export type AdminCreateLandingPageQnaItemErrors = {
@@ -2839,7 +2645,7 @@ export type AdminDeleteLandingPageQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}';
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}';
 };
 
 export type AdminDeleteLandingPageQnaItemErrors = {
@@ -2878,7 +2684,7 @@ export type AdminUpdateLandingPageQnaItemData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_landing_pages/{landingPageId}/qna_items/{id}';
+  url: '/api/admin/course_landing_pages/{landingPageId}/qna_items/{id}';
 };
 
 export type AdminUpdateLandingPageQnaItemErrors = {
@@ -2925,7 +2731,7 @@ export type AdminListCourseLessonReviewsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/course_lesson_reviews';
+  url: '/api/admin/course_lesson_reviews';
 };
 
 export type AdminListCourseLessonReviewsErrors = {
@@ -2972,7 +2778,7 @@ export type AdminListCourseLessonsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/course_lessons';
+  url: '/api/admin/course_lessons';
 };
 
 export type AdminListCourseLessonsErrors = {
@@ -3010,7 +2816,7 @@ export type AdminReviewCourseLessonData = {
     id: number;
   };
   query?: never;
-  url: '/admin/course_lessons/{id}/review';
+  url: '/api/admin/course_lessons/{id}/review';
 };
 
 export type AdminReviewCourseLessonErrors = {
@@ -3061,7 +2867,7 @@ export type AdminListCoursesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/courses';
+  url: '/api/admin/courses';
 };
 
 export type AdminListCoursesErrors = {
@@ -3097,7 +2903,7 @@ export type AdminCreateCourseData = {
   body: CourseInput;
   path?: never;
   query?: never;
-  url: '/admin/courses';
+  url: '/api/admin/courses';
 };
 
 export type AdminCreateCourseErrors = {
@@ -3135,7 +2941,7 @@ export type AdminGetCourseData = {
     id: number;
   };
   query?: never;
-  url: '/admin/courses/{id}';
+  url: '/api/admin/courses/{id}';
 };
 
 export type AdminGetCourseErrors = {
@@ -3173,7 +2979,7 @@ export type AdminUpdateCourseData = {
     id: number;
   };
   query?: never;
-  url: '/admin/courses/{id}';
+  url: '/api/admin/courses/{id}';
 };
 
 export type AdminUpdateCourseErrors = {
@@ -3211,7 +3017,7 @@ export type AdminReviewCourseData = {
     id: number;
   };
   query?: never;
-  url: '/admin/courses/{id}/review';
+  url: '/api/admin/courses/{id}/review';
 };
 
 export type AdminReviewCourseErrors = {
@@ -3253,7 +3059,7 @@ export type AdminCreateCourseVersionData = {
     id: number;
   };
   query?: never;
-  url: '/admin/courses/{id}/versions';
+  url: '/api/admin/courses/{id}/versions';
 };
 
 export type AdminCreateCourseVersionErrors = {
@@ -3304,7 +3110,7 @@ export type AdminListLeadsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/leads';
+  url: '/api/admin/leads';
 };
 
 export type AdminListLeadsErrors = {
@@ -3351,7 +3157,7 @@ export type AdminListLessonProgressData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/lesson_progress';
+  url: '/api/admin/lesson_progress';
 };
 
 export type AdminListLessonProgressErrors = {
@@ -3389,7 +3195,7 @@ export type AdminGetRolePermissionsData = {
     roleId: number;
   };
   query?: never;
-  url: '/admin/management/role_permissions/{roleId}';
+  url: '/api/admin/management/role_permissions/{roleId}';
 };
 
 export type AdminGetRolePermissionsErrors = {
@@ -3427,7 +3233,7 @@ export type AdminUpdateRolePermissionsData = {
     roleId: number;
   };
   query?: never;
-  url: '/admin/management/role_permissions/{roleId}';
+  url: '/api/admin/management/role_permissions/{roleId}';
 };
 
 export type AdminUpdateRolePermissionsErrors = {
@@ -3474,7 +3280,7 @@ export type AdminListRolesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/management/roles';
+  url: '/api/admin/management/roles';
 };
 
 export type AdminListRolesErrors = {
@@ -3510,7 +3316,7 @@ export type AdminCreateRoleData = {
   body: RoleInput;
   path?: never;
   query?: never;
-  url: '/admin/management/roles';
+  url: '/api/admin/management/roles';
 };
 
 export type AdminCreateRoleErrors = {
@@ -3548,7 +3354,7 @@ export type AdminDeleteRoleData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/roles/{id}';
+  url: '/api/admin/management/roles/{id}';
 };
 
 export type AdminDeleteRoleErrors = {
@@ -3586,7 +3392,7 @@ export type AdminGetRoleData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/roles/{id}';
+  url: '/api/admin/management/roles/{id}';
 };
 
 export type AdminGetRoleErrors = {
@@ -3624,7 +3430,7 @@ export type AdminUpdateRoleData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/roles/{id}';
+  url: '/api/admin/management/roles/{id}';
 };
 
 export type AdminUpdateRoleErrors = {
@@ -3671,7 +3477,7 @@ export type AdminListStaffMembersData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/management/staff_members';
+  url: '/api/admin/management/staff_members';
 };
 
 export type AdminListStaffMembersErrors = {
@@ -3707,7 +3513,7 @@ export type AdminCreateStaffMemberData = {
   body: StaffMemberInput;
   path?: never;
   query?: never;
-  url: '/admin/management/staff_members';
+  url: '/api/admin/management/staff_members';
 };
 
 export type AdminCreateStaffMemberErrors = {
@@ -3745,7 +3551,7 @@ export type AdminDeleteStaffMemberData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/staff_members/{id}';
+  url: '/api/admin/management/staff_members/{id}';
 };
 
 export type AdminDeleteStaffMemberErrors = {
@@ -3783,7 +3589,7 @@ export type AdminGetStaffMemberData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/staff_members/{id}';
+  url: '/api/admin/management/staff_members/{id}';
 };
 
 export type AdminGetStaffMemberErrors = {
@@ -3821,7 +3627,7 @@ export type AdminUpdateStaffMemberData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/staff_members/{id}';
+  url: '/api/admin/management/staff_members/{id}';
 };
 
 export type AdminUpdateStaffMemberErrors = {
@@ -3868,7 +3674,7 @@ export type AdminListManagementUsersData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/management/users';
+  url: '/api/admin/management/users';
 };
 
 export type AdminListManagementUsersErrors = {
@@ -3906,7 +3712,7 @@ export type AdminGetManagementUserData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/users/{id}';
+  url: '/api/admin/management/users/{id}';
 };
 
 export type AdminGetManagementUserErrors = {
@@ -3944,7 +3750,7 @@ export type AdminUpdateManagementUserData = {
     id: number;
   };
   query?: never;
-  url: '/admin/management/users/{id}';
+  url: '/api/admin/management/users/{id}';
 };
 
 export type AdminUpdateManagementUserErrors = {
@@ -3991,7 +3797,7 @@ export type AdminListMessagesData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/messages';
+  url: '/api/admin/messages';
 };
 
 export type AdminListMessagesErrors = {
@@ -4038,7 +3844,7 @@ export type AdminListReviewsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/admin/reviews';
+  url: '/api/admin/reviews';
 };
 
 export type AdminListReviewsErrors = {
@@ -4074,7 +3880,7 @@ export type AdminCreateReviewData = {
   body: ReviewInput;
   path?: never;
   query?: never;
-  url: '/admin/reviews';
+  url: '/api/admin/reviews';
 };
 
 export type AdminCreateReviewErrors = {
@@ -4112,7 +3918,7 @@ export type AdminDeleteReviewData = {
     id: number;
   };
   query?: never;
-  url: '/admin/reviews/{id}';
+  url: '/api/admin/reviews/{id}';
 };
 
 export type AdminDeleteReviewErrors = {
@@ -4150,7 +3956,7 @@ export type AdminGetReviewData = {
     id: number;
   };
   query?: never;
-  url: '/admin/reviews/{id}';
+  url: '/api/admin/reviews/{id}';
 };
 
 export type AdminGetReviewErrors = {
@@ -4188,7 +3994,7 @@ export type AdminUpdateReviewData = {
     id: number;
   };
   query?: never;
-  url: '/admin/reviews/{id}';
+  url: '/api/admin/reviews/{id}';
 };
 
 export type AdminUpdateReviewErrors = {
@@ -4226,7 +4032,7 @@ export type ListAssistantMessagesData = {
     lessonId: number;
   };
   query?: never;
-  url: '/ai/lessons/{lessonId}/messages';
+  url: '/api/ai/lessons/{lessonId}/messages';
 };
 
 export type ListAssistantMessagesErrors = {
@@ -4260,7 +4066,7 @@ export type CreateAssistantMessageData = {
     lessonId: number;
   };
   query?: never;
-  url: '/ai/lessons/{lessonId}/messages';
+  url: '/api/ai/lessons/{lessonId}/messages';
 };
 
 export type CreateAssistantMessageErrors = {
@@ -4301,7 +4107,7 @@ export type ListBlogPostsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/blog_posts';
+  url: '/api/blog_posts';
 };
 
 export type ListBlogPostsErrors = {
@@ -4331,7 +4137,7 @@ export type LikeBlogPostData = {
     id: number;
   };
   query?: never;
-  url: '/blog_posts/{id}/likes';
+  url: '/api/blog_posts/{id}/likes';
 };
 
 export type LikeBlogPostErrors = {
@@ -4369,7 +4175,7 @@ export type GetNextBlogPostData = {
     id: number;
   };
   query?: never;
-  url: '/blog_posts/{id}/next';
+  url: '/api/blog_posts/{id}/next';
 };
 
 export type GetNextBlogPostErrors = {
@@ -4403,7 +4209,7 @@ export type GetBlogPostData = {
     slug: string;
   };
   query?: never;
-  url: '/blog_posts/{slug}';
+  url: '/api/blog_posts/{slug}';
 };
 
 export type GetBlogPostErrors = {
@@ -4435,7 +4241,7 @@ export type CreateBookRequestData = {
   body: BookRequestInput;
   path?: never;
   query?: never;
-  url: '/book/create_request';
+  url: '/api/book/create_request';
 };
 
 export type CreateBookRequestErrors = {
@@ -4473,7 +4279,7 @@ export type ListPublicCourseCategoriesData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/language_categories';
+  url: '/api/language_categories';
 };
 
 export type ListPublicCourseCategoriesErrors = {
@@ -4503,7 +4309,7 @@ export type GetPublicCourseCategoryData = {
     slug: string;
   };
   query?: never;
-  url: '/language_categories/{slug}';
+  url: '/api/language_categories/{slug}';
 };
 
 export type GetPublicCourseCategoryErrors = {
@@ -4535,7 +4341,7 @@ export type ListCoursesData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/languages';
+  url: '/api/languages';
 };
 
 export type ListCoursesErrors = {
@@ -4566,7 +4372,7 @@ export type GetCourseLessonData = {
     slug: string;
   };
   query?: never;
-  url: '/languages/{courseSlug}/lessons/{slug}';
+  url: '/api/languages/{courseSlug}/lessons/{slug}';
 };
 
 export type GetCourseLessonErrors = {
@@ -4600,7 +4406,7 @@ export type GetCourseData = {
     slug: string;
   };
   query?: never;
-  url: '/languages/{slug}';
+  url: '/api/languages/{slug}';
 };
 
 export type GetCourseErrors = {
@@ -4632,7 +4438,7 @@ export type CreateLeadData = {
   body: LeadInput;
   path?: never;
   query?: never;
-  url: '/leads';
+  url: '/api/leads';
 };
 
 export type CreateLeadErrors = {
@@ -4672,7 +4478,7 @@ export type CheckLessonData = {
     id: number;
   };
   query?: never;
-  url: '/lessons/{id}/check';
+  url: '/api/lessons/{id}/check';
 };
 
 export type CheckLessonErrors = {
@@ -4725,7 +4531,7 @@ export type StartLessonData = {
     id: number;
   };
   query?: never;
-  url: '/lessons/{id}/start';
+  url: '/api/lessons/{id}/start';
 };
 
 export type StartLessonErrors = {
@@ -4767,7 +4573,7 @@ export type SwitchLocaleData = {
   query: {
     locale: Locale;
   };
-  url: '/locale/switch';
+  url: '/api/locale/switch';
 };
 
 export type SwitchLocaleErrors = {
@@ -4795,7 +4601,7 @@ export type CreateMagicLinkData = {
   body: EmailInput;
   path?: never;
   query?: never;
-  url: '/magic_links';
+  url: '/api/magic_links';
 };
 
 export type CreateMagicLinkErrors = {
@@ -4831,7 +4637,7 @@ export type ConsumeMagicLinkData = {
     token: string;
   };
   query?: never;
-  url: '/magic_links/{token}';
+  url: '/api/magic_links/{token}';
 };
 
 export type ConsumeMagicLinkErrors = {
@@ -4864,7 +4670,7 @@ export type GetSitemapData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/map';
+  url: '/api/map';
 };
 
 export type GetSitemapErrors = {
@@ -4895,7 +4701,7 @@ export type GetCurrentUserData = {
   };
   path?: never;
   query?: never;
-  url: '/me';
+  url: '/api/me';
 };
 
 export type GetCurrentUserErrors = {
@@ -4923,7 +4729,7 @@ export type GetMyDashboardData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/my';
+  url: '/api/my';
 };
 
 export type GetMyDashboardErrors = {
@@ -4951,109 +4757,13 @@ export type GetMyDashboardResponses = {
 
 export type GetMyDashboardResponse = GetMyDashboardResponses[keyof GetMyDashboardResponses];
 
-export type GetPageData = {
-  body?: never;
-  path: {
-    slug: string;
-  };
-  query?: never;
-  url: '/pages/{slug}';
-};
-
-export type GetPageErrors = {
-  /**
-   * A resource was not found.
-   */
-  404: NotFoundError;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type GetPageError = GetPageErrors[keyof GetPageErrors];
-
-export type GetPageResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: PageContent;
-};
-
-export type GetPageResponse = GetPageResponses[keyof GetPageResponses];
-
-export type CreatePasskeySessionData = {
-  body: PasskeyAssertionInput;
-  path?: never;
-  query?: never;
-  url: '/passkey_session';
-};
-
-export type CreatePasskeySessionErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type CreatePasskeySessionError = CreatePasskeySessionErrors[keyof CreatePasskeySessionErrors];
-
-export type CreatePasskeySessionResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: User;
-};
-
-export type CreatePasskeySessionResponse = CreatePasskeySessionResponses[keyof CreatePasskeySessionResponses];
-
-export type NewPasskeySessionData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/passkey_session/new';
-};
-
-export type NewPasskeySessionErrors = {
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type NewPasskeySessionError = NewPasskeySessionErrors[keyof NewPasskeySessionErrors];
-
-export type NewPasskeySessionResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: PasskeyChallenge;
-};
-
-export type NewPasskeySessionResponse = NewPasskeySessionResponses[keyof NewPasskeySessionResponses];
-
 export type UpdatePasswordData = {
   body: ResetPasswordInput;
   path: {
     token: string;
   };
   query?: never;
-  url: '/password/{token}';
+  url: '/api/password/{token}';
 };
 
 export type UpdatePasswordErrors = {
@@ -5094,7 +4804,7 @@ export type CheckPasswordResetTokenData = {
     token: string;
   };
   query?: never;
-  url: '/password/{token}/edit';
+  url: '/api/password/{token}/edit';
 };
 
 export type CheckPasswordResetTokenErrors = {
@@ -5122,79 +4832,11 @@ export type CheckPasswordResetTokenResponses = {
 
 export type CheckPasswordResetTokenResponse = CheckPasswordResetTokenResponses[keyof CheckPasswordResetTokenResponses];
 
-export type CreatePhoneAuthData = {
-  body: PhoneInput;
-  path?: never;
-  query?: never;
-  url: '/phone_auth';
-};
-
-export type CreatePhoneAuthErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type CreatePhoneAuthError = CreatePhoneAuthErrors[keyof CreatePhoneAuthErrors];
-
-export type CreatePhoneAuthResponses = {
-  /**
-   * Empty 204 response for deletes and other content-less successes.
-   */
-  204: void;
-};
-
-export type CreatePhoneAuthResponse = CreatePhoneAuthResponses[keyof CreatePhoneAuthResponses];
-
-export type ConfirmPhoneAuthData = {
-  body: PhoneConfirmInput;
-  path?: never;
-  query?: never;
-  url: '/phone_auth/confirm';
-};
-
-export type ConfirmPhoneAuthErrors = {
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
-  /**
-   * Default error response shared by every operation.
-   *
-   * `@error` emits an OpenAPI `default` response, keeping central transport
-   * failures typed without enumerating every status on every operation.
-   */
-  default: ProblemDetails;
-};
-
-export type ConfirmPhoneAuthError = ConfirmPhoneAuthErrors[keyof ConfirmPhoneAuthErrors];
-
-export type ConfirmPhoneAuthResponses = {
-  /**
-   * The request has succeeded.
-   */
-  200: User;
-};
-
-export type ConfirmPhoneAuthResponse = ConfirmPhoneAuthResponses[keyof ConfirmPhoneAuthResponses];
-
 export type CreatePasswordReminderData = {
   body: EmailInput;
   path?: never;
   query?: never;
-  url: '/remind_password';
+  url: '/api/remind_password';
 };
 
 export type CreatePasswordReminderErrors = {
@@ -5239,7 +4881,7 @@ export type ListPublicReviewsData = {
      */
     sortOrder?: 'asc' | 'desc';
   };
-  url: '/reviews';
+  url: '/api/reviews';
 };
 
 export type ListPublicReviewsErrors = {
@@ -5267,7 +4909,7 @@ export type DeleteSessionData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/session';
+  url: '/api/session';
 };
 
 export type DeleteSessionErrors = {
@@ -5299,7 +4941,7 @@ export type CreateSessionData = {
   body: SessionInput;
   path?: never;
   query?: never;
-  url: '/session';
+  url: '/api/session';
 };
 
 export type CreateSessionErrors = {
@@ -5334,7 +4976,7 @@ export type CreateUserData = {
   body: SignUpInput;
   path?: never;
   query?: never;
-  url: '/users';
+  url: '/api/users';
 };
 
 export type CreateUserErrors = {

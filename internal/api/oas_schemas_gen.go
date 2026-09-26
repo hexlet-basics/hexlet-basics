@@ -3666,11 +3666,6 @@ type CreatePasswordReminderNoContent struct{}
 
 func (*CreatePasswordReminderNoContent) createPasswordReminderRes() {}
 
-// CreatePhoneAuthNoContent is response for CreatePhoneAuth operation.
-type CreatePhoneAuthNoContent struct{}
-
-func (*CreatePhoneAuthNoContent) createPhoneAuthRes() {}
-
 // The current user resolved from the session cookie (null when anonymous).
 // Ref: #/components/schemas/CurrentUser
 type CurrentUser struct {
@@ -3691,11 +3686,6 @@ func (s *CurrentUser) SetUser(val NilUser) {
 type DeleteAccountNoContent struct{}
 
 func (*DeleteAccountNoContent) deleteAccountRes() {}
-
-// DeletePasskeyNoContent is response for DeletePasskey operation.
-type DeletePasskeyNoContent struct{}
-
-func (*DeletePasskeyNoContent) deletePasskeyRes() {}
 
 // DeleteSessionNoContent is response for DeleteSession operation.
 type DeleteSessionNoContent struct {
@@ -4690,10 +4680,6 @@ type ListAssistantMessagesOKApplicationJSON []LessonAssistantMessage
 
 func (*ListAssistantMessagesOKApplicationJSON) listAssistantMessagesRes() {}
 
-type ListPasskeysOKApplicationJSON []UserCredential
-
-func (*ListPasskeysOKApplicationJSON) listPasskeysRes() {}
-
 type ListQuerySortOrder string
 
 const (
@@ -5625,12 +5611,10 @@ func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) checkLessonRes()              {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
 func (*NotFoundError) consumeMagicLinkRes()         {}
-func (*NotFoundError) deletePasskeyRes()            {}
 func (*NotFoundError) getBlogPostRes()              {}
 func (*NotFoundError) getCourseLessonRes()          {}
 func (*NotFoundError) getCourseRes()                {}
 func (*NotFoundError) getNextBlogPostRes()          {}
-func (*NotFoundError) getPageRes()                  {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
 func (*NotFoundError) startLessonRes()              {}
@@ -5774,109 +5758,6 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
-// A static content page (about, authors, privacy, tos, cookie).
-// Ref: #/components/schemas/PageContent
-type PageContent struct {
-	Slug     string `json:"slug"`
-	Title    string `json:"title"`
-	BodyHtml string `json:"bodyHtml"`
-}
-
-// GetSlug returns the value of Slug.
-func (s *PageContent) GetSlug() string {
-	return s.Slug
-}
-
-// GetTitle returns the value of Title.
-func (s *PageContent) GetTitle() string {
-	return s.Title
-}
-
-// GetBodyHtml returns the value of BodyHtml.
-func (s *PageContent) GetBodyHtml() string {
-	return s.BodyHtml
-}
-
-// SetSlug sets the value of Slug.
-func (s *PageContent) SetSlug(val string) {
-	s.Slug = val
-}
-
-// SetTitle sets the value of Title.
-func (s *PageContent) SetTitle(val string) {
-	s.Title = val
-}
-
-// SetBodyHtml sets the value of BodyHtml.
-func (s *PageContent) SetBodyHtml(val string) {
-	s.BodyHtml = val
-}
-
-func (*PageContent) getPageRes() {}
-
-// Ref: #/components/schemas/PasskeyAssertionInput
-type PasskeyAssertionInput struct {
-	// JSON-encoded assertion credential from `navigator.credentials.get`.
-	Credential string `json:"credential"`
-}
-
-// GetCredential returns the value of Credential.
-func (s *PasskeyAssertionInput) GetCredential() string {
-	return s.Credential
-}
-
-// SetCredential sets the value of Credential.
-func (s *PasskeyAssertionInput) SetCredential(val string) {
-	s.Credential = val
-}
-
-// A WebAuthn ceremony payload. The challenge/options and the client response are opaque JSON owned by
-// `go-webauthn`; the contract carries them as strings so the browser API round-trips them verbatim.
-// Ref: #/components/schemas/PasskeyChallenge
-type PasskeyChallenge struct {
-	// JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
-	Options string `json:"options"`
-}
-
-// GetOptions returns the value of Options.
-func (s *PasskeyChallenge) GetOptions() string {
-	return s.Options
-}
-
-// SetOptions sets the value of Options.
-func (s *PasskeyChallenge) SetOptions(val string) {
-	s.Options = val
-}
-
-func (*PasskeyChallenge) newPasskeyRes() {}
-
-// Ref: #/components/schemas/PasskeyRegistrationInput
-type PasskeyRegistrationInput struct {
-	// JSON-encoded registration credential from `navigator.credentials.create`.
-	Credential string    `json:"credential"`
-	Nickname   NilString `json:"nickname"`
-}
-
-// GetCredential returns the value of Credential.
-func (s *PasskeyRegistrationInput) GetCredential() string {
-	return s.Credential
-}
-
-// GetNickname returns the value of Nickname.
-func (s *PasskeyRegistrationInput) GetNickname() NilString {
-	return s.Nickname
-}
-
-// SetCredential sets the value of Credential.
-func (s *PasskeyRegistrationInput) SetCredential(val string) {
-	s.Credential = val
-}
-
-// SetNickname sets the value of Nickname.
-func (s *PasskeyRegistrationInput) SetNickname(val NilString) {
-	s.Nickname = val
-}
-
 // Admin resources a staff role can be granted permissions on.
 // Ref: #/components/schemas/PermissionResource
 type PermissionResource string
@@ -5983,47 +5864,6 @@ func (s *PermissionResource) UnmarshalText(data []byte) error {
 	}
 }
 
-// Ref: #/components/schemas/PhoneConfirmInput
-type PhoneConfirmInput struct {
-	Phone string `json:"phone"`
-	Code  string `json:"code"`
-}
-
-// GetPhone returns the value of Phone.
-func (s *PhoneConfirmInput) GetPhone() string {
-	return s.Phone
-}
-
-// GetCode returns the value of Code.
-func (s *PhoneConfirmInput) GetCode() string {
-	return s.Code
-}
-
-// SetPhone sets the value of Phone.
-func (s *PhoneConfirmInput) SetPhone(val string) {
-	s.Phone = val
-}
-
-// SetCode sets the value of Code.
-func (s *PhoneConfirmInput) SetCode(val string) {
-	s.Code = val
-}
-
-// Ref: #/components/schemas/PhoneInput
-type PhoneInput struct {
-	Phone string `json:"phone"`
-}
-
-// GetPhone returns the value of Phone.
-func (s *PhoneInput) GetPhone() string {
-	return s.Phone
-}
-
-// SetPhone sets the value of Phone.
-func (s *PhoneInput) SetPhone(val string) {
-	s.Phone = val
-}
-
 // RFC 9457 problem details returned by the transport when request decoding, authorization,
 // persistence, or an unexpected server failure prevents an operation from producing its declared
 // domain response.
@@ -6095,16 +5935,12 @@ func (*ProblemDetails) checkLessonRes()            {}
 func (*ProblemDetails) createAssistantMessageRes() {}
 func (*ProblemDetails) createBookRequestRes()      {}
 func (*ProblemDetails) createLeadRes()             {}
-func (*ProblemDetails) createPasskeyRes()          {}
 func (*ProblemDetails) deleteAccountRes()          {}
-func (*ProblemDetails) deletePasskeyRes()          {}
 func (*ProblemDetails) deleteSessionRes()          {}
 func (*ProblemDetails) getMyDashboardRes()         {}
 func (*ProblemDetails) getProfileRes()             {}
 func (*ProblemDetails) likeBlogPostRes()           {}
 func (*ProblemDetails) listAssistantMessagesRes()  {}
-func (*ProblemDetails) listPasskeysRes()           {}
-func (*ProblemDetails) newPasskeyRes()             {}
 func (*ProblemDetails) startLessonRes()            {}
 func (*ProblemDetails) updateProfileRes()          {}
 
@@ -7562,50 +7398,8 @@ func (s *User) SetType(val UserType) {
 	s.Type = val
 }
 
-func (*User) confirmPhoneAuthRes()     {}
-func (*User) createPasskeySessionRes() {}
-func (*User) getProfileRes()           {}
-func (*User) updateProfileRes()        {}
-
-// A registered passkey/WebAuthn credential (legacy: `UserCredential`).
-// Ref: #/components/schemas/UserCredential
-type UserCredential struct {
-	ID        int32     `json:"id"`
-	Nickname  NilString `json:"nickname"`
-	CreatedAt time.Time `json:"createdAt"`
-}
-
-// GetID returns the value of ID.
-func (s *UserCredential) GetID() int32 {
-	return s.ID
-}
-
-// GetNickname returns the value of Nickname.
-func (s *UserCredential) GetNickname() NilString {
-	return s.Nickname
-}
-
-// GetCreatedAt returns the value of CreatedAt.
-func (s *UserCredential) GetCreatedAt() time.Time {
-	return s.CreatedAt
-}
-
-// SetID sets the value of ID.
-func (s *UserCredential) SetID(val int32) {
-	s.ID = val
-}
-
-// SetNickname sets the value of Nickname.
-func (s *UserCredential) SetNickname(val NilString) {
-	s.Nickname = val
-}
-
-// SetCreatedAt sets the value of CreatedAt.
-func (s *UserCredential) SetCreatedAt(val time.Time) {
-	s.CreatedAt = val
-}
-
-func (*UserCredential) createPasskeyRes() {}
+func (*User) getProfileRes()    {}
+func (*User) updateProfileRes() {}
 
 // A user row as shown in admin lists/forms (legacy: `UserCrud`).
 // Ref: #/components/schemas/UserCrud
@@ -7890,14 +7684,10 @@ func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUploadAttachmentRes()          {}
 func (*ValidationError) checkLessonRes()                    {}
-func (*ValidationError) confirmPhoneAuthRes()               {}
 func (*ValidationError) createBookRequestRes()              {}
 func (*ValidationError) createLeadRes()                     {}
 func (*ValidationError) createMagicLinkRes()                {}
-func (*ValidationError) createPasskeyRes()                  {}
-func (*ValidationError) createPasskeySessionRes()           {}
 func (*ValidationError) createPasswordReminderRes()         {}
-func (*ValidationError) createPhoneAuthRes()                {}
 func (*ValidationError) createSessionRes()                  {}
 func (*ValidationError) createUserRes()                     {}
 func (*ValidationError) updatePasswordRes()                 {}

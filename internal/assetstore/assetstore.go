@@ -71,7 +71,7 @@ type Store struct {
 	publicURL string
 }
 
-// New constructs an asset store. publicURL is the origin serving /storage.
+// New constructs an asset store. publicURL is the origin serving /api/storage.
 func New(db *ent.Client, bucket *blob.Bucket, publicURL string) *Store {
 	return &Store{
 		db:        db,
@@ -125,7 +125,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 
 	return Attachment{
 		ID:          record.ID,
-		URL:         s.publicURL + "/storage/" + url.PathEscape(key),
+		URL:         s.publicURL + "/api/storage/" + url.PathEscape(key),
 		Filename:    record.Filename,
 		ContentType: record.ContentType,
 		ByteSize:    record.ByteSize,

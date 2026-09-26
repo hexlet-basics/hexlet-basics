@@ -45,30 +45,30 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 	assert.Equal(t, openAPISecurityScheme{Type: "apiKey", In: "header", Name: "X-XSRF-TOKEN"},
 		spec.Components.SecuritySchemes["XsrfToken"])
 
-	assert.Empty(t, spec.Paths["/languages"].Get.Security)
-	assert.Empty(t, spec.Paths["/lessons/{id}/check"].Post.Security)
+	assert.Empty(t, spec.Paths["/api/languages"].Get.Security)
+	assert.Empty(t, spec.Paths["/api/lessons/{id}/check"].Post.Security)
 	assert.Equal(t,
 		[]map[string][]string{{"UserSession": {}, "XsrfToken": {}}},
-		spec.Paths["/blog_posts/{id}/likes"].Post.Security,
+		spec.Paths["/api/blog_posts/{id}/likes"].Post.Security,
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"UserSession": {}}},
-		spec.Paths["/my"].Get.Security,
+		spec.Paths["/api/my"].Get.Security,
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"AdminSession": {}}},
-		spec.Paths["/admin/course_categories"].Get.Security,
+		spec.Paths["/api/admin/course_categories"].Get.Security,
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"AdminSession": {}, "XsrfToken": {}}},
-		spec.Paths["/admin/course_categories"].Post.Security,
+		spec.Paths["/api/admin/course_categories"].Post.Security,
 	)
 	assert.Equal(t,
 		[]map[string][]string{{"AdminSession": {}, "XsrfToken": {}}},
-		spec.Paths["/admin/attachments"].Post.Security,
+		spec.Paths["/api/admin/attachments"].Post.Security,
 	)
 
-	assert.Contains(t, spec.Paths["/my"].Get.Responses, "401")
-	assert.Contains(t, spec.Paths["/admin/course_categories"].Get.Responses, "401")
-	assert.Contains(t, spec.Paths["/admin/course_categories"].Get.Responses, "403")
+	assert.Contains(t, spec.Paths["/api/my"].Get.Responses, "401")
+	assert.Contains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "401")
+	assert.Contains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "403")
 }

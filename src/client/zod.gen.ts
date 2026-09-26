@@ -606,33 +606,6 @@ export const zNotFoundError = z.object({
 });
 
 /**
- * A static content page (about, authors, privacy, tos, cookie).
- */
-export const zPageContent = z.object({
-  slug: z.string(),
-  title: z.string(),
-  bodyHtml: z.string()
-});
-
-export const zPasskeyAssertionInput = z.object({
-  credential: z.string()
-});
-
-/**
- * A WebAuthn ceremony payload. The challenge/options and the client response
- * are opaque JSON owned by `go-webauthn`; the contract carries them as strings
- * so the browser API round-trips them verbatim.
- */
-export const zPasskeyChallenge = z.object({
-  options: z.string()
-});
-
-export const zPasskeyRegistrationInput = z.object({
-  credential: z.string(),
-  nickname: z.string().nullable()
-});
-
-/**
  * Admin resources a staff role can be granted permissions on.
  */
 export const zPermissionResource = z.enum([
@@ -648,15 +621,6 @@ export const zPermissionResource = z.enum([
   'languages',
   'language_landing_pages'
 ]);
-
-export const zPhoneConfirmInput = z.object({
-  phone: z.string().min(1),
-  code: z.string().min(1)
-});
-
-export const zPhoneInput = z.object({
-  phone: z.string().min(1)
-});
 
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
@@ -969,15 +933,6 @@ export const zStaffMemberPage = z.object({
 });
 
 /**
- * A registered passkey/WebAuthn credential (legacy: `UserCredential`).
- */
-export const zUserCredential = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  nickname: z.string().nullable(),
-  createdAt: z.iso.datetime()
-});
-
-/**
  * A user row as shown in admin lists/forms (legacy: `UserCrud`).
  */
 export const zUserCrud = z.object({
@@ -1028,32 +983,6 @@ export const zListQuerySortField = z.string();
  * Sort order (ransack `so`).
  */
 export const zListQuerySortOrder = z.enum(['asc', 'desc']);
-
-/**
- * The request has succeeded.
- */
-export const zListPasskeysResponse = z.array(zUserCredential);
-
-export const zCreatePasskeyBody = zPasskeyRegistrationInput;
-
-/**
- * The request has succeeded and a new resource has been created as a result.
- */
-export const zCreatePasskeyResponse = zUserCredential;
-
-/**
- * The request has succeeded.
- */
-export const zNewPasskeyResponse = zPasskeyChallenge;
-
-export const zDeletePasskeyPath = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * Empty 204 response for deletes and other content-less successes.
- */
-export const zDeletePasskeyResponse = z.void();
 
 /**
  * Empty 204 response for deletes and other content-less successes.
@@ -1921,27 +1850,6 @@ export const zGetCurrentUserResponse = zCurrentUser;
  */
 export const zGetMyDashboardResponse = zMyDashboard;
 
-export const zGetPagePath = z.object({
-  slug: z.string()
-});
-
-/**
- * The request has succeeded.
- */
-export const zGetPageResponse = zPageContent;
-
-export const zCreatePasskeySessionBody = zPasskeyAssertionInput;
-
-/**
- * The request has succeeded.
- */
-export const zCreatePasskeySessionResponse = zUser;
-
-/**
- * The request has succeeded.
- */
-export const zNewPasskeySessionResponse = zPasskeyChallenge;
-
 export const zUpdatePasswordBody = zResetPasswordInput;
 
 export const zUpdatePasswordPath = z.object({
@@ -1962,20 +1870,6 @@ export const zCheckPasswordResetTokenPath = z.object({
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zCheckPasswordResetTokenResponse = z.void();
-
-export const zCreatePhoneAuthBody = zPhoneInput;
-
-/**
- * Empty 204 response for deletes and other content-less successes.
- */
-export const zCreatePhoneAuthResponse = z.void();
-
-export const zConfirmPhoneAuthBody = zPhoneConfirmInput;
-
-/**
- * The request has succeeded.
- */
-export const zConfirmPhoneAuthResponse = zUser;
 
 export const zCreatePasswordReminderBody = zEmailInput;
 

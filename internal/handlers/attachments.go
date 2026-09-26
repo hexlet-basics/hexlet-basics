@@ -37,7 +37,7 @@ func (s *Server) AdminUploadAttachment(
 	return &attachment, nil
 }
 
-// AttachmentHandler serves the blob read path, `GET /storage/{key}`, mounted
+// AttachmentHandler serves the blob read path, `GET /api/storage/{key}`, mounted
 // alongside the generated api.Server by NewRouter. It is not a contract
 // operation: it streams stored bytes with standard conditional and range
 // semantics, which http.ServeContent provides and a JSON contract cannot
@@ -53,7 +53,7 @@ func NewAttachmentHandler(assets *assetstore.Store, errorHandler *APIErrorHandle
 	return &AttachmentHandler{assets: assets, errors: errorHandler}
 }
 
-// Download handles `GET /storage/{key}`: serve the stored bytes with standard
+// Download handles `GET /api/storage/{key}`: serve the stored bytes with standard
 // conditional and range request semantics. This is the read side of the `url`
 // the uploader returns — without it that url would point at nothing.
 func (h *AttachmentHandler) Download(w http.ResponseWriter, r *http.Request) {

@@ -12,13 +12,18 @@ info:
     `Language`; we keep `Language` ONLY in URL paths (e.g. `/languages`) for
     backward compatibility (ADR-0002), but every type/operation/schema uses
     `Course`. The full model/enum set lives in `models.tsp`.
+
+    Every operation is served under `/api` on the site's own host (ADR-0015):
+    the ingress routes `/api/*` to Go and the rest to the SSR server, so the
+    contract never collides with a page path and needs no CORS. The prefix is
+    set once here, on the namespace every file reopens, so the operation routes
+    below keep the legacy paths they mirror.
   version: 0.0.0
 tags:
   - name: Courses
   - name: Course Categories
   - name: Blog
   - name: Reviews
-  - name: Pages
   - name: Leads
   - name: Marketing
   - name: Sitemap
@@ -41,161 +46,7 @@ tags:
   - name: 'Admin: Staff Members'
   - name: Lesson Player
 paths:
-  /account/passkeys:
-    get:
-      operationId: listPasskeys
-      description: List the current user's passkeys.
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserCredential'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - User Area
-      security:
-        - UserSession: []
-    post:
-      operationId: createPasskey
-      description: Register a new passkey for the current user.
-      parameters: []
-      responses:
-        '201':
-          description: The request has succeeded and a new resource has been created as a result.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserCredential'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - User Area
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PasskeyRegistrationInput'
-      security:
-        - UserSession: []
-          XsrfToken: []
-  /account/passkeys/new:
-    get:
-      operationId: newPasskey
-      description: Begin a passkey registration ceremony.
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PasskeyChallenge'
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - User Area
-      security:
-        - UserSession: []
-  /account/passkeys/{id}:
-    delete:
-      operationId: deletePasskey
-      description: Remove a passkey.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '204':
-          description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - User Area
-      security:
-        - UserSession: []
-          XsrfToken: []
-  /account/profile:
+  /api/account/profile:
     patch:
       operationId: updateProfile
       description: Update the current user's profile.
@@ -271,7 +122,7 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
-  /account/profile/edit:
+  /api/account/profile/edit:
     get:
       operationId: getProfile
       description: The editable profile of the current user.
@@ -303,7 +154,7 @@ paths:
         - User Area
       security:
         - UserSession: []
-  /admin/api/users:
+  /api/admin/api/users:
     get:
       operationId: adminListUsers
       parameters:
@@ -390,7 +241,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/api/users/search:
+  /api/admin/api/users/search:
     get:
       operationId: adminSearchUsers
       description: Typeahead search by name/email.
@@ -436,7 +287,7 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
-  /admin/api/users/{id}:
+  /api/admin/api/users/{id}:
     get:
       operationId: adminGetUser
       description: |-
@@ -573,7 +424,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/attachments:
+  /api/admin/attachments:
     post:
       operationId: adminUploadAttachment
       description: Upload a file; returns the attachment to reference from a form.
@@ -627,7 +478,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/banners:
+  /api/admin/banners:
     get:
       operationId: adminListBanners
       description: List banners (paginated).
@@ -716,7 +567,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/banners/{id}:
+  /api/admin/banners/{id}:
     get:
       operationId: adminGetBanner
       description: |-
@@ -852,7 +703,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/blog_posts:
+  /api/admin/blog_posts:
     get:
       operationId: adminListBlogPosts
       parameters:
@@ -945,7 +796,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/blog_posts/{id}:
+  /api/admin/blog_posts/{id}:
     get:
       operationId: adminGetBlogPost
       parameters:
@@ -1085,7 +936,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/blog_posts/{id}/related_courses:
+  /api/admin/blog_posts/{id}/related_courses:
     post:
       operationId: adminSetBlogPostRelatedCourses
       description: Set the related/promoted courses for a post.
@@ -1145,7 +996,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_categories:
+  /api/admin/course_categories:
     get:
       operationId: adminListCourseCategories
       description: List course categories (paginated).
@@ -1233,7 +1084,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_categories/{categoryId}/qna_items:
+  /api/admin/course_categories/{categoryId}/qna_items:
     get:
       operationId: adminListCategoryQnaItems
       parameters:
@@ -1327,7 +1178,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_categories/{categoryId}/qna_items/{id}:
+  /api/admin/course_categories/{categoryId}/qna_items/{id}:
     put:
       operationId: adminUpdateCategoryQnaItem
       description: |-
@@ -1431,7 +1282,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_categories/{id}:
+  /api/admin/course_categories/{id}:
     get:
       operationId: adminGetCourseCategory
       description: |-
@@ -1569,7 +1420,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_landing_pages:
+  /api/admin/course_landing_pages:
     get:
       operationId: adminListCourseLandingPages
       parameters:
@@ -1653,7 +1504,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_landing_pages/{id}:
+  /api/admin/course_landing_pages/{id}:
     get:
       operationId: adminGetCourseLandingPage
       description: |-
@@ -1790,7 +1641,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_landing_pages/{landingPageId}/qna_items:
+  /api/admin/course_landing_pages/{landingPageId}/qna_items:
     get:
       operationId: adminListLandingPageQnaItems
       parameters:
@@ -1884,7 +1735,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_landing_pages/{landingPageId}/qna_items/{id}:
+  /api/admin/course_landing_pages/{landingPageId}/qna_items/{id}:
     put:
       operationId: adminUpdateLandingPageQnaItem
       description: |-
@@ -1988,7 +1839,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/course_lesson_reviews:
+  /api/admin/course_lesson_reviews:
     get:
       operationId: adminListCourseLessonReviews
       parameters:
@@ -2029,7 +1880,7 @@ paths:
         - 'Admin: Course Lesson Reviews'
       security:
         - AdminSession: []
-  /admin/course_lessons:
+  /api/admin/course_lessons:
     get:
       operationId: adminListCourseLessons
       parameters:
@@ -2070,7 +1921,7 @@ paths:
         - 'Admin: Course Lessons'
       security:
         - AdminSession: []
-  /admin/course_lessons/{id}/review:
+  /api/admin/course_lessons/{id}/review:
     post:
       operationId: adminReviewCourseLesson
       description: Enqueue AI review for a single lesson.
@@ -2117,7 +1968,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/courses:
+  /api/admin/courses:
     get:
       operationId: adminListCourses
       parameters:
@@ -2201,7 +2052,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/courses/{id}:
+  /api/admin/courses/{id}:
     get:
       operationId: adminGetCourse
       description: |-
@@ -2296,7 +2147,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/courses/{id}/review:
+  /api/admin/courses/{id}/review:
     post:
       operationId: adminReviewCourse
       description: Enqueue AI re-review of every current lesson version.
@@ -2343,7 +2194,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/courses/{id}/versions:
+  /api/admin/courses/{id}/versions:
     post:
       operationId: adminCreateCourseVersion
       description: Build a new version of the course exercises.
@@ -2394,7 +2245,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/leads:
+  /api/admin/leads:
     get:
       operationId: adminListLeads
       parameters:
@@ -2435,7 +2286,7 @@ paths:
         - 'Admin: Leads'
       security:
         - AdminSession: []
-  /admin/lesson_progress:
+  /api/admin/lesson_progress:
     get:
       operationId: adminListLessonProgress
       parameters:
@@ -2476,7 +2327,7 @@ paths:
         - 'Admin: Lesson Progress'
       security:
         - AdminSession: []
-  /admin/management/role_permissions/{roleId}:
+  /api/admin/management/role_permissions/{roleId}:
     get:
       operationId: adminGetRolePermissions
       description: The permission matrix for a role.
@@ -2570,7 +2421,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/management/roles:
+  /api/admin/management/roles:
     get:
       operationId: adminListRoles
       parameters:
@@ -2657,7 +2508,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/management/roles/{id}:
+  /api/admin/management/roles/{id}:
     get:
       operationId: adminGetRole
       description: |-
@@ -2791,7 +2642,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/management/staff_members:
+  /api/admin/management/staff_members:
     get:
       operationId: adminListStaffMembers
       parameters:
@@ -2875,7 +2726,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/management/staff_members/{id}:
+  /api/admin/management/staff_members/{id}:
     get:
       operationId: adminGetStaffMember
       parameters:
@@ -3006,7 +2857,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/management/users:
+  /api/admin/management/users:
     get:
       operationId: adminListManagementUsers
       parameters:
@@ -3047,7 +2898,7 @@ paths:
         - 'Admin: Users'
       security:
         - AdminSession: []
-  /admin/management/users/{id}:
+  /api/admin/management/users/{id}:
     get:
       operationId: adminGetManagementUser
       description: |-
@@ -3142,7 +2993,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/messages:
+  /api/admin/messages:
     get:
       operationId: adminListMessages
       parameters:
@@ -3183,7 +3034,7 @@ paths:
         - 'Admin: Messages'
       security:
         - AdminSession: []
-  /admin/reviews:
+  /api/admin/reviews:
     get:
       operationId: adminListReviews
       parameters:
@@ -3267,7 +3118,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /admin/reviews/{id}:
+  /api/admin/reviews/{id}:
     get:
       operationId: adminGetReview
       description: |-
@@ -3404,7 +3255,7 @@ paths:
       security:
         - AdminSession: []
           XsrfToken: []
-  /ai/lessons/{lessonId}/messages:
+  /api/ai/lessons/{lessonId}/messages:
     get:
       operationId: listAssistantMessages
       description: The assistant chat history for the current user in this lesson.
@@ -3486,7 +3337,7 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
-  /blog_posts:
+  /api/blog_posts:
     get:
       operationId: listBlogPosts
       description: Paginated published blog posts.
@@ -3514,7 +3365,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
-  /blog_posts/{id}/likes:
+  /api/blog_posts/{id}/likes:
     post:
       operationId: likeBlogPost
       description: Like a post (idempotent per visitor).
@@ -3559,7 +3410,7 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
-  /blog_posts/{id}/next:
+  /api/blog_posts/{id}/next:
     get:
       operationId: getNextBlogPost
       description: The next post to read after this one.
@@ -3595,7 +3446,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
-  /blog_posts/{slug}:
+  /api/blog_posts/{slug}:
     get:
       operationId: getBlogPost
       description: A single blog post by slug.
@@ -3630,7 +3481,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
-  /book/create_request:
+  /api/book/create_request:
     post:
       operationId: createBookRequest
       description: Request the book download link by email.
@@ -3674,7 +3525,7 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
-  /language_categories:
+  /api/language_categories:
     get:
       operationId: listPublicCourseCategories
       description: List published categories.
@@ -3700,7 +3551,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Course Categories
-  /language_categories/{slug}:
+  /api/language_categories/{slug}:
     get:
       operationId: getPublicCourseCategory
       description: A category and the courses it groups.
@@ -3735,7 +3586,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Course Categories
-  /languages:
+  /api/languages:
     get:
       operationId: listCourses
       description: List the published course catalog.
@@ -3761,7 +3612,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Courses
-  /languages/{courseSlug}/lessons/{slug}:
+  /api/languages/{courseSlug}/lessons/{slug}:
     get:
       operationId: getCourseLesson
       description: |-
@@ -3808,7 +3659,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Courses
-  /languages/{slug}:
+  /api/languages/{slug}:
     get:
       operationId: getCourse
       description: Course landing page by slug.
@@ -3843,7 +3694,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Courses
-  /leads:
+  /api/leads:
     post:
       operationId: createLead
       description: Submit a contact request.
@@ -3891,7 +3742,7 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
-  /lessons/{id}/check:
+  /api/lessons/{id}/check:
     post:
       operationId: checkLesson
       description: |-
@@ -3972,7 +3823,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CheckLessonInput'
-  /lessons/{id}/start:
+  /api/lessons/{id}/start:
     post:
       operationId: startLesson
       description: |-
@@ -4030,7 +3881,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Lesson Player
-  /locale/switch:
+  /api/locale/switch:
     get:
       operationId: switchLocale
       description: Persist the preferred UI locale on the session.
@@ -4056,7 +3907,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
-  /magic_links:
+  /api/magic_links:
     post:
       operationId: createMagicLink
       description: Email a one-time sign-in link.
@@ -4091,7 +3942,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EmailInput'
-  /magic_links/{token}:
+  /api/magic_links/{token}:
     get:
       operationId: consumeMagicLink
       description: Consume a magic link token; sets the JWT cookie.
@@ -4135,7 +3986,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
-  /map:
+  /api/map:
     get:
       operationId: getSitemap
       description: Everything the sitemap generator needs.
@@ -4159,7 +4010,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Sitemap
-  /me:
+  /api/me:
     get:
       operationId: getCurrentUser
       description: Resolve the current user from the session cookie (for SSR).
@@ -4188,7 +4039,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
-  /my:
+  /api/my:
     get:
       operationId: getMyDashboard
       description: The signed-in user's course dashboard.
@@ -4220,105 +4071,7 @@ paths:
         - User Area
       security:
         - UserSession: []
-  /pages/{slug}:
-    get:
-      operationId: getPage
-      description: A static content page by slug.
-      parameters:
-        - name: slug
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PageContent'
-        '404':
-          description: A resource was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - Pages
-  /passkey_session:
-    post:
-      operationId: createPasskeySession
-      description: Complete a passkey login; sets the JWT cookie.
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - Auth
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PasskeyAssertionInput'
-  /passkey_session/new:
-    get:
-      operationId: newPasskeySession
-      description: Begin a passkey login ceremony.
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PasskeyChallenge'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - Auth
-  /password/{token}:
+  /api/password/{token}:
     patch:
       operationId: updatePassword
       description: Set a new password using a reset token; signs the user in.
@@ -4377,7 +4130,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ResetPasswordInput'
-  /password/{token}/edit:
+  /api/password/{token}/edit:
     get:
       operationId: checkPasswordResetToken
       description: Validate a reset token before showing the form.
@@ -4408,81 +4161,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Auth
-  /phone_auth:
-    post:
-      operationId: createPhoneAuth
-      description: Send an SMS verification code.
-      parameters: []
-      responses:
-        '204':
-          description: Empty 204 response for deletes and other content-less successes.
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - Auth
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PhoneInput'
-  /phone_auth/confirm:
-    post:
-      operationId: confirmPhoneAuth
-      description: Confirm the SMS code; sets the JWT cookie.
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - Auth
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PhoneConfirmInput'
-  /remind_password:
+  /api/remind_password:
     post:
       operationId: createPasswordReminder
       description: Email a password-reset link.
@@ -4517,7 +4196,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EmailInput'
-  /reviews:
+  /api/reviews:
     get:
       operationId: listPublicReviews
       description: Paginated published student reviews.
@@ -4545,7 +4224,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Reviews
-  /session:
+  /api/session:
     post:
       operationId: createSession
       description: Log in with email + password; sets the JWT cookie.
@@ -4628,7 +4307,7 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
-  /users:
+  /api/users:
     post:
       operationId: createUser
       description: Sign up; sets the JWT cookie on success.
@@ -6279,52 +5958,6 @@ components:
         message:
           type: string
       description: A resource was not found.
-    PageContent:
-      type: object
-      required:
-        - slug
-        - title
-        - bodyHtml
-      properties:
-        slug:
-          type: string
-        title:
-          type: string
-        bodyHtml:
-          type: string
-      description: A static content page (about, authors, privacy, tos, cookie).
-    PasskeyAssertionInput:
-      type: object
-      required:
-        - credential
-      properties:
-        credential:
-          type: string
-          description: JSON-encoded assertion credential from `navigator.credentials.get`.
-    PasskeyChallenge:
-      type: object
-      required:
-        - options
-      properties:
-        options:
-          type: string
-          description: JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions.
-      description: |-
-        A WebAuthn ceremony payload. The challenge/options and the client response
-        are opaque JSON owned by `go-webauthn`; the contract carries them as strings
-        so the browser API round-trips them verbatim.
-    PasskeyRegistrationInput:
-      type: object
-      required:
-        - credential
-        - nickname
-      properties:
-        credential:
-          type: string
-          description: JSON-encoded registration credential from `navigator.credentials.create`.
-        nickname:
-          type: string
-          nullable: true
     PermissionResource:
       type: string
       enum:
@@ -6340,26 +5973,6 @@ components:
         - languages
         - language_landing_pages
       description: Admin resources a staff role can be granted permissions on.
-    PhoneConfirmInput:
-      type: object
-      required:
-        - phone
-        - code
-      properties:
-        phone:
-          type: string
-          minLength: 1
-        code:
-          type: string
-          minLength: 1
-    PhoneInput:
-      type: object
-      required:
-        - phone
-      properties:
-        phone:
-          type: string
-          minLength: 1
     ProblemDetails:
       type: object
       required:
@@ -6952,23 +6565,6 @@ components:
           enum:
             - user
       description: 'A user (legacy: `User`). Passwords are never part of a response.'
-    UserCredential:
-      type: object
-      required:
-        - id
-        - nickname
-        - createdAt
-      properties:
-        id:
-          type: integer
-          format: int32
-        nickname:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-      description: 'A registered passkey/WebAuthn credential (legacy: `UserCredential`).'
     UserCrud:
       type: object
       required:
