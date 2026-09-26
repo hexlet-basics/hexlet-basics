@@ -1,7 +1,13 @@
 import { ActionIcon, Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
-import { useLocation, useRouteContext } from "@tanstack/react-router";
+import {
+  type RegisteredRouter,
+  useLocation,
+  useRouteContext,
+  type ValidateLinkOptions,
+} from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import type { CourseLessonView } from "@/client/types.gen";
 import { useEnterLesson } from "@/components/lesson/useEnterLesson";
@@ -63,20 +69,14 @@ export default function LessonControls({
           {/* A plain link: going back to re-read starts nothing. On the first
               lesson there is nowhere to go, so it is a disabled button rather
               than an anchor to nowhere. */}
-          {prevLesson ? (
-            <ButtonLink
-              variant="outline"
-              color="green"
-              to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
-              params={{ slug: courseSlug, lessonSlug: prevLesson.slug }}
-            >
-              {t(($) => $.courses.lessons.show.prev)}
-            </ButtonLink>
-          ) : (
-            <Button variant="outline" color="green" disabled>
-              {t(($) => $.courses.lessons.show.prev)}
-            </Button>
-          )}
+          <StepLink
+            enabled={Boolean(prevLesson)}
+            label={t(($) => $.courses.lessons.show.prev)}
+            linkOptions={{
+              to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+              params: { slug: courseSlug, lessonSlug: prevLesson?.slug ?? "" },
+            }}
+          />
 
           {/* While a check is in flight the button says so and refuses a second
               press: one solution is running, and submitting it twice would tell
@@ -127,19 +127,12 @@ function ForwardButton({
   // The last lesson reads as completion and returns to the course page. The
   // dedicated completion page has no contract operation yet.
   if (!nextLesson) {
-    return passed ? (
-      <ButtonLink
-        variant="outline"
-        color="green"
-        to="/{-$locale}/languages/$slug"
-        params={{ slug: courseSlug }}
-      >
-        {t(($) => $.courses.lessons.show.finish)}
-      </ButtonLink>
-    ) : (
-      <Button variant="outline" color="green" disabled>
-        {t(($) => $.courses.lessons.show.finish)}
-      </Button>
+    return (
+      <StepLink
+        enabled={passed}
+        label={t(($) => $.courses.lessons.show.finish)}
+        linkOptions={{ to: "/{-$locale}/languages/$slug", params: { slug: courseSlug } }}
+      />
     );
   }
 
@@ -162,13 +155,38 @@ function GuestSignUp({ passed }: { passed: boolean }) {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
 
-  return passed ? (
-    <ButtonLink variant="outline" color="green" to="/{-$locale}/users/new" search={{ redirect }}>
-      {t(($) => $.courses.lessons.show.next)}
+  return (
+    <StepLink
+      enabled={passed}
+      label={t(($) => $.courses.lessons.show.next)}
+      linkOptions={{ to: "/{-$locale}/users/new", search: { redirect } }}
+    />
+  );
+}
+
+// A step through the course, in the controls' one style: a link while the step
+// is open to the learner, and a disabled button in its place while it is not —
+// a button because an anchor to nowhere would still be focusable and followable.
+//
+// The link options are checked against the route tree the way TanStack Router
+// documents for a component that wraps a link.
+type StepLinkProps<TRouter extends RegisteredRouter = RegisteredRouter, TOptions = unknown> = {
+  enabled: boolean;
+  label: string;
+  linkOptions: ValidateLinkOptions<TRouter, TOptions>;
+};
+
+function StepLink<TRouter extends RegisteredRouter, TOptions>(
+  props: StepLinkProps<TRouter, TOptions>,
+): ReactNode;
+function StepLink({ enabled, label, linkOptions }: StepLinkProps): ReactNode {
+  return enabled ? (
+    <ButtonLink variant="outline" color="green" {...linkOptions}>
+      {label}
     </ButtonLink>
   ) : (
     <Button variant="outline" color="green" disabled>
-      {t(($) => $.courses.lessons.show.next)}
+      {label}
     </Button>
   );
 }
