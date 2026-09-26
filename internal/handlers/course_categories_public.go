@@ -12,6 +12,7 @@ import (
 	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/landingpages"
 )
 
 // The public course categories (legacy `Web::LanguageCategoriesController`).
@@ -53,10 +54,7 @@ func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPubl
 	pages, err := s.db.LandingPage.Query().
 		Where(
 			landingpage.HasCategoryItemsWith(coursecategoryitem.CourseCategoryID(category.ID)),
-			landingpage.StateEQ(string(api.LandingPageStatePublished)),
-			landingpage.LocaleEQ(locale),
-			landingpage.Listed(true),
-			landingpage.HasCourseWith(course.ProgressEQ("completed")),
+			landingpages.Listed(locale),
 		).
 		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
 		Order(

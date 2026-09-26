@@ -21,6 +21,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/store"
 )
 
@@ -150,7 +151,7 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	// is deterministic (legacy left the order to the database).
 	pages, err := s.db.LandingPage.Query().
 		Where(
-			landingpage.StateEQ("published"),
+			landingpage.StateEQ(landingpages.StatePublished),
 			landingpage.Main(true),
 			landingpage.LocaleEQ(lo.FromPtr(post.Locale)),
 		).

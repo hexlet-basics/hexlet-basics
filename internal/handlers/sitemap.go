@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/landingpages"
 )
 
 // sitemapLocales are the locales the sitemap lists, in page order (legacy
@@ -32,7 +33,7 @@ func (s *Server) GetSitemap(ctx context.Context) (*api.Sitemap, error) {
 	for _, locale := range sitemapLocales {
 		rows, err := s.db.LandingPage.Query().
 			Where(
-				landingpage.StateEQ(string(api.LandingPageStatePublished)),
+				landingpage.StateEQ(landingpages.StatePublished),
 				landingpage.Listed(true),
 				landingpage.LocaleEQ(locale),
 				// Legacy sent every lesson of the courses' current versions and the

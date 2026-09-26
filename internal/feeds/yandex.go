@@ -16,12 +16,13 @@ import (
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/coursemoduletranslation"
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/landingpage"
+
+	"hexletbasics/internal/landingpages"
 )
 
 // feedLocale is the only locale the Yandex feed speaks: Yandex's course
@@ -176,11 +177,8 @@ func (y *Yandex) categories(ctx context.Context) ([]set, error) {
 func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 	pages, err := y.db.LandingPage.Query().
 		Where(
-			landingpage.LocaleEQ(feedLocale),
-			landingpage.StateEQ("published"),
-			landingpage.Listed(true),
+			landingpages.Listed(feedLocale),
 			landingpage.Main(true),
-			landingpage.HasCourseWith(course.ProgressEQ("completed")),
 		).
 		WithCourse().
 		Order(landingpage.ByID()).
