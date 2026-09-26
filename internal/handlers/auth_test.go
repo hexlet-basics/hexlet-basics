@@ -35,25 +35,22 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
-	handler := handlers.NewServer(
-		db,
-		&config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"},
-		enqueuer,
-		enqueuer,
-		enqueuer,
-		enqueuer,
+	handler := handlers.NewServer(handlers.Deps{
+		DB:             db,
+		Config:         &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"},
+		Starter:        enqueuer,
+		Reviews:        enqueuer,
+		RelatedCourses: enqueuer,
+		Emails:         enqueuer,
 		// The real progress module: the check is a public operation, so these
 		// tests reach it while asserting what the contract protects.
-		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
-		nil, // no upload runs through the auth router
-		testsupport.NewRecordingRegistrar(db),
-		accounts.NewRemover(transactor),
-		&testsupport.RecordingEventPublisher{},
-		nil, // no lead is submitted here
-		nil, // no book is requested here
-		translator,
-		errorHandler,
-	)
+		Progress:  progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
+		Registrar: testsupport.NewRecordingRegistrar(db),
+		Remover:   accounts.NewRemover(transactor),
+		Events:    &testsupport.RecordingEventPublisher{},
+		I18n:      translator,
+		Errors:    errorHandler,
+	})
 	server, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),

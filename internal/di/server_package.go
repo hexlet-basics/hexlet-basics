@@ -20,6 +20,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
+	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/leads"
@@ -147,6 +148,32 @@ var serverPackage = do.Package(
 		}
 		return lessonreviews.NewEnqueuer(riverClient), nil
 	}),
+	do.Lazy[*relatedcourses.Enqueuer](func(i do.Injector) (*relatedcourses.Enqueuer, error) {
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+		return relatedcourses.NewEnqueuer(riverClient), nil
+	}),
+	do.Lazy[*accountemails.Enqueuer](func(i do.Injector) (*accountemails.Enqueuer, error) {
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+		return accountemails.NewEnqueuer(riverClient), nil
+	}),
+	// The Yandex feed builds its URLs on the canonical host, not the request's.
+	do.Lazy[*feeds.Yandex](func(i do.Injector) (*feeds.Yandex, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		return feeds.NewYandex(db, cfg.AppHost), nil
+	}),
 	do.Lazy[*handlers.Server](func(i do.Injector) (*handlers.Server, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -164,7 +191,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		relatedCourses, err := do.Invoke[*relatedcourses.Enqueuer](i)
+		if err != nil {
+			return nil, err
+		}
+		emails, err := do.Invoke[*accountemails.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
@@ -204,23 +235,28 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return handlers.NewServer(
-			db,
-			cfg,
-			starter,
-			reviews,
-			relatedcourses.NewEnqueuer(riverClient),
-			accountemails.NewEnqueuer(riverClient),
-			tracker,
-			assets,
-			registrar,
-			remover,
-			publisher,
-			leadRecorder,
-			bookRecorder,
-			translator,
-			errorHandler,
-		), nil
+		yandexFeed, err := do.Invoke[*feeds.Yandex](i)
+		if err != nil {
+			return nil, err
+		}
+		return handlers.NewServer(handlers.Deps{
+			DB:             db,
+			Config:         cfg,
+			Starter:        starter,
+			Reviews:        reviews,
+			RelatedCourses: relatedCourses,
+			Emails:         emails,
+			Progress:       tracker,
+			Assets:         assets,
+			Registrar:      registrar,
+			Remover:        remover,
+			Events:         publisher,
+			Leads:          leadRecorder,
+			Books:          bookRecorder,
+			I18n:           translator,
+			Errors:         errorHandler,
+			YandexFeed:     yandexFeed,
+		}), nil
 	}),
 	// The progress module owns sequential progression. It writes and publishes
 	// through the same transaction seam every other business module uses.

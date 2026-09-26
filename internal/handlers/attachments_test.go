@@ -67,23 +67,21 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	cfg := &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
 	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
-	handler := handlers.NewServer(
-		db,
-		cfg,
-		enqueuer,
-		enqueuer,
-		enqueuer,
-		enqueuer,
-		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
-		assets,
-		testsupport.NewRecordingRegistrar(db),
-		accounts.NewRemover(transactor),
-		&testsupport.RecordingEventPublisher{},
-		nil, // no lead is submitted here
-		nil, // no book is requested here
-		translator,
-		errorHandler,
-	)
+	handler := handlers.NewServer(handlers.Deps{
+		DB:             db,
+		Config:         cfg,
+		Starter:        enqueuer,
+		Reviews:        enqueuer,
+		RelatedCourses: enqueuer,
+		Emails:         enqueuer,
+		Progress:       progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
+		Assets:         assets,
+		Registrar:      testsupport.NewRecordingRegistrar(db),
+		Remover:        accounts.NewRemover(transactor),
+		Events:         &testsupport.RecordingEventPublisher{},
+		I18n:           translator,
+		Errors:         errorHandler,
+	})
 	apiServer, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),

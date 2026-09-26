@@ -37,6 +37,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/jobs"
@@ -201,11 +202,26 @@ func NewHarness(t *testing.T) *Harness {
 	// The real lead recorder too: a lead test asserts the stored row and the
 	// published fact, and both go through the test's transaction.
 	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, enqueuer, tracker, assets, registrar,
+	handler := handlers.NewServer(handlers.Deps{
+		DB:             db,
+		Config:         testConfig,
+		Starter:        enqueuer,
+		Reviews:        enqueuer,
+		RelatedCourses: enqueuer,
+		Emails:         enqueuer,
+		Progress:       tracker,
+		Assets:         assets,
+		Registrar:      registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
-		accounts.NewRemover(transactor), eventPublisher, leadRecorder,
-		books.NewRecorder(transactor, eventPublisher), translator, errorHandler)
+		Remover:    accounts.NewRemover(transactor),
+		Events:     eventPublisher,
+		Leads:      leadRecorder,
+		Books:      books.NewRecorder(transactor, eventPublisher),
+		I18n:       translator,
+		Errors:     errorHandler,
+		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
+	})
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
