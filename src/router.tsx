@@ -22,6 +22,15 @@ export function getRouter() {
     context: { queryClient, i18n, user: null },
     defaultPreload: "intent",
     scrollRestoration: true,
+    // On hydration the client does not rerun beforeLoad — it adopts the
+    // server's results — so the `{-$locale}` layout never calls changeLanguage
+    // on the browser's own i18n instance, and every page repaints in the `en`
+    // default. The resolved language travels with the dehydrated router and
+    // is applied before the first client render.
+    dehydrate: () => ({ locale: i18n.language }),
+    hydrate: async ({ locale }) => {
+      await i18n.changeLanguage(locale);
+    },
   });
 
   setupRouterSsrQueryIntegration({ router, queryClient });
