@@ -33,6 +33,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
@@ -54,6 +55,8 @@ var testConfig = &config.Config{
 	JWTSecret:         "test-secret",
 	EmailTokenSecret:  "test-email-secret",
 	CourseRepoBaseURL: "https://github.com/hexlet-basics",
+	SiteURL:           "https://code-basics.com",
+	BookBlobKey:       "book.pdf",
 }
 
 // EmailTokens signs Magic Link and Password Reset tokens the handlers under
@@ -201,7 +204,8 @@ func NewHarness(t *testing.T) *Harness {
 	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
-		accounts.NewRemover(transactor), eventPublisher, leadRecorder, translator, errorHandler)
+		accounts.NewRemover(transactor), eventPublisher, leadRecorder,
+		books.NewRecorder(transactor, eventPublisher), translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),

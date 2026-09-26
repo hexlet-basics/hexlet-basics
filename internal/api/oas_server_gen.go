@@ -388,10 +388,10 @@ type Handler interface {
 	CreateAssistantMessage(ctx context.Context, req *AssistantMessageInput, params CreateAssistantMessageParams) (CreateAssistantMessageRes, error)
 	// CreateBookRequest implements createBookRequest operation.
 	//
-	// Request the book download link by email.
+	// Request the book for the signed-in user. A repeat request changes nothing.
 	//
 	// POST /api/book/create_request
-	CreateBookRequest(ctx context.Context, req *BookRequestInput) (CreateBookRequestRes, error)
+	CreateBookRequest(ctx context.Context) (CreateBookRequestRes, error)
 	// CreateLead implements createLead operation.
 	//
 	// Submit a contact request.
@@ -434,12 +434,26 @@ type Handler interface {
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	// DownloadBook implements downloadBook operation.
+	//
+	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
+	// the book page when there is no request yet. The browser follows it as a link, so only the session
+	// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+	//
+	// GET /api/book/download
+	DownloadBook(ctx context.Context) (DownloadBookRes, error)
 	// GetBlogPost implements getBlogPost operation.
 	//
 	// A published post in the request locale, by slug, with its page data.
 	//
 	// GET /api/blog_posts/{slug}
 	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
+	// GetBook implements getBook operation.
+	//
+	// The book page's state for whoever is visiting; a visitor is answered too.
+	//
+	// GET /api/book
+	GetBook(ctx context.Context) (*BookView, error)
 	// GetCourse implements getCourse operation.
 	//
 	// Course landing page by slug.

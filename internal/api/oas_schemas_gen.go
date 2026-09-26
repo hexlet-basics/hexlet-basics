@@ -1595,31 +1595,33 @@ func (s *BlogPostView) SetRelatedLandingPages(val []CourseCatalogItem) {
 
 func (*BlogPostView) getBlogPostRes() {}
 
-// A request to download the free book (ru marketing funnel).
-// Ref: #/components/schemas/BookRequestInput
-type BookRequestInput struct {
-	Email    string    `json:"email"`
-	FullName NilString `json:"fullName"`
+// The free book page (ru marketing funnel, legacy `books#show`).
+// Ref: #/components/schemas/BookView
+type BookView struct {
+	// Whether the signed-in visitor has requested the book, in any state; false for a visitor.
+	Requested bool `json:"requested"`
+	// Absolute canonical URL of the book page.
+	URL string `json:"url"`
 }
 
-// GetEmail returns the value of Email.
-func (s *BookRequestInput) GetEmail() string {
-	return s.Email
+// GetRequested returns the value of Requested.
+func (s *BookView) GetRequested() bool {
+	return s.Requested
 }
 
-// GetFullName returns the value of FullName.
-func (s *BookRequestInput) GetFullName() NilString {
-	return s.FullName
+// GetURL returns the value of URL.
+func (s *BookView) GetURL() string {
+	return s.URL
 }
 
-// SetEmail sets the value of Email.
-func (s *BookRequestInput) SetEmail(val string) {
-	s.Email = val
+// SetRequested sets the value of Requested.
+func (s *BookView) SetRequested(val bool) {
+	s.Requested = val
 }
 
-// SetFullName sets the value of FullName.
-func (s *BookRequestInput) SetFullName(val NilString) {
-	s.FullName = val
+// SetURL sets the value of URL.
+func (s *BookView) SetURL(val string) {
+	s.URL = val
 }
 
 // A submitted solution to run against the lesson's tests.
@@ -3758,6 +3760,23 @@ func (s *DeleteSessionNoContent) SetSetCookie(val []string) {
 }
 
 func (*DeleteSessionNoContent) deleteSessionRes() {}
+
+// DownloadBookFound is response for DownloadBook operation.
+type DownloadBookFound struct {
+	Location string
+}
+
+// GetLocation returns the value of Location.
+func (s *DownloadBookFound) GetLocation() string {
+	return s.Location
+}
+
+// SetLocation sets the value of Location.
+func (s *DownloadBookFound) SetLocation(val string) {
+	s.Location = val
+}
+
+func (*DownloadBookFound) downloadBookRes() {}
 
 // Ref: #/components/schemas/EmailInput
 type EmailInput struct {
@@ -6230,6 +6249,7 @@ func (*ProblemDetails) createBookRequestRes()      {}
 func (*ProblemDetails) createLeadRes()             {}
 func (*ProblemDetails) deleteAccountRes()          {}
 func (*ProblemDetails) deleteSessionRes()          {}
+func (*ProblemDetails) downloadBookRes()           {}
 func (*ProblemDetails) getMyDashboardRes()         {}
 func (*ProblemDetails) getProfileRes()             {}
 func (*ProblemDetails) likeBlogPostRes()           {}
@@ -7991,7 +8011,6 @@ func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUploadAttachmentRes()          {}
 func (*ValidationError) checkLessonRes()                    {}
-func (*ValidationError) createBookRequestRes()              {}
 func (*ValidationError) createLeadRes()                     {}
 func (*ValidationError) createMagicLinkRes()                {}
 func (*ValidationError) createPasswordReminderRes()         {}

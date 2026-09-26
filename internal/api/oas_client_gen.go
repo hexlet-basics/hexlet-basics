@@ -409,10 +409,10 @@ type Invoker interface {
 	CreateAssistantMessage(ctx context.Context, request *AssistantMessageInput, params CreateAssistantMessageParams) (CreateAssistantMessageRes, error)
 	// CreateBookRequest invokes createBookRequest operation.
 	//
-	// Request the book download link by email.
+	// Request the book for the signed-in user. A repeat request changes nothing.
 	//
 	// POST /api/book/create_request
-	CreateBookRequest(ctx context.Context, request *BookRequestInput) (CreateBookRequestRes, error)
+	CreateBookRequest(ctx context.Context) (CreateBookRequestRes, error)
 	// CreateLead invokes createLead operation.
 	//
 	// Submit a contact request.
@@ -455,12 +455,26 @@ type Invoker interface {
 	//
 	// DELETE /api/session
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
+	// DownloadBook invokes downloadBook operation.
+	//
+	// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
+	// the book page when there is no request yet. The browser follows it as a link, so only the session
+	// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+	//
+	// GET /api/book/download
+	DownloadBook(ctx context.Context) (DownloadBookRes, error)
 	// GetBlogPost invokes getBlogPost operation.
 	//
 	// A published post in the request locale, by slug, with its page data.
 	//
 	// GET /api/blog_posts/{slug}
 	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
+	// GetBook invokes getBook operation.
+	//
+	// The book page's state for whoever is visiting; a visitor is answered too.
+	//
+	// GET /api/book
+	GetBook(ctx context.Context) (*BookView, error)
 	// GetCourse invokes getCourse operation.
 	//
 	// Course landing page by slug.
@@ -11162,15 +11176,15 @@ func (c *Client) sendCreateAssistantMessage(ctx context.Context, request *Assist
 
 // CreateBookRequest invokes createBookRequest operation.
 //
-// Request the book download link by email.
+// Request the book for the signed-in user. A repeat request changes nothing.
 //
 // POST /api/book/create_request
-func (c *Client) CreateBookRequest(ctx context.Context, request *BookRequestInput) (CreateBookRequestRes, error) {
-	res, err := c.sendCreateBookRequest(ctx, request)
+func (c *Client) CreateBookRequest(ctx context.Context) (CreateBookRequestRes, error) {
+	res, err := c.sendCreateBookRequest(ctx)
 	return res, err
 }
 
-func (c *Client) sendCreateBookRequest(ctx context.Context, request *BookRequestInput) (res CreateBookRequestRes, err error) {
+func (c *Client) sendCreateBookRequest(ctx context.Context) (res CreateBookRequestRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("createBookRequest"),
 		semconv.HTTPRequestMethodKey.String("POST"),
@@ -11215,9 +11229,6 @@ func (c *Client) sendCreateBookRequest(ctx context.Context, request *BookRequest
 	r, err := ht.NewRequest(ctx, "POST", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeCreateBookRequestRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -11994,6 +12005,121 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 	return result, nil
 }
 
+// DownloadBook invokes downloadBook operation.
+//
+// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
+// the book page when there is no request yet. The browser follows it as a link, so only the session
+// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+//
+// GET /api/book/download
+func (c *Client) DownloadBook(ctx context.Context) (DownloadBookRes, error) {
+	res, err := c.sendDownloadBook(ctx)
+	return res, err
+}
+
+func (c *Client) sendDownloadBook(ctx context.Context) (res DownloadBookRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("downloadBook"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/book/download"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, DownloadBookOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/book/download"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:UserSession"
+			switch err := c.securityUserSession(ctx, DownloadBookOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"UserSession\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeDownloadBookResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetBlogPost invokes getBlogPost operation.
 //
 // A published post in the request locale, by slug, with its page data.
@@ -12085,6 +12211,86 @@ func (c *Client) sendGetBlogPost(ctx context.Context, params GetBlogPostParams) 
 
 	stage = "DecodeResponse"
 	result, err := decodeGetBlogPostResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetBook invokes getBook operation.
+//
+// The book page's state for whoever is visiting; a visitor is answered too.
+//
+// GET /api/book
+func (c *Client) GetBook(ctx context.Context) (*BookView, error) {
+	res, err := c.sendGetBook(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetBook(ctx context.Context) (res *BookView, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getBook"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/book"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetBookOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/book"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetBookResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

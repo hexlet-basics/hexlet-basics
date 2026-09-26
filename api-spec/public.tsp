@@ -223,21 +223,44 @@ interface PublicLeads {
   } | ValidationError | UnauthorizedError | ApiError;
 }
 
-/** A request to download the free book (ru marketing funnel). */
-model BookRequestInput {
-  @minLength(1) email: string;
-  fullName: string | null;
+/** The free book page (ru marketing funnel, legacy `books#show`). */
+model BookView {
+  /** Whether the signed-in visitor has requested the book, in any state; false for a visitor. */
+  requested: boolean;
+
+  /** Absolute canonical URL of the book page. */
+  url: string;
 }
 
 @route("/book")
 @tag("Marketing")
-@useAuth([UserSession, XsrfToken])
 interface Book {
-  /** Request the book download link by email. */
+  /** The book page's state for whoever is visiting; a visitor is answered too. */
+  @get
+  @operationId("getBook")
+  get(): BookView | ApiError;
+
+  /** Request the book for the signed-in user. A repeat request changes nothing. */
   @post
+  @useAuth([UserSession, XsrfToken])
   @route("/create_request")
   @operationId("createBookRequest")
-  createRequest(@body body: BookRequestInput): NoContent | ValidationError | UnauthorizedError | ApiError;
+  createRequest(): NoContent | UnauthorizedError | ApiError;
+
+  /**
+   * Download the book: mark the request downloaded and redirect to the PDF in
+   * blob storage, or back to the book page when there is no request yet. The
+   * browser follows it as a link, so only the session cookie is required — a
+   * navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+   */
+  @get
+  @useAuth(UserSession)
+  @route("/download")
+  @operationId("downloadBook")
+  download(): {
+    @statusCode statusCode: 302;
+    @header("Location") location: string;
+  } | UnauthorizedError | ApiError;
 }
 
 // ---- Sitemap --------------------------------------------------------------

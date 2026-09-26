@@ -12,6 +12,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
@@ -43,7 +44,9 @@ type Server struct {
 	assets *assetstore.Store
 	auth   *AuthHandler
 	// leads stores a lead and raises LeadCreated in one transaction.
-	leads  leads.Creator
+	leads leads.Creator
+	// books stores a book request and raises BookRequested in one transaction.
+	books  books.Requester
 	i18n   *localization.Translator
 	errors *APIErrorHandler
 	// yandexFeed builds the Yandex course catalogue behind the feed routes.
@@ -63,6 +66,7 @@ func NewServer(
 	remover accounts.AccountRemover,
 	eventPublisher events.StandalonePublisher,
 	leadCreator leads.Creator,
+	bookRequester books.Requester,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 ) *Server {
@@ -77,6 +81,7 @@ func NewServer(
 		auth:       NewAuthHandler(db, cfg, translator, errorHandler, registrar, remover, eventPublisher, tracker, emails),
 		i18n:       translator,
 		leads:      leadCreator,
+		books:      bookRequester,
 		errors:     errorHandler,
 		yandexFeed: feeds.NewYandex(db, cfg.AppHost),
 	}

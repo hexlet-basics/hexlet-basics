@@ -211,6 +211,27 @@ var (
 			},
 		},
 	}
+	// BookRequestsColumns holds the columns for the "book_requests" table.
+	BookRequestsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+	}
+	// BookRequestsTable holds the schema information for the "book_requests" table.
+	BookRequestsTable = &schema.Table{
+		Name:       "book_requests",
+		Columns:    BookRequestsColumns,
+		PrimaryKey: []*schema.Column{BookRequestsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "bookrequest_user_id",
+				Unique:  true,
+				Columns: []*schema.Column{BookRequestsColumns[3]},
+			},
+		},
+	}
 	// LanguageCategoryQnaItemsColumns holds the columns for the "language_category_qna_items" table.
 	LanguageCategoryQnaItemsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -798,6 +819,7 @@ var (
 		BlogPostsTable,
 		BlogPostLikesTable,
 		BlogPostRelatedLanguageItemsTable,
+		BookRequestsTable,
 		LanguageCategoryQnaItemsTable,
 		LanguagesTable,
 		LanguageCategoriesTable,

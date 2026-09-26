@@ -136,6 +136,7 @@ var operationRolesUserSession = map[string][]string{
 	CreateLeadOperation:             []string{},
 	DeleteAccountOperation:          []string{},
 	DeleteSessionOperation:          []string{},
+	DownloadBookOperation:           []string{},
 	GetMyDashboardOperation:         []string{},
 	GetProfileOperation:             []string{},
 	LikeBlogPostOperation:           []string{},

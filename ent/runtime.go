@@ -10,6 +10,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
+	"hexletbasics/ent/bookrequest"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -152,6 +153,21 @@ func init() {
 	blogpostrelatedcourseitem.DefaultUpdatedAt = blogpostrelatedcourseitemDescUpdatedAt.Default.(func() time.Time)
 	// blogpostrelatedcourseitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	blogpostrelatedcourseitem.UpdateDefaultUpdatedAt = blogpostrelatedcourseitemDescUpdatedAt.UpdateDefault.(func() time.Time)
+	bookrequestMixin := schema.BookRequest{}.Mixin()
+	bookrequestMixinFields0 := bookrequestMixin[0].Fields()
+	_ = bookrequestMixinFields0
+	bookrequestFields := schema.BookRequest{}.Fields()
+	_ = bookrequestFields
+	// bookrequestDescCreatedAt is the schema descriptor for created_at field.
+	bookrequestDescCreatedAt := bookrequestMixinFields0[0].Descriptor()
+	// bookrequest.DefaultCreatedAt holds the default value on creation for the created_at field.
+	bookrequest.DefaultCreatedAt = bookrequestDescCreatedAt.Default.(func() time.Time)
+	// bookrequestDescUpdatedAt is the schema descriptor for updated_at field.
+	bookrequestDescUpdatedAt := bookrequestMixinFields0[1].Descriptor()
+	// bookrequest.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	bookrequest.DefaultUpdatedAt = bookrequestDescUpdatedAt.Default.(func() time.Time)
+	// bookrequest.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	bookrequest.UpdateDefaultUpdatedAt = bookrequestDescUpdatedAt.UpdateDefault.(func() time.Time)
 	categoryqnaitemMixin := schema.CategoryQnaItem{}.Mixin()
 	categoryqnaitemMixinFields0 := categoryqnaitemMixin[0].Fields()
 	_ = categoryqnaitemMixinFields0

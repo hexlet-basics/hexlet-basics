@@ -321,6 +321,10 @@ type DeleteSessionRes interface {
 	deleteSessionRes()
 }
 
+type DownloadBookRes interface {
+	downloadBookRes()
+}
+
 type GetBlogPostRes interface {
 	getBlogPostRes()
 }

@@ -79,6 +79,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		accounts.NewRemover(transactor),
 		&testsupport.RecordingEventPublisher{},
 		nil, // no lead is submitted here
+		nil, // no book is requested here
 		translator,
 		errorHandler,
 	)

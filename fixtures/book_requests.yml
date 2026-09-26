@@ -1,0 +1,10 @@
+# Fixtures for `book_requests`, HAND-CURATED from the legacy Rails fixture (its
+# `full` user has a requested book). `make fixtures-import` is non-destructive
+# and skips existing files, so this survives re-imports. Bob holds the request:
+# Alice is the harness user, and the request and download tests need her
+# without one. Loaded by testfixtures inside each test's rollback transaction.
+- id: 1
+  user_id: 1002
+  state: requested
+  created_at: '2026-07-26 20:50:30'
+  updated_at: '2026-07-26 20:50:30'

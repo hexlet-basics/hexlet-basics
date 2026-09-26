@@ -3491,29 +3491,18 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Blog
-  /api/book/create_request:
-    post:
-      operationId: createBookRequest
-      description: Request the book download link by email.
+  /api/book:
+    get:
+      operationId: getBook
+      description: The book page's state for whoever is visiting; a visitor is answered too.
       parameters: []
       responses:
-        '204':
-          description: Empty 204 response for deletes and other content-less successes.
-        '401':
-          description: The request is not authenticated (no/invalid session cookie).
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-        '422':
-          description: |-
-            Field-level validation errors, keyed by field name (each value is the list
-            of messages for that field). Returned when a write fails validation —
-            including constraints the schema cannot express, like uniqueness.
+        '200':
+          description: The request has succeeded.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                $ref: '#/components/schemas/BookView'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3526,15 +3515,72 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Marketing
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BookRequestInput'
+  /api/book/create_request:
+    post:
+      operationId: createBookRequest
+      description: Request the book for the signed-in user. A repeat request changes nothing.
+      parameters: []
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Marketing
       security:
         - UserSession: []
           XsrfToken: []
+  /api/book/download:
+    get:
+      operationId: downloadBook
+      description: |-
+        Download the book: mark the request downloaded and redirect to the PDF in
+        blob storage, or back to the book page when there is no request yet. The
+        browser follows it as a link, so only the session cookie is required — a
+        navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+      parameters: []
+      responses:
+        '302':
+          description: Redirection
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Marketing
+      security:
+        - UserSession: []
   /api/feeds/yandex_courses:
     get:
       operationId: getYandexCoursesFeed
@@ -4817,19 +4863,19 @@ components:
             The main landing page, in the request locale, of each course the post
                   promotes, in the post's display order.
       description: 'A blog post page: the post plus what the page shows under it.'
-    BookRequestInput:
+    BookView:
       type: object
       required:
-        - email
-        - fullName
+        - requested
+        - url
       properties:
-        email:
+        requested:
+          type: boolean
+          description: Whether the signed-in visitor has requested the book, in any state; false for a visitor.
+        url:
           type: string
-          minLength: 1
-        fullName:
-          type: string
-          nullable: true
-      description: A request to download the free book (ru marketing funnel).
+          description: Absolute canonical URL of the book page.
+      description: The free book page (ru marketing funnel, legacy `books#show`).
     CheckLessonInput:
       type: object
       required:

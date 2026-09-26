@@ -609,10 +609,10 @@ func (UnimplementedHandler) CreateAssistantMessage(ctx context.Context, req *Ass
 
 // CreateBookRequest implements createBookRequest operation.
 //
-// Request the book download link by email.
+// Request the book for the signed-in user. A repeat request changes nothing.
 //
 // POST /api/book/create_request
-func (UnimplementedHandler) CreateBookRequest(ctx context.Context, req *BookRequestInput) (r CreateBookRequestRes, _ error) {
+func (UnimplementedHandler) CreateBookRequest(ctx context.Context) (r CreateBookRequestRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
@@ -679,12 +679,32 @@ func (UnimplementedHandler) DeleteSession(ctx context.Context) (r DeleteSessionR
 	return r, ht.ErrNotImplemented
 }
 
+// DownloadBook implements downloadBook operation.
+//
+// Download the book: mark the request downloaded and redirect to the PDF in blob storage, or back to
+// the book page when there is no request yet. The browser follows it as a link, so only the session
+// cookie is required — a navigation cannot carry the XSRF header, and a GET changes nothing unsafe.
+//
+// GET /api/book/download
+func (UnimplementedHandler) DownloadBook(ctx context.Context) (r DownloadBookRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetBlogPost implements getBlogPost operation.
 //
 // A published post in the request locale, by slug, with its page data.
 //
 // GET /api/blog_posts/{slug}
 func (UnimplementedHandler) GetBlogPost(ctx context.Context, params GetBlogPostParams) (r GetBlogPostRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetBook implements getBook operation.
+//
+// The book page's state for whoever is visiting; a visitor is answered too.
+//
+// GET /api/book
+func (UnimplementedHandler) GetBook(ctx context.Context) (r *BookView, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
