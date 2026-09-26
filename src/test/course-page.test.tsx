@@ -117,6 +117,8 @@ function courseView(progress: CourseProgress): CourseView {
       { id: 1002, name: "Variables", description: null, slug: "variables" },
       { id: 1003, name: "Strings", description: null, slug: "strings" },
     ],
+    modules: [],
+    qnaItems: [],
     enrollment: null,
     progress,
   };

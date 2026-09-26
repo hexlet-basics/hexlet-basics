@@ -305,6 +305,19 @@ model CourseLessonListItem {
   slug: string;
 }
 
+/** A module of a course version in one locale (legacy:
+`Language::Module::Version::Info`, as `Language::ModuleResource` served it). */
+model CourseModuleListItem {
+  /** The module's stable id, as legacy's resource exposed it. */
+  id: int32;
+
+  name: string | null;
+  description: string | null;
+
+  /** The module's lessons in this version, in course order, by slug. */
+  lessonSlugs: string[];
+}
+
 /** A learner's progress through one lesson (legacy: `LanguageLessonMember`,
 table `language_lesson_members`). */
 model LessonProgress {

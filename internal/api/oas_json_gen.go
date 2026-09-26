@@ -11239,6 +11239,161 @@ func (s *CourseLessonView) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *CourseModuleListItem) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *CourseModuleListItem) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("id")
+		e.Int32(s.ID)
+	}
+	{
+		e.FieldStart("name")
+		s.Name.Encode(e)
+	}
+	{
+		e.FieldStart("description")
+		s.Description.Encode(e)
+	}
+	{
+		e.FieldStart("lessonSlugs")
+		e.ArrStart()
+		for _, elem := range s.LessonSlugs {
+			e.Str(elem)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfCourseModuleListItem = [4]string{
+	0: "id",
+	1: "name",
+	2: "description",
+	3: "lessonSlugs",
+}
+
+// Decode decodes CourseModuleListItem from json.
+func (s *CourseModuleListItem) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode CourseModuleListItem to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int32()
+				s.ID = int32(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "name":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				if err := s.Name.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"name\"")
+			}
+		case "description":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				if err := s.Description.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"description\"")
+			}
+		case "lessonSlugs":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				s.LessonSlugs = make([]string, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem string
+					v, err := d.Str()
+					elem = string(v)
+					if err != nil {
+						return err
+					}
+					s.LessonSlugs = append(s.LessonSlugs, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lessonSlugs\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode CourseModuleListItem")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00001111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCourseModuleListItem) {
+					name = jsonFieldsNameOfCourseModuleListItem[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *CourseModuleListItem) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *CourseModuleListItem) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *CoursePage) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -11791,6 +11946,22 @@ func (s *CourseView) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
+		e.FieldStart("modules")
+		e.ArrStart()
+		for _, elem := range s.Modules {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		e.FieldStart("qnaItems")
+		e.ArrStart()
+		for _, elem := range s.QnaItems {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
 		e.FieldStart("enrollment")
 		s.Enrollment.Encode(e)
 	}
@@ -11800,12 +11971,14 @@ func (s *CourseView) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCourseView = [5]string{
+var jsonFieldsNameOfCourseView = [7]string{
 	0: "course",
 	1: "landingPage",
 	2: "lessons",
-	3: "enrollment",
-	4: "progress",
+	3: "modules",
+	4: "qnaItems",
+	5: "enrollment",
+	6: "progress",
 }
 
 // Decode decodes CourseView from json.
@@ -11855,8 +12028,44 @@ func (s *CourseView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"lessons\"")
 			}
-		case "enrollment":
+		case "modules":
 			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				s.Modules = make([]CourseModuleListItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem CourseModuleListItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Modules = append(s.Modules, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"modules\"")
+			}
+		case "qnaItems":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				s.QnaItems = make([]QnaItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem QnaItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.QnaItems = append(s.QnaItems, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qnaItems\"")
+			}
+		case "enrollment":
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				if err := s.Enrollment.Decode(d); err != nil {
 					return err
@@ -11866,7 +12075,7 @@ func (s *CourseView) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"enrollment\"")
 			}
 		case "progress":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				if err := s.Progress.Decode(d); err != nil {
 					return err
@@ -11885,7 +12094,7 @@ func (s *CourseView) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011111,
+		0b01111111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

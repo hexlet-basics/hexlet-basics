@@ -249,6 +249,30 @@ func (c *ConverterImpl) ToCourseLessonReviews(source []*ent.CourseLessonReview) 
 	}
 	return apiCourseLessonReviewList
 }
+func (c *ConverterImpl) ToCourseModuleListItem(source *ent.CourseModuleTranslation) api.CourseModuleListItem {
+	var apiCourseModuleListItem api.CourseModuleListItem
+	if source != nil {
+		var pInt *int
+		if (*source).Edges.Version != nil {
+			pInt = &(*source).Edges.Version.ModuleID
+		}
+		apiCourseModuleListItem.ID = Int32FromPtr(pInt)
+		apiCourseModuleListItem.Name = NilStringFromPtr((*source).Name)
+		apiCourseModuleListItem.Description = NilStringFromPtr((*source).Description)
+		apiCourseModuleListItem.LessonSlugs = moduleLessonSlugs(source)
+	}
+	return apiCourseModuleListItem
+}
+func (c *ConverterImpl) ToCourseModuleListItems(source []*ent.CourseModuleTranslation) []api.CourseModuleListItem {
+	var apiCourseModuleListItemList []api.CourseModuleListItem
+	if source != nil {
+		apiCourseModuleListItemList = make([]api.CourseModuleListItem, len(source))
+		for i := 0; i < len(source); i++ {
+			apiCourseModuleListItemList[i] = c.ToCourseModuleListItem(source[i])
+		}
+	}
+	return apiCourseModuleListItemList
+}
 func (c *ConverterImpl) ToCourses(source []*ent.Course) []api.Course {
 	var apiCourseList []api.Course
 	if source != nil {
