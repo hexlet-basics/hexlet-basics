@@ -7,13 +7,6 @@ import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
 
-// Outbound links legacy hardcoded in the page rather than in the locale files.
-const reviewsHref = "https://taplink.cc/codebasics_reviews";
-const careerHref =
-  "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page";
-const skillsHref =
-  "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page";
-
 // The course completion page, ported from legacy languages#success: where the
 // lesson player sends a learner who finished the Course.
 //
@@ -68,7 +61,7 @@ function Success() {
         <Trans
           t={t}
           i18nKey={($) => $.courses.success.add_review}
-          components={{ a: <Anchor href={reviewsHref} {...external} /> }}
+          components={{ a: <Anchor href={t(($) => $.links.reviews_taplink)} {...external} /> }}
         />
       </Alert>
       <Grid gap="xl">
@@ -81,14 +74,28 @@ function Success() {
                 <Trans
                   t={t}
                   i18nKey={($) => $.courses.success.changing_career_html}
-                  components={{ a: <Anchor href={careerHref} {...external} /> }}
+                  components={{
+                    a: (
+                      <Anchor
+                        href={t(($) => $.links.hexlet_courses_for_beginners_after_course)}
+                        {...external}
+                      />
+                    ),
+                  }}
                 />
               </List.Item>
               <List.Item>
                 <Trans
                   t={t}
                   i18nKey={($) => $.courses.success.getting_new_skill_html}
-                  components={{ a: <Anchor href={skillsHref} {...external} /> }}
+                  components={{
+                    a: (
+                      <Anchor
+                        href={t(($) => $.links.hexlet_courses_for_programmers_after_course)}
+                        {...external}
+                      />
+                    ),
+                  }}
                 />
               </List.Item>
             </List>

@@ -12,10 +12,10 @@ import type { i18n as I18n } from "i18next";
 import { type ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import { NotFoundPage } from "@/components/ErrorPage";
-import { SITE_NAME } from "@/lib/seo-head";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import { type AuthUser, resolveCurrentUser } from "@/lib/auth";
 import { recordFirstVisit } from "@/lib/first-visit";
+import { SITE_NAME } from "@/lib/seo-head";
 
 interface RouterContext {
   queryClient: QueryClient;

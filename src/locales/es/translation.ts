@@ -1378,8 +1378,18 @@ export default {
         "https://ru.hexlet.io/courses/awesome-text?promo_name=course-awesome-text&promo_position=body&promo_type=link",
       hexlet_awesome_text_structure:
         "https://ru.hexlet.io/courses/awesome-text-structure?promo_name=course-awesome-text-structure&promo_position=body&promo_type=link",
+      hexlet_b2b: "https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral",
       hexlet_blog: "https://hexlet.io/blog?promo_name=blog&promo_position=body&promo_type=link",
+      hexlet_career: "https://career.hexlet.io?utm_source=code-basics&utm_medium=referral",
       hexlet_courses: "https://hexlet.io/courses",
+      hexlet_courses_for_beginners:
+        "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral",
+      hexlet_courses_for_beginners_after_course:
+        "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page",
+      hexlet_courses_for_programmers:
+        "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral",
+      hexlet_courses_for_programmers_after_course:
+        "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=finished_course_page",
       hexlet_facebook: "https://www.facebook.com/hexlethq",
       hexlet_frontend:
         "https://hexlet.io/programs/frontend?promo_name=prof-frontend&promo_position=body&promo_type=link",
@@ -1407,6 +1417,8 @@ export default {
       hexlet_twitter: "https://twitter.com/hexlet_io",
       hexlet_twitter_handle: "@hexlet_io",
       hexlet_youtube: "https://www.youtube.com/channel/UCMGJqXOa4m37IdmDLO-n-eQ",
+      hexly: "https://hexly.ru?utm_source=code-basics&utm_medium=referral",
+      reviews_taplink: "https://taplink.cc/codebasics_reviews",
     },
     magic_links: {
       new: {

@@ -35,8 +35,8 @@ import BlogPostBlock from "@/components/BlogPostBlock";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import CourseBlock from "@/components/CourseBlock";
 import { ActionIconLink, TextLink } from "@/components/RouterLink";
-import { timeAgo } from "@/lib/time-ago";
 import { seoHead } from "@/lib/seo-head";
+import { timeAgo } from "@/lib/time-ago";
 
 // A blog post, at its legacy URL, ported from legacy blog_posts/show. Reading on
 // scrolls into the next older post (legacy useInfiniteItems), and the address

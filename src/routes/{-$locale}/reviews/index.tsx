@@ -17,11 +17,8 @@ import { z } from "zod";
 import { listPublicReviewsOptions } from "@/client/@tanstack/react-query.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import Pager from "@/components/Pager";
-import { longDate } from "@/lib/time-ago";
 import { seoHead } from "@/lib/seo-head";
-
-// Where a ru reader is sent to leave a review (legacy reviews/index).
-const ADD_REVIEW_URL = "https://taplink.cc/codebasics_reviews";
+import { longDate } from "@/lib/time-ago";
 
 // Student reviews, at their legacy URL, ported from legacy reviews/index. The
 // loader prefetches the requested page so the reviews are in the
@@ -70,7 +67,13 @@ function Index() {
             t={t}
             i18nKey={($) => $.reviews.index.add_review}
             components={{
-              a: <Anchor href={ADD_REVIEW_URL} target="_blank" rel="noopener noreferrer" />,
+              a: (
+                <Anchor
+                  href={t(($) => $.links.reviews_taplink)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              ),
             }}
           />
         </Alert>

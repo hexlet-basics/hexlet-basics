@@ -308,7 +308,8 @@ export function ThemeSwitcher() {
 }
 
 // Marketing "solutions" menu, ru-only, ported from legacy. Every target but
-// the teachers' case is an external Hexlet URL; that one is a local route.
+// the teachers' case is an external Hexlet URL, kept in the locale files' links;
+// that one is a local route.
 // Legacy opened each in a new tab.
 function SolutionsMenu() {
   const { t } = useTranslation();
@@ -318,25 +319,25 @@ function SolutionsMenu() {
       icon: IconTarget,
       title: t(($) => $.layouts.shared.nav.courses_with_employement),
       description: t(($) => $.layouts.shared.nav.courses_with_employement_description),
-      href: "https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_courses_for_beginners),
     },
     {
       icon: IconRocket,
       title: t(($) => $.layouts.shared.nav.career),
       description: t(($) => $.layouts.shared.nav.career_description),
-      href: "https://career.hexlet.io?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_career),
     },
     {
       icon: IconGitBranch,
       title: t(($) => $.layouts.shared.nav.upskilling),
       description: t(($) => $.layouts.shared.nav.upskilling_description),
-      href: "https://ru.hexlet.io/courses_for_programmers?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_courses_for_programmers),
     },
     {
       icon: IconHeartHandshake,
       title: t(($) => $.layouts.shared.nav.business),
       description: t(($) => $.layouts.shared.nav.business_description),
-      href: "https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexlet_b2b),
     },
     {
       icon: IconBlocks,
@@ -348,7 +349,7 @@ function SolutionsMenu() {
       icon: IconSchool,
       title: t(($) => $.layouts.shared.nav.hexly),
       description: t(($) => $.layouts.shared.nav.hexly_description),
-      href: "https://hexly.ru?utm_source=code-basics&utm_medium=referral",
+      href: t(($) => $.links.hexly),
     },
   ];
 
