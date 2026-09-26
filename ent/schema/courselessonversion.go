@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -37,6 +38,23 @@ func (CourseLessonVersion) Fields() []ent.Field {
 		field.Int("course_version_id").StorageKey("language_version_id"),
 		field.Int("lesson_id"),
 		field.Int("module_version_id"),
+	}
+}
+
+// Edges own the existing module_version_id and lesson_id columns (no
+// migration), so a read can walk module version -> lesson versions -> lesson
+// slugs with eager loading instead of stitching id maps by hand.
+func (CourseLessonVersion) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.From("module_version", CourseModuleVersion.Type).
+			Ref("lesson_versions").
+			Field("module_version_id").
+			Unique().
+			Required(),
+		edge.To("lesson", CourseLesson.Type).
+			Field("lesson_id").
+			Unique().
+			Required(),
 	}
 }
 

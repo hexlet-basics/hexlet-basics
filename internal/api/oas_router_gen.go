@@ -115,7 +115,7 @@ var (
 	rn76AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn104AllowedHeaders = map[string]string{
+	rn106AllowedHeaders = map[string]string{
 		"POST": "X-Xsrf-Token",
 	}
 	rn77AllowedHeaders = map[string]string{
@@ -1804,7 +1804,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn104AllowedHeaders,
+											allowedHeaders: rn106AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -1864,6 +1864,57 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 								allowedMethods: "POST",
 								allowedHeaders: rn77AllowedHeaders,
 								acceptPost:     "application/json",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+
+				}
+
+			case 'f': // Prefix: "feeds/yandex_courses"
+
+				if l := len("feeds/yandex_courses"); len(elem) >= l && elem[0:l] == "feeds/yandex_courses" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleGetYandexCoursesFeedRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, notAllowedParams{
+							allowedMethods: "GET",
+							allowedHeaders: nil,
+							acceptPost:     "",
+							acceptPatch:    "",
+						})
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '.': // Prefix: ".xml"
+
+					if l := len(".xml"); len(elem) >= l && elem[0:l] == ".xml" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetYandexCoursesFeedXmlRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET",
+								allowedHeaders: nil,
+								acceptPost:     "",
 								acceptPatch:    "",
 							})
 						}
@@ -4467,6 +4518,57 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.operationID = "createBookRequest"
 							r.operationGroup = ""
 							r.pathPattern = "/api/book/create_request"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				}
+
+			case 'f': // Prefix: "feeds/yandex_courses"
+
+				if l := len("feeds/yandex_courses"); len(elem) >= l && elem[0:l] == "feeds/yandex_courses" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = GetYandexCoursesFeedOperation
+						r.summary = ""
+						r.operationID = "getYandexCoursesFeed"
+						r.operationGroup = ""
+						r.pathPattern = "/api/feeds/yandex_courses"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '.': // Prefix: ".xml"
+
+					if l := len(".xml"); len(elem) >= l && elem[0:l] == ".xml" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetYandexCoursesFeedXmlOperation
+							r.summary = ""
+							r.operationID = "getYandexCoursesFeedXml"
+							r.operationGroup = ""
+							r.pathPattern = "/api/feeds/yandex_courses.xml"
 							r.args = args
 							r.count = 0
 							return r, true

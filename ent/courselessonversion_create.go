@@ -6,7 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonversion"
+	"hexletbasics/ent/coursemoduleversion"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -158,6 +160,16 @@ func (_c *CourseLessonVersionCreate) SetModuleVersionID(v int) *CourseLessonVers
 	return _c
 }
 
+// SetModuleVersion sets the "module_version" edge to the CourseModuleVersion entity.
+func (_c *CourseLessonVersionCreate) SetModuleVersion(v *CourseModuleVersion) *CourseLessonVersionCreate {
+	return _c.SetModuleVersionID(v.ID)
+}
+
+// SetLesson sets the "lesson" edge to the CourseLesson entity.
+func (_c *CourseLessonVersionCreate) SetLesson(v *CourseLesson) *CourseLessonVersionCreate {
+	return _c.SetLessonID(v.ID)
+}
+
 // Mutation returns the CourseLessonVersionMutation object of the builder.
 func (_c *CourseLessonVersionCreate) Mutation() *CourseLessonVersionMutation {
 	return _c.mutation
@@ -222,6 +234,12 @@ func (_c *CourseLessonVersionCreate) check() error {
 	}
 	if _, ok := _c.mutation.ModuleVersionID(); !ok {
 		return &ValidationError{Name: "module_version_id", err: errors.New(`ent: missing required field "CourseLessonVersion.module_version_id"`)}
+	}
+	if len(_c.mutation.ModuleVersionIDs()) == 0 {
+		return &ValidationError{Name: "module_version", err: errors.New(`ent: missing required edge "CourseLessonVersion.module_version"`)}
+	}
+	if len(_c.mutation.LessonIDs()) == 0 {
+		return &ValidationError{Name: "lesson", err: errors.New(`ent: missing required edge "CourseLessonVersion.lesson"`)}
 	}
 	return nil
 }
@@ -290,13 +308,39 @@ func (_c *CourseLessonVersionCreate) createSpec() (*CourseLessonVersion, *sqlgra
 		_spec.SetField(courselessonversion.FieldCourseVersionID, field.TypeInt, value)
 		_node.CourseVersionID = value
 	}
-	if value, ok := _c.mutation.LessonID(); ok {
-		_spec.SetField(courselessonversion.FieldLessonID, field.TypeInt, value)
-		_node.LessonID = value
+	if nodes := _c.mutation.ModuleVersionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   courselessonversion.ModuleVersionTable,
+			Columns: []string{courselessonversion.ModuleVersionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursemoduleversion.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ModuleVersionID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if value, ok := _c.mutation.ModuleVersionID(); ok {
-		_spec.SetField(courselessonversion.FieldModuleVersionID, field.TypeInt, value)
-		_node.ModuleVersionID = value
+	if nodes := _c.mutation.LessonIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   courselessonversion.LessonTable,
+			Columns: []string{courselessonversion.LessonColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(courselesson.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.LessonID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -530,12 +574,6 @@ func (u *CourseLessonVersionUpsert) UpdateLessonID() *CourseLessonVersionUpsert 
 	return u
 }
 
-// AddLessonID adds v to the "lesson_id" field.
-func (u *CourseLessonVersionUpsert) AddLessonID(v int) *CourseLessonVersionUpsert {
-	u.Add(courselessonversion.FieldLessonID, v)
-	return u
-}
-
 // SetModuleVersionID sets the "module_version_id" field.
 func (u *CourseLessonVersionUpsert) SetModuleVersionID(v int) *CourseLessonVersionUpsert {
 	u.Set(courselessonversion.FieldModuleVersionID, v)
@@ -545,12 +583,6 @@ func (u *CourseLessonVersionUpsert) SetModuleVersionID(v int) *CourseLessonVersi
 // UpdateModuleVersionID sets the "module_version_id" field to the value that was provided on create.
 func (u *CourseLessonVersionUpsert) UpdateModuleVersionID() *CourseLessonVersionUpsert {
 	u.SetExcluded(courselessonversion.FieldModuleVersionID)
-	return u
-}
-
-// AddModuleVersionID adds v to the "module_version_id" field.
-func (u *CourseLessonVersionUpsert) AddModuleVersionID(v int) *CourseLessonVersionUpsert {
-	u.Add(courselessonversion.FieldModuleVersionID, v)
 	return u
 }
 
@@ -802,13 +834,6 @@ func (u *CourseLessonVersionUpsertOne) SetLessonID(v int) *CourseLessonVersionUp
 	})
 }
 
-// AddLessonID adds v to the "lesson_id" field.
-func (u *CourseLessonVersionUpsertOne) AddLessonID(v int) *CourseLessonVersionUpsertOne {
-	return u.Update(func(s *CourseLessonVersionUpsert) {
-		s.AddLessonID(v)
-	})
-}
-
 // UpdateLessonID sets the "lesson_id" field to the value that was provided on create.
 func (u *CourseLessonVersionUpsertOne) UpdateLessonID() *CourseLessonVersionUpsertOne {
 	return u.Update(func(s *CourseLessonVersionUpsert) {
@@ -820,13 +845,6 @@ func (u *CourseLessonVersionUpsertOne) UpdateLessonID() *CourseLessonVersionUpse
 func (u *CourseLessonVersionUpsertOne) SetModuleVersionID(v int) *CourseLessonVersionUpsertOne {
 	return u.Update(func(s *CourseLessonVersionUpsert) {
 		s.SetModuleVersionID(v)
-	})
-}
-
-// AddModuleVersionID adds v to the "module_version_id" field.
-func (u *CourseLessonVersionUpsertOne) AddModuleVersionID(v int) *CourseLessonVersionUpsertOne {
-	return u.Update(func(s *CourseLessonVersionUpsert) {
-		s.AddModuleVersionID(v)
 	})
 }
 
@@ -1251,13 +1269,6 @@ func (u *CourseLessonVersionUpsertBulk) SetLessonID(v int) *CourseLessonVersionU
 	})
 }
 
-// AddLessonID adds v to the "lesson_id" field.
-func (u *CourseLessonVersionUpsertBulk) AddLessonID(v int) *CourseLessonVersionUpsertBulk {
-	return u.Update(func(s *CourseLessonVersionUpsert) {
-		s.AddLessonID(v)
-	})
-}
-
 // UpdateLessonID sets the "lesson_id" field to the value that was provided on create.
 func (u *CourseLessonVersionUpsertBulk) UpdateLessonID() *CourseLessonVersionUpsertBulk {
 	return u.Update(func(s *CourseLessonVersionUpsert) {
@@ -1269,13 +1280,6 @@ func (u *CourseLessonVersionUpsertBulk) UpdateLessonID() *CourseLessonVersionUps
 func (u *CourseLessonVersionUpsertBulk) SetModuleVersionID(v int) *CourseLessonVersionUpsertBulk {
 	return u.Update(func(s *CourseLessonVersionUpsert) {
 		s.SetModuleVersionID(v)
-	})
-}
-
-// AddModuleVersionID adds v to the "module_version_id" field.
-func (u *CourseLessonVersionUpsertBulk) AddModuleVersionID(v int) *CourseLessonVersionUpsertBulk {
-	return u.Update(func(s *CourseLessonVersionUpsert) {
-		s.AddModuleVersionID(v)
 	})
 }
 

@@ -2795,6 +2795,38 @@ func (c *CourseLessonVersionClient) GetX(ctx context.Context, id int) *CourseLes
 	return obj
 }
 
+// QueryModuleVersion queries the module_version edge of a CourseLessonVersion.
+func (c *CourseLessonVersionClient) QueryModuleVersion(_m *CourseLessonVersion) *CourseModuleVersionQuery {
+	query := (&CourseModuleVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessonversion.Table, courselessonversion.FieldID, id),
+			sqlgraph.To(coursemoduleversion.Table, coursemoduleversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, courselessonversion.ModuleVersionTable, courselessonversion.ModuleVersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLesson queries the lesson edge of a CourseLessonVersion.
+func (c *CourseLessonVersionClient) QueryLesson(_m *CourseLessonVersion) *CourseLessonQuery {
+	query := (&CourseLessonClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselessonversion.Table, courselessonversion.FieldID, id),
+			sqlgraph.To(courselesson.Table, courselesson.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, courselessonversion.LessonTable, courselessonversion.LessonColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseLessonVersionClient) Hooks() []Hook {
 	return c.hooks.CourseLessonVersion
@@ -3061,6 +3093,22 @@ func (c *CourseModuleTranslationClient) GetX(ctx context.Context, id int) *Cours
 	return obj
 }
 
+// QueryVersion queries the version edge of a CourseModuleTranslation.
+func (c *CourseModuleTranslationClient) QueryVersion(_m *CourseModuleTranslation) *CourseModuleVersionQuery {
+	query := (&CourseModuleVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursemoduletranslation.Table, coursemoduletranslation.FieldID, id),
+			sqlgraph.To(coursemoduleversion.Table, coursemoduleversion.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, coursemoduletranslation.VersionTable, coursemoduletranslation.VersionColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *CourseModuleTranslationClient) Hooks() []Hook {
 	return c.hooks.CourseModuleTranslation
@@ -3192,6 +3240,22 @@ func (c *CourseModuleVersionClient) GetX(ctx context.Context, id int) *CourseMod
 		panic(err)
 	}
 	return obj
+}
+
+// QueryLessonVersions queries the lesson_versions edge of a CourseModuleVersion.
+func (c *CourseModuleVersionClient) QueryLessonVersions(_m *CourseModuleVersion) *CourseLessonVersionQuery {
+	query := (&CourseLessonVersionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursemoduleversion.Table, coursemoduleversion.FieldID, id),
+			sqlgraph.To(courselessonversion.Table, courselessonversion.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, coursemoduleversion.LessonVersionsTable, coursemoduleversion.LessonVersionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

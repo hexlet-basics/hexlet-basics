@@ -764,6 +764,26 @@ func (UnimplementedHandler) GetSitemap(ctx context.Context) (r *Sitemap, _ error
 	return r, ht.ErrNotImplemented
 }
 
+// GetYandexCoursesFeed implements getYandexCoursesFeed operation.
+//
+// The same feed at the path the legacy route declares.
+//
+// GET /api/feeds/yandex_courses
+func (UnimplementedHandler) GetYandexCoursesFeed(ctx context.Context) (r GetYandexCoursesFeedOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetYandexCoursesFeedXml implements getYandexCoursesFeedXml operation.
+//
+// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+// one.
+//
+// GET /api/feeds/yandex_courses.xml
+func (UnimplementedHandler) GetYandexCoursesFeedXml(ctx context.Context) (r GetYandexCoursesFeedXmlOK, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // LikeBlogPost implements likeBlogPost operation.
 //
 // Like a post (idempotent per visitor).

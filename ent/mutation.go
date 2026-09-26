@@ -12103,31 +12103,31 @@ func (m *CourseLessonTranslationMutation) ResetEdge(name string) error {
 // CourseLessonVersionMutation represents an operation that mutates the CourseLessonVersion nodes in the graph.
 type CourseLessonVersionMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *int
-	created_at           *time.Time
-	updated_at           *time.Time
-	natural_order        *int
-	addnatural_order     *int
-	_order               *int
-	add_order            *int
-	original_code        *string
-	prepared_code        *string
-	test_code            *string
-	path_to_code         *string
-	course_id            *int
-	addcourse_id         *int
-	course_version_id    *int
-	addcourse_version_id *int
-	lesson_id            *int
-	addlesson_id         *int
-	module_version_id    *int
-	addmodule_version_id *int
-	clearedFields        map[string]struct{}
-	done                 bool
-	oldValue             func(context.Context) (*CourseLessonVersion, error)
-	predicates           []predicate.CourseLessonVersion
+	op                    Op
+	typ                   string
+	id                    *int
+	created_at            *time.Time
+	updated_at            *time.Time
+	natural_order         *int
+	addnatural_order      *int
+	_order                *int
+	add_order             *int
+	original_code         *string
+	prepared_code         *string
+	test_code             *string
+	path_to_code          *string
+	course_id             *int
+	addcourse_id          *int
+	course_version_id     *int
+	addcourse_version_id  *int
+	clearedFields         map[string]struct{}
+	module_version        *int
+	clearedmodule_version bool
+	lesson                *int
+	clearedlesson         bool
+	done                  bool
+	oldValue              func(context.Context) (*CourseLessonVersion, error)
+	predicates            []predicate.CourseLessonVersion
 }
 
 var _ ent.Mutation = (*CourseLessonVersionMutation)(nil)
@@ -12750,13 +12750,12 @@ func (m *CourseLessonVersionMutation) ResetCourseVersionID() {
 
 // SetLessonID sets the "lesson_id" field.
 func (m *CourseLessonVersionMutation) SetLessonID(i int) {
-	m.lesson_id = &i
-	m.addlesson_id = nil
+	m.lesson = &i
 }
 
 // LessonID returns the value of the "lesson_id" field in the mutation.
 func (m *CourseLessonVersionMutation) LessonID() (r int, exists bool) {
-	v := m.lesson_id
+	v := m.lesson
 	if v == nil {
 		return
 	}
@@ -12780,39 +12779,19 @@ func (m *CourseLessonVersionMutation) OldLessonID(ctx context.Context) (v int, e
 	return oldValue.LessonID, nil
 }
 
-// AddLessonID adds i to the "lesson_id" field.
-func (m *CourseLessonVersionMutation) AddLessonID(i int) {
-	if m.addlesson_id != nil {
-		*m.addlesson_id += i
-	} else {
-		m.addlesson_id = &i
-	}
-}
-
-// AddedLessonID returns the value that was added to the "lesson_id" field in this mutation.
-func (m *CourseLessonVersionMutation) AddedLessonID() (r int, exists bool) {
-	v := m.addlesson_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetLessonID resets all changes to the "lesson_id" field.
 func (m *CourseLessonVersionMutation) ResetLessonID() {
-	m.lesson_id = nil
-	m.addlesson_id = nil
+	m.lesson = nil
 }
 
 // SetModuleVersionID sets the "module_version_id" field.
 func (m *CourseLessonVersionMutation) SetModuleVersionID(i int) {
-	m.module_version_id = &i
-	m.addmodule_version_id = nil
+	m.module_version = &i
 }
 
 // ModuleVersionID returns the value of the "module_version_id" field in the mutation.
 func (m *CourseLessonVersionMutation) ModuleVersionID() (r int, exists bool) {
-	v := m.module_version_id
+	v := m.module_version
 	if v == nil {
 		return
 	}
@@ -12836,28 +12815,63 @@ func (m *CourseLessonVersionMutation) OldModuleVersionID(ctx context.Context) (v
 	return oldValue.ModuleVersionID, nil
 }
 
-// AddModuleVersionID adds i to the "module_version_id" field.
-func (m *CourseLessonVersionMutation) AddModuleVersionID(i int) {
-	if m.addmodule_version_id != nil {
-		*m.addmodule_version_id += i
-	} else {
-		m.addmodule_version_id = &i
-	}
-}
-
-// AddedModuleVersionID returns the value that was added to the "module_version_id" field in this mutation.
-func (m *CourseLessonVersionMutation) AddedModuleVersionID() (r int, exists bool) {
-	v := m.addmodule_version_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetModuleVersionID resets all changes to the "module_version_id" field.
 func (m *CourseLessonVersionMutation) ResetModuleVersionID() {
-	m.module_version_id = nil
-	m.addmodule_version_id = nil
+	m.module_version = nil
+}
+
+// ClearModuleVersion clears the "module_version" edge to the CourseModuleVersion entity.
+func (m *CourseLessonVersionMutation) ClearModuleVersion() {
+	m.clearedmodule_version = true
+	m.clearedFields[courselessonversion.FieldModuleVersionID] = struct{}{}
+}
+
+// ModuleVersionCleared reports if the "module_version" edge to the CourseModuleVersion entity was cleared.
+func (m *CourseLessonVersionMutation) ModuleVersionCleared() bool {
+	return m.clearedmodule_version
+}
+
+// ModuleVersionIDs returns the "module_version" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ModuleVersionID instead. It exists only for internal usage by the builders.
+func (m *CourseLessonVersionMutation) ModuleVersionIDs() (ids []int) {
+	if id := m.module_version; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetModuleVersion resets all changes to the "module_version" edge.
+func (m *CourseLessonVersionMutation) ResetModuleVersion() {
+	m.module_version = nil
+	m.clearedmodule_version = false
+}
+
+// ClearLesson clears the "lesson" edge to the CourseLesson entity.
+func (m *CourseLessonVersionMutation) ClearLesson() {
+	m.clearedlesson = true
+	m.clearedFields[courselessonversion.FieldLessonID] = struct{}{}
+}
+
+// LessonCleared reports if the "lesson" edge to the CourseLesson entity was cleared.
+func (m *CourseLessonVersionMutation) LessonCleared() bool {
+	return m.clearedlesson
+}
+
+// LessonIDs returns the "lesson" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// LessonID instead. It exists only for internal usage by the builders.
+func (m *CourseLessonVersionMutation) LessonIDs() (ids []int) {
+	if id := m.lesson; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetLesson resets all changes to the "lesson" edge.
+func (m *CourseLessonVersionMutation) ResetLesson() {
+	m.lesson = nil
+	m.clearedlesson = false
 }
 
 // Where appends a list predicates to the CourseLessonVersionMutation builder.
@@ -12925,10 +12939,10 @@ func (m *CourseLessonVersionMutation) Fields() []string {
 	if m.course_version_id != nil {
 		fields = append(fields, courselessonversion.FieldCourseVersionID)
 	}
-	if m.lesson_id != nil {
+	if m.lesson != nil {
 		fields = append(fields, courselessonversion.FieldLessonID)
 	}
-	if m.module_version_id != nil {
+	if m.module_version != nil {
 		fields = append(fields, courselessonversion.FieldModuleVersionID)
 	}
 	return fields
@@ -13109,12 +13123,6 @@ func (m *CourseLessonVersionMutation) AddedFields() []string {
 	if m.addcourse_version_id != nil {
 		fields = append(fields, courselessonversion.FieldCourseVersionID)
 	}
-	if m.addlesson_id != nil {
-		fields = append(fields, courselessonversion.FieldLessonID)
-	}
-	if m.addmodule_version_id != nil {
-		fields = append(fields, courselessonversion.FieldModuleVersionID)
-	}
 	return fields
 }
 
@@ -13131,10 +13139,6 @@ func (m *CourseLessonVersionMutation) AddedField(name string) (ent.Value, bool) 
 		return m.AddedCourseID()
 	case courselessonversion.FieldCourseVersionID:
 		return m.AddedCourseVersionID()
-	case courselessonversion.FieldLessonID:
-		return m.AddedLessonID()
-	case courselessonversion.FieldModuleVersionID:
-		return m.AddedModuleVersionID()
 	}
 	return nil, false
 }
@@ -13171,20 +13175,6 @@ func (m *CourseLessonVersionMutation) AddField(name string, value ent.Value) err
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCourseVersionID(v)
-		return nil
-	case courselessonversion.FieldLessonID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddLessonID(v)
-		return nil
-	case courselessonversion.FieldModuleVersionID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddModuleVersionID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseLessonVersion numeric field %s", name)
@@ -13294,19 +13284,35 @@ func (m *CourseLessonVersionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CourseLessonVersionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.module_version != nil {
+		edges = append(edges, courselessonversion.EdgeModuleVersion)
+	}
+	if m.lesson != nil {
+		edges = append(edges, courselessonversion.EdgeLesson)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *CourseLessonVersionMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case courselessonversion.EdgeModuleVersion:
+		if id := m.module_version; id != nil {
+			return []ent.Value{*id}
+		}
+	case courselessonversion.EdgeLesson:
+		if id := m.lesson; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CourseLessonVersionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -13318,25 +13324,53 @@ func (m *CourseLessonVersionMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CourseLessonVersionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedmodule_version {
+		edges = append(edges, courselessonversion.EdgeModuleVersion)
+	}
+	if m.clearedlesson {
+		edges = append(edges, courselessonversion.EdgeLesson)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *CourseLessonVersionMutation) EdgeCleared(name string) bool {
+	switch name {
+	case courselessonversion.EdgeModuleVersion:
+		return m.clearedmodule_version
+	case courselessonversion.EdgeLesson:
+		return m.clearedlesson
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *CourseLessonVersionMutation) ClearEdge(name string) error {
+	switch name {
+	case courselessonversion.EdgeModuleVersion:
+		m.ClearModuleVersion()
+		return nil
+	case courselessonversion.EdgeLesson:
+		m.ClearLesson()
+		return nil
+	}
 	return fmt.Errorf("unknown CourseLessonVersion unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *CourseLessonVersionMutation) ResetEdge(name string) error {
+	switch name {
+	case courselessonversion.EdgeModuleVersion:
+		m.ResetModuleVersion()
+		return nil
+	case courselessonversion.EdgeLesson:
+		m.ResetLesson()
+		return nil
+	}
 	return fmt.Errorf("unknown CourseLessonVersion edge %s", name)
 }
 
@@ -14101,9 +14135,9 @@ type CourseModuleTranslationMutation struct {
 	addcourse_id         *int
 	course_version_id    *int
 	addcourse_version_id *int
-	version_id           *int
-	addversion_id        *int
 	clearedFields        map[string]struct{}
+	version              *int
+	clearedversion       bool
 	done                 bool
 	oldValue             func(context.Context) (*CourseModuleTranslation, error)
 	predicates           []predicate.CourseModuleTranslation
@@ -14540,13 +14574,12 @@ func (m *CourseModuleTranslationMutation) ResetCourseVersionID() {
 
 // SetVersionID sets the "version_id" field.
 func (m *CourseModuleTranslationMutation) SetVersionID(i int) {
-	m.version_id = &i
-	m.addversion_id = nil
+	m.version = &i
 }
 
 // VersionID returns the value of the "version_id" field in the mutation.
 func (m *CourseModuleTranslationMutation) VersionID() (r int, exists bool) {
-	v := m.version_id
+	v := m.version
 	if v == nil {
 		return
 	}
@@ -14570,28 +14603,36 @@ func (m *CourseModuleTranslationMutation) OldVersionID(ctx context.Context) (v i
 	return oldValue.VersionID, nil
 }
 
-// AddVersionID adds i to the "version_id" field.
-func (m *CourseModuleTranslationMutation) AddVersionID(i int) {
-	if m.addversion_id != nil {
-		*m.addversion_id += i
-	} else {
-		m.addversion_id = &i
-	}
-}
-
-// AddedVersionID returns the value that was added to the "version_id" field in this mutation.
-func (m *CourseModuleTranslationMutation) AddedVersionID() (r int, exists bool) {
-	v := m.addversion_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetVersionID resets all changes to the "version_id" field.
 func (m *CourseModuleTranslationMutation) ResetVersionID() {
-	m.version_id = nil
-	m.addversion_id = nil
+	m.version = nil
+}
+
+// ClearVersion clears the "version" edge to the CourseModuleVersion entity.
+func (m *CourseModuleTranslationMutation) ClearVersion() {
+	m.clearedversion = true
+	m.clearedFields[coursemoduletranslation.FieldVersionID] = struct{}{}
+}
+
+// VersionCleared reports if the "version" edge to the CourseModuleVersion entity was cleared.
+func (m *CourseModuleTranslationMutation) VersionCleared() bool {
+	return m.clearedversion
+}
+
+// VersionIDs returns the "version" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// VersionID instead. It exists only for internal usage by the builders.
+func (m *CourseModuleTranslationMutation) VersionIDs() (ids []int) {
+	if id := m.version; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetVersion resets all changes to the "version" edge.
+func (m *CourseModuleTranslationMutation) ResetVersion() {
+	m.version = nil
+	m.clearedversion = false
 }
 
 // Where appends a list predicates to the CourseModuleTranslationMutation builder.
@@ -14650,7 +14691,7 @@ func (m *CourseModuleTranslationMutation) Fields() []string {
 	if m.course_version_id != nil {
 		fields = append(fields, coursemoduletranslation.FieldCourseVersionID)
 	}
-	if m.version_id != nil {
+	if m.version != nil {
 		fields = append(fields, coursemoduletranslation.FieldVersionID)
 	}
 	return fields
@@ -14781,9 +14822,6 @@ func (m *CourseModuleTranslationMutation) AddedFields() []string {
 	if m.addcourse_version_id != nil {
 		fields = append(fields, coursemoduletranslation.FieldCourseVersionID)
 	}
-	if m.addversion_id != nil {
-		fields = append(fields, coursemoduletranslation.FieldVersionID)
-	}
 	return fields
 }
 
@@ -14796,8 +14834,6 @@ func (m *CourseModuleTranslationMutation) AddedField(name string) (ent.Value, bo
 		return m.AddedCourseID()
 	case coursemoduletranslation.FieldCourseVersionID:
 		return m.AddedCourseVersionID()
-	case coursemoduletranslation.FieldVersionID:
-		return m.AddedVersionID()
 	}
 	return nil, false
 }
@@ -14820,13 +14856,6 @@ func (m *CourseModuleTranslationMutation) AddField(name string, value ent.Value)
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCourseVersionID(v)
-		return nil
-	case coursemoduletranslation.FieldVersionID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddVersionID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CourseModuleTranslation numeric field %s", name)
@@ -14906,19 +14935,28 @@ func (m *CourseModuleTranslationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CourseModuleTranslationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.version != nil {
+		edges = append(edges, coursemoduletranslation.EdgeVersion)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *CourseModuleTranslationMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case coursemoduletranslation.EdgeVersion:
+		if id := m.version; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CourseModuleTranslationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -14930,48 +14968,68 @@ func (m *CourseModuleTranslationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CourseModuleTranslationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedversion {
+		edges = append(edges, coursemoduletranslation.EdgeVersion)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *CourseModuleTranslationMutation) EdgeCleared(name string) bool {
+	switch name {
+	case coursemoduletranslation.EdgeVersion:
+		return m.clearedversion
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *CourseModuleTranslationMutation) ClearEdge(name string) error {
+	switch name {
+	case coursemoduletranslation.EdgeVersion:
+		m.ClearVersion()
+		return nil
+	}
 	return fmt.Errorf("unknown CourseModuleTranslation unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *CourseModuleTranslationMutation) ResetEdge(name string) error {
+	switch name {
+	case coursemoduletranslation.EdgeVersion:
+		m.ResetVersion()
+		return nil
+	}
 	return fmt.Errorf("unknown CourseModuleTranslation edge %s", name)
 }
 
 // CourseModuleVersionMutation represents an operation that mutates the CourseModuleVersion nodes in the graph.
 type CourseModuleVersionMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *int
-	created_at           *time.Time
-	updated_at           *time.Time
-	_order               *int
-	add_order            *int
-	course_id            *int
-	addcourse_id         *int
-	course_version_id    *int
-	addcourse_version_id *int
-	module_id            *int
-	addmodule_id         *int
-	clearedFields        map[string]struct{}
-	done                 bool
-	oldValue             func(context.Context) (*CourseModuleVersion, error)
-	predicates           []predicate.CourseModuleVersion
+	op                     Op
+	typ                    string
+	id                     *int
+	created_at             *time.Time
+	updated_at             *time.Time
+	_order                 *int
+	add_order              *int
+	course_id              *int
+	addcourse_id           *int
+	course_version_id      *int
+	addcourse_version_id   *int
+	module_id              *int
+	addmodule_id           *int
+	clearedFields          map[string]struct{}
+	lesson_versions        map[int]struct{}
+	removedlesson_versions map[int]struct{}
+	clearedlesson_versions bool
+	done                   bool
+	oldValue               func(context.Context) (*CourseModuleVersion, error)
+	predicates             []predicate.CourseModuleVersion
 }
 
 var _ ent.Mutation = (*CourseModuleVersionMutation)(nil)
@@ -15382,6 +15440,60 @@ func (m *CourseModuleVersionMutation) ResetModuleID() {
 	m.addmodule_id = nil
 }
 
+// AddLessonVersionIDs adds the "lesson_versions" edge to the CourseLessonVersion entity by ids.
+func (m *CourseModuleVersionMutation) AddLessonVersionIDs(ids ...int) {
+	if m.lesson_versions == nil {
+		m.lesson_versions = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.lesson_versions[ids[i]] = struct{}{}
+	}
+}
+
+// ClearLessonVersions clears the "lesson_versions" edge to the CourseLessonVersion entity.
+func (m *CourseModuleVersionMutation) ClearLessonVersions() {
+	m.clearedlesson_versions = true
+}
+
+// LessonVersionsCleared reports if the "lesson_versions" edge to the CourseLessonVersion entity was cleared.
+func (m *CourseModuleVersionMutation) LessonVersionsCleared() bool {
+	return m.clearedlesson_versions
+}
+
+// RemoveLessonVersionIDs removes the "lesson_versions" edge to the CourseLessonVersion entity by IDs.
+func (m *CourseModuleVersionMutation) RemoveLessonVersionIDs(ids ...int) {
+	if m.removedlesson_versions == nil {
+		m.removedlesson_versions = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.lesson_versions, ids[i])
+		m.removedlesson_versions[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedLessonVersions returns the removed IDs of the "lesson_versions" edge to the CourseLessonVersion entity.
+func (m *CourseModuleVersionMutation) RemovedLessonVersionsIDs() (ids []int) {
+	for id := range m.removedlesson_versions {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// LessonVersionsIDs returns the "lesson_versions" edge IDs in the mutation.
+func (m *CourseModuleVersionMutation) LessonVersionsIDs() (ids []int) {
+	for id := range m.lesson_versions {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetLessonVersions resets all changes to the "lesson_versions" edge.
+func (m *CourseModuleVersionMutation) ResetLessonVersions() {
+	m.lesson_versions = nil
+	m.clearedlesson_versions = false
+	m.removedlesson_versions = nil
+}
+
 // Where appends a list predicates to the CourseModuleVersionMutation builder.
 func (m *CourseModuleVersionMutation) Where(ps ...predicate.CourseModuleVersion) {
 	m.predicates = append(m.predicates, ps...)
@@ -15660,49 +15772,85 @@ func (m *CourseModuleVersionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CourseModuleVersionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.lesson_versions != nil {
+		edges = append(edges, coursemoduleversion.EdgeLessonVersions)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *CourseModuleVersionMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case coursemoduleversion.EdgeLessonVersions:
+		ids := make([]ent.Value, 0, len(m.lesson_versions))
+		for id := range m.lesson_versions {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CourseModuleVersionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedlesson_versions != nil {
+		edges = append(edges, coursemoduleversion.EdgeLessonVersions)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *CourseModuleVersionMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case coursemoduleversion.EdgeLessonVersions:
+		ids := make([]ent.Value, 0, len(m.removedlesson_versions))
+		for id := range m.removedlesson_versions {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CourseModuleVersionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedlesson_versions {
+		edges = append(edges, coursemoduleversion.EdgeLessonVersions)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *CourseModuleVersionMutation) EdgeCleared(name string) bool {
+	switch name {
+	case coursemoduleversion.EdgeLessonVersions:
+		return m.clearedlesson_versions
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *CourseModuleVersionMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown CourseModuleVersion unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *CourseModuleVersionMutation) ResetEdge(name string) error {
+	switch name {
+	case coursemoduleversion.EdgeLessonVersions:
+		m.ResetLessonVersions()
+		return nil
+	}
 	return fmt.Errorf("unknown CourseModuleVersion edge %s", name)
 }
 
@@ -17880,6 +18028,8 @@ type LandingPageMutation struct {
 	outcomes_description           *string
 	footer                         *bool
 	footer_name                    *string
+	language_category_id           *int
+	addlanguage_category_id        *int
 	landing_page_to_redirect_id    *int
 	addlanding_page_to_redirect_id *int
 	clearedFields                  map[string]struct{}
@@ -18929,6 +19079,76 @@ func (m *LandingPageMutation) ResetFooterName() {
 	delete(m.clearedFields, landingpage.FieldFooterName)
 }
 
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (m *LandingPageMutation) SetLanguageCategoryID(i int) {
+	m.language_category_id = &i
+	m.addlanguage_category_id = nil
+}
+
+// LanguageCategoryID returns the value of the "language_category_id" field in the mutation.
+func (m *LandingPageMutation) LanguageCategoryID() (r int, exists bool) {
+	v := m.language_category_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLanguageCategoryID returns the old "language_category_id" field's value of the LandingPage entity.
+// If the LandingPage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LandingPageMutation) OldLanguageCategoryID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLanguageCategoryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLanguageCategoryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLanguageCategoryID: %w", err)
+	}
+	return oldValue.LanguageCategoryID, nil
+}
+
+// AddLanguageCategoryID adds i to the "language_category_id" field.
+func (m *LandingPageMutation) AddLanguageCategoryID(i int) {
+	if m.addlanguage_category_id != nil {
+		*m.addlanguage_category_id += i
+	} else {
+		m.addlanguage_category_id = &i
+	}
+}
+
+// AddedLanguageCategoryID returns the value that was added to the "language_category_id" field in this mutation.
+func (m *LandingPageMutation) AddedLanguageCategoryID() (r int, exists bool) {
+	v := m.addlanguage_category_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLanguageCategoryID clears the value of the "language_category_id" field.
+func (m *LandingPageMutation) ClearLanguageCategoryID() {
+	m.language_category_id = nil
+	m.addlanguage_category_id = nil
+	m.clearedFields[landingpage.FieldLanguageCategoryID] = struct{}{}
+}
+
+// LanguageCategoryIDCleared returns if the "language_category_id" field was cleared in this mutation.
+func (m *LandingPageMutation) LanguageCategoryIDCleared() bool {
+	_, ok := m.clearedFields[landingpage.FieldLanguageCategoryID]
+	return ok
+}
+
+// ResetLanguageCategoryID resets all changes to the "language_category_id" field.
+func (m *LandingPageMutation) ResetLanguageCategoryID() {
+	m.language_category_id = nil
+	m.addlanguage_category_id = nil
+	delete(m.clearedFields, landingpage.FieldLanguageCategoryID)
+}
+
 // SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
 func (m *LandingPageMutation) SetLandingPageToRedirectID(i int) {
 	m.landing_page_to_redirect_id = &i
@@ -19060,7 +19280,7 @@ func (m *LandingPageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LandingPageMutation) Fields() []string {
-	fields := make([]string, 0, 21)
+	fields := make([]string, 0, 22)
 	if m.created_at != nil {
 		fields = append(fields, landingpage.FieldCreatedAt)
 	}
@@ -19121,6 +19341,9 @@ func (m *LandingPageMutation) Fields() []string {
 	if m.footer_name != nil {
 		fields = append(fields, landingpage.FieldFooterName)
 	}
+	if m.language_category_id != nil {
+		fields = append(fields, landingpage.FieldLanguageCategoryID)
+	}
 	if m.landing_page_to_redirect_id != nil {
 		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
 	}
@@ -19172,6 +19395,8 @@ func (m *LandingPageMutation) Field(name string) (ent.Value, bool) {
 		return m.Footer()
 	case landingpage.FieldFooterName:
 		return m.FooterName()
+	case landingpage.FieldLanguageCategoryID:
+		return m.LanguageCategoryID()
 	case landingpage.FieldLandingPageToRedirectID:
 		return m.LandingPageToRedirectID()
 	}
@@ -19223,6 +19448,8 @@ func (m *LandingPageMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldFooter(ctx)
 	case landingpage.FieldFooterName:
 		return m.OldFooterName(ctx)
+	case landingpage.FieldLanguageCategoryID:
+		return m.OldLanguageCategoryID(ctx)
 	case landingpage.FieldLandingPageToRedirectID:
 		return m.OldLandingPageToRedirectID(ctx)
 	}
@@ -19374,6 +19601,13 @@ func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFooterName(v)
 		return nil
+	case landingpage.FieldLanguageCategoryID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLanguageCategoryID(v)
+		return nil
 	case landingpage.FieldLandingPageToRedirectID:
 		v, ok := value.(int)
 		if !ok {
@@ -19389,6 +19623,9 @@ func (m *LandingPageMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *LandingPageMutation) AddedFields() []string {
 	var fields []string
+	if m.addlanguage_category_id != nil {
+		fields = append(fields, landingpage.FieldLanguageCategoryID)
+	}
 	if m.addlanding_page_to_redirect_id != nil {
 		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
 	}
@@ -19400,6 +19637,8 @@ func (m *LandingPageMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *LandingPageMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case landingpage.FieldLanguageCategoryID:
+		return m.AddedLanguageCategoryID()
 	case landingpage.FieldLandingPageToRedirectID:
 		return m.AddedLandingPageToRedirectID()
 	}
@@ -19411,6 +19650,13 @@ func (m *LandingPageMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *LandingPageMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case landingpage.FieldLanguageCategoryID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLanguageCategoryID(v)
+		return nil
 	case landingpage.FieldLandingPageToRedirectID:
 		v, ok := value.(int)
 		if !ok {
@@ -19476,6 +19722,9 @@ func (m *LandingPageMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(landingpage.FieldFooterName) {
 		fields = append(fields, landingpage.FieldFooterName)
+	}
+	if m.FieldCleared(landingpage.FieldLanguageCategoryID) {
+		fields = append(fields, landingpage.FieldLanguageCategoryID)
 	}
 	if m.FieldCleared(landingpage.FieldLandingPageToRedirectID) {
 		fields = append(fields, landingpage.FieldLandingPageToRedirectID)
@@ -19544,6 +19793,9 @@ func (m *LandingPageMutation) ClearField(name string) error {
 		return nil
 	case landingpage.FieldFooterName:
 		m.ClearFooterName()
+		return nil
+	case landingpage.FieldLanguageCategoryID:
+		m.ClearLanguageCategoryID()
 		return nil
 	case landingpage.FieldLandingPageToRedirectID:
 		m.ClearLandingPageToRedirectID()
@@ -19615,6 +19867,9 @@ func (m *LandingPageMutation) ResetField(name string) error {
 		return nil
 	case landingpage.FieldFooterName:
 		m.ResetFooterName()
+		return nil
+	case landingpage.FieldLanguageCategoryID:
+		m.ResetLanguageCategoryID()
 		return nil
 	case landingpage.FieldLandingPageToRedirectID:
 		m.ResetLandingPageToRedirectID()

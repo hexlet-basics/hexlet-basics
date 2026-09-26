@@ -383,6 +383,20 @@ var (
 		Name:       "language_lesson_versions",
 		Columns:    LanguageLessonVersionsColumns,
 		PrimaryKey: []*schema.Column{LanguageLessonVersionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_lesson_versions_language_lessons_lesson",
+				Columns:    []*schema.Column{LanguageLessonVersionsColumns[11]},
+				RefColumns: []*schema.Column{LanguageLessonsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_lesson_versions_language_module_versions_lesson_versions",
+				Columns:    []*schema.Column{LanguageLessonVersionsColumns[12]},
+				RefColumns: []*schema.Column{LanguageModuleVersionsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// LanguageModulesColumns holds the columns for the "language_modules" table.
 	LanguageModulesColumns = []*schema.Column{
@@ -424,6 +438,14 @@ var (
 		Name:       "language_module_version_infos",
 		Columns:    LanguageModuleVersionInfosColumns,
 		PrimaryKey: []*schema.Column{LanguageModuleVersionInfosColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_module_version_infos_language_module_versions_version",
+				Columns:    []*schema.Column{LanguageModuleVersionInfosColumns[8]},
+				RefColumns: []*schema.Column{LanguageModuleVersionsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// LanguageModuleVersionsColumns holds the columns for the "language_module_versions" table.
 	LanguageModuleVersionsColumns = []*schema.Column{
@@ -523,6 +545,7 @@ var (
 		{Name: "outcomes_description", Type: field.TypeString, Nullable: true},
 		{Name: "footer", Type: field.TypeBool, Nullable: true},
 		{Name: "footer_name", Type: field.TypeString, Nullable: true},
+		{Name: "language_category_id", Type: field.TypeInt, Nullable: true},
 		{Name: "landing_page_to_redirect_id", Type: field.TypeInt, Nullable: true},
 		{Name: "language_id", Type: field.TypeInt},
 	}
@@ -534,7 +557,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "language_landing_pages_languages_landing_pages",
-				Columns:    []*schema.Column{LanguageLandingPagesColumns[21]},
+				Columns:    []*schema.Column{LanguageLandingPagesColumns[22]},
 				RefColumns: []*schema.Column{LanguagesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -808,12 +831,15 @@ func init() {
 	LanguageLessonVersionInfosTable.Annotation = &entsql.Annotation{
 		Table: "language_lesson_version_infos",
 	}
+	LanguageLessonVersionsTable.ForeignKeys[0].RefTable = LanguageLessonsTable
+	LanguageLessonVersionsTable.ForeignKeys[1].RefTable = LanguageModuleVersionsTable
 	LanguageLessonVersionsTable.Annotation = &entsql.Annotation{
 		Table: "language_lesson_versions",
 	}
 	LanguageModulesTable.Annotation = &entsql.Annotation{
 		Table: "language_modules",
 	}
+	LanguageModuleVersionInfosTable.ForeignKeys[0].RefTable = LanguageModuleVersionsTable
 	LanguageModuleVersionInfosTable.Annotation = &entsql.Annotation{
 		Table: "language_module_version_infos",
 	}

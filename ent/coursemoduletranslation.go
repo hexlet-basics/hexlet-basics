@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"hexletbasics/ent/coursemoduletranslation"
+	"hexletbasics/ent/coursemoduleversion"
 	"strings"
 	"time"
 
@@ -32,8 +33,31 @@ type CourseModuleTranslation struct {
 	// CourseVersionID holds the value of the "course_version_id" field.
 	CourseVersionID int `json:"course_version_id,omitempty"`
 	// VersionID holds the value of the "version_id" field.
-	VersionID    int `json:"version_id,omitempty"`
+	VersionID int `json:"version_id,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CourseModuleTranslationQuery when eager-loading is set.
+	Edges        CourseModuleTranslationEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// CourseModuleTranslationEdges holds the relations/edges for other nodes in the graph.
+type CourseModuleTranslationEdges struct {
+	// Version holds the value of the version edge.
+	Version *CourseModuleVersion `json:"version,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// VersionOrErr returns the Version value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e CourseModuleTranslationEdges) VersionOrErr() (*CourseModuleVersion, error) {
+	if e.Version != nil {
+		return e.Version, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: coursemoduleversion.Label}
+	}
+	return nil, &NotLoadedError{edge: "version"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -130,6 +154,11 @@ func (_m *CourseModuleTranslation) assignValues(columns []string, values []any) 
 // This includes values selected through modifiers, order, etc.
 func (_m *CourseModuleTranslation) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryVersion queries the "version" edge of the CourseModuleTranslation entity.
+func (_m *CourseModuleTranslation) QueryVersion() *CourseModuleVersionQuery {
+	return NewCourseModuleTranslationClient(_m.config).QueryVersion(_m)
 }
 
 // Update returns a builder for updating this CourseModuleTranslation.

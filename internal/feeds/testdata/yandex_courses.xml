@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<yml_catalog date="2026-09-26 13:31">
+  <shop>
+    <name>Code Basics</name>
+    <company>ООО «Хекслет Рус»</company>
+    <url>https://code-basics.com/ru</url>
+    <email>support@hexlet.io</email>
+    <description>Автоматизированная система для обучения программированию в браузере. Текстовые курсы + удобный тренажер.</description>
+    <picture>https://code-basics.com/images/logo.png</picture>
+    <sets>
+      <set id="272447109">
+        <name>Верстка</name>
+        <url>https://code-basics.com/ru/language_categories/layouting-ru</url>
+      </set>
+      <set id="944426005">
+        <name>Фронтенд</name>
+        <url>https://code-basics.com/ru/language_categories/frontend-ru</url>
+      </set>
+      <set id="948254963">
+        <name>Программирование</name>
+        <url>https://code-basics.com/ru/language_categories/programming-ru</url>
+      </set>
+    </sets>
+    <offers>
+      <offer id="82481401">
+        <name>Курс JavaScript</name>
+        <url>https://code-basics.com/ru/languages/javascript-ru?utm_campaign=cb-javascript-ru&amp;utm_content=feed_search&amp;utm_medium=organic&amp;utm_source=yandex&amp;utm_term=page_javascript-ru</url>
+        <categoryId>101</categoryId>
+        <price>0</price>
+        <currencyId>RUR</currencyId>
+        <set-ids>944426005</set-ids>
+        <param name="Продолжительность" unit="месяц">1</param>
+        <param name="Формат обучения">Самостоятельно</param>
+        <param name="Сложность">Для новичков</param>
+        <param name="Тип обучения">Курс</param>
+        <param name="Результат обучения">Сертификат</param>
+        <param name="Есть бесплатная часть">true</param>
+        <param name="Есть текстовые уроки">true</param>
+        <param name="Есть тренажеры">true</param>
+        <param name="Есть сообщество">true</param>
+        <description>Изучите язык программирования в интерактивной онлайн-среде. Десятки заданий прямо в браузере с поддержкой ИИ-ассистента.</description>
+        <param name="План" order="1" unit="Основы" hours="5"><![CDATA[                    Первая программа и переменные.
+Запускаем код прямо в браузере.
+]]></param>
+        <param name="Ссылка на контент курса">https://code-basics.com/ru/languages/javascript/lessons/hello-world</param>
+        <param name="Ссылка на контент курса">https://code-basics.com/ru/languages/javascript/lessons/variables</param>
+        <param name="Ссылка на контент курса">https://code-basics.com/ru/languages/javascript/lessons/strings</param>
+        <param name="План" order="2" unit="Арифметика" hours="5"><![CDATA[                    Числа & операции над ними.
+]]></param>
+        <param name="План" order="3" unit="Строки" hours="5"><![CDATA[                    Кавычки, экранирование и конкатенация.
+]]></param>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>

@@ -54,6 +54,8 @@ const (
 	FieldFooter = "footer"
 	// FieldFooterName holds the string denoting the footer_name field in the database.
 	FieldFooterName = "footer_name"
+	// FieldLanguageCategoryID holds the string denoting the language_category_id field in the database.
+	FieldLanguageCategoryID = "language_category_id"
 	// FieldLandingPageToRedirectID holds the string denoting the landing_page_to_redirect_id field in the database.
 	FieldLandingPageToRedirectID = "landing_page_to_redirect_id"
 	// EdgeCourse holds the string denoting the course edge name in mutations.
@@ -92,6 +94,7 @@ var Columns = []string{
 	FieldOutcomesDescription,
 	FieldFooter,
 	FieldFooterName,
+	FieldLanguageCategoryID,
 	FieldLandingPageToRedirectID,
 }
 
@@ -220,6 +223,11 @@ func ByFooter(opts ...sql.OrderTermOption) OrderOption {
 // ByFooterName orders the results by the footer_name field.
 func ByFooterName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFooterName, opts...).ToFunc()
+}
+
+// ByLanguageCategoryID orders the results by the language_category_id field.
+func ByLanguageCategoryID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLanguageCategoryID, opts...).ToFunc()
 }
 
 // ByLandingPageToRedirectID orders the results by the landing_page_to_redirect_id field.
