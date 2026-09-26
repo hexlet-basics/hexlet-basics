@@ -801,7 +801,7 @@ export default interface Resources {
           separator: " — ";
           show_full_version: "Реактор кода доступен в основной версии →";
           sign_in: "Войти";
-          sign_up_for_tracking_progress_html: 'Чтобы не потерять достигнутые результаты, обязательно <a href="{{link}}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>\n';
+          sign_up_for_tracking_progress_html: "Чтобы не потерять достигнутые результаты, обязательно <a>зарегистрируйтесь</a>";
           solution: "Решение";
           source_code: "Исходный код урока на GitHub";
           tests: "Тесты";

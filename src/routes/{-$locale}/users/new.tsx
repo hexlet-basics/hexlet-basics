@@ -20,7 +20,20 @@ import { useAppForm } from "@/lib/form";
 // the empty-string default validates instead of the contract's nullable form.
 const signUpFormSchema = zSignUpInput.extend({ firstName: z.string() });
 
+// Where to go once the account exists. The lesson player sends a guest here with
+// the lesson they were on, so signing up does not lose their place. Only a path
+// on this site is honoured — anything else is dropped rather than followed, so
+// the page cannot be used to bounce a new account off to another origin.
+const signUpSearchSchema = z.object({
+  redirect: z
+    .string()
+    .refine((value) => value.startsWith("/") && !value.startsWith("//"))
+    .optional()
+    .catch(undefined),
+});
+
 export const Route = createFileRoute("/{-$locale}/users/new")({
+  validateSearch: signUpSearchSchema,
   component: New,
 });
 
@@ -28,13 +41,15 @@ function New() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { redirect } = Route.useSearch();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const mutation = useMutation({
     ...createUserMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
-      navigate({ to: "/{-$locale}" });
+      if (redirect) navigate({ href: redirect });
+      else navigate({ to: "/{-$locale}" });
     },
     onError: () => setServerError(t(($) => $.flash.users.create.error)),
   });
