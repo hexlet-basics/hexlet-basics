@@ -102,3 +102,42 @@ jobs:
       # DB packages use testcontainers-go to start independent PostgreSQL 18
       # instances, apply Atlas migrations, and load the committed fixtures.
       - run: make test
+
+  # Builds both images without pushing, so a PR that breaks a Dockerfile (or
+  # the files it copies) fails here rather than on the release run.
+  build-images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file: [Dockerfile, Dockerfile.web]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.file }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.file }}
+
+  # Renders the chart with placeholder secrets (the real ones are sops-encrypted
+  # and only decrypted on deploy), so a template error never reaches a release.
+  helm-template:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: azure/setup-helm@v4
+
+      - run: >-
+          helm lint k8s/app-chart
+          --set secrets.docker.config=placeholder
+          --set secrets.code_basics.env.DATABASE_URL=placeholder
+      - run: >-
+          helm template codebasics k8s/app-chart
+          --set secrets.docker.config=placeholder
+          --set secrets.code_basics.env.DATABASE_URL=placeholder
+          --set migrate.baseline=20260727053619

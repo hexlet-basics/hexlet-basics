@@ -1,0 +1,52 @@
+---
+
+# The async worker (cmd/worker): River jobs and Watermill consumers
+# (ADR-0010). It never runs a solution, so it has no Docker socket, and no HTTP
+# port to probe. River and Watermill tables come from the atlas migrations.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-worker-deployment"
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    {{- include "codebasics.labels" . | nindent 4 }}
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "{{ .Release.Name }}-worker-pod"
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "{{ .Release.Name }}-worker-pod"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+        helm.sh/chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+        codebasics/pod: "{{ .Release.Name }}-{{ .Chart.Version }}-worker-pod"
+    spec:
+      {{- include "codebasics.podScheduling" . | nindent 6 }}
+
+      affinity:
+        {{- include "codebasics.nodeAffinity" "service" | nindent 8 }}
+
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: worker
+          imagePullPolicy: IfNotPresent
+          image: {{ include "codebasics.goImage" . }}
+          command: ["/worker"]
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
+            limits:
+              memory: "512Mi"
+          {{- include "codebasics.goEnv" . | nindent 10 }}
