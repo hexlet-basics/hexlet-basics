@@ -438,10 +438,20 @@ func (UnimplementedHandler) AdminSearchUsers(ctx context.Context, params AdminSe
 
 // AdminSetBlogPostRelatedCourses implements adminSetBlogPostRelatedCourses operation.
 //
-// Set the related/promoted courses for a post.
+// Set the related/promoted courses for a post by hand.
 //
 // POST /api/admin/blog_posts/{id}/related_courses
 func (UnimplementedHandler) AdminSetBlogPostRelatedCourses(ctx context.Context, req *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (r AdminSetBlogPostRelatedCoursesRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminSuggestBlogPostRelatedCourses implements adminSuggestBlogPostRelatedCourses operation.
+//
+// Enqueue the AI pick of the post's related courses (legacy FindRelatedCoursesForBlogPostJob); the job
+// replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
+//
+// POST /api/admin/blog_posts/{id}/suggest_related_courses
+func (UnimplementedHandler) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (r AdminSuggestBlogPostRelatedCoursesRes, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

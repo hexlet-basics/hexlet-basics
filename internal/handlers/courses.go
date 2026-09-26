@@ -37,6 +37,8 @@ type Server struct {
 	cfg     *config.Config
 	starter VersionBuildStarter
 	reviews LessonReviewEnqueuer
+	// relatedCourses schedules the AI related-courses pick for blog posts.
+	relatedCourses RelatedCoursesSuggestionEnqueuer
 	// progress owns sequential progression; handlers never evaluate the gate.
 	progress progress.Tracker
 	// assets owns upload policy (MIME allowlist, size cap) and persistence;
@@ -59,6 +61,7 @@ func NewServer(
 	cfg *config.Config,
 	starter VersionBuildStarter,
 	reviews LessonReviewEnqueuer,
+	relatedCourses RelatedCoursesSuggestionEnqueuer,
 	emails AccountEmailEnqueuer,
 	tracker progress.Tracker,
 	assets *assetstore.Store,
@@ -71,19 +74,20 @@ func NewServer(
 	errorHandler *APIErrorHandler,
 ) *Server {
 	return &Server{
-		db:         db,
-		conv:       &apiconv.ConverterImpl{},
-		cfg:        cfg,
-		starter:    starter,
-		reviews:    reviews,
-		progress:   tracker,
-		assets:     assets,
-		auth:       NewAuthHandler(db, cfg, translator, errorHandler, registrar, remover, eventPublisher, tracker, emails),
-		i18n:       translator,
-		leads:      leadCreator,
-		books:      bookRequester,
-		errors:     errorHandler,
-		yandexFeed: feeds.NewYandex(db, cfg.AppHost),
+		db:             db,
+		conv:           &apiconv.ConverterImpl{},
+		cfg:            cfg,
+		starter:        starter,
+		reviews:        reviews,
+		relatedCourses: relatedCourses,
+		progress:       tracker,
+		assets:         assets,
+		auth:           NewAuthHandler(db, cfg, translator, errorHandler, registrar, remover, eventPublisher, tracker, emails),
+		i18n:           translator,
+		leads:          leadCreator,
+		books:          bookRequester,
+		errors:         errorHandler,
+		yandexFeed:     feeds.NewYandex(db, cfg.AppHost),
 	}
 }
 

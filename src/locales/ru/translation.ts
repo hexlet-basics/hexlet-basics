@@ -251,6 +251,8 @@ export default {
       blogPosts: {
         likes: "Лайки",
         relatedCourses: "Связанные курсы",
+        suggestQueued: "Подбор курсов запущен — обновите страницу чуть позже",
+        suggestRelatedCourses: "Подобрать курсы",
       },
       courses: {
         edit: {

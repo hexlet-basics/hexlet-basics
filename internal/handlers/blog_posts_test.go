@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/riverqueue/river"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -13,6 +14,7 @@ import (
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -247,4 +249,26 @@ func TestAdminSetBlogPostRelatedCoursesNotFound(t *testing.T) {
 	}, api.AdminSetBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+// The AI pick is asynchronous: the action only enqueues one job for the post,
+// leaving its current set in place until the worker replaces it.
+func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 6001})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, h.LastStatus())
+	assert.Equal(t, []river.JobArgs{jobs.SuggestRelatedCoursesArgs{BlogPostID: 6001}}, h.Enqueuer.Inserted)
+}
+
+func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := context.Background()
+
+	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+	assert.Empty(t, h.Enqueuer.Inserted)
 }

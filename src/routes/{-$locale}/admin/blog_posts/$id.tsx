@@ -9,6 +9,7 @@ import {
   adminListBlogPostsQueryKey,
   adminListCoursesOptions,
   adminSetBlogPostRelatedCoursesMutation,
+  adminSuggestBlogPostRelatedCoursesMutation,
   adminUpdateBlogPostMutation,
 } from "@/client/@tanstack/react-query.gen";
 import { zBlogPostInput } from "@/client/zod.gen";
@@ -69,8 +70,10 @@ function EditBlogPost() {
   );
 }
 
-// The promoted-courses editor (legacy `related_courses` member action, now an
-// explicit set). Selection order is the display order the backend persists.
+// The promoted-courses editor: an explicit set, plus the legacy AI pick
+// (`related_courses` member action). Selection order is the display order the
+// backend persists. The pick runs in a background job, so its result shows up
+// on a later load of the post — the same manual reload legacy needed.
 function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: number[] }) {
   const { t } = useTranslation();
   const [selected, setSelected] = useState(initial.map(String));
@@ -89,6 +92,13 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
     errorMessage: t(($) => $.admin.crud.saveError),
   });
 
+  const suggestMutation = useResourceMutation({
+    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
+    invalidate: [adminGetBlogPostQueryKey({ path: { id: postId } })],
+    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
+    errorMessage: t(($) => $.admin.crud.saveError),
+  });
+
   return (
     <Card withBorder p="xl" maw={720}>
       <Title order={4} mb="md">
@@ -102,6 +112,14 @@ function RelatedCoursesPanel({ postId, initial }: { postId: number; initial: num
         placeholder={t(($) => $.admin.crud.search)}
       />
       <Group justify="flex-end" mt="md">
+        <Button
+          variant="light"
+          color="grape"
+          loading={suggestMutation.isPending}
+          onClick={() => suggestMutation.mutate({ path: { id: postId } })}
+        >
+          {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
+        </Button>
         <Button
           loading={mutation.isPending}
           onClick={() =>

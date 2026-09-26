@@ -251,6 +251,8 @@ export default {
       blogPosts: {
         likes: "Likes",
         relatedCourses: "Related courses",
+        suggestQueued: "Course suggestion started — reload the page shortly",
+        suggestRelatedCourses: "Suggest courses",
       },
       courses: {
         edit: {

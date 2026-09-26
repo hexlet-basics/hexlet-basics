@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Stack, Title, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Group, Stack, Title, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { PaginationState, SortingState } from "@tanstack/react-table";
@@ -8,6 +8,7 @@ import {
   adminDeleteBlogPostMutation,
   adminListBlogPostsOptions,
   adminListBlogPostsQueryKey,
+  adminSuggestBlogPostRelatedCoursesMutation,
 } from "@/client/@tanstack/react-query.gen";
 import type { BlogPost } from "@/client/types.gen";
 import { type CrudColumnDef, CrudList } from "@/components/admin/CrudList";
@@ -40,6 +41,14 @@ function BlogPostsList() {
     invalidate: [adminListBlogPostsQueryKey()],
     successMessage: t(($) => $.admin.crud.deleted),
     errorMessage: t(($) => $.admin.crud.deleteError),
+  });
+
+  // Legacy row action: enqueue the AI pick of the post's related courses.
+  const suggestMutation = useResourceMutation({
+    mutation: adminSuggestBlogPostRelatedCoursesMutation(),
+    invalidate: [adminListBlogPostsQueryKey()],
+    successMessage: t(($) => $.admin.blogPosts.suggestQueued),
+    errorMessage: t(($) => $.admin.crud.saveError),
   });
 
   const columns: CrudColumnDef<BlogPost>[] = [
@@ -81,6 +90,17 @@ function BlogPostsList() {
           >
             {t(($) => $.admin.crud.edit)}
           </ButtonLink>
+          <Button
+            size="xs"
+            variant="light"
+            color="grape"
+            loading={
+              suggestMutation.isPending && suggestMutation.variables?.path.id === row.original.id
+            }
+            onClick={() => suggestMutation.mutate({ path: { id: row.original.id } })}
+          >
+            {t(($) => $.admin.blogPosts.suggestRelatedCourses)}
+          </Button>
           <Tooltip label={t(($) => $.admin.crud.delete)}>
             <ActionIcon
               color="red"

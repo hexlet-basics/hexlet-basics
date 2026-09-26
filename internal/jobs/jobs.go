@@ -46,7 +46,8 @@ func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { retur
 // loader is supplied; a nil loader (insert-only clients that never Start) skips
 // it, since only the worker process needs the loader's db/blob dependencies.
 // The lesson reviewer is likewise nil-skipped when no LLM credentials are
-// configured — its jobs then wait in the queue for a configured worker. The
+// configured — its jobs then wait in the queue for a configured worker, and
+// the related-courses suggester shares that gate for the same reason. The
 // account email sender is nil-skipped the same way for clients that never
 // Start. The stuck-build reaper shares the loader's gate: it writes the same
 // version rows, so it runs wherever builds run.
@@ -54,6 +55,7 @@ func Workers(
 	loader *courseloader.Loader,
 	leadSyncer LeadSyncer,
 	reviewer LessonReviewer,
+	suggester RelatedCoursesSuggester,
 	emailSender AccountEmailSender,
 	logger *slog.Logger,
 ) *river.Workers {
@@ -68,6 +70,9 @@ func Workers(
 	}
 	if reviewer != nil {
 		river.AddWorker(w, &reviewLessonWorker{reviewer: reviewer})
+	}
+	if suggester != nil {
+		river.AddWorker(w, &suggestRelatedCoursesWorker{suggester: suggester})
 	}
 	if emailSender != nil {
 		river.AddWorker(w, &accountEmailWorker{sender: emailSender})
@@ -101,6 +106,7 @@ func NewWorkerClient(
 	loader *courseloader.Loader,
 	leadSyncer LeadSyncer,
 	reviewer LessonReviewer,
+	suggester RelatedCoursesSuggester,
 	emailSender AccountEmailSender,
 	logger *slog.Logger,
 	errorHandler *ErrorHandler,
@@ -119,7 +125,7 @@ func NewWorkerClient(
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
-		Workers: Workers(loader, leadSyncer, reviewer, emailSender, logger),
+		Workers: Workers(loader, leadSyncer, reviewer, suggester, emailSender, logger),
 	})
 }
 

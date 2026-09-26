@@ -1197,6 +1197,15 @@ export const zAdminSetBlogPostRelatedCoursesPath = z.object({
  */
 export const zAdminSetBlogPostRelatedCoursesResponse = zBlogPost;
 
+export const zAdminSuggestBlogPostRelatedCoursesPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * Empty 204 response for deletes and other content-less successes.
+ */
+export const zAdminSuggestBlogPostRelatedCoursesResponse = z.void();
+
 export const zAdminListCourseCategoriesQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
   perPage: z.int().gte(1).lte(100).optional(),

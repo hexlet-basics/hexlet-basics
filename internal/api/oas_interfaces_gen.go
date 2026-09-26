@@ -217,6 +217,10 @@ type AdminSetBlogPostRelatedCoursesRes interface {
 	adminSetBlogPostRelatedCoursesRes()
 }
 
+type AdminSuggestBlogPostRelatedCoursesRes interface {
+	adminSuggestBlogPostRelatedCoursesRes()
+}
+
 type AdminUpdateBannerRes interface {
 	adminUpdateBannerRes()
 }

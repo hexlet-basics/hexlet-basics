@@ -2313,6 +2313,42 @@ func encodeAdminSetBlogPostRelatedCoursesResponse(response AdminSetBlogPostRelat
 	}
 }
 
+func encodeAdminSuggestBlogPostRelatedCoursesResponse(response AdminSuggestBlogPostRelatedCoursesRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *AdminSuggestBlogPostRelatedCoursesNoContent:
+		w.WriteHeader(204)
+
+		return nil
+
+	case *AdminSuggestBlogPostRelatedCoursesUnauthorized:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(401)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *AdminSuggestBlogPostRelatedCoursesForbidden:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(403)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
 func encodeAdminUpdateBannerResponse(response AdminUpdateBannerRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
 	case *Banner:

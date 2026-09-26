@@ -947,7 +947,7 @@ paths:
   /api/admin/blog_posts/{id}/related_courses:
     post:
       operationId: adminSetBlogPostRelatedCourses
-      description: Set the related/promoted courses for a post.
+      description: Set the related/promoted courses for a post by hand.
       parameters:
         - name: id
           in: path
@@ -1001,6 +1001,50 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BlogPostRelatedCoursesInput'
+      security:
+        - AdminSession: []
+          XsrfToken: []
+  /api/admin/blog_posts/{id}/suggest_related_courses:
+    post:
+      operationId: adminSuggestBlogPostRelatedCourses
+      description: |-
+        Enqueue the AI pick of the post's related courses (legacy
+              FindRelatedCoursesForBlogPostJob); the job replaces the set when done.
+              A missing id surfaces as 404 via the central ent-error handler.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Empty 204 response for deletes and other content-less successes.
+        '401':
+          description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: The caller is authenticated but lacks permission for this resource.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - 'Admin: Blog Posts'
       security:
         - AdminSession: []
           XsrfToken: []

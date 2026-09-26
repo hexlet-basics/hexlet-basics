@@ -2070,6 +2070,44 @@ export type AdminSetBlogPostRelatedCoursesResponses = {
 
 export type AdminSetBlogPostRelatedCoursesResponse = AdminSetBlogPostRelatedCoursesResponses[keyof AdminSetBlogPostRelatedCoursesResponses];
 
+export type AdminSuggestBlogPostRelatedCoursesData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/api/admin/blog_posts/{id}/suggest_related_courses';
+};
+
+export type AdminSuggestBlogPostRelatedCoursesErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminSuggestBlogPostRelatedCoursesError = AdminSuggestBlogPostRelatedCoursesErrors[keyof AdminSuggestBlogPostRelatedCoursesErrors];
+
+export type AdminSuggestBlogPostRelatedCoursesResponses = {
+  /**
+   * Empty 204 response for deletes and other content-less successes.
+   */
+  204: void;
+};
+
+export type AdminSuggestBlogPostRelatedCoursesResponse = AdminSuggestBlogPostRelatedCoursesResponses[keyof AdminSuggestBlogPostRelatedCoursesResponses];
+
 export type AdminListCourseCategoriesData = {
   body?: never;
   path?: never;

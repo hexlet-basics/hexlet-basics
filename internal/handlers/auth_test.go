@@ -41,6 +41,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 		enqueuer,
 		enqueuer,
 		enqueuer,
+		enqueuer,
 		// The real progress module: the check is a public operation, so these
 		// tests reach it while asserting what the contract protects.
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
