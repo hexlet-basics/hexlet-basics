@@ -166,6 +166,7 @@ test("a guest is sent to sign in first", async () => {
 });
 
 test("the course page carries the legacy warning", async () => {
+  serveCourse(courseView("started"));
   await renderRoute(courseRoute, {
     path: "/{-$locale}/languages/$slug",
     initialPath: "/ru/languages/javascript?unfinished=true",

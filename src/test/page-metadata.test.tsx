@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import { expect, test } from "vitest";
+import { afterAll, expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type {
   Course,
@@ -122,7 +122,14 @@ const courseView: CourseView = {
   progress,
 };
 
+// The player lays out by the viewport, and below the sm breakpoint it mounts
+// the theory twice (its own pane and a workspace tab), so the lesson is read
+// at a desktop viewport, restored once the file is done.
+const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+afterAll(() => page.viewport(startingViewport.width, startingViewport.height));
+
 test("a lesson is titled, described and linked the way legacy did it", async () => {
+  await page.viewport(1200, 800);
   worker.use(
     http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView)),
   );
