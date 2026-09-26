@@ -107,25 +107,39 @@ test("the blog lists the posts the API returns", async () => {
   const list: BlogPostPage = { items: [newer, post], total: 2, page: 1, perPage: 20 };
   worker.use(http.get("*/api/blog_posts", () => HttpResponse.json(list)));
 
-  await renderRoute(indexRoute, { path: "/{-$locale}/blog_posts/", initialPath: "/blog_posts/" });
+  const { router } = await renderRoute(indexRoute, {
+    path: "/{-$locale}/blog_posts/",
+    initialPath: "/blog_posts/",
+  });
 
   await expect.element(page.getByRole("heading", { name: "Blog", level: 1 })).toBeVisible();
   await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
   await expect
     .element(page.getByRole("link", { name: /Hello world/ }))
     .toHaveAttribute("href", "/blog_posts/hello-world");
+
+  // The route's head: legacy title behind the site name, and its Twitter card.
+  const meta = router.state.matches.at(-1)?.meta;
+  expect(meta).toContainEqual({ title: "CodeBasics | Blog" });
+  expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
 });
 
 test("a post shows its stored body, its courses and two more posts", async () => {
   worker.use(http.get("*/api/blog_posts/hello-world", () => HttpResponse.json(postView())));
 
-  await renderPost();
+  const { router } = await renderPost();
 
   await expect.element(page.getByRole("heading", { name: "Hello world", level: 1 })).toBeVisible();
   await expect.element(page.getByText("world", { exact: true })).toBeVisible();
   await expect.element(page.getByRole("heading", { name: "Ruby" })).toBeVisible();
   await expect.element(page.getByRole("heading", { name: "Learning Ruby" })).toBeVisible();
   await expect.element(page.getByRole("heading", { name: "Oldest post" })).toBeVisible();
+
+  // The route's head: title, canonical URL and the schema.org Article.
+  const match = router.state.matches.at(-1);
+  expect(match?.meta).toContainEqual({ title: "CodeBasics | Hello world" });
+  expect(match?.links).toContainEqual({ rel: "canonical", href: post.url });
+  expect(match?.headScripts?.[0]?.children).toContain('"@type":"Article"');
 });
 
 test("a visitor's like leads to sign-in", async () => {
