@@ -78,6 +78,9 @@ importers:
       dayjs:
         specifier: ^1.11.23
         version: 1.11.23
+      es-toolkit:
+        specifier: 1.50.0
+        version: 1.50.0
       i18next:
         specifier: ^26.4.2
         version: 26.4.2(typescript@7.0.2)

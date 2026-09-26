@@ -10,6 +10,7 @@ import {
 import type { ReactNode } from "react";
 import type { AuthUser } from "@/lib/auth";
 import { createI18n } from "@/lib/i18n";
+import { localeFromPathname } from "@/lib/locale-path";
 import { renderWithProviders } from "./renderWithProviders";
 
 // Mounts a real file route — its loader, its component, its staticData — at a
@@ -57,9 +58,14 @@ export async function renderRoute(
     path,
   } as never);
 
+  // The locale layout switches the router's i18n to the URL's locale before a
+  // route's head runs; the synthetic root has no such layout, so it is done here.
+  const i18n = createI18n();
+  await i18n.changeLanguage(localeFromPathname(initialPath));
+
   const router = createRouter({
     routeTree: rootRoute.addChildren([mounted as never]),
-    context: { queryClient, i18n: createI18n(), user } as never,
+    context: { queryClient, i18n, user } as never,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
   });
 

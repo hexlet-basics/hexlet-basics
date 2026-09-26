@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
+import { Route as Char123LocaleChar125BookRouteImport } from './routes/{-$locale}/book'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
 import { Route as Char123LocaleChar125Blog_postsIndexRouteImport } from './routes/{-$locale}/blog_posts/index'
 import { Route as Char123LocaleChar125Blog_postsSlugRouteImport } from './routes/{-$locale}/blog_posts/$slug'
@@ -75,6 +76,12 @@ const Char123LocaleChar125AdminRoute =
   Char123LocaleChar125AdminRouteImport.update({
     id: '/admin',
     path: '/admin',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125BookRoute =
+  Char123LocaleChar125BookRouteImport.update({
+    id: '/book',
+    path: '/book',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
 const Char123LocaleChar125AdminIndexRoute =
@@ -363,6 +370,7 @@ const Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute =
 export interface FileRoutesByFullPath {
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
+  '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
@@ -413,6 +421,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/management/users/': typeof Char123LocaleChar125AdminManagementUsersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
@@ -466,6 +475,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
+  '/{-$locale}/book': typeof Char123LocaleChar125BookRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
   '/{-$locale}/blog_posts/$slug': typeof Char123LocaleChar125Blog_postsSlugRoute
   '/{-$locale}/leads/new': typeof Char123LocaleChar125LeadsNewRoute
@@ -520,6 +530,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/{-$locale}'
     | '/{-$locale}/admin'
+    | '/{-$locale}/book'
     | '/{-$locale}/'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/leads/new'
@@ -570,6 +581,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/management/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/{-$locale}/book'
     | '/{-$locale}'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/leads/new'
@@ -622,6 +634,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/{-$locale}'
     | '/{-$locale}/admin'
+    | '/{-$locale}/book'
     | '/{-$locale}/'
     | '/{-$locale}/blog_posts/$slug'
     | '/{-$locale}/leads/new'
@@ -697,6 +710,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/{-$locale}/admin'
       preLoaderRoute: typeof Char123LocaleChar125AdminRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
+    '/{-$locale}/book': {
+      id: '/{-$locale}/book'
+      path: '/book'
+      fullPath: '/{-$locale}/book'
+      preLoaderRoute: typeof Char123LocaleChar125BookRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
     '/{-$locale}/admin/': {
@@ -1146,6 +1166,7 @@ const Char123LocaleChar125AdminRouteWithChildren =
 
 interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
+  Char123LocaleChar125BookRoute: typeof Char123LocaleChar125BookRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
   Char123LocaleChar125Blog_postsSlugRoute: typeof Char123LocaleChar125Blog_postsSlugRoute
   Char123LocaleChar125LeadsNewRoute: typeof Char123LocaleChar125LeadsNewRoute
@@ -1164,6 +1185,7 @@ interface Char123LocaleChar125RouteChildren {
 
 const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
+  Char123LocaleChar125BookRoute: Char123LocaleChar125BookRoute,
   Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
   Char123LocaleChar125Blog_postsSlugRoute:
     Char123LocaleChar125Blog_postsSlugRoute,
