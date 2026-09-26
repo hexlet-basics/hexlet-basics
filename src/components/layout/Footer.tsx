@@ -13,7 +13,10 @@ import { IconBrandGithub, IconBrandYoutube, IconSend } from "@tabler/icons-react
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { listCoursesOptions } from "@/client/@tanstack/react-query.gen";
+import {
+  listCoursesOptions,
+  listPublicCourseCategoriesOptions,
+} from "@/client/@tanstack/react-query.gen";
 
 // Split a list into `count` roughly-equal chunks (replaces legacy es-toolkit
 // `chunk`, which isn't a dependency of the Go stack).
@@ -28,12 +31,13 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
 // hey-api generated `listCourses` hook and link to the real course route.
-// Legacy also linked out to about/blog/legal/category pages; those
+// Legacy also linked out to about/blog/legal pages; those
 // aren't ported to the Go stack yet, so their columns are added back as each
 // page's route lands (no hardcoded hrefs, no placeholder pages).
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
+  const { data: categories } = useQuery(listPublicCourseCategoriesOptions());
 
   const landingPages = courses ?? [];
   const landingGroups = chunk(landingPages, Math.ceil(landingPages.length / 2) || 1);
@@ -73,6 +77,27 @@ export default function Footer() {
                 ))}
               </Stack>
             ))}
+
+            <Stack gap="sm">
+              <Anchor component={Link} to="/{-$locale}/language_categories" fw="bold" fz="sm">
+                {t(($) => $.layouts.shared.footer.course_categories)}
+              </Anchor>
+              {(categories ?? []).map((category) => (
+                <Anchor
+                  key={category.id}
+                  fz="sm"
+                  renderRoot={(props) => (
+                    <Link
+                      to="/{-$locale}/language_categories/$slug"
+                      params={{ slug: category.slug ?? "" }}
+                      {...props}
+                    />
+                  )}
+                >
+                  {category.name}
+                </Anchor>
+              ))}
+            </Stack>
           </SimpleGrid>
 
           <Divider my="xl" />

@@ -23,6 +23,7 @@ import (
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -78,6 +79,8 @@ type Client struct {
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseCategoryItem is the client for interacting with the CourseCategoryItem builders.
+	CourseCategoryItem *CourseCategoryItemClient
 	// CourseLesson is the client for interacting with the CourseLesson builders.
 	CourseLesson *CourseLessonClient
 	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
@@ -139,6 +142,7 @@ func (c *Client) init() {
 	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
+	c.CourseCategoryItem = NewCourseCategoryItemClient(c.config)
 	c.CourseLesson = NewCourseLessonClient(c.config)
 	c.CourseLessonReview = NewCourseLessonReviewClient(c.config)
 	c.CourseLessonTranslation = NewCourseLessonTranslationClient(c.config)
@@ -262,6 +266,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
+		CourseCategoryItem:        NewCourseCategoryItemClient(cfg),
 		CourseLesson:              NewCourseLessonClient(cfg),
 		CourseLessonReview:        NewCourseLessonReviewClient(cfg),
 		CourseLessonTranslation:   NewCourseLessonTranslationClient(cfg),
@@ -312,6 +317,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
+		CourseCategoryItem:        NewCourseCategoryItemClient(cfg),
 		CourseLesson:              NewCourseLessonClient(cfg),
 		CourseLessonReview:        NewCourseLessonReviewClient(cfg),
 		CourseLessonTranslation:   NewCourseLessonTranslationClient(cfg),
@@ -363,11 +369,12 @@ func (c *Client) Use(hooks ...Hook) {
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseLesson, c.CourseLessonReview, c.CourseLessonTranslation,
-		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
-		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
-		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User, c.UserAccount,
+		c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
+		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
+		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
+		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.UserAccount,
 	} {
 		n.Use(hooks...)
 	}
@@ -380,11 +387,12 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseLesson, c.CourseLessonReview, c.CourseLessonTranslation,
-		c.CourseLessonVersion, c.CourseModule, c.CourseModuleTranslation,
-		c.CourseModuleVersion, c.CourseVersion, c.Enrollment, c.LandingPage,
-		c.LandingPageQnaItem, c.Lead, c.LessonProgress, c.Review, c.StaffMember,
-		c.StaffRole, c.StaffRolePermission, c.User, c.UserAccount,
+		c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
+		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
+		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
+		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
+		c.UserAccount,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -417,6 +425,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Course.mutate(ctx, m)
 	case *CourseCategoryMutation:
 		return c.CourseCategory.mutate(ctx, m)
+	case *CourseCategoryItemMutation:
+		return c.CourseCategoryItem.mutate(ctx, m)
 	case *CourseLessonMutation:
 		return c.CourseLesson.mutate(ctx, m)
 	case *CourseLessonReviewMutation:
@@ -2200,6 +2210,171 @@ func (c *CourseCategoryClient) mutate(ctx context.Context, m *CourseCategoryMuta
 	}
 }
 
+// CourseCategoryItemClient is a client for the CourseCategoryItem schema.
+type CourseCategoryItemClient struct {
+	config
+}
+
+// NewCourseCategoryItemClient returns a client for the CourseCategoryItem from the given config.
+func NewCourseCategoryItemClient(c config) *CourseCategoryItemClient {
+	return &CourseCategoryItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `coursecategoryitem.Hooks(f(g(h())))`.
+func (c *CourseCategoryItemClient) Use(hooks ...Hook) {
+	c.hooks.CourseCategoryItem = append(c.hooks.CourseCategoryItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `coursecategoryitem.Intercept(f(g(h())))`.
+func (c *CourseCategoryItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CourseCategoryItem = append(c.inters.CourseCategoryItem, interceptors...)
+}
+
+// Create returns a builder for creating a CourseCategoryItem entity.
+func (c *CourseCategoryItemClient) Create() *CourseCategoryItemCreate {
+	mutation := newCourseCategoryItemMutation(c.config, OpCreate)
+	return &CourseCategoryItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CourseCategoryItem entities.
+func (c *CourseCategoryItemClient) CreateBulk(builders ...*CourseCategoryItemCreate) *CourseCategoryItemCreateBulk {
+	return &CourseCategoryItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CourseCategoryItemClient) MapCreateBulk(slice any, setFunc func(*CourseCategoryItemCreate, int)) *CourseCategoryItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CourseCategoryItemCreateBulk{err: fmt.Errorf("calling to CourseCategoryItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CourseCategoryItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CourseCategoryItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CourseCategoryItem.
+func (c *CourseCategoryItemClient) Update() *CourseCategoryItemUpdate {
+	mutation := newCourseCategoryItemMutation(c.config, OpUpdate)
+	return &CourseCategoryItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CourseCategoryItemClient) UpdateOne(_m *CourseCategoryItem) *CourseCategoryItemUpdateOne {
+	mutation := newCourseCategoryItemMutation(c.config, OpUpdateOne, withCourseCategoryItem(_m))
+	return &CourseCategoryItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CourseCategoryItemClient) UpdateOneID(id int) *CourseCategoryItemUpdateOne {
+	mutation := newCourseCategoryItemMutation(c.config, OpUpdateOne, withCourseCategoryItemID(id))
+	return &CourseCategoryItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CourseCategoryItem.
+func (c *CourseCategoryItemClient) Delete() *CourseCategoryItemDelete {
+	mutation := newCourseCategoryItemMutation(c.config, OpDelete)
+	return &CourseCategoryItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CourseCategoryItemClient) DeleteOne(_m *CourseCategoryItem) *CourseCategoryItemDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CourseCategoryItemClient) DeleteOneID(id int) *CourseCategoryItemDeleteOne {
+	builder := c.Delete().Where(coursecategoryitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CourseCategoryItemDeleteOne{builder}
+}
+
+// Query returns a query builder for CourseCategoryItem.
+func (c *CourseCategoryItemClient) Query() *CourseCategoryItemQuery {
+	return &CourseCategoryItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCourseCategoryItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CourseCategoryItem entity by its id.
+func (c *CourseCategoryItemClient) Get(ctx context.Context, id int) (*CourseCategoryItem, error) {
+	return c.Query().Where(coursecategoryitem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CourseCategoryItemClient) GetX(ctx context.Context, id int) *CourseCategoryItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCategory queries the category edge of a CourseCategoryItem.
+func (c *CourseCategoryItemClient) QueryCategory(_m *CourseCategoryItem) *CourseCategoryQuery {
+	query := (&CourseCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursecategoryitem.Table, coursecategoryitem.FieldID, id),
+			sqlgraph.To(coursecategory.Table, coursecategory.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, coursecategoryitem.CategoryTable, coursecategoryitem.CategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryLandingPage queries the landing_page edge of a CourseCategoryItem.
+func (c *CourseCategoryItemClient) QueryLandingPage(_m *CourseCategoryItem) *LandingPageQuery {
+	query := (&LandingPageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(coursecategoryitem.Table, coursecategoryitem.FieldID, id),
+			sqlgraph.To(landingpage.Table, landingpage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, coursecategoryitem.LandingPageTable, coursecategoryitem.LandingPageColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CourseCategoryItemClient) Hooks() []Hook {
+	return c.hooks.CourseCategoryItem
+}
+
+// Interceptors returns the client interceptors.
+func (c *CourseCategoryItemClient) Interceptors() []Interceptor {
+	return c.inters.CourseCategoryItem
+}
+
+func (c *CourseCategoryItemClient) mutate(ctx context.Context, m *CourseCategoryItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CourseCategoryItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CourseCategoryItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CourseCategoryItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CourseCategoryItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CourseCategoryItem mutation op: %q", m.Op())
+	}
+}
+
 // CourseLessonClient is a client for the CourseLesson schema.
 type CourseLessonClient struct {
 	config
@@ -3745,6 +3920,22 @@ func (c *LandingPageClient) QueryCourse(_m *LandingPage) *CourseQuery {
 	return query
 }
 
+// QueryCategoryItems queries the category_items edge of a LandingPage.
+func (c *LandingPageClient) QueryCategoryItems(_m *LandingPage) *CourseCategoryItemQuery {
+	query := (&CourseCategoryItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(landingpage.Table, landingpage.FieldID, id),
+			sqlgraph.To(coursecategoryitem.Table, coursecategoryitem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, landingpage.CategoryItemsTable, landingpage.CategoryItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *LandingPageClient) Hooks() []Hook {
 	return c.hooks.LandingPage
@@ -5116,7 +5307,7 @@ type (
 	hooks struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
 		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
-		Course, CourseCategory, CourseLesson, CourseLessonReview,
+		Course, CourseCategory, CourseCategoryItem, CourseLesson, CourseLessonReview,
 		CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
@@ -5125,7 +5316,7 @@ type (
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
 		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
-		Course, CourseCategory, CourseLesson, CourseLessonReview,
+		Course, CourseCategory, CourseCategoryItem, CourseLesson, CourseLessonReview,
 		CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,

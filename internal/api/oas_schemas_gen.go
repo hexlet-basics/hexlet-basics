@@ -2152,8 +2152,14 @@ func (*CourseCategoryPage) adminListCourseCategoriesRes() {}
 // A category page with the courses it groups.
 // Ref: #/components/schemas/CourseCategoryView
 type CourseCategoryView struct {
-	Category     CourseCategory      `json:"category"`
+	Category CourseCategory `json:"category"`
+	// The page's absolute legacy URL, for its canonical link.
+	URL string `json:"url"`
+	// The category's listed, published landing pages in the request locale whose course is completed, in
+	// course order.
 	LandingPages []CourseCatalogItem `json:"landingPages"`
+	// The category's questions and answers, oldest first.
+	QnaItems []QnaItem `json:"qnaItems"`
 }
 
 // GetCategory returns the value of Category.
@@ -2161,9 +2167,19 @@ func (s *CourseCategoryView) GetCategory() CourseCategory {
 	return s.Category
 }
 
+// GetURL returns the value of URL.
+func (s *CourseCategoryView) GetURL() string {
+	return s.URL
+}
+
 // GetLandingPages returns the value of LandingPages.
 func (s *CourseCategoryView) GetLandingPages() []CourseCatalogItem {
 	return s.LandingPages
+}
+
+// GetQnaItems returns the value of QnaItems.
+func (s *CourseCategoryView) GetQnaItems() []QnaItem {
+	return s.QnaItems
 }
 
 // SetCategory sets the value of Category.
@@ -2171,9 +2187,19 @@ func (s *CourseCategoryView) SetCategory(val CourseCategory) {
 	s.Category = val
 }
 
+// SetURL sets the value of URL.
+func (s *CourseCategoryView) SetURL(val string) {
+	s.URL = val
+}
+
 // SetLandingPages sets the value of LandingPages.
 func (s *CourseCategoryView) SetLandingPages(val []CourseCatalogItem) {
 	s.LandingPages = val
+}
+
+// SetQnaItems sets the value of QnaItems.
+func (s *CourseCategoryView) SetQnaItems(val []QnaItem) {
+	s.QnaItems = val
 }
 
 func (*CourseCategoryView) getPublicCourseCategoryRes() {}

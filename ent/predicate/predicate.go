@@ -42,6 +42,9 @@ type Course func(*sql.Selector)
 // CourseCategory is the predicate function for coursecategory builders.
 type CourseCategory func(*sql.Selector)
 
+// CourseCategoryItem is the predicate function for coursecategoryitem builders.
+type CourseCategoryItem func(*sql.Selector)
+
 // CourseLesson is the predicate function for courselesson builders.
 type CourseLesson func(*sql.Selector)
 

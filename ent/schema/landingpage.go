@@ -69,6 +69,9 @@ func (LandingPage) Edges() []ent.Edge {
 			Field("course_id").
 			Unique().
 			Required(),
+		// The categories this page is grouped under, via the
+		// `language_category_items` join table.
+		edge.To("category_items", CourseCategoryItem.Type),
 	}
 }
 

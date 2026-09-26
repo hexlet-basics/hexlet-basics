@@ -72,9 +72,11 @@ type LandingPage struct {
 type LandingPageEdges struct {
 	// Course holds the value of the course edge.
 	Course *Course `json:"course,omitempty"`
+	// CategoryItems holds the value of the category_items edge.
+	CategoryItems []*CourseCategoryItem `json:"category_items,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // CourseOrErr returns the Course value or an error if the edge
@@ -86,6 +88,15 @@ func (e LandingPageEdges) CourseOrErr() (*Course, error) {
 		return nil, &NotFoundError{label: course.Label}
 	}
 	return nil, &NotLoadedError{edge: "course"}
+}
+
+// CategoryItemsOrErr returns the CategoryItems value or an error if the edge
+// was not loaded in eager-loading.
+func (e LandingPageEdges) CategoryItemsOrErr() ([]*CourseCategoryItem, error) {
+	if e.loadedTypes[1] {
+		return e.CategoryItems, nil
+	}
+	return nil, &NotLoadedError{edge: "category_items"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -289,6 +300,11 @@ func (_m *LandingPage) Value(name string) (ent.Value, error) {
 // QueryCourse queries the "course" edge of the LandingPage entity.
 func (_m *LandingPage) QueryCourse() *CourseQuery {
 	return NewLandingPageClient(_m.config).QueryCourse(_m)
+}
+
+// QueryCategoryItems queries the "category_items" edge of the LandingPage entity.
+func (_m *LandingPage) QueryCategoryItems() *CourseCategoryItemQuery {
+	return NewLandingPageClient(_m.config).QueryCategoryItems(_m)
 }
 
 // Update returns a builder for updating this LandingPage.

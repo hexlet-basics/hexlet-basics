@@ -283,14 +283,6 @@ export const zCourseCatalogItem = z.object({
 });
 
 /**
- * A category page with the courses it groups.
- */
-export const zCourseCategoryView = z.object({
-  category: zCourseCategory,
-  landingPages: z.array(zCourseCatalogItem)
-});
-
-/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -670,6 +662,16 @@ export const zQnaItem = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   question: z.string(),
   answer: z.string()
+});
+
+/**
+ * A category page with the courses it groups.
+ */
+export const zCourseCategoryView = z.object({
+  category: zCourseCategory,
+  url: z.string(),
+  landingPages: z.array(zCourseCatalogItem),
+  qnaItems: z.array(zQnaItem)
 });
 
 export const zQnaItemInput = z.object({

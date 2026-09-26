@@ -38,7 +38,16 @@ model CourseView {
 /** A category page with the courses it groups. */
 model CourseCategoryView {
   category: CourseCategory;
+
+  /** The page's absolute legacy URL, for its canonical link. */
+  url: string;
+
+  /** The category's listed, published landing pages in the request locale
+      whose course is completed, in course order. */
   landingPages: CourseCatalogItem[];
+
+  /** The category's questions and answers, oldest first. */
+  qnaItems: QnaItem[];
 }
 
 /** A blog post page: the post plus what the page shows under it. */
@@ -129,7 +138,7 @@ interface CourseLessons {
 @route("/language_categories")
 @tag("Course Categories")
 interface PublicCourseCategories {
-  /** List published categories. */
+  /** List the categories of the request locale. */
   @get
   @operationId("listPublicCourseCategories")
   list(): CourseCategory[] | ApiError;

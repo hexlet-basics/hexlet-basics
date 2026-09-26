@@ -60,6 +60,8 @@ const (
 	FieldLandingPageToRedirectID = "landing_page_to_redirect_id"
 	// EdgeCourse holds the string denoting the course edge name in mutations.
 	EdgeCourse = "course"
+	// EdgeCategoryItems holds the string denoting the category_items edge name in mutations.
+	EdgeCategoryItems = "category_items"
 	// Table holds the table name of the landingpage in the database.
 	Table = "language_landing_pages"
 	// CourseTable is the table that holds the course relation/edge.
@@ -69,6 +71,13 @@ const (
 	CourseInverseTable = "languages"
 	// CourseColumn is the table column denoting the course relation/edge.
 	CourseColumn = "language_id"
+	// CategoryItemsTable is the table that holds the category_items relation/edge.
+	CategoryItemsTable = "language_category_items"
+	// CategoryItemsInverseTable is the table name for the CourseCategoryItem entity.
+	// It exists in this package in order to avoid circular dependency with the "coursecategoryitem" package.
+	CategoryItemsInverseTable = "language_category_items"
+	// CategoryItemsColumn is the table column denoting the category_items relation/edge.
+	CategoryItemsColumn = "language_landing_page_id"
 )
 
 // Columns holds all SQL columns for landingpage fields.
@@ -241,10 +250,31 @@ func ByCourseField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCourseStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByCategoryItemsCount orders the results by category_items count.
+func ByCategoryItemsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCategoryItemsStep(), opts...)
+	}
+}
+
+// ByCategoryItems orders the results by category_items terms.
+func ByCategoryItems(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCategoryItemsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newCourseStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CourseInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, CourseTable, CourseColumn),
+	)
+}
+func newCategoryItemsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CategoryItemsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, CategoryItemsTable, CategoryItemsColumn),
 	)
 }

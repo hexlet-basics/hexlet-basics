@@ -8600,6 +8600,10 @@ func (s *CourseCategoryView) encodeFields(e *jx.Encoder) {
 		s.Category.Encode(e)
 	}
 	{
+		e.FieldStart("url")
+		e.Str(s.URL)
+	}
+	{
 		e.FieldStart("landingPages")
 		e.ArrStart()
 		for _, elem := range s.LandingPages {
@@ -8607,11 +8611,21 @@ func (s *CourseCategoryView) encodeFields(e *jx.Encoder) {
 		}
 		e.ArrEnd()
 	}
+	{
+		e.FieldStart("qnaItems")
+		e.ArrStart()
+		for _, elem := range s.QnaItems {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
 }
 
-var jsonFieldsNameOfCourseCategoryView = [2]string{
+var jsonFieldsNameOfCourseCategoryView = [4]string{
 	0: "category",
-	1: "landingPages",
+	1: "url",
+	2: "landingPages",
+	3: "qnaItems",
 }
 
 // Decode decodes CourseCategoryView from json.
@@ -8633,8 +8647,20 @@ func (s *CourseCategoryView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"category\"")
 			}
-		case "landingPages":
+		case "url":
 			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.URL = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"url\"")
+			}
+		case "landingPages":
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				s.LandingPages = make([]CourseCatalogItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -8651,6 +8677,24 @@ func (s *CourseCategoryView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"landingPages\"")
 			}
+		case "qnaItems":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				s.QnaItems = make([]QnaItem, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem QnaItem
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.QnaItems = append(s.QnaItems, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"qnaItems\"")
+			}
 		default:
 			return d.Skip()
 		}
@@ -8661,7 +8705,7 @@ func (s *CourseCategoryView) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

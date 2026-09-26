@@ -553,7 +553,7 @@ type Invoker interface {
 	ListCourses(ctx context.Context) ([]CourseCatalogItem, error)
 	// ListPublicCourseCategories invokes listPublicCourseCategories operation.
 	//
-	// List published categories.
+	// List the categories of the request locale.
 	//
 	// GET /api/language_categories
 	ListPublicCourseCategories(ctx context.Context) ([]CourseCategory, error)
@@ -13582,7 +13582,7 @@ func (c *Client) sendListCourses(ctx context.Context) (res []CourseCatalogItem, 
 
 // ListPublicCourseCategories invokes listPublicCourseCategories operation.
 //
-// List published categories.
+// List the categories of the request locale.
 //
 // GET /api/language_categories
 func (c *Client) ListPublicCourseCategories(ctx context.Context) ([]CourseCategory, error) {

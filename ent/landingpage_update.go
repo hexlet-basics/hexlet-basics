@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"time"
@@ -448,6 +449,21 @@ func (_u *LandingPageUpdate) SetCourse(v *Course) *LandingPageUpdate {
 	return _u.SetCourseID(v.ID)
 }
 
+// AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by IDs.
+func (_u *LandingPageUpdate) AddCategoryItemIDs(ids ...int) *LandingPageUpdate {
+	_u.mutation.AddCategoryItemIDs(ids...)
+	return _u
+}
+
+// AddCategoryItems adds the "category_items" edges to the CourseCategoryItem entity.
+func (_u *LandingPageUpdate) AddCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCategoryItemIDs(ids...)
+}
+
 // Mutation returns the LandingPageMutation object of the builder.
 func (_u *LandingPageUpdate) Mutation() *LandingPageMutation {
 	return _u.mutation
@@ -457,6 +473,27 @@ func (_u *LandingPageUpdate) Mutation() *LandingPageMutation {
 func (_u *LandingPageUpdate) ClearCourse() *LandingPageUpdate {
 	_u.mutation.ClearCourse()
 	return _u
+}
+
+// ClearCategoryItems clears all "category_items" edges to the CourseCategoryItem entity.
+func (_u *LandingPageUpdate) ClearCategoryItems() *LandingPageUpdate {
+	_u.mutation.ClearCategoryItems()
+	return _u
+}
+
+// RemoveCategoryItemIDs removes the "category_items" edge to CourseCategoryItem entities by IDs.
+func (_u *LandingPageUpdate) RemoveCategoryItemIDs(ids ...int) *LandingPageUpdate {
+	_u.mutation.RemoveCategoryItemIDs(ids...)
+	return _u
+}
+
+// RemoveCategoryItems removes "category_items" edges to CourseCategoryItem entities.
+func (_u *LandingPageUpdate) RemoveCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCategoryItemIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -660,6 +697,51 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CategoryItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCategoryItemsIDs(); len(nodes) > 0 && !_u.mutation.CategoryItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CategoryItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1106,6 +1188,21 @@ func (_u *LandingPageUpdateOne) SetCourse(v *Course) *LandingPageUpdateOne {
 	return _u.SetCourseID(v.ID)
 }
 
+// AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by IDs.
+func (_u *LandingPageUpdateOne) AddCategoryItemIDs(ids ...int) *LandingPageUpdateOne {
+	_u.mutation.AddCategoryItemIDs(ids...)
+	return _u
+}
+
+// AddCategoryItems adds the "category_items" edges to the CourseCategoryItem entity.
+func (_u *LandingPageUpdateOne) AddCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddCategoryItemIDs(ids...)
+}
+
 // Mutation returns the LandingPageMutation object of the builder.
 func (_u *LandingPageUpdateOne) Mutation() *LandingPageMutation {
 	return _u.mutation
@@ -1115,6 +1212,27 @@ func (_u *LandingPageUpdateOne) Mutation() *LandingPageMutation {
 func (_u *LandingPageUpdateOne) ClearCourse() *LandingPageUpdateOne {
 	_u.mutation.ClearCourse()
 	return _u
+}
+
+// ClearCategoryItems clears all "category_items" edges to the CourseCategoryItem entity.
+func (_u *LandingPageUpdateOne) ClearCategoryItems() *LandingPageUpdateOne {
+	_u.mutation.ClearCategoryItems()
+	return _u
+}
+
+// RemoveCategoryItemIDs removes the "category_items" edge to CourseCategoryItem entities by IDs.
+func (_u *LandingPageUpdateOne) RemoveCategoryItemIDs(ids ...int) *LandingPageUpdateOne {
+	_u.mutation.RemoveCategoryItemIDs(ids...)
+	return _u
+}
+
+// RemoveCategoryItems removes "category_items" edges to CourseCategoryItem entities.
+func (_u *LandingPageUpdateOne) RemoveCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveCategoryItemIDs(ids...)
 }
 
 // Where appends a list predicates to the LandingPageUpdate builder.
@@ -1348,6 +1466,51 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.CategoryItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedCategoryItemsIDs(); len(nodes) > 0 && !_u.mutation.CategoryItemsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.CategoryItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

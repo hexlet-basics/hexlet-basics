@@ -13,6 +13,7 @@ import (
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -205,6 +206,21 @@ func init() {
 	coursecategory.DefaultUpdatedAt = coursecategoryDescUpdatedAt.Default.(func() time.Time)
 	// coursecategory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	coursecategory.UpdateDefaultUpdatedAt = coursecategoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	coursecategoryitemMixin := schema.CourseCategoryItem{}.Mixin()
+	coursecategoryitemMixinFields0 := coursecategoryitemMixin[0].Fields()
+	_ = coursecategoryitemMixinFields0
+	coursecategoryitemFields := schema.CourseCategoryItem{}.Fields()
+	_ = coursecategoryitemFields
+	// coursecategoryitemDescCreatedAt is the schema descriptor for created_at field.
+	coursecategoryitemDescCreatedAt := coursecategoryitemMixinFields0[0].Descriptor()
+	// coursecategoryitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	coursecategoryitem.DefaultCreatedAt = coursecategoryitemDescCreatedAt.Default.(func() time.Time)
+	// coursecategoryitemDescUpdatedAt is the schema descriptor for updated_at field.
+	coursecategoryitemDescUpdatedAt := coursecategoryitemMixinFields0[1].Descriptor()
+	// coursecategoryitem.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	coursecategoryitem.DefaultUpdatedAt = coursecategoryitemDescUpdatedAt.Default.(func() time.Time)
+	// coursecategoryitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	coursecategoryitem.UpdateDefaultUpdatedAt = coursecategoryitemDescUpdatedAt.UpdateDefault.(func() time.Time)
 	courselessonMixin := schema.CourseLesson{}.Mixin()
 	courselessonMixinFields0 := courselessonMixin[0].Fields()
 	_ = courselessonMixinFields0
