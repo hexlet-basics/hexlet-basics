@@ -11,6 +11,8 @@ import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanst
 import type { i18n as I18n } from "i18next";
 import { type ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
+import { NotFoundPage } from "@/components/ErrorPage";
+import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import { type AuthUser, resolveCurrentUser } from "@/lib/auth";
 import { recordFirstVisit } from "@/lib/first-visit";
 
@@ -34,6 +36,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { title: "Hexlet Basics" },
     ],
   }),
+  // A path the locale layout refuses (`/unknownpage`, `/xx/...`, `/en/...`)
+  // never mounts that layout, so its 404 brings the site chrome itself. Every
+  // other miss renders the router's default 404 inside the layout.
+  notFoundComponent: () => (
+    <ApplicationLayout>
+      <NotFoundPage />
+    </ApplicationLayout>
+  ),
   component: RootComponent,
 });
 

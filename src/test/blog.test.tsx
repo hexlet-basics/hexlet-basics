@@ -183,5 +183,5 @@ test("a post that is not published here is not found", async () => {
 
   await renderPost();
 
-  await expect.element(page.getByText("Not Found")).toBeVisible();
+  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
 });
