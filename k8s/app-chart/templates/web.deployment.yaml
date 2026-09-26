@@ -88,6 +88,10 @@ spec:
             # the /api prefix themselves, so this is the bare service origin.
             - name: API_URL
               value: "http://{{ .Release.Name }}-api-service"
+            # The public origin for absolute URLs in page heads (canonical
+            # links); behind the load balancer the request itself says http.
+            - name: SITE_URL
+              value: {{ .Values.goEnv.SITE_URL | quote }}
             # Heap cap carried over from the legacy SSR container.
             - name: NODE_OPTIONS
               value: "--max-old-space-size=256"

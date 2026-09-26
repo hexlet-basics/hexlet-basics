@@ -5,6 +5,7 @@ import { createI18n } from "@/lib/i18n";
 // Side-effect import: configures the hey-api client (baseUrl, credentials,
 // SSR cookie forwarding) once at module scope.
 import "@/lib/api-client";
+import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import { routeTree } from "./routeTree.gen";
 
 // Start calls getRouter() per request, so each SSR render gets a fresh
@@ -21,6 +22,11 @@ export function getRouter() {
     // `user` is resolved server-side in the root beforeLoad; null is the base.
     context: { queryClient, i18n, user: null },
     defaultPreload: "intent",
+    // Legacy errors#show for every route: a match that finds nothing renders
+    // the 404 page and a load that throws the 500 page, in place of the route
+    // and so inside the site layout. The server answers with the same status.
+    defaultNotFoundComponent: NotFoundPage,
+    defaultErrorComponent: ServerErrorPage,
     scrollRestoration: true,
     // On hydration the client does not rerun beforeLoad — it adopts the
     // server's results — so the `{-$locale}` layout never calls changeLanguage

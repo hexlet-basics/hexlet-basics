@@ -12,6 +12,7 @@ import {
 import { IconBrandGithub, IconBrandYoutube, IconSend } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import type { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import {
   listCoursesOptions,
@@ -31,9 +32,9 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
 // hey-api generated `listCourses` hook and link to the real course route.
-// Legacy also linked out to about/blog/legal pages; those
-// aren't ported to the Go stack yet, so their columns are added back as each
-// page's route lands (no hardcoded hrefs, no placeholder pages).
+// Legacy also linked out to the map page; it isn't ported to the Go stack
+// yet, so its link is added back when its route lands (no hardcoded hrefs, no
+// placeholder pages).
 export default function Footer() {
   const { t, i18n } = useTranslation();
   const { data: courses } = useQuery(listCoursesOptions());
@@ -47,7 +48,18 @@ export default function Footer() {
       <Divider mb="xl" />
       <Container size="lg" pt="lg">
         <footer>
-          <SimpleGrid cols={{ base: 2, xs: 3 }}>
+          <SimpleGrid cols={{ base: 2, xs: 4 }}>
+            <Stack gap="sm">
+              <Text fz="sm" fw="bold">
+                {t(($) => $.layouts.shared.footer.codebasics)}
+              </Text>
+              <PageLink id="about">{t(($) => $.layouts.shared.footer.about)}</PageLink>
+              <Anchor component={Link} to="/{-$locale}/blog_posts" fz="sm">
+                {t(($) => $.layouts.shared.footer.blog)}
+              </Anchor>
+              <PageLink id="authors">{t(($) => $.layouts.shared.footer.authors)}</PageLink>
+            </Stack>
+
             <Stack gap="sm">
               <Anchor component={Link} to="/languages" fw="bold" fz="sm">
                 {t(($) => $.layouts.shared.all_courses)}
@@ -102,7 +114,7 @@ export default function Footer() {
 
           <Divider my="xl" />
 
-          <SimpleGrid cols={{ base: 2, sm: 3 }}>
+          <SimpleGrid cols={{ base: 2, sm: 4 }}>
             <Stack>
               <Group align="top">
                 <Anchor
@@ -143,6 +155,14 @@ export default function Footer() {
               <Anchor href="tel:+74950852162">+7 495 085 21 62</Anchor>
             </Stack>
 
+            <Stack gap="xs">
+              <PageLink id="tos">{t(($) => $.layouts.shared.footer.tos)}</PageLink>
+              <PageLink id="privacy">{t(($) => $.layouts.shared.footer.privacy)}</PageLink>
+              <PageLink id="cookie_policy">
+                {t(($) => $.layouts.shared.footer.cookie_policy)}
+              </PageLink>
+            </Stack>
+
             {i18n.language === "ru" && (
               <Stack gap={0}>
                 <Anchor
@@ -165,5 +185,17 @@ export default function Footer() {
         </footer>
       </Container>
     </Box>
+  );
+}
+
+// A link to one of the static pages (`/pages/:id`).
+function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
+  return (
+    <Anchor
+      fz="sm"
+      renderRoot={(props) => <Link to="/{-$locale}/pages/$id" params={{ id }} {...props} />}
+    >
+      {children}
+    </Anchor>
   );
 }

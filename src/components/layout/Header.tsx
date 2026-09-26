@@ -22,6 +22,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
+  IconBlocks,
   IconChevronDown,
   IconChevronRight,
   IconGitBranch,
@@ -306,10 +307,9 @@ export function ThemeSwitcher() {
   );
 }
 
-// Marketing "solutions" menu, ru-only, ported from legacy. Every target is an
-// external Hexlet URL, so it needs no local route. The legacy `for_teachers`
-// item pointed at an internal route that doesn't exist in the Go stack yet, so
-// it is omitted until that page lands.
+// Marketing "solutions" menu, ru-only, ported from legacy. Every target but
+// the teachers' case is an external Hexlet URL; that one is a local route.
+// Legacy opened each in a new tab.
 function SolutionsMenu() {
   const { t } = useTranslation();
 
@@ -339,6 +339,12 @@ function SolutionsMenu() {
       href: "https://b2b.hexlet.io?utm_source=code-basics&utm_medium=referral",
     },
     {
+      icon: IconBlocks,
+      title: t(($) => $.layouts.shared.nav.for_teachers),
+      description: t(($) => $.layouts.shared.nav.for_teachers_description),
+      to: "/{-$locale}/cases/for_teachers" as const,
+    },
+    {
       icon: IconSchool,
       title: t(($) => $.layouts.shared.nav.hexly),
       description: t(($) => $.layouts.shared.nav.hexly_description),
@@ -353,11 +359,19 @@ function SolutionsMenu() {
           <item.icon size={22} />
         </ThemeIcon>
         <Box>
-          <Anchor href={item.href} target="_blank" rel="noreferrer">
-            <Text fz="sm" fw="bold">
-              {item.title}
-            </Text>
-          </Anchor>
+          {"to" in item ? (
+            <Anchor component={Link} to={item.to} target="_blank" rel="noreferrer">
+              <Text fz="sm" fw="bold">
+                {item.title}
+              </Text>
+            </Anchor>
+          ) : (
+            <Anchor href={item.href} target="_blank" rel="noreferrer">
+              <Text fz="sm" fw="bold">
+                {item.title}
+              </Text>
+            </Anchor>
+          )}
           <Text fz="xs" c="dimmed">
             {item.description}
           </Text>

@@ -11,6 +11,7 @@ import {
   newPasswordInputProps,
   registrationEmailInputProps,
 } from "@/lib/authFieldProps";
+import { TextLink } from "@/components/RouterLink";
 import { useAppForm } from "@/lib/form";
 
 // Registration page, ported from legacy users/new + SignUpFormBlock. Submits
@@ -109,7 +110,11 @@ function New() {
               <Trans
                 t={t}
                 i18nKey={($) => $.users.new.confirmation_html}
-                components={{ a: <Text span fw="bold" /> }}
+                components={{
+                  a: (
+                    <TextLink to="/{-$locale}/pages/$id" params={{ id: "tos" }} fz="inherit" span />
+                  ),
+                }}
               />
             </Text>
           </Stack>
