@@ -785,6 +785,17 @@ func (s *CourseCategoryView) Validate() error {
 			Error: err,
 		})
 	}
+	if err := func() error {
+		if s.QnaItems == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "qnaItems",
+			Error: err,
+		})
+	}
 	if len(failures) > 0 {
 		return &validate.Error{Fields: failures}
 	}

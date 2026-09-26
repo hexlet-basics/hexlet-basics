@@ -1203,7 +1203,7 @@ export const getYandexCoursesFeedXml = <ThrowOnError extends boolean = false>(op
 });
 
 /**
- * List published categories.
+ * List the categories of the request locale.
  */
 export const listPublicCourseCategories = <ThrowOnError extends boolean = false>(options?: Options<ListPublicCourseCategoriesData, ThrowOnError>): RequestResult<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError> => (options?.client ?? client).get<ListPublicCourseCategoriesResponses, ListPublicCourseCategoriesErrors, ThrowOnError>({
   responseType: 'json',

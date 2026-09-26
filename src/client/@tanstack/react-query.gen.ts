@@ -1821,7 +1821,7 @@ export const getYandexCoursesFeedXmlOptions = (options?: Options<GetYandexCourse
 export const listPublicCourseCategoriesQueryKey = (options?: Options<ListPublicCourseCategoriesData>) => createQueryKey('listPublicCourseCategories', options);
 
 /**
- * List published categories.
+ * List the categories of the request locale.
  */
 export const listPublicCourseCategoriesOptions = (options?: Options<ListPublicCourseCategoriesData>) => queryOptions<ListPublicCourseCategoriesResponse, AxiosError<ListPublicCourseCategoriesError>, ListPublicCourseCategoriesResponse, ReturnType<typeof listPublicCourseCategoriesQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {

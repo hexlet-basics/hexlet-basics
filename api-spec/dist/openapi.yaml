@@ -3603,7 +3603,7 @@ paths:
   /api/language_categories:
     get:
       operationId: listPublicCourseCategories
-      description: List published categories.
+      description: List the categories of the request locale.
       parameters: []
       responses:
         '200':
@@ -5052,14 +5052,27 @@ components:
       type: object
       required:
         - category
+        - url
         - landingPages
+        - qnaItems
       properties:
         category:
           $ref: '#/components/schemas/CourseCategory'
+        url:
+          type: string
+          description: The page's absolute legacy URL, for its canonical link.
         landingPages:
           type: array
           items:
             $ref: '#/components/schemas/CourseCatalogItem'
+          description: |-
+            The category's listed, published landing pages in the request locale
+                  whose course is completed, in course order.
+        qnaItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/QnaItem'
+          description: The category's questions and answers, oldest first.
       description: A category page with the courses it groups.
     CourseInput:
       type: object

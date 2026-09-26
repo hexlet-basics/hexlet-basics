@@ -532,7 +532,7 @@ type Handler interface {
 	ListCourses(ctx context.Context) ([]CourseCatalogItem, error)
 	// ListPublicCourseCategories implements listPublicCourseCategories operation.
 	//
-	// List published categories.
+	// List the categories of the request locale.
 	//
 	// GET /api/language_categories
 	ListPublicCourseCategories(ctx context.Context) ([]CourseCategory, error)

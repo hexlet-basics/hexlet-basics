@@ -18,6 +18,7 @@ import (
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -67,6 +68,7 @@ const (
 	TypeCategoryQnaItem           = "CategoryQnaItem"
 	TypeCourse                    = "Course"
 	TypeCourseCategory            = "CourseCategory"
+	TypeCourseCategoryItem        = "CourseCategoryItem"
 	TypeCourseLesson              = "CourseLesson"
 	TypeCourseLessonReview        = "CourseLessonReview"
 	TypeCourseLessonTranslation   = "CourseLessonTranslation"
@@ -9183,6 +9185,610 @@ func (m *CourseCategoryMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown CourseCategory edge %s", name)
 }
 
+// CourseCategoryItemMutation represents an operation that mutates the CourseCategoryItem nodes in the graph.
+type CourseCategoryItemMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *int
+	created_at          *time.Time
+	updated_at          *time.Time
+	clearedFields       map[string]struct{}
+	category            *int
+	clearedcategory     bool
+	landing_page        *int
+	clearedlanding_page bool
+	done                bool
+	oldValue            func(context.Context) (*CourseCategoryItem, error)
+	predicates          []predicate.CourseCategoryItem
+}
+
+var _ ent.Mutation = (*CourseCategoryItemMutation)(nil)
+
+// coursecategoryitemOption allows management of the mutation configuration using functional options.
+type coursecategoryitemOption func(*CourseCategoryItemMutation)
+
+// newCourseCategoryItemMutation creates new mutation for the CourseCategoryItem entity.
+func newCourseCategoryItemMutation(c config, op Op, opts ...coursecategoryitemOption) *CourseCategoryItemMutation {
+	m := &CourseCategoryItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeCourseCategoryItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withCourseCategoryItemID sets the ID field of the mutation.
+func withCourseCategoryItemID(id int) coursecategoryitemOption {
+	return func(m *CourseCategoryItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *CourseCategoryItem
+		)
+		m.oldValue = func(ctx context.Context) (*CourseCategoryItem, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().CourseCategoryItem.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withCourseCategoryItem sets the old CourseCategoryItem of the mutation.
+func withCourseCategoryItem(node *CourseCategoryItem) coursecategoryitemOption {
+	return func(m *CourseCategoryItemMutation) {
+		m.oldValue = func(context.Context) (*CourseCategoryItem, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m CourseCategoryItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m CourseCategoryItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *CourseCategoryItemMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *CourseCategoryItemMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().CourseCategoryItem.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *CourseCategoryItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *CourseCategoryItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the CourseCategoryItem entity.
+// If the CourseCategoryItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *CourseCategoryItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *CourseCategoryItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *CourseCategoryItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the CourseCategoryItem entity.
+// If the CourseCategoryItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *CourseCategoryItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCourseCategoryID sets the "course_category_id" field.
+func (m *CourseCategoryItemMutation) SetCourseCategoryID(i int) {
+	m.category = &i
+}
+
+// CourseCategoryID returns the value of the "course_category_id" field in the mutation.
+func (m *CourseCategoryItemMutation) CourseCategoryID() (r int, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCourseCategoryID returns the old "course_category_id" field's value of the CourseCategoryItem entity.
+// If the CourseCategoryItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryItemMutation) OldCourseCategoryID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCourseCategoryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCourseCategoryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCourseCategoryID: %w", err)
+	}
+	return oldValue.CourseCategoryID, nil
+}
+
+// ResetCourseCategoryID resets all changes to the "course_category_id" field.
+func (m *CourseCategoryItemMutation) ResetCourseCategoryID() {
+	m.category = nil
+}
+
+// SetLandingPageID sets the "landing_page_id" field.
+func (m *CourseCategoryItemMutation) SetLandingPageID(i int) {
+	m.landing_page = &i
+}
+
+// LandingPageID returns the value of the "landing_page_id" field in the mutation.
+func (m *CourseCategoryItemMutation) LandingPageID() (r int, exists bool) {
+	v := m.landing_page
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLandingPageID returns the old "landing_page_id" field's value of the CourseCategoryItem entity.
+// If the CourseCategoryItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CourseCategoryItemMutation) OldLandingPageID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLandingPageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLandingPageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLandingPageID: %w", err)
+	}
+	return oldValue.LandingPageID, nil
+}
+
+// ResetLandingPageID resets all changes to the "landing_page_id" field.
+func (m *CourseCategoryItemMutation) ResetLandingPageID() {
+	m.landing_page = nil
+}
+
+// SetCategoryID sets the "category" edge to the CourseCategory entity by id.
+func (m *CourseCategoryItemMutation) SetCategoryID(id int) {
+	m.category = &id
+}
+
+// ClearCategory clears the "category" edge to the CourseCategory entity.
+func (m *CourseCategoryItemMutation) ClearCategory() {
+	m.clearedcategory = true
+	m.clearedFields[coursecategoryitem.FieldCourseCategoryID] = struct{}{}
+}
+
+// CategoryCleared reports if the "category" edge to the CourseCategory entity was cleared.
+func (m *CourseCategoryItemMutation) CategoryCleared() bool {
+	return m.clearedcategory
+}
+
+// CategoryID returns the "category" edge ID in the mutation.
+func (m *CourseCategoryItemMutation) CategoryID() (id int, exists bool) {
+	if m.category != nil {
+		return *m.category, true
+	}
+	return
+}
+
+// CategoryIDs returns the "category" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CategoryID instead. It exists only for internal usage by the builders.
+func (m *CourseCategoryItemMutation) CategoryIDs() (ids []int) {
+	if id := m.category; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCategory resets all changes to the "category" edge.
+func (m *CourseCategoryItemMutation) ResetCategory() {
+	m.category = nil
+	m.clearedcategory = false
+}
+
+// ClearLandingPage clears the "landing_page" edge to the LandingPage entity.
+func (m *CourseCategoryItemMutation) ClearLandingPage() {
+	m.clearedlanding_page = true
+	m.clearedFields[coursecategoryitem.FieldLandingPageID] = struct{}{}
+}
+
+// LandingPageCleared reports if the "landing_page" edge to the LandingPage entity was cleared.
+func (m *CourseCategoryItemMutation) LandingPageCleared() bool {
+	return m.clearedlanding_page
+}
+
+// LandingPageIDs returns the "landing_page" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// LandingPageID instead. It exists only for internal usage by the builders.
+func (m *CourseCategoryItemMutation) LandingPageIDs() (ids []int) {
+	if id := m.landing_page; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetLandingPage resets all changes to the "landing_page" edge.
+func (m *CourseCategoryItemMutation) ResetLandingPage() {
+	m.landing_page = nil
+	m.clearedlanding_page = false
+}
+
+// Where appends a list predicates to the CourseCategoryItemMutation builder.
+func (m *CourseCategoryItemMutation) Where(ps ...predicate.CourseCategoryItem) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the CourseCategoryItemMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *CourseCategoryItemMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.CourseCategoryItem, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *CourseCategoryItemMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *CourseCategoryItemMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (CourseCategoryItem).
+func (m *CourseCategoryItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *CourseCategoryItemMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.created_at != nil {
+		fields = append(fields, coursecategoryitem.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, coursecategoryitem.FieldUpdatedAt)
+	}
+	if m.category != nil {
+		fields = append(fields, coursecategoryitem.FieldCourseCategoryID)
+	}
+	if m.landing_page != nil {
+		fields = append(fields, coursecategoryitem.FieldLandingPageID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *CourseCategoryItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case coursecategoryitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case coursecategoryitem.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case coursecategoryitem.FieldCourseCategoryID:
+		return m.CourseCategoryID()
+	case coursecategoryitem.FieldLandingPageID:
+		return m.LandingPageID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *CourseCategoryItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case coursecategoryitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case coursecategoryitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case coursecategoryitem.FieldCourseCategoryID:
+		return m.OldCourseCategoryID(ctx)
+	case coursecategoryitem.FieldLandingPageID:
+		return m.OldLandingPageID(ctx)
+	}
+	return nil, fmt.Errorf("unknown CourseCategoryItem field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CourseCategoryItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case coursecategoryitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case coursecategoryitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case coursecategoryitem.FieldCourseCategoryID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCourseCategoryID(v)
+		return nil
+	case coursecategoryitem.FieldLandingPageID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLandingPageID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategoryItem field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *CourseCategoryItemMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *CourseCategoryItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *CourseCategoryItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown CourseCategoryItem numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *CourseCategoryItemMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *CourseCategoryItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *CourseCategoryItemMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown CourseCategoryItem nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *CourseCategoryItemMutation) ResetField(name string) error {
+	switch name {
+	case coursecategoryitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case coursecategoryitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case coursecategoryitem.FieldCourseCategoryID:
+		m.ResetCourseCategoryID()
+		return nil
+	case coursecategoryitem.FieldLandingPageID:
+		m.ResetLandingPageID()
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategoryItem field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *CourseCategoryItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.category != nil {
+		edges = append(edges, coursecategoryitem.EdgeCategory)
+	}
+	if m.landing_page != nil {
+		edges = append(edges, coursecategoryitem.EdgeLandingPage)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *CourseCategoryItemMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case coursecategoryitem.EdgeCategory:
+		if id := m.category; id != nil {
+			return []ent.Value{*id}
+		}
+	case coursecategoryitem.EdgeLandingPage:
+		if id := m.landing_page; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *CourseCategoryItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *CourseCategoryItemMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *CourseCategoryItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedcategory {
+		edges = append(edges, coursecategoryitem.EdgeCategory)
+	}
+	if m.clearedlanding_page {
+		edges = append(edges, coursecategoryitem.EdgeLandingPage)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *CourseCategoryItemMutation) EdgeCleared(name string) bool {
+	switch name {
+	case coursecategoryitem.EdgeCategory:
+		return m.clearedcategory
+	case coursecategoryitem.EdgeLandingPage:
+		return m.clearedlanding_page
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *CourseCategoryItemMutation) ClearEdge(name string) error {
+	switch name {
+	case coursecategoryitem.EdgeCategory:
+		m.ClearCategory()
+		return nil
+	case coursecategoryitem.EdgeLandingPage:
+		m.ClearLandingPage()
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategoryItem unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *CourseCategoryItemMutation) ResetEdge(name string) error {
+	switch name {
+	case coursecategoryitem.EdgeCategory:
+		m.ResetCategory()
+		return nil
+	case coursecategoryitem.EdgeLandingPage:
+		m.ResetLandingPage()
+		return nil
+	}
+	return fmt.Errorf("unknown CourseCategoryItem edge %s", name)
+}
+
 // CourseLessonMutation represents an operation that mutates the CourseLesson nodes in the graph.
 type CourseLessonMutation struct {
 	config
@@ -18255,6 +18861,9 @@ type LandingPageMutation struct {
 	clearedFields                  map[string]struct{}
 	course                         *int
 	clearedcourse                  bool
+	category_items                 map[int]struct{}
+	removedcategory_items          map[int]struct{}
+	clearedcategory_items          bool
 	done                           bool
 	oldValue                       func(context.Context) (*LandingPage, error)
 	predicates                     []predicate.LandingPage
@@ -19466,6 +20075,60 @@ func (m *LandingPageMutation) ResetCourse() {
 	m.clearedcourse = false
 }
 
+// AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by ids.
+func (m *LandingPageMutation) AddCategoryItemIDs(ids ...int) {
+	if m.category_items == nil {
+		m.category_items = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.category_items[ids[i]] = struct{}{}
+	}
+}
+
+// ClearCategoryItems clears the "category_items" edge to the CourseCategoryItem entity.
+func (m *LandingPageMutation) ClearCategoryItems() {
+	m.clearedcategory_items = true
+}
+
+// CategoryItemsCleared reports if the "category_items" edge to the CourseCategoryItem entity was cleared.
+func (m *LandingPageMutation) CategoryItemsCleared() bool {
+	return m.clearedcategory_items
+}
+
+// RemoveCategoryItemIDs removes the "category_items" edge to the CourseCategoryItem entity by IDs.
+func (m *LandingPageMutation) RemoveCategoryItemIDs(ids ...int) {
+	if m.removedcategory_items == nil {
+		m.removedcategory_items = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.category_items, ids[i])
+		m.removedcategory_items[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCategoryItems returns the removed IDs of the "category_items" edge to the CourseCategoryItem entity.
+func (m *LandingPageMutation) RemovedCategoryItemsIDs() (ids []int) {
+	for id := range m.removedcategory_items {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CategoryItemsIDs returns the "category_items" edge IDs in the mutation.
+func (m *LandingPageMutation) CategoryItemsIDs() (ids []int) {
+	for id := range m.category_items {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCategoryItems resets all changes to the "category_items" edge.
+func (m *LandingPageMutation) ResetCategoryItems() {
+	m.category_items = nil
+	m.clearedcategory_items = false
+	m.removedcategory_items = nil
+}
+
 // Where appends a list predicates to the LandingPageMutation builder.
 func (m *LandingPageMutation) Where(ps ...predicate.LandingPage) {
 	m.predicates = append(m.predicates, ps...)
@@ -20100,9 +20763,12 @@ func (m *LandingPageMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *LandingPageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.course != nil {
 		edges = append(edges, landingpage.EdgeCourse)
+	}
+	if m.category_items != nil {
+		edges = append(edges, landingpage.EdgeCategoryItems)
 	}
 	return edges
 }
@@ -20115,27 +20781,47 @@ func (m *LandingPageMutation) AddedIDs(name string) []ent.Value {
 		if id := m.course; id != nil {
 			return []ent.Value{*id}
 		}
+	case landingpage.EdgeCategoryItems:
+		ids := make([]ent.Value, 0, len(m.category_items))
+		for id := range m.category_items {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *LandingPageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removedcategory_items != nil {
+		edges = append(edges, landingpage.EdgeCategoryItems)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *LandingPageMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case landingpage.EdgeCategoryItems:
+		ids := make([]ent.Value, 0, len(m.removedcategory_items))
+		for id := range m.removedcategory_items {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *LandingPageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedcourse {
 		edges = append(edges, landingpage.EdgeCourse)
+	}
+	if m.clearedcategory_items {
+		edges = append(edges, landingpage.EdgeCategoryItems)
 	}
 	return edges
 }
@@ -20146,6 +20832,8 @@ func (m *LandingPageMutation) EdgeCleared(name string) bool {
 	switch name {
 	case landingpage.EdgeCourse:
 		return m.clearedcourse
+	case landingpage.EdgeCategoryItems:
+		return m.clearedcategory_items
 	}
 	return false
 }
@@ -20167,6 +20855,9 @@ func (m *LandingPageMutation) ResetEdge(name string) error {
 	switch name {
 	case landingpage.EdgeCourse:
 		m.ResetCourse()
+		return nil
+	case landingpage.EdgeCategoryItems:
+		m.ResetCategoryItems()
 		return nil
 	}
 	return fmt.Errorf("unknown LandingPage edge %s", name)

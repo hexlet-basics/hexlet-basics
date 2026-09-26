@@ -36,6 +36,8 @@ type Tx struct {
 	Course *CourseClient
 	// CourseCategory is the client for interacting with the CourseCategory builders.
 	CourseCategory *CourseCategoryClient
+	// CourseCategoryItem is the client for interacting with the CourseCategoryItem builders.
+	CourseCategoryItem *CourseCategoryItemClient
 	// CourseLesson is the client for interacting with the CourseLesson builders.
 	CourseLesson *CourseLessonClient
 	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
@@ -217,6 +219,7 @@ func (tx *Tx) init() {
 	tx.CategoryQnaItem = NewCategoryQnaItemClient(tx.config)
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
+	tx.CourseCategoryItem = NewCourseCategoryItemClient(tx.config)
 	tx.CourseLesson = NewCourseLessonClient(tx.config)
 	tx.CourseLessonReview = NewCourseLessonReviewClient(tx.config)
 	tx.CourseLessonTranslation = NewCourseLessonTranslationClient(tx.config)

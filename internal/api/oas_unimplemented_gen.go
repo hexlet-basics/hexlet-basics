@@ -822,7 +822,7 @@ func (UnimplementedHandler) ListCourses(ctx context.Context) (r []CourseCatalogI
 
 // ListPublicCourseCategories implements listPublicCourseCategories operation.
 //
-// List published categories.
+// List the categories of the request locale.
 //
 // GET /api/language_categories
 func (UnimplementedHandler) ListPublicCourseCategories(ctx context.Context) (r []CourseCategory, _ error) {

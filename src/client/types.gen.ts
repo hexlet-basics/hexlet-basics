@@ -291,7 +291,19 @@ export type CourseCategoryPage = {
  */
 export type CourseCategoryView = {
   category: CourseCategory;
+  /**
+   * The page's absolute legacy URL, for its canonical link.
+   */
+  url: string;
+  /**
+   * The category's listed, published landing pages in the request locale
+   *       whose course is completed, in course order.
+   */
   landingPages: Array<CourseCatalogItem>;
+  /**
+   * The category's questions and answers, oldest first.
+   */
+  qnaItems: Array<QnaItem>;
 };
 
 export type CourseInput = {

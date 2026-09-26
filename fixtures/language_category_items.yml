@@ -1,0 +1,32 @@
+# Fixtures for `language_category_items`, HAND-CURATED (legacy had a single
+# row). Everything hangs off programming-ru (948254963) so one category page
+# has several courses: four published, listed ru pages whose courses differ in
+# `order` (three share one, to exercise the tie-breaker), plus an en page the
+# ru page must leave out. The javascript pages stay out: a test deletes them,
+# and these rows would hold them by foreign key. Landing page ids come from
+# language_landing_pages.yml.
+- id: 8001  # typescript-ru
+  language_category_id: 948254963
+  language_landing_page_id: 369896861
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 8002  # python-ru
+  language_category_id: 948254963
+  language_landing_page_id: 341643033
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 8003  # go-ru
+  language_category_id: 948254963
+  language_landing_page_id: 59175011
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 8004  # ruby-ru
+  language_category_id: 948254963
+  language_landing_page_id: 88212034
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 8005  # java-en, another locale
+  language_category_id: 948254963
+  language_landing_page_id: 102732589
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

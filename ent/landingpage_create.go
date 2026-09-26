@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/landingpage"
 	"time"
 
@@ -328,6 +329,21 @@ func (_c *LandingPageCreate) SetCourse(v *Course) *LandingPageCreate {
 	return _c.SetCourseID(v.ID)
 }
 
+// AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by IDs.
+func (_c *LandingPageCreate) AddCategoryItemIDs(ids ...int) *LandingPageCreate {
+	_c.mutation.AddCategoryItemIDs(ids...)
+	return _c
+}
+
+// AddCategoryItems adds the "category_items" edges to the CourseCategoryItem entity.
+func (_c *LandingPageCreate) AddCategoryItems(v ...*CourseCategoryItem) *LandingPageCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddCategoryItemIDs(ids...)
+}
+
 // Mutation returns the LandingPageMutation object of the builder.
 func (_c *LandingPageCreate) Mutation() *LandingPageMutation {
 	return _c.mutation
@@ -513,6 +529,22 @@ func (_c *LandingPageCreate) createSpec() (*LandingPage, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.CourseID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.CategoryItemsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   landingpage.CategoryItemsTable,
+			Columns: []string{landingpage.CategoryItemsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

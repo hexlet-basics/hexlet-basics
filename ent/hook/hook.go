@@ -152,6 +152,18 @@ func (f CourseCategoryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CourseCategoryMutation", m)
 }
 
+// The CourseCategoryItemFunc type is an adapter to allow the use of ordinary
+// function as CourseCategoryItem mutator.
+type CourseCategoryItemFunc func(context.Context, *ent.CourseCategoryItemMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CourseCategoryItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.CourseCategoryItemMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CourseCategoryItemMutation", m)
+}
+
 // The CourseLessonFunc type is an adapter to allow the use of ordinary
 // function as CourseLesson mutator.
 type CourseLessonFunc func(context.Context, *ent.CourseLessonMutation) (ent.Value, error)

@@ -273,6 +273,34 @@ var (
 		Columns:    LanguageCategoriesColumns,
 		PrimaryKey: []*schema.Column{LanguageCategoriesColumns[0]},
 	}
+	// LanguageCategoryItemsColumns holds the columns for the "language_category_items" table.
+	LanguageCategoryItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "language_category_id", Type: field.TypeInt},
+		{Name: "language_landing_page_id", Type: field.TypeInt},
+	}
+	// LanguageCategoryItemsTable holds the schema information for the "language_category_items" table.
+	LanguageCategoryItemsTable = &schema.Table{
+		Name:       "language_category_items",
+		Columns:    LanguageCategoryItemsColumns,
+		PrimaryKey: []*schema.Column{LanguageCategoryItemsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_category_items_language_categories_category",
+				Columns:    []*schema.Column{LanguageCategoryItemsColumns[3]},
+				RefColumns: []*schema.Column{LanguageCategoriesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "language_category_items_language_landing_pages_category_items",
+				Columns:    []*schema.Column{LanguageCategoryItemsColumns[4]},
+				RefColumns: []*schema.Column{LanguageLandingPagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// LanguageLessonsColumns holds the columns for the "language_lessons" table.
 	LanguageLessonsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -801,6 +829,7 @@ var (
 		LanguageCategoryQnaItemsTable,
 		LanguagesTable,
 		LanguageCategoriesTable,
+		LanguageCategoryItemsTable,
 		LanguageLessonsTable,
 		LanguageLessonReviewsTable,
 		LanguageLessonVersionInfosTable,
@@ -849,6 +878,11 @@ func init() {
 	}
 	LanguageCategoriesTable.Annotation = &entsql.Annotation{
 		Table: "language_categories",
+	}
+	LanguageCategoryItemsTable.ForeignKeys[0].RefTable = LanguageCategoriesTable
+	LanguageCategoryItemsTable.ForeignKeys[1].RefTable = LanguageLandingPagesTable
+	LanguageCategoryItemsTable.Annotation = &entsql.Annotation{
+		Table: "language_category_items",
 	}
 	LanguageLessonsTable.Annotation = &entsql.Annotation{
 		Table: "language_lessons",

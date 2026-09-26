@@ -1498,6 +1498,29 @@ func HasCourseWith(preds ...predicate.Course) predicate.LandingPage {
 	})
 }
 
+// HasCategoryItems applies the HasEdge predicate on the "category_items" edge.
+func HasCategoryItems() predicate.LandingPage {
+	return predicate.LandingPage(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, CategoryItemsTable, CategoryItemsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasCategoryItemsWith applies the HasEdge predicate on the "category_items" edge with a given conditions (other predicates).
+func HasCategoryItemsWith(preds ...predicate.CourseCategoryItem) predicate.LandingPage {
+	return predicate.LandingPage(func(s *sql.Selector) {
+		step := newCategoryItemsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.LandingPage) predicate.LandingPage {
 	return predicate.LandingPage(sql.AndPredicates(predicates...))
