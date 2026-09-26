@@ -26,3 +26,39 @@
   state: draft
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+# The public list: a newer, unpinned ru review sorts above the pinned 5001
+# (legacy ordered by id only), a ru draft stays off it, and an en published
+# review is all the en list shows.
+- id: 5003
+  body: Курс помог начать программировать
+  first_name: Maria
+  last_name: Ivanova
+  language_id: 322905520
+  user_id: 1002
+  locale: ru
+  pinned: false
+  state: published
+  created_at: '2026-07-27 10:00:00'
+  updated_at: '2026-07-27 10:00:00'
+- id: 5004
+  body: Черновик отзыва
+  first_name: Oleg
+  last_name: Sidorov
+  language_id: 207281424
+  user_id: 1001
+  locale: ru
+  pinned: false
+  state: draft
+  created_at: '2026-07-28 10:00:00'
+  updated_at: '2026-07-28 10:00:00'
+- id: 5005
+  body: Clear lessons and quick practice
+  first_name: Jane
+  last_name: Smith
+  language_id: 207281424
+  user_id: 1001
+  locale: en
+  pinned: false
+  state: published
+  created_at: '2026-07-29 10:00:00'
+  updated_at: '2026-07-29 10:00:00'

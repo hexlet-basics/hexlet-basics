@@ -444,8 +444,8 @@ model Review {
   state: ReviewState | null;
   locale: ReviewLocale | null;
 
-  /** Pinned reviews sort to the top of the public list. Part of the read model
-      so the admin edit form can round-trip the flag it writes. */
+  /** Stored for the admin edit form to round-trip; it does not affect the
+      public list, which legacy ordered newest first only. */
   pinned: boolean | null;
 
   createdAt: utcDateTime;
