@@ -76,12 +76,29 @@ func StreamResponses(next http.Handler) http.Handler {
 
 // flushingWriter flushes after every Write. A failed flush means the client is
 // gone, and is returned so the copy feeding it stops.
+//
+// A status written after the body has begun is the generated server reporting
+// a failure mid-answer (the model dropped, storing the answer failed). The 200
+// is already on the wire, and appending the error document would hand the
+// client a short answer with JSON glued to it that reads as complete; aborting
+// the handler cuts the connection instead, which the client sees as the broken
+// stream it is. The error has been reported by then — the error handler logs
+// before it writes.
 type flushingWriter struct {
 	http.ResponseWriter
 	controller *http.ResponseController
+	started    bool
+}
+
+func (w *flushingWriter) WriteHeader(status int) {
+	if w.started {
+		panic(http.ErrAbortHandler)
+	}
+	w.ResponseWriter.WriteHeader(status)
 }
 
 func (w *flushingWriter) Write(p []byte) (int, error) {
+	w.started = true
 	n, err := w.ResponseWriter.Write(p)
 	if err != nil {
 		return n, err

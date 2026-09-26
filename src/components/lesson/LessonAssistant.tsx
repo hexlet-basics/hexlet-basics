@@ -89,7 +89,7 @@ function AssistantChat({
   output: string;
   chat: LessonAssistantChat;
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
   const historyKey = listAssistantMessagesQueryKey({ path: { lessonId: lesson.id } });
@@ -164,17 +164,15 @@ function AssistantChat({
             rows={5}
           />
           <Group justify="flex-end" pt="md">
-            {i18n.language === "ru" && (
-              <Button
-                component="a"
-                variant="light"
-                href={communityUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t(($) => $.courses.lessons.show.chat.community)}
-              </Button>
-            )}
+            <Button
+              component="a"
+              variant="light"
+              href={communityUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t(($) => $.courses.lessons.show.chat.community)}
+            </Button>
             <Button type="submit" loading={busy} disabled={!input.trim()}>
               {t(($) => $.helpers.send)}
             </Button>

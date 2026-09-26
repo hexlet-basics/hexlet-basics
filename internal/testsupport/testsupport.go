@@ -266,11 +266,13 @@ func NewHarness(t *testing.T) *Harness {
 
 // StubStreamer answers every chat request with canned deltas and usage, and
 // records the turns it was sent. Err fails the request before the first delta,
-// the way an unreachable provider does.
+// the way an unreachable provider does; ErrAfter fails it after the deltas, the
+// way a stream dropped mid-answer does.
 type StubStreamer struct {
 	Deltas   []string
 	Usage    assistant.Usage
 	Err      error
+	ErrAfter error
 	Requests [][]assistant.Turn
 }
 
@@ -295,6 +297,9 @@ func (s *StubStreamer) Stream(
 		if err := onDelta(delta); err != nil {
 			return assistant.Usage{}, err
 		}
+	}
+	if s.ErrAfter != nil {
+		return assistant.Usage{}, s.ErrAfter
 	}
 	return s.Usage, nil
 }

@@ -1093,7 +1093,7 @@ export default {
             "El editor sugiere comandos mientras escribes. Pulsa Tab para aceptar una sugerencia y usa las teclas ↑ y ↓ para desplazarte por la lista.",
           breadcrumb: "breadcrumb",
           chat: {
-            community: "Живые люди",
+            community: "Pregunta a la comunidad",
             disabled_html:
               "Has alcanzado el límite diario de mensajes, así que el chat está en pausa hasta mañana. Nuestra <a>comunidad de Telegram</a> funciona las 24 horas, ¡únete! :)",
             guest:

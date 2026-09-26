@@ -15,7 +15,9 @@ import (
 	"hexletbasics/ent/aichat"
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/courselessontranslation"
+	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/predicate"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -102,25 +104,23 @@ func (c *Chat) History(ctx context.Context, userID, lessonID int) (*History, err
 	}
 
 	locale := c.i18n.Locale(ctx)
-	messages, err := c.db.AiMessage.Query().
-		Where(
-			aimessage.RoleIn(RoleUser, RoleAssistant),
-			aimessage.HasChatWith(aichat.HasLessonProgressWith(
-				lessonprogress.UserID(userID),
-				lessonprogress.LessonID(lessonID),
-			)),
-		).
+	messages, err := c.conversation(aichat.HasLessonProgressWith(
+		lessonprogress.UserID(userID),
+		lessonprogress.LessonID(lessonID),
+	)).
 		WithChat(func(q *ent.AiChatQuery) {
 			q.WithLessonProgress(func(q *ent.LessonProgressQuery) {
 				q.WithCourse().WithLesson(func(q *ent.CourseLessonQuery) {
+					// The name the learner reads now: the current build's info.
 					q.WithInfos(func(q *ent.CourseLessonTranslationQuery) {
-						q.Where(courselessontranslation.LocaleEQ(locale)).
-							Order(ent.Asc(courselessontranslation.FieldID))
+						q.Where(
+							courselessontranslation.LocaleEQ(locale),
+							courselessontranslation.HasCourseVersionWith(courseversion.HasCurrentCourses()),
+						)
 					})
 				})
 			})
 		}).
-		Order(ent.Asc(aimessage.FieldID)).
 		All(ctx)
 	if err != nil {
 		return nil, oops.Wrapf(err, "load assistant chat for lesson %d", lessonID)
@@ -146,11 +146,13 @@ type Question struct {
 // the quota, the gate, the lesson's text — is settled before it returns, and
 // so is the model's first token: a model that fails straight away is an error
 // here rather than an empty 200. The returned reader yields the answer as the
-// model produces it; both turns are stored, with the answer's usage, before it
+// model produces it; the answer is stored, with its usage, before the reader
 // reports EOF, so a finished response means a stored conversation.
 //
-// A failed or abandoned answer stores nothing: the learner did not get it, so
-// it does not count against their quota.
+// The question is stored when the first token arrives, not when the answer
+// ends: from then on the learner is being answered, and leaving early must
+// still cost them the question — or cutting the connection just before the end
+// would be a way round the quota. A model that never starts costs nothing.
 //
 // Returns ErrQuotaExceeded, progress.ErrLessonNotAvailable, or an ent
 // not-found error for a lesson outside the course's current build.
@@ -176,35 +178,49 @@ func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
 		return nil, err
 	}
 
+	// Rows are written without the request's cancellation: once written to,
+	// the exchange must be recorded whether or not the learner stays.
+	storeCtx := context.WithoutCancel(ctx)
 	answer, writer := io.Pipe()
 	started := make(chan error, 1)
 	go func() {
 		var text strings.Builder
-		first := true
+		chatID := 0
+		// Ask waits for exactly one signal: the first token (the question is
+		// then stored) or the failure that came instead of it.
+		signalled := false
+		signal := func(err error) {
+			if !signalled {
+				signalled = true
+				started <- err
+			}
+		}
+		begin := func() error {
+			id, err := c.saveQuestion(storeCtx, q, lessonProgressID)
+			chatID = id
+			signal(err)
+			return err
+		}
 		usage, err := c.llm.Stream(ctx, turns, func(delta string) error {
-			if first {
-				first = false
-				started <- nil
+			if !signalled {
+				if err := begin(); err != nil {
+					return err
+				}
 			}
 			text.WriteString(delta)
 			_, err := writer.Write([]byte(delta))
 			return err
 		})
+		if err == nil && !signalled {
+			// An empty answer is still an answer.
+			err = begin()
+		}
 		if err != nil {
-			if first {
-				started <- err
-			}
+			signal(err)
 			writer.CloseWithError(err)
 			return
 		}
-		if first {
-			// An empty answer is still an answer.
-			started <- nil
-		}
-		// The answer is complete; storing it must not depend on the learner's
-		// connection outliving the last token.
-		err = c.save(context.WithoutCancel(ctx), q, lessonProgressID, text.String(), usage)
-		writer.CloseWithError(err)
+		writer.CloseWithError(c.saveAnswer(storeCtx, chatID, text.String(), usage))
 	}()
 
 	if err := <-started; err != nil {
@@ -240,13 +256,7 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 		return nil, 0, oops.Wrapf(err, "load lesson %d info in %s", q.LessonID, locale)
 	}
 
-	previous, err := c.db.AiMessage.Query().
-		Where(
-			aimessage.RoleIn(RoleUser, RoleAssistant),
-			aimessage.HasChatWith(aichat.LessonProgressID(lp.ID)),
-		).
-		Order(ent.Asc(aimessage.FieldID)).
-		All(ctx)
+	previous, err := c.conversation(aichat.LessonProgressID(lp.ID)).All(ctx)
 	if err != nil {
 		return nil, 0, oops.Wrapf(err, "load assistant chat for lesson %d", q.LessonID)
 	}
@@ -269,13 +279,14 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 	return turns, lp.ID, nil
 }
 
-// save writes a completed exchange: the chat on first use, the question as
-// asked (the wrapped prompt is rebuilt per request, so storing it would show
-// the learner — and the lesson reviews — boilerplate), and the answer with its
-// usage. The question is attributed to the learner and counted on
+// saveQuestion records the question as asked (the wrapped prompt is rebuilt
+// per request, so storing it would show the learner — and the lesson reviews —
+// boilerplate), creating the chat on first use, and returns the chat. The
+// question is attributed to the learner and counted on
 // users.assistant_messages_count, as legacy's counter cache did.
-func (c *Chat) save(ctx context.Context, q Question, lessonProgressID int, answer string, usage Usage) error {
-	return c.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID int) (int, error) {
+	chatID := 0
+	err := c.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
 		chat, err := db.AiChat.Query().Where(aichat.LessonProgressID(lessonProgressID)).Only(ctx)
 		if ent.IsNotFound(err) {
 			chat, err = db.AiChat.Create().
@@ -286,6 +297,7 @@ func (c *Chat) save(ctx context.Context, q Question, lessonProgressID int, answe
 		if err != nil {
 			return oops.Wrapf(err, "find or create assistant chat")
 		}
+		chatID = chat.ID
 
 		if err := db.AiMessage.Create().
 			SetAiChatID(chat.ID).
@@ -295,20 +307,38 @@ func (c *Chat) save(ctx context.Context, q Question, lessonProgressID int, answe
 			Exec(ctx); err != nil {
 			return oops.Wrapf(err, "store assistant question")
 		}
-		if err := db.AiMessage.Create().
-			SetAiChatID(chat.ID).
-			SetRole(RoleAssistant).
-			SetContent(answer).
-			SetInputTokens(usage.InputTokens).
-			SetOutputTokens(usage.OutputTokens).
-			Exec(ctx); err != nil {
-			return oops.Wrapf(err, "store assistant answer")
-		}
 		return oops.Wrapf(
 			db.User.UpdateOneID(q.UserID).AddAssistantMessagesCount(1).Exec(ctx),
 			"count assistant question",
 		)
 	})
+	return chatID, err
+}
+
+// saveAnswer records a completed answer with its token usage.
+func (c *Chat) saveAnswer(ctx context.Context, chatID int, answer string, usage Usage) error {
+	return oops.Wrapf(
+		c.db.AiMessage.Create().
+			SetAiChatID(chatID).
+			SetRole(RoleAssistant).
+			SetContent(answer).
+			SetInputTokens(usage.InputTokens).
+			SetOutputTokens(usage.OutputTokens).
+			Exec(ctx),
+		"store assistant answer",
+	)
+}
+
+// conversation selects a chat's user and assistant turns, oldest first. The
+// table also holds RubyLLM's system and tool rows, which are not the
+// conversation.
+func (c *Chat) conversation(chat predicate.AiChat) *ent.AiMessageQuery {
+	return c.db.AiMessage.Query().
+		Where(
+			aimessage.RoleIn(RoleUser, RoleAssistant),
+			aimessage.HasChatWith(chat),
+		).
+		Order(ent.Asc(aimessage.FieldID))
 }
 
 // askedToday counts the learner's questions since the start of the UTC day —

@@ -239,6 +239,28 @@ func TestAskAssistantReportsAModelFailureBeforeStreaming(t *testing.T) {
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 }
 
+// Once the answer has begun the question is spent, even if the answer never
+// completes: otherwise cutting the connection just before the end would be a
+// way round the quota. The broken answer itself is not stored.
+func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	lesson := lessonBySlug(t, h, secondLessonSlug)
+	h.Assistant.Deltas = []string{"Declare it "}
+	h.Assistant.ErrAfter = io.ErrUnexpectedEOF
+
+	_, _ = h.Client.CreateAssistantMessage(ctx,
+		&api.AssistantMessageInput{Message: "How do I declare a variable?"},
+		api.CreateAssistantMessageParams{LessonId: int32(lesson.ID)},
+	)
+
+	chat := chatFor(t, h, lesson)
+	stored := h.DB.AiMessage.Query().Where(aimessage.AiChatID(chat.ID)).AllX(ctx)
+	require.Len(t, stored, 1)
+	assert.Equal(t, "user", stored[0].Role)
+	assert.Equal(t, "How do I declare a variable?", *stored[0].Content)
+}
+
 // The chat is a signed-in feature: a visitor is refused by the contract.
 func TestAskAssistantRequiresASignedInLearner(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)

@@ -91,11 +91,7 @@ func (t *Translator) Locale(ctx context.Context) string {
 // not pass through Middleware intentionally fall back to English, which keeps
 // direct handler tests and non-HTTP callers deterministic.
 func (t *Translator) Text(ctx context.Context, message Message) string {
-	localizer, ok := ctx.Value(localizerContextKey{}).(*i18n.Localizer)
-	if !ok {
-		localizer = i18n.NewLocalizer(t.bundle, language.English.String())
-	}
-	return localize(localizer, message, nil)
+	return t.TextWith(ctx, message, nil)
 }
 
 // TextWith translates a message whose text is a template over data, for the

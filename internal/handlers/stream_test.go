@@ -77,3 +77,27 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 	require.NoError(t, err)
 	assert.Equal(t, "second\n", string(rest))
 }
+
+// A failure after the answer has begun cannot change the status any more, and
+// must not read as a finished answer either: the error document the generated
+// server would append is dropped and the connection is cut, so the client sees
+// a broken stream rather than a short answer with JSON glued to it.
+func TestStreamResponsesAbortsOnAFailureAfterTheBodyStarted(t *testing.T) {
+	inner := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = io.WriteString(w, "partial ")
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = io.WriteString(w, `{"status":500}`)
+	})
+	server := httptest.NewServer(handlers.StreamResponses(inner))
+	t.Cleanup(server.Close)
+
+	res, err := http.Get(server.URL)
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = res.Body.Close() })
+	assert.Equal(t, http.StatusOK, res.StatusCode)
+
+	body, err := io.ReadAll(res.Body)
+	require.Error(t, err, "the stream is cut, not ended")
+	assert.Equal(t, "partial ", string(body))
+}

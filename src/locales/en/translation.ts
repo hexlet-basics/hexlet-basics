@@ -1092,7 +1092,7 @@ export default {
             "The editor suggests commands as you type. Press Tab to accept a suggestion and use the ↑ and ↓ keys to move through the list.",
           breadcrumb: "breadcrumb",
           chat: {
-            community: "Живые люди",
+            community: "Ask the community",
             disabled_html:
               "You have reached today's message limit, so the chat is paused until tomorrow. Our <a>Telegram community</a> is around the clock, come join :)",
             guest:
