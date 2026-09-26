@@ -295,10 +295,17 @@ type Invoker interface {
 	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error)
 	// AdminSetBlogPostRelatedCourses invokes adminSetBlogPostRelatedCourses operation.
 	//
-	// Set the related/promoted courses for a post.
+	// Set the related/promoted courses for a post by hand.
 	//
 	// POST /api/admin/blog_posts/{id}/related_courses
 	AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
+	// AdminSuggestBlogPostRelatedCourses invokes adminSuggestBlogPostRelatedCourses operation.
+	//
+	// Enqueue the AI pick of the post's related courses (legacy FindRelatedCoursesForBlogPostJob); the job
+	// replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
+	//
+	// POST /api/admin/blog_posts/{id}/suggest_related_courses
+	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
 	// AdminUpdateBanner invokes adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.
@@ -8535,7 +8542,7 @@ func (c *Client) sendAdminSearchUsers(ctx context.Context, params AdminSearchUse
 
 // AdminSetBlogPostRelatedCourses invokes adminSetBlogPostRelatedCourses operation.
 //
-// Set the related/promoted courses for a post.
+// Set the related/promoted courses for a post by hand.
 //
 // POST /api/admin/blog_posts/{id}/related_courses
 func (c *Client) AdminSetBlogPostRelatedCourses(ctx context.Context, request *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error) {
@@ -8672,6 +8679,150 @@ func (c *Client) sendAdminSetBlogPostRelatedCourses(ctx context.Context, request
 
 	stage = "DecodeResponse"
 	result, err := decodeAdminSetBlogPostRelatedCoursesResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// AdminSuggestBlogPostRelatedCourses invokes adminSuggestBlogPostRelatedCourses operation.
+//
+// Enqueue the AI pick of the post's related courses (legacy FindRelatedCoursesForBlogPostJob); the job
+// replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
+//
+// POST /api/admin/blog_posts/{id}/suggest_related_courses
+func (c *Client) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error) {
+	res, err := c.sendAdminSuggestBlogPostRelatedCourses(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendAdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (res AdminSuggestBlogPostRelatedCoursesRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("adminSuggestBlogPostRelatedCourses"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.URLTemplateKey.String("/api/admin/blog_posts/{id}/suggest_related_courses"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, AdminSuggestBlogPostRelatedCoursesOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/admin/blog_posts/"
+	{
+		// Encode "id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.Int32ToString(params.ID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/suggest_related_courses"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:AdminSession"
+			switch err := c.securityAdminSession(ctx, AdminSuggestBlogPostRelatedCoursesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"AdminSession\"")
+			}
+		}
+		{
+			stage = "Security:XsrfToken"
+			switch err := c.securityXsrfToken(ctx, AdminSuggestBlogPostRelatedCoursesOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 1
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"XsrfToken\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000011},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeAdminSuggestBlogPostRelatedCoursesResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

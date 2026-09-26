@@ -26,6 +26,7 @@ import (
 	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
@@ -208,6 +209,7 @@ var serverPackage = do.Package(
 			cfg,
 			starter,
 			reviews,
+			relatedcourses.NewEnqueuer(riverClient),
 			accountemails.NewEnqueuer(riverClient),
 			tracker,
 			assets,

@@ -73,6 +73,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		enqueuer,
 		enqueuer,
 		enqueuer,
+		enqueuer,
 		progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
 		assets,
 		testsupport.NewRecordingRegistrar(db),

@@ -59,6 +59,7 @@ func TestQueueBackbone(t *testing.T) {
 		nil,
 		nil,
 		nil,
+		nil,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
 		jobs.NewErrorHandler(sentryClient),
 		tracerProvider,

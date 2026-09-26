@@ -274,10 +274,17 @@ type Handler interface {
 	AdminSearchUsers(ctx context.Context, params AdminSearchUsersParams) (AdminSearchUsersRes, error)
 	// AdminSetBlogPostRelatedCourses implements adminSetBlogPostRelatedCourses operation.
 	//
-	// Set the related/promoted courses for a post.
+	// Set the related/promoted courses for a post by hand.
 	//
 	// POST /api/admin/blog_posts/{id}/related_courses
 	AdminSetBlogPostRelatedCourses(ctx context.Context, req *BlogPostRelatedCoursesInput, params AdminSetBlogPostRelatedCoursesParams) (AdminSetBlogPostRelatedCoursesRes, error)
+	// AdminSuggestBlogPostRelatedCourses implements adminSuggestBlogPostRelatedCourses operation.
+	//
+	// Enqueue the AI pick of the post's related courses (legacy FindRelatedCoursesForBlogPostJob); the job
+	// replaces the set when done. A missing id surfaces as 404 via the central ent-error handler.
+	//
+	// POST /api/admin/blog_posts/{id}/suggest_related_courses
+	AdminSuggestBlogPostRelatedCourses(ctx context.Context, params AdminSuggestBlogPostRelatedCoursesParams) (AdminSuggestBlogPostRelatedCoursesRes, error)
 	// AdminUpdateBanner implements adminUpdateBanner operation.
 	//
 	// Update a banner. A missing id surfaces as 404 via the central handler.

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/samber/lo"
-	"golang.org/x/net/html"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/activestorageattachment"
@@ -14,10 +13,12 @@ import (
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/htmltext"
+	"hexletbasics/internal/relatedcourses"
 )
 
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
-// set action. `rich_body` is trusted editor HTML stored and returned exactly as
+// actions (a hand-picked set and the AI suggestion job). `rich_body` is trusted editor HTML stored and returned exactly as
 // given (no ActionText compatibility layer). The cover remains the single
 // ActiveStorage blob served through `/api/storage/{key}` on read; the input's
 // coverAttachmentId is deferred until blob covers land (same deferral as the
@@ -144,10 +145,10 @@ func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDelete
 }
 
 // AdminSetBlogPostRelatedCourses replaces the post's promoted-courses set with
-// the submitted ids, keeping their order as the display order and the counter
-// column in sync. Deliberate divergence from legacy (which enqueued an AI
-// "find related courses" job): the contract makes the selection explicit. An
-// unknown course id fails the FK constraint, surfaced as 409 centrally.
+// the submitted ids, keeping their order as the display order. Legacy had no
+// hand-picked set (only the AI job below), so this is an addition, sharing the
+// job's replace step. An unknown course id fails the FK constraint, surfaced
+// as 409 centrally.
 func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.BlogPostRelatedCoursesInput, params api.AdminSetBlogPostRelatedCoursesParams) (api.AdminSetBlogPostRelatedCoursesRes, error) {
 	id := int(params.ID)
 
@@ -156,30 +157,29 @@ func (s *Server) AdminSetBlogPostRelatedCourses(ctx context.Context, req *api.Bl
 		return nil, err
 	}
 
-	if _, err := s.db.BlogPostRelatedCourseItem.Delete().
-		Where(blogpostrelatedcourseitem.BlogPostID(id)).Exec(ctx); err != nil {
-		return nil, err
-	}
-
-	courseIDs := lo.Uniq(req.CourseIds)
-	builders := make([]*ent.BlogPostRelatedCourseItemCreate, len(courseIDs))
-	for i, courseID := range courseIDs {
-		builders[i] = s.db.BlogPostRelatedCourseItem.Create().
-			SetBlogPostID(id).
-			SetCourseID(int(courseID)).
-			SetOrder(i)
-	}
-	if _, err := s.db.BlogPostRelatedCourseItem.CreateBulk(builders...).Save(ctx); err != nil {
-		return nil, err
-	}
-
-	if err := s.db.BlogPost.UpdateOneID(id).
-		SetRelatedCourseItemsCount(len(courseIDs)).
-		Exec(ctx); err != nil {
+	courseIDs := lo.Map(req.CourseIds, func(courseID int32, _ int) int { return int(courseID) })
+	if err := relatedcourses.Replace(ctx, s.db, id, courseIDs); err != nil {
 		return nil, err
 	}
 
 	return s.getAdminBlogPost(ctx, id)
+}
+
+// AdminSuggestBlogPostRelatedCourses enqueues the AI pick of the post's related
+// courses (legacy `related_courses` member action → FindRelatedCoursesForBlogPostJob).
+// The worker replaces the set asynchronously, so the answer carries no post; a
+// missing id surfaces as ent not-found, which the central handler maps to 404.
+func (s *Server) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params api.AdminSuggestBlogPostRelatedCoursesParams) (api.AdminSuggestBlogPostRelatedCoursesRes, error) {
+	id := int(params.ID)
+
+	if _, err := s.db.BlogPost.Query().Where(blogpost.IDEQ(id)).Only(ctx); err != nil {
+		return nil, err
+	}
+
+	if err := s.relatedCourses.EnqueueRelatedCoursesSuggestion(ctx, id); err != nil {
+		return nil, err
+	}
+	return &api.AdminSuggestBlogPostRelatedCoursesNoContent{}, nil
 }
 
 // blogPostsToAPI assembles the read model for a set of posts. The cover and like
@@ -349,16 +349,6 @@ func (s *Server) blogPostURL(slug, locale *string) string {
 // no-op. That means it is floor division, not round-up: a <260-word post reads as
 // 0. We reproduce that with integer division (not math.Ceil) on purpose.
 func readingTime(richBodyHTML string) int32 {
-	tokenizer := html.NewTokenizer(strings.NewReader(richBodyHTML))
-	var plain strings.Builder
-	for {
-		switch tokenizer.Next() {
-		case html.TextToken:
-			plain.Write(tokenizer.Text())
-			plain.WriteByte(' ')
-		case html.ErrorToken:
-			words := len(strings.Fields(plain.String()))
-			return int32(words / wordsPerMinute)
-		}
-	}
+	words := len(strings.Fields(htmltext.PlainText(richBodyHTML)))
+	return int32(words / wordsPerMinute)
 }

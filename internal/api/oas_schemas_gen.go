@@ -544,6 +544,19 @@ type AdminSetBlogPostRelatedCoursesUnauthorized ProblemDetails
 
 func (*AdminSetBlogPostRelatedCoursesUnauthorized) adminSetBlogPostRelatedCoursesRes() {}
 
+type AdminSuggestBlogPostRelatedCoursesForbidden ProblemDetails
+
+func (*AdminSuggestBlogPostRelatedCoursesForbidden) adminSuggestBlogPostRelatedCoursesRes() {}
+
+// AdminSuggestBlogPostRelatedCoursesNoContent is response for AdminSuggestBlogPostRelatedCourses operation.
+type AdminSuggestBlogPostRelatedCoursesNoContent struct{}
+
+func (*AdminSuggestBlogPostRelatedCoursesNoContent) adminSuggestBlogPostRelatedCoursesRes() {}
+
+type AdminSuggestBlogPostRelatedCoursesUnauthorized ProblemDetails
+
+func (*AdminSuggestBlogPostRelatedCoursesUnauthorized) adminSuggestBlogPostRelatedCoursesRes() {}
+
 type AdminUpdateBannerForbidden ProblemDetails
 
 func (*AdminUpdateBannerForbidden) adminUpdateBannerRes() {}

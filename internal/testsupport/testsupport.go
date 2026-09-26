@@ -201,7 +201,7 @@ func NewHarness(t *testing.T) *Harness {
 	// The real lead recorder too: a lead test asserts the stored row and the
 	// published fact, and both go through the test's transaction.
 	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar,
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, enqueuer, tracker, assets, registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
 		accounts.NewRemover(transactor), eventPublisher, leadRecorder,
@@ -499,7 +499,8 @@ func (r *RecordingRegistrar) Register(
 }
 
 // RecordingEnqueuer is a test adapter for the handlers' job seams
-// (VersionBuildStarter, LessonReviewEnqueuer). It performs the visible DB
+// (VersionBuildStarter, LessonReviewEnqueuer, RelatedCoursesSuggestionEnqueuer,
+// AccountEmailEnqueuer). It performs the visible DB
 // writes through the harness's rollback-only ent client and records the job
 // args without touching River.
 type RecordingEnqueuer struct {
@@ -512,6 +513,12 @@ func (e *RecordingEnqueuer) EnqueueLessonReviews(_ context.Context, lessonInfoID
 	for _, id := range lessonInfoIDs {
 		e.Inserted = append(e.Inserted, jobs.ReviewLessonArgs{LessonInfoID: id})
 	}
+	return nil
+}
+
+// EnqueueRelatedCoursesSuggestion records the post's suggestion job.
+func (e *RecordingEnqueuer) EnqueueRelatedCoursesSuggestion(_ context.Context, blogPostID int) error {
+	e.Inserted = append(e.Inserted, jobs.SuggestRelatedCoursesArgs{BlogPostID: blogPostID})
 	return nil
 }
 
