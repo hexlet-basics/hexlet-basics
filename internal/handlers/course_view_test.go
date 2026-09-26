@@ -99,6 +99,52 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	assert.False(t, progress.Lessons[1].Available)
 }
 
+// The learning program: the current version's modules in the request locale,
+// in the order the version gives them — not by id, which the fixtures set to
+// disagree — each naming its lessons in course order.
+func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsCourseSlug})
+	require.NoError(t, err)
+	view, ok := res.(*api.CourseView)
+	require.True(t, ok, "got %T", res)
+
+	names := make([]string, 0, len(view.Modules))
+	for _, m := range view.Modules {
+		names = append(names, m.Name.Value)
+	}
+	assert.Equal(t, []string{"Основы", "Арифметика", "Строки"}, names,
+		"ru translations only, ordered by the module version's order")
+
+	require.NotEmpty(t, view.Modules)
+	assert.Equal(t, []string{firstLessonSlug, secondLessonSlug, thirdLessonSlug}, view.Modules[0].LessonSlugs,
+		"a module's lessons in course order")
+	assert.Empty(t, view.Modules[1].LessonSlugs)
+}
+
+// The landing page's questions and answers travel with the course, oldest
+// first, and only the course's own.
+func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+
+	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: "go"})
+	require.NoError(t, err)
+	view, ok := res.(*api.CourseView)
+	require.True(t, ok, "got %T", res)
+
+	questions := make([]string, 0, len(view.QnaItems))
+	for _, item := range view.QnaItems {
+		questions = append(questions, item.Question)
+	}
+	assert.Equal(t, []string{"Сколько длится курс Go?", "Есть ли сертификат?"}, questions)
+
+	res, err = h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsCourseSlug})
+	require.NoError(t, err)
+	assert.Empty(t, res.(*api.CourseView).QnaItems, "a landing page with no questions has none")
+}
+
 // A guest carrying a cookie gets exactly the shape a signed-in learner gets,
 // derived from the one lesson the cookie names: everything before it is
 // finished, the next one is open.

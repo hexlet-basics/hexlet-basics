@@ -92,6 +92,8 @@ function courseView(state: EnrollmentState | null): CourseView {
     course,
     landingPage,
     lessons: [{ id: 1001, name: "Hello, World!", description: null, slug: "hello-world" }],
+    modules: [],
+    qnaItems: [],
     enrollment: state
       ? {
           id: 5,
@@ -166,6 +168,7 @@ test("a guest is sent to sign in first", async () => {
 });
 
 test("the course page carries the legacy warning", async () => {
+  serveCourse(courseView("started"));
   await renderRoute(courseRoute, {
     path: "/{-$locale}/languages/$slug",
     initialPath: "/ru/languages/javascript?unfinished=true",

@@ -214,6 +214,17 @@ export const zCourseLessonReviewPage = z.object({
 });
 
 /**
+ * A module of a course version in one locale (legacy:
+ * `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
+ */
+export const zCourseModuleListItem = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string().nullable(),
+  description: z.string().nullable(),
+  lessonSlugs: z.array(z.string())
+});
+
+/**
  * Publication/readiness state of a course.
  */
 export const zCourseReadiness = z.enum([
@@ -236,6 +247,7 @@ export const zCourseInput = z.object({
  */
 export const zCourseVersion = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string().nullable(),
   result: z.string().nullable(),
   state: z.string().nullable(),
   createdAt: z.iso.datetime()
@@ -574,17 +586,6 @@ export const zEnrollment = z.object({
 });
 
 /**
- * Everything the public course landing needs in one payload.
- */
-export const zCourseView = z.object({
-  course: zCourse,
-  landingPage: zCourseLandingPage.nullable(),
-  lessons: z.array(zCourseLessonListItem),
-  enrollment: zEnrollment.nullable(),
-  progress: zCourseProgress.nullable()
-});
-
-/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -680,6 +681,19 @@ export const zCourseCategoryView = z.object({
   category: zCourseCategory,
   landingPages: z.array(zCourseCatalogItem),
   qnaItems: z.array(zQnaItem)
+});
+
+/**
+ * Everything the public course landing needs in one payload.
+ */
+export const zCourseView = z.object({
+  course: zCourse,
+  landingPage: zCourseLandingPage.nullable(),
+  lessons: z.array(zCourseLessonListItem),
+  modules: z.array(zCourseModuleListItem),
+  qnaItems: z.array(zQnaItem),
+  enrollment: zEnrollment.nullable(),
+  progress: zCourseProgress.nullable()
 });
 
 export const zQnaItemInput = z.object({

@@ -1,6 +1,20 @@
 import { CodeHighlightAdapterProvider } from "@mantine/code-highlight";
-import { Center, Loader, ScrollArea, Splitter, Tabs, Text } from "@mantine/core";
-import { type SplitterPaneSize, useLocalStorage } from "@mantine/hooks";
+import {
+  Burger,
+  Center,
+  Loader,
+  ScrollArea,
+  Splitter,
+  Tabs,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
+import {
+  type SplitterPaneSize,
+  useDisclosure,
+  useLocalStorage,
+  useMediaQuery,
+} from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,8 +32,10 @@ import shikiAdapter from "@/lib/shiki";
 // The assistant sits beside the editor rather than in its tabs, so the code
 // stays in view while the learner asks about it.
 //
-// The workspace's output and reference-solution panes arrive with their own
-// tickets; what is here is the editor a learner writes their solution in.
+// On a phone the two panes cannot sit side by side, so one fills the screen at a
+// time and a burger in each pane's tab strip swaps which — legacy's mechanism.
+// Only the pane widths change; nothing unmounts, so a swap costs the learner
+// nothing they have typed.
 export default function LessonPage({
   courseSlug,
   lessonSlug,
@@ -44,6 +60,18 @@ export default function LessonPage({
     defaultValue: ["40%", "60%"],
   });
 
+  // Read in an effect with a desktop default, for the same reason as the sizes
+  // above: the server renders the desktop split, and a phone moves to its
+  // one-pane layout once it has hydrated.
+  const theme = useMantineTheme();
+  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.sm})`, true, {
+    getInitialValueInEffect: true,
+  });
+  // Whether a phone shows the theory pane rather than the workspace. The
+  // workspace comes first, as in legacy: it is where the learner acts, and its
+  // own theory tab keeps the reading one tap away.
+  const [theoryOpened, { toggle: togglePanes }] = useDisclosure(false);
+
   // The outcome of the last check: the workspace renders it, the assistant is
   // asked about it.
   const [result, setResult] = useState<LessonCheckingResponse | null>(null);
@@ -60,12 +88,41 @@ export default function LessonPage({
     return <LessonMissing />;
   }
 
+  const phoneSizes: SplitterPaneSize[] = theoryOpened ? ["100%", "0%"] : ["0%", "100%"];
+  const sizes = isDesktop ? paneSizes : phoneSizes;
+
+  const burger = (
+    <PaneBurger
+      opened={theoryOpened}
+      onToggle={togglePanes}
+      label={t(($) => $.courses.lessons.show.navigation)}
+    />
+  );
+
   return (
     <CodeHighlightAdapterProvider adapter={shikiAdapter}>
-      <Splitter h="100%" sizes={paneSizes} onSizeChange={setPaneSizes} withHandle>
-        <Splitter.Pane defaultSize={paneSizes[0]} min="25%">
+      {/* On a phone the burger drives the panes, not a drag: the handle loses
+          its thumb and its line, and any size change it reports is dropped, so
+          the controlled sizes stay where the burger put them. */}
+      <Splitter
+        h="100%"
+        sizes={sizes}
+        onSizeChange={(next) => {
+          if (isDesktop) setPaneSizes(next);
+        }}
+        withHandle={isDesktop}
+        lineSize={isDesktop ? undefined : 0}
+      >
+        {/* The pane a phone has folded away is `inert`: still mounted, but out
+            of the tab order and the accessibility tree, as it is out of sight. */}
+        <Splitter.Pane
+          defaultSize={sizes[0]}
+          min={isDesktop ? "25%" : "0%"}
+          inert={!isDesktop && !theoryOpened}
+        >
           <Tabs defaultValue="lesson" h="100%" display="flex" style={{ flexDirection: "column" }}>
             <Tabs.List grow>
+              {burger}
               <Tabs.Tab value="lesson">{t(($) => $.courses.lessons.show.lesson)}</Tabs.Tab>
               <Tabs.Tab value="assistant">{t(($) => $.courses.lessons.show.assistant)}</Tabs.Tab>
               <Tabs.Tab value="navigation">{t(($) => $.courses.lessons.show.navigation)}</Tabs.Tab>
@@ -91,11 +148,42 @@ export default function LessonPage({
           </Tabs>
         </Splitter.Pane>
 
-        <Splitter.Pane defaultSize={paneSizes[1]}>
-          <LessonWorkspace view={data} result={result} setResult={setResult} />
+        <Splitter.Pane defaultSize={sizes[1]} inert={!isDesktop && theoryOpened}>
+          <LessonWorkspace
+            view={data}
+            phone={!isDesktop}
+            burger={burger}
+            result={result}
+            setResult={setResult}
+          />
         </Splitter.Pane>
       </Splitter>
     </CodeHighlightAdapterProvider>
+  );
+}
+
+// The pane switch a phone gets in place of the divider, at the head of each
+// pane's tab strip. Hidden from `sm` up by CSS rather than by the media query, so
+// a desktop never paints it, not even before hydration.
+function PaneBurger({
+  opened,
+  onToggle,
+  label,
+}: {
+  opened: boolean;
+  onToggle: () => void;
+  label: string;
+}) {
+  return (
+    <Burger
+      opened={opened}
+      onClick={onToggle}
+      hiddenFrom="sm"
+      size="sm"
+      aria-label={label}
+      mx="xs"
+      style={{ flexGrow: 0, alignSelf: "center" }}
+    />
   );
 }
 

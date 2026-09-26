@@ -102,3 +102,13 @@ export function getEditorSettings(courseSlug: string): EditorSettings {
     insertSpaces: spacesBySlug[courseSlug] ?? false,
   };
 }
+
+// The courses whose exercise is markup rather than a program, so the learner
+// watches what they build instead of waiting for a run to show it. Legacy keeps
+// the same list in code (`neededPreview`) and the payload carries no flag for
+// it, so it stays a property of the course slug like everything above.
+const previewedSlugs = new Set(["css", "html", "layout-designer"]);
+
+export function hasPreview(courseSlug: string): boolean {
+  return previewedSlugs.has(courseSlug);
+}

@@ -1139,7 +1139,7 @@ export default {
           discuss: "AI Assistent",
           editor: "Editor",
           editor_aria_label: "Code editor",
-          finish: "Завершить",
+          finish: "Finish",
           finished: "Finished",
           hint_close: "Dismiss",
           if_stuck_html:
@@ -1156,12 +1156,15 @@ export default {
           please_sign_in:
             "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
           prev: "← Previous",
+          preview: {
+            title: "Preview",
+          },
           profession_description: "Коммерческий опыт и Трудоустройство",
           separator: " ",
           show_full_version: "Реактор кода доступен в основной версии →",
           sign_in: "Sign In",
           sign_up_for_tracking_progress_html:
-            'Be sure to <a href="{{link}}" class="text-decoration-none" target="_blank">register</a> to ensure you don\'t lose the results you\'ve achieved\n',
+            "Be sure to <a>register</a> to ensure you don't lose the results you've achieved",
           solution: "Solution",
           source_code: "Lesson source on GitHub",
           tests: "Tests",
@@ -1199,6 +1202,9 @@ export default {
         lessons: "{{lessons_count}} with practice in the browser",
         more_than_support: "More than Support",
         no_registration: "Registration is not required",
+        progress: {
+          completion: "Completed {{completion}}%",
+        },
         ready: "Are you ready?",
         real_life_challenges:
           "You don't need to install anything - all tasks are performed right in your browser. Built-in code editor, console and automatic tests make learning comfortable. And if something fails, you can always see the teacher's solution",

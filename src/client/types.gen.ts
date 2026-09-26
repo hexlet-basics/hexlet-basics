@@ -536,6 +536,23 @@ export type CourseLessonView = {
 };
 
 /**
+ * A module of a course version in one locale (legacy:
+ * `Language::Module::Version::Info`, as `Language::ModuleResource` served it).
+ */
+export type CourseModuleListItem = {
+  /**
+   * The module's stable id, as legacy's resource exposed it.
+   */
+  id: number;
+  name: string | null;
+  description: string | null;
+  /**
+   * The module's lessons in this version, in course order, by slug.
+   */
+  lessonSlugs: Array<string>;
+};
+
+/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -589,6 +606,11 @@ export type CourseReadiness = 'completed' | 'in_development' | 'draft';
  */
 export type CourseVersion = {
   id: number;
+  /**
+   * The name the course's spec gives this build (e.g. "JavaScript"). Legacy's
+   * lesson page opens its meta description with it, in brackets.
+   */
+  name: string | null;
   result: string | null;
   state: string | null;
   createdAt: string;
@@ -601,6 +623,18 @@ export type CourseView = {
   course: Course;
   landingPage: CourseLandingPage | null;
   lessons: Array<CourseLessonListItem>;
+  /**
+   * The modules of the course's current version in the request locale, in
+   * course order — the learning program's accordion. Each names its lessons by
+   * slug, joined to `lessons` for names, so the flat list stays the one source
+   * of lesson rows the page and the player share.
+   */
+  modules: Array<CourseModuleListItem>;
+  /**
+   * The landing page's questions and answers, oldest first; empty without a
+   *       landing page.
+   */
+  qnaItems: Array<QnaItem>;
   /**
    * The current user's enrollment, when signed in.
    */

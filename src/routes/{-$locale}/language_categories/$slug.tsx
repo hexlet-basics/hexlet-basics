@@ -1,4 +1,4 @@
-import { Box, Card, Center, Container, Grid, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Card, Center, Container, Grid, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
@@ -7,7 +7,7 @@ import { getPublicCourseCategoryOptions } from "@/client/@tanstack/react-query.g
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import CourseBlock from "@/components/CourseBlock";
 import LeadFormBlock from "@/components/LeadFormBlock";
-import MarkdownViewer from "@/components/MarkdownViewer";
+import QnaBlock from "@/components/QnaBlock";
 import { TextLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
@@ -96,21 +96,7 @@ function Show() {
         </Grid>
       )}
 
-      {qnaItems.length > 0 && (
-        <Stack py="xl">
-          <Title order={2}>{t(($) => $.courses.show.sort_questions)}</Title>
-          <SimpleGrid cols={{ base: 1, xs: 2 }}>
-            {qnaItems.map((item) => (
-              <Box key={item.id}>
-                <Text size="lg" fw="bold">
-                  {item.question}
-                </Text>
-                <MarkdownViewer>{item.answer}</MarkdownViewer>
-              </Box>
-            ))}
-          </SimpleGrid>
-        </Stack>
-      )}
+      <QnaBlock items={qnaItems} />
     </Container>
   );
 }

@@ -804,11 +804,14 @@ export default interface Resources {
           output: "Вывод";
           please_sign_in: "Пожалуйста, авторизуйтесь, это необходимо для отслеживания прогресса выполнения уроков. Если у вас ещё нет учётной записи, то сейчас самое время создать аккаунт.";
           prev: "← Предыдущий";
+          preview: {
+            title: "Предпросмотр";
+          };
           profession_description: "Коммерческий опыт и Трудоустройство";
           separator: " — ";
           show_full_version: "Реактор кода доступен в основной версии →";
           sign_in: "Войти";
-          sign_up_for_tracking_progress_html: 'Чтобы не потерять достигнутые результаты, обязательно <a href="{{link}}" class="text-decoration-none" target="_blank">зарегистрируйтесь</a>\n';
+          sign_up_for_tracking_progress_html: "Чтобы не потерять достигнутые результаты, обязательно <a>зарегистрируйтесь</a>";
           solution: "Решение";
           source_code: "Исходный код урока на GitHub";
           tests: "Тесты";
@@ -842,6 +845,9 @@ export default interface Resources {
         lessons: "{{lessons_count}} с практикой в браузере";
         more_than_support: "Больше чем Поддержка";
         no_registration: "Регистрация не требуется";
+        progress: {
+          completion: "Пройдено {{completion}}%";
+        };
         ready: "Готовы попробовать?";
         real_life_challenges: "Вам не нужно ничего устанавливать — все задания выполняются прямо в браузере. Встроенный редактор кода, консоль и автоматические тесты делают обучение комфортным. А если что-то не получается, всегда можно посмотреть решение учителя";
         registration: "Зарегистрироваться";
