@@ -102,6 +102,13 @@ enum PermissionResource {
 /** A build/version of a course's exercises (legacy `LanguageVersion`). */
 model CourseVersion {
   id: int32;
+
+  /**
+   * The name the course's spec gives this build (e.g. "JavaScript"). Legacy's
+   * lesson page opens its meta description with it, in brackets.
+   */
+  name: string | null;
+
   result: string | null;
   state: string | null;
   createdAt: utcDateTime;

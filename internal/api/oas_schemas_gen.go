@@ -3531,7 +3531,10 @@ func (s *CourseReadiness) UnmarshalText(data []byte) error {
 // A build/version of a course's exercises (legacy `LanguageVersion`).
 // Ref: #/components/schemas/CourseVersion
 type CourseVersion struct {
-	ID        int32     `json:"id"`
+	ID int32 `json:"id"`
+	// The name the course's spec gives this build (e.g. "JavaScript"). Legacy's lesson page opens its meta
+	// description with it, in brackets.
+	Name      NilString `json:"name"`
 	Result    NilString `json:"result"`
 	State     NilString `json:"state"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -3540,6 +3543,11 @@ type CourseVersion struct {
 // GetID returns the value of ID.
 func (s *CourseVersion) GetID() int32 {
 	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CourseVersion) GetName() NilString {
+	return s.Name
 }
 
 // GetResult returns the value of Result.
@@ -3560,6 +3568,11 @@ func (s *CourseVersion) GetCreatedAt() time.Time {
 // SetID sets the value of ID.
 func (s *CourseVersion) SetID(val int32) {
 	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseVersion) SetName(val NilString) {
+	s.Name = val
 }
 
 // SetResult sets the value of Result.

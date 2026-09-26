@@ -25,6 +25,7 @@ import codeIllustration from "@/assets/code.svg";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import LessonMark from "@/components/lesson/LessonMark";
 import { NavLink } from "@/components/RouterLink";
+import { seoHead } from "@/lib/seo-head";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
 // current lessons, and one button that puts the learner in it.
@@ -42,6 +43,36 @@ import { NavLink } from "@/components/RouterLink";
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(getCourseOptions({ path: { slug: params.slug } })),
+  // Legacy languages#show meta: the landing page's meta title and description,
+  // the canonical link, the social block with the course cover, and Open Graph
+  // typed as a website in the page's locale.
+  //
+  // og:url is the canonical. Legacy built it from the landing page's slug, the
+  // slug it resolved the page by; this page is resolved by the course's slug,
+  // which is also what legacy's canonical used, so the page's own URL is both.
+  head: ({ loaderData, match }) => {
+    if (!loaderData) return {};
+    const { i18n } = match.context;
+    const { course, landingPage } = loaderData;
+    const image = course.coverListVariant;
+    const head = seoHead({
+      i18n,
+      title: landingPage?.metaTitle ?? course.name ?? course.slug,
+      description: landingPage?.metaDescription ?? "",
+      canonicalPath: match.pathname,
+      image,
+    });
+    const url = head.links[0]?.href;
+    return {
+      meta: [
+        ...head.meta,
+        { property: "og:type", content: "website" },
+        { property: "og:locale", content: i18n.language },
+        ...(url ? [{ property: "og:url", content: url }] : []),
+      ],
+      links: [...head.links, ...(image ? [{ rel: "image_src", href: image }] : [])],
+    };
+  },
   component: Show,
 });
 

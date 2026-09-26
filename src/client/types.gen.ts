@@ -564,6 +564,11 @@ export type CourseReadiness = 'completed' | 'in_development' | 'draft';
  */
 export type CourseVersion = {
   id: number;
+  /**
+   * The name the course's spec gives this build (e.g. "JavaScript"). Legacy's
+   * lesson page opens its meta description with it, in brackets.
+   */
+  name: string | null;
   result: string | null;
   state: string | null;
   createdAt: string;

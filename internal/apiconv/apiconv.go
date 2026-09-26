@@ -545,7 +545,7 @@ func landingOutcomesImageNull(*ent.LandingPage) api.NilString {
 }
 
 // NilCourseVersionFromEnt bridges the current_version association to ogen's
-// NilCourseVersion. The four exposed fields are mapped inline: constructing the
+// NilCourseVersion. The exposed fields are mapped inline: constructing the
 // Nil wrapper is the irreducible part goverter cannot infer, so hand-mapping the
 // small CourseVersion body alongside it keeps the whole bridge in one place.
 func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
@@ -561,6 +561,7 @@ func NilCourseVersionFromEnt(v *ent.CourseVersion) api.NilCourseVersion {
 func CourseVersionFromEnt(v *ent.CourseVersion) api.CourseVersion {
 	return api.CourseVersion{
 		ID:        int32(v.ID),
+		Name:      NilStringFromPtr(v.Name),
 		Result:    NilStringFromPtr(v.Result),
 		State:     NilStringFromPtr(v.State),
 		CreatedAt: v.CreatedAt,
