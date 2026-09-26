@@ -46,6 +46,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 		nil, // no upload runs through the auth router
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
+		nil, // no lead is submitted here
 		translator,
 		errorHandler,
 	)

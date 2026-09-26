@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 )
@@ -40,6 +41,8 @@ type Server struct {
 	// the upload operation only translates its outcome to the contract.
 	assets *assetstore.Store
 	auth   *AuthHandler
+	// leads stores a lead and raises LeadCreated in one transaction.
+	leads  leads.Creator
 	i18n   *localization.Translator
 	errors *APIErrorHandler
 }
@@ -55,6 +58,7 @@ func NewServer(
 	assets *assetstore.Store,
 	registrar accounts.UserRegistrar,
 	eventPublisher events.StandalonePublisher,
+	leadCreator leads.Creator,
 	translator *localization.Translator,
 	errorHandler *APIErrorHandler,
 ) *Server {
@@ -67,6 +71,7 @@ func NewServer(
 		progress: tracker,
 		assets:   assets,
 		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker, emails),
+		leads:    leadCreator,
 		i18n:     translator,
 		errors:   errorHandler,
 	}

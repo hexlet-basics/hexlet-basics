@@ -558,6 +558,8 @@ var (
 	// LeadsColumns holds the columns for the "leads" table.
 	LeadsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "email", Type: field.TypeString, Nullable: true},
 		{Name: "phone", Type: field.TypeString, Nullable: true},
@@ -565,7 +567,7 @@ var (
 		{Name: "telegram", Type: field.TypeString, Nullable: true},
 		{Name: "survey_answers_data", Type: field.TypeString, Nullable: true},
 		{Name: "courses_data", Type: field.TypeString, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
+		{Name: "ym_client_id", Type: field.TypeString, Nullable: true},
 	}
 	// LeadsTable holds the schema information for the "leads" table.
 	LeadsTable = &schema.Table{

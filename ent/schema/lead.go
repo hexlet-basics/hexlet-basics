@@ -6,17 +6,25 @@ import (
 )
 
 // Lead maps the legacy `leads` table (sales leads captured from the site). The
-// admin surface is read-only (list), so this schema maps only the columns the
-// list serializer reads; unmapped baseline columns (state, ahoy_visit_id,
-// ym_client_id, updated_at) are simply not selected — atlas owns the schema, so
-// omitting them here never drops anything. The table name already matches ent's
-// default plural of `Lead`, so no @Table annotation is needed.
+// public lead form writes it (createLead) and the admin list reads it.
+//
+// Two baseline columns stay unmapped on purpose: `ahoy_visit_id`, because ahoy
+// is not ported (ADR-0015) and the first-visit attribution travels in the
+// LeadCreated event instead, and `state`, which legacy never set on this path
+// and nothing reads. Atlas owns the schema, so omitting them drops nothing.
+// The table name already matches ent's default plural of `Lead`, so no @Table
+// annotation is needed.
 //
 // `full_name` is not a column: the legacy serializer derives it from the
-// associated user. Until the User schema lands, the converter returns it null
-// (contract-valid: `fullName: string | null`).
+// associated user.
 type Lead struct {
 	ent.Schema
+}
+
+// Mixin supplies Rails' application-side timestamps: both columns are NOT NULL
+// with no DB default, so ent must fill them on insert like ActiveRecord did.
+func (Lead) Mixin() []ent.Mixin {
+	return []ent.Mixin{TimestampsMixin{}}
 }
 
 func (Lead) Fields() []ent.Field {
@@ -29,7 +37,7 @@ func (Lead) Fields() []ent.Field {
 		field.String("telegram").Optional().Nillable(),
 		field.String("survey_answers_data").Optional().Nillable(),
 		field.String("courses_data").Optional().Nillable(),
-		// Rails-owned timestamp; immutable since admin never writes leads.
-		field.Time("created_at").Immutable(),
+		// The Metrika client id the form carried.
+		field.String("ym_client_id").Optional().Nillable(),
 	}
 }

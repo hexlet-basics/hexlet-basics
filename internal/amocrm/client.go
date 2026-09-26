@@ -8,6 +8,8 @@ import (
 	"io"
 	"mime"
 	"net/http"
+	"net/netip"
+	"net/url"
 	"strings"
 	"time"
 
@@ -103,6 +105,7 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 			customField{code: "PHONE", value: event.Phone},
 		),
 	}
+	landing := landingQuery(event.LandingPage)
 	lead := generated.LeadCreate{
 		Name:              generated.NewOptString(lo.CoalesceOrEmpty(lo.FromPtr(event.Email), "Lead from "+source)),
 		PipelineID:        generated.NewOptInt64(leadPipelineID),
@@ -113,8 +116,19 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 			customField{id: 316_917, code: "UTM_CAMPAIGN", value: event.UTMCampaign},
 			customField{id: 316_919, code: "UTM_SOURCE", value: event.UTMSource},
 			customField{id: 316_921, code: "UTM_TERM", value: event.UTMTerm},
+			customField{id: 316_923, code: "UTM_REFERRER", value: event.Referrer},
+			customField{id: 316_927, code: "REFERRER", value: event.Referrer},
+			customField{id: 316_937, code: "FROM", value: landing("from")},
 			customField{id: 316_941, code: "_YM_UID", value: event.YMClientID},
 			customField{id: 316_943, code: "_YM_COUNTER", value: lo.ToPtr(b.ymCounter)},
+			customField{id: 316_945, code: "GCLID", value: landing("gclid")},
+			// Legacy sent the Metrika client id here ahead of the landing
+			// page's yclid; kept as is, since amoCRM reports are built on it.
+			customField{id: 316_947, code: "YCLID", value: lo.CoalesceOrEmpty(event.YMClientID, landing("yclid"))},
+			customField{id: 316_949, code: "FBCLID", value: landing("fbclid")},
+			customField{id: 957_711, code: "GA_UTM", value: landing("ga_utm")},
+			// The source-form field has no code in amoCRM, only an id.
+			customField{id: 936_587, value: lo.ToPtr(source)},
 		),
 	}
 	return generated.UnsortedFormCreateItem{
@@ -123,13 +137,41 @@ func (b payloadBuilder) build(event events.LeadCreated) generated.UnsortedFormCr
 		Metadata: generated.FormMetadata{
 			FormID:     generated.NewOptFormMetadataFormID(generated.NewStringFormMetadataFormID(source)),
 			FormName:   generated.NewOptString(source),
+			FormPage:   optString(event.LandingPage),
 			FormSentAt: generated.NewOptInt64(event.OccurredAt.Unix()),
+			IP:         optString(ipv4(event.IP)),
+			Referer:    optString(event.Referrer),
 		},
 		Embedded: generated.NewOptUnsortedEmbeddedCreate(generated.UnsortedEmbeddedCreate{
 			Contacts: []generated.ContactCreate{contact},
 			Leads:    []generated.LeadCreate{lead},
 		}),
 	}
+}
+
+// landingQuery reads the click ids legacy parsed out of the landing page's
+// query string. A page that does not parse contributes nothing.
+func landingQuery(landingPage *string) func(key string) *string {
+	var query url.Values
+	if parsed, err := url.Parse(lo.FromPtr(landingPage)); err == nil {
+		query = parsed.Query()
+	}
+	return func(key string) *string {
+		value := query.Get(key)
+		if value == "" {
+			return nil
+		}
+		return &value
+	}
+}
+
+// ipv4 keeps only an IPv4 address: amoCRM rejects IPv6 in the form metadata.
+func ipv4(ip *string) *string {
+	addr, err := netip.ParseAddr(lo.FromPtr(ip))
+	if err != nil || !addr.Unmap().Is4() {
+		return nil
+	}
+	return lo.ToPtr(addr.Unmap().String())
 }
 
 type customField struct {
@@ -145,10 +187,12 @@ func customFields(fields ...customField) []generated.CustomFieldValue {
 			return generated.CustomFieldValue{}, false
 		}
 		field := generated.CustomFieldValue{
-			FieldCode: generated.NewOptString(input.code),
 			Values: []generated.CustomFieldValueItem{
 				{Value: generated.NewStringCustomFieldValueItemValue(value)},
 			},
+		}
+		if input.code != "" {
+			field.FieldCode = generated.NewOptString(input.code)
 		}
 		if input.id != 0 {
 			field.FieldID = generated.NewOptInt64(input.id)

@@ -36,7 +36,8 @@ func NewRouter(
 	// Identify wraps only the generated operations: it attaches the signed-in
 	// user when a session cookie is present, so a public read can answer a
 	// learner with their progress and a visitor without it.
-	generated := auth.Identify(auth.CarryGuestProgress(apiHandler))
+	// WithClientIP records the caller's address for lead attribution.
+	generated := WithClientIP(auth.Identify(auth.CarryGuestProgress(apiHandler)))
 
 	transport := http.NewServeMux()
 	transport.Handle("POST /api/admin/attachments", http.MaxBytesHandler(generated, UploadBodyLimit))
