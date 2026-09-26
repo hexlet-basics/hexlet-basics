@@ -251,6 +251,8 @@ export default {
       blogPosts: {
         likes: "Me gusta",
         relatedCourses: "Cursos relacionados",
+        suggestQueued: "Sugerencia de cursos iniciada: recarga la página en breve",
+        suggestRelatedCourses: "Sugerir cursos",
       },
       courses: {
         edit: {
