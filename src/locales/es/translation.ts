@@ -1149,6 +1149,9 @@ export default {
           please_sign_in:
             "Please sign in with your GitHub account, this is necessary to track the progress of the lessons. If you do not have an account yet, now is the time to create an account on GitHub.",
           prev: "← Previous",
+          preview: {
+            title: "Vista previa",
+          },
           profession_description: "Коммерческий опыт и Трудоустройство",
           separator: " ",
           show_full_version: "Реактор кода доступен в основной версии →",
