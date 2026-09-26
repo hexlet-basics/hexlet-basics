@@ -56,6 +56,7 @@ import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './route
 import { Route as Char123LocaleChar125AdminUsersIdRouteImport } from './routes/{-$locale}/admin/users/$id'
 import { Route as Char123LocaleChar125AdminUsersNewRouteImport } from './routes/{-$locale}/admin/users/new'
 import { Route as Char123LocaleChar125LanguagesSlugIndexRouteImport } from './routes/{-$locale}/languages/$slug/index'
+import { Route as Char123LocaleChar125LanguagesSlugSuccessRouteImport } from './routes/{-$locale}/languages/$slug/success'
 import { Route as Char123LocaleChar125PasswordTokenEditRouteImport } from './routes/{-$locale}/password/$token/edit'
 import { Route as Char123LocaleChar125AdminManagementRolesIndexRouteImport } from './routes/{-$locale}/admin/management/roles/index'
 import { Route as Char123LocaleChar125AdminManagementRolesIdRouteImport } from './routes/{-$locale}/admin/management/roles/$id'
@@ -348,6 +349,12 @@ const Char123LocaleChar125LanguagesSlugIndexRoute =
     path: '/languages/$slug/',
     getParentRoute: () => Char123LocaleChar125Route,
   } as any)
+const Char123LocaleChar125LanguagesSlugSuccessRoute =
+  Char123LocaleChar125LanguagesSlugSuccessRouteImport.update({
+    id: '/languages/$slug/success',
+    path: '/languages/$slug/success',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
 const Char123LocaleChar125PasswordTokenEditRoute =
   Char123LocaleChar125PasswordTokenEditRouteImport.update({
     id: '/password/$token/edit',
@@ -445,6 +452,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
@@ -502,6 +510,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
@@ -562,6 +571,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/reviews/new': typeof Char123LocaleChar125AdminReviewsNewRoute
   '/{-$locale}/admin/users/$id': typeof Char123LocaleChar125AdminUsersIdRoute
   '/{-$locale}/admin/users/new': typeof Char123LocaleChar125AdminUsersNewRoute
+  '/{-$locale}/languages/$slug/success': typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   '/{-$locale}/password/$token/edit': typeof Char123LocaleChar125PasswordTokenEditRoute
   '/{-$locale}/admin/banners/': typeof Char123LocaleChar125AdminBannersIndexRoute
   '/{-$locale}/admin/blog_posts/': typeof Char123LocaleChar125AdminBlog_postsIndexRoute
@@ -623,6 +633,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
@@ -680,6 +691,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners'
     | '/{-$locale}/admin/blog_posts'
@@ -739,6 +751,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/reviews/new'
     | '/{-$locale}/admin/users/$id'
     | '/{-$locale}/admin/users/new'
+    | '/{-$locale}/languages/$slug/success'
     | '/{-$locale}/password/$token/edit'
     | '/{-$locale}/admin/banners/'
     | '/{-$locale}/admin/blog_posts/'
@@ -1098,6 +1111,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugIndexRouteImport
       parentRoute: typeof Char123LocaleChar125Route
     }
+    '/{-$locale}/languages/$slug/success': {
+      id: '/{-$locale}/languages/$slug/success'
+      path: '/languages/$slug/success'
+      fullPath: '/{-$locale}/languages/$slug/success'
+      preLoaderRoute: typeof Char123LocaleChar125LanguagesSlugSuccessRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
+    }
     '/{-$locale}/password/$token/edit': {
       id: '/{-$locale}/password/$token/edit'
       path: '/password/$token/edit'
@@ -1304,6 +1324,7 @@ interface Char123LocaleChar125RouteChildren {
   Char123LocaleChar125LanguagesIndexRoute: typeof Char123LocaleChar125LanguagesIndexRoute
   Char123LocaleChar125ReviewsIndexRoute: typeof Char123LocaleChar125ReviewsIndexRoute
   Char123LocaleChar125AccountProfileEditRoute: typeof Char123LocaleChar125AccountProfileEditRoute
+  Char123LocaleChar125LanguagesSlugSuccessRoute: typeof Char123LocaleChar125LanguagesSlugSuccessRoute
   Char123LocaleChar125PasswordTokenEditRoute: typeof Char123LocaleChar125PasswordTokenEditRoute
   Char123LocaleChar125LanguagesSlugIndexRoute: typeof Char123LocaleChar125LanguagesSlugIndexRoute
   Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute: typeof Char123LocaleChar125LanguagesSlugLessonsLessonSlugRoute
@@ -1339,6 +1360,8 @@ const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
   Char123LocaleChar125ReviewsIndexRoute: Char123LocaleChar125ReviewsIndexRoute,
   Char123LocaleChar125AccountProfileEditRoute:
     Char123LocaleChar125AccountProfileEditRoute,
+  Char123LocaleChar125LanguagesSlugSuccessRoute:
+    Char123LocaleChar125LanguagesSlugSuccessRoute,
   Char123LocaleChar125PasswordTokenEditRoute:
     Char123LocaleChar125PasswordTokenEditRoute,
   Char123LocaleChar125LanguagesSlugIndexRoute:
