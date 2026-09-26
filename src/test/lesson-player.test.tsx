@@ -870,6 +870,27 @@ test("offers a guest sign-up in place of Next, and tells them it keeps their pro
   expect(started).toBe(0);
 });
 
+test("tells a guest nothing on a lesson they finished before, but lets them sign up", async () => {
+  const finished = lessonView({ progress: lastLessonView().progress });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  // The way on is open, as it is for a learner revisiting a finished lesson…
+  await expect
+    .element(page.getByRole("link", { name: "Next →", exact: true }))
+    .toHaveAttribute("href", expect.stringContaining("/users/new"));
+  // …but the prompt is about a pass just achieved, and there has been none.
+  await expect
+    .element(
+      page.getByText("Be sure to register to ensure you don't lose the results you've achieved"),
+    )
+    .not.toBeInTheDocument();
+});
+
 // ---- On a phone ------------------------------------------------------------
 
 // The player at a phone's viewport, in a container of the same size.

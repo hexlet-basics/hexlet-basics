@@ -20,6 +20,7 @@ import { ButtonLink, TextLink } from "@/components/RouterLink";
 export default function LessonControls({
   view,
   passed,
+  passedNow,
   onReset,
   onRun,
   running,
@@ -28,6 +29,9 @@ export default function LessonControls({
   // Passed in this visit or finished before it — the same fact that opens the
   // reference solution, so Next and the solution can never disagree.
   passed: boolean;
+  // Passed by a run in this visit, and only that: what the guest prompt is
+  // about is a result just achieved, not one brought along from before.
+  passedNow: boolean;
   onReset: () => void;
   onRun: () => void;
   running: boolean;
@@ -99,8 +103,10 @@ export default function LessonControls({
 
         {/* The one thing this port adds rather than copies: legacy carried the
             string and rendered it nowhere. The merge that keeps a guest's
-            progress on sign-up is built, so the promise is now true. */}
-        {!user && passed && <GuestPrompt />}
+            progress on sign-up is built, so the promise is now true. It
+            follows a pass in this visit, the moment it is about; a lesson
+            finished earlier opens the sign-up link but says nothing. */}
+        {!user && passedNow && <GuestPrompt />}
       </Box>
     </Stack>
   );
