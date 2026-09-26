@@ -1,8 +1,9 @@
-import { ScrollArea, Stack, Tabs } from "@mantine/core";
+import { Box, ScrollArea, Stack, Tabs } from "@mantine/core";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { ClientOnly } from "@tanstack/react-router";
+import { lazy, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { checkLessonMutation, getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView, LessonCheckingResponse } from "@/client/types.gen";
@@ -11,6 +12,11 @@ import LessonEditor from "@/components/lesson/LessonEditor";
 import LessonOutput from "@/components/lesson/LessonOutput";
 import LessonSolution from "@/components/lesson/LessonSolution";
 import LessonTests from "@/components/lesson/LessonTests";
+import { hasPreview } from "@/lib/editor-languages";
+
+// Only the markup courses show a preview, so every other course is spared the
+// chunk rather than shipped a component it never renders.
+const LessonPreview = lazy(() => import("@/components/lesson/LessonPreview"));
 
 // The right-hand half of the player: what the learner does, as opposed to what
 // they read. It owns the buffer, because everything here works on it — the
@@ -104,17 +110,34 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
         </Tabs.List>
 
         <Tabs.Panel value="editor" h="100%" mih={0}>
-          <LessonEditor
-            // Monaco is handed its buffer once, so moving to another lesson has
-            // to give it a new editor rather than a new prop.
-            key={lesson.slug}
-            courseSlug={courseSlug}
-            initialCode={code}
-            onChange={setCode}
-            starterCode={starterCode}
-            resetCount={resetCount}
-            onRun={run}
-          />
+          <Stack h="100%" gap={0}>
+            <Box style={{ flexGrow: 1, minHeight: 0 }}>
+              <LessonEditor
+                // Monaco is handed its buffer once, so moving to another lesson
+                // has to give it a new editor rather than a new prop.
+                key={lesson.slug}
+                courseSlug={courseSlug}
+                initialCode={code}
+                onChange={setCode}
+                starterCode={starterCode}
+                resetCount={resetCount}
+                onRun={run}
+              />
+            </Box>
+
+            {hasPreview(courseSlug) && (
+              // Client-only for the same reason the editor is: the buffer is read
+              // from storage on the first client render, so markup the server
+              // rendered from the starter code would disagree with it.
+              <ClientOnly>
+                <Suspense>
+                  <Box style={{ flexShrink: 0 }}>
+                    <LessonPreview code={code} />
+                  </Box>
+                </Suspense>
+              </ClientOnly>
+            )}
+          </Stack>
         </Tabs.Panel>
 
         <Tabs.Panel value="output" h="100%" mih={0}>

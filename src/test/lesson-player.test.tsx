@@ -642,3 +642,57 @@ test("gives a signed-in learner the same run a guest gets", async () => {
   await expect.element(page.getByText("Tests passed")).toBeVisible();
   expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
 });
+
+// A markup course: the exercise is a page, and the learner watches it take shape.
+function htmlLessonView(): CourseLessonView {
+  return lessonView({
+    landingPage: { ...landingPage, courseSlug: "html", slug: "html-ru", name: "HTML" },
+    lesson: {
+      ...lesson,
+      course: { ...course, slug: "html", name: "html" },
+      name: "Headings",
+      slug: "headings",
+      preparedCode: "<h1>Hello</h1>\n",
+    },
+  });
+}
+
+test("previews a markup course's page under the editor, as the learner writes it", async () => {
+  worker.use(
+    http.get("*/languages/html/lessons/headings", () => HttpResponse.json(htmlLessonView())),
+  );
+
+  await renderRoute(lessonRoute, {
+    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+    initialPath: "/languages/html/lessons/headings",
+    wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+  });
+
+  const preview = page.getByTitle("Preview");
+  await expect.element(preview, editorLoad).toBeVisible();
+  await expect.element(preview).toHaveAttribute("srcdoc", "<h1>Hello</h1>\n");
+
+  // The learner's markup cannot reach the page around it: no scripts, and an
+  // opaque origin whose document the page cannot open either.
+  const frame = preview.element() as HTMLIFrameElement;
+  expect(frame.getAttribute("sandbox")).toBe("");
+  expect(frame.contentDocument).toBeNull();
+
+  // It follows the buffer, not the starter code it opened with.
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+  await page.getByRole("tabpanel", { name: "Editor" }).getByRole("code").click();
+  await userEvent.keyboard("{Control>}{End}{/Control}mine");
+
+  await expect.poll(() => frame.getAttribute("srcdoc")).toContain("mine");
+});
+
+test("leaves a program course's editor without a preview", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  expect(document.querySelector("iframe")).toBeNull();
+});
