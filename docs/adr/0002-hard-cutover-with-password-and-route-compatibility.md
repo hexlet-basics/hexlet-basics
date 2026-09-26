@@ -4,6 +4,9 @@ The Go backend replaces the Rails app in a single cutover once it reaches
 parity — Rails and Go do NOT run side by side in production (no strangler
 proxy). A broken state at HEAD is acceptable until parity is reached.
 
+What "parity" covers — parity with production, not with the legacy codebase —
+and when the English locale goes are pinned down in ADR-0015.
+
 Two backward-compatibility constraints survive the cutover:
 
 - **Passwords** — existing bcrypt password hashes must keep working, so users

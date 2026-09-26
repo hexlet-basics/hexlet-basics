@@ -18,7 +18,7 @@ Prefer these instructions over generic Go or React defaults.
 
 The plan of record is **hard cutover at parity** (no long side-by-side run),
 keeping backward-compat only on bcrypt passwords and URL routes. See
-`docs/adr/` (0001–0014) for the binding architecture decisions. **Read the
+`docs/adr/` (0001–0015) for the binding architecture decisions. **Read the
 relevant ADR before changing how a subsystem works** — they are the source of truth for why each library was
 chosen, and several decisions (contract-first, hard cutover) constrain how you
 should implement.
