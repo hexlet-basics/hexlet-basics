@@ -53,6 +53,14 @@ export default function ErrorPage({ code }: { code: number }) {
   );
 }
 
+// Legacy errors/show had its own 403 wording. No ported page answers 403:
+// legacy's web pages redirected a visitor without access (the admin guards
+// still do), and its API's `head :forbidden` carried no page. The page is here
+// for the first surface that refuses rather than redirects.
+export function ForbiddenPage() {
+  return <ErrorPage code={403} />;
+}
+
 export function NotFoundPage() {
   return <ErrorPage code={404} />;
 }

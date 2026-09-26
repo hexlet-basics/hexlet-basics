@@ -1,12 +1,14 @@
 import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
+import { ForbiddenPage } from "@/components/ErrorPage";
 import { Route as postRoute } from "@/routes/{-$locale}/blog_posts/$slug";
 import { Route as forTeachersRoute } from "@/routes/{-$locale}/cases/for_teachers";
 import { Route as casesRoute } from "@/routes/{-$locale}/cases/index";
 import { Route as pageRoute } from "@/routes/{-$locale}/pages/$id";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
+import { renderWithProviders } from "@/test/renderWithProviders";
 
 // The data-free pages (ADR-0015) through their real routes: a static page, the
 // ru-only cases and the error pages. Asserted is what a visitor and a crawler
@@ -51,6 +53,13 @@ test("an unknown page is the 404 page", async () => {
   await renderPage("/pages/nope");
 
   await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+});
+
+test("the 403 page says access is denied", async () => {
+  renderWithProviders(<ForbiddenPage />);
+
+  await expect.element(page.getByRole("heading", { name: "Access Denied" })).toBeVisible();
+  await expect.element(page.getByText("403", { exact: true })).toBeVisible();
 });
 
 test("the teachers' case asks a visitor to sign up and is its own canonical", async () => {
