@@ -105,10 +105,7 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 		return []api.CourseCatalogItem{}, nil
 	}
 
-	ids := make([]int, len(courseIDs))
-	for i, id := range courseIDs {
-		ids[i] = int(id)
-	}
+	ids := lo.Map(courseIDs, func(id int32, _ int) int { return int(id) })
 
 	pages, err := s.db.LandingPage.Query().
 		Where(
