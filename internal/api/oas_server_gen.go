@@ -492,6 +492,20 @@ type Handler interface {
 	//
 	// GET /api/map
 	GetSitemap(ctx context.Context) (*Sitemap, error)
+	// GetYandexCoursesFeed implements getYandexCoursesFeed operation.
+	//
+	// The same feed at the path the legacy route declares.
+	//
+	// GET /api/feeds/yandex_courses
+	GetYandexCoursesFeed(ctx context.Context) (GetYandexCoursesFeedOK, error)
+	// GetYandexCoursesFeedXml implements getYandexCoursesFeedXml operation.
+	//
+	// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+	// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+	// one.
+	//
+	// GET /api/feeds/yandex_courses.xml
+	GetYandexCoursesFeedXml(ctx context.Context) (GetYandexCoursesFeedXmlOK, error)
 	// LikeBlogPost implements likeBlogPost operation.
 	//
 	// Like a post (idempotent per visitor).

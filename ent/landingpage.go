@@ -58,6 +58,8 @@ type LandingPage struct {
 	Footer *bool `json:"footer,omitempty"`
 	// FooterName holds the value of the "footer_name" field.
 	FooterName *string `json:"footer_name,omitempty"`
+	// LanguageCategoryID holds the value of the "language_category_id" field.
+	LanguageCategoryID *int `json:"language_category_id,omitempty"`
 	// LandingPageToRedirectID holds the value of the "landing_page_to_redirect_id" field.
 	LandingPageToRedirectID *int `json:"landing_page_to_redirect_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -93,7 +95,7 @@ func (*LandingPage) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case landingpage.FieldListed, landingpage.FieldMain, landingpage.FieldFooter:
 			values[i] = new(sql.NullBool)
-		case landingpage.FieldID, landingpage.FieldCourseID, landingpage.FieldLandingPageToRedirectID:
+		case landingpage.FieldID, landingpage.FieldCourseID, landingpage.FieldLanguageCategoryID, landingpage.FieldLandingPageToRedirectID:
 			values[i] = new(sql.NullInt64)
 		case landingpage.FieldSlug, landingpage.FieldHeader, landingpage.FieldName, landingpage.FieldLocale, landingpage.FieldState, landingpage.FieldOrder, landingpage.FieldMetaTitle, landingpage.FieldMetaDescription, landingpage.FieldDescription, landingpage.FieldUsedInHeader, landingpage.FieldUsedInDescription, landingpage.FieldOutcomesHeader, landingpage.FieldOutcomesDescription, landingpage.FieldFooterName:
 			values[i] = new(sql.NullString)
@@ -257,6 +259,13 @@ func (_m *LandingPage) assignValues(columns []string, values []any) error {
 				_m.FooterName = new(string)
 				*_m.FooterName = value.String
 			}
+		case landingpage.FieldLanguageCategoryID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field language_category_id", values[i])
+			} else if value.Valid {
+				_m.LanguageCategoryID = new(int)
+				*_m.LanguageCategoryID = int(value.Int64)
+			}
 		case landingpage.FieldLandingPageToRedirectID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field landing_page_to_redirect_id", values[i])
@@ -397,6 +406,11 @@ func (_m *LandingPage) String() string {
 	if v := _m.FooterName; v != nil {
 		builder.WriteString("footer_name=")
 		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.LanguageCategoryID; v != nil {
+		builder.WriteString("language_category_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	if v := _m.LandingPageToRedirectID; v != nil {

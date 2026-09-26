@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
+	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 )
@@ -42,6 +43,8 @@ type Server struct {
 	auth   *AuthHandler
 	i18n   *localization.Translator
 	errors *APIErrorHandler
+	// yandexFeed builds the Yandex course catalogue behind the feed routes.
+	yandexFeed *feeds.Yandex
 }
 
 // NewServer wires the handler to its dependencies.
@@ -59,16 +62,17 @@ func NewServer(
 	errorHandler *APIErrorHandler,
 ) *Server {
 	return &Server{
-		db:       db,
-		conv:     &apiconv.ConverterImpl{},
-		cfg:      cfg,
-		starter:  starter,
-		reviews:  reviews,
-		progress: tracker,
-		assets:   assets,
-		auth:     NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker, emails),
-		i18n:     translator,
-		errors:   errorHandler,
+		db:         db,
+		conv:       &apiconv.ConverterImpl{},
+		cfg:        cfg,
+		starter:    starter,
+		reviews:    reviews,
+		progress:   tracker,
+		assets:     assets,
+		auth:       NewAuthHandler(db, cfg, translator, errorHandler, registrar, eventPublisher, tracker, emails),
+		i18n:       translator,
+		errors:     errorHandler,
+		yandexFeed: feeds.NewYandex(db, cfg.AppHost),
 	}
 }
 

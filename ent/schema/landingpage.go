@@ -51,6 +51,12 @@ func (LandingPage) Fields() []ent.Field {
 		field.String("outcomes_description").Optional().Nillable(),
 		field.Bool("footer").Optional().Nillable(),
 		field.String("footer_name").Optional().Nillable(),
+		// language_category_id is the legacy single-category column, read only by
+		// the Yandex feed's `set-ids` (the category pages moved to the
+		// language_category_items join). Admin never edits it, so it is kept out
+		// of the generated input mapping.
+		field.Int("language_category_id").Optional().Nillable().
+			Annotations(AdminInputField{Skip: true}),
 		field.Int("landing_page_to_redirect_id").Optional().Nillable().
 			Annotations(AdminInputField{Rename: "LandingPageToRedirectId"}),
 	}

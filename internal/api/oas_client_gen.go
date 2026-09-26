@@ -513,6 +513,20 @@ type Invoker interface {
 	//
 	// GET /api/map
 	GetSitemap(ctx context.Context) (*Sitemap, error)
+	// GetYandexCoursesFeed invokes getYandexCoursesFeed operation.
+	//
+	// The same feed at the path the legacy route declares.
+	//
+	// GET /api/feeds/yandex_courses
+	GetYandexCoursesFeed(ctx context.Context) (GetYandexCoursesFeedOK, error)
+	// GetYandexCoursesFeedXml invokes getYandexCoursesFeedXml operation.
+	//
+	// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+	// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+	// one.
+	//
+	// GET /api/feeds/yandex_courses.xml
+	GetYandexCoursesFeedXml(ctx context.Context) (GetYandexCoursesFeedXmlOK, error)
 	// LikeBlogPost invokes likeBlogPost operation.
 	//
 	// Like a post (idempotent per visitor).
@@ -12889,6 +12903,168 @@ func (c *Client) sendGetSitemap(ctx context.Context) (res *Sitemap, err error) {
 
 	stage = "DecodeResponse"
 	result, err := decodeGetSitemapResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetYandexCoursesFeed invokes getYandexCoursesFeed operation.
+//
+// The same feed at the path the legacy route declares.
+//
+// GET /api/feeds/yandex_courses
+func (c *Client) GetYandexCoursesFeed(ctx context.Context) (GetYandexCoursesFeedOK, error) {
+	res, err := c.sendGetYandexCoursesFeed(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetYandexCoursesFeed(ctx context.Context) (res GetYandexCoursesFeedOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getYandexCoursesFeed"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/feeds/yandex_courses"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetYandexCoursesFeedOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/feeds/yandex_courses"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetYandexCoursesFeedResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// GetYandexCoursesFeedXml invokes getYandexCoursesFeedXml operation.
+//
+// The feed at the address production actually answers on. Legacy routes `/api` with a JSON default
+// format and the action only knows XML, so the bare path has always answered 406 and Yandex reads this
+// one.
+//
+// GET /api/feeds/yandex_courses.xml
+func (c *Client) GetYandexCoursesFeedXml(ctx context.Context) (GetYandexCoursesFeedXmlOK, error) {
+	res, err := c.sendGetYandexCoursesFeedXml(ctx)
+	return res, err
+}
+
+func (c *Client) sendGetYandexCoursesFeedXml(ctx context.Context) (res GetYandexCoursesFeedXmlOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("getYandexCoursesFeedXml"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/feeds/yandex_courses.xml"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, GetYandexCoursesFeedXmlOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/feeds/yandex_courses.xml"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeGetYandexCoursesFeedXmlResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

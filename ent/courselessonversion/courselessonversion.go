@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -37,8 +38,26 @@ const (
 	FieldLessonID = "lesson_id"
 	// FieldModuleVersionID holds the string denoting the module_version_id field in the database.
 	FieldModuleVersionID = "module_version_id"
+	// EdgeModuleVersion holds the string denoting the module_version edge name in mutations.
+	EdgeModuleVersion = "module_version"
+	// EdgeLesson holds the string denoting the lesson edge name in mutations.
+	EdgeLesson = "lesson"
 	// Table holds the table name of the courselessonversion in the database.
 	Table = "language_lesson_versions"
+	// ModuleVersionTable is the table that holds the module_version relation/edge.
+	ModuleVersionTable = "language_lesson_versions"
+	// ModuleVersionInverseTable is the table name for the CourseModuleVersion entity.
+	// It exists in this package in order to avoid circular dependency with the "coursemoduleversion" package.
+	ModuleVersionInverseTable = "language_module_versions"
+	// ModuleVersionColumn is the table column denoting the module_version relation/edge.
+	ModuleVersionColumn = "module_version_id"
+	// LessonTable is the table that holds the lesson relation/edge.
+	LessonTable = "language_lesson_versions"
+	// LessonInverseTable is the table name for the CourseLesson entity.
+	// It exists in this package in order to avoid circular dependency with the "courselesson" package.
+	LessonInverseTable = "language_lessons"
+	// LessonColumn is the table column denoting the lesson relation/edge.
+	LessonColumn = "lesson_id"
 )
 
 // Columns holds all SQL columns for courselessonversion fields.
@@ -143,4 +162,32 @@ func ByLessonID(opts ...sql.OrderTermOption) OrderOption {
 // ByModuleVersionID orders the results by the module_version_id field.
 func ByModuleVersionID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModuleVersionID, opts...).ToFunc()
+}
+
+// ByModuleVersionField orders the results by module_version field.
+func ByModuleVersionField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newModuleVersionStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByLessonField orders the results by lesson field.
+func ByLessonField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newLessonStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newModuleVersionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ModuleVersionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ModuleVersionTable, ModuleVersionColumn),
+	)
+}
+func newLessonStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(LessonInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, LessonTable, LessonColumn),
+	)
 }

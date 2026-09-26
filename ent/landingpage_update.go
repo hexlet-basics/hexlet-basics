@@ -389,6 +389,33 @@ func (_u *LandingPageUpdate) ClearFooterName() *LandingPageUpdate {
 	return _u
 }
 
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (_u *LandingPageUpdate) SetLanguageCategoryID(v int) *LandingPageUpdate {
+	_u.mutation.ResetLanguageCategoryID()
+	_u.mutation.SetLanguageCategoryID(v)
+	return _u
+}
+
+// SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
+func (_u *LandingPageUpdate) SetNillableLanguageCategoryID(v *int) *LandingPageUpdate {
+	if v != nil {
+		_u.SetLanguageCategoryID(*v)
+	}
+	return _u
+}
+
+// AddLanguageCategoryID adds value to the "language_category_id" field.
+func (_u *LandingPageUpdate) AddLanguageCategoryID(v int) *LandingPageUpdate {
+	_u.mutation.AddLanguageCategoryID(v)
+	return _u
+}
+
+// ClearLanguageCategoryID clears the value of the "language_category_id" field.
+func (_u *LandingPageUpdate) ClearLanguageCategoryID() *LandingPageUpdate {
+	_u.mutation.ClearLanguageCategoryID()
+	return _u
+}
+
 // SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
 func (_u *LandingPageUpdate) SetLandingPageToRedirectID(v int) *LandingPageUpdate {
 	_u.mutation.ResetLandingPageToRedirectID()
@@ -592,6 +619,15 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if _u.mutation.FooterNameCleared() {
 		_spec.ClearField(landingpage.FieldFooterName, field.TypeString)
+	}
+	if value, ok := _u.mutation.LanguageCategoryID(); ok {
+		_spec.SetField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLanguageCategoryID(); ok {
+		_spec.AddField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+	}
+	if _u.mutation.LanguageCategoryIDCleared() {
+		_spec.ClearField(landingpage.FieldLanguageCategoryID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.LandingPageToRedirectID(); ok {
 		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
@@ -1011,6 +1047,33 @@ func (_u *LandingPageUpdateOne) ClearFooterName() *LandingPageUpdateOne {
 	return _u
 }
 
+// SetLanguageCategoryID sets the "language_category_id" field.
+func (_u *LandingPageUpdateOne) SetLanguageCategoryID(v int) *LandingPageUpdateOne {
+	_u.mutation.ResetLanguageCategoryID()
+	_u.mutation.SetLanguageCategoryID(v)
+	return _u
+}
+
+// SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
+func (_u *LandingPageUpdateOne) SetNillableLanguageCategoryID(v *int) *LandingPageUpdateOne {
+	if v != nil {
+		_u.SetLanguageCategoryID(*v)
+	}
+	return _u
+}
+
+// AddLanguageCategoryID adds value to the "language_category_id" field.
+func (_u *LandingPageUpdateOne) AddLanguageCategoryID(v int) *LandingPageUpdateOne {
+	_u.mutation.AddLanguageCategoryID(v)
+	return _u
+}
+
+// ClearLanguageCategoryID clears the value of the "language_category_id" field.
+func (_u *LandingPageUpdateOne) ClearLanguageCategoryID() *LandingPageUpdateOne {
+	_u.mutation.ClearLanguageCategoryID()
+	return _u
+}
+
 // SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
 func (_u *LandingPageUpdateOne) SetLandingPageToRedirectID(v int) *LandingPageUpdateOne {
 	_u.mutation.ResetLandingPageToRedirectID()
@@ -1244,6 +1307,15 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 	}
 	if _u.mutation.FooterNameCleared() {
 		_spec.ClearField(landingpage.FieldFooterName, field.TypeString)
+	}
+	if value, ok := _u.mutation.LanguageCategoryID(); ok {
+		_spec.SetField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedLanguageCategoryID(); ok {
+		_spec.AddField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+	}
+	if _u.mutation.LanguageCategoryIDCleared() {
+		_spec.ClearField(landingpage.FieldLanguageCategoryID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.LandingPageToRedirectID(); ok {
 		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)

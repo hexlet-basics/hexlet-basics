@@ -1,0 +1,53 @@
+# Fixtures for `language_module_version_infos`, HAND-CURATED (see
+# language_modules.yml for why): fixed text instead of Faker, so the Yandex
+# feed golden file only changes when the feed does.
+#
+# JavaScript's three modules have ru infos (the feed reads ru only); module 1
+# also has an en info the feed must ignore. Ruby's single module has a ru info,
+# which is still fewer than three. Module 1's description spans two lines, as
+# real descriptions do.
+- id: 1
+  language_id: 82481401
+  language_version_id: 965227298
+  version_id: 1
+  locale: ru
+  name: Основы
+  description: "Первая программа и переменные.\nЗапускаем код прямо в браузере."
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 2
+  language_id: 82481401
+  language_version_id: 965227298
+  version_id: 1
+  locale: en
+  name: Basics
+  description: The first program and variables.
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 3
+  language_id: 82481401
+  language_version_id: 965227298
+  version_id: 2
+  locale: ru
+  name: Строки
+  description: Кавычки, экранирование и конкатенация.
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 4
+  language_id: 82481401
+  language_version_id: 965227298
+  version_id: 3
+  locale: ru
+  name: Арифметика
+  description: Числа & операции над ними.
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'
+- id: 5
+  language_id: 207281424
+  language_version_id: 207281424
+  version_id: 4
+  locale: ru
+  name: Основы
+  description: Первая программа на Ruby.
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

@@ -50,10 +50,13 @@
   path_to_code: /exercises-javascript/modules/10-basics/30-strings
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
+# The retired version's row hangs off the retired version's own module
+# version (5): a module version belongs to exactly one course version, and the
+# Yandex feed lists a module's lessons through it.
 - id: 545350298
   language_id: 82481401
   language_version_id: 545350298
   lesson_id: 1001
-  module_version_id: 1
+  module_version_id: 5
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'

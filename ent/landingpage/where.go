@@ -155,6 +155,11 @@ func FooterName(v string) predicate.LandingPage {
 	return predicate.LandingPage(sql.FieldEQ(FieldFooterName, v))
 }
 
+// LanguageCategoryID applies equality check predicate on the "language_category_id" field. It's identical to LanguageCategoryIDEQ.
+func LanguageCategoryID(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldLanguageCategoryID, v))
+}
+
 // LandingPageToRedirectID applies equality check predicate on the "landing_page_to_redirect_id" field. It's identical to LandingPageToRedirectIDEQ.
 func LandingPageToRedirectID(v int) predicate.LandingPage {
 	return predicate.LandingPage(sql.FieldEQ(FieldLandingPageToRedirectID, v))
@@ -1368,6 +1373,56 @@ func FooterNameEqualFold(v string) predicate.LandingPage {
 // FooterNameContainsFold applies the ContainsFold predicate on the "footer_name" field.
 func FooterNameContainsFold(v string) predicate.LandingPage {
 	return predicate.LandingPage(sql.FieldContainsFold(FieldFooterName, v))
+}
+
+// LanguageCategoryIDEQ applies the EQ predicate on the "language_category_id" field.
+func LanguageCategoryIDEQ(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldEQ(FieldLanguageCategoryID, v))
+}
+
+// LanguageCategoryIDNEQ applies the NEQ predicate on the "language_category_id" field.
+func LanguageCategoryIDNEQ(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNEQ(FieldLanguageCategoryID, v))
+}
+
+// LanguageCategoryIDIn applies the In predicate on the "language_category_id" field.
+func LanguageCategoryIDIn(vs ...int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIn(FieldLanguageCategoryID, vs...))
+}
+
+// LanguageCategoryIDNotIn applies the NotIn predicate on the "language_category_id" field.
+func LanguageCategoryIDNotIn(vs ...int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotIn(FieldLanguageCategoryID, vs...))
+}
+
+// LanguageCategoryIDGT applies the GT predicate on the "language_category_id" field.
+func LanguageCategoryIDGT(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGT(FieldLanguageCategoryID, v))
+}
+
+// LanguageCategoryIDGTE applies the GTE predicate on the "language_category_id" field.
+func LanguageCategoryIDGTE(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldGTE(FieldLanguageCategoryID, v))
+}
+
+// LanguageCategoryIDLT applies the LT predicate on the "language_category_id" field.
+func LanguageCategoryIDLT(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLT(FieldLanguageCategoryID, v))
+}
+
+// LanguageCategoryIDLTE applies the LTE predicate on the "language_category_id" field.
+func LanguageCategoryIDLTE(v int) predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldLTE(FieldLanguageCategoryID, v))
+}
+
+// LanguageCategoryIDIsNil applies the IsNil predicate on the "language_category_id" field.
+func LanguageCategoryIDIsNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldIsNull(FieldLanguageCategoryID))
+}
+
+// LanguageCategoryIDNotNil applies the NotNil predicate on the "language_category_id" field.
+func LanguageCategoryIDNotNil() predicate.LandingPage {
+	return predicate.LandingPage(sql.FieldNotNull(FieldLanguageCategoryID))
 }
 
 // LandingPageToRedirectIDEQ applies the EQ predicate on the "landing_page_to_redirect_id" field.

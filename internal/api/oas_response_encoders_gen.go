@@ -3,6 +3,7 @@
 package api
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-faster/errors"
@@ -3679,6 +3680,36 @@ func encodeGetSitemapResponse(response *Sitemap, w http.ResponseWriter, span tra
 	e := new(jx.Encoder)
 	response.Encode(e)
 	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeGetYandexCoursesFeedResponse(response GetYandexCoursesFeedOK, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/xml")
+	w.WriteHeader(200)
+
+	writer := w
+	if closer, ok := response.Data.(io.Closer); ok {
+		defer closer.Close()
+	}
+	if _, err := io.Copy(writer, response); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeGetYandexCoursesFeedXmlResponse(response GetYandexCoursesFeedXmlOK, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/xml")
+	w.WriteHeader(200)
+
+	writer := w
+	if closer, ok := response.Data.(io.Closer); ok {
+		defer closer.Close()
+	}
+	if _, err := io.Copy(writer, response); err != nil {
 		return errors.Wrap(err, "write")
 	}
 

@@ -95,6 +95,8 @@ const (
 	GetProfileOperation                     OperationName = "GetProfile"
 	GetPublicCourseCategoryOperation        OperationName = "GetPublicCourseCategory"
 	GetSitemapOperation                     OperationName = "GetSitemap"
+	GetYandexCoursesFeedOperation           OperationName = "GetYandexCoursesFeed"
+	GetYandexCoursesFeedXmlOperation        OperationName = "GetYandexCoursesFeedXml"
 	LikeBlogPostOperation                   OperationName = "LikeBlogPost"
 	ListAssistantMessagesOperation          OperationName = "ListAssistantMessages"
 	ListBlogPostsOperation                  OperationName = "ListBlogPosts"

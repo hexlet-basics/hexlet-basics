@@ -4275,6 +4275,72 @@ export type CreateBookRequestResponses = {
 
 export type CreateBookRequestResponse = CreateBookRequestResponses[keyof CreateBookRequestResponses];
 
+export type GetYandexCoursesFeedData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/feeds/yandex_courses';
+};
+
+export type GetYandexCoursesFeedErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetYandexCoursesFeedError = GetYandexCoursesFeedErrors[keyof GetYandexCoursesFeedErrors];
+
+export type GetYandexCoursesFeedResponses = {
+  /**
+   * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+   * the ru courses, which Yandex polls to list them in its course results.
+   *
+   * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+   * a non-JSON response only as a stream (`format: binary`), so the document is
+   * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+   */
+  200: Blob | File;
+};
+
+export type GetYandexCoursesFeedResponse = GetYandexCoursesFeedResponses[keyof GetYandexCoursesFeedResponses];
+
+export type GetYandexCoursesFeedXmlData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/feeds/yandex_courses.xml';
+};
+
+export type GetYandexCoursesFeedXmlErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetYandexCoursesFeedXmlError = GetYandexCoursesFeedXmlErrors[keyof GetYandexCoursesFeedXmlErrors];
+
+export type GetYandexCoursesFeedXmlResponses = {
+  /**
+   * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+   * the ru courses, which Yandex polls to list them in its course results.
+   *
+   * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+   * a non-JSON response only as a stream (`format: binary`), so the document is
+   * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+   */
+  200: Blob | File;
+};
+
+export type GetYandexCoursesFeedXmlResponse = GetYandexCoursesFeedXmlResponses[keyof GetYandexCoursesFeedXmlResponses];
+
 export type ListPublicCourseCategoriesData = {
   body?: never;
   path?: never;

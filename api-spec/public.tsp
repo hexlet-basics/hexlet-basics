@@ -225,3 +225,43 @@ interface SitemapFeed {
   @operationId("getSitemap")
   get(): Sitemap | ApiError;
 }
+
+// ---- Feeds ----------------------------------------------------------------
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+model YandexCoursesFeed {
+  @header contentType: "application/xml";
+  @body body: bytes;
+}
+
+/**
+ * Machine-read feeds, at the addresses their consumers are registered with —
+ * the URL is the contract here, so it keeps the legacy path exactly
+ * (ADR-0015).
+ */
+@route("/feeds")
+@tag("Feeds")
+interface Feeds {
+  /**
+   * The feed at the address production actually answers on. Legacy routes
+   * `/api` with a JSON default format and the action only knows XML, so the
+   * bare path has always answered 406 and Yandex reads this one.
+   */
+  @get
+  @route("/yandex_courses.xml")
+  @operationId("getYandexCoursesFeedXml")
+  getXml(): YandexCoursesFeed | ApiError;
+
+  /** The same feed at the path the legacy route declares. */
+  @get
+  @route("/yandex_courses")
+  @operationId("getYandexCoursesFeed")
+  get(): YandexCoursesFeed | ApiError;
+}

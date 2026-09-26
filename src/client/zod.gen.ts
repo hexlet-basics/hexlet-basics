@@ -1736,6 +1736,26 @@ export const zCreateBookRequestBody = zBookRequestInput;
 export const zCreateBookRequestResponse = z.void();
 
 /**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+export const zGetYandexCoursesFeedResponse = z.string();
+
+/**
+ * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of
+ * the ru courses, which Yandex polls to list them in its course results.
+ *
+ * `bytes` rather than a modelled XML body: ogen has no XML codec and generates
+ * a non-JSON response only as a stream (`format: binary`), so the document is
+ * built with `encoding/xml` in `internal/feeds` and handed over as a reader.
+ */
+export const zGetYandexCoursesFeedXmlResponse = z.string();
+
+/**
  * The request has succeeded.
  */
 export const zListPublicCourseCategoriesResponse = z.array(zCourseCategory);
