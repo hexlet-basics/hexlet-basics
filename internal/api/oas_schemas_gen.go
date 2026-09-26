@@ -6391,8 +6391,8 @@ type Review struct {
 	FullName  NilString       `json:"fullName"`
 	State     NilReviewState  `json:"state"`
 	Locale    NilReviewLocale `json:"locale"`
-	// Pinned reviews sort to the top of the public list. Part of the read model so the admin edit form can
-	// round-trip the flag it writes.
+	// Stored for the admin edit form to round-trip; it does not affect the public list, which legacy
+	// ordered newest first only.
 	Pinned    NilBool   `json:"pinned"`
 	CreatedAt time.Time `json:"createdAt"`
 }
