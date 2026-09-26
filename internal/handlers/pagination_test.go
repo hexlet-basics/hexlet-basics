@@ -54,11 +54,11 @@ func newPaginationRouter(t *testing.T, handler api.Handler) http.Handler {
 
 func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 	tests := []string{
-		"/reviews?page=0",
-		"/reviews?page=-100",
-		"/reviews?perPage=0",
-		"/reviews?perPage=-1",
-		"/reviews?perPage=101",
+		"/api/reviews?page=0",
+		"/api/reviews?page=-100",
+		"/api/reviews?perPage=0",
+		"/api/reviews?perPage=-1",
+		"/api/reviews?perPage=101",
 	}
 
 	for _, path := range tests {
@@ -77,7 +77,7 @@ func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 
 func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 	router := newPaginationRouter(t, &paginationContractHandler{})
-	req := httptest.NewRequest(http.MethodGet, "/reviews?page=0", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/reviews?page=0", nil)
 	req.Header.Set("Accept-Language", "ru")
 	rec := httptest.NewRecorder()
 
@@ -109,7 +109,7 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 		{
 			name:       "method not allowed",
 			method:     http.MethodDelete,
-			path:       "/reviews",
+			path:       "/api/reviews",
 			status:     http.StatusMethodNotAllowed,
 			body:       "Método no permitido",
 			allowValue: "GET",
@@ -140,9 +140,9 @@ func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {
 		wantPage    int32
 		wantPerPage int32
 	}{
-		{name: "defaults", path: "/reviews", wantPage: 1, wantPerPage: defaultPerPage},
-		{name: "minimums", path: "/reviews?page=1&perPage=1", wantPage: 1, wantPerPage: 1},
-		{name: "maximum page size", path: "/reviews?page=123&perPage=100", wantPage: 123, wantPerPage: 100},
+		{name: "defaults", path: "/api/reviews", wantPage: 1, wantPerPage: defaultPerPage},
+		{name: "minimums", path: "/api/reviews?page=1&perPage=1", wantPage: 1, wantPerPage: 1},
+		{name: "maximum page size", path: "/api/reviews?page=123&perPage=100", wantPage: 123, wantPerPage: 100},
 	}
 
 	for _, tt := range tests {

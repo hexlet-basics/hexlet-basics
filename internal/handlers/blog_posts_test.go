@@ -53,7 +53,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 	assert.Equal(t, "https://code-basics.com/ru/blog_posts/hello-world", full.URL)
 	assert.Equal(t, "alice@example.com", full.Creator.Email.Value)
 	require.False(t, full.CoverThumbVariant.Null)
-	assert.Equal(t, "http://localhost:3001/storage/blogcoverkey001", full.CoverThumbVariant.Value)
+	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", full.CoverThumbVariant.Value)
 	// All three variants serve the same URL until image variants land (ADR-0005).
 	assert.Equal(t, full.CoverThumbVariant.Value, full.CoverListVariant.Value)
 	assert.Equal(t, full.CoverThumbVariant.Value, full.CoverMainVariant.Value)
@@ -82,7 +82,7 @@ func TestAdminGetBlogPost(t *testing.T) {
 	assert.Equal(t, int32(6001), post.ID)
 	assert.Equal(t, "hello-world", post.Slug.Value)
 	assert.Equal(t, int32(2), post.LikesCount)
-	assert.Equal(t, "http://localhost:3001/storage/blogcoverkey001", post.CoverMainVariant.Value)
+	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", post.CoverMainVariant.Value)
 	// Promoted-course ids surface in display order (fixture order 0,1,2).
 	assert.Equal(t, []int32{82481401, 207281424, 617920698}, post.RelatedCourseIds)
 }

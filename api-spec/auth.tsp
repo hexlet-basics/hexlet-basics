@@ -11,9 +11,10 @@ namespace HexletBasics;
 // ---------------------------------------------------------------------------
 // Authentication and the signed-in user area.
 //
-// Auth is a JWT in an httpOnly cookie (ADR-0003/0008): login/signup/magic-link/
-// passkey endpoints set the cookie server-side, so the contract just returns
-// the `User`; the Set-Cookie header is not modeled. Legacy URLs preserved.
+// Auth is a JWT in an httpOnly cookie (ADR-0003/0008): login/signup/magic-link
+// endpoints set the cookie server-side, so the contract just returns the
+// `User`. Legacy URLs preserved. Phone sign-in and passkeys are out of the
+// cutover (ADR-0015) and have no operations here.
 // ---------------------------------------------------------------------------
 
 // ---- Inputs ---------------------------------------------------------------
@@ -44,36 +45,6 @@ model ResetPasswordInput {
 
 model EmailInput {
   @format("email") email: string;
-}
-
-model PhoneInput {
-  @minLength(1) phone: string;
-}
-
-model PhoneConfirmInput {
-  @minLength(1) phone: string;
-  @minLength(1) code: string;
-}
-
-/**
- * A WebAuthn ceremony payload. The challenge/options and the client response
- * are opaque JSON owned by `go-webauthn`; the contract carries them as strings
- * so the browser API round-trips them verbatim.
- */
-model PasskeyChallenge {
-  /** JSON-encoded PublicKeyCredentialCreationOptions / RequestOptions. */
-  options: string;
-}
-
-model PasskeyRegistrationInput {
-  /** JSON-encoded registration credential from `navigator.credentials.create`. */
-  credential: string;
-  nickname: string | null;
-}
-
-model PasskeyAssertionInput {
-  /** JSON-encoded assertion credential from `navigator.credentials.get`. */
-  credential: string;
 }
 
 /** The current user resolved from the session cookie (null when anonymous). */
@@ -200,70 +171,6 @@ interface PasswordReset {
     @path token: string,
     @body body: ResetPasswordInput,
   ): SessionResponse | NotFoundError | ValidationError | ApiError;
-}
-
-@route("/phone_auth")
-@tag("Auth")
-interface PhoneAuth {
-  /** Send an SMS verification code. */
-  @post
-  @operationId("createPhoneAuth")
-  create(@body body: PhoneInput): NoContent | ValidationError | ApiError;
-
-  /** Confirm the SMS code; sets the JWT cookie. */
-  @post
-  @route("/confirm")
-  @operationId("confirmPhoneAuth")
-  confirm(@body body: PhoneConfirmInput): User | ValidationError | ApiError;
-}
-
-// ---- Passkeys / WebAuthn --------------------------------------------------
-
-@route("/passkey_session")
-@tag("Auth")
-interface PasskeySession {
-  /** Begin a passkey login ceremony. */
-  @get
-  @route("/new")
-  @operationId("newPasskeySession")
-  new(): PasskeyChallenge | ApiError;
-
-  /** Complete a passkey login; sets the JWT cookie. */
-  @post
-  @operationId("createPasskeySession")
-  create(@body body: PasskeyAssertionInput): User | ValidationError | ApiError;
-}
-
-@route("/account/passkeys")
-@tag("User Area")
-@useAuth(UserSession)
-interface AccountPasskeys {
-  /** List the current user's passkeys. */
-  @get
-  @operationId("listPasskeys")
-  list(): UserCredential[] | UnauthorizedError | ApiError;
-
-  /** Begin a passkey registration ceremony. */
-  @get
-  @route("/new")
-  @operationId("newPasskey")
-  new(): PasskeyChallenge | UnauthorizedError | ApiError;
-
-  /** Register a new passkey for the current user. */
-  @post
-  @useAuth([UserSession, XsrfToken])
-  @operationId("createPasskey")
-  create(@body body: PasskeyRegistrationInput): {
-    @statusCode statusCode: 201;
-    @body credential: UserCredential;
-  } | ValidationError | UnauthorizedError | ApiError;
-
-  /** Remove a passkey. */
-  @delete
-  @useAuth([UserSession, XsrfToken])
-  @route("/{id}")
-  @operationId("deletePasskey")
-  delete(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ApiError;
 }
 
 // ---- Account profile ------------------------------------------------------

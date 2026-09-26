@@ -399,20 +399,6 @@ func encodeCheckLessonRequest(
 	return nil
 }
 
-func encodeConfirmPhoneAuthRequest(
-	req *PhoneConfirmInput,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
 func encodeCreateAssistantMessageRequest(
 	req *AssistantMessageInput,
 	r *http.Request,
@@ -469,50 +455,8 @@ func encodeCreateMagicLinkRequest(
 	return nil
 }
 
-func encodeCreatePasskeyRequest(
-	req *PasskeyRegistrationInput,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeCreatePasskeySessionRequest(
-	req *PasskeyAssertionInput,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
 func encodeCreatePasswordReminderRequest(
 	req *EmailInput,
-	r *http.Request,
-) error {
-	const contentType = "application/json"
-	e := new(jx.Encoder)
-	{
-		req.Encode(e)
-	}
-	encoded := e.Bytes()
-	ht.SetBody(r, bytes.NewReader(encoded), contentType)
-	return nil
-}
-
-func encodeCreatePhoneAuthRequest(
-	req *PhoneInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

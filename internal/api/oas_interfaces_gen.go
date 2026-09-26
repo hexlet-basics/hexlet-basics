@@ -281,10 +281,6 @@ type CheckPasswordResetTokenRes interface {
 	checkPasswordResetTokenRes()
 }
 
-type ConfirmPhoneAuthRes interface {
-	confirmPhoneAuthRes()
-}
-
 type ConsumeMagicLinkRes interface {
 	consumeMagicLinkRes()
 }
@@ -305,20 +301,8 @@ type CreateMagicLinkRes interface {
 	createMagicLinkRes()
 }
 
-type CreatePasskeyRes interface {
-	createPasskeyRes()
-}
-
-type CreatePasskeySessionRes interface {
-	createPasskeySessionRes()
-}
-
 type CreatePasswordReminderRes interface {
 	createPasswordReminderRes()
-}
-
-type CreatePhoneAuthRes interface {
-	createPhoneAuthRes()
 }
 
 type CreateSessionRes interface {
@@ -331,10 +315,6 @@ type CreateUserRes interface {
 
 type DeleteAccountRes interface {
 	deleteAccountRes()
-}
-
-type DeletePasskeyRes interface {
-	deletePasskeyRes()
 }
 
 type DeleteSessionRes interface {
@@ -361,10 +341,6 @@ type GetNextBlogPostRes interface {
 	getNextBlogPostRes()
 }
 
-type GetPageRes interface {
-	getPageRes()
-}
-
 type GetProfileRes interface {
 	getProfileRes()
 }
@@ -379,14 +355,6 @@ type LikeBlogPostRes interface {
 
 type ListAssistantMessagesRes interface {
 	listAssistantMessagesRes()
-}
-
-type ListPasskeysRes interface {
-	listPasskeysRes()
-}
-
-type NewPasskeyRes interface {
-	newPasskeyRes()
 }
 
 type StartLessonRes interface {

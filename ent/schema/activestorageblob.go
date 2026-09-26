@@ -10,9 +10,9 @@ import (
 // ActiveStorageBlob maps the legacy `active_storage_blobs` table — the metadata
 // record for one stored file (ActiveStorage). The read side needs `key`, which
 // is the bucket key the bytes live under: because the Go blob bucket points at
-// the same S3 bucket as ActiveStorage (ADR-0005), the shipped `/storage/{key}`
+// the same S3 bucket as ActiveStorage (ADR-0005), the shipped `/api/storage/{key}`
 // read path serves these legacy blobs directly, so a cover URL is just
-// `{origin}/storage/{key}`. Only the columns the read side reads are mapped.
+// `{origin}/api/storage/{key}`. Only the columns the read side reads are mapped.
 type ActiveStorageBlob struct {
 	ent.Schema
 }

@@ -8,7 +8,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/riverqueue/river"
-	"github.com/rs/cors"
 	"github.com/samber/do/v2"
 	"go.opentelemetry.io/contrib/otelconf"
 
@@ -306,24 +305,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// Dev CORS lets the Vite frontend (on any localhost port) call both
-		// the generated API and the hand-mounted routes.
+		// No CORS: the browser reaches the API on the site's own origin under
+		// `/api` (ADR-0015), through the ingress in production and the Vite
+		// proxy in development.
 		localized := translator.Middleware(router)
-		corsHandler := cors.New(cors.Options{
-			AllowedOrigins: []string{"http://localhost:*", "http://127.0.0.1:*"},
-			AllowedMethods: []string{
-				http.MethodGet,
-				http.MethodHead,
-				http.MethodPost,
-				http.MethodPut,
-				http.MethodPatch,
-				http.MethodDelete,
-				http.MethodOptions,
-			},
-			AllowedHeaders:   []string{"Accept", "Content-Type", "X-Requested-With", "X-XSRF-TOKEN"},
-			AllowCredentials: true,
-		}).Handler(localized)
-		return telemetry.NewSentryHTTPHandler(sentryClient, corsHandler), nil
+		return telemetry.NewSentryHTTPHandler(sentryClient, localized), nil
 	}),
 	// The process lifecycle coordinator starts and gracefully stops this
 	// server. Keeping the provider on the vendor type avoids coupling DI to

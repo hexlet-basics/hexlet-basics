@@ -30,7 +30,7 @@ type Config struct {
 	// local frontend in development, so a developer can follow the link.
 	SiteURL string `env:"SITE_URL" envDefault:"https://code-basics.com"`
 	// PublicURL is this server's own public origin, used to build absolute asset
-	// URLs it serves itself (the `/storage/{key}` blob read path). Separate from
+	// URLs it serves itself (the `/api/storage/{key}` blob read path). Separate from
 	// AppHost because the API may sit on a different host than the site.
 	PublicURL string `env:"PUBLIC_URL" envDefault:"http://localhost:3001"`
 	// CourseRepoBaseURL is the GitHub org base under which each course's exercises
