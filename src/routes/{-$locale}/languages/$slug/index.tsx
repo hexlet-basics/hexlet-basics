@@ -200,7 +200,7 @@ function Show() {
         {progress && (
           <Stack gap={4} mb="md" maw={320}>
             <Text size="sm">
-              {t(($) => $.courses.show.completion, { completion: progress.completion })}
+              {t(($) => $.courses.show.progress.completion, { completion: progress.completion })}
             </Text>
             <Progress value={progress.completion} aria-hidden="true" />
           </Stack>
