@@ -230,6 +230,44 @@ test("a finished learner is told so and offered no lesson", async () => {
   expect(page.getByRole("button", { name: "Try It" }).elements()).toHaveLength(0);
 });
 
+test("lays the program out by module, the first one open, and answers the landing page's questions", async () => {
+  const view: CourseView = {
+    ...courseView(midCourse),
+    modules: [
+      {
+        id: 1,
+        name: "Basics",
+        description: "The first program and variables.",
+        lessonSlugs: ["hello-world", "variables"],
+      },
+      { id: 3, name: "Text", description: "Working with strings.", lessonSlugs: ["strings"] },
+    ],
+    qnaItems: [{ id: 8001, question: "Is it free?", answer: "Yes, **entirely**." }],
+  };
+  worker.use(http.get("*/languages/javascript", () => HttpResponse.json(view)));
+
+  await renderCourse(learner);
+
+  // The first module is open: its lessons, marked, beside its description.
+  await expect.element(page.getByRole("heading", { name: "Basics" })).toBeVisible();
+  await expect.element(page.getByText("The first program and variables.")).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
+  await expect.element(page.getByRole("link", { name: "Variables" })).toBeVisible();
+  // Only the open module's lessons are shown; the next is folded until asked
+  // for, and opening it folds the first, as legacy's accordion did.
+  expect(lessonNames()).toEqual(["Hello, World!", "Variables"]);
+  await page.getByRole("button", { name: "Text" }).click();
+  await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
+  await expect.element(page.getByText("Working with strings.")).toBeVisible();
+  await expect.poll(lessonNames).toEqual(["Strings"]);
+
+  await expect
+    .element(page.getByRole("heading", { name: "Sorting out the questions" }))
+    .toBeVisible();
+  await expect.element(page.getByText("Is it free?")).toBeVisible();
+  await expect.element(page.getByText("entirely")).toBeVisible();
+});
+
 test("a finished learner is pointed on to the Hexlet program, tagged as a referral", async () => {
   const view = courseView(finished);
   view.course = { ...course, hexletProgramLandingPage: "https://ru.hexlet.io/programs/js?ref=1" };
