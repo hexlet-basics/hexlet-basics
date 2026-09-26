@@ -3847,6 +3847,89 @@ func (s *EnrollmentState) UnmarshalText(data []byte) error {
 	}
 }
 
+// The first visit's traffic source, as recorded by the browser.
+// Ref: #/components/schemas/FirstVisit
+type FirstVisit struct {
+	UtmSource   NilString `json:"utmSource"`
+	UtmMedium   NilString `json:"utmMedium"`
+	UtmCampaign NilString `json:"utmCampaign"`
+	UtmContent  NilString `json:"utmContent"`
+	UtmTerm     NilString `json:"utmTerm"`
+	// The full URL the visit landed on, query string included.
+	LandingPage NilString `json:"landingPage"`
+	Referrer    NilString `json:"referrer"`
+}
+
+// GetUtmSource returns the value of UtmSource.
+func (s *FirstVisit) GetUtmSource() NilString {
+	return s.UtmSource
+}
+
+// GetUtmMedium returns the value of UtmMedium.
+func (s *FirstVisit) GetUtmMedium() NilString {
+	return s.UtmMedium
+}
+
+// GetUtmCampaign returns the value of UtmCampaign.
+func (s *FirstVisit) GetUtmCampaign() NilString {
+	return s.UtmCampaign
+}
+
+// GetUtmContent returns the value of UtmContent.
+func (s *FirstVisit) GetUtmContent() NilString {
+	return s.UtmContent
+}
+
+// GetUtmTerm returns the value of UtmTerm.
+func (s *FirstVisit) GetUtmTerm() NilString {
+	return s.UtmTerm
+}
+
+// GetLandingPage returns the value of LandingPage.
+func (s *FirstVisit) GetLandingPage() NilString {
+	return s.LandingPage
+}
+
+// GetReferrer returns the value of Referrer.
+func (s *FirstVisit) GetReferrer() NilString {
+	return s.Referrer
+}
+
+// SetUtmSource sets the value of UtmSource.
+func (s *FirstVisit) SetUtmSource(val NilString) {
+	s.UtmSource = val
+}
+
+// SetUtmMedium sets the value of UtmMedium.
+func (s *FirstVisit) SetUtmMedium(val NilString) {
+	s.UtmMedium = val
+}
+
+// SetUtmCampaign sets the value of UtmCampaign.
+func (s *FirstVisit) SetUtmCampaign(val NilString) {
+	s.UtmCampaign = val
+}
+
+// SetUtmContent sets the value of UtmContent.
+func (s *FirstVisit) SetUtmContent(val NilString) {
+	s.UtmContent = val
+}
+
+// SetUtmTerm sets the value of UtmTerm.
+func (s *FirstVisit) SetUtmTerm(val NilString) {
+	s.UtmTerm = val
+}
+
+// SetLandingPage sets the value of LandingPage.
+func (s *FirstVisit) SetLandingPage(val NilString) {
+	s.LandingPage = val
+}
+
+// SetReferrer sets the value of Referrer.
+func (s *FirstVisit) SetReferrer(val NilString) {
+	s.Referrer = val
+}
+
 type GetYandexCoursesFeedOK struct {
 	Data io.Reader
 }
@@ -4048,6 +4131,10 @@ type LeadInput struct {
 	ContactMethod LeadInputContactMethod `json:"contactMethod"`
 	ContactValue  string                 `json:"contactValue"`
 	YmClientId    NilString              `json:"ymClientId"`
+	// Where the visitor first came from. Legacy read this off ahoy's visit; ahoy is not ported (ADR-0015),
+	// so the frontend keeps the first visit in a cookie and sends it with the form. Absent when the
+	// browser kept no cookie (blocked or cleared).
+	FirstVisit OptNilFirstVisit `json:"firstVisit"`
 }
 
 // GetContactMethod returns the value of ContactMethod.
@@ -4065,6 +4152,11 @@ func (s *LeadInput) GetYmClientId() NilString {
 	return s.YmClientId
 }
 
+// GetFirstVisit returns the value of FirstVisit.
+func (s *LeadInput) GetFirstVisit() OptNilFirstVisit {
+	return s.FirstVisit
+}
+
 // SetContactMethod sets the value of ContactMethod.
 func (s *LeadInput) SetContactMethod(val LeadInputContactMethod) {
 	s.ContactMethod = val
@@ -4078,6 +4170,11 @@ func (s *LeadInput) SetContactValue(val string) {
 // SetYmClientId sets the value of YmClientId.
 func (s *LeadInput) SetYmClientId(val NilString) {
 	s.YmClientId = val
+}
+
+// SetFirstVisit sets the value of FirstVisit.
+func (s *LeadInput) SetFirstVisit(val OptNilFirstVisit) {
+	s.FirstVisit = val
 }
 
 type LeadInputContactMethod string
@@ -5735,6 +5832,74 @@ func (o OptListQuerySortOrder) Get() (v ListQuerySortOrder, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptListQuerySortOrder) Or(d ListQuerySortOrder) ListQuerySortOrder {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilFirstVisit returns new OptNilFirstVisit with value set to v.
+func NewOptNilFirstVisit(v FirstVisit) OptNilFirstVisit {
+	return OptNilFirstVisit{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilFirstVisit is optional nullable FirstVisit.
+type OptNilFirstVisit struct {
+	Value FirstVisit
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilFirstVisit was set.
+func (o OptNilFirstVisit) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilFirstVisit) Reset() {
+	var v FirstVisit
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilFirstVisit) SetTo(v FirstVisit) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilFirstVisit) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilFirstVisit) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v FirstVisit
+	o.Value = v
+}
+
+// IsEmpty returns true if the field was omitted from the payload (not Set and not Null).
+func (o OptNilFirstVisit) IsEmpty() bool {
+	return !o.Set && !o.Null
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilFirstVisit) Get() (v FirstVisit, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilFirstVisit) Or(d FirstVisit) FirstVisit {
 	if v, ok := o.Get(); ok {
 		return v
 	}

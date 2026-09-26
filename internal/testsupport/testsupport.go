@@ -39,6 +39,7 @@ import (
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -194,7 +195,10 @@ func NewHarness(t *testing.T) *Harness {
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
-	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, translator, errorHandler)
+	// The real lead recorder too: a lead test asserts the stored row and the
+	// published fact, and both go through the test's transaction.
+	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
+	handler := handlers.NewServer(db, testConfig, enqueuer, enqueuer, enqueuer, tracker, assets, registrar, eventPublisher, leadRecorder, translator, errorHandler)
 	srv, err := api.NewServer(
 		handler,
 		handler.AuthHandler(),
@@ -208,9 +212,9 @@ func NewHarness(t *testing.T) *Harness {
 
 	security := newHarnessSecurity(t, db)
 	doer := &inProcessDoer{
-		server: translator.Middleware(handler.AuthHandler().Trace(
+		server: translator.Middleware(handler.AuthHandler().Trace(handlers.WithClientIP(
 			handler.AuthHandler().Identify(handler.AuthHandler().CarryGuestProgress(srv)),
-		)),
+		))),
 		jwt: security.jwt,
 	}
 	client, err := api.NewClient("http://test", security, api.WithClient(doer))
@@ -323,6 +327,12 @@ func NewVisitorHarness(t *testing.T, guest progress.GuestProgress) *Harness {
 // and the locale decides which translation of a lesson is served.
 func SpeakTo(h *Harness, locale string) {
 	h.doer.locale = locale
+}
+
+// ArriveFrom makes every following request come through the ingress on
+// behalf of a client at ip, the way production sees a browser.
+func ArriveFrom(h *Harness, ip string) {
+	h.doer.realIP = ip
 }
 
 // ForgeGuestCookie makes the harness carry progress signed with the wrong
@@ -557,6 +567,8 @@ type inProcessDoer struct {
 	guest string
 	// locale is the Accept-Language a browser would send.
 	locale string
+	// realIP is the client address the ingress would forward.
+	realIP string
 	// setCookies are the raw Set-Cookie headers of the last response.
 	setCookies []string
 }
@@ -576,6 +588,9 @@ func (d *inProcessDoer) Do(r *http.Request) (*http.Response, error) {
 	}
 	if d.locale != "" {
 		r.Header.Set("Accept-Language", d.locale)
+	}
+	if d.realIP != "" {
+		r.Header.Set("X-Real-IP", d.realIP)
 	}
 	// A streamed body (the generated multipart encoder writes through a pipe)
 	// has no length on the client side; over a socket net/http sends it chunked

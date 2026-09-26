@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -24,6 +25,12 @@ type LeadUpdate struct {
 // Where appends a list predicates to the LeadUpdate builder.
 func (_u *LeadUpdate) Where(ps ...predicate.Lead) *LeadUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LeadUpdate) SetUpdatedAt(v time.Time) *LeadUpdate {
+	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
@@ -168,6 +175,26 @@ func (_u *LeadUpdate) ClearCoursesData() *LeadUpdate {
 	return _u
 }
 
+// SetYmClientID sets the "ym_client_id" field.
+func (_u *LeadUpdate) SetYmClientID(v string) *LeadUpdate {
+	_u.mutation.SetYmClientID(v)
+	return _u
+}
+
+// SetNillableYmClientID sets the "ym_client_id" field if the given value is not nil.
+func (_u *LeadUpdate) SetNillableYmClientID(v *string) *LeadUpdate {
+	if v != nil {
+		_u.SetYmClientID(*v)
+	}
+	return _u
+}
+
+// ClearYmClientID clears the value of the "ym_client_id" field.
+func (_u *LeadUpdate) ClearYmClientID() *LeadUpdate {
+	_u.mutation.ClearYmClientID()
+	return _u
+}
+
 // Mutation returns the LeadMutation object of the builder.
 func (_u *LeadUpdate) Mutation() *LeadMutation {
 	return _u.mutation
@@ -175,6 +202,7 @@ func (_u *LeadUpdate) Mutation() *LeadMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *LeadUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -200,6 +228,14 @@ func (_u *LeadUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *LeadUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := lead.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (_u *LeadUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(lead.Table, lead.Columns, sqlgraph.NewFieldSpec(lead.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -208,6 +244,9 @@ func (_u *LeadUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(lead.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(lead.FieldUserID, field.TypeInt, value)
@@ -251,6 +290,12 @@ func (_u *LeadUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.CoursesDataCleared() {
 		_spec.ClearField(lead.FieldCoursesData, field.TypeString)
 	}
+	if value, ok := _u.mutation.YmClientID(); ok {
+		_spec.SetField(lead.FieldYmClientID, field.TypeString, value)
+	}
+	if _u.mutation.YmClientIDCleared() {
+		_spec.ClearField(lead.FieldYmClientID, field.TypeString)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{lead.Label}
@@ -269,6 +314,12 @@ type LeadUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *LeadMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *LeadUpdateOne) SetUpdatedAt(v time.Time) *LeadUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
@@ -412,6 +463,26 @@ func (_u *LeadUpdateOne) ClearCoursesData() *LeadUpdateOne {
 	return _u
 }
 
+// SetYmClientID sets the "ym_client_id" field.
+func (_u *LeadUpdateOne) SetYmClientID(v string) *LeadUpdateOne {
+	_u.mutation.SetYmClientID(v)
+	return _u
+}
+
+// SetNillableYmClientID sets the "ym_client_id" field if the given value is not nil.
+func (_u *LeadUpdateOne) SetNillableYmClientID(v *string) *LeadUpdateOne {
+	if v != nil {
+		_u.SetYmClientID(*v)
+	}
+	return _u
+}
+
+// ClearYmClientID clears the value of the "ym_client_id" field.
+func (_u *LeadUpdateOne) ClearYmClientID() *LeadUpdateOne {
+	_u.mutation.ClearYmClientID()
+	return _u
+}
+
 // Mutation returns the LeadMutation object of the builder.
 func (_u *LeadUpdateOne) Mutation() *LeadMutation {
 	return _u.mutation
@@ -432,6 +503,7 @@ func (_u *LeadUpdateOne) Select(field string, fields ...string) *LeadUpdateOne {
 
 // Save executes the query and returns the updated Lead entity.
 func (_u *LeadUpdateOne) Save(ctx context.Context) (*Lead, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -454,6 +526,14 @@ func (_u *LeadUpdateOne) Exec(ctx context.Context) error {
 func (_u *LeadUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *LeadUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
+		v := lead.UpdateDefaultUpdatedAt()
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -482,6 +562,9 @@ func (_u *LeadUpdateOne) sqlSave(ctx context.Context) (_node *Lead, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(lead.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(lead.FieldUserID, field.TypeInt, value)
@@ -524,6 +607,12 @@ func (_u *LeadUpdateOne) sqlSave(ctx context.Context) (_node *Lead, err error) {
 	}
 	if _u.mutation.CoursesDataCleared() {
 		_spec.ClearField(lead.FieldCoursesData, field.TypeString)
+	}
+	if value, ok := _u.mutation.YmClientID(); ok {
+		_spec.SetField(lead.FieldYmClientID, field.TypeString, value)
+	}
+	if _u.mutation.YmClientIDCleared() {
+		_spec.ClearField(lead.FieldYmClientID, field.TypeString)
 	}
 	_node = &Lead{config: _u.config}
 	_spec.Assign = _node.assignValues

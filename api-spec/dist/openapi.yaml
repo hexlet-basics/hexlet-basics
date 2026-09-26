@@ -5707,6 +5707,40 @@ components:
         - started
         - finished
       description: Enrollment and lesson-progress lifecycle (legacy `MemberState`).
+    FirstVisit:
+      type: object
+      required:
+        - utmSource
+        - utmMedium
+        - utmCampaign
+        - utmContent
+        - utmTerm
+        - landingPage
+        - referrer
+      properties:
+        utmSource:
+          type: string
+          nullable: true
+        utmMedium:
+          type: string
+          nullable: true
+        utmCampaign:
+          type: string
+          nullable: true
+        utmContent:
+          type: string
+          nullable: true
+        utmTerm:
+          type: string
+          nullable: true
+        landingPage:
+          type: string
+          nullable: true
+          description: The full URL the visit landed on, query string included.
+        referrer:
+          type: string
+          nullable: true
+      description: The first visit's traffic source, as recorded by the browser.
     LandingPageState:
       type: string
       enum:
@@ -5778,6 +5812,15 @@ components:
         ymClientId:
           type: string
           nullable: true
+        firstVisit:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/FirstVisit'
+          nullable: true
+          description: |-
+            Where the visitor first came from. Legacy read this off ahoy's visit; ahoy
+            is not ported (ADR-0015), so the frontend keeps the first visit in a cookie
+            and sends it with the form. Absent when the browser kept no cookie (blocked or cleared).
       description: 'A lead captured from a marketing form (legacy: `LeadCrud`).'
     LeadPage:
       type: object

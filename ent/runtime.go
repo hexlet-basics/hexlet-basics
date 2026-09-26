@@ -23,6 +23,7 @@ import (
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
+	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/ent/review"
 	"hexletbasics/ent/schema"
@@ -360,6 +361,21 @@ func init() {
 	landingpageqnaitem.DefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.Default.(func() time.Time)
 	// landingpageqnaitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	landingpageqnaitem.UpdateDefaultUpdatedAt = landingpageqnaitemDescUpdatedAt.UpdateDefault.(func() time.Time)
+	leadMixin := schema.Lead{}.Mixin()
+	leadMixinFields0 := leadMixin[0].Fields()
+	_ = leadMixinFields0
+	leadFields := schema.Lead{}.Fields()
+	_ = leadFields
+	// leadDescCreatedAt is the schema descriptor for created_at field.
+	leadDescCreatedAt := leadMixinFields0[0].Descriptor()
+	// lead.DefaultCreatedAt holds the default value on creation for the created_at field.
+	lead.DefaultCreatedAt = leadDescCreatedAt.Default.(func() time.Time)
+	// leadDescUpdatedAt is the schema descriptor for updated_at field.
+	leadDescUpdatedAt := leadMixinFields0[1].Descriptor()
+	// lead.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	lead.DefaultUpdatedAt = leadDescUpdatedAt.Default.(func() time.Time)
+	// lead.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	lead.UpdateDefaultUpdatedAt = leadDescUpdatedAt.UpdateDefault.(func() time.Time)
 	lessonprogressMixin := schema.LessonProgress{}.Mixin()
 	lessonprogressMixinFields0 := lessonprogressMixin[0].Fields()
 	_ = lessonprogressMixinFields0

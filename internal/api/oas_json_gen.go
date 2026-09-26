@@ -12120,6 +12120,190 @@ func (s *EnrollmentState) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode implements json.Marshaler.
+func (s *FirstVisit) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *FirstVisit) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("utmSource")
+		s.UtmSource.Encode(e)
+	}
+	{
+		e.FieldStart("utmMedium")
+		s.UtmMedium.Encode(e)
+	}
+	{
+		e.FieldStart("utmCampaign")
+		s.UtmCampaign.Encode(e)
+	}
+	{
+		e.FieldStart("utmContent")
+		s.UtmContent.Encode(e)
+	}
+	{
+		e.FieldStart("utmTerm")
+		s.UtmTerm.Encode(e)
+	}
+	{
+		e.FieldStart("landingPage")
+		s.LandingPage.Encode(e)
+	}
+	{
+		e.FieldStart("referrer")
+		s.Referrer.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfFirstVisit = [7]string{
+	0: "utmSource",
+	1: "utmMedium",
+	2: "utmCampaign",
+	3: "utmContent",
+	4: "utmTerm",
+	5: "landingPage",
+	6: "referrer",
+}
+
+// Decode decodes FirstVisit from json.
+func (s *FirstVisit) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode FirstVisit to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "utmSource":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				if err := s.UtmSource.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"utmSource\"")
+			}
+		case "utmMedium":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				if err := s.UtmMedium.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"utmMedium\"")
+			}
+		case "utmCampaign":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				if err := s.UtmCampaign.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"utmCampaign\"")
+			}
+		case "utmContent":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				if err := s.UtmContent.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"utmContent\"")
+			}
+		case "utmTerm":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				if err := s.UtmTerm.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"utmTerm\"")
+			}
+		case "landingPage":
+			requiredBitSet[0] |= 1 << 5
+			if err := func() error {
+				if err := s.LandingPage.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"landingPage\"")
+			}
+		case "referrer":
+			requiredBitSet[0] |= 1 << 6
+			if err := func() error {
+				if err := s.Referrer.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"referrer\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode FirstVisit")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b01111111,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfFirstVisit) {
+					name = jsonFieldsNameOfFirstVisit[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *FirstVisit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *FirstVisit) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes LandingPageState as json.
 func (s LandingPageState) Encode(e *jx.Encoder) {
 	e.Str(string(s))
@@ -12419,12 +12603,19 @@ func (s *LeadInput) encodeFields(e *jx.Encoder) {
 		e.FieldStart("ymClientId")
 		s.YmClientId.Encode(e)
 	}
+	{
+		if s.FirstVisit.Set {
+			e.FieldStart("firstVisit")
+			s.FirstVisit.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfLeadInput = [3]string{
+var jsonFieldsNameOfLeadInput = [4]string{
 	0: "contactMethod",
 	1: "contactValue",
 	2: "ymClientId",
+	3: "firstVisit",
 }
 
 // Decode decodes LeadInput from json.
@@ -12467,6 +12658,16 @@ func (s *LeadInput) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"ymClientId\"")
+			}
+		case "firstVisit":
+			if err := func() error {
+				s.FirstVisit.Reset()
+				if err := s.FirstVisit.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"firstVisit\"")
 			}
 		default:
 			return d.Skip()
@@ -15086,6 +15287,55 @@ func (s *NotFoundError) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *NotFoundError) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes FirstVisit as json.
+func (o OptNilFirstVisit) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	if o.Null {
+		e.Null()
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes FirstVisit from json.
+func (o *OptNilFirstVisit) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptNilFirstVisit to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v FirstVisit
+		o.Value = v
+		o.Set = true
+		o.Null = true
+		return nil
+	}
+	o.Set = true
+	o.Null = false
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptNilFirstVisit) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptNilFirstVisit) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

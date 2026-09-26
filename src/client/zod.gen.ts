@@ -311,6 +311,19 @@ export const zEmailInput = z.object({
 export const zEnrollmentState = z.enum(['started', 'finished']);
 
 /**
+ * The first visit's traffic source, as recorded by the browser.
+ */
+export const zFirstVisit = z.object({
+  utmSource: z.string().nullable(),
+  utmMedium: z.string().nullable(),
+  utmCampaign: z.string().nullable(),
+  utmContent: z.string().nullable(),
+  utmTerm: z.string().nullable(),
+  landingPage: z.string().nullable(),
+  referrer: z.string().nullable()
+});
+
+/**
  * Publication state shared by landing pages.
  */
 export const zLandingPageState = z.enum([
@@ -408,7 +421,8 @@ export const zLeadInput = z.object({
     'whatsapp'
   ]),
   contactValue: z.string().min(1),
-  ymClientId: z.string().nullable()
+  ymClientId: z.string().nullable(),
+  firstVisit: zFirstVisit.nullish()
 });
 
 /**

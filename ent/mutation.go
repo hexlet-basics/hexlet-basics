@@ -20577,6 +20577,8 @@ type LeadMutation struct {
 	op                  Op
 	typ                 string
 	id                  *int
+	created_at          *time.Time
+	updated_at          *time.Time
 	user_id             *int
 	adduser_id          *int
 	email               *string
@@ -20585,7 +20587,7 @@ type LeadMutation struct {
 	telegram            *string
 	survey_answers_data *string
 	courses_data        *string
-	created_at          *time.Time
+	ym_client_id        *string
 	clearedFields       map[string]struct{}
 	done                bool
 	oldValue            func(context.Context) (*Lead, error)
@@ -20688,6 +20690,78 @@ func (m *LeadMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LeadMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LeadMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LeadMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LeadMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LeadMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Lead entity.
+// If the Lead object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LeadMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LeadMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetUserID sets the "user_id" field.
@@ -21040,40 +21114,53 @@ func (m *LeadMutation) ResetCoursesData() {
 	delete(m.clearedFields, lead.FieldCoursesData)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *LeadMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
+// SetYmClientID sets the "ym_client_id" field.
+func (m *LeadMutation) SetYmClientID(s string) {
+	m.ym_client_id = &s
 }
 
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *LeadMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
+// YmClientID returns the value of the "ym_client_id" field in the mutation.
+func (m *LeadMutation) YmClientID() (r string, exists bool) {
+	v := m.ym_client_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Lead entity.
+// OldYmClientID returns the old "ym_client_id" field's value of the Lead entity.
 // If the Lead object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LeadMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *LeadMutation) OldYmClientID(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+		return v, errors.New("OldYmClientID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+		return v, errors.New("OldYmClientID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldYmClientID: %w", err)
 	}
-	return oldValue.CreatedAt, nil
+	return oldValue.YmClientID, nil
 }
 
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *LeadMutation) ResetCreatedAt() {
-	m.created_at = nil
+// ClearYmClientID clears the value of the "ym_client_id" field.
+func (m *LeadMutation) ClearYmClientID() {
+	m.ym_client_id = nil
+	m.clearedFields[lead.FieldYmClientID] = struct{}{}
+}
+
+// YmClientIDCleared returns if the "ym_client_id" field was cleared in this mutation.
+func (m *LeadMutation) YmClientIDCleared() bool {
+	_, ok := m.clearedFields[lead.FieldYmClientID]
+	return ok
+}
+
+// ResetYmClientID resets all changes to the "ym_client_id" field.
+func (m *LeadMutation) ResetYmClientID() {
+	m.ym_client_id = nil
+	delete(m.clearedFields, lead.FieldYmClientID)
 }
 
 // Where appends a list predicates to the LeadMutation builder.
@@ -21110,7 +21197,13 @@ func (m *LeadMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LeadMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 10)
+	if m.created_at != nil {
+		fields = append(fields, lead.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, lead.FieldUpdatedAt)
+	}
 	if m.user_id != nil {
 		fields = append(fields, lead.FieldUserID)
 	}
@@ -21132,8 +21225,8 @@ func (m *LeadMutation) Fields() []string {
 	if m.courses_data != nil {
 		fields = append(fields, lead.FieldCoursesData)
 	}
-	if m.created_at != nil {
-		fields = append(fields, lead.FieldCreatedAt)
+	if m.ym_client_id != nil {
+		fields = append(fields, lead.FieldYmClientID)
 	}
 	return fields
 }
@@ -21143,6 +21236,10 @@ func (m *LeadMutation) Fields() []string {
 // schema.
 func (m *LeadMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case lead.FieldCreatedAt:
+		return m.CreatedAt()
+	case lead.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case lead.FieldUserID:
 		return m.UserID()
 	case lead.FieldEmail:
@@ -21157,8 +21254,8 @@ func (m *LeadMutation) Field(name string) (ent.Value, bool) {
 		return m.SurveyAnswersData()
 	case lead.FieldCoursesData:
 		return m.CoursesData()
-	case lead.FieldCreatedAt:
-		return m.CreatedAt()
+	case lead.FieldYmClientID:
+		return m.YmClientID()
 	}
 	return nil, false
 }
@@ -21168,6 +21265,10 @@ func (m *LeadMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *LeadMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case lead.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case lead.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case lead.FieldUserID:
 		return m.OldUserID(ctx)
 	case lead.FieldEmail:
@@ -21182,8 +21283,8 @@ func (m *LeadMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSurveyAnswersData(ctx)
 	case lead.FieldCoursesData:
 		return m.OldCoursesData(ctx)
-	case lead.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
+	case lead.FieldYmClientID:
+		return m.OldYmClientID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Lead field %s", name)
 }
@@ -21193,6 +21294,20 @@ func (m *LeadMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *LeadMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case lead.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case lead.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case lead.FieldUserID:
 		v, ok := value.(int)
 		if !ok {
@@ -21242,12 +21357,12 @@ func (m *LeadMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCoursesData(v)
 		return nil
-	case lead.FieldCreatedAt:
-		v, ok := value.(time.Time)
+	case lead.FieldYmClientID:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCreatedAt(v)
+		m.SetYmClientID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Lead field %s", name)
@@ -21312,6 +21427,9 @@ func (m *LeadMutation) ClearedFields() []string {
 	if m.FieldCleared(lead.FieldCoursesData) {
 		fields = append(fields, lead.FieldCoursesData)
 	}
+	if m.FieldCleared(lead.FieldYmClientID) {
+		fields = append(fields, lead.FieldYmClientID)
+	}
 	return fields
 }
 
@@ -21344,6 +21462,9 @@ func (m *LeadMutation) ClearField(name string) error {
 	case lead.FieldCoursesData:
 		m.ClearCoursesData()
 		return nil
+	case lead.FieldYmClientID:
+		m.ClearYmClientID()
+		return nil
 	}
 	return fmt.Errorf("unknown Lead nullable field %s", name)
 }
@@ -21352,6 +21473,12 @@ func (m *LeadMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *LeadMutation) ResetField(name string) error {
 	switch name {
+	case lead.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case lead.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case lead.FieldUserID:
 		m.ResetUserID()
 		return nil
@@ -21373,8 +21500,8 @@ func (m *LeadMutation) ResetField(name string) error {
 	case lead.FieldCoursesData:
 		m.ResetCoursesData()
 		return nil
-	case lead.FieldCreatedAt:
-		m.ResetCreatedAt()
+	case lead.FieldYmClientID:
+		m.ResetYmClientID()
 		return nil
 	}
 	return fmt.Errorf("unknown Lead field %s", name)

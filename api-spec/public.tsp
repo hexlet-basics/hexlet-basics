@@ -176,6 +176,25 @@ model LeadInput {
   contactMethod: "telegram" | "phone" | "whatsapp";
   @minLength(1) contactValue: string;
   ymClientId: string | null;
+
+  /**
+   * Where the visitor first came from. Legacy read this off ahoy's visit; ahoy
+   * is not ported (ADR-0015), so the frontend keeps the first visit in a cookie
+   * and sends it with the form. Absent when the browser kept no cookie (blocked or cleared).
+   */
+  firstVisit?: FirstVisit | null;
+}
+
+/** The first visit's traffic source, as recorded by the browser. */
+model FirstVisit {
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  utmContent: string | null;
+  utmTerm: string | null;
+  /** The full URL the visit landed on, query string included. */
+  landingPage: string | null;
+  referrer: string | null;
 }
 
 @route("/leads")

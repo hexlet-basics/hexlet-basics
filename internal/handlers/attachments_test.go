@@ -76,6 +76,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 		assets,
 		testsupport.NewRecordingRegistrar(db),
 		&testsupport.RecordingEventPublisher{},
+		nil, // no lead is submitted here
 		translator,
 		errorHandler,
 	)

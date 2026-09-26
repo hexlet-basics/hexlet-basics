@@ -22,6 +22,7 @@ require (
 	github.com/go-faster/jx v1.2.0
 	github.com/go-git/go-git/v5 v5.19.2
 	github.com/go-pkgz/auth/v2 v2.3.0
+	github.com/go-pkgz/rest v1.24.0
 	github.com/go-testfixtures/testfixtures/v3 v3.19.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/go-github/v89 v89.0.0
@@ -131,7 +132,6 @@ require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-openapi/inflect v1.0.1 // indirect
 	github.com/go-pkgz/repeater/v2 v2.2.0 // indirect
-	github.com/go-pkgz/rest v1.24.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
