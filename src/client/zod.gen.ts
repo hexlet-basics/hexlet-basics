@@ -236,6 +236,7 @@ export const zCourseInput = z.object({
  */
 export const zCourseVersion = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  name: z.string().nullable(),
   result: z.string().nullable(),
   state: z.string().nullable(),
   createdAt: z.iso.datetime()

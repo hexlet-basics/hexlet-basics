@@ -5724,6 +5724,7 @@ components:
       type: object
       required:
         - id
+        - name
         - result
         - state
         - createdAt
@@ -5731,6 +5732,12 @@ components:
         id:
           type: integer
           format: int32
+        name:
+          type: string
+          nullable: true
+          description: |-
+            The name the course's spec gives this build (e.g. "JavaScript"). Legacy's
+            lesson page opens its meta description with it, in brackets.
         result:
           type: string
           nullable: true

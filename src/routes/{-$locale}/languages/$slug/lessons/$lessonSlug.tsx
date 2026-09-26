@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
+import type { CourseLessonView } from "@/client/types.gen";
 import LessonPage, { LessonMissing } from "@/components/lesson/LessonPage";
+import { seoHead } from "@/lib/seo-head";
 
 // The lesson player, at its legacy URL (ADR-0002) under the optional locale
 // prefix.
@@ -18,6 +20,44 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
     context.queryClient.ensureQueryData(
       getCourseLessonOptions({ path: { courseSlug: params.slug, slug: params.lessonSlug } }),
     ),
+  // Legacy lessons#show meta, composed from the payload: a title naming the
+  // lesson and the course's landing copy, a description drawn from the theory,
+  // the canonical link, and Open Graph as an article with the course cover.
+  // Legacy gave this page no og:description and no Twitter card, so the shared
+  // social block is off and the Open Graph tags it did emit are listed here.
+  head: ({ loaderData, match }) => {
+    if (!loaderData) return {};
+    const { i18n } = match.context;
+    const { lesson, landingPage } = loaderData;
+    // The copy is a YAML block scalar ending in a newline, which legacy squished.
+    const title = squish(
+      i18n.t(($) => $.courses.lessons.show.title, {
+        lesson_name: lesson.name ?? "",
+        language_name: landingPage?.name ?? "",
+      }),
+    );
+    const head = seoHead({
+      i18n,
+      title,
+      description: lessonDescription(loaderData),
+      canonicalPath: match.pathname,
+      social: false,
+    });
+    // og:url is the canonical, so the two cannot drift apart.
+    const url = head.links[0]?.href;
+    const image = lesson.course.coverListVariant;
+    return {
+      meta: [
+        ...head.meta,
+        { property: "og:type", content: "article" },
+        { property: "og:locale", content: i18n.language },
+        { property: "og:title", content: title },
+        ...(url ? [{ property: "og:url", content: url }] : []),
+        ...(image ? [{ property: "og:image", content: image }] : []),
+      ],
+      links: [...head.links, ...(image ? [{ rel: "image_src", href: image }] : [])],
+    };
+  },
   // A slug that resolves to nothing rejects in the loader, above the page, so
   // the apology for it lives here rather than in a branch the page cannot reach.
   errorComponent: LessonMissing,
@@ -27,4 +67,27 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
 function LessonRoute() {
   const { slug, lessonSlug } = Route.useParams();
   return <LessonPage courseSlug={slug} lessonSlug={lessonSlug} />;
+}
+
+// Legacy's description: `[<version name>] — <lesson> — <theory>`, cut by Rails'
+// `truncate(length: 220)` — 217 characters and an ellipsis, mid-word — and then
+// whitespace-squashed by meta-tags. The theory is the raw markdown, as legacy
+// used it, and characters are counted as code points, the way Ruby counts them.
+const DESCRIPTION_LENGTH = 220;
+const OMISSION = "...";
+
+function lessonDescription({ lesson }: CourseLessonView): string {
+  const version = lesson.course.currentVersion?.name ?? "";
+  const text = `[${version}] — ${lesson.name ?? ""} — ${lesson.theory ?? ""}`;
+  const chars = Array.from(text);
+  const truncated =
+    chars.length > DESCRIPTION_LENGTH
+      ? chars.slice(0, DESCRIPTION_LENGTH - OMISSION.length).join("") + OMISSION
+      : text;
+  return squish(truncated);
+}
+
+// Rails' `squish`: every whitespace run to one space, both ends trimmed.
+function squish(text: string): string {
+  return text.replace(/\s+/g, " ").trim();
 }

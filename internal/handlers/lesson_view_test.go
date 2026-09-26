@@ -51,6 +51,9 @@ func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
 	// The version the client submits its solution against.
 	assert.Equal(t, lesson.VersionId, lesson.Version.Value)
 	assert.NotZero(t, lesson.VersionId)
+
+	// The build's own name, which the page's meta description opens with.
+	assert.Equal(t, "Основы JavaScript", lesson.Course.CurrentVersion.Value.Name.Value)
 }
 
 // The player titles the page with the course's landing copy, not with the
