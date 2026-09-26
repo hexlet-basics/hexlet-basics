@@ -25,8 +25,8 @@ type Config struct {
 	// public/book.pdf). It is uploaded once, out of band, at cutover rather than
 	// shipped in the image: at ~28 MB it has no place in the repo or the build.
 	BookBlobKey string `env:"BOOK_BLOB_KEY" envDefault:"book.pdf"`
-	// AppHost is the public site host used to build canonical page URLs (e.g. a
-	// blog post's `url`), mirroring legacy AppHost.canonical. HTTPS is assumed in
+	// AppHost is the canonical public site host the Yandex feed builds its
+	// absolute URLs on, mirroring legacy AppHost.canonical. HTTPS is assumed in
 	// prod; the default matches the legacy default.
 	AppHost string `env:"APP_HOST" envDefault:"code-basics.com"`
 	// SiteURL is the origin of the public site that emailed links open. Unlike

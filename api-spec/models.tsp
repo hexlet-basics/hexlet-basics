@@ -414,7 +414,6 @@ model BlogPost {
   description: string | null;
   state: BlogPostState | null;
   locale: string | null;
-  url: string;
   richBodyHtml: string;
   readingTime: int32;
   likesCount: int32;

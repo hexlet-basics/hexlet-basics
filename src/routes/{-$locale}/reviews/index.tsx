@@ -18,6 +18,7 @@ import { listPublicReviewsOptions } from "@/client/@tanstack/react-query.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import Pager from "@/components/Pager";
 import { longDate } from "@/lib/time-ago";
+import { seoHead } from "@/lib/seo-head";
 
 // Where a ru reader is sent to leave a review (legacy reviews/index).
 const ADD_REVIEW_URL = "https://taplink.cc/codebasics_reviews";
@@ -32,24 +33,17 @@ export const Route = createFileRoute("/{-$locale}/reviews/")({
   loaderDeps: ({ search }) => ({ page: search.page }),
   loader: ({ context, deps }) =>
     context.queryClient.ensureQueryData(listPublicReviewsOptions({ query: { page: deps.page } })),
-  // Legacy meta: the header as title (behind the site name, as meta-tags
-  // rendered it) and og:title (legacy asked for a `.title` key that never
-  // existed), the reviews description, and a summary Twitter card. The
-  // canonical link is left out until the frontend knows its own public origin.
+  // Legacy meta: the header as title and og:title (legacy asked for a `.title`
+  // key that never existed), the reviews description, the canonical link and
+  // the social tags.
   head: ({ match }) => {
-    const { t } = match.context.i18n;
-    const title = t(($) => $.reviews.index.header);
-    const description = t(($) => $.reviews.index.meta.description);
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-    };
+    const { i18n } = match.context;
+    return seoHead({
+      i18n,
+      title: i18n.t(($) => $.reviews.index.header),
+      description: i18n.t(($) => $.reviews.index.meta.description),
+      canonicalPath: match.pathname,
+    });
   },
   component: Index,
 });

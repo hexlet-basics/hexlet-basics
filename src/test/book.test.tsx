@@ -33,7 +33,7 @@ function openBook(visitor: User | null, initialPath = "/ru/book") {
 }
 
 test("a visitor is sent to sign in to request the book, with no lead form", async () => {
-  serveBook(() => ({ requested: false, url: "https://code-basics.com/ru/book" }));
+  serveBook(() => ({ requested: false }));
 
   const { router } = await openBook(null);
 
@@ -51,7 +51,7 @@ test("a visitor is sent to sign in to request the book, with no lead form", asyn
   expect(match?.meta).toContainEqual({ name: "twitter:site", content: "@hexlethq" });
   expect(match?.links).toContainEqual({
     rel: "canonical",
-    href: "https://code-basics.com/ru/book",
+    href: `${window.location.origin}/ru/book`,
   });
   const description = match?.meta?.find((tag) => tag?.name === "description")?.content;
   expect(description).toHaveLength(160);
@@ -59,7 +59,7 @@ test("a visitor is sent to sign in to request the book, with no lead form", asyn
 
 test("a user requests the book and then gets the download link", async () => {
   let requested = false;
-  serveBook(() => ({ requested, url: "https://code-basics.com/ru/book" }));
+  serveBook(() => ({ requested }));
   worker.use(
     http.post("*/api/book/create_request", () => {
       requested = true;
@@ -81,7 +81,7 @@ test("a user requests the book and then gets the download link", async () => {
 });
 
 test("the book is not a page outside ru", async () => {
-  serveBook(() => ({ requested: false, url: "https://code-basics.com/ru/book" }));
+  serveBook(() => ({ requested: false }));
 
   const { router } = await openBook(null, "/es/book");
 

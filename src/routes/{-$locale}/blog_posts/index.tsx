@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { listBlogPostsOptions } from "@/client/@tanstack/react-query.gen";
 import BlogPostBlock from "@/components/BlogPostBlock";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
+import { seoHead } from "@/lib/seo-head";
 
 // The blog, at its legacy URL, ported from legacy blog_posts/index. The list is
 // the first page only: legacy paginated server-side but its pager was commented
@@ -12,23 +13,16 @@ import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 // posts are in the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/blog_posts/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(listBlogPostsOptions()),
-  // Legacy meta: the header as title (behind the site name, as meta-tags
-  // rendered it), the blog description, and a summary Twitter card. The
-  // canonical link is left out until the frontend knows its own public origin.
+  // Legacy meta: the header as title, the blog description, the canonical link
+  // and the social tags.
   head: ({ match }) => {
-    const { t } = match.context.i18n;
-    const title = t(($) => $.blog_posts.index.header);
-    const description = t(($) => $.blog_posts.index.meta.description);
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-    };
+    const { i18n } = match.context;
+    return seoHead({
+      i18n,
+      title: i18n.t(($) => $.blog_posts.index.header),
+      description: i18n.t(($) => $.blog_posts.index.meta.description),
+      canonicalPath: match.pathname,
+    });
   },
   component: Index,
 });

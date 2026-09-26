@@ -27,9 +27,11 @@ import (
 // as "not implemented" until their handler lands (contract-first, ADR-0001);
 // methods defined on Server override the embedded stubs.
 //
-// cfg supplies the public hosts used to build absolute URLs in read models
-// (canonical page URLs via AppHost, self-served asset URLs via PublicURL) —
-// there is no *http.Request at the ogen handler boundary to derive them from.
+// cfg supplies the public origins used to build absolute URLs in read models
+// (self-served asset URLs via PublicURL, emailed and redirect links via
+// SiteURL) — there is no *http.Request at the ogen handler boundary to derive
+// them from. Canonical page links are the frontend's: it knows the page's own
+// path.
 type Server struct {
 	api.UnimplementedHandler
 	db      *ent.Client

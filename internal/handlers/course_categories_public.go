@@ -79,18 +79,7 @@ func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPubl
 
 	return &api.CourseCategoryView{
 		Category:     s.conv.ToCourseCategory(category),
-		URL:          s.courseCategoryURL(locale, params.Slug),
 		LandingPages: s.conv.ToCatalogItems(pages),
 		QnaItems:     s.conv.ToCategoryQnaItems(qnaItems),
 	}, nil
-}
-
-// courseCategoryURL is legacy `language_category_url`: English unprefixed, the
-// other locales under their prefix (ADR-0015), on the site's own host.
-func (s *Server) courseCategoryURL(locale, slug string) string {
-	prefix := ""
-	if locale != "en" {
-		prefix = "/" + locale
-	}
-	return "https://" + s.cfg.AppHost + prefix + "/language_categories/" + slug
 }

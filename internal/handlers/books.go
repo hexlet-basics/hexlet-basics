@@ -28,7 +28,7 @@ var bookDelivery = assetstore.Delivery{
 // requested the book, in any state, which picks the request or the download
 // button. A visitor has no request, so the page renders for them too.
 func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
-	view := &api.BookView{URL: "https://" + s.cfg.AppHost + bookPath}
+	view := &api.BookView{}
 	u, ok := AuthenticatedUser(ctx)
 	if !ok {
 		return view, nil

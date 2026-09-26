@@ -23,6 +23,7 @@ import (
 	"hexletbasics/ent/landingpage"
 
 	"hexletbasics/internal/landingpages"
+	"hexletbasics/internal/localization"
 )
 
 // feedLocale is the only locale the Yandex feed speaks: Yandex's course
@@ -127,7 +128,7 @@ func (y *Yandex) Build(ctx context.Context) ([]byte, error) {
 		Shop: shop{
 			Name:        shopName,
 			Company:     shopCompany,
-			URL:         y.origin + "/" + feedLocale,
+			URL:         y.origin + localization.PathPrefix(feedLocale),
 			Email:       shopEmail,
 			Description: shopDescription,
 			Picture:     shopPicture,
@@ -303,7 +304,7 @@ func (y *Yandex) offer(page *ent.LandingPage, crs *ent.Course, plan []*ent.Cours
 
 // localized is an absolute ru page URL.
 func (y *Yandex) localized(path string) string {
-	return y.origin + "/" + feedLocale + path
+	return y.origin + localization.PathPrefix(feedLocale) + path
 }
 
 type catalog struct {

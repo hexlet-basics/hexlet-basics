@@ -12,6 +12,7 @@ import type { i18n as I18n } from "i18next";
 import { type ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import { NotFoundPage } from "@/components/ErrorPage";
+import { SITE_NAME } from "@/lib/seo-head";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import { type AuthUser, resolveCurrentUser } from "@/lib/auth";
 import { recordFirstVisit } from "@/lib/first-visit";
@@ -33,7 +34,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Hexlet Basics" },
+      { title: SITE_NAME },
     ],
   }),
   // A path the locale layout refuses (`/unknownpage`, `/xx/...`, `/en/...`)

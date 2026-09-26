@@ -3,6 +3,7 @@ import { IconArrowRight } from "@tabler/icons-react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { TextLink } from "@/components/RouterLink";
+import { seoHead } from "@/lib/seo-head";
 
 // The cases list, ported from legacy cases/index. Legacy served it for ru only
 // (`require_russian_locale`, whose RoutingError is a 404).
@@ -12,13 +13,13 @@ export const Route = createFileRoute("/{-$locale}/cases/")({
   },
   // Legacy meta: title and description only.
   head: ({ match }) => {
-    const { t } = match.context.i18n;
-    return {
-      meta: [
-        { title: `CodeBasics | ${t(($) => $.cases.index.title)}` },
-        { name: "description", content: t(($) => $.cases.index.meta.description) },
-      ],
-    };
+    const { i18n } = match.context;
+    return seoHead({
+      i18n,
+      title: i18n.t(($) => $.cases.index.title),
+      description: i18n.t(($) => $.cases.index.meta.description),
+      social: false,
+    });
   },
   component: Index,
 });

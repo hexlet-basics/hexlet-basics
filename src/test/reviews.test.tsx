@@ -94,6 +94,11 @@ test("the reviews page lists the reviews the API returns, with a pager", async (
   const meta = router.state.matches.at(-1)?.meta;
   expect(meta).toContainEqual({ title: "CodeBasics | Reviews" });
   expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
+  // The canonical is the list itself, whatever page the visitor is on.
+  expect(router.state.matches.at(-1)?.links).toContainEqual({
+    rel: "canonical",
+    href: `${window.location.origin}/reviews`,
+  });
 });
 
 test("a page in the URL is the page asked of the API", async () => {

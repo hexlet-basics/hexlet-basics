@@ -18,7 +18,7 @@ import integrationIcon from "@/assets/for-school-teachers-page/integration-icon.
 import interactiveFormatIcon from "@/assets/for-school-teachers-page/interactive-format-icon.svg";
 import practiceIcon from "@/assets/for-school-teachers-page/practice-icon.svg";
 import { ButtonLink } from "@/components/RouterLink";
-import { siteUrl } from "@/lib/site-url";
+import { seoHead } from "@/lib/seo-head";
 
 // The case for school and university teachers, ported from legacy
 // cases/for_teachers. Legacy served it for ru only (`require_russian_locale`),
@@ -28,26 +28,19 @@ export const Route = createFileRoute("/{-$locale}/cases/for_teachers")({
     if (params.locale !== "ru") throw notFound();
   },
   // Legacy meta: title, the description cut as Rails `truncate(160)` cut it,
-  // Open Graph and a summary Twitter card. Legacy pointed the canonical at the
-  // book page by mistake; it is the page's own URL here.
+  // and the social tags. Legacy pointed the canonical at the book page by
+  // mistake; it is the page's own URL here.
   head: ({ match }) => {
-    const { t } = match.context.i18n;
-    const title = t(($) => $.cases.for_teachers.title);
-    const description = truncate(
-      t(($) => $.cases.for_teachers.meta.description),
-      160,
-    );
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-      links: [{ rel: "canonical", href: siteUrl(match.pathname) }],
-    };
+    const { i18n } = match.context;
+    return seoHead({
+      i18n,
+      title: i18n.t(($) => $.cases.for_teachers.title),
+      description: truncate(
+        i18n.t(($) => $.cases.for_teachers.meta.description),
+        160,
+      ),
+      canonicalPath: match.pathname,
+    });
   },
   component: ForTeachers,
 });

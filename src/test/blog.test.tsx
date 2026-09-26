@@ -41,7 +41,6 @@ function blogPost(overrides: Partial<BlogPost>): BlogPost {
     description: "The very first post",
     state: "published",
     locale: "en",
-    url: "https://code-basics.com/blog_posts/hello-world",
     richBodyHtml: "<p>Hello <strong>world</strong> from the blog</p>",
     readingTime: 0,
     likesCount: 2,
@@ -122,6 +121,10 @@ test("the blog lists the posts the API returns", async () => {
   const meta = router.state.matches.at(-1)?.meta;
   expect(meta).toContainEqual({ title: "CodeBasics | Blog" });
   expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
+  expect(router.state.matches.at(-1)?.links).toContainEqual({
+    rel: "canonical",
+    href: `${window.location.origin}/blog_posts`,
+  });
 });
 
 test("a post shows its stored body, its courses and two more posts", async () => {
@@ -138,7 +141,10 @@ test("a post shows its stored body, its courses and two more posts", async () =>
   // The route's head: title, canonical URL and the schema.org Article.
   const match = router.state.matches.at(-1);
   expect(match?.meta).toContainEqual({ title: "CodeBasics | Hello world" });
-  expect(match?.links).toContainEqual({ rel: "canonical", href: post.url });
+  expect(match?.links).toContainEqual({
+    rel: "canonical",
+    href: `${window.location.origin}/blog_posts/hello-world`,
+  });
   expect(match?.headScripts?.[0]?.children).toContain('"@type":"Article"');
 });
 

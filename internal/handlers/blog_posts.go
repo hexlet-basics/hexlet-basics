@@ -218,7 +218,6 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 			Description:             apiconv.NilStringFromPtr(p.Description),
 			State:                   nilBlogPostState(p.State),
 			Locale:                  apiconv.NilStringFromPtr(p.Locale),
-			URL:                     s.blogPostURL(p.Slug, p.Locale),
 			RichBodyHtml:            p.RichBody,
 			ReadingTime:             readingTime(p.RichBody),
 			LikesCount:              int32(likesByPost[p.ID]),
@@ -319,27 +318,6 @@ func (s *Server) coverVariant(key string) api.NilString {
 		return api.NilString{Null: true}
 	}
 	return api.NewNilString(s.cfg.PublicURL + "/api/storage/" + key)
-}
-
-// blogPostURL mirrors legacy blog_post_url(slug, suffix): the canonical site URL
-// for the post, with a locale path segment for non-default locales (en, the
-// default, has no prefix — see legacy AppHost.locale_for_url).
-//
-// Divergence, on purpose: legacy uses the REQUEST locale (I18n.locale, the admin
-// UI's current language) as the suffix, not the post's own locale. There is no
-// request locale at the ogen handler boundary yet (the known admin-locale design
-// gap), so we substitute the post's own locale — arguably more correct for a
-// canonical link, and revisitable once request locale reaches handlers.
-func (s *Server) blogPostURL(slug, locale *string) string {
-	var slugPart string
-	if slug != nil {
-		slugPart = *slug
-	}
-	prefix := ""
-	if locale != nil && *locale != "" && *locale != "en" {
-		prefix = "/" + *locale
-	}
-	return "https://" + s.cfg.AppHost + prefix + "/blog_posts/" + slugPart
 }
 
 // readingTime estimates minutes-to-read from the rich body, matching the legacy

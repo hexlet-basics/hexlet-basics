@@ -24,7 +24,7 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -36,6 +36,7 @@ import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import CourseBlock from "@/components/CourseBlock";
 import { ActionIconLink, TextLink } from "@/components/RouterLink";
 import { timeAgo } from "@/lib/time-ago";
+import { seoHead } from "@/lib/seo-head";
 
 // A blog post, at its legacy URL, ported from legacy blog_posts/show. Reading on
 // scrolls into the next older post (legacy useInfiniteItems), and the address
@@ -53,14 +54,11 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       throw error;
     }
   },
-  // Legacy meta: the post's name and description, its canonical URL (the API
-  // builds the absolute legacy URL), the cover as og:image, and a schema.org
-  // Article carrying the like count.
+  // Legacy meta: the post's name and description, its canonical URL, the cover
+  // as og:image, and a schema.org Article carrying the like count.
   head: ({ loaderData, match }) => {
     if (!loaderData) return {};
     const { post } = loaderData;
-    const name = post.name ?? "";
-    const description = post.description ?? "";
     const article = {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -78,21 +76,13 @@ export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
       ],
     };
     return {
-      meta: [
-        { title: `CodeBasics | ${name}` },
-        { name: "description", content: description },
-        { name: "twitter:card", content: "summary" },
-        {
-          name: "twitter:site",
-          content: match.context.i18n.t(($) => $.links.hexlet_twitter_handle),
-        },
-        { property: "og:title", content: name },
-        { property: "og:description", content: description },
-        ...(post.coverMainVariant
-          ? [{ property: "og:image", content: post.coverMainVariant }]
-          : []),
-      ],
-      links: [{ rel: "canonical", href: post.url }],
+      ...seoHead({
+        i18n: match.context.i18n,
+        title: post.name ?? "",
+        description: post.description ?? "",
+        image: post.coverMainVariant,
+        canonicalPath: match.pathname,
+      }),
       scripts: [
         {
           type: "application/ld+json",
@@ -212,6 +202,10 @@ function PostChain({
 function useSyncedUrl() {
   // Insertion order is chain order: posts only ever append.
   const boxes = useRef(new Map<number, { post: BlogPost; element: HTMLElement }>());
+  // The chain is in the page's locale, so each post's path is built under the
+  // page's own locale segment, by the router that owns the prefix rule.
+  const router = useRouter();
+  const { locale } = Route.useParams();
 
   useEffect(() => {
     let frame = 0;
@@ -234,7 +228,10 @@ function useSyncedUrl() {
       }
 
       if (!active) return;
-      const { pathname } = new URL(active.post.url);
+      const { pathname } = router.buildLocation({
+        to: "/{-$locale}/blog_posts/$slug",
+        params: { locale, slug: active.post.slug ?? "" },
+      });
       if (window.location.pathname !== pathname) {
         window.history.replaceState(window.history.state, "", pathname);
       }
@@ -250,7 +247,7 @@ function useSyncedUrl() {
       window.removeEventListener("scroll", onScroll);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [router, locale]);
 
   return (post: BlogPost, element: HTMLElement | null) => {
     if (element) boxes.current.set(post.id, { post, element });

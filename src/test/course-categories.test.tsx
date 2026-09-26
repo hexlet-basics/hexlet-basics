@@ -78,7 +78,6 @@ const rubyLanding: CourseCatalogItem = {
 
 const view: CourseCategoryView = {
   category: programming,
-  url: "https://code-basics.com/language_categories/programming",
   landingPages: [rubyLanding],
   qnaItems: [{ id: 1, question: "Is experience required?", answer: "No, **none**." }],
 };
@@ -113,6 +112,10 @@ test("the index links every category the API returns", async () => {
   const meta = router.state.matches.at(-1)?.meta;
   expect(meta).toContainEqual({ title: "CodeBasics | Course categories" });
   expect(meta).toContainEqual({ name: "twitter:site", content: "@hexlet_io" });
+  expect(router.state.matches.at(-1)?.links).toContainEqual({
+    rel: "canonical",
+    href: `${window.location.origin}/language_categories`,
+  });
 });
 
 test("a category shows its courses and questions, with the legacy head", async () => {
@@ -135,7 +138,10 @@ test("a category shows its courses and questions, with the legacy head", async (
     name: "description",
     content: expect.stringContaining("in the Programming category"),
   });
-  expect(match?.links).toContainEqual({ rel: "canonical", href: view.url });
+  expect(match?.links).toContainEqual({
+    rel: "canonical",
+    href: `${window.location.origin}/language_categories/programming`,
+  });
 });
 
 test("a signed-in visitor on the ru site is offered a consultation", async () => {

@@ -9,6 +9,7 @@ import CourseBlock from "@/components/CourseBlock";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import { TextLink } from "@/components/RouterLink";
+import { seoHead } from "@/lib/seo-head";
 
 // A course category, at its legacy URL, ported from legacy
 // language_categories/show: the category's courses, a consultation form for
@@ -27,26 +28,18 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
     }
   },
   // Legacy meta: title and description built around the category header, the
-  // page's canonical URL (the API builds the absolute legacy URL) and a summary
-  // Twitter card.
+  // canonical link and the social tags.
   head: ({ loaderData, match }) => {
     if (!loaderData) return {};
-    const { t } = match.context.i18n;
+    const { i18n } = match.context;
     const name = loaderData.category.header ?? "";
-    // The ru copy ends in a newline, which legacy's title tag trimmed away.
-    const title = t(($) => $.course_categories.show.header, { name }).trim();
-    const description = t(($) => $.course_categories.show.meta.description, { name });
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-      links: [{ rel: "canonical", href: loaderData.url }],
-    };
+    return seoHead({
+      i18n,
+      // The ru copy ends in a newline, which legacy's title tag trimmed away.
+      title: i18n.t(($) => $.course_categories.show.header, { name }).trim(),
+      description: i18n.t(($) => $.course_categories.show.meta.description, { name }),
+      canonicalPath: match.pathname,
+    });
   },
   component: Show,
 });

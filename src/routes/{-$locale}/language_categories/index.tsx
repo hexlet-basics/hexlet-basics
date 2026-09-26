@@ -6,29 +6,23 @@ import { useTranslation } from "react-i18next";
 import { listPublicCourseCategoriesOptions } from "@/client/@tanstack/react-query.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import { CardLink } from "@/components/RouterLink";
+import { seoHead } from "@/lib/seo-head";
 
 // The course categories, at their legacy URL, ported from legacy
 // language_categories/index. The loader prefetches the list so the cards are in
 // the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/language_categories/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(listPublicCourseCategoriesOptions()),
-  // Legacy meta: the header as title, the index description, and a summary
-  // Twitter card. The canonical link is left out until the frontend knows its
-  // own public origin, as on the blog index.
+  // Legacy meta: the header as title, the index description, the canonical link
+  // and the social tags.
   head: ({ match }) => {
-    const { t } = match.context.i18n;
-    const title = t(($) => $.course_categories.index.header);
-    const description = t(($) => $.course_categories.index.meta.description);
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-    };
+    const { i18n } = match.context;
+    return seoHead({
+      i18n,
+      title: i18n.t(($) => $.course_categories.index.header),
+      description: i18n.t(($) => $.course_categories.index.meta.description),
+      canonicalPath: match.pathname,
+    });
   },
   component: Index,
 });

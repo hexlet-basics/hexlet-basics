@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getSitemapOptions } from "@/client/@tanstack/react-query.gen";
 import { TextLink } from "@/components/RouterLink";
 import type { Locale } from "@/lib/i18n";
+import { seoHead } from "@/lib/seo-head";
 
 // The HTML sitemap at its legacy URL, ported from legacy home/sitemap. Legacy
 // served it on the ru site only (`/ru/map`); `/map` and `/es/map` are 404. It
@@ -24,8 +25,8 @@ export const Route = createFileRoute("/{-$locale}/map")({
   loader: ({ context }) => context.queryClient.ensureQueryData(getSitemapOptions()),
   // Legacy set the title alone: no description, canonical or social tags.
   head: ({ match }) => {
-    const { t } = match.context.i18n;
-    return { meta: [{ title: `CodeBasics | ${t(($) => $.home.sitemap.title)}` }] };
+    const { i18n } = match.context;
+    return seoHead({ i18n, title: i18n.t(($) => $.home.sitemap.title), social: false });
   },
   component: SitemapPage,
 });

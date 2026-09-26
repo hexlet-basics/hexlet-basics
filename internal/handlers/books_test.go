@@ -23,7 +23,6 @@ func TestGetBookAnswersAVisitor(t *testing.T) {
 	view, err := h.Client.GetBook(t.Context())
 	require.NoError(t, err)
 	assert.False(t, view.Requested)
-	assert.Equal(t, "https://code-basics.com/ru/book", view.URL)
 }
 
 func TestGetBookIsNotRequestedByAnotherUsersRequest(t *testing.T) {

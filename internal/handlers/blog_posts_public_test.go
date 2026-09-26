@@ -71,7 +71,6 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 
 	assert.Equal(t, "hello-world", view.Post.Slug.Value)
 	assert.Equal(t, "<p>Hello <strong>world</strong> from the blog</p>", view.Post.RichBodyHtml)
-	assert.Equal(t, "https://code-basics.com/ru/blog_posts/hello-world", view.Post.URL)
 	assert.Equal(t, int32(2), view.Post.LikesCount)
 
 	related := make([]string, len(view.RelatedLandingPages))

@@ -32,7 +32,6 @@ const post: BlogPost = {
   description: "The very first post",
   state: "published",
   locale: "ru",
-  url: "https://code-basics.com/ru/blog_posts/hello-world",
   richBodyHtml: "<p>Hello world</p>",
   readingTime: 0,
   likesCount: 0,

@@ -114,8 +114,7 @@ export const zBlogPostInput = z.object({
  * The free book page (ru marketing funnel, legacy `books#show`).
  */
 export const zBookView = z.object({
-  requested: z.boolean(),
-  url: z.string()
+  requested: z.boolean()
 });
 
 /**
@@ -669,7 +668,6 @@ export const zQnaItem = z.object({
  */
 export const zCourseCategoryView = z.object({
   category: zCourseCategory,
-  url: z.string(),
   landingPages: z.array(zCourseCatalogItem),
   qnaItems: z.array(zQnaItem)
 });
@@ -865,7 +863,6 @@ export const zBlogPost = z.object({
   description: z.string().nullable(),
   state: zBlogPostState.nullable(),
   locale: z.string().nullable(),
-  url: z.string(),
   richBodyHtml: z.string(),
   readingTime: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
   likesCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),

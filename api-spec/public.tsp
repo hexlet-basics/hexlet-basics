@@ -39,9 +39,6 @@ model CourseView {
 model CourseCategoryView {
   category: CourseCategory;
 
-  /** The page's absolute legacy URL, for its canonical link. */
-  url: string;
-
   /** The category's listed, published landing pages in the request locale
       whose course is completed, in course order. */
   landingPages: CourseCatalogItem[];
@@ -236,9 +233,6 @@ interface PublicLeads {
 model BookView {
   /** Whether the signed-in visitor has requested the book, in any state; false for a visitor. */
   requested: boolean;
-
-  /** Absolute canonical URL of the book page. */
-  url: string;
 }
 
 @route("/book")

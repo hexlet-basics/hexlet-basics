@@ -1181,7 +1181,6 @@ type BlogPost struct {
 	Description             NilString        `json:"description"`
 	State                   NilBlogPostState `json:"state"`
 	Locale                  NilString        `json:"locale"`
-	URL                     string           `json:"url"`
 	RichBodyHtml            string           `json:"richBodyHtml"`
 	ReadingTime             int32            `json:"readingTime"`
 	LikesCount              int32            `json:"likesCount"`
@@ -1228,11 +1227,6 @@ func (s *BlogPost) GetState() NilBlogPostState {
 // GetLocale returns the value of Locale.
 func (s *BlogPost) GetLocale() NilString {
 	return s.Locale
-}
-
-// GetURL returns the value of URL.
-func (s *BlogPost) GetURL() string {
-	return s.URL
 }
 
 // GetRichBodyHtml returns the value of RichBodyHtml.
@@ -1313,11 +1307,6 @@ func (s *BlogPost) SetState(val NilBlogPostState) {
 // SetLocale sets the value of Locale.
 func (s *BlogPost) SetLocale(val NilString) {
 	s.Locale = val
-}
-
-// SetURL sets the value of URL.
-func (s *BlogPost) SetURL(val string) {
-	s.URL = val
 }
 
 // SetRichBodyHtml sets the value of RichBodyHtml.
@@ -1613,8 +1602,6 @@ func (*BlogPostView) getBlogPostRes() {}
 type BookView struct {
 	// Whether the signed-in visitor has requested the book, in any state; false for a visitor.
 	Requested bool `json:"requested"`
-	// Absolute canonical URL of the book page.
-	URL string `json:"url"`
 }
 
 // GetRequested returns the value of Requested.
@@ -1622,19 +1609,9 @@ func (s *BookView) GetRequested() bool {
 	return s.Requested
 }
 
-// GetURL returns the value of URL.
-func (s *BookView) GetURL() string {
-	return s.URL
-}
-
 // SetRequested sets the value of Requested.
 func (s *BookView) SetRequested(val bool) {
 	s.Requested = val
-}
-
-// SetURL sets the value of URL.
-func (s *BookView) SetURL(val string) {
-	s.URL = val
 }
 
 // A submitted solution to run against the lesson's tests.
@@ -2168,8 +2145,6 @@ func (*CourseCategoryPage) adminListCourseCategoriesRes() {}
 // Ref: #/components/schemas/CourseCategoryView
 type CourseCategoryView struct {
 	Category CourseCategory `json:"category"`
-	// The page's absolute legacy URL, for its canonical link.
-	URL string `json:"url"`
 	// The category's listed, published landing pages in the request locale whose course is completed, in
 	// course order.
 	LandingPages []CourseCatalogItem `json:"landingPages"`
@@ -2180,11 +2155,6 @@ type CourseCategoryView struct {
 // GetCategory returns the value of Category.
 func (s *CourseCategoryView) GetCategory() CourseCategory {
 	return s.Category
-}
-
-// GetURL returns the value of URL.
-func (s *CourseCategoryView) GetURL() string {
-	return s.URL
 }
 
 // GetLandingPages returns the value of LandingPages.
@@ -2200,11 +2170,6 @@ func (s *CourseCategoryView) GetQnaItems() []QnaItem {
 // SetCategory sets the value of Category.
 func (s *CourseCategoryView) SetCategory(val CourseCategory) {
 	s.Category = val
-}
-
-// SetURL sets the value of URL.
-func (s *CourseCategoryView) SetURL(val string) {
-	s.URL = val
 }
 
 // SetLandingPages sets the value of LandingPages.

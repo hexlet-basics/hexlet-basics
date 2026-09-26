@@ -26,6 +26,7 @@ import type { DownloadBookData } from "@/client/types.gen";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { ButtonLink } from "@/components/RouterLink";
 import bookToc from "@/lib/book";
+import { seoHead } from "@/lib/seo-head";
 
 // The download is a browser navigation, not a client call: the API answers it
 // with a redirect into the bucket, which an XHR would follow cross-origin. The
@@ -39,27 +40,19 @@ export const Route = createFileRoute("/{-$locale}/book")({
     if (params.locale !== "ru") throw notFound();
   },
   loader: ({ context }) => context.queryClient.ensureQueryData(getBookOptions()),
-  // Legacy meta: the header as title (behind the site name, as meta-tags
-  // rendered it), the description cut to 160 characters as Rails' truncate
-  // did, the canonical URL the API builds, and a summary Twitter card.
-  head: ({ loaderData, match }) => {
-    const { t } = match.context.i18n;
-    const title = t(($) => $.books.show.header).trim();
-    const description = truncate(
-      t(($) => $.books.show.description),
-      { length: 160 },
-    );
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-      links: loaderData ? [{ rel: "canonical", href: loaderData.url }] : [],
-    };
+  // Legacy meta: the header as title, the description cut to 160 characters as
+  // Rails' truncate did, the canonical link and the social tags.
+  head: ({ match }) => {
+    const { i18n } = match.context;
+    return seoHead({
+      i18n,
+      title: i18n.t(($) => $.books.show.header).trim(),
+      description: truncate(
+        i18n.t(($) => $.books.show.description),
+        { length: 160 },
+      ),
+      canonicalPath: match.pathname,
+    });
   },
   component: Show,
 });

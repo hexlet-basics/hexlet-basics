@@ -6423,10 +6423,6 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 		s.Locale.Encode(e)
 	}
 	{
-		e.FieldStart("url")
-		e.Str(s.URL)
-	}
-	{
 		e.FieldStart("richBodyHtml")
 		e.Str(s.RichBodyHtml)
 	}
@@ -6468,7 +6464,7 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfBlogPost = [17]string{
+var jsonFieldsNameOfBlogPost = [16]string{
 	0:  "id",
 	1:  "creator",
 	2:  "name",
@@ -6476,16 +6472,15 @@ var jsonFieldsNameOfBlogPost = [17]string{
 	4:  "description",
 	5:  "state",
 	6:  "locale",
-	7:  "url",
-	8:  "richBodyHtml",
-	9:  "readingTime",
-	10: "likesCount",
-	11: "relatedCourseItemsCount",
-	12: "relatedCourseIds",
-	13: "coverThumbVariant",
-	14: "coverListVariant",
-	15: "coverMainVariant",
-	16: "createdAt",
+	7:  "richBodyHtml",
+	8:  "readingTime",
+	9:  "likesCount",
+	10: "relatedCourseItemsCount",
+	11: "relatedCourseIds",
+	12: "coverThumbVariant",
+	13: "coverListVariant",
+	14: "coverMainVariant",
+	15: "createdAt",
 }
 
 // Decode decodes BlogPost from json.
@@ -6493,7 +6488,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode BlogPost to nil")
 	}
-	var requiredBitSet [3]uint8
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -6569,20 +6564,8 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"locale\"")
 			}
-		case "url":
-			requiredBitSet[0] |= 1 << 7
-			if err := func() error {
-				v, err := d.Str()
-				s.URL = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"url\"")
-			}
 		case "richBodyHtml":
-			requiredBitSet[1] |= 1 << 0
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				v, err := d.Str()
 				s.RichBodyHtml = string(v)
@@ -6594,7 +6577,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"richBodyHtml\"")
 			}
 		case "readingTime":
-			requiredBitSet[1] |= 1 << 1
+			requiredBitSet[1] |= 1 << 0
 			if err := func() error {
 				v, err := d.Int32()
 				s.ReadingTime = int32(v)
@@ -6606,7 +6589,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"readingTime\"")
 			}
 		case "likesCount":
-			requiredBitSet[1] |= 1 << 2
+			requiredBitSet[1] |= 1 << 1
 			if err := func() error {
 				v, err := d.Int32()
 				s.LikesCount = int32(v)
@@ -6618,7 +6601,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"likesCount\"")
 			}
 		case "relatedCourseItemsCount":
-			requiredBitSet[1] |= 1 << 3
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				v, err := d.Int32()
 				s.RelatedCourseItemsCount = int32(v)
@@ -6630,7 +6613,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"relatedCourseItemsCount\"")
 			}
 		case "relatedCourseIds":
-			requiredBitSet[1] |= 1 << 4
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
 				s.RelatedCourseIds = make([]int32, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -6650,7 +6633,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"relatedCourseIds\"")
 			}
 		case "coverThumbVariant":
-			requiredBitSet[1] |= 1 << 5
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				if err := s.CoverThumbVariant.Decode(d); err != nil {
 					return err
@@ -6660,7 +6643,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"coverThumbVariant\"")
 			}
 		case "coverListVariant":
-			requiredBitSet[1] |= 1 << 6
+			requiredBitSet[1] |= 1 << 5
 			if err := func() error {
 				if err := s.CoverListVariant.Decode(d); err != nil {
 					return err
@@ -6670,7 +6653,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"coverListVariant\"")
 			}
 		case "coverMainVariant":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[1] |= 1 << 6
 			if err := func() error {
 				if err := s.CoverMainVariant.Decode(d); err != nil {
 					return err
@@ -6680,7 +6663,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"coverMainVariant\"")
 			}
 		case "createdAt":
-			requiredBitSet[2] |= 1 << 0
+			requiredBitSet[1] |= 1 << 7
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -6700,10 +6683,9 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [3]uint8{
+	for i, mask := range [2]uint8{
 		0b11111111,
 		0b11111111,
-		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -7388,15 +7370,10 @@ func (s *BookView) encodeFields(e *jx.Encoder) {
 		e.FieldStart("requested")
 		e.Bool(s.Requested)
 	}
-	{
-		e.FieldStart("url")
-		e.Str(s.URL)
-	}
 }
 
-var jsonFieldsNameOfBookView = [2]string{
+var jsonFieldsNameOfBookView = [1]string{
 	0: "requested",
-	1: "url",
 }
 
 // Decode decodes BookView from json.
@@ -7420,18 +7397,6 @@ func (s *BookView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"requested\"")
 			}
-		case "url":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.URL = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"url\"")
-			}
 		default:
 			return d.Skip()
 		}
@@ -7442,7 +7407,7 @@ func (s *BookView) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00000011,
+		0b00000001,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -8678,10 +8643,6 @@ func (s *CourseCategoryView) encodeFields(e *jx.Encoder) {
 		s.Category.Encode(e)
 	}
 	{
-		e.FieldStart("url")
-		e.Str(s.URL)
-	}
-	{
 		e.FieldStart("landingPages")
 		e.ArrStart()
 		for _, elem := range s.LandingPages {
@@ -8699,11 +8660,10 @@ func (s *CourseCategoryView) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCourseCategoryView = [4]string{
+var jsonFieldsNameOfCourseCategoryView = [3]string{
 	0: "category",
-	1: "url",
-	2: "landingPages",
-	3: "qnaItems",
+	1: "landingPages",
+	2: "qnaItems",
 }
 
 // Decode decodes CourseCategoryView from json.
@@ -8725,20 +8685,8 @@ func (s *CourseCategoryView) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"category\"")
 			}
-		case "url":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.URL = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"url\"")
-			}
 		case "landingPages":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				s.LandingPages = make([]CourseCatalogItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -8756,7 +8704,7 @@ func (s *CourseCategoryView) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"landingPages\"")
 			}
 		case "qnaItems":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
 				s.QnaItems = make([]QnaItem, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -8783,7 +8731,7 @@ func (s *CourseCategoryView) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00001111,
+		0b00000111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

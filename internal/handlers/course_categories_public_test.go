@@ -59,7 +59,6 @@ func TestGetPublicCourseCategoryListsItsLandingPagesInCourseOrder(t *testing.T) 
 	view := getCategoryView(t, h, "programming-ru")
 
 	assert.Equal(t, "programming-ru", view.Category.Slug.Value)
-	assert.Equal(t, "https://code-basics.com/ru/language_categories/programming-ru", view.URL)
 	assert.Equal(t,
 		[]string{"typescript-ru", "ruby-ru", "python-ru", "go-ru"},
 		categoryLandingSlugs(view))

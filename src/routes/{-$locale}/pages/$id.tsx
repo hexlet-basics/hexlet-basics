@@ -13,7 +13,7 @@ import PrivacyEn from "@/components/pages/PrivacyEn";
 import PrivacyRu from "@/components/pages/PrivacyRu";
 import TosEn from "@/components/pages/TosEn";
 import TosRu from "@/components/pages/TosRu";
-import { siteUrl } from "@/lib/site-url";
+import { seoHead } from "@/lib/seo-head";
 
 // The static pages, at their legacy URLs (`resources :pages, only: :show`),
 // ported from legacy pages/show. Their bodies are hardcoded markup with no data
@@ -51,27 +51,20 @@ export const Route = createFileRoute("/{-$locale}/pages/$id")({
   beforeLoad: ({ params }) => {
     if (!isPageId(params.id)) throw notFound();
   },
-  // Legacy meta: the page title and description, Open Graph and a summary
-  // Twitter card. es has no page strings of its own in legacy, which fell back
-  // to en, and the es catalog carries those en strings.
+  // Legacy meta: the page title and description, the social tags and, but for
+  // the legal pages, the canonical link. es has no page strings of its own in
+  // legacy, which fell back to en, and the es catalog carries those en strings.
   head: ({ match }) => {
     const { id } = match.params;
     if (!isPageId(id)) return {};
-    const { t } = match.context.i18n;
-    const { title, description } = pageMeta(t, id);
-    return {
-      meta: [
-        { title: `CodeBasics | ${title}` },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { name: "twitter:card", content: "summary" },
-        { name: "twitter:site", content: t(($) => $.links.hexlet_twitter_handle) },
-      ],
-      links: WITHOUT_CANONICAL.includes(id)
-        ? []
-        : [{ rel: "canonical", href: siteUrl(match.pathname) }],
-    };
+    const { i18n } = match.context;
+    const { title, description } = pageMeta(i18n.t, id);
+    return seoHead({
+      i18n,
+      title,
+      description,
+      canonicalPath: WITHOUT_CANONICAL.includes(id) ? undefined : match.pathname,
+    });
   },
   component: Show,
 });
