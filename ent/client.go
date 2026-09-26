@@ -20,6 +20,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
+	"hexletbasics/ent/bookrequest"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -73,6 +74,8 @@ type Client struct {
 	BlogPostLike *BlogPostLikeClient
 	// BlogPostRelatedCourseItem is the client for interacting with the BlogPostRelatedCourseItem builders.
 	BlogPostRelatedCourseItem *BlogPostRelatedCourseItemClient
+	// BookRequest is the client for interacting with the BookRequest builders.
+	BookRequest *BookRequestClient
 	// CategoryQnaItem is the client for interacting with the CategoryQnaItem builders.
 	CategoryQnaItem *CategoryQnaItemClient
 	// Course is the client for interacting with the Course builders.
@@ -139,6 +142,7 @@ func (c *Client) init() {
 	c.BlogPost = NewBlogPostClient(c.config)
 	c.BlogPostLike = NewBlogPostLikeClient(c.config)
 	c.BlogPostRelatedCourseItem = NewBlogPostRelatedCourseItemClient(c.config)
+	c.BookRequest = NewBookRequestClient(c.config)
 	c.CategoryQnaItem = NewCategoryQnaItemClient(c.config)
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
@@ -263,6 +267,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
 		BlogPostRelatedCourseItem: NewBlogPostRelatedCourseItemClient(cfg),
+		BookRequest:               NewBookRequestClient(cfg),
 		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
@@ -314,6 +319,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		BlogPost:                  NewBlogPostClient(cfg),
 		BlogPostLike:              NewBlogPostLikeClient(cfg),
 		BlogPostRelatedCourseItem: NewBlogPostRelatedCourseItemClient(cfg),
+		BookRequest:               NewBookRequestClient(cfg),
 		CategoryQnaItem:           NewCategoryQnaItemClient(cfg),
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
@@ -368,8 +374,8 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
-		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
+		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
+		c.CourseCategory, c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
 		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
 		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
 		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
@@ -386,8 +392,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
-		c.BlogPostRelatedCourseItem, c.CategoryQnaItem, c.Course, c.CourseCategory,
-		c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
+		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
+		c.CourseCategory, c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
 		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
 		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
 		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
@@ -419,6 +425,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BlogPostLike.mutate(ctx, m)
 	case *BlogPostRelatedCourseItemMutation:
 		return c.BlogPostRelatedCourseItem.mutate(ctx, m)
+	case *BookRequestMutation:
+		return c.BookRequest.mutate(ctx, m)
 	case *CategoryQnaItemMutation:
 		return c.CategoryQnaItem.mutate(ctx, m)
 	case *CourseMutation:
@@ -1776,6 +1784,139 @@ func (c *BlogPostRelatedCourseItemClient) mutate(ctx context.Context, m *BlogPos
 		return (&BlogPostRelatedCourseItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BlogPostRelatedCourseItem mutation op: %q", m.Op())
+	}
+}
+
+// BookRequestClient is a client for the BookRequest schema.
+type BookRequestClient struct {
+	config
+}
+
+// NewBookRequestClient returns a client for the BookRequest from the given config.
+func NewBookRequestClient(c config) *BookRequestClient {
+	return &BookRequestClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `bookrequest.Hooks(f(g(h())))`.
+func (c *BookRequestClient) Use(hooks ...Hook) {
+	c.hooks.BookRequest = append(c.hooks.BookRequest, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `bookrequest.Intercept(f(g(h())))`.
+func (c *BookRequestClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BookRequest = append(c.inters.BookRequest, interceptors...)
+}
+
+// Create returns a builder for creating a BookRequest entity.
+func (c *BookRequestClient) Create() *BookRequestCreate {
+	mutation := newBookRequestMutation(c.config, OpCreate)
+	return &BookRequestCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BookRequest entities.
+func (c *BookRequestClient) CreateBulk(builders ...*BookRequestCreate) *BookRequestCreateBulk {
+	return &BookRequestCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BookRequestClient) MapCreateBulk(slice any, setFunc func(*BookRequestCreate, int)) *BookRequestCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BookRequestCreateBulk{err: fmt.Errorf("calling to BookRequestClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BookRequestCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BookRequestCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BookRequest.
+func (c *BookRequestClient) Update() *BookRequestUpdate {
+	mutation := newBookRequestMutation(c.config, OpUpdate)
+	return &BookRequestUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BookRequestClient) UpdateOne(_m *BookRequest) *BookRequestUpdateOne {
+	mutation := newBookRequestMutation(c.config, OpUpdateOne, withBookRequest(_m))
+	return &BookRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BookRequestClient) UpdateOneID(id int) *BookRequestUpdateOne {
+	mutation := newBookRequestMutation(c.config, OpUpdateOne, withBookRequestID(id))
+	return &BookRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BookRequest.
+func (c *BookRequestClient) Delete() *BookRequestDelete {
+	mutation := newBookRequestMutation(c.config, OpDelete)
+	return &BookRequestDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BookRequestClient) DeleteOne(_m *BookRequest) *BookRequestDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BookRequestClient) DeleteOneID(id int) *BookRequestDeleteOne {
+	builder := c.Delete().Where(bookrequest.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BookRequestDeleteOne{builder}
+}
+
+// Query returns a query builder for BookRequest.
+func (c *BookRequestClient) Query() *BookRequestQuery {
+	return &BookRequestQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBookRequest},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BookRequest entity by its id.
+func (c *BookRequestClient) Get(ctx context.Context, id int) (*BookRequest, error) {
+	return c.Query().Where(bookrequest.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BookRequestClient) GetX(ctx context.Context, id int) *BookRequest {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *BookRequestClient) Hooks() []Hook {
+	return c.hooks.BookRequest
+}
+
+// Interceptors returns the client interceptors.
+func (c *BookRequestClient) Interceptors() []Interceptor {
+	return c.inters.BookRequest
+}
+
+func (c *BookRequestClient) mutate(ctx context.Context, m *BookRequestMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BookRequestCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BookRequestUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BookRequestUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BookRequestDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BookRequest mutation op: %q", m.Op())
 	}
 }
 
@@ -5306,18 +5447,18 @@ func (c *UserAccountClient) mutate(ctx context.Context, m *UserAccountMutation) 
 type (
 	hooks struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
-		Course, CourseCategory, CourseCategoryItem, CourseLesson, CourseLessonReview,
-		CourseLessonTranslation, CourseLessonVersion, CourseModule,
+		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
+		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLesson,
+		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
 		StaffRole, StaffRolePermission, User, UserAccount []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
-		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, CategoryQnaItem,
-		Course, CourseCategory, CourseCategoryItem, CourseLesson, CourseLessonReview,
-		CourseLessonTranslation, CourseLessonVersion, CourseModule,
+		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
+		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLesson,
+		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
 		StaffRole, StaffRolePermission, User, UserAccount []ent.Interceptor

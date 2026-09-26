@@ -116,6 +116,18 @@ func (f BlogPostRelatedCourseItemFunc) Mutate(ctx context.Context, m ent.Mutatio
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BlogPostRelatedCourseItemMutation", m)
 }
 
+// The BookRequestFunc type is an adapter to allow the use of ordinary
+// function as BookRequest mutator.
+type BookRequestFunc func(context.Context, *ent.BookRequestMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BookRequestFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BookRequestMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BookRequestMutation", m)
+}
+
 // The CategoryQnaItemFunc type is an adapter to allow the use of ordinary
 // function as CategoryQnaItem mutator.
 type CategoryQnaItemFunc func(context.Context, *ent.CategoryQnaItemMutation) (ent.Value, error)

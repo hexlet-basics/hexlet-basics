@@ -49,6 +49,7 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transact
 		accounts.NewRemover(transactor),
 		&testsupport.RecordingEventPublisher{},
 		nil, // no lead is submitted here
+		nil, // no book is requested here
 		translator,
 		errorHandler,
 	)

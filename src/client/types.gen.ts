@@ -179,11 +179,17 @@ export type BlogPostView = {
 };
 
 /**
- * A request to download the free book (ru marketing funnel).
+ * The free book page (ru marketing funnel, legacy `books#show`).
  */
-export type BookRequestInput = {
-  email: string;
-  fullName: string | null;
+export type BookView = {
+  /**
+   * Whether the signed-in visitor has requested the book, in any state; false for a visitor.
+   */
+  requested: boolean;
+  /**
+   * Absolute canonical URL of the book page.
+   */
+  url: string;
 };
 
 /**
@@ -4293,8 +4299,36 @@ export type GetBlogPostResponses = {
 
 export type GetBlogPostResponse = GetBlogPostResponses[keyof GetBlogPostResponses];
 
+export type GetBookData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/book';
+};
+
+export type GetBookErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetBookError = GetBookErrors[keyof GetBookErrors];
+
+export type GetBookResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: BookView;
+};
+
+export type GetBookResponse = GetBookResponses[keyof GetBookResponses];
+
 export type CreateBookRequestData = {
-  body: BookRequestInput;
+  body?: never;
   path?: never;
   query?: never;
   url: '/api/book/create_request';
@@ -4305,12 +4339,6 @@ export type CreateBookRequestErrors = {
    * The request is not authenticated (no/invalid session cookie).
    */
   401: ProblemDetails;
-  /**
-   * Field-level validation errors, keyed by field name (each value is the list
-   * of messages for that field). Returned when a write fails validation —
-   * including constraints the schema cannot express, like uniqueness.
-   */
-  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *
@@ -4330,6 +4358,41 @@ export type CreateBookRequestResponses = {
 };
 
 export type CreateBookRequestResponse = CreateBookRequestResponses[keyof CreateBookRequestResponses];
+
+export type DownloadBookData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/book/download';
+};
+
+export type DownloadBookErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type DownloadBookError = DownloadBookErrors[keyof DownloadBookErrors];
+
+export type DownloadBookResponses = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type DownloadBookResponse = DownloadBookResponses[keyof DownloadBookResponses];
 
 export type GetYandexCoursesFeedData = {
   body?: never;

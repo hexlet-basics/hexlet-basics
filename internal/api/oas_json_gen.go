@@ -7300,66 +7300,68 @@ func (s *BlogPostView) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *BookRequestInput) Encode(e *jx.Encoder) {
+func (s *BookView) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *BookRequestInput) encodeFields(e *jx.Encoder) {
+func (s *BookView) encodeFields(e *jx.Encoder) {
 	{
-		e.FieldStart("email")
-		e.Str(s.Email)
+		e.FieldStart("requested")
+		e.Bool(s.Requested)
 	}
 	{
-		e.FieldStart("fullName")
-		s.FullName.Encode(e)
+		e.FieldStart("url")
+		e.Str(s.URL)
 	}
 }
 
-var jsonFieldsNameOfBookRequestInput = [2]string{
-	0: "email",
-	1: "fullName",
+var jsonFieldsNameOfBookView = [2]string{
+	0: "requested",
+	1: "url",
 }
 
-// Decode decodes BookRequestInput from json.
-func (s *BookRequestInput) Decode(d *jx.Decoder) error {
+// Decode decodes BookView from json.
+func (s *BookView) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode BookRequestInput to nil")
+		return errors.New("invalid: unable to decode BookView to nil")
 	}
 	var requiredBitSet [1]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "email":
+		case "requested":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Str()
-				s.Email = string(v)
+				v, err := d.Bool()
+				s.Requested = bool(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"email\"")
+				return errors.Wrap(err, "decode field \"requested\"")
 			}
-		case "fullName":
+		case "url":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				if err := s.FullName.Decode(d); err != nil {
+				v, err := d.Str()
+				s.URL = string(v)
+				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"fullName\"")
+				return errors.Wrap(err, "decode field \"url\"")
 			}
 		default:
 			return d.Skip()
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode BookRequestInput")
+		return errors.Wrap(err, "decode BookView")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -7376,8 +7378,8 @@ func (s *BookRequestInput) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfBookRequestInput) {
-					name = jsonFieldsNameOfBookRequestInput[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfBookView) {
+					name = jsonFieldsNameOfBookView[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -7398,14 +7400,14 @@ func (s *BookRequestInput) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *BookRequestInput) MarshalJSON() ([]byte, error) {
+func (s *BookView) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *BookRequestInput) UnmarshalJSON(data []byte) error {
+func (s *BookView) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

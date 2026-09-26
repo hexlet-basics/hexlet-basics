@@ -16,6 +16,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
@@ -88,6 +89,17 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return leads.NewRecorder(db, publisher), nil
+	}),
+	do.Lazy[*books.Recorder](func(i do.Injector) (*books.Recorder, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		publisher, err := do.Invoke[*events.Publisher](i)
+		if err != nil {
+			return nil, err
+		}
+		return books.NewRecorder(db, publisher), nil
 	}),
 	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -175,6 +187,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		bookRecorder, err := do.Invoke[*books.Recorder](i)
+		if err != nil {
+			return nil, err
+		}
 		translator, err := do.Invoke[*localization.Translator](i)
 		if err != nil {
 			return nil, err
@@ -199,6 +215,7 @@ var serverPackage = do.Package(
 			remover,
 			publisher,
 			leadRecorder,
+			bookRecorder,
 			translator,
 			errorHandler,
 		), nil

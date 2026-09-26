@@ -21,6 +21,10 @@ type Config struct {
 	// (fileblob) in dev, s3blob in prod, chosen by URL scheme. The dev default
 	// writes under ./storage (created on first open) so uploads survive restarts.
 	BlobBucketURL string `env:"BLOB_BUCKET_URL" envDefault:"file://./storage?create_dir=true"`
+	// BookBlobKey is the bucket key of the free book's PDF (legacy
+	// public/book.pdf). It is uploaded once, out of band, at cutover rather than
+	// shipped in the image: at ~28 MB it has no place in the repo or the build.
+	BookBlobKey string `env:"BOOK_BLOB_KEY" envDefault:"book.pdf"`
 	// AppHost is the public site host used to build canonical page URLs (e.g. a
 	// blog post's `url`), mirroring legacy AppHost.canonical. HTTPS is assumed in
 	// prod; the default matches the legacy default.

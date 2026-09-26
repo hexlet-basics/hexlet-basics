@@ -111,11 +111,11 @@ export const zBlogPostInput = z.object({
 });
 
 /**
- * A request to download the free book (ru marketing funnel).
+ * The free book page (ru marketing funnel, legacy `books#show`).
  */
-export const zBookRequestInput = z.object({
-  email: z.string().min(1),
-  fullName: z.string().nullable()
+export const zBookView = z.object({
+  requested: z.boolean(),
+  url: z.string()
 });
 
 /**
@@ -1759,12 +1759,23 @@ export const zGetBlogPostPath = z.object({
  */
 export const zGetBlogPostResponse = zBlogPostView;
 
-export const zCreateBookRequestBody = zBookRequestInput;
+/**
+ * The request has succeeded.
+ */
+export const zGetBookResponse = zBookView;
 
 /**
  * Empty 204 response for deletes and other content-less successes.
  */
 export const zCreateBookRequestResponse = z.void();
+
+/**
+ * Default error response shared by every operation.
+ *
+ * `@error` emits an OpenAPI `default` response, keeping central transport
+ * failures typed without enumerating every status on every operation.
+ */
+export const zDownloadBookResponse = zProblemDetails;
 
 /**
  * The Yandex course catalogue: a YML document (Yandex's own XML dialect) of

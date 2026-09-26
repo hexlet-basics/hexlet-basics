@@ -15,6 +15,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
+	"hexletbasics/ent/bookrequest"
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
@@ -113,6 +114,7 @@ func checkColumn(t, c string) error {
 			blogpost.Table:                  blogpost.ValidColumn,
 			blogpostlike.Table:              blogpostlike.ValidColumn,
 			blogpostrelatedcourseitem.Table: blogpostrelatedcourseitem.ValidColumn,
+			bookrequest.Table:               bookrequest.ValidColumn,
 			categoryqnaitem.Table:           categoryqnaitem.ValidColumn,
 			course.Table:                    course.ValidColumn,
 			coursecategory.Table:            coursecategory.ValidColumn,
