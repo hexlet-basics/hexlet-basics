@@ -28,7 +28,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 // Footer, ported from legacy FooterBlock. Course columns are driven by the
 // hey-api generated `listCourses` hook and link to the real course route.
-// Legacy also linked out to about/blog/reviews/legal/category pages; those
+// Legacy also linked out to about/blog/legal/category pages; those
 // aren't ported to the Go stack yet, so their columns are added back as each
 // page's route lands (no hardcoded hrefs, no placeholder pages).
 export default function Footer() {
@@ -47,6 +47,9 @@ export default function Footer() {
             <Stack gap="sm">
               <Anchor component={Link} to="/languages" fw="bold" fz="sm">
                 {t(($) => $.layouts.shared.all_courses)}
+              </Anchor>
+              <Anchor component={Link} to="/reviews" fz="sm">
+                {t(($) => $.layouts.shared.footer.reviews)}
               </Anchor>
             </Stack>
 
