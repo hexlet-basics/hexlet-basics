@@ -1176,6 +1176,7 @@ export default {
         community_image_preview: "Developer community",
         completed_html:
           'Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page" target="_blank">продолжение на Хекслете</a>\n',
+        completion: "Completado {{completion}}%",
         continue: "Continue Learning",
         "convenient format": "Convenient format",
         course_graduates: "Join 74,761 students who have successfully completed courses",
