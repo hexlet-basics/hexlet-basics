@@ -791,6 +791,32 @@ var (
 			},
 		},
 	}
+	// TagsColumns holds the columns for the "tags" table.
+	TagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "taggings_count", Type: field.TypeInt, Nullable: true},
+	}
+	// TagsTable holds the schema information for the "tags" table.
+	TagsTable = &schema.Table{
+		Name:       "tags",
+		Columns:    TagsColumns,
+		PrimaryKey: []*schema.Column{TagsColumns[0]},
+	}
+	// TaggingsColumns holds the columns for the "taggings" table.
+	TaggingsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "tag_id", Type: field.TypeInt, Nullable: true},
+		{Name: "taggable_id", Type: field.TypeInt, Nullable: true},
+		{Name: "taggable_type", Type: field.TypeString, Nullable: true},
+		{Name: "context", Type: field.TypeString, Nullable: true},
+	}
+	// TaggingsTable holds the schema information for the "taggings" table.
+	TaggingsTable = &schema.Table{
+		Name:       "taggings",
+		Columns:    TaggingsColumns,
+		PrimaryKey: []*schema.Column{TaggingsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -862,6 +888,8 @@ var (
 		StaffMembersTable,
 		StaffMemberRolesTable,
 		StaffMemberRolePermissionsTable,
+		TagsTable,
+		TaggingsTable,
 		UsersTable,
 		UserAccountsTable,
 	}

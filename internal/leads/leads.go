@@ -14,6 +14,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/lessonprogress"
+	"hexletbasics/ent/tag"
+	"hexletbasics/ent/tagging"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/store"
@@ -119,6 +121,10 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 			return fmt.Errorf("create lead: %w", err)
 		}
 
+		if err := removeShouldBeLead(ctx, db, u.ID); err != nil {
+			return err
+		}
+
 		visit := submission.FirstVisit
 		if err := r.publisher.Publish(ctx, tx, events.LeadCreated{
 			LeadID:      created.ID,
@@ -150,6 +156,51 @@ func (r *Recorder) Create(ctx context.Context, submission Submission) (*ent.Lead
 	}
 	return created, nil
 }
+
+// shouldBeLeadTag is the acts_as_taggable_on tag that marks a user the sales
+// team wants a contact from; legacy's layout asked such a user for a contact
+// method, and a submitted lead answers that ask.
+const shouldBeLeadTag = "should_be_lead"
+
+// removeShouldBeLead is legacy's `user.tag_list.remove("should_be_lead")` +
+// `save!`: the user's tagging goes, and the tag's counter cache drops with it
+// (acts_as_taggable_on keeps an unused tag row, as `remove_unused_tags` is
+// off). It runs in the lead's transaction, so a rolled-back lead keeps the tag.
+// A user who never had the tag, or a database without it, is no change.
+func removeShouldBeLead(ctx context.Context, db *ent.Client, userID int) error {
+	t, err := db.Tag.Query().Where(tag.Name(shouldBeLeadTag)).Only(ctx)
+	if ent.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("load %s tag: %w", shouldBeLeadTag, err)
+	}
+
+	removed, err := db.Tagging.Delete().
+		Where(
+			tagging.TagID(t.ID),
+			tagging.TaggableType(userTaggableType),
+			tagging.TaggableID(userID),
+			tagging.Context(tagListContext),
+		).
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("remove %s from user %d: %w", shouldBeLeadTag, userID, err)
+	}
+	if removed == 0 {
+		return nil
+	}
+	if err := db.Tag.UpdateOneID(t.ID).AddTaggingsCount(-removed).Exec(ctx); err != nil {
+		return fmt.Errorf("count %s taggings: %w", shouldBeLeadTag, err)
+	}
+	return nil
+}
+
+// The polymorphic keys acts_as_taggable_on writes for a User's `tag_list`.
+const (
+	userTaggableType = "User"
+	tagListContext   = "tags"
+)
 
 // coursesData snapshots every Course the user is enrolled in, in any state,
 // with how many of its Lessons they finished — what the sales team reads to

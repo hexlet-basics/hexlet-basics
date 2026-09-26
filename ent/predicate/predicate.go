@@ -99,6 +99,12 @@ type StaffRole func(*sql.Selector)
 // StaffRolePermission is the predicate function for staffrolepermission builders.
 type StaffRolePermission func(*sql.Selector)
 
+// Tag is the predicate function for tag builders.
+type Tag func(*sql.Selector)
+
+// Tagging is the predicate function for tagging builders.
+type Tagging func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
 

@@ -1,0 +1,17 @@
+# Fixtures for `taggings`, HAND-CURATED from the legacy Rails fixture:
+# `should_be_lead` on a user and on a survey item. Alice, the harness user, holds
+# the user tagging so the lead tests can see it go. The survey item shares her id
+# on purpose: the polymorphic type, not the id alone, decides what is a user's
+# tag. `make fixtures-import` is non-destructive and skips existing files, so this
+# survives re-imports. Loaded by testfixtures inside each test's rollback
+# transaction.
+- id: 1
+  tag_id: 1
+  taggable_id: 1001
+  taggable_type: User
+  context: tags
+- id: 2
+  tag_id: 1
+  taggable_id: 1001
+  taggable_type: Survey::Item
+  context: tags

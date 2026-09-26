@@ -1,0 +1,9 @@
+# Fixtures for `tags`, HAND-CURATED from the legacy Rails fixture (its one tag,
+# `should_be_lead`). `make fixtures-import` is non-destructive and skips existing
+# files, so this survives re-imports. The counter matches the two taggings in
+# taggings.yml. Loaded by testfixtures inside each test's rollback transaction.
+- id: 1
+  name: should_be_lead
+  taggings_count: 2
+  created_at: '2026-07-26 20:50:29'
+  updated_at: '2026-07-26 20:50:29'

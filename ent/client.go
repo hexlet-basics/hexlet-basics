@@ -42,6 +42,8 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/tag"
+	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
 
@@ -118,6 +120,10 @@ type Client struct {
 	StaffRole *StaffRoleClient
 	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
 	StaffRolePermission *StaffRolePermissionClient
+	// Tag is the client for interacting with the Tag builders.
+	Tag *TagClient
+	// Tagging is the client for interacting with the Tagging builders.
+	Tagging *TaggingClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserAccount is the client for interacting with the UserAccount builders.
@@ -164,6 +170,8 @@ func (c *Client) init() {
 	c.StaffMember = NewStaffMemberClient(c.config)
 	c.StaffRole = NewStaffRoleClient(c.config)
 	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
+	c.Tag = NewTagClient(c.config)
+	c.Tagging = NewTaggingClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserAccount = NewUserAccountClient(c.config)
 }
@@ -289,6 +297,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		Tag:                       NewTagClient(cfg),
+		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
 		UserAccount:               NewUserAccountClient(cfg),
 	}, nil
@@ -341,6 +351,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
+		Tag:                       NewTagClient(cfg),
+		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
 		UserAccount:               NewUserAccountClient(cfg),
 	}, nil
@@ -379,8 +391,8 @@ func (c *Client) Use(hooks ...Hook) {
 		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
 		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
 		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
-		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
-		c.UserAccount,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag, c.Tagging,
+		c.User, c.UserAccount,
 	} {
 		n.Use(hooks...)
 	}
@@ -397,8 +409,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
 		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
 		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
-		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.User,
-		c.UserAccount,
+		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag, c.Tagging,
+		c.User, c.UserAccount,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -469,6 +481,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.StaffRole.mutate(ctx, m)
 	case *StaffRolePermissionMutation:
 		return c.StaffRolePermission.mutate(ctx, m)
+	case *TagMutation:
+		return c.Tag.mutate(ctx, m)
+	case *TaggingMutation:
+		return c.Tagging.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	case *UserAccountMutation:
@@ -5193,6 +5209,272 @@ func (c *StaffRolePermissionClient) mutate(ctx context.Context, m *StaffRolePerm
 	}
 }
 
+// TagClient is a client for the Tag schema.
+type TagClient struct {
+	config
+}
+
+// NewTagClient returns a client for the Tag from the given config.
+func NewTagClient(c config) *TagClient {
+	return &TagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tag.Hooks(f(g(h())))`.
+func (c *TagClient) Use(hooks ...Hook) {
+	c.hooks.Tag = append(c.hooks.Tag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tag.Intercept(f(g(h())))`.
+func (c *TagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Tag = append(c.inters.Tag, interceptors...)
+}
+
+// Create returns a builder for creating a Tag entity.
+func (c *TagClient) Create() *TagCreate {
+	mutation := newTagMutation(c.config, OpCreate)
+	return &TagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Tag entities.
+func (c *TagClient) CreateBulk(builders ...*TagCreate) *TagCreateBulk {
+	return &TagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TagClient) MapCreateBulk(slice any, setFunc func(*TagCreate, int)) *TagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TagCreateBulk{err: fmt.Errorf("calling to TagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Tag.
+func (c *TagClient) Update() *TagUpdate {
+	mutation := newTagMutation(c.config, OpUpdate)
+	return &TagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TagClient) UpdateOne(_m *Tag) *TagUpdateOne {
+	mutation := newTagMutation(c.config, OpUpdateOne, withTag(_m))
+	return &TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TagClient) UpdateOneID(id int) *TagUpdateOne {
+	mutation := newTagMutation(c.config, OpUpdateOne, withTagID(id))
+	return &TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Tag.
+func (c *TagClient) Delete() *TagDelete {
+	mutation := newTagMutation(c.config, OpDelete)
+	return &TagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TagClient) DeleteOne(_m *Tag) *TagDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TagClient) DeleteOneID(id int) *TagDeleteOne {
+	builder := c.Delete().Where(tag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TagDeleteOne{builder}
+}
+
+// Query returns a query builder for Tag.
+func (c *TagClient) Query() *TagQuery {
+	return &TagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Tag entity by its id.
+func (c *TagClient) Get(ctx context.Context, id int) (*Tag, error) {
+	return c.Query().Where(tag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TagClient) GetX(ctx context.Context, id int) *Tag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TagClient) Hooks() []Hook {
+	return c.hooks.Tag
+}
+
+// Interceptors returns the client interceptors.
+func (c *TagClient) Interceptors() []Interceptor {
+	return c.inters.Tag
+}
+
+func (c *TagClient) mutate(ctx context.Context, m *TagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Tag mutation op: %q", m.Op())
+	}
+}
+
+// TaggingClient is a client for the Tagging schema.
+type TaggingClient struct {
+	config
+}
+
+// NewTaggingClient returns a client for the Tagging from the given config.
+func NewTaggingClient(c config) *TaggingClient {
+	return &TaggingClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tagging.Hooks(f(g(h())))`.
+func (c *TaggingClient) Use(hooks ...Hook) {
+	c.hooks.Tagging = append(c.hooks.Tagging, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tagging.Intercept(f(g(h())))`.
+func (c *TaggingClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Tagging = append(c.inters.Tagging, interceptors...)
+}
+
+// Create returns a builder for creating a Tagging entity.
+func (c *TaggingClient) Create() *TaggingCreate {
+	mutation := newTaggingMutation(c.config, OpCreate)
+	return &TaggingCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Tagging entities.
+func (c *TaggingClient) CreateBulk(builders ...*TaggingCreate) *TaggingCreateBulk {
+	return &TaggingCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TaggingClient) MapCreateBulk(slice any, setFunc func(*TaggingCreate, int)) *TaggingCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TaggingCreateBulk{err: fmt.Errorf("calling to TaggingClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TaggingCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TaggingCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Tagging.
+func (c *TaggingClient) Update() *TaggingUpdate {
+	mutation := newTaggingMutation(c.config, OpUpdate)
+	return &TaggingUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TaggingClient) UpdateOne(_m *Tagging) *TaggingUpdateOne {
+	mutation := newTaggingMutation(c.config, OpUpdateOne, withTagging(_m))
+	return &TaggingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TaggingClient) UpdateOneID(id int) *TaggingUpdateOne {
+	mutation := newTaggingMutation(c.config, OpUpdateOne, withTaggingID(id))
+	return &TaggingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Tagging.
+func (c *TaggingClient) Delete() *TaggingDelete {
+	mutation := newTaggingMutation(c.config, OpDelete)
+	return &TaggingDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TaggingClient) DeleteOne(_m *Tagging) *TaggingDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TaggingClient) DeleteOneID(id int) *TaggingDeleteOne {
+	builder := c.Delete().Where(tagging.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TaggingDeleteOne{builder}
+}
+
+// Query returns a query builder for Tagging.
+func (c *TaggingClient) Query() *TaggingQuery {
+	return &TaggingQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTagging},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Tagging entity by its id.
+func (c *TaggingClient) Get(ctx context.Context, id int) (*Tagging, error) {
+	return c.Query().Where(tagging.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TaggingClient) GetX(ctx context.Context, id int) *Tagging {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TaggingClient) Hooks() []Hook {
+	return c.hooks.Tagging
+}
+
+// Interceptors returns the client interceptors.
+func (c *TaggingClient) Interceptors() []Interceptor {
+	return c.inters.Tagging
+}
+
+func (c *TaggingClient) mutate(ctx context.Context, m *TaggingMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TaggingCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TaggingUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TaggingUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TaggingDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Tagging mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -5468,7 +5750,7 @@ type (
 		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
-		StaffRole, StaffRolePermission, User, UserAccount []ent.Hook
+		StaffRole, StaffRolePermission, Tag, Tagging, User, UserAccount []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
@@ -5477,6 +5759,7 @@ type (
 		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
 		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
 		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
-		StaffRole, StaffRolePermission, User, UserAccount []ent.Interceptor
+		StaffRole, StaffRolePermission, Tag, Tagging, User,
+		UserAccount []ent.Interceptor
 	}
 )

@@ -10,6 +10,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/lead"
+	"hexletbasics/ent/tag"
+	"hexletbasics/ent/tagging"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/testsupport"
@@ -118,6 +120,28 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 	assert.Equal(t, "https://code-basics.com/ru?utm_source=vk&gclid=g-1", lo.FromPtr(published.LandingPage))
 	assert.Equal(t, "https://vk.com/", lo.FromPtr(published.Referrer))
 	assert.Equal(t, "203.0.113.7", lo.FromPtr(published.IP))
+}
+
+// A submitted lead answers the ask for a contact, so the user's should_be_lead
+// tag goes with it, and the tag's counter drops by one (legacy
+// `tag_list.remove` + `save!`). The survey item tagged under the same id is
+// not the user and keeps its tag.
+func TestCreateLeadClearsTheUsersShouldBeLeadTag(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+
+	_, err := h.Client.CreateLead(ctx, leadFromTheSite())
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusCreated, h.LastStatus())
+
+	userTagged := h.DB.Tagging.Query().
+		Where(tagging.TaggableType("User"), tagging.TaggableID(h.UserID)).
+		ExistX(ctx)
+	assert.False(t, userTagged, "the user no longer has should_be_lead")
+	assert.True(t, h.DB.Tagging.Query().Where(tagging.TaggableType("Survey::Item")).ExistX(ctx),
+		"another record's tagging stays")
+	shouldBeLead := h.DB.Tag.Query().Where(tag.Name("should_be_lead")).OnlyX(ctx)
+	assert.Equal(t, 1, lo.FromPtr(shouldBeLead.TaggingsCount))
 }
 
 func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {

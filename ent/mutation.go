@@ -38,6 +38,8 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/tag"
+	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
 	"hexletbasics/ent/useraccount"
 	"sync"
@@ -88,6 +90,8 @@ const (
 	TypeStaffMember               = "StaffMember"
 	TypeStaffRole                 = "StaffRole"
 	TypeStaffRolePermission       = "StaffRolePermission"
+	TypeTag                       = "Tag"
+	TypeTagging                   = "Tagging"
 	TypeUser                      = "User"
 	TypeUserAccount               = "UserAccount"
 )
@@ -27097,6 +27101,1102 @@ func (m *StaffRolePermissionMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown StaffRolePermission edge %s", name)
+}
+
+// TagMutation represents an operation that mutates the Tag nodes in the graph.
+type TagMutation struct {
+	config
+	op                Op
+	typ               string
+	id                *int
+	name              *string
+	taggings_count    *int
+	addtaggings_count *int
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*Tag, error)
+	predicates        []predicate.Tag
+}
+
+var _ ent.Mutation = (*TagMutation)(nil)
+
+// tagOption allows management of the mutation configuration using functional options.
+type tagOption func(*TagMutation)
+
+// newTagMutation creates new mutation for the Tag entity.
+func newTagMutation(c config, op Op, opts ...tagOption) *TagMutation {
+	m := &TagMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTag,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTagID sets the ID field of the mutation.
+func withTagID(id int) tagOption {
+	return func(m *TagMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Tag
+		)
+		m.oldValue = func(ctx context.Context) (*Tag, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Tag.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTag sets the old Tag of the mutation.
+func withTag(node *Tag) tagOption {
+	return func(m *TagMutation) {
+		m.oldValue = func(context.Context) (*Tag, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TagMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TagMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TagMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TagMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Tag.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *TagMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *TagMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldName(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *TagMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[tag.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *TagMutation) NameCleared() bool {
+	_, ok := m.clearedFields[tag.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *TagMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, tag.FieldName)
+}
+
+// SetTaggingsCount sets the "taggings_count" field.
+func (m *TagMutation) SetTaggingsCount(i int) {
+	m.taggings_count = &i
+	m.addtaggings_count = nil
+}
+
+// TaggingsCount returns the value of the "taggings_count" field in the mutation.
+func (m *TagMutation) TaggingsCount() (r int, exists bool) {
+	v := m.taggings_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTaggingsCount returns the old "taggings_count" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldTaggingsCount(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTaggingsCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTaggingsCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTaggingsCount: %w", err)
+	}
+	return oldValue.TaggingsCount, nil
+}
+
+// AddTaggingsCount adds i to the "taggings_count" field.
+func (m *TagMutation) AddTaggingsCount(i int) {
+	if m.addtaggings_count != nil {
+		*m.addtaggings_count += i
+	} else {
+		m.addtaggings_count = &i
+	}
+}
+
+// AddedTaggingsCount returns the value that was added to the "taggings_count" field in this mutation.
+func (m *TagMutation) AddedTaggingsCount() (r int, exists bool) {
+	v := m.addtaggings_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearTaggingsCount clears the value of the "taggings_count" field.
+func (m *TagMutation) ClearTaggingsCount() {
+	m.taggings_count = nil
+	m.addtaggings_count = nil
+	m.clearedFields[tag.FieldTaggingsCount] = struct{}{}
+}
+
+// TaggingsCountCleared returns if the "taggings_count" field was cleared in this mutation.
+func (m *TagMutation) TaggingsCountCleared() bool {
+	_, ok := m.clearedFields[tag.FieldTaggingsCount]
+	return ok
+}
+
+// ResetTaggingsCount resets all changes to the "taggings_count" field.
+func (m *TagMutation) ResetTaggingsCount() {
+	m.taggings_count = nil
+	m.addtaggings_count = nil
+	delete(m.clearedFields, tag.FieldTaggingsCount)
+}
+
+// Where appends a list predicates to the TagMutation builder.
+func (m *TagMutation) Where(ps ...predicate.Tag) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TagMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TagMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Tag, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TagMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TagMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Tag).
+func (m *TagMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TagMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.name != nil {
+		fields = append(fields, tag.FieldName)
+	}
+	if m.taggings_count != nil {
+		fields = append(fields, tag.FieldTaggingsCount)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TagMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case tag.FieldName:
+		return m.Name()
+	case tag.FieldTaggingsCount:
+		return m.TaggingsCount()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TagMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case tag.FieldName:
+		return m.OldName(ctx)
+	case tag.FieldTaggingsCount:
+		return m.OldTaggingsCount(ctx)
+	}
+	return nil, fmt.Errorf("unknown Tag field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TagMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case tag.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case tag.FieldTaggingsCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTaggingsCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Tag field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TagMutation) AddedFields() []string {
+	var fields []string
+	if m.addtaggings_count != nil {
+		fields = append(fields, tag.FieldTaggingsCount)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TagMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case tag.FieldTaggingsCount:
+		return m.AddedTaggingsCount()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TagMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case tag.FieldTaggingsCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTaggingsCount(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Tag numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TagMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(tag.FieldName) {
+		fields = append(fields, tag.FieldName)
+	}
+	if m.FieldCleared(tag.FieldTaggingsCount) {
+		fields = append(fields, tag.FieldTaggingsCount)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TagMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TagMutation) ClearField(name string) error {
+	switch name {
+	case tag.FieldName:
+		m.ClearName()
+		return nil
+	case tag.FieldTaggingsCount:
+		m.ClearTaggingsCount()
+		return nil
+	}
+	return fmt.Errorf("unknown Tag nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TagMutation) ResetField(name string) error {
+	switch name {
+	case tag.FieldName:
+		m.ResetName()
+		return nil
+	case tag.FieldTaggingsCount:
+		m.ResetTaggingsCount()
+		return nil
+	}
+	return fmt.Errorf("unknown Tag field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TagMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TagMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TagMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TagMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TagMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TagMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TagMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Tag unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TagMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Tag edge %s", name)
+}
+
+// TaggingMutation represents an operation that mutates the Tagging nodes in the graph.
+type TaggingMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int
+	tag_id         *int
+	addtag_id      *int
+	taggable_id    *int
+	addtaggable_id *int
+	taggable_type  *string
+	context        *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*Tagging, error)
+	predicates     []predicate.Tagging
+}
+
+var _ ent.Mutation = (*TaggingMutation)(nil)
+
+// taggingOption allows management of the mutation configuration using functional options.
+type taggingOption func(*TaggingMutation)
+
+// newTaggingMutation creates new mutation for the Tagging entity.
+func newTaggingMutation(c config, op Op, opts ...taggingOption) *TaggingMutation {
+	m := &TaggingMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTagging,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTaggingID sets the ID field of the mutation.
+func withTaggingID(id int) taggingOption {
+	return func(m *TaggingMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Tagging
+		)
+		m.oldValue = func(ctx context.Context) (*Tagging, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Tagging.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTagging sets the old Tagging of the mutation.
+func withTagging(node *Tagging) taggingOption {
+	return func(m *TaggingMutation) {
+		m.oldValue = func(context.Context) (*Tagging, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TaggingMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TaggingMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TaggingMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TaggingMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Tagging.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetTagID sets the "tag_id" field.
+func (m *TaggingMutation) SetTagID(i int) {
+	m.tag_id = &i
+	m.addtag_id = nil
+}
+
+// TagID returns the value of the "tag_id" field in the mutation.
+func (m *TaggingMutation) TagID() (r int, exists bool) {
+	v := m.tag_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTagID returns the old "tag_id" field's value of the Tagging entity.
+// If the Tagging object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaggingMutation) OldTagID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTagID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTagID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTagID: %w", err)
+	}
+	return oldValue.TagID, nil
+}
+
+// AddTagID adds i to the "tag_id" field.
+func (m *TaggingMutation) AddTagID(i int) {
+	if m.addtag_id != nil {
+		*m.addtag_id += i
+	} else {
+		m.addtag_id = &i
+	}
+}
+
+// AddedTagID returns the value that was added to the "tag_id" field in this mutation.
+func (m *TaggingMutation) AddedTagID() (r int, exists bool) {
+	v := m.addtag_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearTagID clears the value of the "tag_id" field.
+func (m *TaggingMutation) ClearTagID() {
+	m.tag_id = nil
+	m.addtag_id = nil
+	m.clearedFields[tagging.FieldTagID] = struct{}{}
+}
+
+// TagIDCleared returns if the "tag_id" field was cleared in this mutation.
+func (m *TaggingMutation) TagIDCleared() bool {
+	_, ok := m.clearedFields[tagging.FieldTagID]
+	return ok
+}
+
+// ResetTagID resets all changes to the "tag_id" field.
+func (m *TaggingMutation) ResetTagID() {
+	m.tag_id = nil
+	m.addtag_id = nil
+	delete(m.clearedFields, tagging.FieldTagID)
+}
+
+// SetTaggableID sets the "taggable_id" field.
+func (m *TaggingMutation) SetTaggableID(i int) {
+	m.taggable_id = &i
+	m.addtaggable_id = nil
+}
+
+// TaggableID returns the value of the "taggable_id" field in the mutation.
+func (m *TaggingMutation) TaggableID() (r int, exists bool) {
+	v := m.taggable_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTaggableID returns the old "taggable_id" field's value of the Tagging entity.
+// If the Tagging object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaggingMutation) OldTaggableID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTaggableID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTaggableID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTaggableID: %w", err)
+	}
+	return oldValue.TaggableID, nil
+}
+
+// AddTaggableID adds i to the "taggable_id" field.
+func (m *TaggingMutation) AddTaggableID(i int) {
+	if m.addtaggable_id != nil {
+		*m.addtaggable_id += i
+	} else {
+		m.addtaggable_id = &i
+	}
+}
+
+// AddedTaggableID returns the value that was added to the "taggable_id" field in this mutation.
+func (m *TaggingMutation) AddedTaggableID() (r int, exists bool) {
+	v := m.addtaggable_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearTaggableID clears the value of the "taggable_id" field.
+func (m *TaggingMutation) ClearTaggableID() {
+	m.taggable_id = nil
+	m.addtaggable_id = nil
+	m.clearedFields[tagging.FieldTaggableID] = struct{}{}
+}
+
+// TaggableIDCleared returns if the "taggable_id" field was cleared in this mutation.
+func (m *TaggingMutation) TaggableIDCleared() bool {
+	_, ok := m.clearedFields[tagging.FieldTaggableID]
+	return ok
+}
+
+// ResetTaggableID resets all changes to the "taggable_id" field.
+func (m *TaggingMutation) ResetTaggableID() {
+	m.taggable_id = nil
+	m.addtaggable_id = nil
+	delete(m.clearedFields, tagging.FieldTaggableID)
+}
+
+// SetTaggableType sets the "taggable_type" field.
+func (m *TaggingMutation) SetTaggableType(s string) {
+	m.taggable_type = &s
+}
+
+// TaggableType returns the value of the "taggable_type" field in the mutation.
+func (m *TaggingMutation) TaggableType() (r string, exists bool) {
+	v := m.taggable_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTaggableType returns the old "taggable_type" field's value of the Tagging entity.
+// If the Tagging object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaggingMutation) OldTaggableType(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTaggableType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTaggableType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTaggableType: %w", err)
+	}
+	return oldValue.TaggableType, nil
+}
+
+// ClearTaggableType clears the value of the "taggable_type" field.
+func (m *TaggingMutation) ClearTaggableType() {
+	m.taggable_type = nil
+	m.clearedFields[tagging.FieldTaggableType] = struct{}{}
+}
+
+// TaggableTypeCleared returns if the "taggable_type" field was cleared in this mutation.
+func (m *TaggingMutation) TaggableTypeCleared() bool {
+	_, ok := m.clearedFields[tagging.FieldTaggableType]
+	return ok
+}
+
+// ResetTaggableType resets all changes to the "taggable_type" field.
+func (m *TaggingMutation) ResetTaggableType() {
+	m.taggable_type = nil
+	delete(m.clearedFields, tagging.FieldTaggableType)
+}
+
+// SetContext sets the "context" field.
+func (m *TaggingMutation) SetContext(s string) {
+	m.context = &s
+}
+
+// Context returns the value of the "context" field in the mutation.
+func (m *TaggingMutation) Context() (r string, exists bool) {
+	v := m.context
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContext returns the old "context" field's value of the Tagging entity.
+// If the Tagging object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaggingMutation) OldContext(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContext is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContext requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContext: %w", err)
+	}
+	return oldValue.Context, nil
+}
+
+// ClearContext clears the value of the "context" field.
+func (m *TaggingMutation) ClearContext() {
+	m.context = nil
+	m.clearedFields[tagging.FieldContext] = struct{}{}
+}
+
+// ContextCleared returns if the "context" field was cleared in this mutation.
+func (m *TaggingMutation) ContextCleared() bool {
+	_, ok := m.clearedFields[tagging.FieldContext]
+	return ok
+}
+
+// ResetContext resets all changes to the "context" field.
+func (m *TaggingMutation) ResetContext() {
+	m.context = nil
+	delete(m.clearedFields, tagging.FieldContext)
+}
+
+// Where appends a list predicates to the TaggingMutation builder.
+func (m *TaggingMutation) Where(ps ...predicate.Tagging) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TaggingMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TaggingMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Tagging, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TaggingMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TaggingMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Tagging).
+func (m *TaggingMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TaggingMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.tag_id != nil {
+		fields = append(fields, tagging.FieldTagID)
+	}
+	if m.taggable_id != nil {
+		fields = append(fields, tagging.FieldTaggableID)
+	}
+	if m.taggable_type != nil {
+		fields = append(fields, tagging.FieldTaggableType)
+	}
+	if m.context != nil {
+		fields = append(fields, tagging.FieldContext)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TaggingMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case tagging.FieldTagID:
+		return m.TagID()
+	case tagging.FieldTaggableID:
+		return m.TaggableID()
+	case tagging.FieldTaggableType:
+		return m.TaggableType()
+	case tagging.FieldContext:
+		return m.Context()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TaggingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case tagging.FieldTagID:
+		return m.OldTagID(ctx)
+	case tagging.FieldTaggableID:
+		return m.OldTaggableID(ctx)
+	case tagging.FieldTaggableType:
+		return m.OldTaggableType(ctx)
+	case tagging.FieldContext:
+		return m.OldContext(ctx)
+	}
+	return nil, fmt.Errorf("unknown Tagging field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TaggingMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case tagging.FieldTagID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTagID(v)
+		return nil
+	case tagging.FieldTaggableID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTaggableID(v)
+		return nil
+	case tagging.FieldTaggableType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTaggableType(v)
+		return nil
+	case tagging.FieldContext:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContext(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Tagging field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TaggingMutation) AddedFields() []string {
+	var fields []string
+	if m.addtag_id != nil {
+		fields = append(fields, tagging.FieldTagID)
+	}
+	if m.addtaggable_id != nil {
+		fields = append(fields, tagging.FieldTaggableID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TaggingMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case tagging.FieldTagID:
+		return m.AddedTagID()
+	case tagging.FieldTaggableID:
+		return m.AddedTaggableID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TaggingMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case tagging.FieldTagID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTagID(v)
+		return nil
+	case tagging.FieldTaggableID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTaggableID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Tagging numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TaggingMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(tagging.FieldTagID) {
+		fields = append(fields, tagging.FieldTagID)
+	}
+	if m.FieldCleared(tagging.FieldTaggableID) {
+		fields = append(fields, tagging.FieldTaggableID)
+	}
+	if m.FieldCleared(tagging.FieldTaggableType) {
+		fields = append(fields, tagging.FieldTaggableType)
+	}
+	if m.FieldCleared(tagging.FieldContext) {
+		fields = append(fields, tagging.FieldContext)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TaggingMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TaggingMutation) ClearField(name string) error {
+	switch name {
+	case tagging.FieldTagID:
+		m.ClearTagID()
+		return nil
+	case tagging.FieldTaggableID:
+		m.ClearTaggableID()
+		return nil
+	case tagging.FieldTaggableType:
+		m.ClearTaggableType()
+		return nil
+	case tagging.FieldContext:
+		m.ClearContext()
+		return nil
+	}
+	return fmt.Errorf("unknown Tagging nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TaggingMutation) ResetField(name string) error {
+	switch name {
+	case tagging.FieldTagID:
+		m.ResetTagID()
+		return nil
+	case tagging.FieldTaggableID:
+		m.ResetTaggableID()
+		return nil
+	case tagging.FieldTaggableType:
+		m.ResetTaggableType()
+		return nil
+	case tagging.FieldContext:
+		m.ResetContext()
+		return nil
+	}
+	return fmt.Errorf("unknown Tagging field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TaggingMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TaggingMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TaggingMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TaggingMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TaggingMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TaggingMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TaggingMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Tagging unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TaggingMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Tagging edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.
