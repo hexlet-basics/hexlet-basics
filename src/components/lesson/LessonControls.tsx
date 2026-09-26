@@ -1,12 +1,10 @@
 import { ActionIcon, Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { useLocation, useRouteContext } from "@tanstack/react-router";
 import { Trans, useTranslation } from "react-i18next";
-import { getCourseLessonQueryKey, startLessonMutation } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView } from "@/client/types.gen";
+import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import { ButtonLink, TextLink } from "@/components/RouterLink";
 
 // The bar under the workspace, where the buttons that act on the exercise live:
@@ -122,33 +120,9 @@ function ForwardButton({
   passed: boolean;
 }) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const courseSlug = view.lesson.course.slug;
-
-  // Next starts the following lesson and only then goes there. Progress begins
-  // through this command and nothing else: the router preloads on hover, so a
-  // lesson page that started itself on load would enroll a learner in every
-  // lesson they pointed at (ADR-0012). That is also why this is a button and
-  // not a link — a link would be preloaded, and could be opened around it.
-  const start = useMutation({
-    ...startLessonMutation(),
-    onSuccess: async () => {
-      if (!nextLesson) return;
-      const lessonSlug = nextLesson.slug;
-      // The next lesson's payload may already be cached from a hover over the
-      // navigation list, taken before this start — and before the pass that
-      // unlocked it. The loader would serve that stale copy, lock and all.
-      await queryClient.invalidateQueries({
-        queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lessonSlug } }),
-      });
-      await navigate({
-        to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-        params: (prev) => ({ ...prev, slug: courseSlug, lessonSlug }),
-      });
-    },
-    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
-  });
+  // Next starts the following lesson and only then goes there.
+  const { enter, isPending } = useEnterLesson(courseSlug);
 
   // The last lesson reads as completion and returns to the course page. The
   // dedicated completion page has no contract operation yet.
@@ -174,8 +148,8 @@ function ForwardButton({
       variant="outline"
       color="green"
       disabled={!passed}
-      loading={start.isPending}
-      onClick={() => start.mutate({ path: { id: nextLesson.id } })}
+      loading={isPending}
+      onClick={() => enter(nextLesson)}
     >
       {t(($) => $.courses.lessons.show.next)}
     </Button>

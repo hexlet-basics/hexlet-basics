@@ -1,9 +1,17 @@
 import { http, HttpResponse } from "msw";
-import { expect, test } from "vitest";
+import { expect, onTestFinished, test } from "vitest";
 import { page } from "vitest/browser";
-import type { Course, CourseLandingPage, CourseProgress, CourseView } from "@/client/types.gen";
+import { getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
+import type {
+  Course,
+  CourseLandingPage,
+  CourseLessonView,
+  CourseProgress,
+  CourseView,
+} from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
 import { Route as courseRoute } from "@/routes/{-$locale}/languages/$slug/index";
+import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
@@ -132,7 +140,11 @@ const learner: AuthUser = {
 // first render, together with where the visitor was when each arrived — so a
 // test can tell "nothing started on load" and "started, then navigated" apart
 // from their opposites.
-async function renderCourse(user: AuthUser | null = null, initialPath = "/languages/javascript") {
+async function renderCourse(
+  user: AuthUser | null = null,
+  initialPath = "/languages/javascript",
+  { withPlayer = false } = {},
+) {
   const starts: { id: string; pathname: string }[] = [];
   let pathname = () => initialPath;
   worker.use(
@@ -146,6 +158,12 @@ async function renderCourse(user: AuthUser | null = null, initialPath = "/langua
     path: "/{-$locale}/languages/$slug",
     initialPath,
     user,
+    // The lesson player beside it, for a test that follows the button into the
+    // lesson; it divides a real height, so it gets one.
+    ...(withPlayer && {
+      also: [{ route: lessonRoute, path: "/{-$locale}/languages/$slug/lessons/$lessonSlug" }],
+      wrap: (element) => <div style={{ height: "800px", width: "1200px" }}>{element}</div>,
+    }),
   });
   pathname = () => rendered.router.state.location.pathname;
 
@@ -273,4 +291,81 @@ test("stays on the course page when the start command fails", async () => {
     .element(page.getByText("There was a network problem", { exact: false }))
     .toBeVisible();
   expect(router.state.location.pathname).toBe("/languages/javascript");
+});
+
+// The Next Lesson as the lesson player reads it, with the gate as `progress`
+// says: `available` is what the pass the start followed has changed.
+function variablesView(progress: CourseProgress): CourseLessonView {
+  return {
+    lesson: {
+      course,
+      id: 1002,
+      name: "Variables",
+      slug: "variables",
+      locale: "en",
+      naturalOrder: 2,
+      versionId: 99,
+      version: 99,
+      description: null,
+      instructions: "Assign a variable.",
+      theory: "A variable is a name bound to a value.",
+      definitions: [],
+      tips: [],
+      preparedCode: "",
+      originalCode: "",
+      testCode: "",
+      sourceCodeUrl: null,
+      createdAt: "2026-01-01T00:00:00Z",
+    },
+    landingPage,
+    lessons: courseView(progress).lessons,
+    progress,
+  };
+}
+
+test("enters the lesson as it stands after the start, not as a hover cached it", async () => {
+  // The player lays out by the viewport, so it gets the desktop one it expects.
+  const startingViewport = { width: window.innerWidth, height: window.innerHeight };
+  await page.viewport(1200, 800);
+  onTestFinished(() => page.viewport(startingViewport.width, startingViewport.height));
+  worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
+  // The fresh read is held until the test lets it go, so what the learner is
+  // shown while it is in flight can be looked at.
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let reads = 0;
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", async () => {
+      reads += 1;
+      await held;
+      return HttpResponse.json(variablesView(midCourse));
+    }),
+  );
+
+  const { starts, queryClient } = await renderCourse(learner, "/languages/javascript", {
+    withPlayer: true,
+  });
+  // What a hover over the list would have preloaded before the pass: the same
+  // lesson, still locked.
+  queryClient.setQueryData(
+    getCourseLessonQueryKey({ path: { courseSlug: "javascript", slug: "variables" } }),
+    variablesView(firstVisit),
+  );
+
+  await page.getByRole("button", { name: "Continue Learning" }).click();
+  await expect.poll(() => reads).toBe(1);
+  expect(starts).toEqual([{ id: "1002", pathname: "/languages/javascript" }]);
+
+  // While the lesson is read afresh the learner is still on the course page:
+  // the cached copy, lock and all, is never put in front of them.
+  expect(page.getByRole("heading", { name: "JavaScript: Variables" }).elements()).toHaveLength(0);
+  await expect.element(page.getByRole("button", { name: "Continue Learning" })).toBeVisible();
+
+  release();
+  await expect.element(page.getByRole("heading", { name: "JavaScript: Variables" })).toBeVisible();
+  await page.getByRole("tab", { name: "Navigation" }).click();
+  await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
+  expect(page.getByRole("link", { name: "Locked Variables" }).elements()).toHaveLength(0);
 });

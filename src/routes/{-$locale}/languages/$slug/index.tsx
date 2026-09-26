@@ -15,17 +15,17 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { IconClock, IconUsers } from "@tabler/icons-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { getCourseOptions, startLessonMutation } from "@/client/@tanstack/react-query.gen";
+import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import LessonMark from "@/components/lesson/LessonMark";
+import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import { NavLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
@@ -258,16 +258,9 @@ function Show() {
 // would be preloaded on hover besides.
 function CourseAction({ view }: { view: CourseView }) {
   const { t } = useTranslation();
-  const { locale } = Route.useParams();
-  const navigate = useNavigate();
-  const start = useMutation({
-    ...startLessonMutation(),
-    // A refusal or a network failure leaves the visitor where they are; landing
-    // in a lesson that was never started would be worse than staying put.
-    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
-  });
-
   const { course, progress } = view;
+  const { enter, isPending } = useEnterLesson(course.slug);
+
   if (!progress) return null;
 
   if (progress.nextLessonSlug === null) {
@@ -291,26 +284,13 @@ function CourseAction({ view }: { view: CourseView }) {
     );
   }
 
-  const lessonSlug = progress.nextLessonSlug;
-  const lesson = view.lessons.find((item) => item.slug === lessonSlug);
+  const lesson = view.lessons.find((item) => item.slug === progress.nextLessonSlug);
   if (!lesson) return null;
 
   // Navigation waits on the command's success: the lesson is entered started or
   // not at all.
-  const enter = () =>
-    start.mutate(
-      { path: { id: lesson.id } },
-      {
-        onSuccess: () =>
-          navigate({
-            to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-            params: { locale, slug: course.slug, lessonSlug },
-          }),
-      },
-    );
-
   return (
-    <Button size="lg" loading={start.isPending} onClick={enter}>
+    <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
       {progress.furthestFinishedPosition === 0
         ? t(($) => $.courses.show.try)
         : t(($) => $.courses.show.continue)}
