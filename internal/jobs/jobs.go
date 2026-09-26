@@ -48,17 +48,20 @@ func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { retur
 // The lesson reviewer is likewise nil-skipped when no LLM credentials are
 // configured — its jobs then wait in the queue for a configured worker. The
 // account email sender is nil-skipped the same way for clients that never
-// Start.
+// Start. The stuck-build reaper shares the loader's gate: it writes the same
+// version rows, so it runs wherever builds run.
 func Workers(
 	loader *courseloader.Loader,
 	leadSyncer LeadSyncer,
 	reviewer LessonReviewer,
 	emailSender AccountEmailSender,
+	logger *slog.Logger,
 ) *river.Workers {
 	w := river.NewWorkers()
 	river.AddWorker(w, &pingWorker{})
 	if loader != nil {
 		river.AddWorker(w, &exerciseLoaderWorker{loader: loader})
+		river.AddWorker(w, &reapStuckVersionBuildsWorker{loader: loader, logger: logger})
 	}
 	if leadSyncer != nil {
 		river.AddWorker(w, &amoCRMLeadWorker{syncer: leadSyncer})
@@ -91,6 +94,8 @@ func NewInsertOnlyClient(
 // NewWorkerClient builds the River runtime used only by the worker process.
 // The caller owns Start and Stop. Worker dependencies stay behind this
 // constructor so an HTTP process cannot accidentally execute background jobs.
+// Periodic jobs are scheduled only alongside their workers: a periodic kind
+// without a registered worker would be inserted and then fail every tick.
 func NewWorkerClient(
 	db *sql.DB,
 	loader *courseloader.Loader,
@@ -102,14 +107,19 @@ func NewWorkerClient(
 	tracerProvider trace.TracerProvider,
 	meterProvider metric.MeterProvider,
 ) (*river.Client[*sql.Tx], error) {
+	var periodic []*river.PeriodicJob
+	if loader != nil {
+		periodic = periodicJobs()
+	}
 	return river.NewClient(riverdatabasesql.New(db), &river.Config{
 		ErrorHandler: errorHandler,
 		Logger:       logger,
+		PeriodicJobs: periodic,
 		Plugins:      openTelemetryPlugins(tracerProvider, meterProvider),
 		Queues: map[string]river.QueueConfig{
 			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
 		},
-		Workers: Workers(loader, leadSyncer, reviewer, emailSender),
+		Workers: Workers(loader, leadSyncer, reviewer, emailSender, logger),
 	})
 }
 
