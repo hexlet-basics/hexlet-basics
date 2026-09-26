@@ -463,19 +463,6 @@ s_enrollments() {
     "[[ \$(psql \"\$PROD_DATABASE_URL\" -XAt -c 'SELECT count(*) FROM (SELECT 1 FROM language_members GROUP BY user_id, language_id HAVING count(*) > 1) d') == 0 ]]"
 }
 
-s_likes() {
-  stage "Duplicate blog likes (#799)"
-  sql -f "$HERE/blog-likes-count.sql"
-  local pairs; pairs=$(sql_value -f "$HERE/blog-likes-count.sql" | cut -d'|' -f1)
-  write_env DUPLICATE_LIKE_PAIRS_BEFORE "$pairs"
-  if (( pairs > 0 )); then
-    confirm "Delete all but the first like of $pairs pair(s)?" || { warn "Stopped before collapse."; exit 1; }
-    sql --single-transaction -f "$HERE/blog-likes-collapse.sql"
-  fi
-  verify "no duplicate (blog_post_id, user_id) likes left" bash -c \
-    "[[ \$(psql \"\$PROD_DATABASE_URL\" -XAt -f '$HERE/blog-likes-count.sql' | cut -d'|' -f1) == 0 ]]"
-}
-
 s_migrate() {
   stage "Schema: atlas baseline, then the pending migrations"
   local status; status=$(atlas_status 2>&1 || true)
@@ -522,7 +509,6 @@ s_legacy_on_new_schema() {
     | grep -E "PG::|ActiveRecord::" | tail -n 10 || true
   open_url "https://sentry.hexlet.io/organizations/hexlet/issues/?statsPeriod=1h"
   step "Open a lesson and run a check on the legacy site; watch Sentry for new issues."
-  note "Known: a repeat blog like now 500s on legacy (the new unique index, #799)."
   human_check "Legacy healthy on the migrated schema?"
 }
 
@@ -664,7 +650,7 @@ s_after() {
   note "  restores legacy chart $LEGACY_CHART_VERSION (hexletbasics/services-app, services-nginx)."
   note "  Migrations stay applied (no down); legacy was verified on them earlier."
   note "  Rollback runs no pre-upgrade hook, so legacy's rails db:prepare does not fire."
-  note "  Go-issued sessions are lost (users sign in again); repeat likes 500 on legacy."
+  note "  Go-issued sessions are lost (users sign in again)."
   note "  Until $ends: additive migrations only, and do not delete the legacy tables."
   say "Values recorded in $ENV_FILE (non-secret)."
 }
@@ -672,10 +658,10 @@ s_after() {
 # ── Plan ──────────────────────────────────────────────────────────────────
 
 if [[ -n "$REHEARSAL" ]]; then
-  PLAN=(s_preflight s_db s_enrollments s_likes s_migrate s_blog s_rehearse_apps)
+  PLAN=(s_preflight s_db s_enrollments s_migrate s_blog s_rehearse_apps)
   TITLE="Cutover rehearsal on a production copy"
 else
-  PLAN=(s_preflight s_cluster s_postbox s_secrets s_db s_enrollments s_likes
+  PLAN=(s_preflight s_cluster s_postbox s_secrets s_db s_enrollments
         s_migrate s_blog s_legacy_on_new_schema s_book s_dry_run s_deploy
         s_routing s_auth_email s_check s_webhook s_lead s_after)
   TITLE="code-basics cutover: Rails → Go"

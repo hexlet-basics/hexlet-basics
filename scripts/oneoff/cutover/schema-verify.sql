@@ -3,9 +3,6 @@
 SELECT 'index_language_members_on_user_id_and_language_id' AS object,
        to_regclass('public.index_language_members_on_user_id_and_language_id') IS NOT NULL AS present
 UNION ALL
-SELECT 'index_blog_post_likes_on_blog_post_id_and_user_id',
-       to_regclass('public.index_blog_post_likes_on_blog_post_id_and_user_id') IS NOT NULL
-UNION ALL
 SELECT 'blog_posts.rich_body',
        EXISTS (SELECT 1 FROM information_schema.columns
                WHERE table_name = 'blog_posts' AND column_name = 'rich_body')

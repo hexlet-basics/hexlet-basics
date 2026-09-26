@@ -174,13 +174,6 @@ var (
 		Name:       "blog_post_likes",
 		Columns:    BlogPostLikesColumns,
 		PrimaryKey: []*schema.Column{BlogPostLikesColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "blogpostlike_blog_post_id_user_id",
-				Unique:  true,
-				Columns: []*schema.Column{BlogPostLikesColumns[3], BlogPostLikesColumns[4]},
-			},
-		},
 	}
 	// BlogPostRelatedLanguageItemsColumns holds the columns for the "blog_post_related_language_items" table.
 	BlogPostRelatedLanguageItemsColumns = []*schema.Column{

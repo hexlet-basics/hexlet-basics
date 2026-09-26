@@ -39,27 +39,25 @@ scripts/oneoff/cutover/cutover.sh
    echoed.
 6. Duplicate enrollments (#765): `count.sql`, then its decision rule, then
    `collapse.sql`.
-7. Duplicate blog likes (#799): `blog-likes-count.sql`, then
-   `blog-likes-collapse.sql`.
-8. atlas: `migrate apply --baseline 20260727053619` by hand, then
+7. atlas: `migrate apply --baseline 20260727053619` by hand, then
    `schema-verify.sql`.
-9. Blog bodies: ActionText goes into `rich_body` (`blog-bodies-*.sql`). Posts
+8. Blog bodies: ActionText goes into `rich_body` (`blog-bodies-*.sql`). Posts
    with `<action-text-attachment>` are listed for a hand fix.
-10. Legacy is still healthy on the migrated schema. This is what a rollback
-    relies on.
-11. Upload `book.pdf` to the bucket (#804).
-12. A server-side dry run of the rendered chart.
-13. `make -C k8s helm-upgrade-app`, which is the switch, followed by the rollout
+9. Legacy is still healthy on the migrated schema. This is what a rollback
+   relies on.
+10. Upload `book.pdf` to the bucket (#804).
+11. A server-side dry run of the rendered chart.
+12. `make -C k8s helm-upgrade-app`, which is the switch, followed by the rollout
     status of each deployment.
-14. Routing: `/`, `/api`, both feed URLs (#805) and the `/webhooks/github`
+13. Routing: `/`, `/api`, both feed URLs (#805) and the `/webhooks/github`
     alias. The legacy nginx 301s are recorded but not enforced, because #811
     left them as an open decision.
-15. Password sign-in, Magic Link email (the `account_email` River job), and the
+14. Password sign-in, Magic Link email (the `account_email` River job), and the
     book download.
-16. A lesson check on `api-check`, which also warms the course images (#767).
-17. GitHub webhook redelivery.
-18. A lead reaching amoCRM (the `amocrm_lead` River job).
-19. Sentry, the blog hand-fixes, and the rollback card.
+15. A lesson check on `api-check`, which also warms the course images (#767).
+16. GitHub webhook redelivery.
+17. A lead reaching amoCRM (the `amocrm_lead` River job).
+18. Sentry, the blog hand-fixes, and the rollback card.
 
 ## Why atlas runs by hand and not in the Helm hook
 
