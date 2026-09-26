@@ -3695,10 +3695,33 @@ func (s *CourseView) SetProgress(val NilCourseProgress) {
 
 func (*CourseView) getCourseRes() {}
 
-// CreateAssistantMessageAccepted is response for CreateAssistantMessage operation.
-type CreateAssistantMessageAccepted struct{}
+type CreateAssistantMessageConflict ProblemDetails
 
-func (*CreateAssistantMessageAccepted) createAssistantMessageRes() {}
+func (*CreateAssistantMessageConflict) createAssistantMessageRes() {}
+
+type CreateAssistantMessageOK struct {
+	Data io.Reader
+}
+
+// Read reads data from the Data reader.
+//
+// Kept to satisfy the io.Reader interface.
+func (s CreateAssistantMessageOK) Read(p []byte) (n int, err error) {
+	if s.Data == nil {
+		return 0, io.EOF
+	}
+	return s.Data.Read(p)
+}
+
+func (*CreateAssistantMessageOK) createAssistantMessageRes() {}
+
+type CreateAssistantMessageTooManyRequests ProblemDetails
+
+func (*CreateAssistantMessageTooManyRequests) createAssistantMessageRes() {}
+
+type CreateAssistantMessageUnauthorized ProblemDetails
+
+func (*CreateAssistantMessageUnauthorized) createAssistantMessageRes() {}
 
 // CreateBookRequestNoContent is response for CreateBookRequest operation.
 type CreateBookRequestNoContent struct{}
@@ -4357,6 +4380,39 @@ func (s *LeadPage) SetPerPage(val int32) {
 
 func (*LeadPage) adminListLeadsRes() {}
 
+// The learner's in-lesson chat, plus whether they may ask again today. The quota flag rides along with
+// the history so the panel renders its disabled state on first paint instead of discovering it from a
+// refused question.
+// Ref: #/components/schemas/LessonAssistantChat
+type LessonAssistantChat struct {
+	// User and assistant turns, oldest first; empty before the first question.
+	Messages []LessonAssistantMessage `json:"messages"`
+	// The learner has used up today's questions (UTC day).
+	QuotaExceeded bool `json:"quotaExceeded"`
+}
+
+// GetMessages returns the value of Messages.
+func (s *LessonAssistantChat) GetMessages() []LessonAssistantMessage {
+	return s.Messages
+}
+
+// GetQuotaExceeded returns the value of QuotaExceeded.
+func (s *LessonAssistantChat) GetQuotaExceeded() bool {
+	return s.QuotaExceeded
+}
+
+// SetMessages sets the value of Messages.
+func (s *LessonAssistantChat) SetMessages(val []LessonAssistantMessage) {
+	s.Messages = val
+}
+
+// SetQuotaExceeded sets the value of QuotaExceeded.
+func (s *LessonAssistantChat) SetQuotaExceeded(val bool) {
+	s.QuotaExceeded = val
+}
+
+func (*LessonAssistantChat) listAssistantMessagesRes() {}
+
 // One message in the in-lesson AI chat (legacy: `AiMessage`).
 // Ref: #/components/schemas/LessonAssistantMessage
 type LessonAssistantMessage struct {
@@ -4878,10 +4934,6 @@ func (s *LessonProgressPage) SetPerPage(val int32) {
 }
 
 func (*LessonProgressPage) adminListLessonProgressRes() {}
-
-type ListAssistantMessagesOKApplicationJSON []LessonAssistantMessage
-
-func (*ListAssistantMessagesOKApplicationJSON) listAssistantMessagesRes() {}
 
 type ListQuerySortOrder string
 
@@ -5859,12 +5911,14 @@ func (*NotFoundError) adminReviewCourseRes()        {}
 func (*NotFoundError) checkLessonRes()              {}
 func (*NotFoundError) checkPasswordResetTokenRes()  {}
 func (*NotFoundError) consumeMagicLinkRes()         {}
+func (*NotFoundError) createAssistantMessageRes()   {}
 func (*NotFoundError) getBlogPostRes()              {}
 func (*NotFoundError) getCourseLessonRes()          {}
 func (*NotFoundError) getCourseRes()                {}
 func (*NotFoundError) getNextBlogPostRes()          {}
 func (*NotFoundError) getPublicCourseCategoryRes()  {}
 func (*NotFoundError) likeBlogPostRes()             {}
+func (*NotFoundError) listAssistantMessagesRes()    {}
 func (*NotFoundError) startLessonRes()              {}
 func (*NotFoundError) updatePasswordRes()           {}
 
@@ -6247,19 +6301,18 @@ func (s *ProblemDetails) SetInstance(val OptString) {
 	s.Instance = val
 }
 
-func (*ProblemDetails) checkLessonRes()            {}
-func (*ProblemDetails) createAssistantMessageRes() {}
-func (*ProblemDetails) createBookRequestRes()      {}
-func (*ProblemDetails) createLeadRes()             {}
-func (*ProblemDetails) deleteAccountRes()          {}
-func (*ProblemDetails) deleteSessionRes()          {}
-func (*ProblemDetails) downloadBookRes()           {}
-func (*ProblemDetails) getMyDashboardRes()         {}
-func (*ProblemDetails) getProfileRes()             {}
-func (*ProblemDetails) likeBlogPostRes()           {}
-func (*ProblemDetails) listAssistantMessagesRes()  {}
-func (*ProblemDetails) startLessonRes()            {}
-func (*ProblemDetails) updateProfileRes()          {}
+func (*ProblemDetails) checkLessonRes()           {}
+func (*ProblemDetails) createBookRequestRes()     {}
+func (*ProblemDetails) createLeadRes()            {}
+func (*ProblemDetails) deleteAccountRes()         {}
+func (*ProblemDetails) deleteSessionRes()         {}
+func (*ProblemDetails) downloadBookRes()          {}
+func (*ProblemDetails) getMyDashboardRes()        {}
+func (*ProblemDetails) getProfileRes()            {}
+func (*ProblemDetails) likeBlogPostRes()          {}
+func (*ProblemDetails) listAssistantMessagesRes() {}
+func (*ProblemDetails) startLessonRes()           {}
+func (*ProblemDetails) updateProfileRes()         {}
 
 // ProblemDetailsStatusCode wraps ProblemDetails with StatusCode.
 type ProblemDetailsStatusCode struct {

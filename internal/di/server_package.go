@@ -16,6 +16,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
@@ -243,6 +244,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		chat, err := do.Invoke[*assistant.Chat](i)
+		if err != nil {
+			return nil, err
+		}
 		return handlers.NewServer(handlers.Deps{
 			DB:                db,
 			Config:            cfg,
@@ -261,7 +266,37 @@ var serverPackage = do.Package(
 			I18n:              translator,
 			Errors:            errorHandler,
 			YandexFeed:        yandexFeed,
+			Assistant:         chat,
 		}), nil
+	}),
+	// The in-lesson assistant answers inside the request (a stream, no job), so
+	// its model client lives in the HTTP process. Unlike the worker's LLM jobs
+	// it is built even without credentials: a question then fails at the
+	// provider before the first token and the learner gets an error status,
+	// where a skipped job could simply wait in the queue.
+	do.Lazy[*assistant.Chat](func(i do.Injector) (*assistant.Chat, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		tracker, err := do.Invoke[*progress.Progress](i)
+		if err != nil {
+			return nil, err
+		}
+		cfg, err := do.Invoke[*config.Config](i)
+		if err != nil {
+			return nil, err
+		}
+		translator, err := do.Invoke[*localization.Translator](i)
+		if err != nil {
+			return nil, err
+		}
+		llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
+		return assistant.NewChat(db, txStore, tracker, llm, translator), nil
 	}),
 	// The progress module owns sequential progression. It writes and publishes
 	// through the same transaction seam every other business module uses.

@@ -1104,7 +1104,8 @@ export const adminUpdateReview = <ThrowOnError extends boolean = false>(options:
 });
 
 /**
- * The assistant chat history for the current user in this lesson.
+ * The assistant chat history for the current user in this lesson, and their
+ * remaining quota. A lesson they never asked about answers an empty chat.
  */
 export const listAssistantMessages = <ThrowOnError extends boolean = false>(options: Options<ListAssistantMessagesData, ThrowOnError>): RequestResult<ListAssistantMessagesResponses, ListAssistantMessagesErrors, ThrowOnError> => (options.client ?? client).get<ListAssistantMessagesResponses, ListAssistantMessagesErrors, ThrowOnError>({
   responseType: 'json',
@@ -1119,10 +1120,15 @@ export const listAssistantMessages = <ThrowOnError extends boolean = false>(opti
 });
 
 /**
- * Ask the assistant. Enqueues generation (river job); the reply is delivered
- * out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
+ * Ask the assistant and stream its answer back. Both turns are stored once
+ * the answer is complete, with the answer's token usage.
+ *
+ * Asking is doing the lesson, so it starts the lesson when the learner has
+ * not yet (409 beyond the gate, exactly as starting would). 429 once today's
+ * questions are used up — decided before anything streams.
  */
 export const createAssistantMessage = <ThrowOnError extends boolean = false>(options: Options<CreateAssistantMessageData, ThrowOnError>): RequestResult<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError> => (options.client ?? client).post<CreateAssistantMessageResponses, CreateAssistantMessageErrors, ThrowOnError>({
+  responseType: 'text',
   security: [{
       key: 'UserSession',
       in: 'cookie',

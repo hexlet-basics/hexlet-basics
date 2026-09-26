@@ -143,6 +143,12 @@ var (
 			Other: "Unprocessable Entity",
 		},
 	}
+	TooManyRequests = Message{
+		value: i18n.Message{
+			ID:    "http.too_many_requests",
+			Other: "Too Many Requests",
+		},
+	}
 	InternalServerError = Message{
 		value: i18n.Message{
 			ID:    "http.internal_server_error",
@@ -161,5 +167,6 @@ var statusMessages = map[int]Message{
 	http.StatusRequestEntityTooLarge: RequestEntityTooLarge,
 	http.StatusUnsupportedMediaType:  UnsupportedMediaType,
 	http.StatusUnprocessableEntity:   UnprocessableEntity,
+	http.StatusTooManyRequests:       TooManyRequests,
 	http.StatusInternalServerError:   InternalServerError,
 }

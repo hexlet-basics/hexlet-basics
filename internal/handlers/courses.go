@@ -12,6 +12,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
@@ -57,6 +58,8 @@ type Server struct {
 	errors *APIErrorHandler
 	// yandexFeed builds the Yandex course catalogue behind the feed routes.
 	yandexFeed *feeds.Yandex
+	// assistant is the in-lesson chat: quota, prompt, stream and storage.
+	assistant *assistant.Chat
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -82,6 +85,7 @@ type Deps struct {
 	I18n              *localization.Translator
 	Errors            *APIErrorHandler
 	YandexFeed        *feeds.Yandex
+	Assistant         *assistant.Chat
 }
 
 // NewServer wires the handler to its dependencies.
@@ -103,6 +107,7 @@ func NewServer(deps Deps) *Server {
 		books:      deps.Books,
 		errors:     deps.Errors,
 		yandexFeed: deps.YandexFeed,
+		assistant:  deps.Assistant,
 	}
 }
 

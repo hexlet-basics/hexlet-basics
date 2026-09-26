@@ -609,8 +609,12 @@ func (UnimplementedHandler) ConsumeMagicLink(ctx context.Context, params Consume
 
 // CreateAssistantMessage implements createAssistantMessage operation.
 //
-// Ask the assistant. Enqueues generation (river job); the reply is delivered out-of-band. 202 =
-// accepted, 429 = rate limited. SSE streaming is TBD.
+// Ask the assistant and stream its answer back. Both turns are stored once the answer is complete,
+// with the answer's token usage.
+//
+// Asking is doing the lesson, so it starts the lesson when the learner has not yet (409 beyond the
+// gate, exactly as starting would). 429 once today's questions are used up — decided before anything
+// streams.
 //
 // POST /api/ai/lessons/{lessonId}/messages
 func (UnimplementedHandler) CreateAssistantMessage(ctx context.Context, req *AssistantMessageInput, params CreateAssistantMessageParams) (r CreateAssistantMessageRes, _ error) {
@@ -825,7 +829,8 @@ func (UnimplementedHandler) LikeBlogPost(ctx context.Context, params LikeBlogPos
 
 // ListAssistantMessages implements listAssistantMessages operation.
 //
-// The assistant chat history for the current user in this lesson.
+// The assistant chat history for the current user in this lesson, and their remaining quota. A lesson
+// they never asked about answers an empty chat.
 //
 // GET /api/ai/lessons/{lessonId}/messages
 func (UnimplementedHandler) ListAssistantMessages(ctx context.Context, params ListAssistantMessagesParams) (r ListAssistantMessagesRes, _ error) {

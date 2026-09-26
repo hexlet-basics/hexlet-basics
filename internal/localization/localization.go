@@ -95,20 +95,31 @@ func (t *Translator) Text(ctx context.Context, message Message) string {
 	if !ok {
 		localizer = i18n.NewLocalizer(t.bundle, language.English.String())
 	}
-	return localize(localizer, message)
+	return localize(localizer, message, nil)
+}
+
+// TextWith translates a message whose text is a template over data, for the
+// locale attached to ctx — the assistant's prompts, which carry the lesson.
+func (t *Translator) TextWith(ctx context.Context, message Message, data any) string {
+	localizer, ok := ctx.Value(localizerContextKey{}).(*i18n.Localizer)
+	if !ok {
+		localizer = i18n.NewLocalizer(t.bundle, language.English.String())
+	}
+	return localize(localizer, message, data)
 }
 
 // TextIn translates message for an explicit locale. Work that runs outside the
 // request that asked for it — a River job rendering an email — carries the
 // locale along instead of a request context.
 func (t *Translator) TextIn(locale string, message Message) string {
-	return localize(i18n.NewLocalizer(t.bundle, locale), message)
+	return localize(i18n.NewLocalizer(t.bundle, locale), message, nil)
 }
 
-func localize(localizer *i18n.Localizer, message Message) string {
+func localize(localizer *i18n.Localizer, message Message, data any) string {
 	text, err := localizer.Localize(&i18n.LocalizeConfig{
 		MessageID:      message.value.ID,
 		DefaultMessage: &message.value,
+		TemplateData:   data,
 	})
 	if err != nil {
 		return message.value.Other

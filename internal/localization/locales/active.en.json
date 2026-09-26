@@ -1,4 +1,6 @@
 {
+  "assistant.instructions": "You help people learn {{.Course}} as part of a course on Hexlet.\nThis conversation is about the lesson \"{{.Lesson}}\".\nThe course consists of theory, practice and tests that run right in the browser.\nYou never show the solution to the exercise: the learner must solve it on their own.\nGuide them, explain, help them understand, suggest steps towards a solution, put forward hypotheses.\nAnswer in English. Keep your answers short.\n\nIf the discussion reveals a mistake in the theory or the exercise (its description, solution or tests),\nrecommend writing about it in the community at https://t.me/hexletcommunity, where the project team is.\n\nLesson theory:\n{{.Theory}}\n\nLesson exercise:\n{{.Instructions}}",
+  "assistant.question": "The learner's code (their solution to the exercise): {{.Code}}\n\nThe result of running the learner's code against the exercise tests: {{.Output}}\n\nThe learner's question: {{.Question}}",
   "attachments.file_too_large": "file is too large",
   "attachments.read_failed": "failed to read file",
   "attachments.store_failed": "failed to store file",
@@ -25,6 +27,7 @@
   "http.method_not_allowed": "Method Not Allowed",
   "http.not_found": "Not Found",
   "http.request_entity_too_large": "Request Entity Too Large",
+  "http.too_many_requests": "Too Many Requests",
   "http.unauthorized": "Unauthorized",
   "http.unprocessable_entity": "Unprocessable Entity",
   "http.unsupported_media_type": "Unsupported Media Type",
