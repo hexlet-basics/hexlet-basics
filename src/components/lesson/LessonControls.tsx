@@ -112,8 +112,8 @@ export default function LessonControls({
   );
 }
 
-// Next, for a signed-in learner — or, on the last lesson, the way back to the
-// course. Unavailable until the lesson is passed, as in legacy, so the button
+// Next, for a signed-in learner — or, on the last lesson, Finish, which leads
+// to the course completion page. Unavailable until the lesson is passed, as in legacy, so the button
 // tells the learner what is expected; `passed` already covers a lesson finished
 // on an earlier visit, because revisiting is not the same as being stuck.
 function ForwardButton({
@@ -130,14 +130,18 @@ function ForwardButton({
   // Next starts the following lesson and only then goes there.
   const { enter, isPending } = useEnterLesson(courseSlug);
 
-  // The last lesson reads as completion and returns to the course page. The
-  // dedicated completion page has no contract operation yet.
+  // The last lesson reads as completion and leads to the completion page, as in
+  // legacy. Passing it finished the Enrollment that page checks for, and the
+  // check dropped the cached course read so the page sees it (LessonWorkspace).
   if (!nextLesson) {
     return (
       <StepLink
         enabled={passed}
         label={t(($) => $.courses.lessons.show.finish)}
-        linkOptions={{ to: "/{-$locale}/languages/$slug", params: { slug: courseSlug } }}
+        linkOptions={{
+          to: "/{-$locale}/languages/$slug/success",
+          params: { slug: courseSlug },
+        }}
       />
     );
   }

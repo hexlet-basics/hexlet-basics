@@ -6,7 +6,11 @@ import { ClientOnly } from "@tanstack/react-router";
 import { IconBook } from "@tabler/icons-react";
 import { lazy, type ReactNode, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { checkLessonMutation, getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
+import {
+  checkLessonMutation,
+  getCourseLessonQueryKey,
+  getCourseQueryKey,
+} from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView, LessonCheckingResponse } from "@/client/types.gen";
 import LessonControls from "@/components/lesson/LessonControls";
 import LessonEditor from "@/components/lesson/LessonEditor";
@@ -81,6 +85,15 @@ export default function LessonWorkspace({
       await queryClient.invalidateQueries({
         queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
       });
+      // A pass also moves the course's own progress, and on the last lesson it
+      // finishes the Enrollment the completion page checks for. A course read
+      // cached from an earlier visit to the Course page is inactive here, so an
+      // invalidation would not refetch it and the completion page's
+      // ensureQueryData would serve it as it was — still unfinished, bouncing
+      // the learner back. The entry is dropped so the next read is fresh.
+      if (outcome.passed) {
+        queryClient.removeQueries({ queryKey: getCourseQueryKey({ path: { slug: courseSlug } }) });
+      }
     },
     // A network failure must never read as a wrong answer, so it says what it
     // was and leaves the page where it stood.

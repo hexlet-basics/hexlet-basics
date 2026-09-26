@@ -6,10 +6,14 @@ import type {
   CourseLandingPage,
   CourseLesson,
   CourseLessonView,
+  CourseView,
+  EnrollmentState,
   LessonCheckingResponse,
 } from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
+import { getCourseQueryKey } from "@/client/@tanstack/react-query.gen";
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
+import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/success";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
@@ -814,13 +818,52 @@ test("lets a learner revisiting a finished lesson move on straight away", async 
   await expect.element(page.getByRole("button", { name: "Next →" })).toBeEnabled();
 });
 
-test("says so on the last lesson, and returns to the course page", async () => {
+// The course read for a learner whose Enrollment is in `state` — what the
+// completion page checks before it congratulates anyone.
+function courseView(state: EnrollmentState): CourseView {
+  const progress = lastLessonView().progress ?? null;
+  return {
+    course,
+    landingPage,
+    lessons: [],
+    modules: [],
+    qnaItems: [],
+    enrollment: progress && {
+      id: 5,
+      userId: learner.id,
+      courseId: course.id,
+      state,
+      completion: progress.completion,
+      nextLessonName: null,
+      progress,
+    },
+    progress,
+  };
+}
+
+test("says so on the last lesson, and leads to the completion page", async () => {
   worker.use(
     http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
     http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
+    // The pass has finished the Enrollment on the server.
+    http.get("*/api/languages/javascript", () => HttpResponse.json(courseView("finished"))),
   );
 
-  await renderPlayer("strings", learner);
+  const { router, queryClient } = await renderRoute(lessonRoute, {
+    path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+    initialPath: "/languages/javascript/lessons/strings",
+    user: learner,
+    also: [{ route: successRoute, path: "/{-$locale}/languages/$slug/success" }],
+    wrap: (element) => (
+      <div style={{ height: `${desktop.height}px`, width: `${desktop.width}px` }}>{element}</div>
+    ),
+  });
+  // A course read left from an earlier visit to the Course page, taken before
+  // the pass: served as it is, it would bounce the learner back as unfinished.
+  queryClient.setQueryData(
+    getCourseQueryKey({ path: { slug: "javascript" } }),
+    courseView("started"),
+  );
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
 
   await expect.element(page.getByRole("button", { name: "Finish" })).toBeDisabled();
@@ -829,10 +872,33 @@ test("says so on the last lesson, and returns to the course page", async () => {
   await page.getByRole("button", { name: "Run" }).click();
   await expect.element(page.getByText("Tests passed")).toBeVisible();
 
-  // The completion page has no contract operation yet; the course page stands in.
+  const finish = page.getByRole("link", { name: "Finish" });
+  await expect.element(finish).toHaveAttribute("href", "/languages/javascript/success");
+  await finish.click();
+
   await expect
-    .element(page.getByRole("link", { name: "Finish" }))
-    .toHaveAttribute("href", "/languages/javascript");
+    .element(page.getByRole("heading", { name: "Congratulations, you completed the course!" }))
+    .toBeVisible();
+  expect(router.state.location.pathname).toBe("/languages/javascript/success");
+});
+
+test("offers a guest sign-up rather than Finish on the last lesson", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
+    http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
+  );
+
+  await renderPlayer("strings");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+
+  // The completion page needs a session, so a guest is asked to sign up first.
+  await expect.element(page.getByRole("link", { name: "Finish" })).not.toBeInTheDocument();
+  await expect
+    .element(page.getByRole("link", { name: "Next →", exact: true }))
+    .toHaveAttribute("href", expect.stringContaining("/users/new"));
 });
 
 test("offers a guest sign-up in place of Next, and tells them it keeps their progress", async () => {
