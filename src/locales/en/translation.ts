@@ -1131,7 +1131,7 @@ export default {
           discuss: "AI Assistent",
           editor: "Editor",
           editor_aria_label: "Code editor",
-          finish: "Завершить",
+          finish: "Finish",
           finished: "Finished",
           hint_close: "Dismiss",
           if_stuck_html:
@@ -1156,7 +1156,7 @@ export default {
           show_full_version: "Реактор кода доступен в основной версии →",
           sign_in: "Sign In",
           sign_up_for_tracking_progress_html:
-            'Be sure to <a href="{{link}}" class="text-decoration-none" target="_blank">register</a> to ensure you don\'t lose the results you\'ve achieved\n',
+            "Be sure to <a>register</a> to ensure you don't lose the results you've achieved",
           solution: "Solution",
           source_code: "Lesson source on GitHub",
           tests: "Tests",

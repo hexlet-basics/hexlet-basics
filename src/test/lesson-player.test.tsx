@@ -198,7 +198,8 @@ test("lists every lesson in course order, marking finished and locked ones", asy
   await renderPlayer("variables");
   await page.getByRole("tab", { name: "Navigation" }).click();
 
-  const links = page.getByRole("link").elements();
+  // The list itself — the control bar's Previous links to a lesson too.
+  const links = page.getByRole("tabpanel", { name: "Navigation" }).getByRole("link").elements();
   const lessonLinks = links.filter((el) => el.getAttribute("href")?.includes("/lessons/"));
   expect(lessonLinks.map((el) => el.textContent?.trim())).toEqual([
     "Hello, World!",
@@ -695,4 +696,163 @@ test("leaves a program course's editor without a preview", async () => {
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
 
   expect(document.querySelector("iframe")).toBeNull();
+});
+
+// ---- Progression -----------------------------------------------------------
+
+// The last lesson of the course, which the learner has reached but not passed.
+function lastLessonView(): CourseLessonView {
+  return lessonView({
+    lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings" },
+    progress: {
+      state: "started",
+      completion: 66,
+      nextLessonSlug: "strings",
+      furthestFinishedPosition: 2,
+      lessons: [
+        { slug: "hello-world", position: 1, finished: true, available: true },
+        { slug: "variables", position: 2, finished: true, available: true },
+        { slug: "strings", position: 3, finished: false, available: true },
+      ],
+    },
+  });
+}
+
+test("carries reset, Previous, Run and Next under the editor, in legacy's order", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+  );
+
+  await renderPlayer("variables", learner);
+  await expect.element(page.getByRole("button", { name: "Run" })).toBeVisible();
+
+  const bar = page.getByRole("button", { name: "Run" }).element().parentElement;
+  const controls = Array.from(bar?.children ?? []).map(
+    (el) => el.getAttribute("aria-label") ?? el.textContent?.trim(),
+  );
+  expect(controls).toEqual(["Reset", "← Previous", "Run", "Next →"]);
+});
+
+test("goes back with a plain link, and has nowhere to go back to on the first lesson", async () => {
+  const first = lessonView({
+    lesson: { ...lesson, id: 1001, name: "Hello, World!", slug: "hello-world" },
+  });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/languages/javascript/lessons/hello-world", () => HttpResponse.json(first)),
+  );
+
+  const { screen } = await renderPlayer("variables", learner);
+  await expect
+    .element(page.getByRole("link", { name: "← Previous" }))
+    .toHaveAttribute("href", "/languages/javascript/lessons/hello-world");
+
+  await screen.unmount();
+  await renderPlayer("hello-world", learner);
+  await expect.element(page.getByRole("button", { name: "← Previous" })).toBeDisabled();
+});
+
+test("moves a learner on: Next waits for the pass, then starts the next lesson before going there", async () => {
+  const strings = lessonView({
+    lesson: { ...lesson, id: 1003, name: "Strings", slug: "strings", preparedCode: "// strings\n" },
+  });
+  const requests: string[] = [];
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
+    http.post("*/lessons/:id/start", ({ params }) => {
+      requests.push(`start ${String(params.id)}`);
+      return HttpResponse.json(strings.progress);
+    }),
+    http.get("*/languages/javascript/lessons/strings", () => {
+      requests.push("read strings");
+      return HttpResponse.json(strings);
+    }),
+  );
+
+  const { router } = await renderPlayer("variables", learner);
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  // The button says what is expected: pass first.
+  const next = page.getByRole("button", { name: "Next →" });
+  await expect.element(next).toBeDisabled();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await expect.element(next).toBeEnabled();
+
+  await next.click();
+
+  await expect.element(page.getByRole("heading", { name: "JavaScript: Strings" })).toBeVisible();
+  expect(router.state.location.pathname).toBe("/languages/javascript/lessons/strings");
+  // Started exactly once, and before the page it leads to was read (ADR-0012).
+  expect(requests).toEqual(["start 1003", "read strings"]);
+});
+
+test("lets a learner revisiting a finished lesson move on straight away", async () => {
+  const finished = lessonView({ progress: lastLessonView().progress });
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(finished)),
+  );
+
+  await renderPlayer("variables", learner);
+
+  // Revisiting is not the same as being stuck: no run needed.
+  await expect.element(page.getByRole("button", { name: "Next →" })).toBeEnabled();
+});
+
+test("says so on the last lesson, and returns to the course page", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
+    http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
+  );
+
+  await renderPlayer("strings", learner);
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  await expect.element(page.getByRole("button", { name: "Finish" })).toBeDisabled();
+  await expect.element(page.getByRole("button", { name: "Next →" })).not.toBeInTheDocument();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+
+  // The completion page has no contract operation yet; the course page stands in.
+  await expect
+    .element(page.getByRole("link", { name: "Finish" }))
+    .toHaveAttribute("href", "/languages/javascript");
+});
+
+test("offers a guest sign-up in place of Next, and tells them it keeps their progress", async () => {
+  let started = 0;
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.post("*/lessons/1002/check", () => HttpResponse.json(checkResult())),
+    http.post("*/lessons/:id/start", () => {
+      started += 1;
+      return HttpResponse.json({});
+    }),
+  );
+
+  await renderPlayer("variables");
+  await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
+
+  const prompt = "Be sure to register to ensure you don't lose the results you've achieved";
+  await expect.element(page.getByRole("button", { name: "Next →" })).toBeDisabled();
+  await expect.element(page.getByText(prompt)).not.toBeInTheDocument();
+
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect.element(page.getByText("Tests passed")).toBeVisible();
+  await expect.element(page.getByText(prompt)).toBeVisible();
+
+  // Both lead to sign-up and carry the way back to this lesson. The merge that
+  // credits what was passed is the server's, and is covered by its tests.
+  for (const name of ["Next →", "register"]) {
+    const href = page.getByRole("link", { name, exact: true }).element().getAttribute("href");
+    const url = new URL(href ?? "", location.origin);
+    expect(url.pathname).toBe("/users/new");
+    expect(url.searchParams.get("redirect")).toBe("/languages/javascript/lessons/variables");
+  }
+
+  // A guest's Next starts nothing: it leads to sign-up, not to the next lesson.
+  expect(started).toBe(0);
 });

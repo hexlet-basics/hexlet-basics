@@ -164,7 +164,13 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
         </Tabs.Panel>
       </Tabs>
 
-      <LessonControls onReset={reset} onRun={run} running={check.isPending} />
+      <LessonControls
+        view={view}
+        passed={solutionUnlocked}
+        onReset={reset}
+        onRun={run}
+        running={check.isPending}
+      />
     </Stack>
   );
 }
