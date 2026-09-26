@@ -5175,8 +5175,12 @@ type BlogPostLikeMutation struct {
 	op              Op
 	typ             string
 	id              *int
+	created_at      *time.Time
+	updated_at      *time.Time
 	blog_post_id    *int
 	addblog_post_id *int
+	user_id         *int
+	adduser_id      *int
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*BlogPostLike, error)
@@ -5281,6 +5285,78 @@ func (m *BlogPostLikeMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (m *BlogPostLikeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *BlogPostLikeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the BlogPostLike entity.
+// If the BlogPostLike object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostLikeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *BlogPostLikeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *BlogPostLikeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *BlogPostLikeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the BlogPostLike entity.
+// If the BlogPostLike object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostLikeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *BlogPostLikeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
 // SetBlogPostID sets the "blog_post_id" field.
 func (m *BlogPostLikeMutation) SetBlogPostID(i int) {
 	m.blog_post_id = &i
@@ -5337,6 +5413,76 @@ func (m *BlogPostLikeMutation) ResetBlogPostID() {
 	m.addblog_post_id = nil
 }
 
+// SetUserID sets the "user_id" field.
+func (m *BlogPostLikeMutation) SetUserID(i int) {
+	m.user_id = &i
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *BlogPostLikeMutation) UserID() (r int, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the BlogPostLike entity.
+// If the BlogPostLike object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlogPostLikeMutation) OldUserID(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds i to the "user_id" field.
+func (m *BlogPostLikeMutation) AddUserID(i int) {
+	if m.adduser_id != nil {
+		*m.adduser_id += i
+	} else {
+		m.adduser_id = &i
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *BlogPostLikeMutation) AddedUserID() (r int, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (m *BlogPostLikeMutation) ClearUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
+	m.clearedFields[blogpostlike.FieldUserID] = struct{}{}
+}
+
+// UserIDCleared returns if the "user_id" field was cleared in this mutation.
+func (m *BlogPostLikeMutation) UserIDCleared() bool {
+	_, ok := m.clearedFields[blogpostlike.FieldUserID]
+	return ok
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *BlogPostLikeMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
+	delete(m.clearedFields, blogpostlike.FieldUserID)
+}
+
 // Where appends a list predicates to the BlogPostLikeMutation builder.
 func (m *BlogPostLikeMutation) Where(ps ...predicate.BlogPostLike) {
 	m.predicates = append(m.predicates, ps...)
@@ -5371,9 +5517,18 @@ func (m *BlogPostLikeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BlogPostLikeMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 4)
+	if m.created_at != nil {
+		fields = append(fields, blogpostlike.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, blogpostlike.FieldUpdatedAt)
+	}
 	if m.blog_post_id != nil {
 		fields = append(fields, blogpostlike.FieldBlogPostID)
+	}
+	if m.user_id != nil {
+		fields = append(fields, blogpostlike.FieldUserID)
 	}
 	return fields
 }
@@ -5383,8 +5538,14 @@ func (m *BlogPostLikeMutation) Fields() []string {
 // schema.
 func (m *BlogPostLikeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case blogpostlike.FieldCreatedAt:
+		return m.CreatedAt()
+	case blogpostlike.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case blogpostlike.FieldBlogPostID:
 		return m.BlogPostID()
+	case blogpostlike.FieldUserID:
+		return m.UserID()
 	}
 	return nil, false
 }
@@ -5394,8 +5555,14 @@ func (m *BlogPostLikeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *BlogPostLikeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case blogpostlike.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case blogpostlike.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case blogpostlike.FieldBlogPostID:
 		return m.OldBlogPostID(ctx)
+	case blogpostlike.FieldUserID:
+		return m.OldUserID(ctx)
 	}
 	return nil, fmt.Errorf("unknown BlogPostLike field %s", name)
 }
@@ -5405,12 +5572,33 @@ func (m *BlogPostLikeMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *BlogPostLikeMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case blogpostlike.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case blogpostlike.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case blogpostlike.FieldBlogPostID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBlogPostID(v)
+		return nil
+	case blogpostlike.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPostLike field %s", name)
@@ -5423,6 +5611,9 @@ func (m *BlogPostLikeMutation) AddedFields() []string {
 	if m.addblog_post_id != nil {
 		fields = append(fields, blogpostlike.FieldBlogPostID)
 	}
+	if m.adduser_id != nil {
+		fields = append(fields, blogpostlike.FieldUserID)
+	}
 	return fields
 }
 
@@ -5433,6 +5624,8 @@ func (m *BlogPostLikeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case blogpostlike.FieldBlogPostID:
 		return m.AddedBlogPostID()
+	case blogpostlike.FieldUserID:
+		return m.AddedUserID()
 	}
 	return nil, false
 }
@@ -5449,6 +5642,13 @@ func (m *BlogPostLikeMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddBlogPostID(v)
 		return nil
+	case blogpostlike.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown BlogPostLike numeric field %s", name)
 }
@@ -5456,7 +5656,11 @@ func (m *BlogPostLikeMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *BlogPostLikeMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(blogpostlike.FieldUserID) {
+		fields = append(fields, blogpostlike.FieldUserID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -5469,6 +5673,11 @@ func (m *BlogPostLikeMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *BlogPostLikeMutation) ClearField(name string) error {
+	switch name {
+	case blogpostlike.FieldUserID:
+		m.ClearUserID()
+		return nil
+	}
 	return fmt.Errorf("unknown BlogPostLike nullable field %s", name)
 }
 
@@ -5476,8 +5685,17 @@ func (m *BlogPostLikeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *BlogPostLikeMutation) ResetField(name string) error {
 	switch name {
+	case blogpostlike.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case blogpostlike.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case blogpostlike.FieldBlogPostID:
 		m.ResetBlogPostID()
+		return nil
+	case blogpostlike.FieldUserID:
+		m.ResetUserID()
 		return nil
 	}
 	return fmt.Errorf("unknown BlogPostLike field %s", name)

@@ -3444,7 +3444,7 @@ func encodeDeleteSessionResponse(response DeleteSessionRes, w http.ResponseWrite
 
 func encodeGetBlogPostResponse(response GetBlogPostRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *BlogPost:
+	case *BlogPostView:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 

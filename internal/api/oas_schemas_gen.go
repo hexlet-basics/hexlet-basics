@@ -1355,7 +1355,6 @@ func (*BlogPost) adminCreateBlogPostRes()            {}
 func (*BlogPost) adminGetBlogPostRes()               {}
 func (*BlogPost) adminSetBlogPostRelatedCoursesRes() {}
 func (*BlogPost) adminUpdateBlogPostRes()            {}
-func (*BlogPost) getBlogPostRes()                    {}
 func (*BlogPost) getNextBlogPostRes()                {}
 func (*BlogPost) likeBlogPostRes()                   {}
 
@@ -1551,6 +1550,49 @@ func (s *BlogPostState) UnmarshalText(data []byte) error {
 		return errors.Errorf("invalid value: %q", data)
 	}
 }
+
+// A blog post page: the post plus what the page shows under it.
+// Ref: #/components/schemas/BlogPostView
+type BlogPostView struct {
+	Post BlogPost `json:"post"`
+	// Two other published posts in the request locale, newest first.
+	RecommendedPosts []BlogPost `json:"recommendedPosts"`
+	// The main landing page, in the request locale, of each course the post promotes, in the post's
+	// display order.
+	RelatedLandingPages []CourseCatalogItem `json:"relatedLandingPages"`
+}
+
+// GetPost returns the value of Post.
+func (s *BlogPostView) GetPost() BlogPost {
+	return s.Post
+}
+
+// GetRecommendedPosts returns the value of RecommendedPosts.
+func (s *BlogPostView) GetRecommendedPosts() []BlogPost {
+	return s.RecommendedPosts
+}
+
+// GetRelatedLandingPages returns the value of RelatedLandingPages.
+func (s *BlogPostView) GetRelatedLandingPages() []CourseCatalogItem {
+	return s.RelatedLandingPages
+}
+
+// SetPost sets the value of Post.
+func (s *BlogPostView) SetPost(val BlogPost) {
+	s.Post = val
+}
+
+// SetRecommendedPosts sets the value of RecommendedPosts.
+func (s *BlogPostView) SetRecommendedPosts(val []BlogPost) {
+	s.RecommendedPosts = val
+}
+
+// SetRelatedLandingPages sets the value of RelatedLandingPages.
+func (s *BlogPostView) SetRelatedLandingPages(val []CourseCatalogItem) {
+	s.RelatedLandingPages = val
+}
+
+func (*BlogPostView) getBlogPostRes() {}
 
 // A request to download the free book (ru marketing funnel).
 // Ref: #/components/schemas/BookRequestInput

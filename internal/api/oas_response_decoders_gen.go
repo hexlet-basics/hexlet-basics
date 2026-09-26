@@ -12396,7 +12396,7 @@ func decodeGetBlogPostResponse(resp *http.Response) (res GetBlogPostRes, _ error
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response BlogPost
+			var response BlogPostView
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

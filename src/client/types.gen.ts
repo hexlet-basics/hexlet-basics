@@ -163,6 +163,22 @@ export type BlogPostRelatedCoursesInput = {
 export type BlogPostState = 'draft' | 'published' | 'archived';
 
 /**
+ * A blog post page: the post plus what the page shows under it.
+ */
+export type BlogPostView = {
+  post: BlogPost;
+  /**
+   * Two other published posts in the request locale, newest first.
+   */
+  recommendedPosts: Array<BlogPost>;
+  /**
+   * The main landing page, in the request locale, of each course the post
+   *       promotes, in the post's display order.
+   */
+  relatedLandingPages: Array<CourseCatalogItem>;
+};
+
+/**
  * A request to download the free book (ru marketing funnel).
  */
 export type BookRequestInput = {
@@ -4232,7 +4248,7 @@ export type GetBlogPostResponses = {
   /**
    * The request has succeeded.
    */
-  200: BlogPost;
+  200: BlogPostView;
 };
 
 export type GetBlogPostResponse = GetBlogPostResponses[keyof GetBlogPostResponses];

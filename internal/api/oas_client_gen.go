@@ -457,7 +457,7 @@ type Invoker interface {
 	DeleteSession(ctx context.Context) (DeleteSessionRes, error)
 	// GetBlogPost invokes getBlogPost operation.
 	//
-	// A single blog post by slug.
+	// A published post in the request locale, by slug, with its page data.
 	//
 	// GET /api/blog_posts/{slug}
 	GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error)
@@ -491,7 +491,7 @@ type Invoker interface {
 	GetMyDashboard(ctx context.Context) (GetMyDashboardRes, error)
 	// GetNextBlogPost invokes getNextBlogPost operation.
 	//
-	// The next post to read after this one.
+	// The next post to read after this one: the next older published post in the request locale.
 	//
 	// GET /api/blog_posts/{id}/next
 	GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error)
@@ -515,7 +515,7 @@ type Invoker interface {
 	GetSitemap(ctx context.Context) (*Sitemap, error)
 	// LikeBlogPost invokes likeBlogPost operation.
 	//
-	// Like a post (idempotent per visitor).
+	// Like a post once per signed-in user; a repeat like changes nothing.
 	//
 	// POST /api/blog_posts/{id}/likes
 	LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error)
@@ -11981,7 +11981,7 @@ func (c *Client) sendDeleteSession(ctx context.Context) (res DeleteSessionRes, e
 
 // GetBlogPost invokes getBlogPost operation.
 //
-// A single blog post by slug.
+// A published post in the request locale, by slug, with its page data.
 //
 // GET /api/blog_posts/{slug}
 func (c *Client) GetBlogPost(ctx context.Context, params GetBlogPostParams) (GetBlogPostRes, error) {
@@ -12508,7 +12508,7 @@ func (c *Client) sendGetMyDashboard(ctx context.Context) (res GetMyDashboardRes,
 
 // GetNextBlogPost invokes getNextBlogPost operation.
 //
-// The next post to read after this one.
+// The next post to read after this one: the next older published post in the request locale.
 //
 // GET /api/blog_posts/{id}/next
 func (c *Client) GetNextBlogPost(ctx context.Context, params GetNextBlogPostParams) (GetNextBlogPostRes, error) {
@@ -12898,7 +12898,7 @@ func (c *Client) sendGetSitemap(ctx context.Context) (res *Sitemap, err error) {
 
 // LikeBlogPost invokes likeBlogPost operation.
 //
-// Like a post (idempotent per visitor).
+// Like a post once per signed-in user; a repeat like changes nothing.
 //
 // POST /api/blog_posts/{id}/likes
 func (c *Client) LikeBlogPost(ctx context.Context, params LikeBlogPostParams) (LikeBlogPostRes, error) {

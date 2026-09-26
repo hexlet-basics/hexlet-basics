@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/blogpostlike"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -16,8 +17,14 @@ type BlogPostLike struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// BlogPostID holds the value of the "blog_post_id" field.
-	BlogPostID   int `json:"blog_post_id,omitempty"`
+	BlogPostID int `json:"blog_post_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID       *int `json:"user_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -26,8 +33,10 @@ func (*BlogPostLike) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case blogpostlike.FieldID, blogpostlike.FieldBlogPostID:
+		case blogpostlike.FieldID, blogpostlike.FieldBlogPostID, blogpostlike.FieldUserID:
 			values[i] = new(sql.NullInt64)
+		case blogpostlike.FieldCreatedAt, blogpostlike.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -49,11 +58,30 @@ func (_m *BlogPostLike) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
+		case blogpostlike.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
+		case blogpostlike.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
 		case blogpostlike.FieldBlogPostID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field blog_post_id", values[i])
 			} else if value.Valid {
 				_m.BlogPostID = int(value.Int64)
+			}
+		case blogpostlike.FieldUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value.Valid {
+				_m.UserID = new(int)
+				*_m.UserID = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -91,8 +119,19 @@ func (_m *BlogPostLike) String() string {
 	var builder strings.Builder
 	builder.WriteString("BlogPostLike(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("blog_post_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.BlogPostID))
+	builder.WriteString(", ")
+	if v := _m.UserID; v != nil {
+		builder.WriteString("user_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

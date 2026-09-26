@@ -1710,7 +1710,7 @@ export const listBlogPostsInfiniteOptions = (options?: Options<ListBlogPostsData
 };
 
 /**
- * Like a post (idempotent per visitor).
+ * Like a post once per signed-in user; a repeat like changes nothing.
  */
 export const likeBlogPostMutation = (options?: Partial<Options<LikeBlogPostData>>): UseMutationOptions<LikeBlogPostResponse, AxiosError<LikeBlogPostError>, Options<LikeBlogPostData>> => {
   const mutationOptions: UseMutationOptions<LikeBlogPostResponse, AxiosError<LikeBlogPostError>, Options<LikeBlogPostData>> = {
@@ -1729,7 +1729,8 @@ export const likeBlogPostMutation = (options?: Partial<Options<LikeBlogPostData>
 export const getNextBlogPostQueryKey = (options: Options<GetNextBlogPostData>) => createQueryKey('getNextBlogPost', options);
 
 /**
- * The next post to read after this one.
+ * The next post to read after this one: the next older published post in
+ *       the request locale.
  */
 export const getNextBlogPostOptions = (options: Options<GetNextBlogPostData>) => queryOptions<GetNextBlogPostResponse, AxiosError<GetNextBlogPostError>, GetNextBlogPostResponse, ReturnType<typeof getNextBlogPostQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
@@ -1747,7 +1748,7 @@ export const getNextBlogPostOptions = (options: Options<GetNextBlogPostData>) =>
 export const getBlogPostQueryKey = (options: Options<GetBlogPostData>) => createQueryKey('getBlogPost', options);
 
 /**
- * A single blog post by slug.
+ * A published post in the request locale, by slug, with its page data.
  */
 export const getBlogPostOptions = (options: Options<GetBlogPostData>) => queryOptions<GetBlogPostResponse, AxiosError<GetBlogPostError>, GetBlogPostResponse, ReturnType<typeof getBlogPostQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {

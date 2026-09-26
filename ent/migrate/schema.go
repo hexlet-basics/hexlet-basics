@@ -164,13 +164,23 @@ var (
 	// BlogPostLikesColumns holds the columns for the "blog_post_likes" table.
 	BlogPostLikesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "blog_post_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// BlogPostLikesTable holds the schema information for the "blog_post_likes" table.
 	BlogPostLikesTable = &schema.Table{
 		Name:       "blog_post_likes",
 		Columns:    BlogPostLikesColumns,
 		PrimaryKey: []*schema.Column{BlogPostLikesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "blogpostlike_blog_post_id_user_id",
+				Unique:  true,
+				Columns: []*schema.Column{BlogPostLikesColumns[3], BlogPostLikesColumns[4]},
+			},
+		},
 	}
 	// BlogPostRelatedLanguageItemsColumns holds the columns for the "blog_post_related_language_items" table.
 	BlogPostRelatedLanguageItemsColumns = []*schema.Column{

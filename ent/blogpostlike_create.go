@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/blogpostlike"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -21,9 +22,51 @@ type BlogPostLikeCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *BlogPostLikeCreate) SetCreatedAt(v time.Time) *BlogPostLikeCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *BlogPostLikeCreate) SetNillableCreatedAt(v *time.Time) *BlogPostLikeCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *BlogPostLikeCreate) SetUpdatedAt(v time.Time) *BlogPostLikeCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *BlogPostLikeCreate) SetNillableUpdatedAt(v *time.Time) *BlogPostLikeCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
 // SetBlogPostID sets the "blog_post_id" field.
 func (_c *BlogPostLikeCreate) SetBlogPostID(v int) *BlogPostLikeCreate {
 	_c.mutation.SetBlogPostID(v)
+	return _c
+}
+
+// SetUserID sets the "user_id" field.
+func (_c *BlogPostLikeCreate) SetUserID(v int) *BlogPostLikeCreate {
+	_c.mutation.SetUserID(v)
+	return _c
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_c *BlogPostLikeCreate) SetNillableUserID(v *int) *BlogPostLikeCreate {
+	if v != nil {
+		_c.SetUserID(*v)
+	}
 	return _c
 }
 
@@ -34,6 +77,7 @@ func (_c *BlogPostLikeCreate) Mutation() *BlogPostLikeMutation {
 
 // Save creates the BlogPostLike in the database.
 func (_c *BlogPostLikeCreate) Save(ctx context.Context) (*BlogPostLike, error) {
+	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -59,8 +103,26 @@ func (_c *BlogPostLikeCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_c *BlogPostLikeCreate) defaults() {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		v := blogpostlike.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		v := blogpostlike.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (_c *BlogPostLikeCreate) check() error {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "BlogPostLike.created_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "BlogPostLike.updated_at"`)}
+	}
 	if _, ok := _c.mutation.BlogPostID(); !ok {
 		return &ValidationError{Name: "blog_post_id", err: errors.New(`ent: missing required field "BlogPostLike.blog_post_id"`)}
 	}
@@ -91,9 +153,21 @@ func (_c *BlogPostLikeCreate) createSpec() (*BlogPostLike, *sqlgraph.CreateSpec)
 		_spec = sqlgraph.NewCreateSpec(blogpostlike.Table, sqlgraph.NewFieldSpec(blogpostlike.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(blogpostlike.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(blogpostlike.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	if value, ok := _c.mutation.BlogPostID(); ok {
 		_spec.SetField(blogpostlike.FieldBlogPostID, field.TypeInt, value)
 		_node.BlogPostID = value
+	}
+	if value, ok := _c.mutation.UserID(); ok {
+		_spec.SetField(blogpostlike.FieldUserID, field.TypeInt, value)
+		_node.UserID = &value
 	}
 	return _node, _spec
 }
@@ -102,7 +176,7 @@ func (_c *BlogPostLikeCreate) createSpec() (*BlogPostLike, *sqlgraph.CreateSpec)
 // of the `INSERT` statement. For example:
 //
 //	client.BlogPostLike.Create().
-//		SetBlogPostID(v).
+//		SetCreatedAt(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -111,7 +185,7 @@ func (_c *BlogPostLikeCreate) createSpec() (*BlogPostLike, *sqlgraph.CreateSpec)
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.BlogPostLikeUpsert) {
-//			SetBlogPostID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *BlogPostLikeCreate) OnConflict(opts ...sql.ConflictOption) *BlogPostLikeUpsertOne {
@@ -147,6 +221,18 @@ type (
 	}
 )
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BlogPostLikeUpsert) SetUpdatedAt(v time.Time) *BlogPostLikeUpsert {
+	u.Set(blogpostlike.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BlogPostLikeUpsert) UpdateUpdatedAt() *BlogPostLikeUpsert {
+	u.SetExcluded(blogpostlike.FieldUpdatedAt)
+	return u
+}
+
 // SetBlogPostID sets the "blog_post_id" field.
 func (u *BlogPostLikeUpsert) SetBlogPostID(v int) *BlogPostLikeUpsert {
 	u.Set(blogpostlike.FieldBlogPostID, v)
@@ -165,6 +251,30 @@ func (u *BlogPostLikeUpsert) AddBlogPostID(v int) *BlogPostLikeUpsert {
 	return u
 }
 
+// SetUserID sets the "user_id" field.
+func (u *BlogPostLikeUpsert) SetUserID(v int) *BlogPostLikeUpsert {
+	u.Set(blogpostlike.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *BlogPostLikeUpsert) UpdateUserID() *BlogPostLikeUpsert {
+	u.SetExcluded(blogpostlike.FieldUserID)
+	return u
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *BlogPostLikeUpsert) AddUserID(v int) *BlogPostLikeUpsert {
+	u.Add(blogpostlike.FieldUserID, v)
+	return u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *BlogPostLikeUpsert) ClearUserID() *BlogPostLikeUpsert {
+	u.SetNull(blogpostlike.FieldUserID)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -175,6 +285,11 @@ func (u *BlogPostLikeUpsert) AddBlogPostID(v int) *BlogPostLikeUpsert {
 //		Exec(ctx)
 func (u *BlogPostLikeUpsertOne) UpdateNewValues() *BlogPostLikeUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(blogpostlike.FieldCreatedAt)
+		}
+	}))
 	return u
 }
 
@@ -205,6 +320,20 @@ func (u *BlogPostLikeUpsertOne) Update(set func(*BlogPostLikeUpsert)) *BlogPostL
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BlogPostLikeUpsertOne) SetUpdatedAt(v time.Time) *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BlogPostLikeUpsertOne) UpdateUpdatedAt() *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetBlogPostID sets the "blog_post_id" field.
 func (u *BlogPostLikeUpsertOne) SetBlogPostID(v int) *BlogPostLikeUpsertOne {
 	return u.Update(func(s *BlogPostLikeUpsert) {
@@ -223,6 +352,34 @@ func (u *BlogPostLikeUpsertOne) AddBlogPostID(v int) *BlogPostLikeUpsertOne {
 func (u *BlogPostLikeUpsertOne) UpdateBlogPostID() *BlogPostLikeUpsertOne {
 	return u.Update(func(s *BlogPostLikeUpsert) {
 		s.UpdateBlogPostID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *BlogPostLikeUpsertOne) SetUserID(v int) *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *BlogPostLikeUpsertOne) AddUserID(v int) *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *BlogPostLikeUpsertOne) UpdateUserID() *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *BlogPostLikeUpsertOne) ClearUserID() *BlogPostLikeUpsertOne {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.ClearUserID()
 	})
 }
 
@@ -278,6 +435,7 @@ func (_c *BlogPostLikeCreateBulk) Save(ctx context.Context) ([]*BlogPostLike, er
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BlogPostLikeMutation)
 				if !ok {
@@ -360,7 +518,7 @@ func (_c *BlogPostLikeCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.BlogPostLikeUpsert) {
-//			SetBlogPostID(v+v).
+//			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
 func (_c *BlogPostLikeCreateBulk) OnConflict(opts ...sql.ConflictOption) *BlogPostLikeUpsertBulk {
@@ -399,6 +557,13 @@ type BlogPostLikeUpsertBulk struct {
 //		Exec(ctx)
 func (u *BlogPostLikeUpsertBulk) UpdateNewValues() *BlogPostLikeUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(blogpostlike.FieldCreatedAt)
+			}
+		}
+	}))
 	return u
 }
 
@@ -429,6 +594,20 @@ func (u *BlogPostLikeUpsertBulk) Update(set func(*BlogPostLikeUpsert)) *BlogPost
 	return u
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (u *BlogPostLikeUpsertBulk) SetUpdatedAt(v time.Time) *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *BlogPostLikeUpsertBulk) UpdateUpdatedAt() *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
 // SetBlogPostID sets the "blog_post_id" field.
 func (u *BlogPostLikeUpsertBulk) SetBlogPostID(v int) *BlogPostLikeUpsertBulk {
 	return u.Update(func(s *BlogPostLikeUpsert) {
@@ -447,6 +626,34 @@ func (u *BlogPostLikeUpsertBulk) AddBlogPostID(v int) *BlogPostLikeUpsertBulk {
 func (u *BlogPostLikeUpsertBulk) UpdateBlogPostID() *BlogPostLikeUpsertBulk {
 	return u.Update(func(s *BlogPostLikeUpsert) {
 		s.UpdateBlogPostID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *BlogPostLikeUpsertBulk) SetUserID(v int) *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *BlogPostLikeUpsertBulk) AddUserID(v int) *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *BlogPostLikeUpsertBulk) UpdateUserID() *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *BlogPostLikeUpsertBulk) ClearUserID() *BlogPostLikeUpsertBulk {
+	return u.Update(func(s *BlogPostLikeUpsert) {
+		s.ClearUserID()
 	})
 }
 

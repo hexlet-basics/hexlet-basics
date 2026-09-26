@@ -3368,7 +3368,7 @@ paths:
   /api/blog_posts/{id}/likes:
     post:
       operationId: likeBlogPost
-      description: Like a post (idempotent per visitor).
+      description: Like a post once per signed-in user; a repeat like changes nothing.
       parameters:
         - name: id
           in: path
@@ -3413,7 +3413,9 @@ paths:
   /api/blog_posts/{id}/next:
     get:
       operationId: getNextBlogPost
-      description: The next post to read after this one.
+      description: |-
+        The next post to read after this one: the next older published post in
+              the request locale.
       parameters:
         - name: id
           in: path
@@ -3449,7 +3451,7 @@ paths:
   /api/blog_posts/{slug}:
     get:
       operationId: getBlogPost
-      description: A single blog post by slug.
+      description: A published post in the request locale, by slug, with its page data.
       parameters:
         - name: slug
           in: path
@@ -3462,7 +3464,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BlogPost'
+                $ref: '#/components/schemas/BlogPostView'
         '404':
           description: A resource was not found.
           content:
@@ -4710,6 +4712,28 @@ components:
         - published
         - archived
       description: Blog post publication state.
+    BlogPostView:
+      type: object
+      required:
+        - post
+        - recommendedPosts
+        - relatedLandingPages
+      properties:
+        post:
+          $ref: '#/components/schemas/BlogPost'
+        recommendedPosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlogPost'
+          description: Two other published posts in the request locale, newest first.
+        relatedLandingPages:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseCatalogItem'
+          description: |-
+            The main landing page, in the request locale, of each course the post
+                  promotes, in the post's display order.
+      description: 'A blog post page: the post plus what the page shows under it.'
     BookRequestInput:
       type: object
       required:
