@@ -97,9 +97,9 @@ func TestGetBlogPostIsNotFoundOutsidePublishedPostsOfTheLocale(t *testing.T) {
 			h := testsupport.NewAnonymousHarness(t)
 			testsupport.SpeakTo(h, c.locale)
 
-			res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: c.slug})
-			require.NoError(t, err)
-			assert.IsType(t, &api.NotFoundError{}, res)
+			_, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: c.slug})
+			require.Error(t, err)
+			assert.Equal(t, http.StatusNotFound, h.LastStatus())
 		})
 	}
 }
@@ -114,12 +114,12 @@ func TestGetNextBlogPostWalksToOlderPosts(t *testing.T) {
 	id := blogPostID(t, h, "learning-ruby")
 	for {
 		res, err := h.Client.GetNextBlogPost(t.Context(), api.GetNextBlogPostParams{ID: id})
-		require.NoError(t, err)
-		post, ok := res.(*api.BlogPost)
-		if !ok {
-			assert.IsType(t, &api.NotFoundError{}, res)
+		if err != nil {
+			assert.Equal(t, http.StatusNotFound, h.LastStatus(), "the chain ends in a 404")
 			break
 		}
+		post, ok := res.(*api.BlogPost)
+		require.True(t, ok, "got %T", res)
 		walked = append(walked, post.Slug.Value)
 		id = post.ID
 	}
@@ -172,7 +172,7 @@ func TestLikeBlogPostRequiresSignIn(t *testing.T) {
 func TestLikeBlogPostIsNotFoundForAMissingPost(t *testing.T) {
 	h := testsupport.NewHarness(t)
 
-	res, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: 1})
-	require.NoError(t, err)
-	assert.IsType(t, &api.NotFoundError{}, res)
+	_, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: 1})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
