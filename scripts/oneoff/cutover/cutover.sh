@@ -261,7 +261,7 @@ atlas_status() {
 # rendered_secret_keys lists the KEY NAMES of the Secret the chart would
 # create. helm-secrets decrypts in memory; only names leave the pipeline.
 rendered_secret_keys() {
-  make -s -C "$REPO_ROOT/k8s" helm-template-app 2>/dev/null \
+  make -s --no-print-directory -C "$REPO_ROOT/k8s" helm-template-app 2>/dev/null \
     | yq 'select(.kind == "Secret" and .metadata.name == "codebasics-environment-secrets") | .data | keys | .[]'
 }
 
@@ -270,7 +270,7 @@ rendered_secret_keys() {
 secret_is_not_dev() {
   local key="$1" dev rendered
   dev=$(grep -E "^${key}=" "$REPO_ROOT/.env.example" | cut -d= -f2-)
-  rendered=$(make -s -C "$REPO_ROOT/k8s" helm-template-app 2>/dev/null \
+  rendered=$(make -s --no-print-directory -C "$REPO_ROOT/k8s" helm-template-app 2>/dev/null \
     | yq "select(.kind == \"Secret\" and .metadata.name == \"codebasics-environment-secrets\") | .data.${key} // \"\"" \
     | base64 -d 2>/dev/null)
   [[ -n "$rendered" && "$rendered" != "$dev" ]]
@@ -344,7 +344,10 @@ s_preflight() {
   LEGACY_CHART_VERSION=$(yq '.version' "$REPO_ROOT/legacy/k8s/app-chart/Chart.yaml")
   write_env LEGACY_CHART_VERSION "$LEGACY_CHART_VERSION"
   say "Go chart/image version: $CHART_VERSION · legacy chart: $LEGACY_CHART_VERSION"
-  verify "working tree is clean" bash -c "[[ -z \"\$(git -C '$REPO_ROOT' status --porcelain)\" ]]"
+  # The sops file is expected to be dirty from the secrets stage on (it is
+  # committed after the night), so a re-run must not trip over it.
+  verify "working tree is clean (apart from legacy/k8s/secrets.yaml)" bash -c \
+    "[[ -z \"\$(git -C '$REPO_ROOT' status --porcelain | grep -v 'legacy/k8s/secrets.yaml')\" ]]"
   if ! git -C "$REPO_ROOT" describe --tags --exact-match >/dev/null 2>&1; then
     warn "HEAD is not a release tag. The migrations and chart must be the release's."
     human_check "Continue on $(git -C "$REPO_ROOT" rev-parse --short HEAD) anyway?"
@@ -414,7 +417,7 @@ s_secrets() {
   step "AMOCRM_BASE_URL: https://<legacy AMOCRM_SUBDOMAIN>.amocrm.ru."
   step "GITHUB_WEBHOOK_SECRET: a fresh value; you'll paste it into GitHub later."
   pause "Press Enter to open the editor"
-  make -s -C "$REPO_ROOT/k8s" secrets-edit
+  make -s --no-print-directory -C "$REPO_ROOT/k8s" secrets-edit
   verify "every required key renders into codebasics-environment-secrets" secret_keys_complete
   verify "JWT_SECRET is not the public development value" secret_is_not_dev JWT_SECRET
   verify "EMAIL_TOKEN_SECRET is not the public development value" secret_is_not_dev EMAIL_TOKEN_SECRET
@@ -426,7 +429,7 @@ s_secrets() {
   verify "SITE_URL and PUBLIC_URL are $SITE (#797, #808)" bash -c \
     "[[ \$(yq '.goEnv.SITE_URL' '$REPO_ROOT/k8s/app-chart/values.yaml') == '$SITE' && \$(yq '.goEnv.PUBLIC_URL' '$REPO_ROOT/k8s/app-chart/values.yaml') == '$SITE' ]]"
   verify "the web deployment gets SITE_URL (#808)" bash -c \
-    "make -s -C '$REPO_ROOT/k8s' helm-template-app 2>/dev/null | yq 'select(.kind == \"Deployment\" and .metadata.name == \"$RELEASE-web-deployment\") | .spec.template.spec.containers[].env[] | select(.name == \"SITE_URL\") | .value' | grep -qx '$SITE'"
+    "make -s --no-print-directory -C '$REPO_ROOT/k8s' helm-template-app 2>/dev/null | yq 'select(.kind == \"Deployment\" and .metadata.name == \"$RELEASE-web-deployment\") | .spec.template.spec.containers[].env[] | select(.name == \"SITE_URL\") | .value' | grep -qx '$SITE'"
   say "Commit the re-encrypted legacy/k8s/secrets.yaml after the night (values stay ENC[...])."
 }
 
@@ -551,7 +554,7 @@ s_dry_run() {
   say "Renders the chart and asks the API server to validate every object; nothing changes."
   note "Output is object names only; the Secret's values go straight into kubectl."
   verify "the API server accepts every rendered object" bash -c \
-    "make -s -C '$REPO_ROOT/k8s' helm-template-app 2>/dev/null | kubectl apply --dry-run=server -n '$NAMESPACE' -f -"
+    "make -s --no-print-directory -C '$REPO_ROOT/k8s' helm-template-app 2>/dev/null | kubectl apply --dry-run=server -n '$NAMESPACE' -f -"
 }
 
 s_deploy() {
@@ -573,8 +576,8 @@ s_deploy() {
 s_routing() {
   stage "Routing through the ingress"
   verify "/ answers 200 (web)" bash -c "[[ \$(curl -s -o /dev/null -w '%{http_code}' '$SITE/') == 200 ]]"
-  verify "/api/me unauthenticated answers 401 (reaches Go)" bash -c \
-    "[[ \$(curl -s -o /dev/null -w '%{http_code}' '$SITE/api/me') == 401 ]]"
+  verify "/api/me answers JSON from Go (a visitor gets the guest user)" bash -c \
+    "[[ \$(curl -s -o /dev/null -w '%{http_code}' '$SITE/api/me') == 200 && \$(curl -s -o /dev/null -w '%{content_type}' '$SITE/api/me') == application/json* ]]"
   verify "Yandex feed at /api/feeds/yandex_courses.xml is XML (#805)" feed_is_xml /api/feeds/yandex_courses.xml
   verify "Yandex feed at /api/feeds/yandex_courses is XML" feed_is_xml /api/feeds/yandex_courses
   local wh; wh=$(http_code "$SITE/webhooks/github" -X POST -H 'Content-Type: application/json' -d '{}')
@@ -600,6 +603,7 @@ s_auth_email() {
   human_check "Password sign-in works?"
   step "Sign out, request a Magic Link to your own address."
   step "It arrives from support@hexlet.io; the link opens $SITE and signs you in."
+  pause "Press Enter once you have requested the link"
   river_jobs account_email
   verify "an account_email job completed in the last 30 min" river_job_completed account_email
   human_check "The Magic Link email arrived and signed you in?"
