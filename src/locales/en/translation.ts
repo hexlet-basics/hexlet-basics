@@ -915,6 +915,7 @@ export default {
         },
         success: {
           error: "В этом курсе есть уроки, которые вы не завершили",
+          warning: "This course still has unfinished lessons. Complete them to finish the course!",
         },
       },
       leads: {
