@@ -177,5 +177,5 @@ test("a category that is not in this locale is not found", async () => {
     initialPath: "/language_categories/programming",
   });
 
-  await expect.element(page.getByText("Not Found")).toBeVisible();
+  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
 });
