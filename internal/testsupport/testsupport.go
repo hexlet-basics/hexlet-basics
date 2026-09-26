@@ -33,6 +33,7 @@ import (
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
+	"hexletbasics/internal/assistant"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/emailtokens"
@@ -151,6 +152,9 @@ type Harness struct {
 	// Runner is the exercise runner behind the check, returning a canned outcome
 	// instead of starting a container.
 	Runner *StubExerciseRunner
+	// Assistant is the model behind the in-lesson chat, streaming canned deltas
+	// instead of calling the provider.
+	Assistant *StubStreamer
 	// UserID is the fixture user the harness authenticates as, so a test can
 	// assert on rows belonging to the caller without hard-coding a fixture id.
 	UserID int
@@ -203,6 +207,8 @@ func NewHarness(t *testing.T) *Harness {
 	// The real lead recorder too: a lead test asserts the stored row and the
 	// published fact, and both go through the test's transaction.
 	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
+	// The real chat over the real progress module: only the model is canned.
+	streamer := NewStubStreamer()
 	handler := handlers.NewServer(handlers.Deps{
 		DB:             db,
 		Config:         testConfig,
@@ -225,6 +231,7 @@ func NewHarness(t *testing.T) *Harness {
 		I18n:       translator,
 		Errors:     errorHandler,
 		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
+		Assistant:  assistant.NewChat(db, transactor, tracker, streamer, translator),
 	})
 	srv, err := api.NewServer(
 		handler,
@@ -252,9 +259,49 @@ func NewHarness(t *testing.T) *Harness {
 	return &Harness{
 		Client: &Client{Client: client}, DB: db, doer: doer,
 		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
-		Runner: runner,
+		Runner: runner, Assistant: streamer,
 		UserID: security.userID,
 	}
+}
+
+// StubStreamer answers every chat request with canned deltas and usage, and
+// records the turns it was sent. Err fails the request before the first delta,
+// the way an unreachable provider does; ErrAfter fails it after the deltas, the
+// way a stream dropped mid-answer does.
+type StubStreamer struct {
+	Deltas   []string
+	Usage    assistant.Usage
+	Err      error
+	ErrAfter error
+	Requests [][]assistant.Turn
+}
+
+// NewStubStreamer answers with a short two-delta reply.
+func NewStubStreamer() *StubStreamer {
+	return &StubStreamer{
+		Deltas: []string{"Try ", "console.log."},
+		Usage:  assistant.Usage{InputTokens: 100, OutputTokens: 5},
+	}
+}
+
+func (s *StubStreamer) Stream(
+	_ context.Context,
+	turns []assistant.Turn,
+	onDelta func(string) error,
+) (assistant.Usage, error) {
+	s.Requests = append(s.Requests, turns)
+	if s.Err != nil {
+		return assistant.Usage{}, s.Err
+	}
+	for _, delta := range s.Deltas {
+		if err := onDelta(delta); err != nil {
+			return assistant.Usage{}, err
+		}
+	}
+	if s.ErrAfter != nil {
+		return assistant.Usage{}, s.ErrAfter
+	}
+	return s.Usage, nil
 }
 
 // StubExerciseRunner answers every submission with a canned outcome and records

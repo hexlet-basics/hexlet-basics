@@ -20,9 +20,8 @@ namespace HexletBasics;
 //      should likely become submit -> poll/stream, not one blocking POST.
 //      Modeled synchronously below to match legacy; revisit before Wave 4.
 //
-//   2. AI assistant streaming. Legacy enqueues a job and streams tokens back.
-//      hey-api can emit an SSE client (`serverSentEvents.gen.ts`), but the
-//      event schema (token deltas, done, error) is not designed here yet.
+//   2. AI assistant streaming. Answered as a plain text stream from the
+//      generated operation (see `AssistantAnswerStream`).
 // ===========================================================================
 
 /** Result of running a submitted solution (legacy: `LessonCheckingResponse`). */
@@ -128,6 +127,19 @@ model LessonAssistantMessage {
   createdAt: utcDateTime;
 }
 
+/**
+ * The learner's in-lesson chat, plus whether they may ask again today. The
+ * quota flag rides along with the history so the panel renders its disabled
+ * state on first paint instead of discovering it from a refused question.
+ */
+model LessonAssistantChat {
+  /** User and assistant turns, oldest first; empty before the first question. */
+  messages: LessonAssistantMessage[];
+
+  /** The learner has used up today's questions (UTC day). */
+  quotaExceeded: boolean;
+}
+
 /** A prompt to the in-lesson assistant, carrying the editor context. */
 model AssistantMessageInput {
   @minLength(1) message: string;
@@ -135,23 +147,57 @@ model AssistantMessageInput {
   userCode: string | null;
 }
 
+/**
+ * The assistant's answer, streamed as plain text while the model produces it.
+ *
+ * ogen generates a `text/plain` string body as an `io.Reader` the encoder copies
+ * straight to the socket, which is what lets tokens reach the learner as they
+ * arrive. (`bytes` would not do: TypeSpec emits it as `format: byte` for a text
+ * content type, and ogen then base64-encodes the stream.) SSE is out of reach — ogen
+ * cannot serve it yet (ogen#1742) — and the client does not need it: the AI SDK
+ * reads a plain text stream directly.
+ */
+model AssistantAnswerStream {
+  @header contentType: "text/plain";
+  @body body: string;
+}
+
+/** The learner has used up today's assistant questions. */
+@error
+model AssistantQuotaExceededError {
+  @statusCode statusCode: 429;
+  @header contentType: "application/problem+json";
+  @body body: ProblemDetails;
+}
+
 @route("/ai/lessons/{lessonId}/messages")
 @tag("Lesson Player")
 @useAuth(UserSession)
 interface LessonAssistant {
-  /** The assistant chat history for the current user in this lesson. */
+  /**
+   * The assistant chat history for the current user in this lesson, and their
+   * remaining quota. A lesson they never asked about answers an empty chat.
+   */
   @get
   @operationId("listAssistantMessages")
-  list(@path lessonId: int32): LessonAssistantMessage[] | UnauthorizedError | ApiError;
+  list(@path lessonId: int32): LessonAssistantChat | UnauthorizedError | NotFoundError | ApiError;
 
   /**
-   * Ask the assistant. Enqueues generation (river job); the reply is delivered
-   * out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
+   * Ask the assistant and stream its answer back. Both turns are stored once
+   * the answer is complete, with the answer's token usage.
+   *
+   * Asking is doing the lesson, so it starts the lesson when the learner has
+   * not yet (409 beyond the gate, exactly as starting would). 429 once today's
+   * questions are used up — decided before anything streams.
    */
   @post
   @useAuth([UserSession, XsrfToken])
   @operationId("createAssistantMessage")
-  create(@path lessonId: int32, @body body: AssistantMessageInput): {
-    @statusCode statusCode: 202;
-  } | UnauthorizedError | ApiError;
+  create(@path lessonId: int32, @body body: AssistantMessageInput):
+    | AssistantAnswerStream
+    | AssistantQuotaExceededError
+    | LessonNotAvailableError
+    | UnauthorizedError
+    | NotFoundError
+    | ApiError;
 }

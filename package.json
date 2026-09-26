@@ -21,6 +21,7 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.119",
     "@mantine/code-highlight": "^9.6.2",
     "@mantine/core": "^9.6.2",
     "@mantine/dates": "^9.6.2",
@@ -41,6 +42,7 @@
     "@tiptap/extension-link": "^3.31.3",
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
+    "ai": "^7.0.116",
     "axios": "^1.20.0",
     "dayjs": "^1.11.23",
     "es-toolkit": "1.50.0",

@@ -2,7 +2,7 @@ import { ScrollArea, Stack, Tabs } from "@mantine/core";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { checkLessonMutation, getCourseLessonQueryKey } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView, LessonCheckingResponse } from "@/client/types.gen";
@@ -11,16 +11,26 @@ import LessonEditor from "@/components/lesson/LessonEditor";
 import LessonOutput from "@/components/lesson/LessonOutput";
 import LessonSolution from "@/components/lesson/LessonSolution";
 import LessonTests from "@/components/lesson/LessonTests";
+import { lessonCodeKey } from "@/lib/lesson-code";
 
 // The right-hand half of the player: what the learner does, as opposed to what
 // they read. It owns the buffer, because everything here works on it — the
 // editor writes it, reset restores it, and the check submits it — and it owns
 // the outcome of the last run, which is what the output and the solution are
-// rendered from.
+// rendered from. The outcome is held by the page, because the assistant in the
+// other pane is asked about it too.
 //
 // The tabs keep every pane mounted: switching to the output and back must not
 // remount the editor, which would cost the learner what they had typed.
-export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
+export default function LessonWorkspace({
+  view,
+  result,
+  setResult,
+}: {
+  view: CourseLessonView;
+  result: LessonCheckingResponse | null;
+  setResult: Dispatch<SetStateAction<LessonCheckingResponse | null>>;
+}) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { lesson } = view;
@@ -28,10 +38,8 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
   const starterCode = lesson.preparedCode ?? "";
 
   // A reload, a second tab or a return tomorrow finds the work still there.
-  // Keyed per lesson and nothing else — as in legacy, the key carries no lesson
-  // version, so a buffer survives the author changing the starter code.
   const [code, setCode] = useLocalStorage({
-    key: `lesson-code-${courseSlug}-${lesson.slug}`,
+    key: lessonCodeKey(courseSlug, lesson.slug),
     defaultValue: starterCode,
     // Read straight away rather than in an effect: the value is only ever
     // rendered inside the editor, which is client-only, so there is no
@@ -43,7 +51,6 @@ export default function LessonWorkspace({ view }: { view: CourseLessonView }) {
   // Bumped to tell the editor its buffer has been replaced; see LessonEditor.
   const [resetCount, setResetCount] = useState(0);
   const [tab, setTab] = useState<string | null>("editor");
-  const [result, setResult] = useState<LessonCheckingResponse | null>(null);
 
   const reset = () => {
     setCode(starterCode);

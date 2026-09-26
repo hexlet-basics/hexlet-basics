@@ -26,5 +26,6 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
 
 function LessonRoute() {
   const { slug, lessonSlug } = Route.useParams();
-  return <LessonPage courseSlug={slug} lessonSlug={lessonSlug} />;
+  const { user } = Route.useRouteContext();
+  return <LessonPage courseSlug={slug} lessonSlug={lessonSlug} signedIn={Boolean(user)} />;
 }

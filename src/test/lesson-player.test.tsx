@@ -6,6 +6,8 @@ import type {
   CourseLandingPage,
   CourseLesson,
   CourseLessonView,
+  LessonAssistantChat,
+  LessonAssistantMessage,
   LessonCheckingResponse,
 } from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
@@ -641,4 +643,127 @@ test("gives a signed-in learner the same run a guest gets", async () => {
 
   await expect.element(page.getByText("Tests passed")).toBeVisible();
   expect(submitted).toEqual([{ code: "let greeting = '';\n", versionId: 99 }]);
+});
+
+// ---- The assistant -----------------------------------------------------------
+
+function assistantChat(overrides: Partial<LessonAssistantChat> = {}): LessonAssistantChat {
+  return {
+    messages: [
+      assistantMessage({ id: 1, role: "user", userId: 7, content: "What is a variable?" }),
+      assistantMessage({ id: 2, role: "assistant", content: "A name bound to a value." }),
+    ],
+    quotaExceeded: false,
+    ...overrides,
+  };
+}
+
+function assistantMessage(overrides: Partial<LessonAssistantMessage>): LessonAssistantMessage {
+  return {
+    id: 1,
+    role: "assistant",
+    userId: null,
+    content: "",
+    courseSlug: "javascript",
+    courseLessonSlug: "variables",
+    courseLessonName: "Variables",
+    createdAt: "2026-01-01T00:00:00Z",
+    ...overrides,
+  };
+}
+
+// The answer as the server sends it: plain text, a chunk at a time.
+function streamedAnswer(chunks: string[]) {
+  const encoder = new TextEncoder();
+  const body = new ReadableStream({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(encoder.encode(chunk));
+      controller.close();
+    },
+  });
+  return new HttpResponse(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}
+
+test("asks a visitor to sign in before the assistant helps", async () => {
+  let listed = 0;
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/api/ai/lessons/1002/messages", () => {
+      listed += 1;
+      return HttpResponse.json(assistantChat());
+    }),
+  );
+
+  await renderPlayer("variables");
+  await page.getByRole("tab", { name: "Assistant" }).click();
+
+  await expect.element(page.getByText(/please sign up or log in/)).toBeVisible();
+  expect(listed).toBe(0);
+});
+
+test("shows the learner's chat and streams the answer to a new question", async () => {
+  const asked: unknown[] = [];
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/api/ai/lessons/1002/messages", () => HttpResponse.json(assistantChat())),
+    http.post("*/api/ai/lessons/1002/messages", async ({ request }) => {
+      asked.push(await request.json());
+      return streamedAnswer(["Use ", "`let` ", "and assign it."]);
+    }),
+  );
+
+  await renderPlayer("variables", learner);
+  await page.getByRole("tab", { name: "Assistant" }).click();
+
+  await expect.element(page.getByText("What is a variable?")).toBeVisible();
+  await expect.element(page.getByText("A name bound to a value.")).toBeVisible();
+
+  await page.getByRole("textbox", { name: "Your question" }).fill("How do I declare one?");
+  await page.getByRole("button", { name: "Send" }).click();
+
+  await expect.element(page.getByText("How do I declare one?")).toBeVisible();
+  await expect.element(page.getByText(/and assign it\./)).toBeVisible();
+
+  // The question goes out with the editor's buffer; nothing has been run yet.
+  expect(asked).toEqual([
+    { message: "How do I declare one?", userCode: "let greeting = '';\n", output: "" },
+  ]);
+});
+
+test("switches the assistant off once today's questions are used up", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/api/ai/lessons/1002/messages", () =>
+      HttpResponse.json(assistantChat({ quotaExceeded: true })),
+    ),
+  );
+
+  await renderPlayer("variables", learner);
+  await page.getByRole("tab", { name: "Assistant" }).click();
+
+  await expect.element(page.getByText(/reached today's message limit/)).toBeVisible();
+  await expect
+    .element(page.getByRole("link", { name: "Telegram community" }))
+    .toHaveAttribute("href", "https://t.me/hexletcommunity");
+  expect(page.getByRole("button", { name: "Send" }).elements()).toHaveLength(0);
+});
+
+test("switches the assistant off when the server refuses a question over the quota", async () => {
+  worker.use(
+    http.get("*/languages/javascript/lessons/variables", () => HttpResponse.json(lessonView())),
+    http.get("*/api/ai/lessons/1002/messages", () => HttpResponse.json(assistantChat())),
+    http.post("*/api/ai/lessons/1002/messages", () =>
+      HttpResponse.json(
+        { type: "about:blank", title: "Too Many Requests", status: 429 },
+        { status: 429, headers: { "Content-Type": "application/problem+json" } },
+      ),
+    ),
+  );
+
+  await renderPlayer("variables", learner);
+  await page.getByRole("tab", { name: "Assistant" }).click();
+  await page.getByRole("textbox", { name: "Your question" }).fill("One more?");
+  await page.getByRole("button", { name: "Send" }).click();
+
+  await expect.element(page.getByText(/reached today's message limit/)).toBeVisible();
 });
