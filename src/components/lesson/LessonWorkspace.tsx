@@ -202,6 +202,7 @@ export default function LessonWorkspace({
       <LessonControls
         view={view}
         passed={solutionUnlocked}
+        passedNow={Boolean(result?.passed)}
         onReset={reset}
         onRun={run}
         running={check.isPending}

@@ -1186,7 +1186,6 @@ export default {
         community_image_preview: "Сообщество разработчиков",
         completed_html:
           'Поздравляем! Вы успешно завершили базовый курс на Code Basics. Это первый шаг в мир <b>профессиональной разработки</b>.\nЧто дальше? Посмотрите <a class="link-body-emphasis" href="https://ru.hexlet.io/courses_for_beginners?utm_source=code-basics&utm_medium=referral&utm_campaign=courses_for_beginners&utm_content=course_landing_page" target="_blank">продолжение на Хекслете</a>\n',
-        completion: "Пройдено {{completion}}%",
         continue: "Продолжить обучение",
         "convenient format": "Удобный формат",
         course_graduates: "Присоединяйтесь к более чем 80 000 студентов",
@@ -1203,6 +1202,9 @@ export default {
         lessons: "{{lessons_count}} с практикой в браузере",
         more_than_support: "Больше чем Поддержка",
         no_registration: "Регистрация не требуется",
+        progress: {
+          completion: "Пройдено {{completion}}%",
+        },
         ready: "Готовы попробовать?",
         real_life_challenges:
           "Вам не нужно ничего устанавливать — все задания выполняются прямо в браузере. Встроенный редактор кода, консоль и автоматические тесты делают обучение комфортным. А если что-то не получается, всегда можно посмотреть решение учителя",

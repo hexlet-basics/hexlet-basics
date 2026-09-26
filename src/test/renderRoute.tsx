@@ -34,6 +34,7 @@ export async function renderRoute(
     user = null,
     locale,
     wrap = (element) => element,
+    also = [],
   }: {
     // The route's own path pattern, e.g. "/{-$locale}/languages/$slug".
     path: string;
@@ -49,6 +50,9 @@ export async function renderRoute(
     locale?: Locale;
     // Wraps the router, for a page that needs a sized container to render into.
     wrap?: (element: ReactNode) => ReactNode;
+    // Further real routes mounted beside the one under test, each at its own
+    // path pattern, for a test that follows the page into another one.
+    also?: { route: AnyRoute; path: string }[];
   },
 ) {
   const queryClient = new QueryClient({
@@ -58,11 +62,13 @@ export async function renderRoute(
   const rootRoute = createRootRouteWithContext<{ queryClient: QueryClient }>()();
   // The file route carries its parent from the generated tree, so it is rebuilt
   // here from its own options with the synthetic root as its parent.
-  const mounted = createRoute({
-    ...(route.options as object),
-    getParentRoute: () => rootRoute,
-    path,
-  } as never);
+  const mount = (fileRoute: AnyRoute, pattern: string) =>
+    createRoute({
+      ...(fileRoute.options as object),
+      getParentRoute: () => rootRoute,
+      path: pattern,
+    } as never);
+  const mounted = [mount(route, path), ...also.map((extra) => mount(extra.route, extra.path))];
 
   // The locale layout switches the router's i18n to the URL's locale before a
   // route's head runs; the synthetic root has no such layout, so it is done here.
@@ -70,7 +76,7 @@ export async function renderRoute(
   await i18n.changeLanguage(locale ?? localeFromPathname(initialPath));
 
   const router = createRouter({
-    routeTree: rootRoute.addChildren([mounted as never]),
+    routeTree: rootRoute.addChildren(mounted as never[]),
     context: { queryClient, i18n, user } as never,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
     // The application's error pages, as getRouter sets them.

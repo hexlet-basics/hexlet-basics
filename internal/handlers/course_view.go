@@ -9,9 +9,12 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courselessonversion"
+	"hexletbasics/ent/coursemoduletranslation"
+	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 )
@@ -45,10 +48,22 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 		return nil, err
 	}
 
+	modules, err := s.currentModuleList(ctx, crs)
+	if err != nil {
+		return nil, err
+	}
+
+	qnaItems, err := s.landingQnaItems(ctx, landing)
+	if err != nil {
+		return nil, err
+	}
+
 	view := &api.CourseView{
 		Course:      s.conv.ToCourse(crs),
 		LandingPage: landing,
 		Lessons:     lessons,
+		Modules:     modules,
+		QnaItems:    qnaItems,
 		Enrollment:  api.NilEnrollment{Null: true},
 		Progress:    api.NilCourseProgress{Null: true},
 	}
@@ -138,4 +153,61 @@ func (s *Server) currentLessonList(ctx context.Context, crs *ent.Course) ([]api.
 		return nil, err
 	}
 	return s.conv.ToCourseLessonListItems(infos), nil
+}
+
+// currentModuleList is the modules of the course's current version, in the
+// request locale, each with its lessons in course order — the learning
+// program legacy's course page rendered as an accordion.
+//
+// Modules are ordered by their version row's Position, as the loader built
+// them; the translation id breaks ties. A module's lessons are ordered by the
+// same natural order currentLessonList uses, so a module's slugs read in the
+// order the flat list shows them.
+func (s *Server) currentModuleList(ctx context.Context, crs *ent.Course) ([]api.CourseModuleListItem, error) {
+	if crs.CurrentVersionID == nil {
+		return []api.CourseModuleListItem{}, nil
+	}
+
+	rows, err := s.db.CourseModuleTranslation.Query().
+		Where(
+			coursemoduletranslation.LocaleEQ(s.i18n.Locale(ctx)),
+			coursemoduletranslation.CourseVersionID(*crs.CurrentVersionID),
+		).
+		WithVersion(func(q *ent.CourseModuleVersionQuery) {
+			q.WithLessonVersions(func(q *ent.CourseLessonVersionQuery) {
+				q.WithLesson().Order(
+					courselessonversion.ByNaturalOrder(sql.OrderNullsLast()),
+					courselessonversion.ByID(),
+				)
+			})
+		}).
+		Order(
+			coursemoduletranslation.ByVersionField(coursemoduleversion.FieldOrder, sql.OrderNullsLast()),
+			// Qualify the id: the edge ordering joins language_module_versions,
+			// so a bare `id` is ambiguous.
+			func(s *sql.Selector) { s.OrderBy(s.C(coursemoduletranslation.FieldID)) },
+		).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.conv.ToCourseModuleListItems(rows), nil
+}
+
+// landingQnaItems is the landing page's questions and answers, oldest first,
+// as legacy's `qna_items` association returned them. A course without landing
+// copy has none.
+func (s *Server) landingQnaItems(ctx context.Context, landing api.NilCourseLandingPage) ([]api.QnaItem, error) {
+	page, ok := landing.Get()
+	if !ok {
+		return []api.QnaItem{}, nil
+	}
+	items, err := s.db.LandingPageQnaItem.Query().
+		Where(landingpageqnaitem.CourseLandingPageID(int(page.ID))).
+		Order(landingpageqnaitem.ByID()).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.conv.ToLandingPageQnaItems(items), nil
 }

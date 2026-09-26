@@ -13,6 +13,7 @@ import {
 } from "@/lib/authFieldProps";
 import { TextLink } from "@/components/RouterLink";
 import { useAppForm } from "@/lib/form";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 // Registration page, ported from legacy users/new + SignUpFormBlock. Submits
 // through the generated `createUser` mutation, which creates the account and
@@ -26,11 +27,7 @@ const signUpFormSchema = zSignUpInput.extend({ firstName: z.string() });
 // on this site is honoured — anything else is dropped rather than followed, so
 // the page cannot be used to bounce a new account off to another origin.
 const signUpSearchSchema = z.object({
-  redirect: z
-    .string()
-    .refine((value) => value.startsWith("/") && !value.startsWith("//"))
-    .optional()
-    .catch(undefined),
+  redirect: z.string().transform(safeRedirectPath).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/{-$locale}/users/new")({
@@ -47,10 +44,18 @@ function New() {
 
   const mutation = useMutation({
     ...createUserMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
-      if (redirect) navigate({ href: redirect });
-      else navigate({ to: "/{-$locale}" });
+    onSuccess: async () => {
+      // Everything read as a guest describes the guest. The course and lesson
+      // reads carry progress, which the sign-up has just merged into the new
+      // account — so the lesson a guest is sent back to must be read again,
+      // not served from the cache with the guest's locks. They are dropped
+      // rather than invalidated: an inactive query is only marked stale by an
+      // invalidation, and a loader's ensureQueryData serves stale data.
+      queryClient.removeQueries({ queryKey: [{ _id: "getCourse" }] });
+      queryClient.removeQueries({ queryKey: [{ _id: "getCourseLesson" }] });
+      await queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+      if (redirect) await navigate({ href: redirect });
+      else await navigate({ to: "/{-$locale}" });
     },
     onError: () => setServerError(t(($) => $.flash.users.create.error)),
   });

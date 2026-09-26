@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Alert,
   Box,
   Button,
@@ -15,28 +16,28 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { IconClock, IconUsers } from "@tabler/icons-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { getCourseOptions, startLessonMutation } from "@/client/@tanstack/react-query.gen";
+import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import LessonMark from "@/components/lesson/LessonMark";
+import { useEnterLesson } from "@/components/lesson/useEnterLesson";
+import QnaBlock from "@/components/QnaBlock";
 import { NavLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
 
 // The Course page, at its legacy URL (ADR-0002): the course's landing copy, its
 // current lessons, and one button that puts the learner in it.
 //
-// Ported from legacy `languages/show`. What did not come across is what the
-// contract does not carry or what would branch on having an account: the
-// module accordion (the payload's lesson list is flat), the Q&A block, the
-// lead and sign-up forms, the promo video, and the two extra calls to action,
-// which would each be a second way in that skips the start command.
+// Ported from legacy `languages/show`, module accordion and Q&A included. What
+// did not come across is what would branch on having an account or add a way
+// in: the lead and sign-up forms, the promo video, and the two extra calls to
+// action, which would each be a second way in that skips the start command.
 //
 // The loader prefetches into the request-scoped QueryClient, so the landing
 // copy is in the server-rendered HTML (ADR-0008). Loading this page starts
@@ -61,24 +62,14 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
     if (!loaderData) return {};
     const { i18n } = match.context;
     const { course, landingPage } = loaderData;
-    const image = course.coverListVariant;
-    const head = seoHead({
+    return seoHead({
       i18n,
       title: landingPage?.metaTitle ?? course.name ?? course.slug,
       description: landingPage?.metaDescription ?? "",
       canonicalPath: match.pathname,
-      image,
+      image: course.coverListVariant,
+      openGraph: { type: "website", locale: i18n.language },
     });
-    const url = head.links[0]?.href;
-    return {
-      meta: [
-        ...head.meta,
-        { property: "og:type", content: "website" },
-        { property: "og:locale", content: i18n.language },
-        ...(url ? [{ property: "og:url", content: url }] : []),
-      ],
-      links: [...head.links, ...(image ? [{ rel: "image_src", href: image }] : [])],
-    };
   },
   component: Show,
 });
@@ -109,10 +100,6 @@ function Show() {
   const header = landingPage?.header ?? course.name ?? course.slug;
   const name = landingPage?.name ?? course.name ?? course.slug;
   const updatedAt = course.currentVersion?.createdAt;
-
-  // Checks and locks come from `progress`, names and order from `lessons`,
-  // joined by slug — the same pair the player's list renders.
-  const stateBySlug = new Map(progress?.lessons.map((item) => [item.slug, item]) ?? []);
 
   return (
     <Container size="lg">
@@ -210,23 +197,13 @@ function Show() {
         {progress && (
           <Stack gap={4} mb="md" maw={320}>
             <Text size="sm">
-              {t(($) => $.courses.show.completion, { completion: progress.completion })}
+              {t(($) => $.courses.show.progress.completion, { completion: progress.completion })}
             </Text>
             <Progress value={progress.completion} aria-hidden="true" />
           </Stack>
         )}
 
-        {/* A locked lesson is still a link: theory is public, and the lock
-            says "not yet", never "you cannot read this". */}
-        {view.lessons.map((item) => (
-          <NavLink
-            key={item.slug}
-            to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
-            params={{ slug: course.slug, lessonSlug: item.slug }}
-            label={item.name}
-            leftSection={<LessonMark state={stateBySlug.get(item.slug)} />}
-          />
-        ))}
+        <LearningProgram view={view} />
       </Box>
 
       <Box my={{ base: "lg", sm: "xxl" }}>
@@ -240,7 +217,64 @@ function Show() {
         <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
         <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
       </Box>
+
+      <QnaBlock items={view.qnaItems} />
     </Container>
+  );
+}
+
+// The learning program, as legacy's accordion laid it out: a panel per module,
+// the first one open, each with its lessons beside the module's description.
+//
+// A lesson in the panel is a link carrying its mark. Checks and locks come from
+// `progress`, names and order from `lessons`, joined by slug — the same pair
+// the player's list renders; a module names its lessons by slug the same way.
+// A lesson no module in this locale claims is listed after the panels rather
+// than dropped, and a course with no modules is the flat list alone.
+function LearningProgram({ view }: { view: CourseView }) {
+  const lessonBySlug = new Map(view.lessons.map((item) => [item.slug, item]));
+  const stateBySlug = new Map(view.progress?.lessons.map((item) => [item.slug, item]) ?? []);
+  const claimed = new Set(view.modules.flatMap((module) => module.lessonSlugs));
+  const unclaimed = view.lessons.filter((item) => !claimed.has(item.slug));
+
+  // A locked lesson is still a link: theory is public, and the lock says "not
+  // yet", never "you cannot read this".
+  const lessonLinks = (lessons: CourseView["lessons"]) =>
+    lessons.map((item) => (
+      <NavLink
+        key={item.slug}
+        to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
+        params={{ slug: view.course.slug, lessonSlug: item.slug }}
+        label={item.name}
+        leftSection={<LessonMark state={stateBySlug.get(item.slug)} />}
+      />
+    ));
+
+  return (
+    <>
+      {view.modules.length > 0 && (
+        <Accordion defaultValue={String(view.modules[0]?.id)}>
+          {view.modules.map((module) => (
+            <Accordion.Item key={module.id} value={String(module.id)} py="lg">
+              <Accordion.Control>
+                <Title order={3}>{module.name}</Title>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <Grid>
+                  <Grid.Col span={{ base: 12, xs: 4 }}>
+                    {lessonLinks(
+                      module.lessonSlugs.flatMap((slug) => lessonBySlug.get(slug) ?? []),
+                    )}
+                  </Grid.Col>
+                  <Grid.Col span={{ base: 12, xs: 8 }}>{module.description}</Grid.Col>
+                </Grid>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      )}
+      {lessonLinks(unclaimed)}
+    </>
   );
 }
 
@@ -258,16 +292,9 @@ function Show() {
 // would be preloaded on hover besides.
 function CourseAction({ view }: { view: CourseView }) {
   const { t } = useTranslation();
-  const { locale } = Route.useParams();
-  const navigate = useNavigate();
-  const start = useMutation({
-    ...startLessonMutation(),
-    // A refusal or a network failure leaves the visitor where they are; landing
-    // in a lesson that was never started would be worse than staying put.
-    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
-  });
-
   const { course, progress } = view;
+  const { enter, isPending } = useEnterLesson(course.slug);
+
   if (!progress) return null;
 
   if (progress.nextLessonSlug === null) {
@@ -280,7 +307,7 @@ function CourseAction({ view }: { view: CourseView }) {
           <Button
             size="lg"
             component="a"
-            href={`${course.hexletProgramLandingPage}?utm_source=code-basics&utm_medium=referral`}
+            href={programLink(course.hexletProgramLandingPage)}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -291,29 +318,29 @@ function CourseAction({ view }: { view: CourseView }) {
     );
   }
 
-  const lessonSlug = progress.nextLessonSlug;
-  const lesson = view.lessons.find((item) => item.slug === lessonSlug);
+  const lesson = view.lessons.find((item) => item.slug === progress.nextLessonSlug);
   if (!lesson) return null;
 
   // Navigation waits on the command's success: the lesson is entered started or
   // not at all.
-  const enter = () =>
-    start.mutate(
-      { path: { id: lesson.id } },
-      {
-        onSuccess: () =>
-          navigate({
-            to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-            params: { locale, slug: course.slug, lessonSlug },
-          }),
-      },
-    );
-
   return (
-    <Button size="lg" loading={start.isPending} onClick={enter}>
+    <Button size="lg" loading={isPending} onClick={() => enter(lesson)}>
       {progress.furthestFinishedPosition === 0
         ? t(($) => $.courses.show.try)
         : t(($) => $.courses.show.continue)}
     </Button>
   );
+}
+
+// The Hexlet program the course leads on to, tagged as a referral from here as
+// legacy tagged it. The parameters are set on the parsed URL rather than
+// appended, so a landing address that already carries a query stays well formed.
+function programLink(landingPage: string): string {
+  // An address the admin form let through malformed is linked as written
+  // rather than taking the page down with it.
+  if (!URL.canParse(landingPage)) return landingPage;
+  const url = new URL(landingPage);
+  url.searchParams.set("utm_source", "code-basics");
+  url.searchParams.set("utm_medium", "referral");
+  return url.toString();
 }

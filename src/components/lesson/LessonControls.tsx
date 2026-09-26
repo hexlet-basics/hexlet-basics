@@ -1,12 +1,16 @@
 import { ActionIcon, Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { notifications } from "@mantine/notifications";
 import { IconPlayerPlay, IconRepeat } from "@tabler/icons-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation, useNavigate, useRouteContext } from "@tanstack/react-router";
+import {
+  type RegisteredRouter,
+  useLocation,
+  useRouteContext,
+  type ValidateLinkOptions,
+} from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { getCourseLessonQueryKey, startLessonMutation } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView } from "@/client/types.gen";
+import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import { ButtonLink, TextLink } from "@/components/RouterLink";
 
 // The bar under the workspace, where the buttons that act on the exercise live:
@@ -16,6 +20,7 @@ import { ButtonLink, TextLink } from "@/components/RouterLink";
 export default function LessonControls({
   view,
   passed,
+  passedNow,
   onReset,
   onRun,
   running,
@@ -24,6 +29,9 @@ export default function LessonControls({
   // Passed in this visit or finished before it — the same fact that opens the
   // reference solution, so Next and the solution can never disagree.
   passed: boolean;
+  // Passed by a run in this visit, and only that: what the guest prompt is
+  // about is a result just achieved, not one brought along from before.
+  passedNow: boolean;
   onReset: () => void;
   onRun: () => void;
   running: boolean;
@@ -65,20 +73,14 @@ export default function LessonControls({
           {/* A plain link: going back to re-read starts nothing. On the first
               lesson there is nowhere to go, so it is a disabled button rather
               than an anchor to nowhere. */}
-          {prevLesson ? (
-            <ButtonLink
-              variant="outline"
-              color="green"
-              to="/{-$locale}/languages/$slug/lessons/$lessonSlug"
-              params={{ slug: courseSlug, lessonSlug: prevLesson.slug }}
-            >
-              {t(($) => $.courses.lessons.show.prev)}
-            </ButtonLink>
-          ) : (
-            <Button variant="outline" color="green" disabled>
-              {t(($) => $.courses.lessons.show.prev)}
-            </Button>
-          )}
+          <StepLink
+            enabled={Boolean(prevLesson)}
+            label={t(($) => $.courses.lessons.show.prev)}
+            linkOptions={{
+              to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
+              params: { slug: courseSlug, lessonSlug: prevLesson?.slug ?? "" },
+            }}
+          />
 
           {/* While a check is in flight the button says so and refuses a second
               press: one solution is running, and submitting it twice would tell
@@ -101,8 +103,10 @@ export default function LessonControls({
 
         {/* The one thing this port adds rather than copies: legacy carried the
             string and rendered it nowhere. The merge that keeps a guest's
-            progress on sign-up is built, so the promise is now true. */}
-        {!user && passed && <GuestPrompt />}
+            progress on sign-up is built, so the promise is now true. It
+            follows a pass in this visit, the moment it is about; a lesson
+            finished earlier opens the sign-up link but says nothing. */}
+        {!user && passedNow && <GuestPrompt />}
       </Box>
     </Stack>
   );
@@ -122,50 +126,19 @@ function ForwardButton({
   passed: boolean;
 }) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const courseSlug = view.lesson.course.slug;
-
-  // Next starts the following lesson and only then goes there. Progress begins
-  // through this command and nothing else: the router preloads on hover, so a
-  // lesson page that started itself on load would enroll a learner in every
-  // lesson they pointed at (ADR-0012). That is also why this is a button and
-  // not a link — a link would be preloaded, and could be opened around it.
-  const start = useMutation({
-    ...startLessonMutation(),
-    onSuccess: async () => {
-      if (!nextLesson) return;
-      const lessonSlug = nextLesson.slug;
-      // The next lesson's payload may already be cached from a hover over the
-      // navigation list, taken before this start — and before the pass that
-      // unlocked it. The loader would serve that stale copy, lock and all.
-      await queryClient.invalidateQueries({
-        queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lessonSlug } }),
-      });
-      await navigate({
-        to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
-        params: (prev) => ({ ...prev, slug: courseSlug, lessonSlug }),
-      });
-    },
-    onError: () => notifications.show({ message: t(($) => $.common.errors.network) }),
-  });
+  // Next starts the following lesson and only then goes there.
+  const { enter, isPending } = useEnterLesson(courseSlug);
 
   // The last lesson reads as completion and returns to the course page. The
   // dedicated completion page has no contract operation yet.
   if (!nextLesson) {
-    return passed ? (
-      <ButtonLink
-        variant="outline"
-        color="green"
-        to="/{-$locale}/languages/$slug"
-        params={{ slug: courseSlug }}
-      >
-        {t(($) => $.courses.lessons.show.finish)}
-      </ButtonLink>
-    ) : (
-      <Button variant="outline" color="green" disabled>
-        {t(($) => $.courses.lessons.show.finish)}
-      </Button>
+    return (
+      <StepLink
+        enabled={passed}
+        label={t(($) => $.courses.lessons.show.finish)}
+        linkOptions={{ to: "/{-$locale}/languages/$slug", params: { slug: courseSlug } }}
+      />
     );
   }
 
@@ -174,8 +147,8 @@ function ForwardButton({
       variant="outline"
       color="green"
       disabled={!passed}
-      loading={start.isPending}
-      onClick={() => start.mutate({ path: { id: nextLesson.id } })}
+      loading={isPending}
+      onClick={() => enter(nextLesson)}
     >
       {t(($) => $.courses.lessons.show.next)}
     </Button>
@@ -188,13 +161,38 @@ function GuestSignUp({ passed }: { passed: boolean }) {
   const { t } = useTranslation();
   const redirect = useLocation({ select: (location) => location.href });
 
-  return passed ? (
-    <ButtonLink variant="outline" color="green" to="/{-$locale}/users/new" search={{ redirect }}>
-      {t(($) => $.courses.lessons.show.next)}
+  return (
+    <StepLink
+      enabled={passed}
+      label={t(($) => $.courses.lessons.show.next)}
+      linkOptions={{ to: "/{-$locale}/users/new", search: { redirect } }}
+    />
+  );
+}
+
+// A step through the course, in the controls' one style: a link while the step
+// is open to the learner, and a disabled button in its place while it is not —
+// a button because an anchor to nowhere would still be focusable and followable.
+//
+// The link options are checked against the route tree the way TanStack Router
+// documents for a component that wraps a link.
+type StepLinkProps<TRouter extends RegisteredRouter = RegisteredRouter, TOptions = unknown> = {
+  enabled: boolean;
+  label: string;
+  linkOptions: ValidateLinkOptions<TRouter, TOptions>;
+};
+
+function StepLink<TRouter extends RegisteredRouter, TOptions>(
+  props: StepLinkProps<TRouter, TOptions>,
+): ReactNode;
+function StepLink({ enabled, label, linkOptions }: StepLinkProps): ReactNode {
+  return enabled ? (
+    <ButtonLink variant="outline" color="green" {...linkOptions}>
+      {label}
     </ButtonLink>
   ) : (
     <Button variant="outline" color="green" disabled>
-      {t(($) => $.courses.lessons.show.next)}
+      {label}
     </Button>
   );
 }

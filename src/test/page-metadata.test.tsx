@@ -118,6 +118,8 @@ const courseView: CourseView = {
   course,
   landingPage,
   lessons,
+  modules: [],
+  qnaItems: [],
   enrollment: null,
   progress,
 };

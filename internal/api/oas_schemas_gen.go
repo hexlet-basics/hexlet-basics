@@ -3404,6 +3404,58 @@ func (s *CourseLessonView) SetProgress(val NilCourseProgress) {
 
 func (*CourseLessonView) getCourseLessonRes() {}
 
+// A module of a course version in one locale (legacy: `Language::Module::Version::Info`, as
+// `Language::ModuleResource` served it).
+// Ref: #/components/schemas/CourseModuleListItem
+type CourseModuleListItem struct {
+	// The module's stable id, as legacy's resource exposed it.
+	ID          int32     `json:"id"`
+	Name        NilString `json:"name"`
+	Description NilString `json:"description"`
+	// The module's lessons in this version, in course order, by slug.
+	LessonSlugs []string `json:"lessonSlugs"`
+}
+
+// GetID returns the value of ID.
+func (s *CourseModuleListItem) GetID() int32 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *CourseModuleListItem) GetName() NilString {
+	return s.Name
+}
+
+// GetDescription returns the value of Description.
+func (s *CourseModuleListItem) GetDescription() NilString {
+	return s.Description
+}
+
+// GetLessonSlugs returns the value of LessonSlugs.
+func (s *CourseModuleListItem) GetLessonSlugs() []string {
+	return s.LessonSlugs
+}
+
+// SetID sets the value of ID.
+func (s *CourseModuleListItem) SetID(val int32) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *CourseModuleListItem) SetName(val NilString) {
+	s.Name = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CourseModuleListItem) SetDescription(val NilString) {
+	s.Description = val
+}
+
+// SetLessonSlugs sets the value of LessonSlugs.
+func (s *CourseModuleListItem) SetLessonSlugs(val []string) {
+	s.LessonSlugs = val
+}
+
 // A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
 // can read pagination uniformly.
 // Ref: #/components/schemas/CoursePage
@@ -3647,6 +3699,12 @@ type CourseView struct {
 	Course      Course                 `json:"course"`
 	LandingPage NilCourseLandingPage   `json:"landingPage"`
 	Lessons     []CourseLessonListItem `json:"lessons"`
+	// The modules of the course's current version in the request locale, in course order — the learning
+	// program's accordion. Each names its lessons by slug, joined to `lessons` for names, so the flat list
+	// stays the one source of lesson rows the page and the player share.
+	Modules []CourseModuleListItem `json:"modules"`
+	// The landing page's questions and answers, oldest first; empty without a landing page.
+	QnaItems []QnaItem `json:"qnaItems"`
 	// The current user's enrollment, when signed in.
 	Enrollment NilEnrollment `json:"enrollment"`
 	// Where the visitor stands in this course. Identical in shape for a signed-in learner, whose position
@@ -3669,6 +3727,16 @@ func (s *CourseView) GetLandingPage() NilCourseLandingPage {
 // GetLessons returns the value of Lessons.
 func (s *CourseView) GetLessons() []CourseLessonListItem {
 	return s.Lessons
+}
+
+// GetModules returns the value of Modules.
+func (s *CourseView) GetModules() []CourseModuleListItem {
+	return s.Modules
+}
+
+// GetQnaItems returns the value of QnaItems.
+func (s *CourseView) GetQnaItems() []QnaItem {
+	return s.QnaItems
 }
 
 // GetEnrollment returns the value of Enrollment.
@@ -3694,6 +3762,16 @@ func (s *CourseView) SetLandingPage(val NilCourseLandingPage) {
 // SetLessons sets the value of Lessons.
 func (s *CourseView) SetLessons(val []CourseLessonListItem) {
 	s.Lessons = val
+}
+
+// SetModules sets the value of Modules.
+func (s *CourseView) SetModules(val []CourseModuleListItem) {
+	s.Modules = val
+}
+
+// SetQnaItems sets the value of QnaItems.
+func (s *CourseView) SetQnaItems(val []QnaItem) {
+	s.QnaItems = val
 }
 
 // SetEnrollment sets the value of Enrollment.

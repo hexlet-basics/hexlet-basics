@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { truncate } from "es-toolkit/compat";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseLessonView } from "@/client/types.gen";
 import LessonPage, { LessonMissing } from "@/components/lesson/LessonPage";
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
   // lesson and the course's landing copy, a description drawn from the theory,
   // the canonical link, and Open Graph as an article with the course cover.
   // Legacy gave this page no og:description and no Twitter card, so the shared
-  // social block is off and the Open Graph tags it did emit are listed here.
+  // social block is off and only the Open Graph block is asked for.
   head: ({ loaderData, match }) => {
     if (!loaderData) return {};
     const { i18n } = match.context;
@@ -36,27 +37,15 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lesso
         language_name: landingPage?.name ?? "",
       }),
     );
-    const head = seoHead({
+    return seoHead({
       i18n,
       title,
       description: lessonDescription(loaderData),
       canonicalPath: match.pathname,
+      image: lesson.course.coverListVariant,
       social: false,
+      openGraph: { type: "article", locale: i18n.language },
     });
-    // og:url is the canonical, so the two cannot drift apart.
-    const url = head.links[0]?.href;
-    const image = lesson.course.coverListVariant;
-    return {
-      meta: [
-        ...head.meta,
-        { property: "og:type", content: "article" },
-        { property: "og:locale", content: i18n.language },
-        { property: "og:title", content: title },
-        ...(url ? [{ property: "og:url", content: url }] : []),
-        ...(image ? [{ property: "og:image", content: image }] : []),
-      ],
-      links: [...head.links, ...(image ? [{ rel: "image_src", href: image }] : [])],
-    };
   },
   // A slug that resolves to nothing rejects in the loader, above the page, so
   // the apology for it lives here rather than in a branch the page cannot reach.
@@ -72,22 +61,16 @@ function LessonRoute() {
 // Legacy's description: `[<version name>] — <lesson> — <theory>`, cut by Rails'
 // `truncate(length: 220)` — 217 characters and an ellipsis, mid-word — and then
 // whitespace-squashed by meta-tags. The theory is the raw markdown, as legacy
-// used it, and characters are counted as code points, the way Ruby counts them.
-const DESCRIPTION_LENGTH = 220;
-const OMISSION = "...";
-
+// used it. es-toolkit's truncate counts code points once a string holds any
+// astral or combining character, the way Ruby counts characters.
 function lessonDescription({ lesson }: CourseLessonView): string {
   const version = lesson.course.currentVersion?.name ?? "";
   const text = `[${version}] — ${lesson.name ?? ""} — ${lesson.theory ?? ""}`;
-  const chars = Array.from(text);
-  const truncated =
-    chars.length > DESCRIPTION_LENGTH
-      ? chars.slice(0, DESCRIPTION_LENGTH - OMISSION.length).join("") + OMISSION
-      : text;
-  return squish(truncated);
+  return squish(truncate(text, { length: 220 }));
 }
 
 // Rails' `squish`: every whitespace run to one space, both ends trimmed.
+// es-toolkit has no counterpart, so this one line stays.
 function squish(text: string): string {
   return text.replace(/\s+/g, " ").trim();
 }
