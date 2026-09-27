@@ -70,7 +70,7 @@ function New() {
         </Card>
 
         <Text mt="xs">
-          <Anchor component={Link} to="/session/new" fw="bold">
+          <Anchor component={Link} to="/{-$locale}/session/new" fw="bold">
             {t(($) => $.magic_links.new.other_methods)}
           </Anchor>
         </Text>

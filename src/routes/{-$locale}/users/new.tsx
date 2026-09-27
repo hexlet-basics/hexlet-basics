@@ -117,7 +117,7 @@ function New() {
 
             <Box my="lg" ta="right">
               {t(($) => $.users.new.have_account)}{" "}
-              <Anchor component={Link} to="/session/new" fw="bold">
+              <Anchor component={Link} to="/{-$locale}/session/new" fw="bold">
                 {t(($) => $.users.new.sign_in)}
               </Anchor>
             </Box>

@@ -82,11 +82,11 @@ function New() {
               {t(($) => $.helpers.submit.user_sign_in_form.create)}
             </Button>
 
-            <Anchor component={Link} to="/remind_password/new" ta="center">
+            <Anchor component={Link} to="/{-$locale}/remind_password/new" ta="center">
               {t(($) => $.sessions.new.forgot_password)}
             </Anchor>
 
-            <Anchor component={Link} to="/magic_links/new" ta="center">
+            <Anchor component={Link} to="/{-$locale}/magic_links/new" ta="center">
               {t(($) => $.sessions.new.sign_in_with_magic_link)}
             </Anchor>
           </Stack>
@@ -94,7 +94,7 @@ function New() {
 
         <Text mt="xs">
           {t(($) => $.sessions.new.dont_have_account)}{" "}
-          <Anchor component={Link} to="/users/new" fw="bold">
+          <Anchor component={Link} to="/{-$locale}/users/new" fw="bold">
             {t(($) => $.sessions.new.register)}
           </Anchor>
         </Text>

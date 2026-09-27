@@ -71,7 +71,7 @@ function New() {
 
         <Text mt="xs">
           {t(($) => $.remind_passwords.new.trying_to_login)}{" "}
-          <Anchor component={Link} to="/session/new" fw="bold">
+          <Anchor component={Link} to="/{-$locale}/session/new" fw="bold">
             {t(($) => $.remind_passwords.new.login)}
           </Anchor>
         </Text>
