@@ -26,6 +26,9 @@ import LessonTheory from "@/components/lesson/LessonTheory";
 import LessonWorkspace from "@/components/lesson/LessonWorkspace";
 import shikiAdapter from "@/lib/shiki";
 
+// The desktop split before the learner drags the divider: theory, then workspace.
+const DEFAULT_PANE_SIZES: [SplitterPaneSize, SplitterPaneSize] = ["40%", "60%"];
+
 // The lesson player's shell: theory, the assistant and navigation on the left,
 // the workspace on the right. Both panes stay mounted for the life of the page —
 // the editor in the right pane must never remount and lose a learner's buffer.
@@ -57,7 +60,7 @@ export default function LessonPage({
   // a split the server's HTML does not have.
   const [paneSizes, setPaneSizes] = useLocalStorage<SplitterPaneSize[]>({
     key: `lesson-panes-${courseSlug}-${lessonSlug}`,
-    defaultValue: ["40%", "60%"],
+    defaultValue: DEFAULT_PANE_SIZES,
   });
 
   // Read in an effect with a desktop default, for the same reason as the sizes
@@ -90,6 +93,9 @@ export default function LessonPage({
 
   const phoneSizes: SplitterPaneSize[] = theoryOpened ? ["100%", "0%"] : ["0%", "100%"];
   const sizes = isDesktop ? paneSizes : phoneSizes;
+  // Storage holds whatever array was written to it, so a pane with no entry
+  // falls back to the default split instead of an undefined size.
+  const [theorySize = DEFAULT_PANE_SIZES[0], workspaceSize = DEFAULT_PANE_SIZES[1]] = sizes;
 
   const burger = (
     <PaneBurger
@@ -116,7 +122,7 @@ export default function LessonPage({
         {/* The pane a phone has folded away is `inert`: still mounted, but out
             of the tab order and the accessibility tree, as it is out of sight. */}
         <Splitter.Pane
-          defaultSize={sizes[0]}
+          defaultSize={theorySize}
           min={isDesktop ? "25%" : "0%"}
           inert={!isDesktop && !theoryOpened}
         >
@@ -148,7 +154,7 @@ export default function LessonPage({
           </Tabs>
         </Splitter.Pane>
 
-        <Splitter.Pane defaultSize={sizes[1]} inert={!isDesktop && theoryOpened}>
+        <Splitter.Pane defaultSize={workspaceSize} inert={!isDesktop && theoryOpened}>
           <LessonWorkspace
             view={data}
             phone={!isDesktop}
