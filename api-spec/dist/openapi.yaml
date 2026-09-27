@@ -3310,7 +3310,9 @@ paths:
   /api/ai/lessons/{lessonId}/messages:
     get:
       operationId: listAssistantMessages
-      description: The assistant chat history for the current user in this lesson.
+      description: |-
+        The assistant chat history for the current user in this lesson, and their
+        remaining quota. A lesson they never asked about answers an empty chat.
       parameters:
         - name: lessonId
           in: path
@@ -3324,15 +3326,19 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LessonAssistantMessage'
+                $ref: '#/components/schemas/LessonAssistantChat'
         '401':
           description: The request is not authenticated (no/invalid session cookie).
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
         default:
           description: |-
             Default error response shared by every operation.
@@ -3350,8 +3356,12 @@ paths:
     post:
       operationId: createAssistantMessage
       description: |-
-        Ask the assistant. Enqueues generation (river job); the reply is delivered
-        out-of-band. 202 = accepted, 429 = rate limited. SSE streaming is TBD.
+        Ask the assistant and stream its answer back. Both turns are stored once
+        the answer is complete, with the answer's token usage.
+
+        Asking is doing the lesson, so it starts the lesson when the learner has
+        not yet (409 beyond the gate, exactly as starting would). 429 once today's
+        questions are used up — decided before anything streams.
       parameters:
         - name: lessonId
           in: path
@@ -3360,10 +3370,45 @@ paths:
             type: integer
             format: int32
       responses:
-        '202':
-          description: The request has been accepted for processing, but processing has not yet completed.
+        '200':
+          description: |-
+            The assistant's answer, streamed as plain text while the model produces it.
+
+            ogen generates a `text/plain` string body as an `io.Reader` the encoder copies
+            straight to the socket, which is what lets tokens reach the learner as they
+            arrive. (`bytes` would not do: TypeSpec emits it as `format: byte` for a text
+            content type, and ogen then base64-encodes the stream.) SSE is out of reach — ogen
+            cannot serve it yet (ogen#1742) — and the client does not need it: the AI SDK
+            reads a plain text stream directly.
+          content:
+            text/plain:
+              schema:
+                type: string
         '401':
           description: The request is not authenticated (no/invalid session cookie).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: A resource was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '409':
+          description: |-
+            The learner has not reached this lesson yet. Sequential progression
+            (ADR-0012) makes a lesson available only when its position in the course's
+            current version is at most one past the furthest lesson they have finished.
+
+            Distinct from 403: the caller's permissions are fine, their progress is not.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '429':
+          description: The learner has used up today's assistant questions.
           content:
             application/problem+json:
               schema:
@@ -6033,6 +6078,24 @@ components:
       description: |-
         A page of results. Generic envelope reused by every admin list so the CRUD
         engine (TanStack Table) can read pagination uniformly.
+    LessonAssistantChat:
+      type: object
+      required:
+        - messages
+        - quotaExceeded
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonAssistantMessage'
+          description: User and assistant turns, oldest first; empty before the first question.
+        quotaExceeded:
+          type: boolean
+          description: The learner has used up today's questions (UTC day).
+      description: |-
+        The learner's in-lesson chat, plus whether they may ask again today. The
+        quota flag rides along with the history so the panel renders its disabled
+        state on first paint instead of discovering it from a refused question.
     LessonAssistantMessage:
       type: object
       required:

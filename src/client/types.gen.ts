@@ -757,6 +757,22 @@ export type LeadPage = {
 };
 
 /**
+ * The learner's in-lesson chat, plus whether they may ask again today. The
+ * quota flag rides along with the history so the panel renders its disabled
+ * state on first paint instead of discovering it from a refused question.
+ */
+export type LessonAssistantChat = {
+  /**
+   * User and assistant turns, oldest first; empty before the first question.
+   */
+  messages: Array<LessonAssistantMessage>;
+  /**
+   * The learner has used up today's questions (UTC day).
+   */
+  quotaExceeded: boolean;
+};
+
+/**
  * One message in the in-lesson AI chat (legacy: `AiMessage`).
  */
 export type LessonAssistantMessage = {
@@ -4160,6 +4176,10 @@ export type ListAssistantMessagesErrors = {
    */
   401: ProblemDetails;
   /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4174,7 +4194,7 @@ export type ListAssistantMessagesResponses = {
   /**
    * The request has succeeded.
    */
-  200: Array<LessonAssistantMessage>;
+  200: LessonAssistantChat;
 };
 
 export type ListAssistantMessagesResponse = ListAssistantMessagesResponses[keyof ListAssistantMessagesResponses];
@@ -4194,6 +4214,22 @@ export type CreateAssistantMessageErrors = {
    */
   401: ProblemDetails;
   /**
+   * A resource was not found.
+   */
+  404: NotFoundError;
+  /**
+   * The learner has not reached this lesson yet. Sequential progression
+   * (ADR-0012) makes a lesson available only when its position in the course's
+   * current version is at most one past the furthest lesson they have finished.
+   *
+   * Distinct from 403: the caller's permissions are fine, their progress is not.
+   */
+  409: ProblemDetails;
+  /**
+   * The learner has used up today's assistant questions.
+   */
+  429: ProblemDetails;
+  /**
    * Default error response shared by every operation.
    *
    * `@error` emits an OpenAPI `default` response, keeping central transport
@@ -4206,10 +4242,19 @@ export type CreateAssistantMessageError = CreateAssistantMessageErrors[keyof Cre
 
 export type CreateAssistantMessageResponses = {
   /**
-   * The request has been accepted for processing, but processing has not yet completed.
+   * The assistant's answer, streamed as plain text while the model produces it.
+   *
+   * ogen generates a `text/plain` string body as an `io.Reader` the encoder copies
+   * straight to the socket, which is what lets tokens reach the learner as they
+   * arrive. (`bytes` would not do: TypeSpec emits it as `format: byte` for a text
+   * content type, and ogen then base64-encodes the stream.) SSE is out of reach — ogen
+   * cannot serve it yet (ogen#1742) — and the client does not need it: the AI SDK
+   * reads a plain text stream directly.
    */
-  202: unknown;
+  200: string;
 };
+
+export type CreateAssistantMessageResponse = CreateAssistantMessageResponses[keyof CreateAssistantMessageResponses];
 
 export type ListBlogPostsData = {
   body?: never;

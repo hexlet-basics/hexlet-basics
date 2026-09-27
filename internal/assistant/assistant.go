@@ -1,7 +1,7 @@
 // Package assistant hosts the LLM access for the AI features: the lesson-review
-// summarizer today, the in-lesson chat assistant next (see the assistant port
-// design — one shared client for both, synchronous calls, no persistence of
-// provider internals).
+// summarizer and the in-lesson chat (see the assistant port design — one
+// shared client for both, synchronous calls, no persistence of provider
+// internals).
 package assistant
 
 import (
@@ -21,10 +21,11 @@ type OpenAI struct {
 }
 
 // NewOpenAI builds the shared client. The token is required by the callers'
-// wiring (nil-skipped workers when absent), not validated here.
-func NewOpenAI(token, model string) *OpenAI {
+// wiring (nil-skipped workers when absent), not validated here. Extra SDK
+// options point a test at a local endpoint.
+func NewOpenAI(token, model string, opts ...option.RequestOption) *OpenAI {
 	return &OpenAI{
-		client: openai.NewClient(option.WithAPIKey(token)),
+		client: openai.NewClient(append([]option.RequestOption{option.WithAPIKey(token)}, opts...)...),
 		model:  openai.ChatModel(model),
 	}
 }
@@ -45,4 +46,51 @@ func (c *OpenAI) Complete(ctx context.Context, instructions, prompt string) (str
 		return "", oops.Errorf("openai chat completion returned no choices")
 	}
 	return resp.Choices[0].Message.Content, nil
+}
+
+// Stream runs a chat completion over turns and hands each content delta to
+// onDelta as it arrives. The SDK's accumulator collects the final usage, which
+// the API only sends when asked for it (include_usage) — without it a streamed
+// answer would carry no token counts. An error from onDelta (the learner went
+// away) aborts the stream.
+func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (Usage, error) {
+	messages := make([]openai.ChatCompletionMessageParamUnion, len(turns))
+	for i, turn := range turns {
+		switch turn.Role {
+		case RoleSystem:
+			messages[i] = openai.SystemMessage(turn.Content)
+		case RoleAssistant:
+			messages[i] = openai.AssistantMessage(turn.Content)
+		default:
+			messages[i] = openai.UserMessage(turn.Content)
+		}
+	}
+
+	stream := c.client.Chat.Completions.NewStreaming(ctx, openai.ChatCompletionNewParams{
+		Model:         c.model,
+		Messages:      messages,
+		StreamOptions: openai.ChatCompletionStreamOptionsParam{IncludeUsage: openai.Bool(true)},
+	})
+	// Close only releases the response body; the stream's own error is what
+	// reports a failed answer.
+	defer func() { _ = stream.Close() }()
+
+	acc := openai.ChatCompletionAccumulator{}
+	for stream.Next() {
+		chunk := stream.Current()
+		acc.AddChunk(chunk)
+		if len(chunk.Choices) == 0 || chunk.Choices[0].Delta.Content == "" {
+			continue
+		}
+		if err := onDelta(chunk.Choices[0].Delta.Content); err != nil {
+			return Usage{}, err
+		}
+	}
+	if err := stream.Err(); err != nil {
+		return Usage{}, oops.Wrapf(err, "openai chat completion stream")
+	}
+	return Usage{
+		InputTokens:  int(acc.Usage.PromptTokens),
+		OutputTokens: int(acc.Usage.CompletionTokens),
+	}, nil
 }

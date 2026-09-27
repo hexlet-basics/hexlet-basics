@@ -16,16 +16,21 @@ import {
   useMediaQuery,
 } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getCourseLessonOptions } from "@/client/@tanstack/react-query.gen";
+import type { LessonCheckingResponse } from "@/client/types.gen";
+import LessonAssistant from "@/components/lesson/LessonAssistant";
 import LessonNavigation from "@/components/lesson/LessonNavigation";
 import LessonTheory from "@/components/lesson/LessonTheory";
 import LessonWorkspace from "@/components/lesson/LessonWorkspace";
 import shikiAdapter from "@/lib/shiki";
 
-// The lesson player's shell: theory and navigation on the left, the workspace on
-// the right. Both panes stay mounted for the life of the page — the editor in
-// the right pane must never remount and lose a learner's buffer.
+// The lesson player's shell: theory, the assistant and navigation on the left,
+// the workspace on the right. Both panes stay mounted for the life of the page —
+// the editor in the right pane must never remount and lose a learner's buffer.
+// The assistant sits beside the editor rather than in its tabs, so the code
+// stays in view while the learner asks about it.
 //
 // On a phone the two panes cannot sit side by side, so one fills the screen at a
 // time and a burger in each pane's tab strip swaps which — legacy's mechanism.
@@ -34,9 +39,11 @@ import shikiAdapter from "@/lib/shiki";
 export default function LessonPage({
   courseSlug,
   lessonSlug,
+  signedIn,
 }: {
   courseSlug: string;
   lessonSlug: string;
+  signedIn: boolean;
 }) {
   const { t } = useTranslation();
   const { data, isPending, isError } = useQuery(
@@ -64,6 +71,10 @@ export default function LessonPage({
   // workspace comes first, as in legacy: it is where the learner acts, and its
   // own theory tab keeps the reading one tap away.
   const [theoryOpened, { toggle: togglePanes }] = useDisclosure(false);
+
+  // The outcome of the last check: the workspace renders it, the assistant is
+  // asked about it.
+  const [result, setResult] = useState<LessonCheckingResponse | null>(null);
 
   if (isPending) {
     return (
@@ -113,12 +124,19 @@ export default function LessonPage({
             <Tabs.List grow>
               {burger}
               <Tabs.Tab value="lesson">{t(($) => $.courses.lessons.show.lesson)}</Tabs.Tab>
+              <Tabs.Tab value="assistant">{t(($) => $.courses.lessons.show.assistant)}</Tabs.Tab>
               <Tabs.Tab value="navigation">{t(($) => $.courses.lessons.show.navigation)}</Tabs.Tab>
             </Tabs.List>
 
             <Tabs.Panel value="lesson" h="100%" mih={0}>
               <ScrollArea h="100%">
                 <LessonTheory view={data} />
+              </ScrollArea>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="assistant" h="100%" mih={0}>
+              <ScrollArea h="100%">
+                <LessonAssistant view={data} output={result?.output ?? ""} signedIn={signedIn} />
               </ScrollArea>
             </Tabs.Panel>
 
@@ -131,7 +149,13 @@ export default function LessonPage({
         </Splitter.Pane>
 
         <Splitter.Pane defaultSize={sizes[1]} inert={!isDesktop && theoryOpened}>
-          <LessonWorkspace view={data} phone={!isDesktop} burger={burger} />
+          <LessonWorkspace
+            view={data}
+            phone={!isDesktop}
+            burger={burger}
+            result={result}
+            setResult={setResult}
+          />
         </Splitter.Pane>
       </Splitter>
     </CodeHighlightAdapterProvider>

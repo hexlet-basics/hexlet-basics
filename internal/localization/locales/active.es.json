@@ -40,5 +40,12 @@
   "emails.password_reset.ignore": {
     "other": "Si no solicitaste restablecer la contraseña, ignora este correo. Tu contraseña no cambiará hasta que abras el enlace y elijas una nueva."
   },
-  "emails.link_invalid": { "other": "Este enlace ya no es válido. Solicita uno nuevo." }
+  "emails.link_invalid": { "other": "Este enlace ya no es válido. Solicita uno nuevo." },
+  "http.too_many_requests": { "other": "Demasiadas solicitudes" },
+  "assistant.instructions": {
+    "other": "Ayudas a aprender {{.Course}} como parte de un curso en Hexlet.\nEsta conversación trata sobre la lección «{{.Lesson}}».\nEl curso consta de teoría, práctica y pruebas que se ejecutan directamente en el navegador.\nNunca muestras la solución del ejercicio: el estudiante debe resolverlo por su cuenta.\nOrienta, explica, ayuda a entender, sugiere pasos hacia la solución, plantea hipótesis.\nResponde en español. Responde de forma breve.\n\nSi durante la conversación aparece un error en la teoría o en el ejercicio (su descripción, solución o pruebas),\nrecomienda escribir sobre ello en la comunidad https://t.me/hexletcommunity, donde está el equipo del proyecto.\n\nTeoría de la lección:\n{{.Theory}}\n\nEjercicio de la lección:\n{{.Instructions}}"
+  },
+  "assistant.question": {
+    "other": "El código del estudiante (su solución del ejercicio): {{.Code}}\n\nEl resultado de ejecutar el código del estudiante con las pruebas del ejercicio: {{.Output}}\n\nLa pregunta del estudiante: {{.Question}}"
+  }
 }

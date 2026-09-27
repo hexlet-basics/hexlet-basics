@@ -3142,14 +3142,59 @@ func encodeConsumeMagicLinkResponse(response ConsumeMagicLinkRes, w http.Respons
 
 func encodeCreateAssistantMessageResponse(response CreateAssistantMessageRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *CreateAssistantMessageAccepted:
-		w.WriteHeader(202)
+	case *CreateAssistantMessageOK:
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(200)
+
+		writer := w
+		if closer, ok := response.Data.(io.Closer); ok {
+			defer closer.Close()
+		}
+		if _, err := io.Copy(writer, response); err != nil {
+			return errors.Wrap(err, "write")
+		}
 
 		return nil
 
-	case *ProblemDetails:
+	case *CreateAssistantMessageUnauthorized:
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(401)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *NotFoundError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(404)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *CreateAssistantMessageConflict:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(409)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *CreateAssistantMessageTooManyRequests:
+		w.Header().Set("Content-Type", "application/problem+json")
+		w.WriteHeader(429)
 
 		e := new(jx.Encoder)
 		response.Encode(e)
@@ -3865,7 +3910,7 @@ func encodeLikeBlogPostResponse(response LikeBlogPostRes, w http.ResponseWriter,
 
 func encodeListAssistantMessagesResponse(response ListAssistantMessagesRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *ListAssistantMessagesOKApplicationJSON:
+	case *LessonAssistantChat:
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(200)
 
@@ -3880,6 +3925,18 @@ func encodeListAssistantMessagesResponse(response ListAssistantMessagesRes, w ht
 	case *ProblemDetails:
 		w.Header().Set("Content-Type", "application/problem+json")
 		w.WriteHeader(401)
+
+		e := new(jx.Encoder)
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+
+		return nil
+
+	case *NotFoundError:
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(404)
 
 		e := new(jx.Encoder)
 		response.Encode(e)

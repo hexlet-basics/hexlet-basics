@@ -454,6 +454,16 @@ export const zLessonAssistantMessage = z.object({
 });
 
 /**
+ * The learner's in-lesson chat, plus whether they may ask again today. The
+ * quota flag rides along with the history so the panel renders its disabled
+ * state on first paint instead of discovering it from a refused question.
+ */
+export const zLessonAssistantChat = z.object({
+  messages: z.array(zLessonAssistantMessage),
+  quotaExceeded: z.boolean()
+});
+
+/**
  * A page of results. Generic envelope reused by every admin list so the CRUD
  * engine (TanStack Table) can read pagination uniformly.
  */
@@ -1726,13 +1736,25 @@ export const zListAssistantMessagesPath = z.object({
 /**
  * The request has succeeded.
  */
-export const zListAssistantMessagesResponse = z.array(zLessonAssistantMessage);
+export const zListAssistantMessagesResponse = zLessonAssistantChat;
 
 export const zCreateAssistantMessageBody = zAssistantMessageInput;
 
 export const zCreateAssistantMessagePath = z.object({
   lessonId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
+
+/**
+ * The assistant's answer, streamed as plain text while the model produces it.
+ *
+ * ogen generates a `text/plain` string body as an `io.Reader` the encoder copies
+ * straight to the socket, which is what lets tokens reach the learner as they
+ * arrive. (`bytes` would not do: TypeSpec emits it as `format: byte` for a text
+ * content type, and ogen then base64-encodes the stream.) SSE is out of reach — ogen
+ * cannot serve it yet (ogen#1742) — and the client does not need it: the AI SDK
+ * reads a plain text stream directly.
+ */
+export const zCreateAssistantMessageResponse = z.string();
 
 export const zListBlogPostsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
