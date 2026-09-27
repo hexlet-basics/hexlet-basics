@@ -39,7 +39,7 @@ export const Route = createFileRoute("/{-$locale}/book")({
   beforeLoad: ({ params }) => {
     if (params.locale !== "ru") throw notFound();
   },
-  loader: ({ context }) => context.queryClient.ensureQueryData(getBookOptions()),
+  loader: ({ context }) => context.queryClient.query({ ...getBookOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the description cut to 160 characters as
   // Rails' truncate did, the canonical link and the social tags.
   head: ({ match }) => {

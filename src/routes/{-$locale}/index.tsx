@@ -15,6 +15,7 @@ export const Route = createFileRoute("/{-$locale}/")({
       }
     }
   },
-  loader: ({ context }) => context.queryClient.ensureQueryData(listCoursesOptions()),
+  loader: ({ context }) =>
+    context.queryClient.query({ ...listCoursesOptions(), staleTime: "static" }),
   component: CourseCatalog,
 });

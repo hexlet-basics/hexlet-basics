@@ -26,7 +26,9 @@ function EditBanner() {
 
   const { data, isLoading } = useQuery(adminGetBannerOptions({ path: { id: bannerId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/banners" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/banners" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateBannerMutation(),

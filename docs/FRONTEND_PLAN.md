@@ -24,7 +24,7 @@ generation), then the value spine, then the public/SEO surface last.
 - Migrate the current Vite SPA to TanStack Start; wire SSR + Query dehydration.
 - Locale routing: optional prefix (`en` bare, `ru`/`es` prefixed) + root
   auto-detect (session → Accept-Language → country-by-IP).
-- Generic Start `loader` adapter over hey-api `Options` (`ensureQueryData`).
+- Generic Start `loader` adapter over hey-api `Options` (`queryClient.query` with `staleTime: "static"`).
 - httpOnly-cookie auth plumbing (stub until the auth backend lands).
 - Run the existing catalog/course slice through SSR as the proof.
 

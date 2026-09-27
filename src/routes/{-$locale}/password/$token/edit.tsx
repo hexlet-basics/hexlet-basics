@@ -20,7 +20,7 @@ const refusedLink = (locale: string | undefined) => ({
 // link before the form is shown, so nobody types a new password into a dead
 // one; a refused link goes back to the request form, which says it is no longer
 // valid. The check answers 204 with no data to cache, so it calls the SDK
-// directly rather than going through ensureQueryData (ADR-0008). Submitting signs the visitor in and takes
+// directly rather than going through queryClient.query (ADR-0008). Submitting signs the visitor in and takes
 // them home.
 export const Route = createFileRoute("/{-$locale}/password/$token/edit")({
   loader: async ({ params }) => {
@@ -46,15 +46,15 @@ function Edit() {
     ...updatePasswordMutation(),
     onSuccess: (user) => {
       // Seeded from the response, as after a Magic Link: the root guard reads
-      // the current user through ensureQueryData and would keep the guest.
+      // the current user through queryClient.query and would keep the guest.
       queryClient.setQueryData(getCurrentUserQueryKey(), { user });
-      navigate({ to: "/{-$locale}", params: { locale } });
+      void navigate({ to: "/{-$locale}", params: { locale } });
     },
     onError: (error) => {
       // The link can die between the check and the submission: it expired,
       // or it was already used from another tab.
       if (isAxiosError(error) && error.response?.status === 404) {
-        navigate(refusedLink(locale));
+        void navigate(refusedLink(locale));
       }
     },
   });
@@ -79,7 +79,7 @@ function Edit() {
             component="form"
             onSubmit={(event) => {
               event.preventDefault();
-              form.handleSubmit();
+              void form.handleSubmit();
             }}
           >
             {mutation.isError && <Alert color="red">{t(($) => $.common.errors.network)}</Alert>}

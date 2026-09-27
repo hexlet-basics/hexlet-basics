@@ -22,7 +22,9 @@ export function NewCourseCategory() {
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/course_categories" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/course_categories" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseCategoryMutation(),

@@ -44,9 +44,10 @@ import { timeAgo } from "@/lib/time-ago";
 export const Route = createFileRoute("/{-$locale}/blog_posts/$slug")({
   loader: async ({ context, params }) => {
     try {
-      return await context.queryClient.ensureQueryData(
-        getBlogPostOptions({ path: { slug: params.slug } }),
-      );
+      return await context.queryClient.query({
+        ...getBlogPostOptions({ path: { slug: params.slug } }),
+        staleTime: "static",
+      });
     } catch (error) {
       // A draft, a post in another language and a missing slug are all the
       // same to a visitor: there is no such page.

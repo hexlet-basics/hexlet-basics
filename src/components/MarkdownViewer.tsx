@@ -92,8 +92,12 @@ function MarkdownCodeBlock({ node }: ComponentPropsWithoutRef<"pre"> & ExtraProp
 
 // Only inline code (single backticks) reaches the `code` handler; fenced blocks
 // are intercepted by `pre` above.
-function MarkdownInlineCode({ children }: ComponentPropsWithoutRef<"code">) {
-  return <InlineCodeHighlight code={String(children)} />;
+function MarkdownInlineCode({ node }: ComponentPropsWithoutRef<"code"> & ExtraProps) {
+  const code = (node?.children ?? [])
+    .map((child) => (child.type === "text" ? child.value : ""))
+    .join("");
+
+  return <InlineCodeHighlight code={code} />;
 }
 
 // Headings inside authored prose are one step down from the page's own, so a

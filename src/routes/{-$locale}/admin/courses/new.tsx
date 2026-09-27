@@ -19,7 +19,9 @@ export function NewCourse() {
   const navigate = useNavigate();
   const fields = useCourseFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/courses" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/courses" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseMutation(),

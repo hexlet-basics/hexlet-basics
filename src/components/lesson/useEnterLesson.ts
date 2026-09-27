@@ -29,16 +29,16 @@ export function useEnterLesson(courseSlug: string) {
     start.mutate(
       { path: { id: lesson.id } },
       {
-        onSuccess: async () => {
+        onSuccess: () => {
           // The lesson's payload may already be cached from a hover, taken
           // before this start — and before the pass that unlocked it. The
-          // loader's ensureQueryData would serve that stale copy, lock and all,
+          // loader's queryClient.query would serve that stale copy, lock and all,
           // and an inactive query is not refetched by a plain invalidation, so
           // the entry is dropped and the loader reads it afresh.
           queryClient.removeQueries({
             queryKey: getCourseLessonQueryKey({ path: { courseSlug, slug: lesson.slug } }),
           });
-          await navigate({
+          void navigate({
             to: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
             // Keeps the URL locale of whichever page the learner came from.
             params: (prev) => ({ ...prev, slug: courseSlug, lessonSlug: lesson.slug }),

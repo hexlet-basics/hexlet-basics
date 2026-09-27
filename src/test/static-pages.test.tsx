@@ -56,7 +56,7 @@ test("an unknown page is the 404 page", async () => {
 });
 
 test("the 403 page says access is denied", async () => {
-  renderWithProviders(<ForbiddenPage />);
+  await renderWithProviders(<ForbiddenPage />);
 
   await expect.element(page.getByRole("heading", { name: "Access Denied" })).toBeVisible();
   await expect.element(page.getByText("403", { exact: true })).toBeVisible();

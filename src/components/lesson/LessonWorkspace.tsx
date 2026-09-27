@@ -100,7 +100,7 @@ export default function LessonWorkspace({
       // finishes the Enrollment the completion page checks for. A course read
       // cached from an earlier visit to the Course page is inactive here, so an
       // invalidation would not refetch it and the completion page's
-      // ensureQueryData would serve it as it was — still unfinished, bouncing
+      // queryClient.query would serve it as it was — still unfinished, bouncing
       // the learner back. The entry is dropped so the next read is fresh.
       if (outcome.passed) {
         queryClient.removeQueries({ queryKey: getCourseQueryKey({ path: { slug: courseSlug } }) });

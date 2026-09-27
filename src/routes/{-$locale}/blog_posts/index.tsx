@@ -12,7 +12,8 @@ import { seoHead } from "@/lib/seo-head";
 // out, so page one is all a visitor could reach. The loader prefetches it so the
 // posts are in the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/blog_posts/")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(listBlogPostsOptions()),
+  loader: ({ context }) =>
+    context.queryClient.query({ ...listBlogPostsOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the blog description, the canonical link
   // and the social tags.
   head: ({ match }) => {

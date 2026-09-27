@@ -35,7 +35,9 @@ function EditCourseLandingPage() {
 
   const { data, isLoading } = useQuery(adminGetCourseLandingPageOptions({ path: { id: pageId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/course_landing_pages" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/course_landing_pages" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateCourseLandingPageMutation(),

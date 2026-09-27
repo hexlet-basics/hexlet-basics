@@ -26,7 +26,9 @@ function EditCourse() {
 
   const { data, isLoading } = useQuery(adminGetCourseOptions({ path: { id: courseId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/courses" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/courses" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateCourseMutation(),

@@ -17,9 +17,10 @@ import { seoHead } from "@/lib/seo-head";
 export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
   loader: async ({ context, params }) => {
     try {
-      return await context.queryClient.ensureQueryData(
-        getPublicCourseCategoryOptions({ path: { slug: params.slug } }),
-      );
+      return await context.queryClient.query({
+        ...getPublicCourseCategoryOptions({ path: { slug: params.slug } }),
+        staleTime: "static",
+      });
     } catch (error) {
       // A missing slug and a category of another language are the same to a
       // visitor: there is no such page.

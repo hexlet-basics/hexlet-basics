@@ -19,7 +19,9 @@ export function NewBanner() {
   const navigate = useNavigate();
   const fields = useBannerFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/banners" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/banners" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateBannerMutation(),

@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { type Mock, vi } from "vitest";
+import { vi } from "vitest";
 import { renderWithProviders } from "./renderWithProviders";
 
 type RenderWithRouterOptions = {
@@ -35,7 +35,9 @@ export async function renderWithRouter(
     history: createMemoryHistory({ initialEntries: [initialPath] }),
   });
 
-  const navigate: Mock = vi.fn().mockResolvedValue(undefined);
+  // router.navigate is generic over the route tree, which a Mock cannot carry,
+  // so the mock takes any arguments and is cast back onto the router.
+  const navigate = vi.fn<(...args: unknown[]) => Promise<void>>().mockResolvedValue(undefined);
   router.navigate = navigate as unknown as typeof router.navigate;
 
   const screen = await renderWithProviders(<RouterProvider router={router} />);

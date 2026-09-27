@@ -22,7 +22,9 @@ export function NewCourseLandingPage() {
   const navigate = useNavigate();
   const fields = useCourseLandingPageFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/course_landing_pages" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/course_landing_pages" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateCourseLandingPageMutation(),

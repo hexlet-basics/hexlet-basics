@@ -50,7 +50,10 @@ import { seoHead } from "@/lib/seo-head";
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(getCourseOptions({ path: { slug: params.slug } })),
+    context.queryClient.query({
+      ...getCourseOptions({ path: { slug: params.slug } }),
+      staleTime: "static",
+    }),
   // Legacy languages#show meta: the landing page's meta title and description,
   // the canonical link, the social block with the course cover, and Open Graph
   // typed as a website in the page's locale.

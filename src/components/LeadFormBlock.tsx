@@ -87,7 +87,7 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
       gap={0}
       onSubmit={(event) => {
         event.preventDefault();
-        form.handleSubmit();
+        void form.handleSubmit();
       }}
     >
       <form.AppField name="contactMethod">

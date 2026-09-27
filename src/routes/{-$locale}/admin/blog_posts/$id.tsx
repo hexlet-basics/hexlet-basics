@@ -30,7 +30,9 @@ function EditBlogPost() {
 
   const { data, isLoading } = useQuery(adminGetBlogPostOptions({ path: { id: postId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/blog_posts" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/blog_posts" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateBlogPostMutation(),

@@ -29,7 +29,10 @@ export const Route = createFileRoute("/{-$locale}/reviews/")({
   }),
   loaderDeps: ({ search }) => ({ page: search.page }),
   loader: ({ context, deps }) =>
-    context.queryClient.ensureQueryData(listPublicReviewsOptions({ query: { page: deps.page } })),
+    context.queryClient.query({
+      ...listPublicReviewsOptions({ query: { page: deps.page } }),
+      staleTime: "static",
+    }),
   // Legacy meta: the header as title and og:title (legacy asked for a `.title`
   // key that never existed), the reviews description, the canonical link and
   // the social tags.

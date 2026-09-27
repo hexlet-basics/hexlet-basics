@@ -46,7 +46,7 @@ function New() {
               component="form"
               onSubmit={(event) => {
                 event.preventDefault();
-                form.handleSubmit();
+                void form.handleSubmit();
               }}
             >
               {invalid && <Alert color="red">{t(($) => $.flash.magic_links.show.error)}</Alert>}

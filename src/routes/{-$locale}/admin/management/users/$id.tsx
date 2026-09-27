@@ -26,7 +26,9 @@ function EditManagementUser() {
 
   const { data, isLoading } = useQuery(adminGetManagementUserOptions({ path: { id: userId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/management/users" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/management/users" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateManagementUserMutation(),

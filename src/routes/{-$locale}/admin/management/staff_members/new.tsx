@@ -19,7 +19,9 @@ export function NewStaffMember() {
   const navigate = useNavigate();
   const fields = useStaffMemberFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/management/staff_members" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/management/staff_members" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateStaffMemberMutation(),

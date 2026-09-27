@@ -12,7 +12,8 @@ import { seoHead } from "@/lib/seo-head";
 // language_categories/index. The loader prefetches the list so the cards are in
 // the server-rendered HTML (ADR-0008).
 export const Route = createFileRoute("/{-$locale}/language_categories/")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(listPublicCourseCategoriesOptions()),
+  loader: ({ context }) =>
+    context.queryClient.query({ ...listPublicCourseCategoriesOptions(), staleTime: "static" }),
   // Legacy meta: the header as title, the index description, the canonical link
   // and the social tags.
   head: ({ match }) => {

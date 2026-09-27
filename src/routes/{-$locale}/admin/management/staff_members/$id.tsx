@@ -26,7 +26,9 @@ function EditStaffMember() {
 
   const { data, isLoading } = useQuery(adminGetStaffMemberOptions({ path: { id: memberId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/management/staff_members" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/management/staff_members" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateStaffMemberMutation(),

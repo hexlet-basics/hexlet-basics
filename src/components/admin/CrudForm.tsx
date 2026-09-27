@@ -72,7 +72,7 @@ export function CrudForm<T extends Record<string, unknown>>({
         component="form"
         onSubmit={(event) => {
           event.preventDefault();
-          form.handleSubmit();
+          void form.handleSubmit();
         }}
       >
         {fields.map((spec) => (
@@ -105,7 +105,8 @@ export function CrudForm<T extends Record<string, unknown>>({
                   );
                 case "richtext":
                   return <field.RichTextField label={spec.label} />;
-                default:
+                case "text":
+                case undefined:
                   return <field.TextField label={spec.label} required={spec.required} />;
               }
             }}

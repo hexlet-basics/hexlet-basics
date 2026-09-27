@@ -31,7 +31,8 @@ screens are generated from the same schema rather than authored per resource.
 ## Decisions
 
 - **Data:** hey-api generates `xxxOptions()`/mutations/query-keys. Start
-  `loader` calls `queryClient.ensureQueryData(xxxOptions())` for SSR prefetch +
+  `loader` calls `queryClient.query({ ...xxxOptions(), staleTime: "static" })`
+  (the replacement for the deprecated `ensureQueryData`) for SSR prefetch +
   dehydration via one generic adapter; components read the same options with
   `useQuery` — no double fetch, no hand-written loaders.
   - **Exception — loaders that sign the visitor in.** A route whose job is a
@@ -40,13 +41,13 @@ screens are generated from the same schema rather than authored per resource.
     its loader, then seeds the current-user query from the response. Run
     server-side, the Node process would receive the session cookie and the
     browser never would; and a sign-in is not a cacheable read, so it has no
-    business in `ensureQueryData`. The call is still the generated client —
+    business in `queryClient.query`. The call is still the generated client —
     only the prefetch pattern is skipped.
   - **Exception — reads with no data.** A loader that only asks whether
     something may be shown (checking a Password Reset link, answered 204 or
     404) calls the generated SDK function directly and redirects on refusal.
     There is nothing to dehydrate, and TanStack Query rejects `undefined` as
-    query data, so `ensureQueryData` does not fit. It still runs during SSR.
+    query data, so `queryClient.query` does not fit. It still runs during SSR.
 - **Forms:** TanStack Form (headless) + Mantine input wrappers; validators are
   Zod schemas generated from OpenAPI by the hey-api zod plugin. Chosen over
   `@mantine/form` because a schema-driven field layer is built regardless, which

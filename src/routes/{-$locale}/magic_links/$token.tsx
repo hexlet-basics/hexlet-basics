@@ -20,7 +20,7 @@ export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
         throwOnError: true,
       });
       // The response is the signed-in user, so the cache is set from it rather
-      // than refetched: the root beforeLoad reads it through ensureQueryData,
+      // than refetched: the root beforeLoad reads it through queryClient.query,
       // which would otherwise keep serving the guest it resolved on arrival.
       context.queryClient.setQueryData(getCurrentUserQueryKey(), { user });
     } catch (error) {

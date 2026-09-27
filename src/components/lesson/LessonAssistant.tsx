@@ -15,7 +15,7 @@ import { useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { APICallError, TextStreamChatTransport, type UIMessage } from "ai";
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   listAssistantMessagesOptions,
@@ -106,7 +106,9 @@ function AssistantChat({
     transport: assistantTransport(lesson.id),
     // Re-read the history's quota flag after every exchange: the answer that
     // used up today's last question is what switches the panel off.
-    onFinish: () => queryClient.invalidateQueries({ queryKey: historyKey }),
+    onFinish: () => {
+      void queryClient.invalidateQueries({ queryKey: historyKey });
+    },
     onError: (failure) => {
       if (isQuotaExceeded(failure)) return;
       notifications.show({ message: t(($) => $.common.errors.network) });
@@ -117,7 +119,7 @@ function AssistantChat({
   const quotaExceeded = chat.quotaExceeded || isQuotaExceeded(error);
   const communityUrl = t(($) => $.common.community_url).trim();
 
-  const submit = (event: FormEvent) => {
+  const submit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const text = input.trim();
     if (!text || busy) return;

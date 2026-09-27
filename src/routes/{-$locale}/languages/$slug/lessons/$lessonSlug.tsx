@@ -18,9 +18,10 @@ import { seoHead } from "@/lib/seo-head";
 export const Route = createFileRoute("/{-$locale}/languages/$slug/lessons/$lessonSlug")({
   staticData: { chrome: "bare" },
   loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(
-      getCourseLessonOptions({ path: { courseSlug: params.slug, slug: params.lessonSlug } }),
-    ),
+    context.queryClient.query({
+      ...getCourseLessonOptions({ path: { courseSlug: params.slug, slug: params.lessonSlug } }),
+      staleTime: "static",
+    }),
   // Legacy lessons#show meta, composed from the payload: a title naming the
   // lesson and the course's landing copy, a description drawn from the theory,
   // the canonical link, and Open Graph as an article with the course cover.

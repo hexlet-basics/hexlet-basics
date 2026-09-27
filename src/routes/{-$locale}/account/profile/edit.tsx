@@ -24,7 +24,8 @@ export const Route = createFileRoute("/{-$locale}/account/profile/edit")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
-  loader: ({ context }) => context.queryClient.ensureQueryData(getProfileOptions()),
+  loader: ({ context }) =>
+    context.queryClient.query({ ...getProfileOptions(), staleTime: "static" }),
   head: ({ match }) => {
     const { t } = match.context.i18n;
     return {
@@ -71,7 +72,7 @@ function Edit() {
               component="form"
               onSubmit={(event) => {
                 event.preventDefault();
-                form.handleSubmit();
+                void form.handleSubmit();
               }}
             >
               <form.AppField name="firstName">
@@ -122,7 +123,7 @@ function DeleteAccount() {
         color: "green",
         message: t(($) => $.flash.account.profiles.destroy.success),
       });
-      navigate({ to: "/{-$locale}" });
+      void navigate({ to: "/{-$locale}" });
     },
     onError: () =>
       notifications.show({

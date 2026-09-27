@@ -26,8 +26,8 @@ function New() {
   const mutation = useMutation({
     ...createSessionMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
-      navigate({ to: "/{-$locale}" });
+      void queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+      void navigate({ to: "/{-$locale}" });
     },
     onError: () => setServerError(t(($) => $.flash.sessions.create.error)),
   });
@@ -53,7 +53,7 @@ function New() {
             component="form"
             onSubmit={(event) => {
               event.preventDefault();
-              form.handleSubmit();
+              void form.handleSubmit();
             }}
           >
             {serverError && <Alert color="red">{serverError}</Alert>}

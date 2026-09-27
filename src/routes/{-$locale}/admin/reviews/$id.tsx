@@ -26,7 +26,9 @@ function EditReview() {
 
   const { data, isLoading } = useQuery(adminGetReviewOptions({ path: { id: reviewId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/reviews" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/reviews" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateReviewMutation(),

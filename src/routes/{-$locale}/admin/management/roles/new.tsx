@@ -19,7 +19,9 @@ export function NewRole() {
   const navigate = useNavigate();
   const fields = useStaffRoleFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/management/roles" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/management/roles" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateRoleMutation(),

@@ -1,9 +1,9 @@
 import { Alert, Box, Stack, useComputedColorScheme } from "@mantine/core";
-import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
+import { useCallbackRef, useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import { ClientOnly } from "@tanstack/react-router";
 import type { Monaco } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getEditorSettings } from "@/lib/editor-languages";
 
@@ -76,12 +76,12 @@ function EditorPane({
   const settings = getEditorSettings(courseSlug);
 
   // Monaco keeps the callback it is given for the life of the command, so the
-  // command calls through a ref rather than closing over a stale run.
-  const runRef = useRef(onRun);
-  runRef.current = onRun;
+  // command calls through a stable ref-backed callback rather than closing over
+  // a stale run.
+  const run = useCallbackRef(onRun);
 
   const bindEditor = (mounted: editor.IStandaloneCodeEditor, monaco: Monaco) => {
-    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runRef.current());
+    mounted.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => run());
     setInstance(mounted);
   };
 

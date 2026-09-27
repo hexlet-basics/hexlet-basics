@@ -22,7 +22,8 @@ export const Route = createFileRoute("/{-$locale}/map")({
       throw notFound();
     }
   },
-  loader: ({ context }) => context.queryClient.ensureQueryData(getSitemapOptions()),
+  loader: ({ context }) =>
+    context.queryClient.query({ ...getSitemapOptions(), staleTime: "static" }),
   // Legacy set the title alone: no description, canonical or social tags.
   head: ({ match }) => {
     const { i18n } = match.context;

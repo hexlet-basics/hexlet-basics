@@ -27,7 +27,9 @@ function EditRole() {
 
   const { data, isLoading } = useQuery(adminGetRoleOptions({ path: { id: roleId } }));
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/management/roles" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/management/roles" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminUpdateRoleMutation(),

@@ -19,7 +19,9 @@ export function NewUser() {
   const navigate = useNavigate();
   const fields = useUserFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/users" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/users" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateUserMutation(),

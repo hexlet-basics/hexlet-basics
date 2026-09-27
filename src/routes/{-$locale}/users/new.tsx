@@ -50,7 +50,7 @@ function New() {
       // account — so the lesson a guest is sent back to must be read again,
       // not served from the cache with the guest's locks. They are dropped
       // rather than invalidated: an inactive query is only marked stale by an
-      // invalidation, and a loader's ensureQueryData serves stale data.
+      // invalidation, and a loader's queryClient.query serves stale data.
       queryClient.removeQueries({ queryKey: [{ _id: "getCourse" }] });
       queryClient.removeQueries({ queryKey: [{ _id: "getCourseLesson" }] });
       await queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
@@ -81,7 +81,7 @@ function New() {
             component="form"
             onSubmit={(event) => {
               event.preventDefault();
-              form.handleSubmit();
+              void form.handleSubmit();
             }}
           >
             {serverError && <Alert color="red">{serverError}</Alert>}

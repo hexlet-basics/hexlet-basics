@@ -19,7 +19,9 @@ export function NewBlogPost() {
   const navigate = useNavigate();
   const fields = useBlogPostFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/blog_posts" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/blog_posts" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateBlogPostMutation(),

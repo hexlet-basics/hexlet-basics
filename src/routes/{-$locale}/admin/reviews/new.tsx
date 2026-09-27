@@ -19,7 +19,9 @@ export function NewReview() {
   const navigate = useNavigate();
   const fields = useReviewFields();
 
-  const backToList = () => navigate({ to: "/{-$locale}/admin/reviews" });
+  const backToList = () => {
+    void navigate({ to: "/{-$locale}/admin/reviews" });
+  };
 
   const mutation = useResourceMutation({
     mutation: adminCreateReviewMutation(),

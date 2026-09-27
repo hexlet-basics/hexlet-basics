@@ -27,7 +27,7 @@ export function isLocale(value: string): value is Locale {
 export function createI18n(): I18n {
   const instance = createInstance();
 
-  instance.use(initReactI18next).init({
+  void instance.use(initReactI18next).init({
     lng: DEFAULT_LOCALE,
     fallbackLng: DEFAULT_LOCALE,
     defaultNS: "translation",

@@ -177,8 +177,8 @@ function AuthLinks() {
   const { mutate: logout } = useMutation({
     ...deleteSessionMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
-      navigate({ to: "/{-$locale}" });
+      void queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+      void navigate({ to: "/{-$locale}" });
     },
   });
 
