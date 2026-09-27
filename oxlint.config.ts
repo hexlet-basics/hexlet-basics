@@ -24,6 +24,19 @@ export default defineConfig({
     // A union grown by the contract must fail the switch, not fall into default.
     "typescript/switch-exhaustiveness-check": "error",
     "typescript/no-deprecated": "error",
+    // TanStack Router signals redirects and 404s by throwing plain objects.
+    "typescript/only-throw-error": [
+      "error",
+      {
+        allow: [
+          {
+            from: "package",
+            package: "@tanstack/router-core",
+            name: ["Redirect", "NotFoundError"],
+          },
+        ],
+      },
+    ],
   },
   ignorePatterns: [
     "legacy/**/*",
