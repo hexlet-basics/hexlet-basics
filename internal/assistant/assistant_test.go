@@ -46,4 +46,5 @@ func TestOpenAIStreamDeliversDeltasAndUsage(t *testing.T) {
 	assert.Equal(t, []string{"Hel", "lo"}, deltas)
 	assert.Equal(t, assistant.Usage{InputTokens: 42, OutputTokens: 2}, usage)
 	assert.Equal(t, map[string]any{"include_usage": true}, request["stream_options"])
+	assert.Equal(t, "low", request["reasoning_effort"], "the first token must not wait on a long think")
 }

@@ -26,7 +26,7 @@ goEnv:
   SITE_URL: https://code-basics.com
   # Origin only: the blob read route already carries the /api prefix.
   PUBLIC_URL: https://code-basics.com
-  OPENAI_MODEL: gpt-4o-mini
+  OPENAI_MODEL: gpt-5.5
   MAIL_FROM: support@hexlet.io
   MAIL_POSTBOX_ENDPOINT: https://postbox.cloud.yandex.net
   MAIL_POSTBOX_REGION: ru-central1

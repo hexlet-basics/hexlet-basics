@@ -9,6 +9,7 @@ import (
 
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/option"
+	"github.com/openai/openai-go/v3/shared"
 	"github.com/samber/oops"
 )
 
@@ -53,6 +54,11 @@ func (c *OpenAI) Complete(ctx context.Context, instructions, prompt string) (str
 // the API only sends when asked for it (include_usage) — without it a streamed
 // answer would carry no token counts. An error from onDelta (the learner went
 // away) aborts the stream.
+//
+// Reasoning effort is low for the chat alone: a reasoning model thinks before
+// its first token, and a learner watching an empty bubble feels every second
+// of it. The batch jobs (Complete) keep the model's default, where latency
+// costs nothing.
 func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (Usage, error) {
 	messages := make([]openai.ChatCompletionMessageParamUnion, len(turns))
 	for i, turn := range turns {
@@ -67,9 +73,10 @@ func (c *OpenAI) Stream(ctx context.Context, turns []Turn, onDelta func(string) 
 	}
 
 	stream := c.client.Chat.Completions.NewStreaming(ctx, openai.ChatCompletionNewParams{
-		Model:         c.model,
-		Messages:      messages,
-		StreamOptions: openai.ChatCompletionStreamOptionsParam{IncludeUsage: openai.Bool(true)},
+		Model:           c.model,
+		Messages:        messages,
+		StreamOptions:   openai.ChatCompletionStreamOptionsParam{IncludeUsage: openai.Bool(true)},
+		ReasoningEffort: shared.ReasoningEffortLow,
 	})
 	// Close only releases the response body; the stream's own error is what
 	// reports a failed answer.

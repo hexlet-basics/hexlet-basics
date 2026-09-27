@@ -58,8 +58,10 @@ type Config struct {
 	// OpenAI powers the AI features (lesson-review summaries, the in-lesson
 	// assistant). The env name matches the legacy Rails deployment so the
 	// secret carries over unchanged; an empty token disables the AI workers.
+	// The model must be a reasoning model: the assistant's stream sets a
+	// reasoning effort, which older chat models refuse.
 	OpenAIAccessToken string `env:"OPENAI_ACCESS_TOKEN"`
-	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-4o-mini"`
+	OpenAIModel       string `env:"OPENAI_MODEL" envDefault:"gpt-5.5"`
 	// SentryDSN enables exception delivery. An empty DSN intentionally creates a
 	// disabled client so local development and tests stay off-process.
 	SentryDSN         string `env:"SENTRY_DSN"`
