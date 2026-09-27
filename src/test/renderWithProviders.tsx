@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { I18nextProvider } from "react-i18next";
 import { render } from "vitest-browser-react";
 import { createI18n } from "@/lib/i18n";
+import { queryDefaults } from "@/lib/query-client";
 
 // Mirrors the provider stack from __root.tsx so components render the same way
 // they do in the app: Mantine + Modals + Notifications, a request-scoped i18n
@@ -16,7 +17,10 @@ import { createI18n } from "@/lib/i18n";
 // renderWithRouter instead.
 function makeQueryClient() {
   return new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    defaultOptions: {
+      queries: { ...queryDefaults.queries, retry: false },
+      mutations: { retry: false },
+    },
   });
 }
 

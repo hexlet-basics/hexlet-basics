@@ -12,6 +12,7 @@ import { NotFoundPage, ServerErrorPage } from "@/components/ErrorPage";
 import type { AuthUser } from "@/lib/auth";
 import { createI18n, type Locale } from "@/lib/i18n";
 import { localeFromPathname } from "@/lib/locale-path";
+import { queryDefaults } from "@/lib/query-client";
 import { renderWithProviders } from "./renderWithProviders";
 
 // Mounts a real file route — its loader, its component, its staticData — at a
@@ -56,7 +57,10 @@ export async function renderRoute(
   },
 ) {
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    defaultOptions: {
+      queries: { ...queryDefaults.queries, retry: false },
+      mutations: { retry: false },
+    },
   });
 
   const rootRoute = createRootRouteWithContext<{ queryClient: QueryClient }>()();
