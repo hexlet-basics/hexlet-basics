@@ -66,10 +66,11 @@ class Assistants::RunJobTest < ActiveJob::TestCase
     current_info = language_lesson_version_infos("javascript2-module1_version2-lesson1_version2-ru")
     stale_info = language_lesson_version_infos("javascript1-module1_version1-lesson1_version1-ru")
     system_message = ai_chat.ai_messages.find_by!(role: "system")
+    content = T.must(system_message.content)
 
-    assert { system_message.content.include?(current_info.name) }
-    assert { system_message.content.include?(current_info.instructions) }
-    assert { system_message.content.exclude?(stale_info.name) }
-    assert { system_message.content.exclude?(stale_info.instructions) }
+    assert { content.include?(T.must(current_info.name)) }
+    assert { content.include?(T.must(current_info.instructions)) }
+    assert { content.exclude?(T.must(stale_info.name)) }
+    assert { content.exclude?(T.must(stale_info.instructions)) }
   end
 end
