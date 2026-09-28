@@ -120,3 +120,9 @@ should_add_contact_method-elixir_strings:
   lesson: elixir-strings
   state: finished
   language_member: should_add_contact_method-elixir
+full-javascript-lesson1:
+  user: full
+  language: javascript
+  lesson: javascript-module1-lesson1
+  language_member: full_javascript
+  state: started

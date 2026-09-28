@@ -12,8 +12,11 @@ class Assistants::RunJob < ApplicationJob
   def run(ai_chat_id:, message:, user_code:, output:)
     ai_chat = AiChat.find(ai_chat_id)
     lesson = ai_chat.language_lesson_member.lesson
-    lesson_info = lesson.infos.find_by!(locale: I18n.locale)
     language = lesson.language
+    # lesson.infos обходит все версии урока, включая архивные,
+    # поэтому берём инфу строго текущей версии курса — ту же, что видит пользователь
+    lesson_version = language.current_lesson_versions.find_by!(lesson:)
+    lesson_info = lesson_version.infos.find_by!(locale: I18n.locale)
 
     community_url = I18n.t("common.community_url")
     answer_language = I18n.t(I18n.locale, scope: "common.languages")

@@ -121,7 +121,8 @@ typescript1-module1_version1-lesson3_version1-ru:
 
 javascript1-module1_version1-lesson1_version1-ru:
   <<: *DEFAULTS
-  name: <%= Faker::Lorem.word %>
+  name: Устаревшее название урока
+  instructions: Выведите на экран устаревшую строку
   language: javascript
   language_lesson: javascript-module1-lesson1
   language_version: javascript1
@@ -156,7 +157,8 @@ javascript1-module1_version1-lesson1_version1-en:
 
 javascript2-module1_version2-lesson1_version2-ru:
   <<: *DEFAULTS
-  name: <%= Faker::Lorem.word %>
+  name: Актуальное название урока
+  instructions: Выведите на экран актуальную строку
   language: javascript
   language_lesson: javascript-module1-lesson1
   language_version: javascript2
