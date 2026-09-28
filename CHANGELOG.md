@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4-main2.2](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.4-main2.1...hexlet_basics-v0.1.4-main2.2) (2026-09-28)
+
+
+### Bug Fixes
+
+* **ai:** feed the assistant the current lesson version ([e47a663](https://github.com/hexlet-basics/hexlet-basics/commit/e47a6636cd5868108796771e846befcaf55fef35))
+
 ## [0.1.4-main2.1](https://github.com/hexlet-basics/hexlet-basics/compare/hexlet_basics-v0.1.4-main2.0...hexlet_basics-v0.1.4-main2.1) (2026-08-31)
 
 
