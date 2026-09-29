@@ -14,7 +14,7 @@ WORKDIR /app
 
 FROM base AS build
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-# --ignore-scripts: `prepare` installs git hooks, which a build has no use for.
+# --ignore-scripts: no dependency lifecycle script is needed for a build.
 RUN --mount=type=cache,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
 RUN pnpm build

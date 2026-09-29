@@ -13,9 +13,10 @@ help:
 # Setup
 # ---------------------------------------------------------------------------
 
-## prepare: install the mise-pinned toolchain (go, node, pnpm, golangci-lint, atlas)
+## prepare: install the mise-pinned toolchain (go, node, pnpm, golangci-lint, atlas, hk) and git hooks
 prepare:
 	mise install
+	hk install --mise
 
 ## install: install project dependencies (go modules + frontend/api-spec via root package.json)
 install:

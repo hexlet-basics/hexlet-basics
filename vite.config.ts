@@ -7,7 +7,9 @@ import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [tanstackStart(), viteReact()],
+  // `compiler`: React Compiler via oxc (`oxc-transform-react`), not the Babel
+  // plugin — it memoizes components, so the code carries no manual useMemo.
+  plugins: [tanstackStart(), viteReact({ compiler: true })],
   // The browser reaches the Go API on the site's own origin under `/api`
   // (ADR-0015); in development Vite stands in for the production ingress.
   server: {

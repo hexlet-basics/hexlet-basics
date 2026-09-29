@@ -17,8 +17,7 @@
     "format:check": "pnpm format --check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "preview": "vite preview",
-    "prepare": "lefthook install"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@ai-sdk/react": "^4.0.119",
@@ -84,8 +83,8 @@
     "@vitest/browser-playwright": "^5.0.1",
     "concurrently": "^10.0.5",
     "i18next-cli": "^1.74.1",
-    "lefthook": "^2.1.14",
     "msw": "^2.15.0",
+    "oxc-transform-react": "^0.145.0",
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
     "oxlint-tsgolint": "^7.0.2003",

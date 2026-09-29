@@ -1,0 +1,27 @@
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+
+// Git hooks managed by hk (installed by `make install` via `hk install --mise`).
+// Rails/legacy keeps its own hooks under legacy/.
+hooks {
+  ["commit-msg"] {
+    steps {
+      // commitlint rather than hk's built-in conventional-commit check:
+      // commitlint.config.js is the rule set release-please relies on.
+      ["commitlint"] {
+        check = "pnpm exec commitlint --edit {{commit_msg_file}}"
+      }
+    }
+  }
+  // Whole-project lint, not a changed-files run: `tsc -b` and golangci-lint
+  // need the full program to type-check.
+  ["pre-push"] {
+    steps {
+      ["lint-go"] {
+        check = "make lint-go"
+      }
+      ["lint-web"] {
+        check = "make lint-web"
+      }
+    }
+  }
+}

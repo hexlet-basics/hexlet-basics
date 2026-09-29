@@ -22,3 +22,6 @@ golangci-lint = "2.13.2"
 # there and no Pro feature is used — see docs/adr/0014. Ariga drops release
 # binaries after ~6 months, so this pin must keep moving or `mise install` breaks.
 atlas-community = "1.3.0"
+# hk: git hooks (hk.pkl); pkl evaluates that config.
+hk = "2.4.0"
+pkl = "0.32.1"

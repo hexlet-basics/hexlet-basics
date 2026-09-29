@@ -112,6 +112,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   2024-11 0.13.x snapshot and will not install — its go.mod has replace
   directives), and golangci-lint (a tool directive would drag its whole
   analyzer tree into go.mod to rebuild what mise fetches as a binary).
+  Git hooks are hk (`hk.pkl`, pinned in `mise.toml` with pkl), installed
+  by `make prepare` via `hk install --mise`.
   Use `pnpm`, never `npm`/`npx` directly for JS deps.
 
 ## Codegen Commands
