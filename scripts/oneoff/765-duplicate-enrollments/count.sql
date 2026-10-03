@@ -1,6 +1,6 @@
 -- Count duplicate Enrollments — see issue #765 (parent #755).
 --
--- Vocabulary follows CONTEXT.md: the concept is an **Enrollment**, and the
+-- Vocabulary follows GLOSSARY.md: the concept is an **Enrollment**, and the
 -- per-Lesson record is **Lesson Progress**. Table and column names keep the
 -- legacy words, which is why the SQL below still says `language_members`.
 --

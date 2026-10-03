@@ -59,7 +59,7 @@ expected answer changes.
 
 ## Vocabulary
 
-`CONTEXT.md` names the concept **Enrollment**, and the per-Lesson record
+`GLOSSARY.md` names the concept **Enrollment**, and the per-Lesson record
 **Lesson Progress**; Course Membership and Lesson Membership are on their
 `_Avoid_` lines. These files said Membership until #766 flipped the glossary the
 other way round — the words changed, none of the SQL did, because table and

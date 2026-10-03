@@ -223,7 +223,7 @@ The five canonical triage roles, each label string equal to its name. See
 
 ### Domain docs
 
-Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See
+Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See
 `docs/agents/domain.md`.
 
 ## High-Value Agent Workflow
