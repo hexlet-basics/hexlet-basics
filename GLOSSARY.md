@@ -1,4 +1,7 @@
-# Domain Glossary
+# Hexlet Basics
+
+Free interactive programming courses: a learner works through a Course's Lessons
+in the browser, finishing each one by passing its Lesson Tests.
 
 ## Naming rule
 
