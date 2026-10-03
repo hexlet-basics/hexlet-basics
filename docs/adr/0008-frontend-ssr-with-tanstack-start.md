@@ -28,7 +28,7 @@ screens are generated from the same schema rather than authored per resource.
 - **Build-time prerender / pure CSR** (rejected) — no second process, but not
   real SSR for dynamic/authenticated pages; SEO regression vs legacy.
 
-## Decisions
+**Decisions**
 
 - **Data:** hey-api generates `xxxOptions()`/mutations/query-keys. Start
   `loader` calls `queryClient.query({ ...xxxOptions(), staleTime: "static" })`

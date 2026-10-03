@@ -1,8 +1,14 @@
-# ADR-0011: Declare authentication in the HTTP contract
+---
+status: accepted
+---
 
-**Status:** Accepted
+# Declare authentication in the HTTP contract
 
-## Context
+Protected routes were chosen by hand-written URL-prefix checks outside the
+contract, and administrator rights came from a JWT claim that survives a
+refresh. We declare authentication as security schemes in TypeSpec, so ogen's
+generated security handler guards every protected operation, and administrator
+rights are read from the current database row.
 
 Protected route families were selected by handwritten URL-prefix checks in the
 HTTP router. Authentication therefore lived outside the contract-first
@@ -12,8 +18,6 @@ clients could not see its cookie, XSRF, 401, or 403 requirements.
 The JWT also contained an `admin` value. Because go-pkgz/auth can refresh a
 valid token, accepting that claim for authorization could preserve privileges
 after an administrator had been demoted in the database.
-
-## Decision
 
 TypeSpec is the source of truth for protected operations. It declares:
 
@@ -41,7 +45,7 @@ The multipart attachment upload is a generated operation too: its file part is
 declared as `HttpPart<bytes>`, which omits the OpenAPI encoding block ogen
 cannot generate, so no operation sits outside the generated security layer.
 
-### Optional identity on public operations
+**Optional identity on public operations**
 
 Some public operations answer a visitor and a signed-in learner differently:
 the course read returns a learner's position, and starting or checking a lesson

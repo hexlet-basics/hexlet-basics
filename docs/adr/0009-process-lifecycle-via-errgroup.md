@@ -1,8 +1,13 @@
-# ADR-0009: Supervise the process lifecycle with errgroup
+---
+status: superseded by ADR-0010
+---
 
-**Status:** Superseded by ADR-0010
+# Supervise the process lifecycle with errgroup
 
-## Context
+`cmd/server` supervised River, Watermill and HTTP with hand-written goroutines,
+so a partial startup could exit without cleaning up. We gave `cmd/server` one
+`errgroup`-based coordinator that starts the actors in readiness order and stops
+them in reverse, and kept `samber/do` for construction only.
 
 The server has three long-lived runtime components: River workers, the
 Watermill router, and the HTTP server. They have readiness dependencies and
@@ -12,8 +17,6 @@ does not model blocking actors, readiness, or propagation of runtime failures.
 Hand-written goroutines and an error channel in `main` duplicated part of a
 supervisor. They also left a partial-startup hole: if Watermill failed after
 River started, `os.Exit` bypassed River shutdown and resource cleanup.
-
-## Decision
 
 `cmd/server` owns one package-local lifecycle coordinator based on
 `golang.org/x/sync/errgroup`.
@@ -40,7 +43,7 @@ cancellation would race the required staged shutdown.
 `samber/do` remains the dependency-construction mechanism. It is not a second
 lifecycle owner, and production shutdown does not call `injector.Shutdown`.
 
-## Alternatives
+## Considered Options
 
 `oklog/run` provides execute/interrupt actor pairs, but it would not remove the
 application-specific readiness gates or staged shutdown coordinator. Using it

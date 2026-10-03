@@ -1,8 +1,14 @@
-# ADR-0015: Cutover scope, English locale kept until after it, and the `/api` prefix
+---
+status: accepted
+---
 
-**Status:** Accepted
+# Cutover scope, English locale kept until after it, and the `/api` prefix
 
-## Context
+ADR-0002 commits to a hard cutover at parity, but parity was never pinned down
+against what production actually does. Done means deployable, parity is with
+production rather than the legacy codebase (unused surfaces are not ported),
+English stays until after a two-week rollback window, and everything Go serves
+lives under `/api` on the site's own host.
 
 ADR-0002 commits to a hard cutover at parity, but "parity" was never pinned
 down against what production actually does. A pass over the legacy app turned
@@ -14,8 +20,6 @@ cutover night.
 Separately, the contract's paths start at the root (`/account/profile`) and
 collide with the frontend's page paths, and the browser reaches the API
 through a `VITE_API_URL` that production has never had a value for.
-
-## Decision
 
 **Done means deployable.** The Go stack is ready for cutover when everything
 production users rely on works end to end and the stack deploys to the
@@ -60,7 +64,7 @@ no CORS and no parent-domain cookies: the httpOnly JWT and the XSRF cookie
 address. The GitHub webhook keeps `/webhooks/github` for now through an
 ingress rule.
 
-## Considered options
+## Considered Options
 
 - **An `api.` subdomain** — rejected: it buys nothing a path prefix does not,
   and costs CORS plus cookies scoped to the parent domain.

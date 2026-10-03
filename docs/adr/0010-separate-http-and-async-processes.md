@@ -1,8 +1,15 @@
-# ADR-0010: Separate HTTP and asynchronous process runtimes
+---
+status: accepted
+---
 
-**Status:** Accepted
+# Separate HTTP and asynchronous process runtimes
 
-## Context
+HTTP, River workers and Watermill subscribers ran in one process, so background
+consumers affected HTTP availability and River concurrency grew with HTTP
+replicas. We run two processes from one codebase: `cmd/server` serves HTTP and
+only publishes events and enqueues jobs, `cmd/worker` consumes them. Both
+transports are durable in PostgreSQL, so work waits safely while the worker is
+down.
 
 The Go server previously supervised HTTP, River workers, and Watermill
 subscribers in one process. That made HTTP readiness and availability depend on
@@ -12,8 +19,6 @@ coupled River concurrency to the number of HTTP replicas.
 Both transports are PostgreSQL-backed and durable. Business writes can publish
 Watermill events and enqueue River jobs without either consumer runtime being
 available.
-
-## Decision
 
 Run two independent Go processes from the same codebase:
 

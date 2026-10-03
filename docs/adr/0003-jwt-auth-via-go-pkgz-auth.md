@@ -1,6 +1,10 @@
+---
+status: accepted
+---
+
 # Authentication via go-pkgz/auth JWT tokens
 
-**Status:** Accepted, amended by [ADR-0011](0011-contract-declared-authentication.md)
+Amended by [ADR-0011](0011-contract-declared-authentication.md).
 
 Authentication uses **go-pkgz/auth's `token.Service`** rather than assembling
 JWT signing, parsing, and cookie handling from primitives. The application owns
@@ -16,7 +20,7 @@ XSRF support to copy that value into `X-XSRF-TOKEN`; go-pkgz/auth's
 `GET`, `HEAD`, and `OPTIONS` requests are exempt. `SameSite=Lax` remains
 defense-in-depth rather than the primary CSRF control.
 
-## How each legacy sign-in method maps
+**How each legacy sign-in method maps**
 
 - **Email + password** — the auth module loads the user through ent, verifies
   the existing bcrypt hash, and passes that same user to `token.Service` for JWT

@@ -1,8 +1,15 @@
-# ADR-0013: How untrusted exercise code is executed
+---
+status: accepted
+---
 
-**Status:** Accepted
+# How untrusted exercise code is executed
 
-## Context
+Checking a solution runs a stranger's code on our hardware, and the legacy
+runner was a single `docker run` with unlimited swap and few limits. The Go
+runner drives Docker through `github.com/moby/moby/client`, checks
+synchronously, copies the submission in instead of mounting it, bounds the
+output, tightens isolation past legacy with every limit configurable, and pins
+grading to the Course Version.
 
 Checking a solution means running code a stranger wrote, on our hardware, and
 telling them whether it passed. It is the product's core loop and its largest
@@ -19,8 +26,6 @@ which the file itself flags as a problem under Docker-in-Docker.
 
 The research behind this decision is `docs/research/2026-08-04-untrusted-code-runner-in-go.md`,
 which cites the Docker client's own source for every API claim.
-
-## Decision
 
 **The client is `github.com/moby/moby/client`.** It is already in the build
 graph through testcontainers, and `github.com/docker/docker` is absent

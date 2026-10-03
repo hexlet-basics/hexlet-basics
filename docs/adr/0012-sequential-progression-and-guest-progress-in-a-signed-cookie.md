@@ -1,8 +1,15 @@
-# ADR-0012: Sequential progression, and guest progress in a signed cookie
+---
+status: accepted
+---
 
-**Status:** Accepted
+# Sequential progression, and guest progress in a signed cookie
 
-## Context
+Legacy enrolled a learner on *viewing* a Lesson and kept guest progress in the
+server session; route preloading makes the first unsafe, and the stateless JWT
+stack has no session for the second. We make progression sequential (a Lesson is
+available up to one past the highest finished position), enroll only on a
+deliberate action, and keep a guest's progress as the furthest finished Lesson
+per Course in a signed cookie.
 
 The legacy application let a learner take a Course's Lessons in any order, and
 created the Enrollment as a side effect of *viewing* a Lesson page. A visitor
@@ -27,9 +34,7 @@ Both replacements are expensive to reverse once learners are living under them:
 the first changes what the marketing funnel measures, the second writes rows
 into real accounts from state a client held.
 
-## Decision
-
-### Sequential progression
+**Sequential progression**
 
 A Lesson is **available** when its position within the Course's current Version
 is at most one greater than the highest position the learner has finished.
@@ -67,7 +72,7 @@ Theory stays fully public and indexed. On a Lesson the visitor cannot yet take,
 the page renders in full and the editor stays usable; its actions lead to
 sign-in, and an already-signed-in learner is sent to their dashboard.
 
-### Guest progress in a signed cookie
+**Guest progress in a signed cookie**
 
 A visitor without an account progresses under the same rule. Their entire state
 is one entry per Course: the **slug of the furthest Lesson they finished**.

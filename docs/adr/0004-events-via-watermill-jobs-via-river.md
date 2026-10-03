@@ -17,7 +17,7 @@ boundary:
 work does NOT do it inline — it enqueues a river job. Events =
 notification/routing; jobs = execution.
 
-## Implementation
+**Implementation**
 
 Domain events use Watermill's CQRS components over the PostgreSQL SQL Pub/Sub.
 All event types share the durable `domain_events` topic. Each handler has a
