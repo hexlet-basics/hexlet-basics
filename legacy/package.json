@@ -60,7 +60,7 @@
     "@tiptap/starter-kit": "^3.28.0",
     "ahoy.js": "^0.4.5",
     "analytics": "0.8.19",
-    "axios": "^1.18.1",
+    "axios": "^1.20.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.21",
