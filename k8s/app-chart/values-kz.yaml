@@ -1,0 +1,6 @@
+# Отличия облака KZ (terraform/yandex_kz) поверх values.yaml:
+# свой балансировщик и сертификат Certificate Manager.
+ingress:
+  externalIp: "94.131.90.236"
+  subnets: "ad15dl2o2g1n66t8brh6"
+  tlsSecret: "yc-certmgr-cert-id-bdckon2fk7jnkndmdqe5"

@@ -69,7 +69,7 @@ resource "cloudflare_dns_record" "ru" {
   name    = "ru.${local.data.terraform.domain}"
   content = local.data.terraform.k8s_data.ip
   type    = "A"
-  proxied = true
+  proxied = false
   ttl     = 1
 }
 
@@ -199,7 +199,7 @@ resource "cloudflare_dns_record" "facebook_domain_verification" {
 resource "cloudflare_dns_record" "code_basics_com_cert_validation" {
   zone_id = cloudflare_zone.hexlet_basics_zone.id
   name    = "_acme-challenge.${local.data.terraform.domain}"
-  content = "fpqgjl11q387a86d42kn.cm.yandexcloud.net"
+  content = "bdckon2fk7jnkndmdqe5.cm.yacloudkz.tech"
   type    = "CNAME"
   proxied = false
   ttl     = 1

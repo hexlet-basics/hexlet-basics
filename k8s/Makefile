@@ -18,6 +18,12 @@ production-console:
 helm-install-app:
 	helm secrets install codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml
 
+helm-kz-install-app:
+	helm secrets install codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml -f $(CURRENT_DIR)/app-chart/values-kz.yaml
+
+helm-kz-upgrade-app:
+	helm secrets upgrade codebasics $(CURRENT_DIR)/app-chart -f $(CURRENT_DIR)/secrets.yaml -f $(CURRENT_DIR)/app-chart/values-kz.yaml
+
 helm-upgrade-app:
 	# Версия берётся из Chart.yaml (её коммитит release-please). Перед деплоем
 	# сделай `git pull` main, чтобы взять поднятую версию.

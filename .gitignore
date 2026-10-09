@@ -50,8 +50,8 @@ coverage/
 
 .kube/
 .terraform/
-terraform/*.tfvars
-terraform/*.json
+terraform/**/*.tfvars
+terraform/**/*.json
 
 .envrc
 .vscode
