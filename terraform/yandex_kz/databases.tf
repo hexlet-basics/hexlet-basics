@@ -39,6 +39,14 @@ resource "yandex_mdb_postgresql_cluster" "code_basics_cluster" {
     assign_public_ip = true
   }
 
+  host {
+    name      = "code_basics_pg_host_a_2"
+    zone      = data.yandex_vpc_subnet.db_subnet_a_1.zone
+    subnet_id = data.yandex_vpc_subnet.db_subnet_a_1.id
+
+    assign_public_ip = true
+  }
+
   maintenance_window {
     type = "WEEKLY"
     day  = "MON"
