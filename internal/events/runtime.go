@@ -14,7 +14,12 @@ import (
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
 )
 
-const observerConsumerGroup = "observe_domain_events_v1"
+const (
+	observerConsumerGroup = "observe_domain_events_v1"
+
+	// PoisonTopic receives a message once its handler has failed every retry.
+	PoisonTopic = "domain_events_poison"
+)
 
 // Runtime exposes the Watermill Router as a blocking process actor. The process
 // coordinator owns startup ordering and graceful shutdown.
@@ -35,7 +40,19 @@ func NewRuntime(
 	if err != nil {
 		return nil, fmt.Errorf("create Watermill router: %w", err)
 	}
-	router.AddMiddleware(deliveryMiddleware(watermillLogger)...)
+	poisonPublisher, err := wmsql.NewPublisher(
+		wmsql.BeginnerFromStdSQL(db),
+		wmsql.PublisherConfig{SchemaAdapter: wmsql.DefaultPostgreSQLSchema{}},
+		watermillLogger,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("create poison queue publisher: %w", err)
+	}
+	delivery, err := deliveryMiddleware(watermillLogger, poisonPublisher)
+	if err != nil {
+		return nil, err
+	}
+	router.AddMiddleware(delivery...)
 
 	observerSubscriber, err := newSubscriber(db, observerConsumerGroup, watermillLogger)
 	if err != nil {
@@ -76,14 +93,24 @@ func NewRuntime(
 	return &Runtime{router: router}, nil
 }
 
-// deliveryMiddleware is the per-message delivery policy. Retry is outermost so
-// that a panic, which Recoverer turns into an error, is retried like any other
-// failure; with the order reversed a panic would skip Retry and be Nacked at
-// once. After the retries are exhausted the message is Nacked and the SQL
-// subscriber redelivers it, so a handler that always fails holds back its own
-// consumer group (other groups are unaffected).
-func deliveryMiddleware(logger watermill.LoggerAdapter) []message.HandlerMiddleware {
+// deliveryMiddleware is the per-message delivery policy, outermost first.
+// PoisonQueue catches what is left after the retries and moves it to
+// PoisonTopic with the failure reason in its metadata, so the message is acked
+// and a handler that always fails cannot hold back its consumer group. Retry
+// wraps Recoverer so that a panic, which Recoverer turns into an error, is
+// retried like any other failure; with the order reversed a panic would skip
+// Retry. Messages in the poison table are replayed by hand once the cause is
+// fixed.
+func deliveryMiddleware(
+	logger watermill.LoggerAdapter,
+	poison message.Publisher,
+) ([]message.HandlerMiddleware, error) {
+	poisonQueue, err := middleware.PoisonQueue(poison, PoisonTopic)
+	if err != nil {
+		return nil, fmt.Errorf("create poison queue middleware: %w", err)
+	}
 	return []message.HandlerMiddleware{
+		poisonQueue,
 		middleware.Retry{
 			MaxRetries:          3,
 			InitialInterval:     100 * time.Millisecond,
@@ -93,7 +120,7 @@ func deliveryMiddleware(logger watermill.LoggerAdapter) []message.HandlerMiddlew
 			Logger:              logger,
 		}.Middleware,
 		middleware.Recoverer,
-	}
+	}, nil
 }
 
 func observeMessage(logger *slog.Logger, msg *message.Message) {

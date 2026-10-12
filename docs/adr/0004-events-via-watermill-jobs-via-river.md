@@ -32,10 +32,11 @@ a subscriber list.
 
 Delivery is at least once. Subscribers must therefore be idempotent. Watermill
 recovers panics, retries a handler three times with short exponential backoff,
-then Nacks the message for durable SQL redelivery (Retry wraps Recoverer, so a
-panic is retried like any error). There is no poison queue: a handler that
-always fails is redelivered indefinitely and holds back only its own consumer
-group, so such a handler must be kept trivial (the amoCRM one only enqueues).
+then moves the message to the `domain_events_poison` topic (a second table,
+created by Atlas) with the failure reason in its metadata and acks it, so a
+handler that always fails cannot hold back its consumer group. Retry wraps
+Recoverer, so a panic is retried like any error. Poisoned messages are replayed
+by hand once the cause is fixed.
 
 Schema version 1 defines all legacy event names and data shapes:
 `user_signed_up`, `user_signed_in`, `book_requested`, `course_started`,
