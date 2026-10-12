@@ -415,6 +415,15 @@ func currentLessons(ctx context.Context, db *ent.Client, crs *ent.Course) ([]cur
 	return byCourse[crs.ID], nil
 }
 
+// lessonSlug is the slug of the Lesson a version row belongs to; a row whose
+// lesson is missing reads as the empty slug, like an unnamed lesson.
+func lessonSlug(v *ent.CourseLessonVersion) string {
+	if v.Edges.Lesson == nil {
+		return ""
+	}
+	return lo.FromPtr(v.Edges.Lesson.Slug)
+}
+
 // currentLessonsByCourse is currentLessons for many Courses in two queries, not
 // two per Course. A Course with no current Version has no entry.
 func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.Course) (map[int][]currentLesson, error) {
@@ -431,29 +440,23 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 		return nil, nil
 	}
 
+	// The version rows carry the Position; the stable Lesson identity carries
+	// the slug, reached through the version's lesson edge. Only the columns the
+	// ordering needs are read: the rows also hold each lesson's test and starter
+	// code, which a position lookup has no use for.
 	versions, err := db.CourseLessonVersion.Query().
 		Where(courselessonversion.CourseVersionIDIn(versionIDs...)).
+		Select(
+			courselessonversion.FieldCourseVersionID,
+			courselessonversion.FieldLessonID,
+			courselessonversion.FieldNaturalOrder,
+		).
+		WithLesson(func(q *ent.CourseLessonQuery) {
+			q.Select(courselesson.FieldSlug)
+		}).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load current lesson versions: %w", err)
-	}
-
-	// The version rows carry the Position; the stable Lesson identity carries
-	// the slug. CourseLessonVersion declares no edge to it (the schema is the
-	// loader's write shape), so they are joined here in one extra query.
-	ids := make([]int, 0, len(versions))
-	for _, v := range versions {
-		if v.NaturalOrder != nil {
-			ids = append(ids, v.LessonID)
-		}
-	}
-	rows, err := db.CourseLesson.Query().Where(courselesson.IDIn(ids...)).All(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("load current lessons: %w", err)
-	}
-	slugs := make(map[int]string, len(rows))
-	for _, row := range rows {
-		slugs[row.ID] = lo.FromPtr(row.Slug)
 	}
 
 	byCourse := make(map[int][]currentLesson, len(courses))
@@ -464,7 +467,7 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 		courseID := courseOf[v.CourseVersionID]
 		byCourse[courseID] = append(byCourse[courseID], currentLesson{
 			lessonID: v.LessonID,
-			slug:     slugs[v.LessonID],
+			slug:     lessonSlug(v),
 			position: *v.NaturalOrder,
 		})
 	}
