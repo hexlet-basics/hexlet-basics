@@ -1,0 +1,21 @@
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - forbidigo
+  settings:
+    forbidigo:
+      forbid:
+        # Persistence goes through ent builders; raw SQL in production code
+        # splits the package between two idioms. Tests and testsupport (savepoints,
+        # cleanup of non-ent tables) are exempt below.
+        - pattern: '^.*\.(ExecContext|QueryContext|QueryRowContext)$'
+          msg: use ent query builders instead of raw SQL
+      analyze-types: false
+  exclusions:
+    paths:
+      - internal/testsupport
+    rules:
+      - path: _test\.go
+        linters: [forbidigo]
