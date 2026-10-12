@@ -8,10 +8,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/landingpages"
 )
 
 // The public blog (legacy `Web::BlogPostsController`, `Web::BlogPosts::
@@ -110,24 +108,9 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 
 	ids := lo.Map(courseIDs, func(id int32, _ int) int { return int(id) })
 
-	pages, err := s.db.LandingPage.Query().
-		Where(
-			landingpage.CourseIDIn(ids...),
-			landingpage.MainEQ(true),
-			landingpages.Web(s.i18n.Locale(ctx)),
-		).
-		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
-		Order(landingpage.ByID()).
-		All(ctx)
+	byCourse, err := s.catalog.MainPages(ctx, s.i18n.Locale(ctx), ids...)
 	if err != nil {
 		return nil, err
-	}
-
-	byCourse := make(map[int]*ent.LandingPage, len(pages))
-	for _, p := range pages {
-		if _, seen := byCourse[p.CourseID]; !seen {
-			byCourse[p.CourseID] = p
-		}
 	}
 
 	ordered := make([]*ent.LandingPage, 0, len(byCourse))

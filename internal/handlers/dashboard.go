@@ -4,12 +4,12 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/samber/lo"
+
 	"hexletbasics/ent"
 	"hexletbasics/ent/enrollment"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/progress"
 )
 
@@ -48,12 +48,18 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 		LandingPagesByCourseId: api.MyDashboardLandingPagesByCourseId{},
 	}
 
+	// The card is the course's main landing page in the request locale, legacy
+	// `LandingPage.web.where(main: true)`: the dashboard scope, which unlike the
+	// public lists does not require `listed`. One query serves every enrollment.
+	cards, err := s.catalog.MainPages(ctx, s.i18n.Locale(ctx),
+		lo.Map(enrollments, func(e *ent.Enrollment, _ int) int { return e.CourseID })...)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, enrolled := range enrollments {
-		card, err := s.catalogueCard(ctx, enrolled.CourseID)
-		if err != nil {
-			return nil, err
-		}
-		if card == nil {
+		page, ok := cards[enrolled.CourseID]
+		if !ok {
 			continue
 		}
 
@@ -70,31 +76,7 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 		}
 		// Keyed by course id as a string: JSON object keys are strings, and the
 		// client pairs each card with the enrollment's courseId.
-		dashboard.LandingPagesByCourseId[strconv.Itoa(enrolled.CourseID)] = *card
+		dashboard.LandingPagesByCourseId[strconv.Itoa(enrolled.CourseID)] = s.conv.ToCatalogItem(page)
 	}
 	return dashboard, nil
-}
-
-// catalogueCard is the course's main landing page in the request locale, or nil
-// when it has none — legacy `LandingPage.web.where(main: true)`, the dashboard
-// scope. Unlike the public lists it does not require `listed`.
-func (s *Server) catalogueCard(ctx context.Context, courseID int) (*api.CourseCatalogItem, error) {
-	page, err := s.db.LandingPage.Query().
-		Where(
-			landingpage.CourseID(courseID),
-			landingpage.MainEQ(true),
-			landingpages.Web(s.i18n.Locale(ctx)),
-		).
-		Order(ent.Asc(landingpage.FieldID)).
-		WithCourse().
-		First(ctx)
-	switch {
-	case ent.IsNotFound(err):
-		return nil, nil
-	case err != nil:
-		return nil, err
-	}
-
-	item := s.conv.ToCatalogItem(page)
-	return &item, nil
 }

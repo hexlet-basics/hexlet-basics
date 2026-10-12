@@ -75,3 +75,31 @@ func TestCatalogWithinNeverWidensTheScope(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, one, 1)
 }
+
+// MainPages answers every course in one call and leaves out a course with no
+// public main page; a draft main page is no page.
+func TestMainPagesKeyedByCourseWithoutDraftsOrForeignLocales(t *testing.T) {
+	catalog := newCatalog(t)
+
+	listed, err := catalog.Pages(t.Context(), "ru")
+	require.NoError(t, err)
+	ids := make([]int, 0, len(listed))
+	for _, page := range listed {
+		ids = append(ids, page.CourseID)
+	}
+
+	mains, err := catalog.MainPages(t.Context(), "ru", ids...)
+	require.NoError(t, err)
+	require.NotEmpty(t, mains)
+	for courseID, page := range mains {
+		assert.Equal(t, courseID, page.CourseID)
+		assert.True(t, *page.Main, *page.Slug)
+		assert.Equal(t, "ru", *page.Locale)
+		assert.Equal(t, StatePublished, *page.State)
+		require.NotNil(t, page.Edges.Course)
+	}
+
+	none, err := catalog.MainPages(t.Context(), "ru")
+	require.NoError(t, err)
+	assert.Empty(t, none)
+}

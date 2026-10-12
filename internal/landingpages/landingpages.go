@@ -80,3 +80,38 @@ func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.
 		).
 		All(ctx)
 }
+
+// MainPages returns, for each of courseIDs that has one, its main landing page
+// in locale under the Web scope: legacy `Language#main_landing_page` narrowed to
+// what a visitor may open. A course with no such page is absent from the map.
+// One query serves every course, whatever their number.
+//
+// Legacy's `has_one` picked arbitrarily among several main pages in one locale;
+// the oldest is kept here, so the answer does not depend on row order. Each page
+// arrives with its Course and current Version, as Pages does.
+func (c *Catalog) MainPages(ctx context.Context, locale string, courseIDs ...int) (map[int]*ent.LandingPage, error) {
+	if len(courseIDs) == 0 {
+		return map[int]*ent.LandingPage{}, nil
+	}
+
+	pages, err := c.db.LandingPage.Query().
+		Where(
+			Web(locale),
+			landingpage.MainEQ(true),
+			landingpage.CourseIDIn(courseIDs...),
+		).
+		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
+		Order(landingpage.ByID()).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	byCourse := make(map[int]*ent.LandingPage, len(pages))
+	for _, page := range pages {
+		if _, seen := byCourse[page.CourseID]; !seen {
+			byCourse[page.CourseID] = page
+		}
+	}
+	return byCourse, nil
+}
