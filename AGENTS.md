@@ -137,10 +137,16 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 ## Lint & Typecheck
 
-- `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint`) + frontend
-  (`tsc -b`) + ADR number uniqueness. The pre-push hook runs the same checks;
-  pushes need them clean. The pre-commit hook scans staged changes with gitleaks.
-- `mise run lint:fix` — `gofmt -w`, `golangci-lint --fix`.
+- `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint` with
+  contextcheck/noctx/errorlint/bodyclose among others) + frontend (`oxlint`,
+  `oxfmt --check`, `tsc -b`) + ADR number uniqueness + `lint:deps` (`go mod tidy
+  -diff`, `govulncheck`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
+  + `lint:shell` (shellcheck) + `lint:unused` (knip). CI runs the same task. The
+  pre-push hook runs the Go, frontend and ADR checks; the pre-commit hook runs
+  gitleaks, oxlint, oxfmt, golangci-lint, typos, shellcheck, zizmor and
+  jactionlint on the staged files. Pushes need them clean.
+- `mise run lint:fix` — `gofmt -w`, `golangci-lint --fix`, `oxlint --fix`,
+  `oxfmt` and `typos --write-changes`.
 - Go vet/build only: `go vet ./...`, `go build ./...`.
 
 ## Test
