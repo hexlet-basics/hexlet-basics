@@ -645,7 +645,7 @@ export default {
       confirm:
         "You want to reset the exercise progress. The current code version will not be saved. We hope you’ve already copied it. Continue resetting?",
       current_state: "Current state",
-      discuss: "AI Assistent",
+      discuss: "AI Assistant",
       editor: "Editor",
       empty: "Empty",
       errors: {
@@ -972,7 +972,7 @@ export default {
       continue: "Continue",
       crud: {
         add: "Add",
-        adding: "Addmin",
+        adding: "Admin",
         editing: "Editing",
         list: "List",
         remove: "Удалить",
@@ -1137,7 +1137,7 @@ export default {
             run: "Run",
           },
           definitions: "Definitions",
-          discuss: "AI Assistent",
+          discuss: "AI Assistant",
           editor: "Editor",
           editor_aria_label: "Editor de código",
           finish: "Finalizar",
@@ -1332,8 +1332,8 @@ export default {
           categories: "Categories",
           community: "Community",
           courses: "Courses",
-          courses_with_employement: "Курсы с трудоустройством",
-          courses_with_employement_description: "Обучим программированию, аналитике и тестированию",
+          courses_with_employment: "Курсы с трудоустройством",
+          courses_with_employment_description: "Обучим программированию, аналитике и тестированию",
           enable_dark_theme: "Enable dark theme",
           enable_light_theme: "Enable light theme",
           for_authors: "For authors",
@@ -1937,7 +1937,7 @@ export default {
             chat: {
               community: "Живые люди",
               disabled_html:
-                'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" traget="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
+                'Чат временно отключен, так как вы достигли суточного лимита. А наше <a href="https://t.me/hexletcommunity" target="_blank">телеграм-сообещство</a> работает круглосуточно, подключайтесь :)',
               guest:
                 "Hi! I'm Tota, and my job is to help you learn. To activate me, please sign up or log in if you already have an account",
               hi: "Hi! My name is Tota, and I'm here to help you with any questions about theory or practice. Just ask — I'm always here for you!\n\nP.S. You can send up to 7 messages per day, so try to ask only the most important questions\n",
@@ -1976,7 +1976,7 @@ export default {
               header: "Help",
               run: "Run",
             },
-            discuss: "AI Assistent",
+            discuss: "AI Assistant",
             editor: "Editor",
             finish: "Завершить",
             if_stuck_html:

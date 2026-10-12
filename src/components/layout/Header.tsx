@@ -317,8 +317,8 @@ function SolutionsMenu() {
   const items = [
     {
       icon: IconTarget,
-      title: t(($) => $.layouts.shared.nav.courses_with_employement),
-      description: t(($) => $.layouts.shared.nav.courses_with_employement_description),
+      title: t(($) => $.layouts.shared.nav.courses_with_employment),
+      description: t(($) => $.layouts.shared.nav.courses_with_employment_description),
       href: t(($) => $.links.hexlet_courses_for_beginners),
     },
     {
