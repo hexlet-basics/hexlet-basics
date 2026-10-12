@@ -36,11 +36,11 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 - You hand-write **TypeSpec** in `api-spec/*.tsp` (`main.tsp`, `public.tsp`,
   `auth.tsp`, `admin.tsp`, `lesson-player.tsp`, `models.tsp`, `common.tsp`).
-- `make gen` runs the whole pipeline: `gen-spec` (TypeSpec → OpenAPI) →
-  `gen-api` (`go generate ./internal/apigen`, ogen → `internal/api/`) →
-  `gen-client` (openapi-ts → `src/client/`).
+- `mise run gen` runs the whole pipeline: `gen:spec` (TypeSpec → OpenAPI) →
+  `gen:api` (`go generate ./internal/apigen`, ogen → `internal/api/`) →
+  `gen:client` (openapi-ts → `src/client/`).
 - **Never hand-edit `internal/api/oas_*_gen.go`, `api-spec/dist/`, or the
-  generated TS client.** Change the `.tsp`, run `make gen`, commit the outputs.
+  generated TS client.** Change the `.tsp`, run `mise run gen`, commit the outputs.
 - Adding a contract operation adds a method to the generated `api.Handler`
   interface. Until you implement it, the embedded `api.UnimplementedHandler`
   keeps it compiling as "not implemented" — so the build never breaks on a
@@ -52,7 +52,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   operation with an `ht.MultipartFile` field.
 - **`@hey-api/openapi-ts` must stay on the `next` channel** while `typescript`
   is 7.x: the stable releases call the TypeScript compiler API (`ts.SyntaxKind`),
-  which the native TS 7 package no longer exposes, so `gen-client` dies with
+  which the native TS 7 package no longer exposes, so `gen:client` dies with
   `Cannot read properties of undefined`. The next-channel builds dropped that
   peer dependency. A "latest" bump therefore breaks codegen — the pin lives in
   both `package.json` and the `minimumReleaseAgeExclude` list in
@@ -78,7 +78,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   only constructs dependencies. Add a new service to the appropriate process
   graph instead of threading it through constructors.
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
-  client with `make gen-ent` (`go generate ./ent`) after editing a schema.
+  client with `mise run gen:ent` (`go generate ./ent`) after editing a schema.
 - Other `internal/` packages: `config/` (env config via `caarlos0/env`),
   `logging/` (`slog` + `tint`), `store/` (ent client construction), `slugs/`,
   `ids/`, `apiconv/`, `testsupport/`.
@@ -88,22 +88,28 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - **atlas** owns the schema going forward (versioned SQL in `migrations/`,
   config in `atlas.hcl`). The baseline is the retired Rails schema. This is *not*
   ent auto-migrate and *not* Rails migrations.
-- New schema change: edit `ent/schema`, then `make migrate-new NAME=...` to
+- New schema change: edit `ent/schema`, then `mise run db:migrate-new <name>` to
   scaffold a migration to hand-author, then `atlas migrate hash`.
-- Local PostgreSQL 18 runs in Docker on port **54330** (via
-  `make services-start`) to avoid clashing with a `5432` DB. It is only for
-  development; tests own disposable PostgreSQL 18 containers.
+- Local PostgreSQL 18 runs as the `db` mise daemon (`mise.toml`, pitchfork) on
+  port **54330** (via `mise run db:up`) to avoid clashing with a `5432` DB. It
+  is a standing service: leave it running. It is only for development; tests own
+  disposable PostgreSQL 18 containers.
 
 ## Setup & Dev Commands (run from repo root)
 
-- `make setup` — `go mod download` + `pnpm install` (root package.json is shared
-  by the frontend and the api-spec tooling).
-- `make services-start` / `make services-stop` — local Postgres in Docker;
-  startup idempotently creates the development database.
-- `make dev` — run API, async worker (both air live-reload), and Vite together.
-- `make dev-api` — Go API only. `make dev-worker` — async worker only.
-  `make dev-web` — Vite only.
-- `make dev-spec` — watch TypeSpec and re-emit OpenAPI on change.
+- Tasks live in `mise/tasks.toml` (`mise tasks` lists them) and the dev stack is
+  the `[daemons]` table in `mise.toml`; there is no Makefile at the root.
+- `mise run setup` — toolchain + git hooks, seed `.env`, `go mod download` +
+  `pnpm install` (root package.json is shared by the frontend and the api-spec
+  tooling).
+- `mise run db:up` — start the Postgres daemon; idempotently creates the
+  development database.
+- `mise run dev` — start the API, async worker (both air live-reload), and Vite
+  as daemons; `mise run dev:down` stops them (never the database).
+  `mise daemons logs <api|worker|web|db>` shows output. If a daemon port is
+  taken by another project, override it in the gitignored `mise.local.toml`.
+- `mise run dev:api` / `dev:worker` / `dev:web` — one process in the foreground.
+- `mise run dev:spec` — watch TypeSpec and re-emit OpenAPI on change.
 - Go tooling that is cheap to build is pinned by `tool` directives in `go.mod`
   and invoked as `go tool <name>` (air, ent, ogen, goverter, goi18n) — add new
   ones with `go get -tool`, never by hand. `mise.toml` pins the rest: the go
@@ -113,36 +119,37 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   directives), and golangci-lint (a tool directive would drag its whole
   analyzer tree into go.mod to rebuild what mise fetches as a binary).
   Git hooks are hk (`hk.pkl`, pinned in `mise.toml` with pkl), installed
-  by `make prepare` via `hk install --mise`.
+  by `mise run setup` (and mise's postinstall hook) via `hk install --mise`.
   Use `pnpm`, never `npm`/`npx` directly for JS deps.
 
 ## Codegen Commands
 
-- `make gen` — full contract pipeline (spec → ogen server → hey-api client).
-- `make gen-spec` / `make gen-api` / `make gen-client` — individual stages.
-- `make gen-ent` — regenerate the ent ORM from `ent/schema`.
-- `make gen-all` — `gen-ent` + `gen`. `make tidy` — `go mod tidy`.
+- `mise run gen` — full contract pipeline (spec → ogen server → hey-api client).
+- `mise run gen:spec` / `mise run gen:api` / `mise run gen:client` — individual stages.
+- `mise run gen:ent` — regenerate the ent ORM from `ent/schema`.
+- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm`. `mise run tidy` — `go mod tidy`.
 - After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
   and commit the regenerated outputs alongside the source change.
 
 ## Lint & Typecheck
 
-- `make lint` — Go (`gofmt` check, `go vet`, `golangci-lint`) + frontend
-  (`tsc -b`). The pre-push hook runs this; pushes need it clean.
-- `make lint-fix` — `gofmt -w`, `golangci-lint --fix`.
+- `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint`) + frontend
+  (`tsc -b`) + ADR number uniqueness. The pre-push hook runs the same checks;
+  pushes need them clean. The pre-commit hook scans staged changes with gitleaks.
+- `mise run lint:fix` — `gofmt -w`, `golangci-lint --fix`.
 - Go vet/build only: `go vet ./...`, `go build ./...`.
 
 ## Test
 
-- `make test` — the Go suite (`go test ./...`).
+- `mise run test` — the Go suite (`go test ./...`).
 - DB-dependent packages use testcontainers-go to start isolated PostgreSQL 18
   containers, apply the Atlas migrations, and load the committed `fixtures/`
   snapshot. Docker is required; no separate test DB preparation is needed.
-- `make dev-prepare` prepares the development DB without replacing its data.
+- `mise run db:prepare` prepares the development DB without replacing its data.
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **Fixtures** in `fixtures/` are the starting data (converted from the legacy
-  Rails set via `make fixtures-import`, which borrows the Rails runtime). Their
+  Rails set via `mise run fixtures:import`, which borrows the Rails runtime). Their
   ids are legacy crc32 values, so **assert on business facts (slug, order),
   never on raw ids** — see `courses_test.go` for the pattern.
 - Tests use `stretchr/testify` (`require`/`assert`); each handler test gets an
@@ -151,8 +158,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 ## Build
 
-- `make build` — `build-api` (`bin/server`) + `build-worker` (`bin/worker`) +
-  `build-web` (`pnpm build`). `make clean` removes `bin/` and `dist/`.
+- `mise run build` — `build:api` (`bin/server`) + `build:worker` (`bin/worker`) +
+  `build:web` (`pnpm build`). `mise run clean` removes `bin/` and `dist/`.
 
 ## Frontend (`src/`)
 
@@ -170,12 +177,12 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 Change the source, run the generator, commit the output. Never hand-edit or
 `git restore` a generated file — regenerate it from current source.
 
-- `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `make gen-spec`.
-- `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `make gen-api`.
+- `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `mise run gen:spec`.
+- `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `mise run gen:api`.
 - `internal/amocrm/generated/**` (ogen client) ← the pinned amoCRM OpenAPI via
-  `make gen-amocrm` (`go:generate` in `internal/amocrm/gen.go`).
-- `src/client/**` (hey-api TS client + Query hooks) ← OpenAPI via `make gen-client`.
-- `ent/**` (except `ent/schema/`) ← `ent/schema` via `make gen-ent`.
+  `mise run gen:amocrm` (`go:generate` in `internal/amocrm/gen.go`).
+- `src/client/**` (hey-api TS client + Query hooks) ← OpenAPI via `mise run gen:client`.
+- `ent/**` (except `ent/schema/`) ← `ent/schema` via `mise run gen:ent`.
 - `internal/apiconv/apiconv.gen.go` — generated converter.
 - `src/routeTree.gen.ts` — TanStack Router route tree.
 - `CHANGELOG.md` and `version` in `package.json` — release-please; never bump
@@ -230,15 +237,15 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See
 
 - Confirm you're working at the root (Go) vs `legacy/` (Rails) and follow the
   right guide.
-- To change the API: edit TypeSpec → `make gen` → implement/adjust the Go
+- To change the API: edit TypeSpec → `mise run gen` → implement/adjust the Go
   handler and, if needed, the frontend client usage → run the narrowest Go test.
 - After Go changes: `go build ./...`, then `go test ./...` (or a single package);
   DB-dependent packages prepare their own testcontainers automatically.
 - After frontend changes: run `tsc -b` (`pnpm check`).
-- Before finishing substantial work: `make lint` and the most relevant tests.
+- Before finishing substantial work: `mise run lint` and the most relevant tests.
 - Prefer minimal diffs; don't start broad refactors or "normalize" unrelated
   files. When unsure whether a file is generated, find its generator before
-  editing (`grep` the Makefile / `go:generate` directives).
+  editing (`grep` `mise/tasks.toml` / `go:generate` directives).
 
 ## Ops
 

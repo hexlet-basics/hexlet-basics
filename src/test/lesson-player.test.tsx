@@ -14,6 +14,7 @@ import type {
 } from "@/client/types.gen";
 import type { AuthUser } from "@/lib/auth";
 import { getCourseQueryKey } from "@/client/@tanstack/react-query.gen";
+import { client } from "@/client/client.gen";
 import { Route as lessonRoute } from "@/routes/{-$locale}/languages/$slug/lessons/$lessonSlug";
 import { Route as successRoute } from "@/routes/{-$locale}/languages/$slug/success";
 import { worker } from "@/test/msw";
@@ -335,10 +336,14 @@ test("opens the editor with the lesson's starter code, after the theory", async 
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
   await expect.poll(editorText, editorLoad).toContain("let greeting = '';");
 
-  // Monaco is this application's own copy, not a CDN's.
+  // Monaco is this application's own copy, not a CDN's. The API (the client's
+  // baseURL, answered by MSW) is the one expected cross-origin target.
+  const apiOrigin = client.getConfig().baseURL ?? "";
   const remote = performance
     .getEntriesByType("resource")
-    .filter((entry) => !entry.name.startsWith(location.origin));
+    .filter(
+      (entry) => !entry.name.startsWith(location.origin) && !entry.name.startsWith(apiOrigin),
+    );
   expect(remote).toEqual([]);
 });
 

@@ -1,0 +1,228 @@
+# Project tasks, included from mise.toml (`[task_config] includes`).
+#   mise tasks          list them
+#   mise run <task>     run one
+# Replaces the old Makefile; the dev stack itself is the [daemons] table in mise.toml.
+# The Rails app in legacy/ keeps its own Makefile.
+#
+# Ordering: `depends` runs in parallel in mise, unlike Make prerequisites. Where
+# order matters (the codegen pipeline), steps are a `run` list, which is sequential.
+
+# --- setup -----------------------------------------------------------------------
+
+[install]
+description = "Install project dependencies (go modules + frontend/api-spec via the root package.json)"
+run = ["go mod download", "pnpm install"]
+
+[setup]
+description = "Full local bootstrap: toolchain + git hooks, seed .env, install deps"
+run = ["mise install", "hk install --mise", "cp -n .env.example .env || true", { task = "install" }]
+
+# --- dev stack (daemons in mise.toml) ---------------------------------------------
+
+["db:up"]
+description = "Start the local Postgres daemon (:54330) and idempotently create the development database"
+quiet = true
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+host=${DB_HOST:-127.0.0.1}
+port=${DB_PORT:-54330}
+name=${DEV_DB_NAME:-code_basics_development}
+# A server already answering on the port is used as is (the daemon, an external one).
+if ! nc -z "$host" "$port" 2>/dev/null; then
+  mise daemons start db >/dev/null 2>&1 || true
+  for _ in $(seq 1 120); do nc -z "$host" "$port" 2>/dev/null && break; sleep 0.5; done
+  nc -z "$host" "$port" 2>/dev/null || { echo "db:up: Postgres did not come up on $host:$port; see: mise daemons logs db" >&2; exit 1; }
+fi
+psql=psql
+command -v psql >/dev/null || psql="mise x postgres@18 -- psql"
+admin=(-X -q -t -A -h "$host" -p "$port" -U postgres -d postgres)
+if ! $psql "${admin[@]}" -c "select 1 from pg_database where datname = '$name'" | grep -q 1; then
+  $psql "${admin[@]}" -c "create database \"$name\""
+fi
+'''
+
+[dev]
+description = "Run API + async worker (air live-reload) + Vite as daemons; stop with `mise run dev:down`"
+depends = ["db:up"]
+run = "mise daemons start api worker web"
+
+["dev:down"]
+description = "Stop the API, worker and Vite daemons (never the database: it is a standing service)"
+run = "mise daemons stop api worker web"
+
+["dev:api"]
+description = "Run only the Go API server in the foreground with live-reload (:3001)"
+depends = ["db:up"]
+run = "go tool air"
+
+["dev:worker"]
+description = "Run only the async Go worker in the foreground with live-reload"
+depends = ["db:up"]
+run = "go tool air -c .air.worker.toml"
+
+["dev:web"]
+description = "Run only the Vite frontend in the foreground"
+run = "pnpm exec vite dev"
+
+["dev:spec"]
+description = "Watch TypeSpec and re-emit OpenAPI on change"
+run = "pnpm spec:watch"
+
+# --- database ----------------------------------------------------------------------
+
+["db:migrate-new"]
+description = "Scaffold a new empty migration to hand-author, then re-hash: `mise run db:migrate-new add_widgets`"
+usage = 'arg "<name>" help="migration name, e.g. add_widgets"'
+run = [
+  'atlas migrate new "${usage_name}" --dir "file://migrations"',
+  'atlas migrate hash --dir "file://migrations"',
+]
+
+["db:migrate"]
+description = "Apply atlas migrations to the development DB"
+depends = ["db:up"]
+run = 'atlas migrate apply --env local --url "${DEV_DB_URL:-postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable}&search_path=public"'
+
+["db:prepare"]
+description = "Create and migrate the development DB without replacing its data"
+run = [{ task = "db:up" }, { task = "db:migrate" }]
+
+# --- code generation (contract is the source of truth, ADR-0001) -------------------
+
+["gen:spec"]
+description = "Compile TypeSpec to api-spec/dist/openapi.yaml"
+run = "pnpm spec"
+
+["gen:api"]
+description = "Generate the ogen Go server from OpenAPI"
+run = "go generate ./internal/apigen"
+
+["gen:client"]
+description = "Generate the hey-api TS client + Query hooks from OpenAPI"
+run = "pnpm generate"
+
+["gen:locales"]
+description = "Extract the English backend catalog from the message registry"
+run = "go generate ./internal/localization"
+
+["gen:amocrm"]
+description = "Generate the typed amoCRM client from the pinned upstream contract"
+run = "go generate ./internal/amocrm"
+
+["gen:ent"]
+description = "Regenerate the ent ORM from ent/schema"
+run = "go generate ./ent"
+
+[gen]
+description = "Full contract pipeline: TypeSpec -> OpenAPI -> ogen server + hey-api client"
+run = [{ task = "gen:spec" }, { task = "gen:api" }, { task = "gen:client" }]
+
+["gen:all"]
+description = "Regenerate everything: ent + contracts + locales + external clients"
+run = [{ task = "gen:ent" }, { task = "gen" }, { task = "gen:locales" }, { task = "gen:amocrm" }]
+
+[tidy]
+description = "Prune/sync go.mod after generation or dep changes"
+run = "go mod tidy"
+
+["fixtures:import"]
+description = "Convert legacy Rails fixtures into Go testfixtures YAML in fixtures/ (non-destructive; FORCE=1 overwrites, ONLY=t1,t2 scopes). Borrows the Rails runtime; adds no files to legacy/"
+dir = "legacy"
+env = { RAILS_ENV = "test" }
+run = "bin/rails runner ../scripts/export_fixtures.rb"
+
+# --- lint & typecheck ---------------------------------------------------------------
+
+[lint]
+description = "Lint Go + frontend + ADR numbering"
+depends = ["lint:go", "lint:web", "lint:adr"]
+
+["lint:adr"]
+description = "ADR numbers are unique (a merge of main can bring a second ADR with the same number)"
+run = '''
+nums=$(ls docs/adr | sed -n 's/^\([0-9][0-9]*\)-.*/\1/p')
+dup=$(echo "$nums" | sort | uniq -d)
+if [ -n "$dup" ]; then
+  next=$(printf '%04d' $(( $(echo "$nums" | sort -n | tail -1 | sed 's/^0*//') + 1 )))
+  echo "error: duplicate ADR numbers in docs/adr: $(echo $dup); renumber the newer file (next free: $next)"; exit 1
+fi
+'''
+
+["lint:locales"]
+description = "Verify generated source messages and complete translations"
+run = "sh scripts/lint_locales.sh"
+
+["lint:go"]
+description = "Locale catalogs, gofmt, go vet, golangci-lint (skips generated files)"
+depends = ["lint:locales"]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+unformatted=$(gofmt -l cmd internal ent/schema)
+if [ -n "$unformatted" ]; then echo "gofmt needed:"; echo "$unformatted"; exit 1; fi
+go vet ./...
+golangci-lint run
+'''
+
+["lint:web"]
+description = "oxlint, oxfmt check, and the TypeScript project build"
+run = ["pnpm lint", "pnpm format:check", "pnpm check"]
+
+["lint:fix"]
+description = "Auto-fix Go and frontend formatting and lint findings"
+run = [
+  "gofmt -w cmd internal ent/schema",
+  "golangci-lint run --fix || true",
+  "pnpm lint:fix",
+  "pnpm format",
+]
+
+# --- test --------------------------------------------------------------------------
+
+[test]
+description = "Run the Go suite; DB packages start disposable Postgres 18 containers (Docker required). Pass packages/flags after `--`"
+usage = 'arg "[go_test_args]" var=#true default="./..." help="packages and flags for go test"'
+run = 'eval "set -- $usage_go_test_args"; go test "$@"'
+
+["test:web"]
+description = "Run the frontend suite (Vitest Browser Mode via Playwright; needs `pnpm exec playwright install chromium` once)"
+run = "pnpm test"
+
+# --- build -------------------------------------------------------------------------
+
+["build:api"]
+description = "Compile the Go server to bin/server"
+run = "go build -o bin/server ./cmd/server"
+
+["build:worker"]
+description = "Compile the async runtime to bin/worker"
+run = "go build -o bin/worker ./cmd/worker"
+
+["build:web"]
+description = "Build the production frontend bundle"
+run = "pnpm build"
+
+[build]
+description = "Build the API, async worker, and frontend bundle"
+depends = ["build:api", "build:worker", "build:web"]
+
+[clean]
+description = "Remove build artifacts"
+run = "rm -rf bin dist"
+
+# --- maintenance -------------------------------------------------------------------
+
+["deps:update"]
+description = "Bump Go + frontend (incl. api-spec) dependencies to latest; then run gen:all, lint and test"
+run = [
+  "go get -u ./...",
+  "go mod tidy",
+  "pnpm dlx npm-check-updates -u",
+  "pnpm install",
+  "echo '>> deps bumped: run `mise run gen:all`, then `mise run lint` and `mise run test` to verify'",
+]
+
+["skills:update"]
+description = "Update the project's agent skills"
+run = "pnpm dlx skills update --project --yes"

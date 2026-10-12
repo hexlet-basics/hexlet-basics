@@ -1,8 +1,16 @@
-amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.5.0/hk@2.5.0#/Config.pkl"
 
-// Git hooks managed by hk (installed by `make install` via `hk install --mise`).
+// Git hooks managed by hk (installed by `mise run setup`, and by mise's postinstall hook, via `hk install --mise`).
 // Rails/legacy keeps its own hooks under legacy/.
 hooks {
+  ["pre-commit"] {
+    steps {
+      // Staged content only: the builtin scans the whole directory, ignored files included.
+      ["gitleaks"] {
+        check = "gitleaks git --staged --redact --no-banner"
+      }
+    }
+  }
   ["commit-msg"] {
     steps {
       // commitlint rather than hk's built-in conventional-commit check:
@@ -17,10 +25,13 @@ hooks {
   ["pre-push"] {
     steps {
       ["lint-go"] {
-        check = "make lint-go"
+        check = "mise run lint:go"
       }
       ["lint-web"] {
-        check = "make lint-web"
+        check = "mise run lint:web"
+      }
+      ["lint-adr"] {
+        check = "mise run lint:adr"
       }
     }
   }

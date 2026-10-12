@@ -2,11 +2,11 @@
 # (migrations/…_baseline.sql) is the legacy Rails schema captured once via
 # `atlas migrate diff` — Rails is retired, so all further changes are added with
 # `atlas migrate new <name>` (hand-authored SQL). Development uses
-# `make dev-migrate`; tests apply the same directory through the Atlas Go library.
+# `mise run db:migrate`; tests apply the same directory through the Atlas Go library.
 #
 # `dev` is a throwaway Postgres that Atlas spins up to plan/lint migrations; it is
 # never the target DB. `url` (the DB to apply to) is overridden per environment
-# with `--url` — see the Makefile.
+# with `--url` — see mise/tasks.toml.
 
 env "local" {
   url = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_test?sslmode=disable&search_path=public"

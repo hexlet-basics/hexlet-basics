@@ -25,6 +25,7 @@ dist/
 # Env
 .env
 .env.local
+mise.local.toml
 
 # OS / editor / tooling caches
 .DS_Store

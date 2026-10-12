@@ -1,5 +1,5 @@
 # Live-reload for the Go API server (github.com/air-verse/air).
-# Rebuilds and restarts ./cmd/server on .go changes; run via `make dev-api`.
+# Rebuilds and restarts ./cmd/server on .go changes; run via `mise run dev:api` (or the `api` daemon).
 root = "."
 tmp_dir = "tmp"
 

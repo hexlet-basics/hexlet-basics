@@ -22,6 +22,56 @@ golangci-lint = "2.13.2"
 # there and no Pro feature is used — see docs/adr/0014. Ariga drops release
 # binaries after ~6 months, so this pin must keep moving or `mise install` breaks.
 atlas-community = "1.3.0"
-# hk: git hooks (hk.pkl); pkl evaluates that config.
-hk = "2.4.0"
+# hk: git hooks (hk.pkl); pkl evaluates that config. hk's version must match the
+# package:// import at the top of hk.pkl.
+hk = "2.5.0"
 pkl = "0.32.1"
+# pitchfork runs the [daemons] below (`mise daemons ...`).
+pitchfork = "2.30.1"
+# Secret scan on staged changes (pre-commit hook in hk.pkl).
+gitleaks = "8.30.1"
+
+# Install the git hooks (hk.pkl) once the toolchain is in place.
+[hooks]
+postinstall = "hk install --mise"
+
+# Keep dependencies in sync when the lockfiles change (checked on the shell prompt).
+[[watch_files]]
+patterns = ["pnpm-lock.yaml"]
+run = "pnpm install --frozen-lockfile"
+
+[[watch_files]]
+patterns = ["go.mod", "go.sum"]
+run = "go mod download"
+
+# `daemons` and `watch_files` are experimental in mise.
+[settings]
+experimental = true
+
+# Development stack: `mise run dev` starts everything below, `mise run dev:down` stops
+# the app processes (never the database: it is a standing service, see `db`).
+# The port stays 54330 (not 5432) to avoid clashing with a local PostgreSQL;
+# .env.example, atlas.hcl and the db:* tasks all point at it. Tests do not use it:
+# they own disposable testcontainers.
+[daemons.db]
+preset = "postgres"
+version = "18"
+port = 54330
+
+[daemons.api]
+run = "exec go tool air"
+port = 3001
+ready_cmd = "nc -z localhost 3001"
+depends = ["db"]
+
+[daemons.worker]
+run = "exec go tool air -c .air.worker.toml"
+depends = ["db"]
+
+[daemons.web]
+run = "exec pnpm exec vite dev"
+port = 5173
+ready_cmd = "nc -z localhost 5173"
+
+[task_config]
+includes = ["mise/tasks.toml"]

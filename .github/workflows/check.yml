@@ -6,7 +6,7 @@ on:
       - main
   # Deliberately no `push` trigger. Everything that reaches main either arrived
   # through a PR (already checked here) or was pushed directly by a maintainer,
-  # whose pre-push hook runs `make lint` locally. Re-running on the merge commit
+  # whose pre-push hook runs `mise run lint` locally. Re-running on the merge commit
   # would only duplicate the PR's run.
   #
   # Adding `push` for the release-please branch would not help either: refs
@@ -53,7 +53,7 @@ jobs:
       - run: pnpm install
 
       # gofmt + go vet + golangci-lint (Go) and tsc (frontend).
-      - run: make lint
+      - run: mise run lint
 
   test-web:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
       # (with OS deps) before running the frontend suite.
       - run: pnpm exec playwright install --with-deps chromium
 
-      - run: make test-web
+      - run: mise run test:web
 
   test:
     runs-on: ubuntu-latest
@@ -101,7 +101,7 @@ jobs:
 
       # DB packages use testcontainers-go to start independent PostgreSQL 18
       # instances, apply Atlas migrations, and load the committed fixtures.
-      - run: make test
+      - run: mise run test
 
   # Builds both images without pushing, so a PR that breaks a Dockerfile (or
   # the files it copies) fails here rather than on the release run.

@@ -5,14 +5,16 @@
 // - A fixed client baseUrl so the generated client emits absolute URLs MSW can
 //   match; the real `@/lib/api-client` (with its SSR cookie interceptor) is never
 //   imported in tests.
-// - MSW worker lifecycle: start once, reset handlers between tests, stop at end.
+// - MSW worker lifecycle: start once, reset handlers between tests. No explicit
+//   stop: msw 3's `worker.stop()` never settles in the browser runner (the hook
+//   times out), and the page is discarded after each test file anyway.
 import "@mantine/core/styles.css";
 import "@mantine/code-highlight/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/tiptap/styles.css";
 import "@mantine/notifications/styles.css";
 import { notifications } from "@mantine/notifications";
-import { afterAll, afterEach, beforeAll } from "vitest";
+import { afterEach, beforeAll } from "vitest";
 import { client } from "@/client/client.gen";
 import { worker } from "./msw";
 
@@ -23,4 +25,3 @@ afterEach(() => worker.resetHandlers());
 // Notifications render into a portal outside the rendered tree, so unmounting a
 // component leaves them on screen, where they sit over the next test's clicks.
 afterEach(() => notifications.clean());
-afterAll(() => worker.stop());

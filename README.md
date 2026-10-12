@@ -16,24 +16,25 @@ with its own README and Makefile.
 
 ### Requirements
 
-- `make`, `docker`
+- `docker` (Go tests start disposable PostgreSQL containers)
 - [`mise`](https://mise.jdx.dev) — provisions the pinned toolchain from
-  `mise.toml` (`go`, `node`, `pnpm`, `golangci-lint`, `atlas`);
-  `make setup` runs `mise install` for you. Go codegen/dev tools (`air`, `ent`,
-  `ogen`, …) come from `go.mod` `tool` directives — nothing to install.
+  `mise.toml` (`go`, `node`, `pnpm`, `golangci-lint`, `atlas`, `hk`, …), runs the
+  project tasks (`mise tasks`) and the dev daemons; `mise run setup` runs
+  `mise install` for you. Go codegen/dev tools (`air`, `ent`, `ogen`, …) come
+  from `go.mod` `tool` directives — nothing to install.
 
 ### Run
 
 1. Install dependencies (Go modules + frontend/api-spec packages):
 
    ```bash
-   make setup
+   mise run setup
    ```
 
-2. Start local Postgres (Docker):
+2. Start local Postgres (a mise daemon):
 
    ```bash
-   make services-start
+   mise run db:up
    ```
 
    PostgreSQL 18 is published on port `54330` so it does not conflict with a
@@ -43,7 +44,7 @@ with its own README and Makefile.
    Prepare the development schema:
 
    ```bash
-   make dev-prepare
+   mise run db:prepare
    ```
 
    The server reads `DATABASE_URL` / `ADDR` from the environment but defaults
@@ -52,11 +53,13 @@ with its own README and Makefile.
 3. Run the stack (Go API on `:3001`, asynchronous worker, and Vite frontend):
 
    ```bash
-   make dev
+   mise run dev
    ```
 
-   Run one process alone with `make dev-api`, `make dev-worker`, or
-   `make dev-web`.
+   `mise run dev` starts them as background daemons (`mise daemons ls`,
+   `mise daemons logs api`, `mise run dev:down` to stop). Run one process alone in
+   the foreground with `mise run dev:api`, `mise run dev:worker`, or
+   `mise run dev:web`.
 
 ## Code Generation
 
@@ -65,31 +68,31 @@ The HTTP contract is the source of truth (see
 TypeSpec in `api-spec/*.tsp`, then regenerate — never hand-edit generated files.
 
 ```bash
-make gen       # TypeSpec -> OpenAPI -> ogen Go server + hey-api TS client
-make gen-ent   # regenerate the ent ORM from ent/schema
-make gen-all   # gen-ent + gen
-make dev-spec  # watch TypeSpec and re-emit OpenAPI on change
+mise run gen       # TypeSpec -> OpenAPI -> ogen Go server + hey-api TS client
+mise run gen:ent   # regenerate the ent ORM from ent/schema
+mise run gen:all   # gen-ent + gen
+mise run dev:spec  # watch TypeSpec and re-emit OpenAPI on change
 ```
 
 ## Lint & Test
 
 ```bash
-make lint          # gofmt + go vet + golangci-lint, and tsc
-make lint-fix      # auto-fix Go formatting and lint findings
+mise run lint          # gofmt + go vet + golangci-lint, and tsc
+mise run lint:fix      # auto-fix Go formatting and lint findings
 
-make test          # go test ./... with disposable PostgreSQL 18 containers
-make dev-prepare   # create/migrate dev DB without replacing development data
+mise run test          # go test ./... with disposable PostgreSQL 18 containers
+mise run db:prepare   # create/migrate dev DB without replacing development data
 ```
 
-`make test` requires Docker. Each DB-dependent Go package starts an independent
+`mise run test` requires Docker. Each DB-dependent Go package starts an independent
 PostgreSQL 18 through testcontainers-go, applies the [atlas](https://atlasgo.io)
 migrations from `migrations/`, and loads `fixtures/` before its tests. Scaffold
-a schema change with `make migrate-new NAME=...`.
+a schema change with `mise run db:migrate-new <name>`.
 
 ## Build
 
 ```bash
-make build  # builds bin/server, bin/worker, and the frontend bundle
+mise run build  # builds bin/server, bin/worker, and the frontend bundle
 ```
 
 ## Releases
