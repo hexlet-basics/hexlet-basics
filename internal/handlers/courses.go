@@ -17,6 +17,7 @@ import (
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
+	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
@@ -120,7 +121,9 @@ func (s *Server) AuthHandler() *AuthHandler {
 // ListCourses returns the published course catalog.
 //
 // URL stays `/languages` for backward-compat; the domain concept is Course.
-// Mirrors the legacy scope: listed landing pages joined to their Course,
+// Mirrors the legacy scope (`LandingPage.web.where(listed: true)`): published,
+// listed landing pages of the request locale whose Course is completed, joined
+// to their Course,
 // ordered by the Course display order (NULLS LAST), then Course id.
 func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
 	// Order by the Course's integer `order` (NULLS LAST), then Course id. The
@@ -128,7 +131,7 @@ func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, erro
 	// pages, leaving that order undefined; landing page id goes last so the
 	// catalog is deterministic. All ordering happens in SQL.
 	pages, err := s.db.LandingPage.Query().
-		Where(landingpage.Listed(true)).
+		Where(landingpages.Listed(s.i18n.Locale(ctx))).
 		WithCourse(func(q *ent.CourseQuery) {
 			// current_version populates Course.currentVersion in apiconv; without
 			// eager-loading it the edge is nil and the field serializes as null.

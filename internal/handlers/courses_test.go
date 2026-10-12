@@ -21,6 +21,7 @@ import (
 // sort, not the id.
 func TestListCourses(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
 	items, err := h.Client.ListCourses(ctx)
@@ -51,5 +52,27 @@ func TestListCourses(t *testing.T) {
 			assert.Less(t, items[i-1].ID, items[i].ID,
 				"same-course pages must ascend by landing id")
 		}
+	}
+}
+
+// The catalog is the published landing pages of the request locale (legacy
+// `LandingPage.web.where(listed: true)`): a draft or archived page is not
+// public, and neither is a page written for another locale.
+func TestListCoursesServesOnlyPublishedPagesInTheRequestLocale(t *testing.T) {
+	for _, locale := range []string{"ru", "en"} {
+		t.Run(locale, func(t *testing.T) {
+			h := testsupport.NewHarness(t)
+			testsupport.SpeakTo(h, locale)
+
+			items, err := h.Client.ListCourses(t.Context())
+			require.NoError(t, err)
+			require.NotEmpty(t, items)
+
+			for _, item := range items {
+				assert.Equal(t, locale, item.Locale.Value, "%s is in another locale", item.Slug)
+				assert.NotEqual(t, "javascript-ru-archived", item.Slug)
+				assert.NotEqual(t, "nodejs-ru", item.Slug, "draft page")
+			}
+		})
 	}
 }
