@@ -287,12 +287,23 @@ func (c *Chat) turns(ctx context.Context, q Question, locale string) ([]Turn, in
 func (c *Chat) saveQuestion(ctx context.Context, q Question, lessonProgressID int) (int, error) {
 	chatID := 0
 	err := c.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		chat, err := db.AiChat.Query().Where(aichat.LessonProgressID(lessonProgressID)).Only(ctx)
+		load := func() (*ent.AiChat, error) {
+			return db.AiChat.Query().Where(aichat.LessonProgressID(lessonProgressID)).Only(ctx)
+		}
+		chat, err := load()
 		if ent.IsNotFound(err) {
-			chat, err = db.AiChat.Create().
+			// DO NOTHING on the unique (user, lesson progress) index: a second
+			// question racing the first reads the chat the first one created
+			// rather than failing the whole transaction on a constraint.
+			_, err = db.AiChat.Create().
 				SetUserID(q.UserID).
 				SetLessonProgressID(lessonProgressID).
-				Save(ctx)
+				OnConflictColumns(aichat.FieldUserID, aichat.FieldLessonProgressID).
+				DoNothing().
+				ID(ctx)
+			if err == nil || errors.Is(err, sql.ErrNoRows) {
+				chat, err = load()
+			}
 		}
 		if err != nil {
 			return oops.Wrapf(err, "find or create assistant chat")

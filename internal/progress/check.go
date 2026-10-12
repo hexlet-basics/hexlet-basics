@@ -230,32 +230,17 @@ func (p *Progress) record(
 		}
 	}
 
-	taken, err := db.LessonProgress.Query().
-		Where(
-			lessonprogress.UserID(userID),
-			lessonprogress.LessonID(check.LessonID),
-		).
-		Only(ctx)
-	switch {
-	case ent.IsNotFound(err):
-		taken, err = db.LessonProgress.Create().
-			SetUserID(userID).
-			SetCourseID(open.course.ID).
-			SetEnrollmentID(enrolled.ID).
-			SetLessonID(check.LessonID).
-			SetState(StateStarted).
-			Save(ctx)
-		if err != nil {
-			return fmt.Errorf("create lesson progress: %w", err)
-		}
+	taken, createdProgress, err := takeLesson(ctx, db, userID, open.course.ID, enrolled.ID, check.LessonID)
+	if err != nil {
+		return err
+	}
+	if createdProgress {
 		// The learner reached this Lesson without pressing start — a deep link,
 		// or a page restored from history. Submitting is as deliberate an act as
 		// starting, so it produces the same fact.
 		if err := p.publishLessonStarted(ctx, tx, db, enrolled.ID, open, check.Locale, occurredAt); err != nil {
 			return err
 		}
-	case err != nil:
-		return fmt.Errorf("load lesson progress: %w", err)
 	}
 
 	if !outcome.Passed {

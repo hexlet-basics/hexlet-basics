@@ -143,31 +143,16 @@ func (p *Progress) startLesson(ctx context.Context, learner Learner, lessonID in
 			return err
 		}
 
-		alreadyTaken, err := db.LessonProgress.Query().
-			Where(
-				lessonprogress.UserID(userID),
-				lessonprogress.LessonID(lessonID),
-			).
-			Exist(ctx)
+		_, createdProgress, err := takeLesson(ctx, db, userID, open.course.ID, enrolled.ID, lessonID)
 		if err != nil {
-			return fmt.Errorf("load lesson progress: %w", err)
+			return err
 		}
-		if alreadyTaken {
+		if !createdProgress {
 			// Already started, or already finished: the learner pressed the
 			// button twice, or came back to a Lesson they passed. Nothing
 			// changes and no fact is published — the occurrence counts the CRM
 			// consumes count transitions, not requests.
 			return nil
-		}
-
-		if _, err := db.LessonProgress.Create().
-			SetUserID(userID).
-			SetCourseID(open.course.ID).
-			SetEnrollmentID(enrolled.ID).
-			SetLessonID(lessonID).
-			SetState(StateStarted).
-			Save(ctx); err != nil {
-			return fmt.Errorf("create lesson progress: %w", err)
 		}
 
 		occurredAt := p.now()
@@ -345,6 +330,56 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 	// more often than anyone enrolls, and it is never used as a progress figure.
 	if err := db.Course.UpdateOneID(courseID).AddEnrollmentsCount(1).Exec(ctx); err != nil {
 		return nil, false, fmt.Errorf("count new enrollment on course %d: %w", courseID, err)
+	}
+	return row, true, nil
+}
+
+// takeLesson returns the learner's Lesson Progress for a Lesson, creating it as
+// started when absent, and reports whether this call created it — the
+// lesson-started fact is published on creation only.
+//
+// Two requests taking the same Lesson at once resolve to one row: the unique
+// (user, lesson) index decides, DO NOTHING hands the loser no row instead of a
+// constraint violation that would abort the transaction, and the loser reads
+// the winner's.
+func takeLesson(ctx context.Context, db *ent.Client, userID, courseID, enrollmentID, lessonID int) (*ent.LessonProgress, bool, error) {
+	load := func() (*ent.LessonProgress, error) {
+		return db.LessonProgress.Query().
+			Where(lessonprogress.UserID(userID), lessonprogress.LessonID(lessonID)).
+			Only(ctx)
+	}
+
+	existing, err := load()
+	switch {
+	case err == nil:
+		return existing, false, nil
+	case !ent.IsNotFound(err):
+		return nil, false, fmt.Errorf("load lesson progress: %w", err)
+	}
+
+	id, err := db.LessonProgress.Create().
+		SetUserID(userID).
+		SetCourseID(courseID).
+		SetEnrollmentID(enrollmentID).
+		SetLessonID(lessonID).
+		SetState(StateStarted).
+		OnConflictColumns(lessonprogress.FieldUserID, lessonprogress.FieldLessonID).
+		DoNothing().
+		ID(ctx)
+	if errors.Is(err, sql.ErrNoRows) {
+		existing, err := load()
+		if err != nil {
+			return nil, false, fmt.Errorf("load concurrent lesson progress: %w", err)
+		}
+		return existing, false, nil
+	}
+	if err != nil {
+		return nil, false, fmt.Errorf("create lesson progress: %w", err)
+	}
+
+	row, err := db.LessonProgress.Get(ctx, id)
+	if err != nil {
+		return nil, false, fmt.Errorf("load new lesson progress: %w", err)
 	}
 	return row, true, nil
 }
