@@ -12,12 +12,15 @@ import (
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/sitemap"
+	"hexletbasics/internal/staffroles"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -62,6 +65,12 @@ type Server struct {
 	assistant *assistant.Chat
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover blogposts.PostRemover
+	// permissions writes a role's permission matrix.
+	permissions staffroles.PermissionWriter
+	// dashboard assembles the learner's courses with cards and progress.
+	dashboard dashboard.CourseLister
+	// sitemap reads the rows behind the sitemap page.
+	sitemap sitemap.Reader
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -87,6 +96,9 @@ type Deps struct {
 	YandexFeed        *feeds.Yandex
 	Assistant         *assistant.Chat
 	PostRemover       blogposts.PostRemover
+	Permissions       staffroles.PermissionWriter
+	Dashboard         dashboard.CourseLister
+	Sitemap           sitemap.Reader
 }
 
 // NewServer wires the handler to its dependencies.
@@ -110,6 +122,9 @@ func NewServer(deps Deps) *Server {
 		catalog:     landingpages.NewCatalog(deps.DB),
 		assistant:   deps.Assistant,
 		postRemover: deps.PostRemover,
+		permissions: deps.Permissions,
+		dashboard:   deps.Dashboard,
+		sitemap:     deps.Sitemap,
 	}
 }
 

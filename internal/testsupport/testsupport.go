@@ -36,14 +36,18 @@ import (
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
+	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/sitemap"
+	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -234,6 +238,9 @@ func NewHarness(t *testing.T) *Harness {
 		Assistant:  assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator),
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover: blogposts.NewRemover(transactor),
+		Permissions: staffroles.NewPermissions(db),
+		Dashboard:   dashboard.New(db, landingpages.NewCatalog(db), tracker),
+		Sitemap:     sitemap.New(db),
 	})
 	srv, err := api.NewServer(
 		handler,

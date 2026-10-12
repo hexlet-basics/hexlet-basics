@@ -19,15 +19,19 @@ import (
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
+	"hexletbasics/internal/dashboard"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/exerciserunner"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
+	"hexletbasics/internal/sitemap"
+	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/telemetry"
 	"hexletbasics/internal/versionbuilds"
@@ -109,6 +113,31 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return blogposts.NewRemover(db), nil
+	}),
+	do.Lazy[*staffroles.Permissions](func(i do.Injector) (*staffroles.Permissions, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return staffroles.NewPermissions(db), nil
+	}),
+	do.Lazy[*sitemap.Sitemap](func(i do.Injector) (*sitemap.Sitemap, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return sitemap.New(db), nil
+	}),
+	do.Lazy[*dashboard.Dashboard](func(i do.Injector) (*dashboard.Dashboard, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		tracker, err := do.Invoke[*progress.Progress](i)
+		if err != nil {
+			return nil, err
+		}
+		return dashboard.New(db, landingpages.NewCatalog(db), tracker), nil
 	}),
 	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -240,6 +269,18 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		permissions, err := do.Invoke[*staffroles.Permissions](i)
+		if err != nil {
+			return nil, err
+		}
+		sitemapReader, err := do.Invoke[*sitemap.Sitemap](i)
+		if err != nil {
+			return nil, err
+		}
+		dashboardCourses, err := do.Invoke[*dashboard.Dashboard](i)
+		if err != nil {
+			return nil, err
+		}
 		return handlers.NewServer(handlers.Deps{
 			DB:                db,
 			Config:            cfg,
@@ -258,6 +299,9 @@ var serverPackage = do.Package(
 			YandexFeed:        yandexFeed,
 			Assistant:         chat,
 			PostRemover:       postRemover,
+			Permissions:       permissions,
+			Dashboard:         dashboardCourses,
+			Sitemap:           sitemapReader,
 		}), nil
 	}),
 	// The in-lesson assistant answers inside the request (a stream, no job), so
