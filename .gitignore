@@ -19,6 +19,12 @@ dist/
 /tmp/
 *.exe
 
+# End-to-end suite: the frontend build it serves, Playwright output, and the API's blob dir
+/e2e/.build/
+/e2e/.results/
+/e2e/.report/
+/e2e/.storage/
+
 # Local fileblob asset storage (dev default BLOB_BUCKET_URL, ADR-0005)
 /storage/
 

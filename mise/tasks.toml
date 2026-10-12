@@ -286,6 +286,20 @@ run = 'eval "set -- $usage_go_test_args"; go test "$@"'
 description = "Run the frontend suite (Vitest Browser Mode via Playwright; needs `pnpm exec playwright install chromium` once)"
 run = "pnpm test"
 
+["test:e2e:db"]
+description = "Recreate the end-to-end database code_basics_e2e_test: atlas migrations + the committed fixtures (E2E_DB_HOST/E2E_DB_PORT, default the db daemon on :54330)"
+run = "scripts/e2e_db.sh"
+
+["test:e2e"]
+description = "End-to-end suite: a real browser against the built Go API and SSR frontend (needs the db daemon, `mise run db:up`, and `pnpm exec playwright install chromium` once). Pass Playwright flags after `--`"
+usage = 'arg "[playwright_args]" var=#true default="" help="flags for playwright test, e.g. --headed or a file name"'
+run = [
+  { task = "test:e2e:db" },
+  "go build -o bin/server ./cmd/server",
+  "pnpm exec vite build --outDir e2e/.build",
+  'eval "set -- $usage_playwright_args"; pnpm exec playwright test -c e2e/playwright.config.ts "$@"',
+]
+
 # --- build -------------------------------------------------------------------------
 
 ["build:api"]
