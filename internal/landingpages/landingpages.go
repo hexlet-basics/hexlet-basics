@@ -25,16 +25,21 @@ const StatePublished = "published"
 // courses stay off the public lists.
 const CourseCompleted = "completed"
 
-// Listed is legacy `Language::LandingPage.web.where(listed: true)`:
-// published landing pages in locale whose Course is completed, and that are
-// listed. Callers add their own narrowing (a category, `main`) and ordering.
-func Listed(locale string) predicate.LandingPage {
+// Web is legacy `Language::LandingPage.web`: published landing pages in locale
+// whose Course is completed. Every public read starts here; callers add their
+// own narrowing (`listed`, `main`, a category) and ordering.
+func Web(locale string) predicate.LandingPage {
 	return landingpage.And(
 		landingpage.StateEQ(StatePublished),
 		landingpage.LocaleEQ(locale),
-		landingpage.Listed(true),
 		landingpage.HasCourseWith(course.ProgressEQ(CourseCompleted)),
 	)
+}
+
+// Listed is legacy `Language::LandingPage.web.where(listed: true)`: the Web
+// scope narrowed to the pages flagged for the public lists.
+func Listed(locale string) predicate.LandingPage {
+	return landingpage.And(Web(locale), landingpage.Listed(true))
 }
 
 // Catalog reads the public course catalog: the listed landing pages a visitor

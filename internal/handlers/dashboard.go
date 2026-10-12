@@ -9,6 +9,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/progress"
 )
 
@@ -74,14 +75,15 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 	return dashboard, nil
 }
 
-// catalogueCard is the course's listed main landing page, or nil when it has
-// none — the legacy dashboard scope.
+// catalogueCard is the course's main landing page in the request locale, or nil
+// when it has none — legacy `LandingPage.web.where(main: true)`, the dashboard
+// scope. Unlike the public lists it does not require `listed`.
 func (s *Server) catalogueCard(ctx context.Context, courseID int) (*api.CourseCatalogItem, error) {
 	page, err := s.db.LandingPage.Query().
 		Where(
 			landingpage.CourseID(courseID),
 			landingpage.MainEQ(true),
-			landingpage.ListedEQ(true),
+			landingpages.Web(s.i18n.Locale(ctx)),
 		).
 		Order(ent.Asc(landingpage.FieldID)).
 		WithCourse().

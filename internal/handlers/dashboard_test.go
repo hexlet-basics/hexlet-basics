@@ -21,6 +21,7 @@ import (
 // same completion the course page reports, because the same module computes it.
 func TestDashboardListsStartedCoursesWithProgress(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
 	res, err := h.Client.GetMyDashboard(ctx)
@@ -44,6 +45,7 @@ func TestDashboardListsStartedCoursesWithProgress(t *testing.T) {
 // A finished course moves to the other list rather than disappearing.
 func TestDashboardSeparatesFinishedCourses(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 	finishLesson(t, h, secondLessonSlug)
 	finishLesson(t, h, thirdLessonSlug)
@@ -61,6 +63,7 @@ func TestDashboardSeparatesFinishedCourses(t *testing.T) {
 // Both lists at once, each carrying its own course's card.
 func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
 	second := seedCourse(t, h, "dashboard-extra", "intro")
@@ -76,11 +79,12 @@ func TestDashboardReturnsStartedAndFinishedTogether(t *testing.T) {
 	assert.Len(t, dashboard.LandingPagesByCourseId, 2)
 }
 
-// A course with no listed main catalogue entry has no card to render, so it is
+// A course with no main catalogue entry has no card to render, so it is
 // not on the dashboard at all — the legacy scope. The learner's other course,
 // which has one, still is.
-func TestDashboardSkipsCoursesWithoutAListedMainCard(t *testing.T) {
+func TestDashboardSkipsCoursesWithoutAMainCard(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
 	cardless := seedCourse(t, h, "dashboard-cardless", "intro")
@@ -93,6 +97,48 @@ func TestDashboardSkipsCoursesWithoutAListedMainCard(t *testing.T) {
 	require.Len(t, dashboard.StartedEnrollments, 1, "only the course with a card")
 	assert.NotEqual(t, int32(*cardless.CourseID), dashboard.StartedEnrollments[0].CourseId)
 	assert.NotContains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(*cardless.CourseID))
+}
+
+// The card follows the legacy dashboard scope, `LandingPage.web.where(main:
+// true)`: a published page in the request locale of a completed course. A draft
+// main page, or one written for another locale, is no card, and the course drops
+// off the dashboard with it.
+func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	draft := seedCourse(t, h, "dashboard-draft", "intro")
+	enrollActingUser(t, h, *draft.CourseID, "started")
+	giveCatalogueCardForID(t, h, *draft.CourseID, func(c *ent.LandingPageCreate) { c.SetState("draft") })
+
+	foreign := seedCourse(t, h, "dashboard-foreign", "intro")
+	enrollActingUser(t, h, *foreign.CourseID, "started")
+	giveCatalogueCardForID(t, h, *foreign.CourseID, func(c *ent.LandingPageCreate) { c.SetLocale("en") })
+
+	res, err := h.Client.GetMyDashboard(t.Context())
+	require.NoError(t, err)
+	dashboard := res.(*api.MyDashboard)
+
+	require.Len(t, dashboard.StartedEnrollments, 1, "only the fixture course has a public card")
+	assert.NotContains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(*draft.CourseID))
+	assert.NotContains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(*foreign.CourseID))
+}
+
+// Unlike the catalogue, the dashboard never required `listed`: a learner's own
+// course stays on their dashboard even when it is hidden from the public lists.
+func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	hidden := seedCourse(t, h, "dashboard-unlisted", "intro")
+	enrollActingUser(t, h, *hidden.CourseID, "started")
+	giveCatalogueCardForID(t, h, *hidden.CourseID, func(c *ent.LandingPageCreate) { c.SetListed(false) })
+
+	res, err := h.Client.GetMyDashboard(t.Context())
+	require.NoError(t, err)
+	dashboard := res.(*api.MyDashboard)
+
+	assert.Contains(t, dashboard.LandingPagesByCourseId, strconv.Itoa(*hidden.CourseID))
 }
 
 // A visitor is refused, cookie or no cookie: the dashboard is the incentive to
@@ -108,18 +154,25 @@ func TestDashboardRefusesAGuest(t *testing.T) {
 }
 
 // giveCatalogueCardForID makes a course dashboard-visible by giving it the
-// listed main landing page the card is drawn from. The fixture JavaScript
-// course already has one; seeded courses do not.
-func giveCatalogueCardForID(t *testing.T, h *testsupport.Harness, courseID int) {
+// main landing page the card is drawn from, in ru, the locale the fixture JavaScript card is written in,
+// and finishing the course the way every public one is. The fixture JavaScript
+// course already has one; seeded courses do not. adjust edits the page before
+// it is saved, so a test can make it a draft or move it to another locale.
+func giveCatalogueCardForID(t *testing.T, h *testsupport.Harness, courseID int, adjust ...func(*ent.LandingPageCreate)) {
 	t.Helper()
-	h.DB.LandingPage.Create().
+	h.DB.Course.UpdateOneID(courseID).SetProgress("completed").ExecX(t.Context())
+	create := h.DB.LandingPage.Create().
 		SetCourseID(courseID).
 		SetSlug("card-" + strconv.Itoa(courseID)).
 		SetName("Card").
 		SetMain(true).
 		SetListed(true).
-		SetState("published").
-		SaveX(t.Context())
+		SetLocale("ru").
+		SetState("published")
+	for _, edit := range adjust {
+		edit(create)
+	}
+	create.SaveX(t.Context())
 }
 
 func enrollActingUser(t *testing.T, h *testsupport.Harness, courseID int, state string) *ent.Enrollment {
