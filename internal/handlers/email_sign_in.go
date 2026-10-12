@@ -11,6 +11,7 @@ import (
 	"hexletbasics/internal/accountemails"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
 )
 
@@ -109,7 +110,11 @@ func (h *AuthHandler) requestAccountEmail(ctx context.Context, purpose emailtoke
 	if err != nil {
 		return err
 	}
-	return h.emails.EnqueueAccountEmail(ctx, purpose, u.ID, accountemails.Locale(h.i18n.Locale(ctx)))
+	return h.jobs.Enqueue(ctx, jobs.AccountEmailArgs{
+		Purpose: purpose,
+		UserID:  u.ID,
+		Locale:  accountemails.Locale(h.i18n.Locale(ctx)),
+	})
 }
 
 func (h *AuthHandler) linkInvalid(ctx context.Context) *api.NotFoundError {

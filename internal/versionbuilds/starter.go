@@ -5,7 +5,6 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/riverqueue/river"
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
@@ -20,12 +19,12 @@ const stateCreated = "created"
 // other.
 type Starter struct {
 	store store.Transactor
-	river *river.Client[*sql.Tx]
+	jobs  *jobs.Enqueuer
 }
 
-// NewStarter wires the shared pool and River client.
-func NewStarter(txStore store.Transactor, riverClient *river.Client[*sql.Tx]) *Starter {
-	return &Starter{store: txStore, river: riverClient}
+// NewStarter wires the shared pool and the job enqueuer.
+func NewStarter(txStore store.Transactor, enqueuer *jobs.Enqueuer) *Starter {
+	return &Starter{store: txStore, jobs: enqueuer}
 }
 
 // Start creates a version in `created` state and schedules its loader job.
@@ -40,10 +39,7 @@ func (s *Starter) Start(ctx context.Context, courseID int) (_ *ent.CourseVersion
 			return oops.Wrapf(err, "create course version")
 		}
 
-		if _, err = s.river.InsertTx(ctx, tx, jobs.ExerciseLoaderArgs{VersionID: version.ID}, nil); err != nil {
-			return oops.Wrapf(err, "enqueue exercise loader")
-		}
-		return nil
+		return s.jobs.EnqueueTx(ctx, tx, jobs.ExerciseLoaderArgs{VersionID: version.ID})
 	})
 	if err != nil {
 		return nil, err

@@ -6,10 +6,8 @@ package lessonreviews
 
 import (
 	"context"
-	"database/sql"
 	"strings"
 
-	"github.com/riverqueue/river"
 	"github.com/samber/lo"
 	"github.com/samber/oops"
 
@@ -18,8 +16,6 @@ import (
 	"hexletbasics/ent/aimessage"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/lessonprogress"
-	"hexletbasics/internal/jobs"
-	"hexletbasics/internal/store"
 )
 
 // maxQuestions caps how many recent student questions feed one summary,
@@ -31,39 +27,6 @@ const maxQuestions = 100
 // prompt language is intentional, not tied to the lesson's locale.
 const reviewInstructions = `Проанализируй вопросы, которые задают студенты ассистенту по уроку. Вопросы будут переданы ниже.
 Суммируй основные претензиии и пожелания. Предложи как поменять урок.`
-
-// Enqueuer schedules review jobs from the HTTP process (insert-only River
-// client). The jobs go in together in one transaction, so a failure enqueues
-// none of them; each job is independent and idempotent (the worker upserts by
-// its natural key), so the admin just clicks again.
-type Enqueuer struct {
-	store store.Transactor
-	river *river.Client[*sql.Tx]
-}
-
-// NewEnqueuer wires the shared pool and insert-only River client.
-func NewEnqueuer(txStore store.Transactor, riverClient *river.Client[*sql.Tx]) *Enqueuer {
-	return &Enqueuer{store: txStore, river: riverClient}
-}
-
-// EnqueueLessonReviews inserts one review job per lesson version info.
-func (e *Enqueuer) EnqueueLessonReviews(ctx context.Context, lessonInfoIDs []int) error {
-	if len(lessonInfoIDs) == 0 {
-		return nil
-	}
-	params := make([]river.InsertManyParams, len(lessonInfoIDs))
-	for i, id := range lessonInfoIDs {
-		params[i] = river.InsertManyParams{Args: jobs.ReviewLessonArgs{LessonInfoID: id}}
-	}
-	err := e.store.WithinTx(ctx, func(tx *sql.Tx, _ *ent.Client) error {
-		_, err := e.river.InsertManyTx(ctx, tx, params)
-		return err
-	})
-	if err != nil {
-		return oops.Wrapf(err, "enqueue lesson reviews")
-	}
-	return nil
-}
 
 // Completer is the LLM seam (implemented by assistant.OpenAI; tests fake it).
 type Completer interface {

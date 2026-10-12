@@ -12,7 +12,6 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/riverqueue/river"
 	"github.com/samber/lo"
 	"github.com/samber/oops"
 
@@ -20,7 +19,6 @@ import (
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/htmltext"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/store"
 )
@@ -87,31 +85,6 @@ func (r *Replacer) Replace(ctx context.Context, postID int, courseIDs []int) err
 		}
 		return nil
 	})
-}
-
-// Enqueuer schedules the suggestion job from the HTTP process (insert-only
-// River client). The job is idempotent — it replaces the whole set — so a
-// repeated click only costs another LLM call.
-type Enqueuer struct {
-	store store.Transactor
-	river *river.Client[*sql.Tx]
-}
-
-// NewEnqueuer wires the shared pool and insert-only River client.
-func NewEnqueuer(txStore store.Transactor, riverClient *river.Client[*sql.Tx]) *Enqueuer {
-	return &Enqueuer{store: txStore, river: riverClient}
-}
-
-// EnqueueRelatedCoursesSuggestion inserts one suggestion job for the post.
-func (e *Enqueuer) EnqueueRelatedCoursesSuggestion(ctx context.Context, blogPostID int) error {
-	err := e.store.WithinTx(ctx, func(tx *sql.Tx, _ *ent.Client) error {
-		_, err := e.river.InsertTx(ctx, tx, jobs.SuggestRelatedCoursesArgs{BlogPostID: blogPostID}, nil)
-		return err
-	})
-	if err != nil {
-		return oops.Wrapf(err, "enqueue related courses suggestion for post %d", blogPostID)
-	}
-	return nil
 }
 
 // Completer is the LLM seam (implemented by assistant.OpenAI; tests fake it).

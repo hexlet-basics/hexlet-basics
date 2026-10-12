@@ -6,20 +6,16 @@ package accountemails
 import (
 	"bytes"
 	"context"
-	"database/sql"
 	"embed"
 	"html/template"
 	"net/url"
 
-	"github.com/riverqueue/river"
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/emailtokens"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/mailer"
-	"hexletbasics/internal/store"
 )
 
 //go:embed templates/email.html
@@ -35,32 +31,6 @@ func Locale(requestLocale string) string {
 		return "es"
 	}
 	return "ru"
-}
-
-// Enqueuer schedules account emails from the HTTP process through the
-// insert-only River client, inserting inside a transaction the way the other
-// enqueuers do.
-type Enqueuer struct {
-	store store.Transactor
-	river *river.Client[*sql.Tx]
-}
-
-// NewEnqueuer wires the shared pool and insert-only River client.
-func NewEnqueuer(txStore store.Transactor, riverClient *river.Client[*sql.Tx]) *Enqueuer {
-	return &Enqueuer{store: txStore, river: riverClient}
-}
-
-// EnqueueAccountEmail inserts the job. A duplicate within the cooldown is
-// skipped by River and is not an error: the caller answers the same either way.
-func (e *Enqueuer) EnqueueAccountEmail(ctx context.Context, purpose emailtokens.Purpose, userID int, locale string) error {
-	err := e.store.WithinTx(ctx, func(tx *sql.Tx, _ *ent.Client) error {
-		_, err := e.river.InsertTx(ctx, tx, jobs.AccountEmailArgs{Purpose: purpose, UserID: userID, Locale: locale}, nil)
-		return err
-	})
-	if err != nil {
-		return oops.Wrapf(err, "enqueue %s email", purpose)
-	}
-	return nil
 }
 
 // Sender renders and delivers one account email in the worker.

@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/htmltext"
+	"hexletbasics/internal/jobs"
 )
 
 // Blog posts (legacy `/admin/blog_posts`): full CRUD plus the related-courses
@@ -175,7 +176,7 @@ func (s *Server) AdminSuggestBlogPostRelatedCourses(ctx context.Context, params 
 		return nil, err
 	}
 
-	if err := s.relatedCourses.EnqueueRelatedCoursesSuggestion(ctx, id); err != nil {
+	if err := s.jobs.Enqueue(ctx, jobs.SuggestRelatedCoursesArgs{BlogPostID: id}); err != nil {
 		return nil, err
 	}
 	return &api.AdminSuggestBlogPostRelatedCoursesNoContent{}, nil

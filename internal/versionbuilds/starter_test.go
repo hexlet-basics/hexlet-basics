@@ -35,7 +35,7 @@ func TestStarterCommitsVersionAndJobTogether(t *testing.T) {
 		metricnoop.NewMeterProvider(),
 	)
 	require.NoError(t, err)
-	starter := versionbuilds.NewStarter(store.New(sqlDB), riverClient)
+	starter := versionbuilds.NewStarter(store.New(sqlDB), jobs.NewEnqueuer(store.New(sqlDB), riverClient))
 
 	ruby, err := db.Course.Query().Where(course.Slug("ruby")).Only(ctx)
 	require.NoError(t, err)

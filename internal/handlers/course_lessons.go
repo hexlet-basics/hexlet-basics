@@ -166,7 +166,7 @@ func (s *Server) AdminReviewCourseLesson(ctx context.Context, params api.AdminRe
 		return nil, err
 	}
 
-	if err := s.reviews.EnqueueLessonReviews(ctx, infoIDs); err != nil {
+	if err := s.enqueueLessonReviews(ctx, infoIDs); err != nil {
 		return nil, err
 	}
 	return &api.AdminReviewCourseLessonNoContent{}, nil

@@ -69,19 +69,17 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	services := testsupport.NewServices(t, tx, transactor)
 	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
-		DB:             db,
-		Config:         cfg,
-		Starter:        services.Starter,
-		Reviews:        services.Reviews,
-		RelatedCourses: services.RelatedCourses,
-		Emails:         services.Emails,
-		Progress:       progress.New(db, transactor, services.Events, mocks.Runner),
-		Assets:         assets,
-		Registrar:      accounts.NewRegistrar(transactor, services.Events),
-		Remover:        accounts.NewRemover(transactor),
-		Events:         services.Events,
-		I18n:           translator,
-		Errors:         errorHandler,
+		DB:        db,
+		Config:    cfg,
+		Starter:   services.Starter,
+		Jobs:      services.Jobs,
+		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
+		Assets:    assets,
+		Registrar: accounts.NewRegistrar(transactor, services.Events),
+		Remover:   accounts.NewRemover(transactor),
+		Events:    services.Events,
+		I18n:      translator,
+		Errors:    errorHandler,
 	})
 	apiServer, err := api.NewServer(
 		handler,

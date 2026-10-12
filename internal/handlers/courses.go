@@ -36,9 +36,9 @@ type Server struct {
 	conv    apiconv.Converter
 	cfg     *config.Config
 	starter VersionBuildStarter
-	reviews LessonReviewEnqueuer
-	// relatedCourses schedules the AI related-courses pick for blog posts.
-	relatedCourses RelatedCoursesSuggestionEnqueuer
+	// jobs schedules the background work handlers trigger: lesson reviews, the
+	// related-courses pick, account emails.
+	jobs JobEnqueuer
 	// relatedCoursesSet replaces a post's related courses in one transaction.
 	relatedCoursesSet RelatedCoursesReplacer
 	// progress owns sequential progression; handlers never evaluate the gate.
@@ -70,10 +70,8 @@ type Deps struct {
 	DB                *ent.Client
 	Config            *config.Config
 	Starter           VersionBuildStarter
-	Reviews           LessonReviewEnqueuer
-	RelatedCourses    RelatedCoursesSuggestionEnqueuer
+	Jobs              JobEnqueuer
 	RelatedCoursesSet RelatedCoursesReplacer
-	Emails            AccountEmailEnqueuer
 	Progress          progress.Tracker
 	Assets            *assetstore.Store
 	Registrar         accounts.UserRegistrar
@@ -94,13 +92,12 @@ func NewServer(deps Deps) *Server {
 		conv:              &apiconv.ConverterImpl{},
 		cfg:               deps.Config,
 		starter:           deps.Starter,
-		reviews:           deps.Reviews,
-		relatedCourses:    deps.RelatedCourses,
+		jobs:              deps.Jobs,
 		relatedCoursesSet: deps.RelatedCoursesSet,
 		progress:          deps.Progress,
 		assets:            deps.Assets,
 		auth: NewAuthHandler(deps.DB, deps.Config, deps.I18n, deps.Errors, deps.Registrar,
-			deps.Remover, deps.Events, deps.Progress, deps.Emails),
+			deps.Remover, deps.Events, deps.Progress, deps.Jobs),
 		i18n:       deps.I18n,
 		leads:      deps.Leads,
 		books:      deps.Books,

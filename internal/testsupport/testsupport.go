@@ -211,15 +211,13 @@ func NewHarness(t *testing.T) *Harness {
 	leadRecorder := leads.NewRecorder(transactor, services.Events)
 	// The real chat over the real progress module: only the model is mocked.
 	handler := handlers.NewServer(handlers.Deps{
-		DB:             db,
-		Config:         testConfig,
-		Starter:        services.Starter,
-		Reviews:        services.Reviews,
-		RelatedCourses: services.RelatedCourses,
+		DB:      db,
+		Config:  testConfig,
+		Starter: services.Starter,
+		Jobs:    services.Jobs,
 		// The real replacer over the savepoint transactor, so a failed replace
 		// rolls back exactly as it does in production.
 		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
-		Emails:            services.Emails,
 		Progress:          tracker,
 		Assets:            assets,
 		Registrar:         registrar,

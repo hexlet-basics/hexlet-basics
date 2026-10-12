@@ -12,7 +12,6 @@ import (
 	"go.opentelemetry.io/contrib/otelconf"
 
 	"hexletbasics/ent"
-	"hexletbasics/internal/accountemails"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
@@ -25,7 +24,6 @@ import (
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/leads"
-	"hexletbasics/internal/lessonreviews"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/relatedcourses"
@@ -131,49 +129,27 @@ var serverPackage = do.Package(
 			otelSDK.MeterProvider(),
 		)
 	}),
+	do.Lazy[*jobs.Enqueuer](func(i do.Injector) (*jobs.Enqueuer, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		if err != nil {
+			return nil, err
+		}
+		return jobs.NewEnqueuer(db, riverClient), nil
+	}),
 	do.Lazy[*versionbuilds.Starter](func(i do.Injector) (*versionbuilds.Starter, error) {
 		db, err := do.Invoke[*store.Store](i)
 		if err != nil {
 			return nil, err
 		}
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
+		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
-		return versionbuilds.NewStarter(db, riverClient), nil
-	}),
-	do.Lazy[*lessonreviews.Enqueuer](func(i do.Injector) (*lessonreviews.Enqueuer, error) {
-		db, err := do.Invoke[*store.Store](i)
-		if err != nil {
-			return nil, err
-		}
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
-		if err != nil {
-			return nil, err
-		}
-		return lessonreviews.NewEnqueuer(db, riverClient), nil
-	}),
-	do.Lazy[*relatedcourses.Enqueuer](func(i do.Injector) (*relatedcourses.Enqueuer, error) {
-		db, err := do.Invoke[*store.Store](i)
-		if err != nil {
-			return nil, err
-		}
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
-		if err != nil {
-			return nil, err
-		}
-		return relatedcourses.NewEnqueuer(db, riverClient), nil
-	}),
-	do.Lazy[*accountemails.Enqueuer](func(i do.Injector) (*accountemails.Enqueuer, error) {
-		db, err := do.Invoke[*store.Store](i)
-		if err != nil {
-			return nil, err
-		}
-		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
-		if err != nil {
-			return nil, err
-		}
-		return accountemails.NewEnqueuer(db, riverClient), nil
+		return versionbuilds.NewStarter(db, enqueuer), nil
 	}),
 	// The Yandex feed builds its URLs on the canonical host, not the request's.
 	do.Lazy[*feeds.Yandex](func(i do.Injector) (*feeds.Yandex, error) {
@@ -200,19 +176,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		reviews, err := do.Invoke[*lessonreviews.Enqueuer](i)
-		if err != nil {
-			return nil, err
-		}
-		relatedCourses, err := do.Invoke[*relatedcourses.Enqueuer](i)
+		enqueuer, err := do.Invoke[*jobs.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
 		relatedCoursesSet, err := do.Invoke[*relatedcourses.Replacer](i)
-		if err != nil {
-			return nil, err
-		}
-		emails, err := do.Invoke[*accountemails.Enqueuer](i)
 		if err != nil {
 			return nil, err
 		}
@@ -264,10 +232,8 @@ var serverPackage = do.Package(
 			DB:                db,
 			Config:            cfg,
 			Starter:           starter,
-			Reviews:           reviews,
-			RelatedCourses:    relatedCourses,
+			Jobs:              enqueuer,
 			RelatedCoursesSet: relatedCoursesSet,
-			Emails:            emails,
 			Progress:          tracker,
 			Assets:            assets,
 			Registrar:         registrar,

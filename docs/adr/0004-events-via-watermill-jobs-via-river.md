@@ -59,6 +59,16 @@ Version 1 retains domain-event rows indefinitely for replay and diagnosis.
 Retention or PII erasure must be designed explicitly before adding a cleanup
 job; deleting rows without considering every consumer offset can lose events.
 
+**River usage rules.** Each job kind owns its insert policy in its Args'
+`InsertOpts` (queue, attempts, uniqueness), its `Timeout`, and a `jobs.Module`
+constructor; the worker process composes the modules it can run and the client
+sets `FetchOnlyKnownKinds`, so a job without a module in this worker waits for
+one that has it. Queues isolate classes of work (`mail`, `builds`, `llm`,
+default). The HTTP process schedules through `jobs.Enqueuer`, which inserts in
+a SQL transaction (the caller's, via `EnqueueTx`, when a business write must
+not exist without its job). A Watermill handler has no business write, so it
+inserts directly and relies on the kind's uniqueness for redelivery.
+
 ## Considered Options
 
 - **Both (chosen)** — decoupled fan-out for events plus a real job queue.

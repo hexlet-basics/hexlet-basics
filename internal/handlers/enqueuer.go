@@ -3,8 +3,10 @@ package handlers
 import (
 	"context"
 
+	"github.com/riverqueue/river"
+
 	"hexletbasics/ent"
-	"hexletbasics/internal/emailtokens"
+	"hexletbasics/internal/jobs"
 )
 
 // VersionBuildStarter is the atomic operation handlers need: create a course
@@ -15,18 +17,13 @@ type VersionBuildStarter interface {
 	Start(ctx context.Context, courseID int) (*ent.CourseVersion, error)
 }
 
-// LessonReviewEnqueuer schedules the AI review jobs behind the admin review
-// actions — one job per lesson version info (lessonreviews.Enqueuer in
-// production, a moq mock in tests).
-type LessonReviewEnqueuer interface {
-	EnqueueLessonReviews(ctx context.Context, lessonInfoIDs []int) error
-}
-
-// RelatedCoursesSuggestionEnqueuer schedules the AI pick of a blog post's
-// related courses (relatedcourses.Enqueuer in production, a moq mock in
-// tests).
-type RelatedCoursesSuggestionEnqueuer interface {
-	EnqueueRelatedCoursesSuggestion(ctx context.Context, blogPostID int) error
+// JobEnqueuer schedules background jobs from a handler (jobs.Enqueuer in
+// production and in tests, over the test's savepoint transaction). The handler
+// names what should run; each kind's queue, attempts and uniqueness live with
+// its Args, so a request repeated within an email cooldown is skipped, not
+// refused.
+type JobEnqueuer interface {
+	Enqueue(ctx context.Context, args ...river.JobArgs) error
 }
 
 // RelatedCoursesReplacer swaps a blog post's related-courses set atomically
@@ -36,10 +33,14 @@ type RelatedCoursesReplacer interface {
 	Replace(ctx context.Context, postID int, courseIDs []int) error
 }
 
-// AccountEmailEnqueuer schedules a Magic Link or Password Reset email for the
-// worker to render and send (accountemails.Enqueuer in production, a moq mock in
-// tests). A request repeated within the cooldown is skipped, not
-// refused.
-type AccountEmailEnqueuer interface {
-	EnqueueAccountEmail(ctx context.Context, purpose emailtokens.Purpose, userID int, locale string) error
+// enqueueLessonReviews schedules one review job per lesson version info, all in
+// one transaction so a failure enqueues none; each job is independent and
+// idempotent (the worker upserts by its natural key), so the admin just clicks
+// again.
+func (s *Server) enqueueLessonReviews(ctx context.Context, lessonInfoIDs []int) error {
+	args := make([]river.JobArgs, len(lessonInfoIDs))
+	for i, id := range lessonInfoIDs {
+		args[i] = jobs.ReviewLessonArgs{LessonInfoID: id}
+	}
+	return s.jobs.Enqueue(ctx, args...)
 }

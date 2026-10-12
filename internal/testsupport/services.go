@@ -16,11 +16,8 @@ import (
 	metricnoop "go.opentelemetry.io/otel/metric/noop"
 	tracenoop "go.opentelemetry.io/otel/trace/noop"
 
-	"hexletbasics/internal/accountemails"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/jobs"
-	"hexletbasics/internal/lessonreviews"
-	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 	"hexletbasics/internal/versionbuilds"
@@ -33,12 +30,10 @@ import (
 type Services struct {
 	// River is the insert-only client behind the enqueuers; EnqueuedJobs lists the
 	// queue through its own JobListTx.
-	River          *river.Client[*sql.Tx]
-	Events         *events.Publisher
-	Starter        *versionbuilds.Starter
-	Reviews        *lessonreviews.Enqueuer
-	RelatedCourses *relatedcourses.Enqueuer
-	Emails         *accountemails.Enqueuer
+	River   *river.Client[*sql.Tx]
+	Events  *events.Publisher
+	Starter *versionbuilds.Starter
+	Jobs    *jobs.Enqueuer
 
 	tx *sql.Tx
 }
@@ -58,14 +53,13 @@ func NewServices(t *testing.T, tx *sql.Tx, transactor store.Transactor) *Service
 		metricnoop.NewMeterProvider(),
 	)
 	require.NoError(t, err)
+	enqueuer := jobs.NewEnqueuer(transactor, riverClient)
 	return &Services{
-		tx:             tx,
-		River:          riverClient,
-		Events:         events.NewPublisher(transactor, slog.New(slog.NewTextHandler(io.Discard, nil))),
-		Starter:        versionbuilds.NewStarter(transactor, riverClient),
-		Reviews:        lessonreviews.NewEnqueuer(transactor, riverClient),
-		RelatedCourses: relatedcourses.NewEnqueuer(transactor, riverClient),
-		Emails:         accountemails.NewEnqueuer(transactor, riverClient),
+		tx:      tx,
+		River:   riverClient,
+		Events:  events.NewPublisher(transactor, slog.New(slog.NewTextHandler(io.Discard, nil))),
+		Starter: versionbuilds.NewStarter(transactor, enqueuer),
+		Jobs:    enqueuer,
 	}
 }
 

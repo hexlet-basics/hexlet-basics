@@ -73,9 +73,9 @@ type AuthHandler struct {
 	guests   progress.Tracker
 	guestJar *progress.GuestCodec
 	secure   bool
-	// emails schedules Magic Link and Password Reset emails; emailTokens
+	// jobs schedules Magic Link and Password Reset emails; emailTokens
 	// verifies the links they carry.
-	emails      AccountEmailEnqueuer
+	jobs        JobEnqueuer
 	emailTokens *emailtokens.Tokens
 }
 
@@ -89,7 +89,7 @@ func NewAuthHandler(
 	remover accounts.AccountRemover,
 	eventPublisher events.StandalonePublisher,
 	tracker progress.Tracker,
-	emails AccountEmailEnqueuer,
+	jobs JobEnqueuer,
 ) *AuthHandler {
 	tokenOpts := token.Opts{
 		SecretReader: token.SecretFunc(func(string) (string, error) {
@@ -130,7 +130,7 @@ func NewAuthHandler(
 		guestJar: progress.NewGuestCodec(cfg.JWTSecret),
 		secure:   strings.HasPrefix(cfg.PublicURL, "https://"),
 
-		emails:      emails,
+		jobs:        jobs,
 		emailTokens: emailtokens.New(cfg.EmailTokenSecret),
 	}
 }
