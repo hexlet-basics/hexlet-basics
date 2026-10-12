@@ -18,7 +18,7 @@ import { worker } from "./msw";
 
 client.setConfig({ baseURL: "http://localhost" });
 
-beforeAll(() => worker.start({ onUnhandledRequest: "bypass", quiet: true }));
+beforeAll(() => worker.start({ onUnhandledFrame: "bypass", quiet: true }));
 afterEach(() => worker.resetHandlers());
 // Notifications render into a portal outside the rendered tree, so unmounting a
 // component leaves them on screen, where they sit over the next test's clicks.
