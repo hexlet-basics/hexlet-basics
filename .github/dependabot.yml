@@ -1,0 +1,64 @@
+version: 2
+
+# The root stack only: legacy/ is the Rails app being retired (hard cutover), so
+# its Gemfile and package.json are deliberately not tracked here.
+#
+# cooldown: a release must be a week old before a PR is opened, the same
+# supply-chain delay the pnpm minimumReleaseAge setting applies locally.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    ignore:
+      # Pinned on the `next` channel while typescript is 7.x: the stable releases
+      # call the TypeScript compiler API the native package no longer exposes
+      # (see AGENTS.md). The pin moves by hand, in package.json and in
+      # pnpm-workspace.yaml together.
+      - dependency-name: '@hey-api/*'
+    groups:
+      mantine:
+        patterns:
+          - '@mantine/*'
+      tanstack:
+        patterns:
+          - '@tanstack/*'
+      typespec:
+        patterns:
+          - '@typespec/*'
+
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      opentelemetry:
+        patterns:
+          - 'go.opentelemetry.io/*'
+      golang-x:
+        patterns:
+          - 'golang.org/x/*'
+      river:
+        patterns:
+          - 'github.com/riverqueue/*'
+      watermill:
+        patterns:
+          - 'github.com/ThreeDotsLabs/*'
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7

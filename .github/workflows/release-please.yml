@@ -5,16 +5,24 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-  pull-requests: write
+# One run at a time and none cancelled: a release in flight must finish before
+# the next push is looked at.
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+# No default token permissions: each job asks for exactly what it needs.
+permissions: {}
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
       # Bare semver (X.Y.Z) for the Docker tag / chart version; the `v` prefix
       # lives only in the git tag (tag_name), never in the image tag.
       version: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
@@ -23,7 +31,7 @@ jobs:
       # (and any extra-files) and CHANGELOG.md. Merging that PR cuts a vX.Y.Z
       # tag + GitHub Release. Config: release-please-config.json +
       # .release-please-manifest.json.
-      - uses: googleapis/release-please-action@v5
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,6 +47,7 @@ jobs:
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       packages: write
@@ -50,20 +59,25 @@ jobs:
           - file: Dockerfile.web
             image: ghcr.io/${{ github.repository }}-web
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Log in to GHCR
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          # The job publishes images, so it restores no cached buildx binary.
+          cache-binary: false
 
       - name: Build & push
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           file: ${{ matrix.file }}
@@ -71,5 +85,6 @@ jobs:
           tags: |
             ${{ matrix.image }}:${{ needs.release-please.outputs.version }}
             ${{ matrix.image }}:latest
-          cache-from: type=gha,scope=${{ matrix.file }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.file }}
+          # No build cache here on purpose: this job publishes the images, and a
+          # poisoned cache entry restored into it would end up in the artifact.
+          # The check workflow still builds both images with a cache.
