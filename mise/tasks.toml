@@ -167,6 +167,10 @@ depends = [
 description = "Spelling in code, docs and comments (_typos.toml)"
 run = "typos"
 
+["lint:unused"]
+description = "Unused files, exports and dependencies of the frontend (knip.ts)"
+run = "pnpm exec knip"
+
 ["lint:shell"]
 description = "shellcheck the scripts under scripts/ (the legacy and third-party skill scripts are not ours)"
 run = "shellcheck -x scripts/*.sh scripts/oneoff/*/*.sh"

@@ -38,7 +38,7 @@ function errorText(t: TFunction, code: number): { header: string; description: s
 // The error page, ported from legacy errors/show: the code, a header and what
 // to do about it. The status line itself is the router's: a not-found match
 // answers 404 and a failed load 500.
-export default function ErrorPage({ code }: { code: number }) {
+function ErrorPage({ code }: { code: number }) {
   const { t } = useTranslation();
   const { header, description } = errorText(t, code);
 
