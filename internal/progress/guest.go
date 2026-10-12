@@ -264,51 +264,50 @@ func (p *Progress) mergeCourse(ctx context.Context, tx *sql.Tx, db *ent.Client, 
 		return err
 	}
 
+	var credited []currentLesson
 	for _, lesson := range lessons {
-		if lesson.position > guestPosition || finished[lesson.lessonID] {
-			continue
-		}
-		if err := p.creditLesson(ctx, tx, db, userID, crs, enrolled, lesson, locale, occurredAt); err != nil {
-			return err
+		if lesson.position <= guestPosition && !finished[lesson.lessonID] {
+			credited = append(credited, lesson)
 		}
 	}
-	return nil
+	return p.creditLessons(ctx, tx, db, userID, crs, enrolled, credited, locale, occurredAt)
 }
 
-// creditLesson writes one implied completion and the pair of facts that a
-// learner passing it would have produced.
-func (p *Progress) creditLesson(
+// creditLessons writes the implied completions of a guest's prefix and the pair
+// of facts each one would have produced had a learner passed it.
+//
+// The rows go in three statements however long the prefix is: one read of what
+// the account already holds, one update finishing the started ones, and one
+// insert of the missing ones. The occurrence count each fact carries is the
+// number of Lesson Progress rows on the Enrollment as of that Lesson, so it is
+// counted once before the writes and advanced by every row this merge creates,
+// in Position order, as the per-Lesson writes used to leave it.
+func (p *Progress) creditLessons(
 	ctx context.Context,
 	tx *sql.Tx,
 	db *ent.Client,
 	userID int,
 	crs *ent.Course,
 	enrolled *ent.Enrollment,
-	lesson currentLesson,
+	lessons []currentLesson,
 	locale string,
 	occurredAt time.Time,
 ) error {
-	existing, err := db.LessonProgress.Query().
-		Where(lessonprogress.UserID(userID), lessonprogress.LessonID(lesson.lessonID)).
-		Only(ctx)
-	switch {
-	case err == nil:
-		// Started but not finished: the guest's prefix says otherwise.
-		if _, err := existing.Update().SetState(StateFinished).Save(ctx); err != nil {
-			return fmt.Errorf("finish lesson progress: %w", err)
-		}
-	case ent.IsNotFound(err):
-		if _, err := db.LessonProgress.Create().
-			SetUserID(userID).
-			SetCourseID(crs.ID).
-			SetEnrollmentID(enrolled.ID).
-			SetLessonID(lesson.lessonID).
-			SetState(StateFinished).
-			Save(ctx); err != nil {
-			return fmt.Errorf("create finished lesson progress: %w", err)
-		}
-	default:
+	if len(lessons) == 0 {
+		return nil
+	}
+
+	lessonIDs := lo.Map(lessons, func(l currentLesson, _ int) int { return l.lessonID })
+	held, err := db.LessonProgress.Query().
+		Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lessonIDs...)).
+		Select(lessonprogress.FieldLessonID).
+		All(ctx)
+	if err != nil {
 		return fmt.Errorf("load lesson progress: %w", err)
+	}
+	isHeld := make(map[int]bool, len(held))
+	for _, row := range held {
+		isHeld[row.LessonID] = true
 	}
 
 	count, err := lessonProgressCount(ctx, db, enrolled.ID)
@@ -316,24 +315,54 @@ func (p *Progress) creditLesson(
 		return err
 	}
 
-	for _, event := range []events.Event{
-		events.LessonStarted{
-			OccurrenceCount: count,
-			LessonSlug:      lesson.slug,
-			CourseSlug:      lo.FromPtr(crs.Slug),
-			Locale:          locale,
-			OccurredAt:      occurredAt,
-		},
-		events.LessonFinished{
-			OccurrenceCount: count,
-			LessonSlug:      lesson.slug,
-			CourseSlug:      lo.FromPtr(crs.Slug),
-			Locale:          locale,
-			OccurredAt:      occurredAt,
-		},
-	} {
-		if err := p.publisher.Publish(ctx, tx, event); err != nil {
-			return fmt.Errorf("publish merge fact: %w", err)
+	// Started but not finished: the guest's prefix says otherwise.
+	if len(held) > 0 {
+		if _, err := db.LessonProgress.Update().
+			Where(lessonprogress.UserID(userID), lessonprogress.LessonIDIn(lo.Keys(isHeld)...)).
+			SetState(StateFinished).
+			Save(ctx); err != nil {
+			return fmt.Errorf("finish lesson progress: %w", err)
+		}
+	}
+
+	missing := lo.Filter(lessons, func(l currentLesson, _ int) bool { return !isHeld[l.lessonID] })
+	if len(missing) > 0 {
+		builders := lo.Map(missing, func(l currentLesson, _ int) *ent.LessonProgressCreate {
+			return db.LessonProgress.Create().
+				SetUserID(userID).
+				SetCourseID(crs.ID).
+				SetEnrollmentID(enrolled.ID).
+				SetLessonID(l.lessonID).
+				SetState(StateFinished)
+		})
+		if _, err := db.LessonProgress.CreateBulk(builders...).Save(ctx); err != nil {
+			return fmt.Errorf("create finished lesson progress: %w", err)
+		}
+	}
+
+	for _, lesson := range lessons {
+		if !isHeld[lesson.lessonID] {
+			count++
+		}
+		for _, event := range []events.Event{
+			events.LessonStarted{
+				OccurrenceCount: count,
+				LessonSlug:      lesson.slug,
+				CourseSlug:      lo.FromPtr(crs.Slug),
+				Locale:          locale,
+				OccurredAt:      occurredAt,
+			},
+			events.LessonFinished{
+				OccurrenceCount: count,
+				LessonSlug:      lesson.slug,
+				CourseSlug:      lo.FromPtr(crs.Slug),
+				Locale:          locale,
+				OccurredAt:      occurredAt,
+			},
+		} {
+			if err := p.publisher.Publish(ctx, tx, event); err != nil {
+				return fmt.Errorf("publish merge fact: %w", err)
+			}
 		}
 	}
 	return nil

@@ -296,9 +296,11 @@ func (p *Progress) publishLessonStarted(
 // published on creation only, so a learner returning to a Course they already
 // began does not generate a second one.
 //
-// The narrow race where two requests enroll the same learner at once resolves
-// to one row (the unique index decides), and both may report it as created. A
-// duplicate fact is the safe failure here; a lost row would not be.
+// Two requests enrolling the same learner at once resolve to one row, and only
+// the request whose insert landed reports it as created: the unique index
+// decides, DO NOTHING hands the loser no row, and the loser reads the winner's.
+// That keeps the course-started fact and the Course's member count to one per
+// Enrollment.
 func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID int) (*ent.Enrollment, bool, error) {
 	existing, err := db.Enrollment.Query().
 		Where(enrollment.UserID(userID), enrollment.CourseID(courseID)).
@@ -318,8 +320,17 @@ func (p *Progress) enroll(ctx context.Context, db *ent.Client, userID, courseID 
 		SetCourseID(courseID).
 		SetState(StateStarted).
 		OnConflictColumns(enrollment.FieldUserID, enrollment.FieldCourseID).
-		Ignore().
+		DoNothing().
 		ID(ctx)
+	if errors.Is(err, sql.ErrNoRows) {
+		existing, err := db.Enrollment.Query().
+			Where(enrollment.UserID(userID), enrollment.CourseID(courseID)).
+			Only(ctx)
+		if err != nil {
+			return nil, false, fmt.Errorf("load concurrent enrollment: %w", err)
+		}
+		return existing, false, nil
+	}
 	if err != nil {
 		return nil, false, fmt.Errorf("enroll: %w", err)
 	}
@@ -486,6 +497,26 @@ func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.
 // makes their gaps unrepresentable, so their single furthest Lesson implies the
 // whole finished set: everything up to it is done, everything after it is not.
 func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error) {
+	if learner.SignedIn() {
+		// One implementation for accounts, whether one Course is asked for or a
+		// dashboard asks for many: a second copy of the read is a second place
+		// for availability and completion to drift.
+		states, err := p.CourseStates(ctx, learner.UserID, []int{courseID})
+		if err != nil {
+			return nil, err
+		}
+		state, ok := states[courseID]
+		if !ok {
+			return nil, fmt.Errorf("load course %d: %w", courseID, &ent.NotFoundError{})
+		}
+		return state, nil
+	}
+	return p.guestCourseState(ctx, learner, courseID)
+}
+
+// guestCourseState is CourseState for a visitor, whose position lives in a
+// signed cookie rather than in rows.
+func (p *Progress) guestCourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error) {
 	crs, err := p.db.Course.Query().Where(course.ID(courseID)).Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load course %d: %w", courseID, err)
@@ -496,36 +527,27 @@ func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID in
 		return nil, err
 	}
 
-	finishedIDs, err := p.finishedLessons(ctx, learner, crs, lessons)
+	furthest, err := p.furthestPosition(ctx, p.db, learner, crs, lessons)
 	if err != nil {
 		return nil, err
+	}
+	finishedIDs := make(map[int]bool, len(lessons))
+	for _, lesson := range lessons {
+		finishedIDs[lesson.lessonID] = lesson.position <= furthest
 	}
 
 	state, finishedCount := stateOf(lessons, finishedIDs)
 
-	if !learner.SignedIn() {
-		// A guest has no Enrollment to read a state from, so it is derived from
-		// what they have finished. Deriving rather than leaving it null is what
-		// makes the payload the client renders identical for both.
-		switch {
-		case finishedCount == 0:
-			state.State = ""
-		case finishedCount == len(lessons):
-			state.State = StateFinished
-		default:
-			state.State = StateStarted
-		}
-		return state, nil
-	}
-
-	enrolled, err := p.db.Enrollment.Query().
-		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(courseID)).
-		Only(ctx)
+	// A guest has no Enrollment to read a state from, so it is derived from
+	// what they have finished. Deriving rather than leaving it null is what
+	// makes the payload the client renders identical for both.
 	switch {
-	case err == nil:
-		state.State = lo.FromPtr(enrolled.State)
-	case !ent.IsNotFound(err):
-		return nil, fmt.Errorf("load enrollment: %w", err)
+	case finishedCount == 0:
+		state.State = ""
+	case finishedCount == len(lessons):
+		state.State = StateFinished
+	default:
+		state.State = StateStarted
 	}
 	return state, nil
 }
@@ -551,22 +573,9 @@ func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int
 		return nil, err
 	}
 
-	finished, err := p.db.LessonProgress.Query().
-		Where(
-			lessonprogress.UserID(userID),
-			lessonprogress.CourseIDIn(courseIDs...),
-			lessonprogress.StateEQ(StateFinished),
-		).
-		All(ctx)
+	finishedIDs, err := finishedLessonsByCourse(ctx, p.db, userID, courseIDs...)
 	if err != nil {
-		return nil, fmt.Errorf("load finished lessons: %w", err)
-	}
-	finishedIDs := make(map[int]map[int]bool, len(courses))
-	for _, row := range finished {
-		if finishedIDs[row.CourseID] == nil {
-			finishedIDs[row.CourseID] = map[int]bool{}
-		}
-		finishedIDs[row.CourseID][row.LessonID] = true
+		return nil, err
 	}
 
 	enrollments, err := p.db.Enrollment.Query().
@@ -629,47 +638,43 @@ func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, i
 	return state, finishedCount
 }
 
-// finishedLessons is the set of Lessons the learner has finished, from
-// whichever storage holds their progress: rows for an account, and for a guest
-// the prefix their furthest Lesson implies.
-func (p *Progress) finishedLessons(
-	ctx context.Context,
-	learner Learner,
-	crs *ent.Course,
-	lessons []currentLesson,
-) (map[int]bool, error) {
-	if learner.SignedIn() {
-		return finishedLessonIDs(ctx, p.db, learner.UserID, crs.ID)
-	}
-
-	furthest, err := p.furthestPosition(ctx, p.db, learner, crs, lessons)
-	if err != nil {
-		return nil, err
-	}
-	finished := make(map[int]bool, len(lessons))
-	for _, lesson := range lessons {
-		finished[lesson.lessonID] = lesson.position <= furthest
-	}
-	return finished, nil
-}
-
-func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int) (map[int]bool, error) {
+// finishedLessonsByCourse is the set of Lessons a signed-in learner has
+// finished in each of the Courses, keyed by Course id then Lesson id. It is the
+// one place "finished" is read: every progress read and write that needs the
+// finished set goes through it, so a Course the learner never joined and a
+// Course they joined without finishing anything both come back empty.
+func finishedLessonsByCourse(ctx context.Context, db *ent.Client, userID int, courseIDs ...int) (map[int]map[int]bool, error) {
 	rows, err := db.LessonProgress.Query().
 		Where(
 			lessonprogress.UserID(userID),
-			lessonprogress.CourseID(courseID),
+			lessonprogress.CourseIDIn(courseIDs...),
 			lessonprogress.StateEQ(StateFinished),
 		).
+		Select(lessonprogress.FieldCourseID, lessonprogress.FieldLessonID).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load finished lessons: %w", err)
 	}
 
-	finished := make(map[int]bool, len(rows))
+	finished := make(map[int]map[int]bool, len(courseIDs))
 	for _, row := range rows {
-		finished[row.LessonID] = true
+		if finished[row.CourseID] == nil {
+			finished[row.CourseID] = map[int]bool{}
+		}
+		finished[row.CourseID][row.LessonID] = true
 	}
 	return finished, nil
+}
+
+func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int) (map[int]bool, error) {
+	byCourse, err := finishedLessonsByCourse(ctx, db, userID, courseID)
+	if err != nil {
+		return nil, err
+	}
+	if finished := byCourse[courseID]; finished != nil {
+		return finished, nil
+	}
+	return map[int]bool{}, nil
 }
 
 // furthestFinishedPosition is the highest Position the learner has finished in
@@ -678,20 +683,14 @@ func finishedLessonIDs(ctx context.Context, db *ent.Client, userID, courseID int
 // gap in a learner's history does not block them — and a finished Lesson that a
 // later Version dropped has no Position and therefore raises nothing.
 func furthestFinishedPosition(ctx context.Context, db *ent.Client, userID, courseID int, positions map[int]int) (int, error) {
-	finished, err := db.LessonProgress.Query().
-		Where(
-			lessonprogress.UserID(userID),
-			lessonprogress.CourseID(courseID),
-			lessonprogress.StateEQ(StateFinished),
-		).
-		All(ctx)
+	finished, err := finishedLessonIDs(ctx, db, userID, courseID)
 	if err != nil {
-		return 0, fmt.Errorf("load finished lessons: %w", err)
+		return 0, err
 	}
 
 	furthest := 0
-	for _, row := range finished {
-		if position, ok := positions[row.LessonID]; ok && position > furthest {
+	for lessonID := range finished {
+		if position, ok := positions[lessonID]; ok && position > furthest {
 			furthest = position
 		}
 	}
