@@ -34,13 +34,13 @@ resource "yandex_vpc_address" "code_basics_ingress_address_1" {
 }
 
 resource "yandex_vpc_security_group" "code_basics_postgresql" {
-  name        = "code-basics-postgresql"
-  network_id  = data.yandex_vpc_network.hexlet.id
+  name       = "code-basics-postgresql"
+  network_id = data.yandex_vpc_network.hexlet.id
 
   ingress {
-    description       = "Permit access to k8s nodes"
-    protocol          = "TCP"
-    port              = 6432
-    v4_cidr_blocks    = yandex_vpc_subnet.code_basics_b_1.v4_cidr_blocks
+    description    = "Permit access to k8s nodes"
+    protocol       = "TCP"
+    port           = 6432
+    v4_cidr_blocks = yandex_vpc_subnet.code_basics_b_1.v4_cidr_blocks
   }
 }

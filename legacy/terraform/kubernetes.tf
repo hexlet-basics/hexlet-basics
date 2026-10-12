@@ -9,7 +9,7 @@ resource "yandex_kubernetes_node_group" "code_basics_node_group_1" {
 
   node_labels = {
     "group" = "codebasics"
-    "role" = "web"
+    "role"  = "web"
   }
 
   instance_template {
@@ -61,7 +61,7 @@ resource "yandex_kubernetes_node_group" "code_basics_node_group_2" {
 
   node_labels = {
     "group" = "codebasics"
-    "role" = "service"
+    "role"  = "service"
   }
 
   instance_template {

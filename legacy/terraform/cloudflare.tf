@@ -33,7 +33,7 @@ resource "cloudflare_dns_record" "main_ru_www" {
   content = local.data.terraform.domain_ru
   type    = "CNAME"
   proxied = true
-   ttl    = 1
+  ttl     = 1
 }
 
 resource "cloudflare_ruleset" "http_request_dynamic_redirect_main_ru" {

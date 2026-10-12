@@ -20,7 +20,7 @@ resource "yandex_mdb_postgresql_cluster" "code_basics_cluster" {
     }
 
     access {
-      web_sql = false
+      web_sql   = false
       data_lens = true
     }
 
