@@ -153,11 +153,23 @@ run = "bin/rails runner ../scripts/export_fixtures.rb"
 
 [lint]
 description = "Lint Go + frontend + ADR numbering + dependency health"
-depends = ["lint:go", "lint:web", "lint:adr", "lint:deps", "lint:typos", "lint:workflows"]
+depends = [
+  "lint:go",
+  "lint:web",
+  "lint:adr",
+  "lint:deps",
+  "lint:typos",
+  "lint:workflows",
+  "lint:shell",
+]
 
 ["lint:typos"]
 description = "Spelling in code, docs and comments (_typos.toml)"
 run = "typos"
+
+["lint:shell"]
+description = "shellcheck the scripts under scripts/ (the legacy and third-party skill scripts are not ours)"
+run = "shellcheck -x scripts/*.sh scripts/oneoff/*/*.sh"
 
 ["lint:workflows"]
 description = "GitHub workflows: zizmor (security) and jactionlint (correctness)"

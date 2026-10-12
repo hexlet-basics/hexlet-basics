@@ -36,6 +36,8 @@ zizmor = "1.30.1"
 jactionlint = "2.1.0"
 typos = "1.51.1"
 pinact = "5.0.0"
+# Shell scripts under scripts/ (mise run lint:shell).
+shellcheck = "0.11.0"
 
 # Install the git hooks (hk.pkl) once the toolchain is in place.
 [hooks]
