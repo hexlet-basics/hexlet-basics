@@ -35,22 +35,14 @@ func NewRuntime(
 	if err != nil {
 		return nil, fmt.Errorf("create Watermill router: %w", err)
 	}
-	router.AddMiddleware(
-		middleware.Recoverer,
-		middleware.Retry{
-			MaxRetries:          3,
-			InitialInterval:     100 * time.Millisecond,
-			MaxInterval:         2 * time.Second,
-			Multiplier:          2,
-			ResetContextOnRetry: true,
-			Logger:              watermillLogger,
-		}.Middleware,
-	)
+	router.AddMiddleware(deliveryMiddleware(watermillLogger)...)
 
 	observerSubscriber, err := newSubscriber(db, observerConsumerGroup, watermillLogger)
 	if err != nil {
 		return nil, fmt.Errorf("create domain event observer subscriber: %w", err)
 	}
+	// The observer takes every event type, so it is a raw handler rather than a
+	// typed cqrs handler.
 	router.AddConsumerHandler(
 		observerConsumerGroup,
 		Topic,
@@ -70,7 +62,7 @@ func NewRuntime(
 				return newSubscriber(db, params.HandlerName, watermillLogger)
 			},
 			AckOnUnknownEvent: true,
-			Marshaler:         cqrs.JSONMarshaler{GenerateName: nameOf},
+			Marshaler:         Marshaler,
 			Logger:            watermillLogger,
 		})
 		if err != nil {
@@ -82,6 +74,26 @@ func NewRuntime(
 	}
 
 	return &Runtime{router: router}, nil
+}
+
+// deliveryMiddleware is the per-message delivery policy. Retry is outermost so
+// that a panic, which Recoverer turns into an error, is retried like any other
+// failure; with the order reversed a panic would skip Retry and be Nacked at
+// once. After the retries are exhausted the message is Nacked and the SQL
+// subscriber redelivers it, so a handler that always fails holds back its own
+// consumer group (other groups are unaffected).
+func deliveryMiddleware(logger watermill.LoggerAdapter) []message.HandlerMiddleware {
+	return []message.HandlerMiddleware{
+		middleware.Retry{
+			MaxRetries:          3,
+			InitialInterval:     100 * time.Millisecond,
+			MaxInterval:         2 * time.Second,
+			Multiplier:          2,
+			ResetContextOnRetry: true,
+			Logger:              logger,
+		}.Middleware,
+		middleware.Recoverer,
+	}
 }
 
 func observeMessage(logger *slog.Logger, msg *message.Message) {
@@ -117,8 +129,9 @@ func (r *Runtime) Run(ctx context.Context) error {
 	return nil
 }
 
-// Running is closed once every subscriber is ready. HTTP startup waits on this
-// channel so requests cannot publish before the event runtime is alive.
+// Running is closed once every subscriber is ready; the worker process waits on
+// it before reporting itself started. Publishing never depends on it: events go
+// to the outbox table whether or not a router is running.
 func (r *Runtime) Running() <-chan struct{} { return r.router.Running() }
 
 // Close drains subscribers and in-flight handlers.

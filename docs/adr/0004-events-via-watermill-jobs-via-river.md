@@ -32,8 +32,10 @@ a subscriber list.
 
 Delivery is at least once. Subscribers must therefore be idempotent. Watermill
 recovers panics, retries a handler three times with short exponential backoff,
-then Nacks the message for durable SQL redelivery. A stuck consumer group does
-not block independent groups.
+then Nacks the message for durable SQL redelivery (Retry wraps Recoverer, so a
+panic is retried like any error). There is no poison queue: a handler that
+always fails is redelivered indefinitely and holds back only its own consumer
+group, so such a handler must be kept trivial (the amoCRM one only enqueues).
 
 Schema version 1 defines all legacy event names and data shapes:
 `user_signed_up`, `user_signed_in`, `book_requested`, `course_started`,

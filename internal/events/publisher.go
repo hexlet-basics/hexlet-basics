@@ -57,20 +57,7 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 	}
 	defer func() { _ = sqlPublisher.Close() }()
 
-	bus, err := cqrs.NewEventBusWithConfig(sqlPublisher, cqrs.EventBusConfig{
-		GeneratePublishTopic: func(cqrs.GenerateEventPublishTopicParams) (string, error) {
-			return Topic, nil
-		},
-		Marshaler: Marshaler,
-		Logger:    p.logger,
-		OnPublish: func(params cqrs.OnEventSendParams) error {
-			if params.EventName == "" {
-				return fmt.Errorf("domain event has no stable name")
-			}
-			params.Message.Metadata.Set("schema_version", schemaVersion)
-			return nil
-		},
-	})
+	bus, err := cqrs.NewEventBusWithConfig(sqlPublisher, busConfig(p.logger))
 	if err != nil {
 		return fmt.Errorf("create Watermill event bus: %w", err)
 	}
@@ -78,4 +65,24 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 		return fmt.Errorf("publish %s: %w", event.eventName(), err)
 	}
 	return nil
+}
+
+// busConfig is the part of the event bus that does not depend on the
+// transaction. Only the SQL publisher is bound to a transaction, and the bus
+// takes it at construction, so the bus itself is built per Publish.
+func busConfig(logger watermill.LoggerAdapter) cqrs.EventBusConfig {
+	return cqrs.EventBusConfig{
+		GeneratePublishTopic: func(cqrs.GenerateEventPublishTopicParams) (string, error) {
+			return Topic, nil
+		},
+		Marshaler: Marshaler,
+		Logger:    logger,
+		OnPublish: func(params cqrs.OnEventSendParams) error {
+			if params.EventName == "" {
+				return fmt.Errorf("domain event has no stable name")
+			}
+			params.Message.Metadata.Set("schema_version", schemaVersion)
+			return nil
+		},
+	}
 }

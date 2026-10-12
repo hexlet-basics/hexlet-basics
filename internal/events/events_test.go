@@ -160,3 +160,23 @@ func TestSQLRouterFansOutToIndependentConsumerGroups(t *testing.T) {
 	`, groupA, groupB).Scan(&groups))
 	assert.Zero(t, groups, fmt.Sprintf("test consumer offsets must be cleaned: %s, %s", groupA, groupB))
 }
+
+func TestDeliveryRetriesAHandlerThatPanics(t *testing.T) {
+	logger := watermill.NopLogger{}
+	attempts := 0
+	handler := func(*message.Message) ([]*message.Message, error) {
+		attempts++
+		if attempts == 1 {
+			panic("boom")
+		}
+		return nil, nil
+	}
+	for i := len(deliveryMiddleware(logger)) - 1; i >= 0; i-- {
+		handler = deliveryMiddleware(logger)[i](handler)
+	}
+
+	_, err := handler(message.NewMessage("event-1", nil))
+
+	require.NoError(t, err)
+	assert.Equal(t, 2, attempts)
+}
