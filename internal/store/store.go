@@ -17,6 +17,10 @@ import (
 	_ "gocloud.dev/blob/s3blob"
 
 	"hexletbasics/ent"
+	// ent's generated defaults (created_at/updated_at) and hooks are registered
+	// by this package's init; without it a production insert panics with
+	// "uninitialized default". Tests got it through enttest, the binaries did not.
+	_ "hexletbasics/ent/runtime"
 )
 
 // Transactor is the transaction seam shared by business modules. The callback

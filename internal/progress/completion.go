@@ -5,49 +5,14 @@ import (
 	"database/sql"
 	"fmt"
 
+	entsql "entgo.io/ent/dialect/sql"
+
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/enrollment"
+	"hexletbasics/ent/lessonprogress"
 	"hexletbasics/internal/events"
 )
-
-// completionSweepSQL selects the Enrollments a promoted Version has just
-// completed: not yet finished, and having finished every Lesson the new Version
-// contains.
-//
-// A NULL state counts as started. AASM always wrote the column, but the legacy
-// baseline allows NULL and rows predating it exist; the conversion layer
-// already resolves NULL to started, and a learner whose row happens to be NULL
-// must not be the one learner who can never complete.
-//
-// The shape is deliberate. A correlated per-Enrollment subquery would make the
-// promotion pay for every Enrollment the Course has; this is one pass — join
-// the Course's Enrollments to their finished Lesson Progress rows restricted to
-// the new Version's Lessons, and keep the learners whose distinct count matches
-// the Version's Lesson count. Work is proportional to the Course's finished
-// Lesson Progress rows and is a single statement, which is the same order as
-// the hundreds of content rows the promotion transaction is already writing.
-var completionSweepSQL = fmt.Sprintf(`
-SELECT lm.id, lm.user_id
-FROM language_members lm
-JOIN language_lesson_members llm
-  ON llm.user_id = lm.user_id
- AND llm.state = '%s'
- AND llm.lesson_id = ANY($2)
-WHERE lm.language_id = $1
-  AND (lm.state IS NULL OR lm.state <> '%s')
-GROUP BY lm.id, lm.user_id
-HAVING count(DISTINCT llm.lesson_id) = $3
-`, StateFinished, StateFinished)
-
-// finishedEnrollmentCountsSQL counts each learner's finished Enrollments in one
-// statement, so the occurrence counts the facts carry do not cost a query per
-// transitioning learner.
-const finishedEnrollmentCountsSQL = `
-SELECT user_id, count(*)
-FROM language_members
-WHERE user_id = ANY($1) AND state = $2
-GROUP BY user_id
-`
 
 // ReevaluateCompletion finishes the Enrollments a newly promoted Version has
 // completed, and publishes the fact for each.
@@ -85,12 +50,12 @@ func (p *Progress) ReevaluateCompletion(
 		return nil
 	}
 
-	lessonIDs := make([]int64, 0, len(lessons))
+	lessonIDs := make([]int, 0, len(lessons))
 	for _, lesson := range lessons {
-		lessonIDs = append(lessonIDs, int64(lesson.lessonID))
+		lessonIDs = append(lessonIDs, lesson.lessonID)
 	}
 
-	completed, err := completedEnrollments(ctx, tx, courseID, lessonIDs)
+	completed, err := completedEnrollments(ctx, db, courseID, lessonIDs)
 	if err != nil {
 		return err
 	}
@@ -98,21 +63,21 @@ func (p *Progress) ReevaluateCompletion(
 		return nil
 	}
 
-	enrollmentIDs := make([]int64, 0, len(completed))
-	userIDs := make([]int64, 0, len(completed))
+	enrollmentIDs := make([]int, 0, len(completed))
+	userIDs := make([]int, 0, len(completed))
 	for _, row := range completed {
-		enrollmentIDs = append(enrollmentIDs, int64(row.id))
-		userIDs = append(userIDs, int64(row.userID))
+		enrollmentIDs = append(enrollmentIDs, row.id)
+		userIDs = append(userIDs, row.userID)
 	}
 
-	if _, err := tx.ExecContext(ctx,
-		`UPDATE language_members SET state = $2, updated_at = now() WHERE id = ANY($1)`,
-		enrollmentIDs, StateFinished,
-	); err != nil {
+	if err := db.Enrollment.Update().
+		Where(enrollment.IDIn(enrollmentIDs...)).
+		SetState(StateFinished).
+		Exec(ctx); err != nil {
 		return fmt.Errorf("finish completed enrollments: %w", err)
 	}
 
-	counts, err := finishedEnrollmentCounts(ctx, tx, userIDs)
+	counts, err := finishedEnrollmentCounts(ctx, db, userIDs)
 	if err != nil {
 		return err
 	}
@@ -138,47 +103,88 @@ type completedEnrollment struct {
 	userID int
 }
 
-func completedEnrollments(ctx context.Context, tx *sql.Tx, courseID int, lessonIDs []int64) ([]completedEnrollment, error) {
-	rows, err := tx.QueryContext(ctx, completionSweepSQL, courseID, lessonIDs, len(lessonIDs))
+// completedEnrollments selects the Enrollments a promoted Version has just
+// completed: not yet finished, and having finished every Lesson the new Version
+// contains.
+//
+// A NULL state counts as started. AASM always wrote the column, but the legacy
+// baseline allows NULL and rows predating it exist; the conversion layer
+// already resolves NULL to started, and a learner whose row happens to be NULL
+// must not be the one learner who can never complete.
+//
+// The shape is deliberate. A correlated per-Enrollment subquery would make the
+// promotion pay for every Enrollment the Course has; this counts each learner's
+// distinct finished Lessons of the new Version in one grouped pass, keeps those
+// matching the Version's Lesson count, and then loads their unfinished
+// Enrollments. Work is proportional to the finished Lesson Progress rows of the
+// new Version's Lessons — the same order as the hundreds of content rows the
+// promotion transaction is already writing.
+func completedEnrollments(ctx context.Context, db *ent.Client, courseID int, lessonIDs []int) ([]completedEnrollment, error) {
+	var finishedPerLearner []struct {
+		UserID  int `json:"user_id"`
+		Lessons int `json:"lessons"`
+	}
+	if err := db.LessonProgress.Query().
+		Where(
+			lessonprogress.State(StateFinished),
+			lessonprogress.LessonIDIn(lessonIDs...),
+		).
+		GroupBy(lessonprogress.FieldUserID).
+		Aggregate(func(s *entsql.Selector) string {
+			return entsql.As(entsql.Count(entsql.Distinct(s.C(lessonprogress.FieldLessonID))), "lessons")
+		}).
+		Scan(ctx, &finishedPerLearner); err != nil {
+		return nil, fmt.Errorf("count finished lessons per learner: %w", err)
+	}
+
+	var finishers []int
+	for _, row := range finishedPerLearner {
+		if row.Lessons == len(lessonIDs) {
+			finishers = append(finishers, row.UserID)
+		}
+	}
+	if len(finishers) == 0 {
+		return nil, nil
+	}
+
+	enrollments, err := db.Enrollment.Query().
+		Where(
+			enrollment.CourseID(courseID),
+			enrollment.UserIDIn(finishers...),
+			enrollment.Or(enrollment.StateIsNil(), enrollment.StateNEQ(StateFinished)),
+		).
+		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("select completed enrollments: %w", err)
 	}
-	defer func() { _ = rows.Close() }()
 
-	var completed []completedEnrollment
-	for rows.Next() {
-		var row completedEnrollment
-		if err := rows.Scan(&row.id, &row.userID); err != nil {
-			return nil, fmt.Errorf("scan completed enrollment: %w", err)
-		}
-		completed = append(completed, row)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("read completed enrollments: %w", err)
+	completed := make([]completedEnrollment, 0, len(enrollments))
+	for _, e := range enrollments {
+		completed = append(completed, completedEnrollment{id: e.ID, userID: e.UserID})
 	}
 	return completed, nil
 }
 
 // finishedEnrollmentCounts is each learner's number of finished Enrollments,
 // read after the update so the freshly finished Course is included — the legacy
-// events counted the transition itself.
-func finishedEnrollmentCounts(ctx context.Context, tx *sql.Tx, userIDs []int64) (map[int]int, error) {
-	rows, err := tx.QueryContext(ctx, finishedEnrollmentCountsSQL, userIDs, StateFinished)
-	if err != nil {
+// events counted the transition itself. One grouped query keeps the occurrence
+// counts from costing a query per transitioning learner.
+func finishedEnrollmentCounts(ctx context.Context, db *ent.Client, userIDs []int) (map[int]int, error) {
+	var rows []struct {
+		UserID int `json:"user_id"`
+		Count  int `json:"count"`
+	}
+	if err := db.Enrollment.Query().
+		Where(enrollment.UserIDIn(userIDs...), enrollment.State(StateFinished)).
+		GroupBy(enrollment.FieldUserID).
+		Aggregate(ent.Count()).
+		Scan(ctx, &rows); err != nil {
 		return nil, fmt.Errorf("count finished enrollments: %w", err)
 	}
-	defer func() { _ = rows.Close() }()
 
-	counts := map[int]int{}
-	for rows.Next() {
-		var userID, count int
-		if err := rows.Scan(&userID, &count); err != nil {
-			return nil, fmt.Errorf("scan finished enrollment count: %w", err)
-		}
-		counts[userID] = count
-	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("read finished enrollment counts: %w", err)
+	counts := make(map[int]int, len(rows))
+	for _, row := range rows {
+		counts[row.UserID] = row.Count
 	}
 	return counts, nil
 }
