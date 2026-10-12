@@ -265,17 +265,6 @@ func (s *BlogPost) Validate() error {
 
 	var failures []validate.FieldError
 	if err := func() error {
-		if err := s.Creator.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "creator",
-			Error: err,
-		})
-	}
-	if err := func() error {
 		if value, ok := s.State.Get(); ok {
 			if err := func() error {
 				if err := value.Validate(); err != nil {
@@ -2078,17 +2067,6 @@ func (s *Review) Validate() error {
 	}
 
 	var failures []validate.FieldError
-	if err := func() error {
-		if err := s.User.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		failures = append(failures, validate.FieldError{
-			Name:  "user",
-			Error: err,
-		})
-	}
 	if err := func() error {
 		if err := s.Course.Validate(); err != nil {
 			return err

@@ -392,11 +392,21 @@ func (c *ConverterImpl) ToLessonProgressList(source []*ent.LessonProgress) []api
 	}
 	return apiLessonProgressList
 }
+func (c *ConverterImpl) ToPublicUser(source *ent.User) api.PublicUser {
+	var apiPublicUser api.PublicUser
+	if source != nil {
+		apiPublicUser.ID = Int32FromInt((*source).ID)
+		apiPublicUser.FirstName = NilStringFromPtr((*source).FirstName)
+		apiPublicUser.LastName = NilStringFromPtr((*source).LastName)
+		apiPublicUser.Name = userName(source)
+	}
+	return apiPublicUser
+}
 func (c *ConverterImpl) ToReview(source *ent.Review) api.Review {
 	var apiReview api.Review
 	if source != nil {
 		apiReview.ID = Int32FromInt((*source).ID)
-		apiReview.User = c.ToUser((*source).Edges.User)
+		apiReview.User = c.ToPublicUser((*source).Edges.User)
 		apiReview.Course = c.ToCourse((*source).Edges.Course)
 		apiReview.UserId = Int32FromInt((*source).UserID)
 		apiReview.CourseId = Int32FromInt((*source).CourseID)

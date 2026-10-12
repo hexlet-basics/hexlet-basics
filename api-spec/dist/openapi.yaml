@@ -4802,7 +4802,7 @@ components:
           type: integer
           format: int32
         creator:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/PublicUser'
         name:
           type: string
           nullable: true
@@ -6380,6 +6380,30 @@ components:
       description: |-
         A name on the profile (legacy `User` validations on first/last name): at
         most 40 characters, none of the characters in the pattern; blank is allowed.
+    PublicUser:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+      description: |-
+        The part of a user that is safe to show anonymous visitors: the display
+            name only, never the email or the admin flag. Embedded in public review and
+            blog responses in place of `User`.
     QnaItem:
       type: object
       required:
@@ -6437,7 +6461,7 @@ components:
           type: integer
           format: int32
         user:
-          $ref: '#/components/schemas/User'
+          $ref: '#/components/schemas/PublicUser'
         course:
           $ref: '#/components/schemas/Course'
         userId:

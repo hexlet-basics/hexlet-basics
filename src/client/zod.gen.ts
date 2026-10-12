@@ -666,6 +666,60 @@ export const zProfileInput = z.object({
 });
 
 /**
+ * The part of a user that is safe to show anonymous visitors: the display
+ *     name only, never the email or the admin flag. Embedded in public review and
+ *     blog responses in place of `User`.
+ */
+export const zPublicUser = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  name: z.string().nullable()
+});
+
+/**
+ * A blog post (legacy: `BlogPost`).
+ */
+export const zBlogPost = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  creator: zPublicUser,
+  name: z.string().nullable(),
+  slug: z.string().nullable(),
+  description: z.string().nullable(),
+  state: zBlogPostState.nullable(),
+  locale: z.string().nullable(),
+  richBodyHtml: z.string(),
+  readingTime: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  likesCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  relatedCourseItemsCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  relatedCourseIds: z.array(z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })),
+  coverThumbVariant: z.string().nullable(),
+  coverListVariant: z.string().nullable(),
+  coverMainVariant: z.string().nullable(),
+  createdAt: z.iso.datetime()
+});
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export const zBlogPostPage = z.object({
+  items: z.array(zBlogPost),
+  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * A blog post page: the post plus what the page shows under it.
+ */
+export const zBlogPostView = z.object({
+  post: zBlogPost,
+  recommendedPosts: z.array(zBlogPost),
+  relatedLandingPages: z.array(zCourseCatalogItem)
+});
+
+/**
  * A Q&A entry attached to a category or landing page (legacy QnA item).
  */
 export const zQnaItem = z.object({
@@ -722,6 +776,25 @@ export const zReviewState = z.enum([
   'archived'
 ]);
 
+/**
+ * A student review/testimonial (legacy: `Review`).
+ */
+export const zReview = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  user: zPublicUser,
+  course: zCourse,
+  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  body: z.string().nullable(),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
+  fullName: z.string().nullable(),
+  state: zReviewState.nullable(),
+  locale: zReviewLocale.nullable(),
+  pinned: z.boolean().nullable(),
+  createdAt: z.iso.datetime()
+});
+
 export const zReviewInput = z.object({
   state: zReviewState.nullable(),
   pinned: z.boolean().nullable(),
@@ -730,6 +803,17 @@ export const zReviewInput = z.object({
   body: z.string().nullable(),
   firstName: z.string().nullable(),
   lastName: z.string().nullable()
+});
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export const zReviewPage = z.object({
+  items: z.array(zReview),
+  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 export const zRoleInput = z.object({
@@ -877,82 +961,10 @@ export const zUser = z.object({
 });
 
 /**
- * A blog post (legacy: `BlogPost`).
- */
-export const zBlogPost = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  creator: zUser,
-  name: z.string().nullable(),
-  slug: z.string().nullable(),
-  description: z.string().nullable(),
-  state: zBlogPostState.nullable(),
-  locale: z.string().nullable(),
-  richBodyHtml: z.string(),
-  readingTime: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  likesCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  relatedCourseItemsCount: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  relatedCourseIds: z.array(z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })),
-  coverThumbVariant: z.string().nullable(),
-  coverListVariant: z.string().nullable(),
-  coverMainVariant: z.string().nullable(),
-  createdAt: z.iso.datetime()
-});
-
-/**
- * A page of results. Generic envelope reused by every admin list so the CRUD
- * engine (TanStack Table) can read pagination uniformly.
- */
-export const zBlogPostPage = z.object({
-  items: z.array(zBlogPost),
-  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
-});
-
-/**
- * A blog post page: the post plus what the page shows under it.
- */
-export const zBlogPostView = z.object({
-  post: zBlogPost,
-  recommendedPosts: z.array(zBlogPost),
-  relatedLandingPages: z.array(zCourseCatalogItem)
-});
-
-/**
  * The current user resolved from the session cookie (null when anonymous).
  */
 export const zCurrentUser = z.object({
   user: zUser.nullable()
-});
-
-/**
- * A student review/testimonial (legacy: `Review`).
- */
-export const zReview = z.object({
-  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  user: zUser,
-  course: zCourse,
-  userId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  courseId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  body: z.string().nullable(),
-  firstName: z.string().nullable(),
-  lastName: z.string().nullable(),
-  fullName: z.string().nullable(),
-  state: zReviewState.nullable(),
-  locale: zReviewLocale.nullable(),
-  pinned: z.boolean().nullable(),
-  createdAt: z.iso.datetime()
-});
-
-/**
- * A page of results. Generic envelope reused by every admin list so the CRUD
- * engine (TanStack Table) can read pagination uniformly.
- */
-export const zReviewPage = z.object({
-  items: z.array(zReview),
-  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
 });
 
 /**

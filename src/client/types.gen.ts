@@ -93,7 +93,7 @@ export type BannerState = 'draft' | 'published' | 'archived';
  */
 export type BlogPost = {
   id: number;
-  creator: User;
+  creator: PublicUser;
   name: string | null;
   slug: string | null;
   description: string | null;
@@ -951,6 +951,18 @@ export type ProfileInput = {
 export type ProfileName = string;
 
 /**
+ * The part of a user that is safe to show anonymous visitors: the display
+ *     name only, never the email or the admin flag. Embedded in public review and
+ *     blog responses in place of `User`.
+ */
+export type PublicUser = {
+  id: number;
+  firstName: string | null;
+  lastName: string | null;
+  name: string | null;
+};
+
+/**
  * A Q&A entry attached to a category or landing page (legacy QnA item).
  */
 export type QnaItem = {
@@ -976,7 +988,7 @@ export type ResetPasswordInput = {
  */
 export type Review = {
   id: number;
-  user: User;
+  user: PublicUser;
   course: Course;
   userId: number;
   courseId: number;

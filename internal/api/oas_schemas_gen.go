@@ -1175,7 +1175,7 @@ func (s *BannerState) UnmarshalText(data []byte) error {
 // Ref: #/components/schemas/BlogPost
 type BlogPost struct {
 	ID                      int32            `json:"id"`
-	Creator                 User             `json:"creator"`
+	Creator                 PublicUser       `json:"creator"`
 	Name                    NilString        `json:"name"`
 	Slug                    NilString        `json:"slug"`
 	Description             NilString        `json:"description"`
@@ -1200,7 +1200,7 @@ func (s *BlogPost) GetID() int32 {
 }
 
 // GetCreator returns the value of Creator.
-func (s *BlogPost) GetCreator() User {
+func (s *BlogPost) GetCreator() PublicUser {
 	return s.Creator
 }
 
@@ -1280,7 +1280,7 @@ func (s *BlogPost) SetID(val int32) {
 }
 
 // SetCreator sets the value of Creator.
-func (s *BlogPost) SetCreator(val User) {
+func (s *BlogPost) SetCreator(val PublicUser) {
 	s.Creator = val
 }
 
@@ -6460,6 +6460,56 @@ func (s *ProfileInput) SetLastName(val NilProfileName) {
 
 type ProfileName string
 
+// The part of a user that is safe to show anonymous visitors: the display name only, never the email
+// or the admin flag. Embedded in public review and blog responses in place of `User`.
+// Ref: #/components/schemas/PublicUser
+type PublicUser struct {
+	ID        int32     `json:"id"`
+	FirstName NilString `json:"firstName"`
+	LastName  NilString `json:"lastName"`
+	Name      NilString `json:"name"`
+}
+
+// GetID returns the value of ID.
+func (s *PublicUser) GetID() int32 {
+	return s.ID
+}
+
+// GetFirstName returns the value of FirstName.
+func (s *PublicUser) GetFirstName() NilString {
+	return s.FirstName
+}
+
+// GetLastName returns the value of LastName.
+func (s *PublicUser) GetLastName() NilString {
+	return s.LastName
+}
+
+// GetName returns the value of Name.
+func (s *PublicUser) GetName() NilString {
+	return s.Name
+}
+
+// SetID sets the value of ID.
+func (s *PublicUser) SetID(val int32) {
+	s.ID = val
+}
+
+// SetFirstName sets the value of FirstName.
+func (s *PublicUser) SetFirstName(val NilString) {
+	s.FirstName = val
+}
+
+// SetLastName sets the value of LastName.
+func (s *PublicUser) SetLastName(val NilString) {
+	s.LastName = val
+}
+
+// SetName sets the value of Name.
+func (s *PublicUser) SetName(val NilString) {
+	s.Name = val
+}
+
 // A Q&A entry attached to a category or landing page (legacy QnA item).
 // Ref: #/components/schemas/QnaItem
 type QnaItem struct {
@@ -6549,7 +6599,7 @@ func (s *ResetPasswordInput) SetPassword(val string) {
 // Ref: #/components/schemas/Review
 type Review struct {
 	ID        int32           `json:"id"`
-	User      User            `json:"user"`
+	User      PublicUser      `json:"user"`
 	Course    Course          `json:"course"`
 	UserId    int32           `json:"userId"`
 	CourseId  int32           `json:"courseId"`
@@ -6571,7 +6621,7 @@ func (s *Review) GetID() int32 {
 }
 
 // GetUser returns the value of User.
-func (s *Review) GetUser() User {
+func (s *Review) GetUser() PublicUser {
 	return s.User
 }
 
@@ -6636,7 +6686,7 @@ func (s *Review) SetID(val int32) {
 }
 
 // SetUser sets the value of User.
-func (s *Review) SetUser(val User) {
+func (s *Review) SetUser(val PublicUser) {
 	s.User = val
 }
 

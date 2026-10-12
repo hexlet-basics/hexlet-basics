@@ -363,6 +363,16 @@ model User {
   type: "user";
 }
 
+/** The part of a user that is safe to show anonymous visitors: the display
+    name only, never the email or the admin flag. Embedded in public review and
+    blog responses in place of `User`. */
+model PublicUser {
+  id: int32;
+  firstName: string | null;
+  lastName: string | null;
+  name: string | null;
+}
+
 /** A user row as shown in admin lists/forms (legacy: `UserCrud`). */
 model UserCrud {
   id: int32;
@@ -428,7 +438,7 @@ model Banner {
 /** A blog post (legacy: `BlogPost`). */
 model BlogPost {
   id: int32;
-  creator: User;
+  creator: PublicUser;
   name: string | null;
   slug: string | null;
   description: string | null;
@@ -452,7 +462,7 @@ model BlogPost {
 /** A student review/testimonial (legacy: `Review`). */
 model Review {
   id: int32;
-  user: User;
+  user: PublicUser;
   course: Course;
   userId: int32;
   courseId: int32;

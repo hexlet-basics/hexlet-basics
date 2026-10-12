@@ -212,7 +212,7 @@ func (s *Server) blogPostsToAPI(ctx context.Context, posts []*ent.BlogPost) ([]a
 	for i, p := range posts {
 		items[i] = api.BlogPost{
 			ID:                      int32(p.ID),
-			Creator:                 s.conv.ToUser(p.Edges.Creator),
+			Creator:                 s.conv.ToPublicUser(p.Edges.Creator),
 			Name:                    apiconv.NilStringFromPtr(p.Name),
 			Slug:                    apiconv.NilStringFromPtr(p.Slug),
 			Description:             apiconv.NilStringFromPtr(p.Description),

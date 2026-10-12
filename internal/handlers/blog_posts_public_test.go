@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"encoding/json"
 	"net/http"
 	"testing"
 
@@ -174,4 +175,26 @@ func TestLikeBlogPostIsNotFoundForAMissingPost(t *testing.T) {
 	_, err := h.Client.LikeBlogPost(t.Context(), api.LikeBlogPostParams{ID: 1})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+// The blog is public, so the embedded author must not carry the staff
+// account's email or admin flag.
+func TestListBlogPostsDoesNotExposeAuthorAccountData(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	page, err := h.Client.ListBlogPosts(t.Context(), api.ListBlogPostsParams{})
+	require.NoError(t, err)
+	require.NotEmpty(t, page.Items)
+
+	for _, post := range page.Items {
+		raw, err := json.Marshal(post.Creator)
+		require.NoError(t, err)
+
+		var fields map[string]any
+		require.NoError(t, json.Unmarshal(raw, &fields))
+		assert.NotContains(t, fields, "email")
+		assert.NotContains(t, fields, "admin")
+		assert.Contains(t, fields, "name")
+	}
 }

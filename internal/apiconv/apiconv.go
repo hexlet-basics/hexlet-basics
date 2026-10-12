@@ -119,6 +119,11 @@ type Converter interface {
 	// goverter:map . Type | userType
 	ToUser(source *ent.User) api.User
 
+	// PublicUser is the anonymous-safe user projection: id and display name, with
+	// no email or admin flag, for the public review and blog responses.
+	// goverter:map . Name | userName
+	ToPublicUser(source *ent.User) api.PublicUser
+
 	// Review embeds the full course and user (loaded via WithCourse/WithUser).
 	// courseId is the legacy `language_id` column; full_name joins the review's
 	// own first/last name (mirrors ReviewResource#full_name).

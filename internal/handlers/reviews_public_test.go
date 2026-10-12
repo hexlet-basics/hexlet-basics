@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"encoding/json"
 	"net/http"
 	"testing"
 
@@ -84,4 +85,26 @@ func TestListPublicReviewsPaginates(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.Empty(t, page.Items)
+}
+
+// The public list is anonymous, so the embedded reviewer must not carry the
+// account's email or admin flag, only what the page shows.
+func TestListPublicReviewsDoesNotExposeReviewerAccountData(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	page, err := h.Client.ListPublicReviews(t.Context(), api.ListPublicReviewsParams{})
+	require.NoError(t, err)
+	require.NotEmpty(t, page.Items)
+
+	for _, review := range page.Items {
+		raw, err := json.Marshal(review.User)
+		require.NoError(t, err)
+
+		var fields map[string]any
+		require.NoError(t, json.Unmarshal(raw, &fields))
+		assert.NotContains(t, fields, "email")
+		assert.NotContains(t, fields, "admin")
+		assert.Contains(t, fields, "name")
+	}
 }

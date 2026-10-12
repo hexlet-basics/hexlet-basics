@@ -54,10 +54,8 @@ func TestAdminListReviewsEmbedsCourseAndUser(t *testing.T) {
 	// Embedded course (ruby) is loaded in full.
 	assert.Equal(t, "ruby", r.Course.Slug)
 	assert.Equal(t, r.CourseId, r.Course.ID)
-	// Embedded user (alice) with its computed fields.
-	assert.Equal(t, "alice@example.com", r.User.Email.Value)
-	assert.Equal(t, api.UserTypeUser, r.User.Type)
-	assert.True(t, r.User.CanAccessAdmin, "alice is admin -> can access admin")
+	// Embedded user (alice) as the public projection: id and display name.
+	assert.Equal(t, "Alice Anderson", r.User.Name.Value)
 	// Review's own display name (not the user's).
 	assert.Equal(t, "Ivan Petrov", r.FullName.Value)
 	assert.Equal(t, api.ReviewStatePublished, r.State.Value)
@@ -75,7 +73,7 @@ func TestAdminGetReview(t *testing.T) {
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "John Doe", got.FullName.Value)
 	assert.Equal(t, api.ReviewStateDraft, got.State.Value)
-	assert.Equal(t, "bob@example.com", got.User.Email.Value)
+	assert.Equal(t, "Bob Brown", got.User.Name.Value)
 }
 
 func TestAdminGetReviewNotFound(t *testing.T) {
@@ -107,7 +105,7 @@ func TestAdminCreateReview(t *testing.T) {
 	assert.Equal(t, "Carol Clark", created.FullName.Value)
 	// The response reloads the embedded associations.
 	assert.Equal(t, "ruby", created.Course.Slug)
-	assert.Equal(t, "carol@example.com", created.User.Email.Value)
+	assert.Equal(t, "Carol Clark", created.User.Name.Value)
 
 	total, err := h.DB.Review.Query().Count(ctx)
 	require.NoError(t, err)

@@ -52,7 +52,7 @@ func TestAdminListBlogPosts(t *testing.T) {
 	assert.Equal(t, int32(0), full.ReadingTime)
 	assert.Equal(t, int32(2), full.LikesCount)
 	assert.Equal(t, int32(3), full.RelatedCourseItemsCount)
-	assert.Equal(t, "alice@example.com", full.Creator.Email.Value)
+	assert.Equal(t, "Alice Anderson", full.Creator.Name.Value)
 	require.False(t, full.CoverThumbVariant.Null)
 	assert.Equal(t, "http://localhost:3001/api/storage/blogcoverkey001", full.CoverThumbVariant.Value)
 	// All three variants serve the same URL until image variants land (ADR-0005).
@@ -132,7 +132,7 @@ func TestAdminCreateBlogPost(t *testing.T) {
 	// The creator is the authenticated admin (the harness signs in as the
 	// fixture admin), and the locale is pinned to the default until request
 	// locale reaches handlers.
-	assert.Equal(t, "alice@example.com", post.Creator.Email.Value)
+	assert.Equal(t, "Alice Anderson", post.Creator.Name.Value)
 	assert.Equal(t, "en", post.Locale.Value)
 	assert.Equal(t, int32(0), post.LikesCount)
 	assert.Equal(t, int32(0), post.RelatedCourseItemsCount)
