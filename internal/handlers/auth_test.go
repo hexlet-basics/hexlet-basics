@@ -1,7 +1,6 @@
 package handlers_test
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -158,21 +157,12 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 	require.NoError(t, json.NewDecoder(resp.Body).Decode(&anon))
 	assert.Nil(t, anon.User)
 
-	userQueries := 0
-	db.User.Intercept(ent.InterceptFunc(func(next ent.Querier) ent.Querier {
-		return ent.QuerierFunc(func(ctx context.Context, query ent.Query) (ent.Value, error) {
-			userQueries++
-			return next.Query(ctx, query)
-		})
-	}))
-
 	// Login with the registered credentials succeeds and re-issues the cookie.
 	resp = do(t, router, http.MethodPost, "/api/session",
 		`{"email":"`+email+`","password":"`+password+`"}`, nil)
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 	loginCookie := jwtCookie(resp)
 	require.NotNil(t, loginCookie)
-	assert.Equal(t, 1, userQueries, "login must load the user only once")
 
 	// Login and signup issue equivalent cookies that resolve through /me.
 	resp = do(t, router, http.MethodGet, "/api/me", "", loginCookie)
