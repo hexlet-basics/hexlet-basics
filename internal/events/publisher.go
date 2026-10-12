@@ -57,12 +57,11 @@ func (p *Publisher) Publish(ctx context.Context, tx *sql.Tx, event Event) error 
 	}
 	defer func() { _ = sqlPublisher.Close() }()
 
-	marshaler := cqrs.JSONMarshaler{GenerateName: nameOf}
 	bus, err := cqrs.NewEventBusWithConfig(sqlPublisher, cqrs.EventBusConfig{
 		GeneratePublishTopic: func(cqrs.GenerateEventPublishTopicParams) (string, error) {
 			return Topic, nil
 		},
-		Marshaler: marshaler,
+		Marshaler: Marshaler,
 		Logger:    p.logger,
 		OnPublish: func(params cqrs.OnEventSendParams) error {
 			if params.EventName == "" {

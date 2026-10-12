@@ -3,11 +3,8 @@ package handlers
 import (
 	"context"
 
-	"entgo.io/ent/dialect/sql"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/course"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
@@ -59,6 +56,8 @@ type Server struct {
 	errors *APIErrorHandler
 	// yandexFeed builds the Yandex course catalogue behind the feed routes.
 	yandexFeed *feeds.Yandex
+	// catalog reads the listed landing pages the course list and category pages share.
+	catalog *landingpages.Catalog
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
 }
@@ -108,6 +107,7 @@ func NewServer(deps Deps) *Server {
 		books:      deps.Books,
 		errors:     deps.Errors,
 		yandexFeed: deps.YandexFeed,
+		catalog:    landingpages.NewCatalog(deps.DB),
 		assistant:  deps.Assistant,
 	}
 }
@@ -122,32 +122,10 @@ func (s *Server) AuthHandler() *AuthHandler {
 //
 // URL stays `/languages` for backward-compat; the domain concept is Course.
 // Mirrors the legacy scope (`LandingPage.web.where(listed: true)`): published,
-// listed landing pages of the request locale whose Course is completed, joined
-// to their Course,
-// ordered by the Course display order (NULLS LAST), then Course id.
+// listed landing pages of the request locale whose Course is completed, in
+// catalog order (see landingpages.Catalog).
 func (s *Server) ListCourses(ctx context.Context) ([]api.CourseCatalogItem, error) {
-	// Order by the Course's integer `order` (NULLS LAST), then Course id. The
-	// legacy query had no tie-breaker among a Course's several listed landing
-	// pages, leaving that order undefined; landing page id goes last so the
-	// catalog is deterministic. All ordering happens in SQL.
-	pages, err := s.db.LandingPage.Query().
-		Where(landingpages.Listed(s.i18n.Locale(ctx))).
-		WithCourse(func(q *ent.CourseQuery) {
-			// current_version populates Course.currentVersion in apiconv; without
-			// eager-loading it the edge is nil and the field serializes as null.
-			q.WithCurrentVersion()
-		}).
-		Order(
-			landingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
-			// language_id is the FK to Course, so it equals the Course id — order
-			// by it directly (a main-table column) instead of joining the edge
-			// again for its id.
-			landingpage.ByCourseID(),
-			// Qualify the landing page id: the edge ordering joins `languages`,
-			// so a bare `id` term is ambiguous.
-			func(s *sql.Selector) { s.OrderBy(s.C(landingpage.FieldID)) },
-		).
-		All(ctx)
+	pages, err := s.catalog.Pages(ctx, s.i18n.Locale(ctx))
 	if err != nil {
 		return nil, err
 	}

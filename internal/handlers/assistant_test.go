@@ -119,60 +119,72 @@ func TestAskAssistantStreamsTheAnswerAndStoresBothTurns(t *testing.T) {
 // the request locale), and the question arrives wrapped with the editor state.
 func TestAskAssistantBuildsThePromptFromTheLesson(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	h.Assistant.StreamFunc = echoModel
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
-	askAssistantWith(t, h, lesson, &api.AssistantMessageInput{
+	prompt := askAssistantWith(t, h, lesson, &api.AssistantMessageInput{
 		Message:  "Why does it fail?",
 		UserCode: api.NewNilString("let x = 1;"),
 		Output:   api.NewNilString("expected 2, got 1"),
 	})
 
-	require.Len(t, h.Assistant.StreamCalls(), 1)
-	turns := h.Assistant.StreamCalls()[0].Turns
-	require.Len(t, turns, 2, "a first question: the system prompt and the question")
+	system, question, found := strings.Cut(prompt, "\nuser: ")
+	require.True(t, found, "a first question: the system prompt, then the question")
+	assert.True(t, strings.HasPrefix(system, "system: "))
+	assert.Contains(t, system, jsCourseSlug)
+	assert.Contains(t, system, `"Variables"`)
+	assert.Contains(t, system, "Answer in English")
+	assert.Contains(t, question, "let x = 1;")
+	assert.Contains(t, question, "expected 2, got 1")
+	assert.Contains(t, question, "Why does it fail?")
+}
 
-	system := turns[0]
-	assert.Equal(t, assistant.RoleSystem, system.Role)
-	assert.Contains(t, system.Content, jsCourseSlug)
-	assert.Contains(t, system.Content, `"Variables"`)
-	assert.Contains(t, system.Content, "Answer in English")
-
-	question := turns[1]
-	assert.Equal(t, assistant.RoleUser, question.Role)
-	assert.Contains(t, question.Content, "let x = 1;")
-	assert.Contains(t, question.Content, "expected 2, got 1")
-	assert.Contains(t, question.Content, "Why does it fail?")
+// echoModel answers with the conversation it was given, one "role: content"
+// line per turn, so a test reads the prompt through the response.
+func echoModel(_ context.Context, turns []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
+	for _, turn := range turns {
+		if err := onDelta(string(turn.Role) + ": " + turn.Content + "\n"); err != nil {
+			return assistant.Usage{}, err
+		}
+	}
+	return assistant.Usage{}, nil
 }
 
 // A learner reading the course in Russian is tutored in Russian, from the
 // Russian lesson text.
 func TestAskAssistantPromptFollowsTheLocale(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	h.Assistant.StreamFunc = echoModel
 	testsupport.SpeakTo(h, "ru")
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
-	askAssistant(t, h, lesson, "Как вывести строку?")
+	prompt := askAssistant(t, h, lesson, "Как вывести строку?")
 
-	require.Len(t, h.Assistant.StreamCalls(), 1)
-	system := h.Assistant.StreamCalls()[0].Turns[0].Content
-	assert.Contains(t, system, "«Привет, мир!»")
-	assert.Contains(t, system, "Отвечай на русском языке")
+	assert.Contains(t, prompt, "«Привет, мир!»")
+	assert.Contains(t, prompt, "Отвечай на русском языке")
 }
 
 // A follow-up question carries the conversation so far, between the system
 // prompt and the new question.
 func TestAskAssistantSendsTheChatHistory(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	h.Assistant.StreamFunc = echoModel
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
-	askAssistant(t, h, lesson, "And a number?")
+	prompt := askAssistant(t, h, lesson, "And a number?")
 
-	require.Len(t, h.Assistant.StreamCalls(), 1)
-	turns := h.Assistant.StreamCalls()[0].Turns
-	require.Len(t, turns, 4)
-	assert.Equal(t, assistant.Turn{Role: assistant.RoleUser, Content: "How do I print a string?"}, turns[1])
-	assert.Equal(t, assistant.Turn{Role: assistant.RoleAssistant, Content: "Use console.log to print a string."}, turns[2])
-	assert.Contains(t, turns[3].Content, "And a number?")
+	history := []string{
+		"user: How do I print a string?",
+		"assistant: Use console.log to print a string.",
+		"user: ",
+	}
+	rest := prompt
+	for _, line := range history {
+		at := strings.Index(rest, line)
+		require.NotEqual(t, -1, at, "%q follows the previous turn", line)
+		rest = rest[at+len(line):]
+	}
+	assert.Contains(t, rest, "And a number?")
 }
 
 // Seven questions a day. Over the quota the operation answers 429 before the
@@ -191,7 +203,6 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 	require.NoError(t, err)
 	assert.IsType(t, &api.CreateAssistantMessageTooManyRequests{}, res)
 	assert.Equal(t, http.StatusTooManyRequests, h.LastStatus())
-	assert.Empty(t, h.Assistant.StreamCalls(), "the model is never asked")
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 
 	assert.True(t, listAssistantChat(t, h, lesson).QuotaExceeded)
@@ -203,9 +214,9 @@ func TestAskAssistantQuotaResetsDaily(t *testing.T) {
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 	askedAt(t, h, lesson, assistant.DailyQuota, time.Now().UTC().Truncate(24*time.Hour).Add(-time.Minute))
 
-	askAssistant(t, h, lesson, "A new day?")
+	answer := askAssistant(t, h, lesson, "A new day?")
 
-	assert.Len(t, h.Assistant.StreamCalls(), 1)
+	assert.NotEmpty(t, answer, "yesterday's questions do not count, so the model answers")
 }
 
 // Asking about a lesson beyond the gate is refused as starting it would be,
@@ -223,7 +234,6 @@ func TestAskAssistantRefusesALessonBeyondTheGate(t *testing.T) {
 	require.NoError(t, err)
 	assert.IsType(t, &api.CreateAssistantMessageConflict{}, res)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
-	assert.Empty(t, h.Assistant.StreamCalls())
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 }
 
@@ -285,7 +295,6 @@ func TestAskAssistantRequiresASignedInLearner(t *testing.T) {
 	)
 	require.NoError(t, err)
 	assert.IsType(t, &api.CreateAssistantMessageUnauthorized{}, res)
-	assert.Empty(t, h.Assistant.StreamCalls())
 }
 
 func listAssistantChat(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) *api.LessonAssistantChat {

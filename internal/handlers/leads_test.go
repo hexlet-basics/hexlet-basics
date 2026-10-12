@@ -103,9 +103,9 @@ func TestCreateLeadStoresTheLeadAndPublishesItsAttribution(t *testing.T) {
 	assert.JSONEq(t, `[{"slug":"javascript","lessons_finished_count":1}]`, lo.FromPtr(stored.CoursesData))
 	assert.JSONEq(t, `[]`, lo.FromPtr(stored.SurveyAnswersData))
 
-	require.Len(t, publishedEvents(h), 1)
-	published, ok := publishedEvents(h)[0].(events.LeadCreated)
-	require.True(t, ok, "expected LeadCreated, got %T", publishedEvents(h)[0])
+	createdFacts := testsupport.PublishedEvents[events.LeadCreated](t, h.Services)
+	require.Len(t, createdFacts, 1)
+	published := createdFacts[0]
 	assert.Equal(t, stored.ID, published.LeadID)
 	assert.Equal(t, h.UserID, published.UserID)
 	assert.Equal(t, "Alice Anderson", published.UserName)
@@ -161,9 +161,9 @@ func TestCreateLeadWritesThePhoneColumnForAPhoneContact(t *testing.T) {
 	assert.Equal(t, "+79990000003", lo.FromPtr(stored.Phone))
 	assert.Nil(t, stored.Telegram)
 
-	require.Len(t, publishedEvents(h), 1)
-	published, ok := publishedEvents(h)[0].(events.LeadCreated)
-	require.True(t, ok)
+	createdFacts := testsupport.PublishedEvents[events.LeadCreated](t, h.Services)
+	require.Len(t, createdFacts, 1)
+	published := createdFacts[0]
 	assert.Equal(t, "+79990000003", lo.FromPtr(published.Phone))
 	assert.Nil(t, published.UTMSource)
 	assert.Nil(t, published.LandingPage)
@@ -176,6 +176,6 @@ func TestCreateLeadRequiresASignedInUser(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
 	assert.IsType(t, &api.ProblemDetails{}, res)
-	assert.Empty(t, publishedEvents(h))
+	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
 	assert.Equal(t, totalLeads, h.DB.Lead.Query().CountX(t.Context()))
 }

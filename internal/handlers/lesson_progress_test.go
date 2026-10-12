@@ -55,7 +55,7 @@ func TestStartLessonRecordsProgressOnTheNextAvailableLesson(t *testing.T) {
 	assert.Equal(t, secondLessonSlug, started.LessonSlug)
 	assert.Equal(t, jsCourseSlug, started.CourseSlug)
 	assert.Equal(t, 2, started.OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
-	assert.Empty(t, publishedOf[events.CourseStarted](h), "the learner was already enrolled")
+	assert.Empty(t, publishedOf[events.CourseStarted](t, h), "the learner was already enrolled")
 }
 
 // The first lesson of a course the learner has never touched enrolls them, and
@@ -81,7 +81,7 @@ func TestStartLessonEnrollsInAnUntouchedCourse(t *testing.T) {
 	enrolledCourse := h.DB.Course.GetX(ctx, *lesson.CourseID)
 	assert.Equal(t, 1, enrolledCourse.MembersCount, "the catalogue figure counts the new enrollment")
 
-	courseStarted := publishedOf[events.CourseStarted](h)
+	courseStarted := publishedOf[events.CourseStarted](t, h)
 	require.Len(t, courseStarted, 1)
 	assert.Equal(t, "go-basics", courseStarted[0].Slug)
 	assert.Equal(t, 2, courseStarted[0].OccurrenceCount, "the learner's started enrollments, fixture one included")
@@ -106,7 +106,7 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 	require.IsType(t, &api.CourseProgress{}, res)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "no row is written")
-	assert.Empty(t, publishedEvents(h), "an already-finished lesson publishes nothing")
+	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "an already-finished lesson publishes nothing")
 
 	row := h.DB.LessonProgress.Query().
 		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
@@ -127,7 +127,7 @@ func TestStartLessonRefusesALessonBeyondTheGate(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Empty(t, publishedEvents(h))
+	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
 }
 
 // A lesson the current version does not contain contributes no Position, so a
@@ -217,7 +217,7 @@ func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
-	assert.Empty(t, publishedEvents(h), "starting is not a fact for someone with no account")
+	assert.Zero(t, testsupport.PublishedCount(t, h.Services), "starting is not a fact for someone with no account")
 }
 
 // The gate is real for a visitor too: with no cookie only the first lesson of a
@@ -310,30 +310,12 @@ func seedCourse(t *testing.T, h *testsupport.Harness, courseSlug, lessonSlug str
 
 func publishedLessonStarted(t *testing.T, h *testsupport.Harness) events.LessonStarted {
 	t.Helper()
-	found := publishedOf[events.LessonStarted](h)
+	found := publishedOf[events.LessonStarted](t, h)
 	require.Len(t, found, 1)
 	return found[0]
 }
 
-// publishedEvents lists the domain facts the handlers raised, whichever seam
-// carried them: inside a transaction or on their own.
-func publishedEvents(h *testsupport.Harness) []events.Event {
-	var all []events.Event
-	for _, call := range h.TxEvents.PublishCalls() {
-		all = append(all, call.Event)
-	}
-	for _, call := range h.StandaloneEvents.PublishStandaloneCalls() {
-		all = append(all, call.Event)
-	}
-	return all
-}
-
-func publishedOf[T events.Event](h *testsupport.Harness) []T {
-	var found []T
-	for _, e := range publishedEvents(h) {
-		if typed, ok := e.(T); ok {
-			found = append(found, typed)
-		}
-	}
-	return found
+func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
+	t.Helper()
+	return testsupport.PublishedEvents[T](t, h.Services)
 }

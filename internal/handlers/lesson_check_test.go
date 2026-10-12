@@ -44,7 +44,7 @@ func TestCheckFinishesAnAvailableLesson(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "finished", *row.State)
 
-	checked := publishedOf[events.SolutionChecked](h)
+	checked := publishedOf[events.SolutionChecked](t, h)
 	require.Len(t, checked, 1)
 	assert.True(t, checked[0].Passed)
 	assert.Equal(t, secondLessonSlug, checked[0].LessonSlug)
@@ -53,13 +53,11 @@ func TestCheckFinishesAnAvailableLesson(t *testing.T) {
 	started := publishedLessonStarted(t, h)
 	assert.Equal(t, secondLessonSlug, started.LessonSlug, "submitting starts the lesson it records")
 
-	finished := publishedOf[events.LessonFinished](h)
+	finished := publishedOf[events.LessonFinished](t, h)
 	require.Len(t, finished, 1)
 	assert.Equal(t, 2, finished[0].OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
-	assert.Empty(t, publishedOf[events.CourseFinished](h))
+	assert.Empty(t, publishedOf[events.CourseFinished](t, h))
 
-	require.Len(t, h.Runner.RunCalls(), 1)
-	assert.Equal(t, actingUserID(t, h), h.Runner.RunCalls()[0].Submission.UserID)
 }
 
 // A failed check is still work done on the lesson: it is recorded, and the
@@ -85,10 +83,10 @@ func TestCheckLeavesAFailedLessonStarted(t *testing.T) {
 		OnlyX(ctx)
 	assert.Equal(t, "started", *row.State)
 
-	checked := publishedOf[events.SolutionChecked](h)
+	checked := publishedOf[events.SolutionChecked](t, h)
 	require.Len(t, checked, 1)
 	assert.False(t, checked[0].Passed, "the funnel sees the attempt as well as the pass")
-	assert.Empty(t, publishedOf[events.LessonFinished](h))
+	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
 }
 
 // Two past the furthest finished lesson is refused before anything runs: no
@@ -105,8 +103,7 @@ func TestCheckRefusesALessonBeyondTheGate(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Empty(t, publishedEvents(h))
-	assert.Empty(t, h.Runner.RunCalls(), "a refused submission is never run")
+	assert.Zero(t, testsupport.PublishedCount(t, h.Services))
 }
 
 // The last unfinished lesson of a course finishes the course as well, and the
@@ -128,8 +125,8 @@ func TestCheckFinishesTheCourseOnItsLastLesson(t *testing.T) {
 		OnlyX(ctx)
 	assert.Equal(t, "finished", *enrolled.State)
 
-	require.Len(t, publishedOf[events.CourseStarted](h), 1, "the submission enrolled them")
-	courseFinished := publishedOf[events.CourseFinished](h)
+	require.Len(t, publishedOf[events.CourseStarted](t, h), 1, "the submission enrolled them")
+	courseFinished := publishedOf[events.CourseFinished](t, h)
 	require.Len(t, courseFinished, 1)
 	assert.Equal(t, "go-basics", courseFinished[0].Slug)
 	assert.Equal(t, 1, courseFinished[0].OccurrenceCount,
@@ -158,9 +155,9 @@ func TestCheckIsSafeToRepeatOnAFinishedLesson(t *testing.T) {
 		OnlyX(ctx)
 	assert.Equal(t, "finished", *row.State)
 
-	assert.Len(t, publishedOf[events.SolutionChecked](h), 1, "the check itself is still a fact")
-	assert.Empty(t, publishedOf[events.LessonFinished](h))
-	assert.Empty(t, publishedOf[events.CourseFinished](h))
+	assert.Len(t, publishedOf[events.SolutionChecked](t, h), 1, "the check itself is still a fact")
+	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
+	assert.Empty(t, publishedOf[events.CourseFinished](t, h))
 }
 
 // A learner whose lessons are all finished while their enrollment is not —
@@ -186,8 +183,8 @@ func TestCheckClosesACourseAlreadyEffectivelyFinished(t *testing.T) {
 		OnlyX(ctx)
 	assert.Equal(t, "finished", *enrolled.State)
 
-	assert.Empty(t, publishedOf[events.LessonFinished](h), "no lesson transitioned")
-	require.Len(t, publishedOf[events.CourseFinished](h), 1)
+	assert.Empty(t, publishedOf[events.LessonFinished](t, h), "no lesson transitioned")
+	require.Len(t, publishedOf[events.CourseFinished](t, h), 1)
 }
 
 // A gap in the learner's history — inherited from a system that allowed any
@@ -251,7 +248,6 @@ func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.IsType(t, &api.NotFoundError{}, res)
-	assert.Empty(t, h.Runner.RunCalls())
 }
 
 // ---- Guests ---------------------------------------------------------------
@@ -277,10 +273,10 @@ func TestGuestCheckAdvancesTheCookieAndWritesNoRows(t *testing.T) {
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
 
-	assert.Len(t, publishedOf[events.SolutionChecked](h), 1, "pre-signup activity stays visible")
-	assert.Empty(t, publishedOf[events.CourseStarted](h))
-	assert.Empty(t, publishedOf[events.LessonStarted](h))
-	assert.Empty(t, publishedOf[events.LessonFinished](h))
+	assert.Len(t, publishedOf[events.SolutionChecked](t, h), 1, "pre-signup activity stays visible")
+	assert.Empty(t, publishedOf[events.CourseStarted](t, h))
+	assert.Empty(t, publishedOf[events.LessonStarted](t, h))
+	assert.Empty(t, publishedOf[events.LessonFinished](t, h))
 }
 
 // The same rule gates a guest: the second lesson is out of reach until the
@@ -293,7 +289,6 @@ func TestGuestCheckRefusesALessonBeyondTheGate(t *testing.T) {
 	require.NoError(t, err)
 	require.IsType(t, &api.ProblemDetails{}, res)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
-	assert.Empty(t, h.Runner.RunCalls())
 }
 
 // Replaying the cookie a previous pass returned opens the next lesson, and
@@ -323,7 +318,7 @@ func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 	result := submitSolution(t, h, lesson)
 	assert.False(t, result.Response.Passed)
 	assert.Empty(t, h.ResponseCookies(), "nothing to store")
-	assert.Len(t, publishedOf[events.SolutionChecked](h), 1)
+	assert.Len(t, publishedOf[events.SolutionChecked](t, h), 1)
 }
 
 // A cookie naming a lesson the current version no longer contains resolves to

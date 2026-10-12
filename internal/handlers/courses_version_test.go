@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"context"
+	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
 
@@ -31,10 +32,9 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 	assert.Equal(t, "created", *row.State)
 	assert.Equal(t, courseRubyIDA, row.CourseID)
 
-	// One build was started, for the ruby course.
-	calls := h.Starter.StartCalls()
-	require.Len(t, calls, 1)
-	assert.Equal(t, courseRubyIDA, calls[0].CourseID)
+	// The loader job was enqueued for exactly this version.
+	queued := testsupport.RequireEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{})
+	assert.Equal(t, int(version.ID), queued.VersionID)
 }
 
 func TestAdminCreateCourseVersionNotFound(t *testing.T) {
@@ -48,5 +48,5 @@ func TestAdminCreateCourseVersionNotFound(t *testing.T) {
 	assert.True(t, ok, "expected NotFoundError, got %T", res)
 
 	// A missing course enqueues nothing.
-	assert.Empty(t, h.Starter.StartCalls())
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.ExerciseLoaderArgs{})
 }

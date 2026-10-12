@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -26,28 +27,29 @@ import (
 // proving the auth routes are implemented through the contract seam.
 func newAuthRouter(t *testing.T) http.Handler {
 	t.Helper()
-	db, transactor := testsupport.NewClientWithTransactor(t)
-	return newAuthRouterWithDB(t, db, transactor)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	return newAuthRouterWithDB(t, db, tx, transactor)
 }
 
-func newAuthRouterWithDB(t *testing.T, db *ent.Client, transactor store.Transactor) http.Handler {
+func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor store.Transactor) http.Handler {
 	t.Helper()
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
-	mocks := testsupport.NewMocks(db)
+	services := testsupport.NewServices(t, tx, transactor)
+	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
 		DB:             db,
 		Config:         &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"},
-		Starter:        mocks.Starter,
-		Reviews:        mocks.Reviews,
-		RelatedCourses: mocks.RelatedCourses,
-		Emails:         mocks.Emails,
+		Starter:        services.Starter,
+		Reviews:        services.Reviews,
+		RelatedCourses: services.RelatedCourses,
+		Emails:         services.Emails,
 		// The real progress module: the check is a public operation, so these
 		// tests reach it while asserting what the contract protects.
-		Progress:  progress.New(db, transactor, mocks.TxEvents, mocks.Runner),
-		Registrar: accounts.NewRegistrar(transactor, mocks.TxEvents),
+		Progress:  progress.New(db, transactor, services.Events, mocks.Runner),
+		Registrar: accounts.NewRegistrar(transactor, services.Events),
 		Remover:   accounts.NewRemover(transactor),
-		Events:    mocks.StandaloneEvents,
+		Events:    services.Events,
 		I18n:      translator,
 		Errors:    errorHandler,
 	})
@@ -108,8 +110,8 @@ func doWithXSRF(
 }
 
 func TestAuthRegisterLoginFlow(t *testing.T) {
-	db, transactor := testsupport.NewClientWithTransactor(t)
-	router := newAuthRouterWithDB(t, db, transactor)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const email = "auth-flow@example.com"
 	const password = "s3cret-pass"
 
@@ -209,8 +211,8 @@ func TestAuthRegisterLoginFlow(t *testing.T) {
 }
 
 func TestCurrentUserSurvivesEmailChange(t *testing.T) {
-	db, transactor := testsupport.NewClientWithTransactor(t)
-	router := newAuthRouterWithDB(t, db, transactor)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const oldEmail = "jwt-old-email@example.com"
 	const newEmail = "jwt-new-email@example.com"
 
@@ -283,8 +285,8 @@ func TestContractSecurityProtectsParityRoutesAndKeepsLessonCheckPublic(t *testin
 }
 
 func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
-	db, transactor := testsupport.NewClientWithTransactor(t)
-	router := newAuthRouterWithDB(t, db, transactor)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const email = "admin-revocation@example.com"
 
 	resp := do(t, router, http.MethodPost, "/api/users",
@@ -330,8 +332,8 @@ func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 }
 
 func TestSignUpRejectsShortPassword(t *testing.T) {
-	db, transactor := testsupport.NewClientWithTransactor(t)
-	router := newAuthRouterWithDB(t, db, transactor)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	router := newAuthRouterWithDB(t, db, tx, transactor)
 
 	resp := do(t, router, http.MethodPost, "/api/users",
 		`{"firstName":null,"email":"short-password@example.com","password":"12345"}`, nil)
@@ -348,8 +350,8 @@ func TestSignUpRejectsShortPassword(t *testing.T) {
 // refuses them as a bad request, and only a valid name is saved. Raw HTTP, so
 // the bodies are exactly what a client that skips the form could send.
 func TestUpdateProfileRejectsInvalidNames(t *testing.T) {
-	db, transactor := testsupport.NewClientWithTransactor(t)
-	router := newAuthRouterWithDB(t, db, transactor)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
+	router := newAuthRouterWithDB(t, db, tx, transactor)
 	const email = "profile-validation@example.com"
 
 	resp := do(t, router, http.MethodPost, "/api/users",

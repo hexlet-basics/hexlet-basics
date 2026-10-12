@@ -3,16 +3,12 @@ package handlers
 import (
 	"context"
 
-	"entgo.io/ent/dialect/sql"
 
-	"hexletbasics/ent"
 	"hexletbasics/ent/categoryqnaitem"
-	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/landingpages"
 )
 
 // The public course categories (legacy `Web::LanguageCategoriesController`).
@@ -47,23 +43,10 @@ func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPubl
 	}
 
 	// Legacy `category.language_landing_pages.web.where(listed: true)
-	// .merge(Language.ordered)`: pages grouped under the category through
-	// `language_category_items`, published, in the request locale, listed, of a
-	// completed course, by course order. Legacy had no tie-breaker; course id
-	// then landing page id make the order deterministic, as in ListCourses.
-	pages, err := s.db.LandingPage.Query().
-		Where(
-			landingpage.HasCategoryItemsWith(coursecategoryitem.CourseCategoryID(category.ID)),
-			landingpages.Listed(locale),
-		).
-		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
-		Order(
-			landingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
-			landingpage.ByCourseID(),
-			// The edge ordering joins `languages`, so a bare `id` is ambiguous.
-			func(s *sql.Selector) { s.OrderBy(s.C(landingpage.FieldID)) },
-		).
-		All(ctx)
+	// .merge(Language.ordered)`: the catalog narrowed to the pages grouped under
+	// the category through `language_category_items`.
+	pages, err := s.catalog.Pages(ctx, locale,
+		landingpage.HasCategoryItemsWith(coursecategoryitem.CourseCategoryID(category.ID)))
 	if err != nil {
 		return nil, err
 	}

@@ -143,25 +143,37 @@ var serverPackage = do.Package(
 		return versionbuilds.NewStarter(db, riverClient), nil
 	}),
 	do.Lazy[*lessonreviews.Enqueuer](func(i do.Injector) (*lessonreviews.Enqueuer, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
 		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
 		if err != nil {
 			return nil, err
 		}
-		return lessonreviews.NewEnqueuer(riverClient), nil
+		return lessonreviews.NewEnqueuer(db, riverClient), nil
 	}),
 	do.Lazy[*relatedcourses.Enqueuer](func(i do.Injector) (*relatedcourses.Enqueuer, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
 		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
 		if err != nil {
 			return nil, err
 		}
-		return relatedcourses.NewEnqueuer(riverClient), nil
+		return relatedcourses.NewEnqueuer(db, riverClient), nil
 	}),
 	do.Lazy[*accountemails.Enqueuer](func(i do.Injector) (*accountemails.Enqueuer, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
 		riverClient, err := do.Invoke[*river.Client[*sql.Tx]](i)
 		if err != nil {
 			return nil, err
 		}
-		return accountemails.NewEnqueuer(riverClient), nil
+		return accountemails.NewEnqueuer(db, riverClient), nil
 	}),
 	// The Yandex feed builds its URLs on the canonical host, not the request's.
 	do.Lazy[*feeds.Yandex](func(i do.Injector) (*feeds.Yandex, error) {

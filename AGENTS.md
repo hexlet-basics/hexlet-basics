@@ -130,7 +130,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - `mise run gen:spec` / `mise run gen:api` / `mise run gen:client` — individual stages.
 - `mise run gen:ent` — regenerate the ent ORM from `ent/schema`.
 - `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks`.
-- `mise run gen:mocks` — regenerate the moq mocks in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`); add a seam there instead of writing a fake by hand. `mise run tidy` — `go mod tidy`.
+- `mise run gen:mocks` — regenerate the moq mocks of the external boundaries (LLM, exercise runner) in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`). `mise run tidy` — `go mod tidy`.
 - `mise run gen:check` — runs `gen:all` and fails if the tree changes; the CI `gen-check` job runs it, so generated output must be committed with its source.
 - After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
   and commit the regenerated outputs alongside the source change.
@@ -159,9 +159,13 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - Tests use `stretchr/testify` (`require`/`assert`); each handler test gets an
   explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
   tests, and builds a `Server` through `testsupport`.
-  The seams a test replaces (chat model, exercise runner, event transport, job
-  enqueuers) are moq mocks from `testsupport.NewMocks`: set a mock's `…Func` to
-  change its behaviour, read `…Calls()` to assert what a handler asked for.
+  The harness runs the real event publisher and job enqueuers over the test
+  transaction, so a test asserts on what an operation left behind
+  (`testsupport.PublishedEvents`, `testsupport.EnqueuedJobs`, DB rows), never on
+  what was called, how often or with which arguments: no call-verification
+  tests. Only the LLM and the Docker runner are mocks (`testsupport.NewMocks`,
+  moq): set a mock's `…Func` for what the boundary answers, and read the prompt
+  back through the response.
 
 ## Build
 

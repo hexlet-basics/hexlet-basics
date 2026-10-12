@@ -39,8 +39,8 @@ func TestSignUpCreditsTheGuestPrefix(t *testing.T) {
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug}, finished,
 		"the lesson before the guest's furthest one is credited too")
 
-	assert.Len(t, publishedOf[events.CourseStarted](h), 1, "the enrollment is new")
-	assert.Len(t, publishedOf[events.LessonFinished](h), 2, "one per credited lesson")
+	assert.Len(t, publishedOf[events.CourseStarted](t, h), 1, "the enrollment is new")
+	assert.Len(t, publishedOf[events.LessonFinished](t, h), 2, "one per credited lesson")
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()), "the cookie is consumed")
 }
 
@@ -56,8 +56,8 @@ func TestSignInTakesTheFurtherOfTheTwoPositions(t *testing.T) {
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug, thirdLessonSlug}, finished,
 		"the account had only the first; the browser's third pulls the prefix with it")
 
-	assert.Empty(t, publishedOf[events.CourseStarted](h), "the learner was already enrolled")
-	assert.Len(t, publishedOf[events.LessonFinished](h), 2, "only what the merge actually created")
+	assert.Empty(t, publishedOf[events.CourseStarted](t, h), "the learner was already enrolled")
+	assert.Len(t, publishedOf[events.LessonFinished](t, h), 2, "only what the merge actually created")
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()))
 }
 
@@ -72,8 +72,8 @@ func TestSignInLeavesAnAccountAheadOfTheCookieAlone(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "nothing is written")
-	assert.Empty(t, publishedOf[events.LessonFinished](h), "and no progress fact is published")
-	assert.Empty(t, publishedOf[events.CourseStarted](h))
+	assert.Empty(t, publishedOf[events.LessonFinished](t, h), "and no progress fact is published")
+	assert.Empty(t, publishedOf[events.CourseStarted](t, h))
 }
 
 // A cookie naming a lesson the current version no longer contains resolves to

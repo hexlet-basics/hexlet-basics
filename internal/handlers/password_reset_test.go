@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
 	"time"
@@ -45,11 +46,7 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
-	calls := h.Emails.EnqueueAccountEmailCalls()
-	require.Len(t, calls, 1)
-	assert.Equal(t, emailtokens.PasswordReset, calls[0].Purpose)
-	assert.Equal(t, u.ID, calls[0].UserID)
-	assert.Equal(t, "es", calls[0].Locale)
+	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtokens.PasswordReset, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
 }
 
 // Unlike legacy, an unknown email is not reported.
@@ -61,7 +58,7 @@ func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.Empty(t, h.Emails.EnqueueAccountEmailCalls())
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{})
 }
 
 func TestCheckPasswordResetToken(t *testing.T) {
@@ -94,7 +91,7 @@ func TestUpdatePasswordSignsInWithTheNewPassword(t *testing.T) {
 	require.True(t, ok, "got %T", res)
 	assert.Equal(t, u.ID, int(session.Response.ID))
 	assert.Contains(t, h.ResponseCookies()[0], "JWT=")
-	assert.Len(t, publishedOf[events.UserSignedIn](h), 1)
+	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
 	assert.True(t, signsInWith(t, h, "reset-success@example.com", "new-password"))
 	assert.False(t, signsInWith(t, h, "reset-success@example.com", oldPassword))
 }
@@ -128,7 +125,7 @@ func TestUpdatePasswordRefusesAnExpiredLink(t *testing.T) {
 
 	assert.IsType(t, &api.NotFoundError{}, res)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-	assert.Empty(t, publishedOf[events.UserSignedIn](h), "nobody is signed in")
+	assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
 	assert.True(t, signsInWith(t, h, "reset-expired@example.com", oldPassword))
 }
 

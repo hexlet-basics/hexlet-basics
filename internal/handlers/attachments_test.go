@@ -59,26 +59,27 @@ func (h authenticatedHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 // production; downloads use the blob read route mounted beside it.
 func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.Cookie, string) {
 	t.Helper()
-	db, transactor := testsupport.NewClientWithTransactor(t)
+	db, tx, transactor := testsupport.NewClientWithTxAndTransactor(t)
 	bucket := memblob.OpenBucket(nil)
 	t.Cleanup(func() { _ = bucket.Close() })
 	assets := assetstore.New(db, bucket, "http://assets.example.test")
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	cfg := &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
-	mocks := testsupport.NewMocks(db)
+	services := testsupport.NewServices(t, tx, transactor)
+	mocks := testsupport.NewMocks()
 	handler := handlers.NewServer(handlers.Deps{
 		DB:             db,
 		Config:         cfg,
-		Starter:        mocks.Starter,
-		Reviews:        mocks.Reviews,
-		RelatedCourses: mocks.RelatedCourses,
-		Emails:         mocks.Emails,
-		Progress:       progress.New(db, transactor, mocks.TxEvents, mocks.Runner),
+		Starter:        services.Starter,
+		Reviews:        services.Reviews,
+		RelatedCourses: services.RelatedCourses,
+		Emails:         services.Emails,
+		Progress:       progress.New(db, transactor, services.Events, mocks.Runner),
 		Assets:         assets,
-		Registrar:      accounts.NewRegistrar(transactor, mocks.TxEvents),
+		Registrar:      accounts.NewRegistrar(transactor, services.Events),
 		Remover:        accounts.NewRemover(transactor),
-		Events:         mocks.StandaloneEvents,
+		Events:         services.Events,
 		I18n:           translator,
 		Errors:         errorHandler,
 	})
@@ -91,7 +92,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	)
 	require.NoError(t, err)
 	att := handlers.NewAttachmentHandler(assets, errorHandler)
-	gh := handlers.NewGitHubWebhookHandler(db, mocks.Starter, "", translator)
+	gh := handlers.NewGitHubWebhookHandler(db, services.Starter, "", translator)
 	router := translator.Middleware(handlers.NewRouter(apiServer, att, gh, handler.AuthHandler()))
 
 	jti := ids.New()

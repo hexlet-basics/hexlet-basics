@@ -4,7 +4,11 @@
 // Watermill owns routing, consumer offsets, retries, and fan-out (ADR-0004).
 package events
 
-import "time"
+import (
+	"time"
+
+	"github.com/ThreeDotsLabs/watermill/components/cqrs"
+)
 
 const (
 	// Topic is the single durable PostgreSQL stream for domain facts.
@@ -151,6 +155,11 @@ type LeadCreated struct {
 }
 
 func (LeadCreated) eventName() string { return leadCreatedName }
+
+// Marshaler encodes events into outbox messages and decodes them back; the
+// stable event name travels in the message metadata. The publisher writes with
+// it and tests read the outbox with it.
+var Marshaler = cqrs.JSONMarshaler{GenerateName: nameOf}
 
 func nameOf(value any) string {
 	if event, ok := value.(Event); ok {

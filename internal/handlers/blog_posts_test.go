@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"context"
+	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
 
@@ -277,9 +278,9 @@ func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 6001})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	calls := h.RelatedCourses.EnqueueRelatedCoursesSuggestionCalls()
-	require.Len(t, calls, 1)
-	assert.Equal(t, 6001, calls[0].BlogPostID)
+	assert.Equal(t,
+		jobs.SuggestRelatedCoursesArgs{BlogPostID: 6001},
+		testsupport.RequireEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{}))
 }
 
 func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
@@ -289,5 +290,5 @@ func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-	assert.Empty(t, h.RelatedCourses.EnqueueRelatedCoursesSuggestionCalls())
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.SuggestRelatedCoursesArgs{})
 }

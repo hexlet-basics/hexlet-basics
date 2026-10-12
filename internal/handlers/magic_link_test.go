@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"hexletbasics/internal/jobs"
 	"net/http"
 	"testing"
 	"time"
@@ -42,11 +43,7 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
-	calls := h.Emails.EnqueueAccountEmailCalls()
-	require.Len(t, calls, 1)
-	assert.Equal(t, emailtokens.MagicLink, calls[0].Purpose)
-	assert.Equal(t, u.ID, calls[0].UserID)
-	assert.Equal(t, "es", calls[0].Locale)
+	assert.Equal(t, jobs.AccountEmailArgs{Purpose: emailtokens.MagicLink, UserID: u.ID, Locale: "es"}, testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{}))
 }
 
 func TestCreateMagicLinkIgnoresCase(t *testing.T) {
@@ -56,9 +53,8 @@ func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "Magic-Case@Example.com"})
 	require.NoError(t, err)
 
-	calls := h.Emails.EnqueueAccountEmailCalls()
-	require.Len(t, calls, 1)
-	assert.Equal(t, u.ID, calls[0].UserID)
+	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	assert.Equal(t, u.ID, email.UserID)
 }
 
 // Only ru and es are emailed; a request in any other language gets ru.
@@ -70,9 +66,8 @@ func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
 	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "magic-en@example.com"})
 	require.NoError(t, err)
 
-	calls := h.Emails.EnqueueAccountEmailCalls()
-	require.Len(t, calls, 1)
-	assert.Equal(t, "ru", calls[0].Locale)
+	email := testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
+	assert.Equal(t, "ru", email.Locale)
 }
 
 func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
@@ -84,13 +79,11 @@ func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 	assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.Empty(t, h.Emails.EnqueueAccountEmailCalls())
+	testsupport.RequireNotEnqueued(t, h.Services, jobs.AccountEmailArgs{})
 	assert.Equal(t, before, h.DB.User.Query().CountX(t.Context()), "no account is created")
 }
 
-// The cooldown is River's uniqueness over the job args (jobs.AccountEmailArgs),
-// not the handler's: the handler asks the queue every time.
-func TestCreateMagicLinkTwiceAsksTheQueueEachTime(t *testing.T) {
+func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	createEmailUser(t, h, "magic-twice@example.com")
 
@@ -100,7 +93,8 @@ func TestCreateMagicLinkTwiceAsksTheQueueEachTime(t *testing.T) {
 		assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	}
 
-	assert.Len(t, h.Emails.EnqueueAccountEmailCalls(), 2)
+	// RequireEnqueued fails on a second job: River skipped the repeat.
+	testsupport.RequireEnqueued(t, h.Services, jobs.AccountEmailArgs{})
 }
 
 // Following the link signs in exactly as a password does: the session cookie,
@@ -120,7 +114,7 @@ func TestConsumeMagicLinkSignsInAndCreditsGuestProgress(t *testing.T) {
 	assert.ElementsMatch(t, []string{firstLessonSlug, secondLessonSlug},
 		finishedLessonSlugs(t, h, u.ID, jsCourseSlug))
 	assert.True(t, clearsGuestCookie(h.ResponseCookies()))
-	assert.Len(t, publishedOf[events.UserSignedIn](h), 1)
+	assert.Len(t, publishedOf[events.UserSignedIn](t, h), 1)
 }
 
 func TestConsumeMagicLinkWorksTwiceWhileItLives(t *testing.T) {
@@ -158,7 +152,7 @@ func TestConsumeMagicLinkRefusesDeadLinks(t *testing.T) {
 
 			assert.IsType(t, &api.NotFoundError{}, res)
 			assert.Equal(t, http.StatusNotFound, h.LastStatus())
-			assert.Empty(t, publishedOf[events.UserSignedIn](h), "nobody is signed in")
+			assert.Empty(t, publishedOf[events.UserSignedIn](t, h), "nobody is signed in")
 		})
 	}
 }
