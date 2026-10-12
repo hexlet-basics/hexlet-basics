@@ -9,6 +9,7 @@ import (
 	"hexletbasics/internal/apiconv"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
@@ -17,7 +18,6 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
-	"hexletbasics/internal/store"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -60,9 +60,8 @@ type Server struct {
 	catalog *landingpages.Catalog
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
-	// tx runs the handlers' own multi-write operations (a post with its
-	// dependents, a role's permission matrix) as one unit.
-	tx store.Transactor
+	// postRemover deletes a post with its dependents in one transaction.
+	postRemover blogposts.PostRemover
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -87,7 +86,7 @@ type Deps struct {
 	Errors            *APIErrorHandler
 	YandexFeed        *feeds.Yandex
 	Assistant         *assistant.Chat
-	Tx                store.Transactor
+	PostRemover       blogposts.PostRemover
 }
 
 // NewServer wires the handler to its dependencies.
@@ -103,14 +102,14 @@ func NewServer(deps Deps) *Server {
 		assets:            deps.Assets,
 		auth: NewAuthHandler(deps.DB, deps.Config, deps.I18n, deps.Errors, deps.Registrar,
 			deps.Remover, deps.Events, deps.Progress, deps.Jobs),
-		i18n:       deps.I18n,
-		leads:      deps.Leads,
-		books:      deps.Books,
-		errors:     deps.Errors,
-		yandexFeed: deps.YandexFeed,
-		catalog:    landingpages.NewCatalog(deps.DB),
-		assistant:  deps.Assistant,
-		tx:         deps.Tx,
+		i18n:        deps.I18n,
+		leads:       deps.Leads,
+		books:       deps.Books,
+		errors:      deps.Errors,
+		yandexFeed:  deps.YandexFeed,
+		catalog:     landingpages.NewCatalog(deps.DB),
+		assistant:   deps.Assistant,
+		postRemover: deps.PostRemover,
 	}
 }
 

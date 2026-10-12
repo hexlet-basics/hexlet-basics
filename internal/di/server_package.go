@@ -16,6 +16,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/events"
@@ -101,6 +102,13 @@ var serverPackage = do.Package(
 			return nil, err
 		}
 		return books.NewRecorder(db, publisher), nil
+	}),
+	do.Lazy[*blogposts.Remover](func(i do.Injector) (*blogposts.Remover, error) {
+		db, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
+		return blogposts.NewRemover(db), nil
 	}),
 	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)
@@ -228,7 +236,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		txStore, err := do.Invoke[*store.Store](i)
+		postRemover, err := do.Invoke[*blogposts.Remover](i)
 		if err != nil {
 			return nil, err
 		}
@@ -249,7 +257,7 @@ var serverPackage = do.Package(
 			Errors:            errorHandler,
 			YandexFeed:        yandexFeed,
 			Assistant:         chat,
-			Tx:                txStore,
+			PostRemover:       postRemover,
 		}), nil
 	}),
 	// The in-lesson assistant answers inside the request (a stream, no job), so

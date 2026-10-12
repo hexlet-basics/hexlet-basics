@@ -33,6 +33,7 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
 	"hexletbasics/internal/assistant"
+	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/emailtokens"
@@ -231,7 +232,8 @@ func NewHarness(t *testing.T) *Harness {
 		Errors:     errorHandler,
 		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
 		Assistant:  assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator),
-		Tx:         transactor,
+		// The real remover over the savepoint transactor, like the others.
+		PostRemover: blogposts.NewRemover(transactor),
 	})
 	srv, err := api.NewServer(
 		handler,

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"database/sql"
 	"strings"
 
 	"github.com/samber/lo"
@@ -120,9 +119,8 @@ func (s *Server) AdminUpdateBlogPost(ctx context.Context, req *api.BlogPostInput
 	return s.getAdminBlogPost(ctx, row.ID)
 }
 
-// AdminDeleteBlogPost removes a post with its dependents, mirroring the legacy
-// model (`related_language_items dependent: :delete_all`, `likes dependent:
-// :destroy`) — the FKs have no ON DELETE CASCADE, so the children go first.
+// AdminDeleteBlogPost removes a post with its dependents (the likes and related
+// courses go with it, in one transaction, inside the remover).
 func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDeleteBlogPostParams) (api.AdminDeleteBlogPostRes, error) {
 	id := int(params.ID)
 
@@ -131,20 +129,7 @@ func (s *Server) AdminDeleteBlogPost(ctx context.Context, params api.AdminDelete
 		return nil, err
 	}
 
-	// One transaction: with no cascade, a failure after the children went would
-	// otherwise leave a post that has lost its likes and related courses.
-	err := s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		if _, err := db.BlogPostRelatedCourseItem.Delete().
-			Where(blogpostrelatedcourseitem.BlogPostID(id)).Exec(ctx); err != nil {
-			return err
-		}
-		if _, err := db.BlogPostLike.Delete().
-			Where(blogpostlike.BlogPostID(id)).Exec(ctx); err != nil {
-			return err
-		}
-		return db.BlogPost.DeleteOneID(id).Exec(ctx)
-	})
-	if err != nil {
+	if err := s.postRemover.Remove(ctx, id); err != nil {
 		return nil, err
 	}
 	return &api.AdminDeleteBlogPostNoContent{}, nil

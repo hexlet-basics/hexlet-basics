@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"context"
-	"database/sql"
+	"slices"
+
+	"github.com/samber/lo"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrole"
@@ -77,8 +79,9 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 // AdminUpdateRolePermissions applies the submitted matrix, upserting each row by
 // (role_id, resource) — mirrors the legacy StaffRoleMutator#sync_permissions
 // (find_or_initialize_by(resource).update!), so unlisted resources are left
-// untouched. The rows are written in one transaction so a failure part-way
-// leaves the previous matrix intact rather than a half-applied one.
+// untouched. The unique index on (role_id, resource) decides insert or update
+// in one statement, so the matrix lands whole or not at all without a
+// transaction, and two admins saving at once cannot both insert a row.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
@@ -87,29 +90,21 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		return nil, err
 	}
 
-	err := s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
-		for _, p := range req.Permissions {
-			existing, err := db.StaffRolePermission.Query().
-				Where(
-					staffrolepermission.RoleID(roleID),
-					staffrolepermission.Resource(string(p.Resource)),
-				).
-				Only(ctx)
-			switch {
-			case ent.IsNotFound(err):
-				_, err = db.StaffRolePermission.Create().SetRoleID(roleID).SetInput(&p).Save(ctx)
-			case err != nil:
-				return err
-			default:
-				// SetInput re-sets resource to its own lookup value, a no-op.
-				_, err = existing.Update().SetInput(&p).Save(ctx)
-			}
-			if err != nil {
-				return err
-			}
-		}
-		return nil
+	// A resource listed twice would make the upsert touch one row twice, which
+	// PostgreSQL rejects; the last entry wins, as it did when rows were written
+	// one after another.
+	perms := slices.Clone(req.Permissions)
+	slices.Reverse(perms)
+	perms = lo.UniqBy(perms, func(p api.RolePermissionInput) api.PermissionResource { return p.Resource })
+	slices.Reverse(perms)
+
+	builders := lo.Map(perms, func(p api.RolePermissionInput, _ int) *ent.StaffRolePermissionCreate {
+		return s.db.StaffRolePermission.Create().SetRoleID(roleID).SetInput(&p)
 	})
+	err := s.db.StaffRolePermission.CreateBulk(builders...).
+		OnConflictColumns(staffrolepermission.FieldRoleID, staffrolepermission.FieldResource).
+		UpdateNewValues().
+		Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
