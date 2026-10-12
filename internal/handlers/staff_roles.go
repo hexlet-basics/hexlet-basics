@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"database/sql"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/staffrole"
@@ -76,8 +77,8 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 // AdminUpdateRolePermissions applies the submitted matrix, upserting each row by
 // (role_id, resource) — mirrors the legacy StaffRoleMutator#sync_permissions
 // (find_or_initialize_by(resource).update!), so unlisted resources are left
-// untouched. ent's upsert feature is not enabled, so this is a per-row
-// find-or-create.
+// untouched. The rows are written in one transaction so a failure part-way
+// leaves the previous matrix intact rather than a half-applied one.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
@@ -86,25 +87,31 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		return nil, err
 	}
 
-	for _, p := range req.Permissions {
-		existing, err := s.db.StaffRolePermission.Query().
-			Where(
-				staffrolepermission.RoleID(roleID),
-				staffrolepermission.Resource(string(p.Resource)),
-			).
-			Only(ctx)
-		switch {
-		case ent.IsNotFound(err):
-			_, err = s.db.StaffRolePermission.Create().SetRoleID(roleID).SetInput(&p).Save(ctx)
-		case err != nil:
-			return nil, err
-		default:
-			// SetInput re-sets resource to its own lookup value, a no-op.
-			_, err = existing.Update().SetInput(&p).Save(ctx)
+	err := s.tx.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		for _, p := range req.Permissions {
+			existing, err := db.StaffRolePermission.Query().
+				Where(
+					staffrolepermission.RoleID(roleID),
+					staffrolepermission.Resource(string(p.Resource)),
+				).
+				Only(ctx)
+			switch {
+			case ent.IsNotFound(err):
+				_, err = db.StaffRolePermission.Create().SetRoleID(roleID).SetInput(&p).Save(ctx)
+			case err != nil:
+				return err
+			default:
+				// SetInput re-sets resource to its own lookup value, a no-op.
+				_, err = existing.Update().SetInput(&p).Save(ctx)
+			}
+			if err != nil {
+				return err
+			}
 		}
-		if err != nil {
-			return nil, err
-		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
 
 	return s.roleDetail(ctx, roleID)

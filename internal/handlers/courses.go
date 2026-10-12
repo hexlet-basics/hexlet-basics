@@ -17,6 +17,7 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/store"
 )
 
 // Server implements the generated ogen api.Handler backed by ent.
@@ -59,6 +60,9 @@ type Server struct {
 	catalog *landingpages.Catalog
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
+	// tx runs the handlers' own multi-write operations (a post with its
+	// dependents, a role's permission matrix) as one unit.
+	tx store.Transactor
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
@@ -83,6 +87,7 @@ type Deps struct {
 	Errors            *APIErrorHandler
 	YandexFeed        *feeds.Yandex
 	Assistant         *assistant.Chat
+	Tx                store.Transactor
 }
 
 // NewServer wires the handler to its dependencies.
@@ -105,6 +110,7 @@ func NewServer(deps Deps) *Server {
 		yandexFeed: deps.YandexFeed,
 		catalog:    landingpages.NewCatalog(deps.DB),
 		assistant:  deps.Assistant,
+		tx:         deps.Tx,
 	}
 }
 

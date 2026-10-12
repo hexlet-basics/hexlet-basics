@@ -228,6 +228,10 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		txStore, err := do.Invoke[*store.Store](i)
+		if err != nil {
+			return nil, err
+		}
 		return handlers.NewServer(handlers.Deps{
 			DB:                db,
 			Config:            cfg,
@@ -245,6 +249,7 @@ var serverPackage = do.Package(
 			Errors:            errorHandler,
 			YandexFeed:        yandexFeed,
 			Assistant:         chat,
+			Tx:                txStore,
 		}), nil
 	}),
 	// The in-lesson assistant answers inside the request (a stream, no job), so

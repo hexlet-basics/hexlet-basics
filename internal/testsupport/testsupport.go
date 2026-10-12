@@ -231,6 +231,7 @@ func NewHarness(t *testing.T) *Harness {
 		Errors:     errorHandler,
 		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
 		Assistant:  assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator),
+		Tx:         transactor,
 	})
 	srv, err := api.NewServer(
 		handler,
