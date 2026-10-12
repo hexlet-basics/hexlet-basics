@@ -68,6 +68,7 @@
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@hey-api/openapi-ts": "0.0.0-next-20260930190945",
+    "@size-limit/file": "^14.2.0",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
@@ -88,11 +89,26 @@
     "oxlint": "^1.87.0",
     "oxlint-tsgolint": "^7.0.2004",
     "playwright": "^1.64.0",
+    "size-limit": "^14.2.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.4",
     "vitest-browser-react": "^2.3.0"
   },
+  "size-limit": [
+    {
+      "name": "entry chunk (loaded on every page)",
+      "path": "dist/client/assets/index-*.js",
+      "limit": "320 kB",
+      "gzip": true
+    },
+    {
+      "name": "all client JavaScript, lazy chunks and the Monaco workers included",
+      "path": "dist/client/assets/*.js",
+      "limit": "5.5 MB",
+      "gzip": true
+    }
+  ],
   "msw": {
     "workerDirectory": [
       "public"

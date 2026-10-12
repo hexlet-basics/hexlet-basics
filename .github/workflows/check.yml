@@ -196,6 +196,9 @@ jobs:
 
   # Renders the chart with placeholder secrets (the real ones are sops-encrypted
   # and only decrypted on deploy), so a template error never reaches a release.
+  # Renders the chart with placeholder secrets (the real ones are sops-encrypted
+  # and only decrypted on deploy) and validates every manifest against the
+  # Kubernetes schemas, so a template or schema error never reaches a release.
   helm-template:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -204,14 +207,21 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
 
-      - run: >-
-          helm lint k8s/app-chart
-          --set secrets.docker.config=placeholder
-          --set secrets.code_basics.env.DATABASE_URL=placeholder
-      - run: >-
-          helm template codebasics k8s/app-chart
-          --set secrets.docker.config=placeholder
-          --set secrets.code_basics.env.DATABASE_URL=placeholder
-          --set migrate.baseline=20260727053619
+      - run: mise run lint:helm
+
+  # The client bundle must stay within the budgets in package.json (size-limit).
+  bundle-size:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: jdx/mise-action@08ae2a091c038e1e05ec6f5115dc5c69d5a2a6b8 # v5.1.2
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: mise run lint:size

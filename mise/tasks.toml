@@ -203,12 +203,20 @@ helm template codebasics "$chart" "${set[@]}" --set migrate.baseline=20260727053
 '''
 
 ["lint:infra"]
-description = "Terraform (legacy/terraform): fmt --check and validate; init runs without the backend, so no credentials or state are needed"
-run = [
-  "terraform -chdir=legacy/terraform fmt -check -diff -recursive",
-  "terraform -chdir=legacy/terraform init -backend=false -input=false -lockfile=readonly",
-  "terraform -chdir=legacy/terraform validate",
-]
+description = "Terraform (legacy/terraform): fmt --check, then init without the backend and validate in a scratch copy, so no credentials, state or yc_config.json are needed"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+tf=legacy/terraform
+terraform -chdir="$tf" fmt -check -diff -recursive
+scratch=$(mktemp -d)
+trap 'rm -rf "$scratch"' EXIT
+cp -R "$tf/." "$scratch"
+# The yandex provider reads this key file while validating its configuration.
+echo '{}' > "$scratch/yc_config.json"
+terraform -chdir="$scratch" init -backend=false -input=false -lockfile=readonly
+terraform -chdir="$scratch" validate
+'''
 
 ["lint:size"]
 description = "Client bundle budgets (size-limit config in package.json); builds the web app first"

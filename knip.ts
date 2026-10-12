@@ -5,10 +5,8 @@ import type { KnipConfig } from "knip";
 const config: KnipConfig = {
   ignore: ["legacy/**", "src/client/**", "src/types/**"],
   ignoreDependencies: [
-    // Run by name from the SSR image (Dockerfile.web) and the git hooks (hk.pkl),
-    // never imported.
+    // Run by name from the SSR image (Dockerfile.web), never imported.
     "srvx",
-    "@commitlint/cli",
     // The frontend state library the plan names (docs/FRONTEND_PLAN.md), not
     // used by any screen yet.
     "zustand",
