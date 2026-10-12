@@ -13,7 +13,6 @@ import (
 	"github.com/getsentry/sentry-go"
 	"go.opentelemetry.io/contrib/otelconf"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/log/global"
 
 	"hexletbasics/internal/config"
 )
@@ -49,7 +48,7 @@ func NewOpenTelemetrySDK(
 
 	otel.SetTracerProvider(sdk.TracerProvider())
 	otel.SetMeterProvider(sdk.MeterProvider())
-	global.SetLoggerProvider(sdk.LoggerProvider())
+	otel.SetLoggerProvider(sdk.LoggerProvider())
 	otel.SetTextMapPropagator(sdk.Propagator())
 	return &sdk, nil
 }

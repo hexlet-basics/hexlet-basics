@@ -14,7 +14,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/log/global"
 	collectortrace "go.opentelemetry.io/proto/otlp/collector/trace/v1"
 	common "go.opentelemetry.io/proto/otlp/common/v1"
 	"google.golang.org/protobuf/proto"
@@ -40,7 +39,7 @@ func TestNewOpenTelemetrySDKIsNoopWithoutConfigFile(t *testing.T) {
 
 	assert.Equal(t, sdk.TracerProvider(), otel.GetTracerProvider())
 	assert.Equal(t, sdk.MeterProvider(), otel.GetMeterProvider())
-	assert.Equal(t, sdk.LoggerProvider(), global.GetLoggerProvider())
+	assert.Equal(t, sdk.LoggerProvider(), otel.GetLoggerProvider())
 	assert.Equal(t, sdk.Propagator(), otel.GetTextMapPropagator())
 }
 
