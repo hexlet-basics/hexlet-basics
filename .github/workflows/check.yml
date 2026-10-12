@@ -27,13 +27,13 @@ jobs:
       # Installs the toolchain pinned in mise.toml (go, node, pnpm,
       # golangci-lint — single source of truth with local dev), and caches it
       # between runs.
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
 
       # mise-action does not cache the pnpm store (setup-node used to); keyed on
       # the lockfile the same way the Go cache is keyed on go.sum.
       - id: pnpm-store
         run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
@@ -42,7 +42,7 @@ jobs:
       # Neither job had a Go cache, so every run recompiled the dependency tree
       # from scratch. Keyed on go.sum: a dependency bump invalidates it, the
       # restore-key still seeds the next run from the previous tree.
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: |
             ~/.cache/go-build
@@ -63,17 +63,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
 
       - id: pnpm-store
         run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: |
             ~/.cache/go-build
@@ -91,13 +91,13 @@ jobs:
       - uses: actions/checkout@v7
 
       # node + pnpm pinned in mise.toml, same as local dev.
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
 
       # mise-action does not cache the pnpm store (setup-node used to); keyed on
       # the lockfile the same way the Go cache is keyed on go.sum.
       - id: pnpm-store
         run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-store.outputs.path }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
@@ -117,11 +117,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v5
 
       # Keyed on go.sum: a dependency bump invalidates it, the restore-key still
       # seeds the next run from the previous tree.
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: |
             ~/.cache/go-build
@@ -160,7 +160,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: azure/setup-helm@v4
+      - uses: azure/setup-helm@v5
 
       - run: >-
           helm lint k8s/app-chart

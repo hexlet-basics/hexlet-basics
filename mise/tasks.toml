@@ -152,8 +152,12 @@ run = "bin/rails runner ../scripts/export_fixtures.rb"
 # --- lint & typecheck ---------------------------------------------------------------
 
 [lint]
-description = "Lint Go + frontend + ADR numbering"
-depends = ["lint:go", "lint:web", "lint:adr"]
+description = "Lint Go + frontend + ADR numbering + dependency health"
+depends = ["lint:go", "lint:web", "lint:adr", "lint:deps"]
+
+["lint:deps"]
+description = "go.mod is tidy and the code calls no known-vulnerable dependency or stdlib function (network: the vulnerability database)"
+run = ["go mod tidy -diff", "go tool govulncheck ./..."]
 
 ["lint:adr"]
 description = "ADR numbers are unique (a merge of main can bring a second ADR with the same number)"

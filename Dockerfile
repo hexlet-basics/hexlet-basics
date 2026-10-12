@@ -7,7 +7,7 @@
 # The builder's Go and the copied atlas must match mise.toml (go, and the
 # atlas-community pin from ADR-0014); move them together.
 
-FROM golang:1.27.1 AS build
+FROM golang:1.27.2 AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
