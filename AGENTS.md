@@ -164,6 +164,12 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   containers, apply the Atlas migrations, and load the committed `fixtures/`
   snapshot. Docker is required; no separate test DB preparation is needed.
 - `mise run db:prepare` prepares the development DB without replacing its data.
+- `mise run test:e2e` — the Playwright suite in `e2e/`: Chromium against the
+  built Go API and SSR frontend on a throw-away `code_basics_e2e_test` database
+  (migrations + `fixtures/`, `test:e2e:db`). Needs the db daemon (`mise run
+  db:up`) and `pnpm exec playwright install chromium` once; never part of
+  `mise run test`. It asserts on what pages show, mocks nothing, and does not run
+  lesson code (that needs an environment the stack lacks).
 - Single package / test: `go test ./internal/handlers/`,
   `go test ./internal/handlers/ -run TestListCourses -v`.
 - **Fixtures** in `fixtures/` are the starting data (converted from the legacy
