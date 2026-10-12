@@ -47,6 +47,7 @@ type Tracker interface {
 	StartLesson(ctx context.Context, learner Learner, lessonID int, locale string) (*CourseState, error)
 	CheckSolution(ctx context.Context, check Check) (*CheckResult, error)
 	CourseState(ctx context.Context, learner Learner, courseID int) (*CourseState, error)
+	CourseStates(ctx context.Context, userID int, courseIDs []int) (map[int]*CourseState, error)
 	MergeGuest(ctx context.Context, userID int, guest GuestProgress, locale string) error
 }
 
@@ -407,12 +408,31 @@ type currentLesson struct {
 }
 
 func currentLessons(ctx context.Context, db *ent.Client, crs *ent.Course) ([]currentLesson, error) {
-	if crs.CurrentVersionID == nil {
+	byCourse, err := currentLessonsByCourse(ctx, db, []*ent.Course{crs})
+	if err != nil {
+		return nil, err
+	}
+	return byCourse[crs.ID], nil
+}
+
+// currentLessonsByCourse is currentLessons for many Courses in two queries, not
+// two per Course. A Course with no current Version has no entry.
+func currentLessonsByCourse(ctx context.Context, db *ent.Client, courses []*ent.Course) (map[int][]currentLesson, error) {
+	courseOf := make(map[int]int, len(courses))
+	versionIDs := make([]int, 0, len(courses))
+	for _, crs := range courses {
+		if crs.CurrentVersionID == nil {
+			continue
+		}
+		courseOf[*crs.CurrentVersionID] = crs.ID
+		versionIDs = append(versionIDs, *crs.CurrentVersionID)
+	}
+	if len(versionIDs) == 0 {
 		return nil, nil
 	}
 
 	versions, err := db.CourseLessonVersion.Query().
-		Where(courselessonversion.CourseVersionID(*crs.CurrentVersionID)).
+		Where(courselessonversion.CourseVersionIDIn(versionIDs...)).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load current lesson versions: %w", err)
@@ -436,19 +456,22 @@ func currentLessons(ctx context.Context, db *ent.Client, crs *ent.Course) ([]cur
 		slugs[row.ID] = lo.FromPtr(row.Slug)
 	}
 
-	lessons := make([]currentLesson, 0, len(versions))
+	byCourse := make(map[int][]currentLesson, len(courses))
 	for _, v := range versions {
 		if v.NaturalOrder == nil {
 			continue
 		}
-		lessons = append(lessons, currentLesson{
+		courseID := courseOf[v.CourseVersionID]
+		byCourse[courseID] = append(byCourse[courseID], currentLesson{
 			lessonID: v.LessonID,
 			slug:     slugs[v.LessonID],
 			position: *v.NaturalOrder,
 		})
 	}
-	sort.Slice(lessons, func(i, j int) bool { return lessons[i].position < lessons[j].position })
-	return lessons, nil
+	for _, lessons := range byCourse {
+		sort.Slice(lessons, func(i, j int) bool { return lessons[i].position < lessons[j].position })
+	}
+	return byCourse, nil
 }
 
 // CourseState answers where the learner stands. A learner with no Enrollment
@@ -475,6 +498,99 @@ func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID in
 		return nil, err
 	}
 
+	state, finishedCount := stateOf(lessons, finishedIDs)
+
+	if !learner.SignedIn() {
+		// A guest has no Enrollment to read a state from, so it is derived from
+		// what they have finished. Deriving rather than leaving it null is what
+		// makes the payload the client renders identical for both.
+		switch {
+		case finishedCount == 0:
+			state.State = ""
+		case finishedCount == len(lessons):
+			state.State = StateFinished
+		default:
+			state.State = StateStarted
+		}
+		return state, nil
+	}
+
+	enrolled, err := p.db.Enrollment.Query().
+		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(courseID)).
+		Only(ctx)
+	switch {
+	case err == nil:
+		state.State = lo.FromPtr(enrolled.State)
+	case !ent.IsNotFound(err):
+		return nil, fmt.Errorf("load enrollment: %w", err)
+	}
+	return state, nil
+}
+
+// CourseStates is CourseState for a signed-in learner across many Courses, in
+// five queries however many there are — a dashboard needs every enrollment's
+// state at once, and asking per Course made its cost grow with the learner's
+// history. Each answer is exactly what CourseState gives for that Course; the
+// two share stateOf, and a Course the learner has not joined comes back with
+// nothing finished. A Course id that does not exist is absent from the result.
+func (p *Progress) CourseStates(ctx context.Context, userID int, courseIDs []int) (map[int]*CourseState, error) {
+	if len(courseIDs) == 0 {
+		return map[int]*CourseState{}, nil
+	}
+
+	courses, err := p.db.Course.Query().Where(course.IDIn(courseIDs...)).All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("load courses: %w", err)
+	}
+
+	lessons, err := currentLessonsByCourse(ctx, p.db, courses)
+	if err != nil {
+		return nil, err
+	}
+
+	finished, err := p.db.LessonProgress.Query().
+		Where(
+			lessonprogress.UserID(userID),
+			lessonprogress.CourseIDIn(courseIDs...),
+			lessonprogress.StateEQ(StateFinished),
+		).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("load finished lessons: %w", err)
+	}
+	finishedIDs := make(map[int]map[int]bool, len(courses))
+	for _, row := range finished {
+		if finishedIDs[row.CourseID] == nil {
+			finishedIDs[row.CourseID] = map[int]bool{}
+		}
+		finishedIDs[row.CourseID][row.LessonID] = true
+	}
+
+	enrollments, err := p.db.Enrollment.Query().
+		Where(enrollment.UserID(userID), enrollment.CourseIDIn(courseIDs...)).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("load enrollments: %w", err)
+	}
+	enrollmentState := make(map[int]string, len(enrollments))
+	for _, e := range enrollments {
+		enrollmentState[e.CourseID] = lo.FromPtr(e.State)
+	}
+
+	states := make(map[int]*CourseState, len(courses))
+	for _, crs := range courses {
+		state, _ := stateOf(lessons[crs.ID], finishedIDs[crs.ID])
+		state.State = enrollmentState[crs.ID]
+		states[crs.ID] = state
+	}
+	return states, nil
+}
+
+// stateOf folds a Course's current Lessons and the learner's finished set into
+// the read model, and reports how many current Lessons are finished. It is the
+// one place availability, the next Lesson and completion are decided, whether
+// the learner is a guest, one Course is asked for, or a dashboard asks for many.
+func stateOf(lessons []currentLesson, finishedIDs map[int]bool) (*CourseState, int) {
 	state := &CourseState{Lessons: make([]LessonState, 0, len(lessons))}
 	finishedCount := 0
 	for _, l := range lessons {
@@ -507,31 +623,7 @@ func (p *Progress) CourseState(ctx context.Context, learner Learner, courseID in
 		state.Completion = finishedCount * 100 / len(lessons)
 	}
 
-	if !learner.SignedIn() {
-		// A guest has no Enrollment to read a state from, so it is derived from
-		// what they have finished. Deriving rather than leaving it null is what
-		// makes the payload the client renders identical for both.
-		switch {
-		case finishedCount == 0:
-			state.State = ""
-		case finishedCount == len(lessons):
-			state.State = StateFinished
-		default:
-			state.State = StateStarted
-		}
-		return state, nil
-	}
-
-	enrolled, err := p.db.Enrollment.Query().
-		Where(enrollment.UserID(learner.UserID), enrollment.CourseID(courseID)).
-		Only(ctx)
-	switch {
-	case err == nil:
-		state.State = lo.FromPtr(enrolled.State)
-	case !ent.IsNotFound(err):
-		return nil, fmt.Errorf("load enrollment: %w", err)
-	}
-	return state, nil
+	return state, finishedCount
 }
 
 // finishedLessons is the set of Lessons the learner has finished, from

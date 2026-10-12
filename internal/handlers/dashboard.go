@@ -57,16 +57,18 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 		return nil, err
 	}
 
+	states, err := s.progress.CourseStates(ctx, u.ID,
+		lo.Map(enrollments, func(e *ent.Enrollment, _ int) int { return e.CourseID }))
+	if err != nil {
+		return nil, err
+	}
+
 	for _, enrolled := range enrollments {
 		page, ok := cards[enrolled.CourseID]
 		if !ok {
 			continue
 		}
-
-		state, err := s.progress.CourseState(ctx, progress.Learner{UserID: u.ID}, enrolled.CourseID)
-		if err != nil {
-			return nil, err
-		}
+		state := states[enrolled.CourseID]
 
 		item := apiconv.ToEnrollment(enrolled, state)
 		if state.State == progress.StateFinished {
