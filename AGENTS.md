@@ -143,10 +143,16 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   -diff`, `govulncheck`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
   + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
   types current, no hardcoded strings outside `src/components/pages`, no key missing
-  from a locale catalog). CI runs the same task. The
-  pre-push hook runs the Go, frontend and ADR checks; the pre-commit hook runs
-  gitleaks, oxlint, oxfmt, golangci-lint, typos, shellcheck, zizmor and
-  jactionlint on the staged files. Pushes need them clean.
+  from a locale catalog) + `lint:helm` (helm lint, render, kubeconform) +
+  `lint:infra` (terraform fmt and validate for `legacy/terraform`). CI runs the
+  same task. The pre-push hook runs the Go, frontend and ADR checks; the
+  pre-commit hook runs gitleaks, oxlint, oxfmt, golangci-lint, typos,
+  shellcheck, zizmor, jactionlint, terraform and helm on the staged files.
+  Pushes need them clean.
+- `mise run lint:size` — the client bundle budgets (size-limit config in
+  `package.json`): builds the web app, then fails if the entry chunk or the
+  total client JavaScript grows past its gzip limit. CI runs it as the
+  `bundle-size` job; it is not part of `lint` because it needs a build.
 - `mise run lint:fix` — `gofmt -w`, `golangci-lint --fix`, `oxlint --fix`,
   `oxfmt` and `typos --write-changes`.
 - Go vet/build only: `go vet ./...`, `go build ./...`.
