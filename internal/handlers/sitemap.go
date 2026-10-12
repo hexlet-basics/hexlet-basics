@@ -33,9 +33,8 @@ func (s *Server) GetSitemap(ctx context.Context) (*api.Sitemap, error) {
 	for _, locale := range sitemapLocales {
 		rows, err := s.db.CourseLandingPage.Query().
 			Where(
-				courselandingpage.StateEQ(landingpages.StatePublished),
+				landingpages.Published(locale),
 				courselandingpage.Listed(true),
-				courselandingpage.LocaleEQ(locale),
 				// Legacy sent every lesson of the courses' current versions and the
 				// page hid a landing page whose course had none in its locale. Unlike
 				// the catalog, there is no completed-course filter here.

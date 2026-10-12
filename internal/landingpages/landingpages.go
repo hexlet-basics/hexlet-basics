@@ -25,13 +25,22 @@ const StatePublished = "published"
 // courses stay off the public lists.
 const CourseCompleted = "completed"
 
+// Published is the part of the public scope that does not look at the Course:
+// published landing pages in locale. Web narrows it; the sitemap, which lists
+// pages of courses that are not completed yet, builds on it directly.
+func Published(locale string) predicate.CourseLandingPage {
+	return courselandingpage.And(
+		courselandingpage.StateEQ(StatePublished),
+		courselandingpage.LocaleEQ(locale),
+	)
+}
+
 // Web is legacy `Language::LandingPage.web`: published landing pages in locale
 // whose Course is completed. Every public read starts here; callers add their
 // own narrowing (`listed`, `main`, a category) and ordering.
 func Web(locale string) predicate.CourseLandingPage {
 	return courselandingpage.And(
-		courselandingpage.StateEQ(StatePublished),
-		courselandingpage.LocaleEQ(locale),
+		Published(locale),
 		courselandingpage.HasCourseWith(course.ReadinessEQ(CourseCompleted)),
 	)
 }
