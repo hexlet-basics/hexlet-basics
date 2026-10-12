@@ -9,14 +9,13 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courselessonversion"
-	"hexletbasics/ent/coursemoduletranslation"
-	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
+	"hexletbasics/internal/curriculum"
 )
 
 // GetCourse returns everything the public course landing page needs: the
@@ -168,26 +167,7 @@ func (s *Server) currentModuleList(ctx context.Context, crs *ent.Course) ([]api.
 		return []api.CourseModuleListItem{}, nil
 	}
 
-	rows, err := s.db.CourseModuleTranslation.Query().
-		Where(
-			coursemoduletranslation.LocaleEQ(s.i18n.Locale(ctx)),
-			coursemoduletranslation.CourseVersionID(*crs.CurrentVersionID),
-		).
-		WithVersion(func(q *ent.CourseModuleVersionQuery) {
-			q.WithLessonVersions(func(q *ent.CourseLessonVersionQuery) {
-				q.WithLesson().Order(
-					courselessonversion.ByNaturalOrder(sql.OrderNullsLast()),
-					courselessonversion.ByID(),
-				)
-			})
-		}).
-		Order(
-			coursemoduletranslation.ByVersionField(coursemoduleversion.FieldOrder, sql.OrderNullsLast()),
-			// Qualify the id: the edge ordering joins language_module_versions,
-			// so a bare `id` is ambiguous.
-			func(s *sql.Selector) { s.OrderBy(s.C(coursemoduletranslation.FieldID)) },
-		).
-		All(ctx)
+	rows, err := curriculum.Modules(ctx, s.db, s.i18n.Locale(ctx), *crs.CurrentVersionID)
 	if err != nil {
 		return nil, err
 	}

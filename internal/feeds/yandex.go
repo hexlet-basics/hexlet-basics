@@ -12,15 +12,12 @@ import (
 	"strings"
 	"time"
 
-	"entgo.io/ent/dialect/sql"
 	"github.com/samber/lo"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/coursecategory"
-	"hexletbasics/ent/courselessonversion"
-	"hexletbasics/ent/coursemoduletranslation"
-	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/landingpage"
+	"hexletbasics/internal/curriculum"
 
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/localization"
@@ -224,26 +221,7 @@ func (y *Yandex) modules(ctx context.Context, pages []*ent.LandingPage) (map[int
 		return map[int][]*ent.CourseModuleTranslation{}, nil
 	}
 
-	rows, err := y.db.CourseModuleTranslation.Query().
-		Where(
-			coursemoduletranslation.LocaleEQ(feedLocale),
-			coursemoduletranslation.CourseVersionIDIn(versionIDs...),
-		).
-		WithVersion(func(q *ent.CourseModuleVersionQuery) {
-			q.WithLessonVersions(func(q *ent.CourseLessonVersionQuery) {
-				q.WithLesson().Order(
-					courselessonversion.ByNaturalOrder(sql.OrderNullsLast()),
-					courselessonversion.ByID(),
-				)
-			})
-		}).
-		Order(
-			coursemoduletranslation.ByVersionField(coursemoduleversion.FieldOrder, sql.OrderNullsLast()),
-			// Qualify the id: the edge ordering joins language_module_versions,
-			// so a bare `id` is ambiguous.
-			func(s *sql.Selector) { s.OrderBy(s.C(coursemoduletranslation.FieldID)) },
-		).
-		All(ctx)
+	rows, err := curriculum.Modules(ctx, y.db, feedLocale, versionIDs...)
 	if err != nil {
 		return nil, fmt.Errorf("load feed modules: %w", err)
 	}
