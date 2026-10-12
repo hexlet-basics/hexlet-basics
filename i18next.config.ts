@@ -27,7 +27,15 @@ export default defineConfig({
     defaultNS: "translation",
     primaryLanguage: "ru",
   },
-  lint: { ignore },
+  lint: {
+    ignore: [
+      ...ignore,
+      // Legal and about pages are written as one component per language
+      // (PrivacyRu/PrivacyEn, TosRu/TosEn, ...), their text is the page, not a
+      // catalog entry. The hardcoded-string rule does not apply to them.
+      "src/components/pages/**",
+    ],
+  },
   types: {
     input: ["src/locales/ru/translation.ts"],
     output: "src/types/i18next.d.ts",

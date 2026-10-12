@@ -489,8 +489,7 @@ export default interface Resources {
     },
     "blocks": {
       "lead_form_block": {
-        "description1": "Ответим в течение дня",
-        "description2": "Нам можно написать в <a>телеграм</a>"
+        "description": "Ответим в течение дня. Нам можно написать в <a>телеграм</a>"
       }
     },
     "blog_posts": {

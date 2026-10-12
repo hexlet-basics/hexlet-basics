@@ -115,10 +115,9 @@ export default function LeadFormBlock({ autoFocus = false, redirectHref }: Props
         )}
       </form.AppField>
       <Box fz="sm" my="lg">
-        {t(($) => $.blocks.lead_form_block.description1)}{" "}
         <Trans
           t={t}
-          i18nKey={($) => $.blocks.lead_form_block.description2}
+          i18nKey={($) => $.blocks.lead_form_block.description}
           components={{ a: communityLink }}
         />
       </Box>
