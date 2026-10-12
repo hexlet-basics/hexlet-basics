@@ -153,7 +153,15 @@ run = "bin/rails runner ../scripts/export_fixtures.rb"
 
 [lint]
 description = "Lint Go + frontend + ADR numbering + dependency health"
-depends = ["lint:go", "lint:web", "lint:adr", "lint:deps"]
+depends = ["lint:go", "lint:web", "lint:adr", "lint:deps", "lint:typos", "lint:workflows"]
+
+["lint:typos"]
+description = "Spelling in code, docs and comments (_typos.toml)"
+run = "typos"
+
+["lint:workflows"]
+description = "GitHub workflows: zizmor (security) and jactionlint (correctness)"
+run = ["zizmor --no-progress .github", "jactionlint .github/workflows/*.yml"]
 
 ["lint:deps"]
 description = "go.mod is tidy and the code calls no known-vulnerable dependency or stdlib function (network: the vulnerability database)"

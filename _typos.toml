@@ -1,0 +1,42 @@
+# typos: spelling in code, docs and comments. Generated code, vendored trees,
+# lockfiles and the translated catalogs (ru/es are not English) are skipped.
+[files]
+extend-exclude = [
+  "legacy",
+  "node_modules",
+  "dist",
+  "src/client",
+  "src/routeTree.gen.ts",
+  "src/locales/ru",
+  "src/locales/es",
+  "internal/api",
+  "internal/amocrm/generated",
+  "internal/apiconv/apiconv.gen.go",
+  "internal/testsupport/mock_*_gen.go",
+  "internal/localization/locales",
+  "api-spec/dist",
+  "ent/*.go",
+  "ent/*/",
+  "!ent/schema",
+  "migrations",
+  "fixtures",
+  "docs/research",
+  "k8s/app-chart/secrets",
+  "public/mockServiceWorker.js",
+  "go.mod",
+  "pnpm-lock.yaml",
+  "go.sum",
+  "*.lock",
+]
+
+[default.extend-words]
+# Intentional fragments: a deliberately misspelled YAML key in a parser test, a
+# streamed chunk cut mid-word, a "NAMEs" plural in a comment, the legacy Ruby
+# method Lesson#localed_info, and Spanish words in GLOSSARY.md.
+descriptio = "descriptio"
+Hel = "Hel"
+NAM = "NAM"
+localed = "localed"
+curso = "curso"
+inicial = "inicial"
+autor = "autor"
