@@ -122,6 +122,13 @@ run = [{ task = "gen:spec" }, { task = "gen:api" }, { task = "gen:client" }]
 description = "Regenerate everything: ent + contracts + locales + external clients"
 run = [{ task = "gen:ent" }, { task = "gen" }, { task = "gen:locales" }, { task = "gen:amocrm" }]
 
+["gen:check"]
+description = "Fail when committed generated code differs from what gen:all produces (CI gate; needs a clean tree)"
+run = [
+  { task = "gen:all" },
+  '''test -z "$(git status --porcelain)" || { echo 'generated code is out of date; run `mise run gen:all` and commit:'; git status --short; git diff | head -80; exit 1; }''',
+]
+
 [tidy]
 description = "Prune/sync go.mod after generation or dep changes"
 run = "go mod tidy"

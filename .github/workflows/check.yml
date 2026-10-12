@@ -55,6 +55,36 @@ jobs:
       # gofmt + go vet + golangci-lint (Go) and tsc (frontend).
       - run: mise run lint
 
+  # Regenerates every committed generated file (ent, ogen, hey-api, goverter,
+  # locales, amoCRM client) and fails if the tree changes, so a schema or
+  # contract edit cannot land without its generated output.
+  gen-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: jdx/mise-action@v2
+
+      - id: pnpm-store
+        run: echo "path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-store.outputs.path }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - run: pnpm install
+
+      - run: mise run gen:check
+
   test-web:
     runs-on: ubuntu-latest
     steps:
