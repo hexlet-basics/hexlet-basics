@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/riverqueue/river"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -14,7 +13,6 @@ import (
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -279,7 +277,9 @@ func TestAdminSuggestBlogPostRelatedCourses(t *testing.T) {
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 6001})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.Equal(t, []river.JobArgs{jobs.SuggestRelatedCoursesArgs{BlogPostID: 6001}}, h.Enqueuer.Inserted)
+	calls := h.RelatedCourses.EnqueueRelatedCoursesSuggestionCalls()
+	require.Len(t, calls, 1)
+	assert.Equal(t, 6001, calls[0].BlogPostID)
 }
 
 func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
@@ -289,5 +289,5 @@ func TestAdminSuggestBlogPostRelatedCoursesNotFound(t *testing.T) {
 	_, err := h.Client.AdminSuggestBlogPostRelatedCourses(ctx, api.AdminSuggestBlogPostRelatedCoursesParams{ID: 999999})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
-	assert.Empty(t, h.Enqueuer.Inserted)
+	assert.Empty(t, h.RelatedCourses.EnqueueRelatedCoursesSuggestionCalls())
 }

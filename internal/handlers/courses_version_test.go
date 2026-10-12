@@ -10,7 +10,6 @@ import (
 
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/internal/api"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -32,11 +31,10 @@ func TestAdminCreateCourseVersion(t *testing.T) {
 	assert.Equal(t, "created", *row.State)
 	assert.Equal(t, courseRubyIDA, row.CourseID)
 
-	// The loader job was enqueued for exactly this version.
-	require.Len(t, h.Enqueuer.Inserted, 1)
-	args, ok := h.Enqueuer.Inserted[0].(jobs.ExerciseLoaderArgs)
-	require.True(t, ok, "expected ExerciseLoaderArgs, got %T", h.Enqueuer.Inserted[0])
-	assert.Equal(t, int(version.ID), args.VersionID)
+	// One build was started, for the ruby course.
+	calls := h.Starter.StartCalls()
+	require.Len(t, calls, 1)
+	assert.Equal(t, courseRubyIDA, calls[0].CourseID)
 }
 
 func TestAdminCreateCourseVersionNotFound(t *testing.T) {
@@ -50,5 +48,5 @@ func TestAdminCreateCourseVersionNotFound(t *testing.T) {
 	assert.True(t, ok, "expected NotFoundError, got %T", res)
 
 	// A missing course enqueues nothing.
-	assert.Empty(t, h.Enqueuer.Inserted)
+	assert.Empty(t, h.Starter.StartCalls())
 }

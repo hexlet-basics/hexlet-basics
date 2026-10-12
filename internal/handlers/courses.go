@@ -63,7 +63,7 @@ type Server struct {
 }
 
 // Deps are the handler's collaborators. A struct rather than positional
-// parameters: most are interfaces the tests fill with recording adapters, and
+// parameters: most are interfaces the tests fill with moq mocks, and
 // a test that never reaches a collaborator (no lead is submitted through the
 // auth router) simply leaves its field zero instead of passing a labelled nil.
 // Plain fields, no DI tags, so the handlers package stays injector-agnostic.

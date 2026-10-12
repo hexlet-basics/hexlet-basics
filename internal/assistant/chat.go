@@ -52,8 +52,8 @@ type Usage struct {
 	OutputTokens int
 }
 
-// Streamer is the LLM seam: implemented by OpenAI, faked in tests with canned
-// deltas.
+// Streamer is the LLM seam: implemented by OpenAI, mocked in tests with
+// canned deltas.
 type Streamer interface {
 	Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (Usage, error)
 }

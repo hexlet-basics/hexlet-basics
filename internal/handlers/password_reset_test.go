@@ -13,7 +13,6 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -46,9 +45,11 @@ func TestCreatePasswordReminderEmailsARegisteredUser(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
-	assert.Equal(t, []jobs.AccountEmailArgs{
-		{Purpose: emailtokens.PasswordReset, UserID: u.ID, Locale: "es"},
-	}, h.Enqueuer.AccountEmails())
+	calls := h.Emails.EnqueueAccountEmailCalls()
+	require.Len(t, calls, 1)
+	assert.Equal(t, emailtokens.PasswordReset, calls[0].Purpose)
+	assert.Equal(t, u.ID, calls[0].UserID)
+	assert.Equal(t, "es", calls[0].Locale)
 }
 
 // Unlike legacy, an unknown email is not reported.
@@ -60,7 +61,7 @@ func TestCreatePasswordReminderAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 	assert.IsType(t, &api.CreatePasswordReminderNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.Empty(t, h.Enqueuer.AccountEmails())
+	assert.Empty(t, h.Emails.EnqueueAccountEmailCalls())
 }
 
 func TestCheckPasswordResetToken(t *testing.T) {

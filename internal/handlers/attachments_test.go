@@ -66,19 +66,19 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	translator := testsupport.NewTranslator(t)
 	errorHandler := testsupport.NewAPIErrorHandler(t, translator)
 	cfg := &config.Config{JWTSecret: "test-secret", EmailTokenSecret: "test-email-secret"}
-	enqueuer := &testsupport.RecordingEnqueuer{DB: db}
+	mocks := testsupport.NewMocks(db)
 	handler := handlers.NewServer(handlers.Deps{
 		DB:             db,
 		Config:         cfg,
-		Starter:        enqueuer,
-		Reviews:        enqueuer,
-		RelatedCourses: enqueuer,
-		Emails:         enqueuer,
-		Progress:       progress.New(db, transactor, &testsupport.RecordingEventPublisher{}, testsupport.NewStubExerciseRunner()),
+		Starter:        mocks.Starter,
+		Reviews:        mocks.Reviews,
+		RelatedCourses: mocks.RelatedCourses,
+		Emails:         mocks.Emails,
+		Progress:       progress.New(db, transactor, mocks.TxEvents, mocks.Runner),
 		Assets:         assets,
-		Registrar:      testsupport.NewRecordingRegistrar(db),
+		Registrar:      accounts.NewRegistrar(transactor, mocks.TxEvents),
 		Remover:        accounts.NewRemover(transactor),
-		Events:         &testsupport.RecordingEventPublisher{},
+		Events:         mocks.StandaloneEvents,
 		I18n:           translator,
 		Errors:         errorHandler,
 	})
@@ -91,7 +91,7 @@ func newAttachmentRouterStack(t *testing.T, admin bool) (http.Handler, []*http.C
 	)
 	require.NoError(t, err)
 	att := handlers.NewAttachmentHandler(assets, errorHandler)
-	gh := handlers.NewGitHubWebhookHandler(db, enqueuer, "", translator)
+	gh := handlers.NewGitHubWebhookHandler(db, mocks.Starter, "", translator)
 	router := translator.Middleware(handlers.NewRouter(apiServer, att, gh, handler.AuthHandler()))
 
 	jti := ids.New()

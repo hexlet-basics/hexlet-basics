@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -57,8 +58,8 @@ func TestCheckFinishesAnAvailableLesson(t *testing.T) {
 	assert.Equal(t, 2, finished[0].OccurrenceCount, "counts the Lesson Progress rows on this enrollment")
 	assert.Empty(t, publishedOf[events.CourseFinished](h))
 
-	require.Len(t, h.Runner.Submissions, 1)
-	assert.Equal(t, actingUserID(t, h), h.Runner.Submissions[0].UserID)
+	require.Len(t, h.Runner.RunCalls(), 1)
+	assert.Equal(t, actingUserID(t, h), h.Runner.RunCalls()[0].Submission.UserID)
 }
 
 // A failed check is still work done on the lesson: it is recorded, and the
@@ -66,7 +67,9 @@ func TestCheckFinishesAnAvailableLesson(t *testing.T) {
 func TestCheckLeavesAFailedLessonStarted(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
-	h.Runner.Outcome = testsupport.FailingOutcome()
+	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
+		return testsupport.FailingOutcome(), nil
+	}
 	lesson := lessonBySlug(t, h, secondLessonSlug)
 
 	result := submitSolution(t, h, lesson)
@@ -102,8 +105,8 @@ func TestCheckRefusesALessonBeyondTheGate(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Empty(t, h.Events.Published)
-	assert.Empty(t, h.Runner.Submissions, "a refused submission is never run")
+	assert.Empty(t, publishedEvents(h))
+	assert.Empty(t, h.Runner.RunCalls(), "a refused submission is never run")
 }
 
 // The last unfinished lesson of a course finishes the course as well, and the
@@ -248,7 +251,7 @@ func TestCheckRefusesASupersededLessonVersion(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.IsType(t, &api.NotFoundError{}, res)
-	assert.Empty(t, h.Runner.Submissions)
+	assert.Empty(t, h.Runner.RunCalls())
 }
 
 // ---- Guests ---------------------------------------------------------------
@@ -290,7 +293,7 @@ func TestGuestCheckRefusesALessonBeyondTheGate(t *testing.T) {
 	require.NoError(t, err)
 	require.IsType(t, &api.ProblemDetails{}, res)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
-	assert.Empty(t, h.Runner.Submissions)
+	assert.Empty(t, h.Runner.RunCalls())
 }
 
 // Replaying the cookie a previous pass returned opens the next lesson, and
@@ -312,7 +315,9 @@ func TestGuestCheckAdvancesFromTheCarriedCookie(t *testing.T) {
 // only on a pass.
 func TestGuestCheckDoesNotAdvanceOnAFailure(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
-	h.Runner.Outcome = testsupport.FailingOutcome()
+	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
+		return testsupport.FailingOutcome(), nil
+	}
 	lesson := lessonBySlug(t, h, firstLessonSlug)
 
 	result := submitSolution(t, h, lesson)

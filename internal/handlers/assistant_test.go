@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"strings"
@@ -80,8 +81,14 @@ func TestAskAssistantStreamsTheAnswerAndStoresBothTurns(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
-	h.Assistant.Deltas = []string{"Declare it ", "with ", "`let`."}
-	h.Assistant.Usage = assistant.Usage{InputTokens: 321, OutputTokens: 12}
+	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
+		for _, delta := range []string{"Declare it ", "with ", "`let`."} {
+			if err := onDelta(delta); err != nil {
+				return assistant.Usage{}, err
+			}
+		}
+		return assistant.Usage{InputTokens: 321, OutputTokens: 12}, nil
+	}
 	counterBefore := assistantMessagesCount(t, h)
 
 	answer := askAssistant(t, h, lesson, "How do I declare a variable?")
@@ -120,8 +127,8 @@ func TestAskAssistantBuildsThePromptFromTheLesson(t *testing.T) {
 		Output:   api.NewNilString("expected 2, got 1"),
 	})
 
-	require.Len(t, h.Assistant.Requests, 1)
-	turns := h.Assistant.Requests[0]
+	require.Len(t, h.Assistant.StreamCalls(), 1)
+	turns := h.Assistant.StreamCalls()[0].Turns
 	require.Len(t, turns, 2, "a first question: the system prompt and the question")
 
 	system := turns[0]
@@ -146,8 +153,8 @@ func TestAskAssistantPromptFollowsTheLocale(t *testing.T) {
 
 	askAssistant(t, h, lesson, "Как вывести строку?")
 
-	require.Len(t, h.Assistant.Requests, 1)
-	system := h.Assistant.Requests[0][0].Content
+	require.Len(t, h.Assistant.StreamCalls(), 1)
+	system := h.Assistant.StreamCalls()[0].Turns[0].Content
 	assert.Contains(t, system, "«Привет, мир!»")
 	assert.Contains(t, system, "Отвечай на русском языке")
 }
@@ -160,8 +167,8 @@ func TestAskAssistantSendsTheChatHistory(t *testing.T) {
 
 	askAssistant(t, h, lesson, "And a number?")
 
-	require.Len(t, h.Assistant.Requests, 1)
-	turns := h.Assistant.Requests[0]
+	require.Len(t, h.Assistant.StreamCalls(), 1)
+	turns := h.Assistant.StreamCalls()[0].Turns
 	require.Len(t, turns, 4)
 	assert.Equal(t, assistant.Turn{Role: assistant.RoleUser, Content: "How do I print a string?"}, turns[1])
 	assert.Equal(t, assistant.Turn{Role: assistant.RoleAssistant, Content: "Use console.log to print a string."}, turns[2])
@@ -184,7 +191,7 @@ func TestAskAssistantRefusesOverTheDailyQuota(t *testing.T) {
 	require.NoError(t, err)
 	assert.IsType(t, &api.CreateAssistantMessageTooManyRequests{}, res)
 	assert.Equal(t, http.StatusTooManyRequests, h.LastStatus())
-	assert.Empty(t, h.Assistant.Requests, "the model is never asked")
+	assert.Empty(t, h.Assistant.StreamCalls(), "the model is never asked")
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 
 	assert.True(t, listAssistantChat(t, h, lesson).QuotaExceeded)
@@ -198,7 +205,7 @@ func TestAskAssistantQuotaResetsDaily(t *testing.T) {
 
 	askAssistant(t, h, lesson, "A new day?")
 
-	assert.Len(t, h.Assistant.Requests, 1)
+	assert.Len(t, h.Assistant.StreamCalls(), 1)
 }
 
 // Asking about a lesson beyond the gate is refused as starting it would be,
@@ -216,7 +223,7 @@ func TestAskAssistantRefusesALessonBeyondTheGate(t *testing.T) {
 	require.NoError(t, err)
 	assert.IsType(t, &api.CreateAssistantMessageConflict{}, res)
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
-	assert.Empty(t, h.Assistant.Requests)
+	assert.Empty(t, h.Assistant.StreamCalls())
 	assert.Equal(t, messages, h.DB.AiMessage.Query().CountX(ctx))
 }
 
@@ -227,7 +234,9 @@ func TestAskAssistantReportsAModelFailureBeforeStreaming(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, firstLessonSlug)
-	h.Assistant.Err = io.ErrUnexpectedEOF
+	h.Assistant.StreamFunc = func(context.Context, []assistant.Turn, func(string) error) (assistant.Usage, error) {
+		return assistant.Usage{}, io.ErrUnexpectedEOF
+	}
 	messages := h.DB.AiMessage.Query().CountX(ctx)
 
 	_, err := h.Client.CreateAssistantMessage(ctx,
@@ -246,8 +255,12 @@ func TestAskAssistantChargesAQuestionWhoseAnswerBroke(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
 	lesson := lessonBySlug(t, h, secondLessonSlug)
-	h.Assistant.Deltas = []string{"Declare it "}
-	h.Assistant.ErrAfter = io.ErrUnexpectedEOF
+	h.Assistant.StreamFunc = func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
+		if err := onDelta("Declare it "); err != nil {
+			return assistant.Usage{}, err
+		}
+		return assistant.Usage{}, io.ErrUnexpectedEOF
+	}
 
 	_, _ = h.Client.CreateAssistantMessage(ctx,
 		&api.AssistantMessageInput{Message: "How do I declare a variable?"},
@@ -272,7 +285,7 @@ func TestAskAssistantRequiresASignedInLearner(t *testing.T) {
 	)
 	require.NoError(t, err)
 	assert.IsType(t, &api.CreateAssistantMessageUnauthorized{}, res)
-	assert.Empty(t, h.Assistant.Requests)
+	assert.Empty(t, h.Assistant.StreamCalls())
 }
 
 func listAssistantChat(t *testing.T, h *testsupport.Harness, lesson *ent.CourseLesson) *api.LessonAssistantChat {

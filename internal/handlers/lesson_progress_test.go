@@ -106,7 +106,7 @@ func TestStartLessonIsIdempotent(t *testing.T) {
 	require.IsType(t, &api.CourseProgress{}, res)
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx), "no row is written")
-	assert.Empty(t, h.Events.Published, "an already-finished lesson publishes nothing")
+	assert.Empty(t, publishedEvents(h), "an already-finished lesson publishes nothing")
 
 	row := h.DB.LessonProgress.Query().
 		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
@@ -127,7 +127,7 @@ func TestStartLessonRefusesALessonBeyondTheGate(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	assert.Equal(t, before, h.DB.LessonProgress.Query().CountX(ctx))
-	assert.Empty(t, h.Events.Published)
+	assert.Empty(t, publishedEvents(h))
 }
 
 // A lesson the current version does not contain contributes no Position, so a
@@ -217,7 +217,7 @@ func TestStartLessonAnswersAGuestWithoutStoringAnything(t *testing.T) {
 
 	assert.Equal(t, rows, h.DB.LessonProgress.Query().CountX(ctx))
 	assert.Equal(t, enrollments, h.DB.Enrollment.Query().CountX(ctx))
-	assert.Empty(t, h.Events.Published, "starting is not a fact for someone with no account")
+	assert.Empty(t, publishedEvents(h), "starting is not a fact for someone with no account")
 }
 
 // The gate is real for a visitor too: with no cookie only the first lesson of a
@@ -315,9 +315,22 @@ func publishedLessonStarted(t *testing.T, h *testsupport.Harness) events.LessonS
 	return found[0]
 }
 
+// publishedEvents lists the domain facts the handlers raised, whichever seam
+// carried them: inside a transaction or on their own.
+func publishedEvents(h *testsupport.Harness) []events.Event {
+	var all []events.Event
+	for _, call := range h.TxEvents.PublishCalls() {
+		all = append(all, call.Event)
+	}
+	for _, call := range h.StandaloneEvents.PublishStandaloneCalls() {
+		all = append(all, call.Event)
+	}
+	return all
+}
+
 func publishedOf[T events.Event](h *testsupport.Harness) []T {
 	var found []T
-	for _, e := range h.Events.Published {
+	for _, e := range publishedEvents(h) {
 		if typed, ok := e.(T); ok {
 			found = append(found, typed)
 		}

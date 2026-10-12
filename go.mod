@@ -158,6 +158,7 @@ require (
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
 	github.com/lufia/plan9stats v0.0.0-20260802145828-341c2f0c90b5 // indirect
 	github.com/magiconair/properties v1.18.12 // indirect
+	github.com/matryer/moq v0.8.0 // indirect
 	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.23 // indirect
@@ -256,5 +257,6 @@ tool (
 	entgo.io/ent/cmd/ent
 	github.com/air-verse/air
 	github.com/jmattheis/goverter/cmd/goverter
+	github.com/matryer/moq
 	github.com/ogen-go/ogen/cmd/ogen
 )

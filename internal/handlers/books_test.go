@@ -45,9 +45,9 @@ func TestCreateBookRequestStoresTheRequestAndPublishesIt(t *testing.T) {
 	stored := h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).OnlyX(t.Context())
 	assert.Equal(t, books.StateRequested, lo.FromPtr(stored.State))
 
-	require.Len(t, h.Events.Published, 1)
-	published, ok := h.Events.Published[0].(events.BookRequested)
-	require.True(t, ok, "expected BookRequested, got %T", h.Events.Published[0])
+	require.Len(t, publishedEvents(h), 1)
+	published, ok := publishedEvents(h)[0].(events.BookRequested)
+	require.True(t, ok, "expected BookRequested, got %T", publishedEvents(h)[0])
 	assert.Equal(t, "ru", published.Locale)
 
 	view, err := h.Client.GetBook(t.Context())
@@ -65,7 +65,7 @@ func TestCreateBookRequestTwiceKeepsOneRequestAndOneEvent(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
 	assert.Equal(t, 1, h.DB.BookRequest.Query().Where(bookrequest.UserID(h.UserID)).CountX(t.Context()))
-	assert.Len(t, h.Events.Published, 1)
+	assert.Len(t, publishedEvents(h), 1)
 }
 
 func TestCreateBookRequestRequiresASignedInUser(t *testing.T) {
@@ -75,7 +75,7 @@ func TestCreateBookRequestRequiresASignedInUser(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusUnauthorized, h.LastStatus())
 	assert.IsType(t, &api.ProblemDetails{}, res)
-	assert.Empty(t, h.Events.Published)
+	assert.Empty(t, publishedEvents(h))
 }
 
 func TestDownloadBookRedirectsToThePDFAndMarksItDownloaded(t *testing.T) {

@@ -129,7 +129,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - `mise run gen` — full contract pipeline (spec → ogen server → hey-api client).
 - `mise run gen:spec` / `mise run gen:api` / `mise run gen:client` — individual stages.
 - `mise run gen:ent` — regenerate the ent ORM from `ent/schema`.
-- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm`. `mise run tidy` — `go mod tidy`.
+- `mise run gen:all` — `gen:ent` + `gen` + `gen:locales` + `gen:amocrm` + `gen:mocks`.
+- `mise run gen:mocks` — regenerate the moq mocks in `internal/testsupport/mock_*_gen.go` (directives in `internal/testsupport/gen.go`); add a seam there instead of writing a fake by hand. `mise run tidy` — `go mod tidy`.
 - `mise run gen:check` — runs `gen:all` and fails if the tree changes; the CI `gen-check` job runs it, so generated output must be committed with its source.
 - After changing a `.tsp`, ent schema, or deps, run the matching `gen` target
   and commit the regenerated outputs alongside the source change.
@@ -158,6 +159,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - Tests use `stretchr/testify` (`require`/`assert`); each handler test gets an
   explicit `sql.Tx` rolled back during cleanup, matching Rails transactional
   tests, and builds a `Server` through `testsupport`.
+  The seams a test replaces (chat model, exercise runner, event transport, job
+  enqueuers) are moq mocks from `testsupport.NewMocks`: set a mock's `…Func` to
+  change its behaviour, read `…Calls()` to assert what a handler asked for.
 
 ## Build
 
@@ -180,6 +184,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 Change the source, run the generator, commit the output. Never hand-edit or
 `git restore` a generated file — regenerate it from current source.
 
+- `internal/testsupport/mock_*_gen.go` (moq mocks) ← the production interfaces via `mise run gen:mocks`.
 - `api-spec/dist/**` (OpenAPI) ← `api-spec/*.tsp` via `mise run gen:spec`.
 - `internal/api/oas_*_gen.go` (ogen server) ← OpenAPI via `mise run gen:api`.
 - `internal/amocrm/generated/**` (ogen client) ← the pinned amoCRM OpenAPI via

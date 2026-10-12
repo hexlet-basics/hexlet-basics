@@ -23,7 +23,6 @@ import (
 
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/riverqueue/river"
 	"github.com/samber/lo"
 	"gocloud.dev/blob/memblob"
 	"golang.org/x/crypto/bcrypt"
@@ -37,11 +36,9 @@ import (
 	"hexletbasics/internal/books"
 	"hexletbasics/internal/config"
 	"hexletbasics/internal/emailtokens"
-	"hexletbasics/internal/events"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/handlers"
 	"hexletbasics/internal/ids"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
@@ -144,17 +141,9 @@ type Harness struct {
 	Client *Client
 	// DB queries the same transaction the handlers wrote through, for assertions.
 	DB *ent.Client
-	// Enqueuer records background jobs the handlers scheduled, so a test can
-	// assert an operation both wrote to the DB and enqueued its follow-up work.
-	Enqueuer  *RecordingEnqueuer
-	Registrar *RecordingRegistrar
-	Events    *RecordingEventPublisher
-	// Runner is the exercise runner behind the check, returning a canned outcome
-	// instead of starting a container.
-	Runner *StubExerciseRunner
-	// Assistant is the model behind the in-lesson chat, streaming canned deltas
-	// instead of calling the provider.
-	Assistant *StubStreamer
+	// Mocks are the replaced seams (chat model, exercise runner, event
+	// transport, job enqueuers); their fields are promoted onto the harness.
+	*Mocks
 	// UserID is the fixture user the harness authenticates as, so a test can
 	// assert on rows belonging to the caller without hard-coding a fixture id.
 	UserID int
@@ -187,9 +176,10 @@ func NewHarness(t *testing.T) *Harness {
 
 	db, transactor := NewClientWithTransactor(t)
 
-	enqueuer := &RecordingEnqueuer{DB: db}
-	registrar := NewRecordingRegistrar(db)
-	eventPublisher := &RecordingEventPublisher{}
+	mocks := NewMocks(db)
+	// The real registrar: it hashes, writes the user and raises the sign-up fact
+	// through the transactor, only the fact's transport is a mock.
+	registrar := accounts.NewRegistrar(transactor, mocks.TxEvents)
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
 	// The real progress module, over the test's transaction: the gate and the
@@ -197,8 +187,7 @@ func NewHarness(t *testing.T) *Harness {
 	// is recorded instead of written to the outbox and the submission is not
 	// really run — running it means Docker, which is the one thing this seam
 	// exists to keep out of the tests.
-	runner := NewStubExerciseRunner()
-	tracker := progress.New(db, transactor, eventPublisher, runner)
+	tracker := progress.New(db, transactor, mocks.TxEvents, mocks.Runner)
 	// An in-memory bucket keeps uploads off disk and out of the network while
 	// the attachment metadata still lands in the test's transaction.
 	bucket := memblob.OpenBucket(nil)
@@ -206,32 +195,31 @@ func NewHarness(t *testing.T) *Harness {
 	assets := assetstore.New(db, bucket, testConfig.PublicURL)
 	// The real lead recorder too: a lead test asserts the stored row and the
 	// published fact, and both go through the test's transaction.
-	leadRecorder := leads.NewRecorder(transactor, eventPublisher)
-	// The real chat over the real progress module: only the model is canned.
-	streamer := NewStubStreamer()
+	leadRecorder := leads.NewRecorder(transactor, mocks.TxEvents)
+	// The real chat over the real progress module: only the model is mocked.
 	handler := handlers.NewServer(handlers.Deps{
 		DB:             db,
 		Config:         testConfig,
-		Starter:        enqueuer,
-		Reviews:        enqueuer,
-		RelatedCourses: enqueuer,
+		Starter:        mocks.Starter,
+		Reviews:        mocks.Reviews,
+		RelatedCourses: mocks.RelatedCourses,
 		// The real replacer over the savepoint transactor, so a failed replace
 		// rolls back exactly as it does in production.
 		RelatedCoursesSet: relatedcourses.NewReplacer(transactor),
-		Emails:            enqueuer,
+		Emails:            mocks.Emails,
 		Progress:          tracker,
 		Assets:            assets,
 		Registrar:         registrar,
 		// The real remover, over the savepoint transactor: what a test asserts
 		// about a removed account is what production does to one.
 		Remover:    accounts.NewRemover(transactor),
-		Events:     eventPublisher,
+		Events:     mocks.StandaloneEvents,
 		Leads:      leadRecorder,
-		Books:      books.NewRecorder(transactor, eventPublisher),
+		Books:      books.NewRecorder(transactor, mocks.TxEvents),
 		I18n:       translator,
 		Errors:     errorHandler,
 		YandexFeed: feeds.NewYandex(db, testConfig.AppHost),
-		Assistant:  assistant.NewChat(db, transactor, tracker, streamer, translator),
+		Assistant:  assistant.NewChat(db, transactor, tracker, mocks.Assistant, translator),
 	})
 	srv, err := api.NewServer(
 		handler,
@@ -258,64 +246,66 @@ func NewHarness(t *testing.T) *Harness {
 
 	return &Harness{
 		Client: &Client{Client: client}, DB: db, doer: doer,
-		Enqueuer: enqueuer, Registrar: registrar, Events: eventPublisher,
-		Runner: runner, Assistant: streamer,
+		Mocks:  mocks,
 		UserID: security.userID,
 	}
 }
 
-// StubStreamer answers every chat request with canned deltas and usage, and
-// records the turns it was sent. Err fails the request before the first delta,
-// the way an unreachable provider does; ErrAfter fails it after the deltas, the
-// way a stream dropped mid-answer does.
-type StubStreamer struct {
-	Deltas   []string
-	Usage    assistant.Usage
-	Err      error
-	ErrAfter error
-	Requests [][]assistant.Turn
+// Mocks are the seams the harness replaces, generated by moq (gen.go) and
+// preset to the behaviour most tests want: a passing exercise runner, a short
+// canned chat reply, and a build starter that creates the version row. A test
+// that needs another outcome sets the mock's Func; one that asserts on what a
+// handler asked for reads the mock's Calls.
+type Mocks struct {
+	// Assistant is the model behind the in-lesson chat, streaming canned deltas
+	// instead of calling the provider.
+	Assistant *StreamerMock
+	// Runner is the exercise runner behind the check, returning a passing
+	// outcome instead of starting a container.
+	Runner *ExerciseRunnerMock
+	// TxEvents and StandaloneEvents take the domain facts instead of the SQL
+	// outbox; Watermill's delivery is production's job.
+	TxEvents         *TxPublisherMock
+	StandaloneEvents *StandalonePublisherMock
+	// Starter, Reviews, RelatedCourses and Emails take the job requests instead
+	// of River; the job args themselves are covered by the jobs package tests.
+	Starter        *VersionBuildStarterMock
+	Reviews        *LessonReviewEnqueuerMock
+	RelatedCourses *RelatedCoursesSuggestionEnqueuerMock
+	Emails         *AccountEmailEnqueuerMock
 }
 
-// NewStubStreamer answers with a short two-delta reply.
-func NewStubStreamer() *StubStreamer {
-	return &StubStreamer{
-		Deltas: []string{"Try ", "console.log."},
-		Usage:  assistant.Usage{InputTokens: 100, OutputTokens: 5},
+// NewMocks builds the mocks with their defaults. db is the test's rollback-only
+// client: the build starter writes the version row through it, the visible half
+// of the production operation.
+func NewMocks(db *ent.Client) *Mocks {
+	return &Mocks{
+		Assistant: &StreamerMock{
+			StreamFunc: func(_ context.Context, _ []assistant.Turn, onDelta func(string) error) (assistant.Usage, error) {
+				for _, delta := range []string{"Try ", "console.log."} {
+					if err := onDelta(delta); err != nil {
+						return assistant.Usage{}, err
+					}
+				}
+				return assistant.Usage{InputTokens: 100, OutputTokens: 5}, nil
+			},
+		},
+		Runner: &ExerciseRunnerMock{
+			RunFunc: func(context.Context, progress.Submission) (progress.Outcome, error) {
+				return PassingOutcome(), nil
+			},
+		},
+		TxEvents:         &TxPublisherMock{},
+		StandaloneEvents: &StandalonePublisherMock{},
+		Starter: &VersionBuildStarterMock{
+			StartFunc: func(ctx context.Context, courseID int) (*ent.CourseVersion, error) {
+				return db.CourseVersion.Create().SetCourseID(courseID).SetState("created").Save(ctx)
+			},
+		},
+		Reviews:        &LessonReviewEnqueuerMock{},
+		RelatedCourses: &RelatedCoursesSuggestionEnqueuerMock{},
+		Emails:         &AccountEmailEnqueuerMock{},
 	}
-}
-
-func (s *StubStreamer) Stream(
-	_ context.Context,
-	turns []assistant.Turn,
-	onDelta func(string) error,
-) (assistant.Usage, error) {
-	s.Requests = append(s.Requests, turns)
-	if s.Err != nil {
-		return assistant.Usage{}, s.Err
-	}
-	for _, delta := range s.Deltas {
-		if err := onDelta(delta); err != nil {
-			return assistant.Usage{}, err
-		}
-	}
-	if s.ErrAfter != nil {
-		return assistant.Usage{}, s.ErrAfter
-	}
-	return s.Usage, nil
-}
-
-// StubExerciseRunner answers every submission with a canned outcome and records
-// what it was asked to run. A passing outcome is the default because it is the
-// one that moves progress; a test after the failure path sets Outcome itself.
-type StubExerciseRunner struct {
-	Outcome     progress.Outcome
-	Err         error
-	Submissions []progress.Submission
-}
-
-// NewStubExerciseRunner builds the stub with a passing outcome.
-func NewStubExerciseRunner() *StubExerciseRunner {
-	return &StubExerciseRunner{Outcome: PassingOutcome()}
 }
 
 // PassingOutcome is what the runner returns for a solution that passes.
@@ -331,18 +321,6 @@ func FailingOutcome() progress.Outcome {
 		Output: "expected 3, got 2",
 		Status: 1,
 	}
-}
-
-// Run records the submission and returns the canned outcome.
-func (r *StubExerciseRunner) Run(
-	_ context.Context,
-	submission progress.Submission,
-) (progress.Outcome, error) {
-	r.Submissions = append(r.Submissions, submission)
-	if r.Err != nil {
-		return progress.Outcome{}, r.Err
-	}
-	return r.Outcome, nil
 }
 
 // HarnessUserPassword is the password GivePassword sets, so a test can sign in
@@ -497,138 +475,6 @@ func (s *harnessSecurity) UserSession(context.Context, api.OperationName) (api.U
 
 func (s *harnessSecurity) XsrfToken(context.Context, api.OperationName) (api.XsrfToken, error) {
 	return api.XsrfToken{APIKey: s.xsrf}, nil
-}
-
-// RecordingEventPublisher captures standalone domain facts in handler tests.
-type RecordingEventPublisher struct {
-	Published []events.Event
-	Err       error
-}
-
-// PublishStandalone records the fact without touching the SQL outbox.
-func (p *RecordingEventPublisher) PublishStandalone(
-	_ context.Context,
-	event events.Event,
-) error {
-	if p.Err != nil {
-		return p.Err
-	}
-	p.Published = append(p.Published, event)
-	return nil
-}
-
-// Publish records a fact raised inside a caller-owned transaction. The harness
-// asserts on what was published; Watermill's outbox write is production's job.
-func (p *RecordingEventPublisher) Publish(
-	_ context.Context,
-	_ *sql.Tx,
-	event events.Event,
-) error {
-	if p.Err != nil {
-		return p.Err
-	}
-	p.Published = append(p.Published, event)
-	return nil
-}
-
-// RecordingRegistrar mirrors account creation inside the harness transaction
-// and records the requested registration without touching Watermill.
-type RecordingRegistrar struct {
-	DB            *ent.Client
-	Registrations []accounts.Registration
-}
-
-// NewRecordingRegistrar builds the auth test adapter.
-func NewRecordingRegistrar(db *ent.Client) *RecordingRegistrar {
-	return &RecordingRegistrar{DB: db}
-}
-
-// Register persists a bcrypt-compatible user so login tests exercise the real
-// credential path after registration.
-func (r *RecordingRegistrar) Register(
-	ctx context.Context,
-	input accounts.Registration,
-) (*ent.User, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, accounts.ErrPasswordProcessing
-	}
-	u, err := r.DB.User.Create().
-		SetEmail(input.Email).
-		SetPasswordDigest(string(hash)).
-		SetNillableFirstName(input.FirstName).
-		Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	r.Registrations = append(r.Registrations, input)
-	return u, nil
-}
-
-// RecordingEnqueuer is a test adapter for the handlers' job seams
-// (VersionBuildStarter, LessonReviewEnqueuer, RelatedCoursesSuggestionEnqueuer,
-// AccountEmailEnqueuer). It performs the visible DB
-// writes through the harness's rollback-only ent client and records the job
-// args without touching River.
-type RecordingEnqueuer struct {
-	DB       *ent.Client
-	Inserted []river.JobArgs
-}
-
-// EnqueueLessonReviews records one review job per lesson info.
-func (e *RecordingEnqueuer) EnqueueLessonReviews(_ context.Context, lessonInfoIDs []int) error {
-	for _, id := range lessonInfoIDs {
-		e.Inserted = append(e.Inserted, jobs.ReviewLessonArgs{LessonInfoID: id})
-	}
-	return nil
-}
-
-// EnqueueRelatedCoursesSuggestion records the post's suggestion job.
-func (e *RecordingEnqueuer) EnqueueRelatedCoursesSuggestion(_ context.Context, blogPostID int) error {
-	e.Inserted = append(e.Inserted, jobs.SuggestRelatedCoursesArgs{BlogPostID: blogPostID})
-	return nil
-}
-
-// EnqueueAccountEmail records the job and applies the same one-minute
-// uniqueness River does, so a test sees a repeated request skipped.
-func (e *RecordingEnqueuer) EnqueueAccountEmail(
-	_ context.Context,
-	purpose emailtokens.Purpose,
-	userID int,
-	locale string,
-) error {
-	for _, inserted := range e.Inserted {
-		if prior, ok := inserted.(jobs.AccountEmailArgs); ok && prior.Purpose == purpose && prior.UserID == userID {
-			return nil
-		}
-	}
-	e.Inserted = append(e.Inserted, jobs.AccountEmailArgs{Purpose: purpose, UserID: userID, Locale: locale})
-	return nil
-}
-
-// AccountEmails returns the account email jobs recorded so far.
-func (e *RecordingEnqueuer) AccountEmails() []jobs.AccountEmailArgs {
-	var found []jobs.AccountEmailArgs
-	for _, inserted := range e.Inserted {
-		if args, ok := inserted.(jobs.AccountEmailArgs); ok {
-			found = append(found, args)
-		}
-	}
-	return found
-}
-
-// Start mirrors the production operation's visible result.
-func (e *RecordingEnqueuer) Start(ctx context.Context, courseID int) (*ent.CourseVersion, error) {
-	version, err := e.DB.CourseVersion.Create().
-		SetCourseID(courseID).
-		SetState("created").
-		Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	args := jobs.ExerciseLoaderArgs{VersionID: version.ID}
-	e.Inserted = append(e.Inserted, args)
-	return version, nil
 }
 
 // inProcessDoer satisfies ogen's http client interface by serving each request

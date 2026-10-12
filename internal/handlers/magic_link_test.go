@@ -12,7 +12,6 @@ import (
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/events"
-	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/testsupport"
 )
@@ -43,9 +42,11 @@ func TestCreateMagicLinkEmailsARegisteredUser(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
-	assert.Equal(t, []jobs.AccountEmailArgs{
-		{Purpose: emailtokens.MagicLink, UserID: u.ID, Locale: "es"},
-	}, h.Enqueuer.AccountEmails())
+	calls := h.Emails.EnqueueAccountEmailCalls()
+	require.Len(t, calls, 1)
+	assert.Equal(t, emailtokens.MagicLink, calls[0].Purpose)
+	assert.Equal(t, u.ID, calls[0].UserID)
+	assert.Equal(t, "es", calls[0].Locale)
 }
 
 func TestCreateMagicLinkIgnoresCase(t *testing.T) {
@@ -55,9 +56,9 @@ func TestCreateMagicLinkIgnoresCase(t *testing.T) {
 	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "Magic-Case@Example.com"})
 	require.NoError(t, err)
 
-	emails := h.Enqueuer.AccountEmails()
-	require.Len(t, emails, 1)
-	assert.Equal(t, u.ID, emails[0].UserID)
+	calls := h.Emails.EnqueueAccountEmailCalls()
+	require.Len(t, calls, 1)
+	assert.Equal(t, u.ID, calls[0].UserID)
 }
 
 // Only ru and es are emailed; a request in any other language gets ru.
@@ -69,9 +70,9 @@ func TestCreateMagicLinkEmailsRussianForOtherLocales(t *testing.T) {
 	_, err := h.Client.CreateMagicLink(t.Context(), &api.EmailInput{Email: "magic-en@example.com"})
 	require.NoError(t, err)
 
-	emails := h.Enqueuer.AccountEmails()
-	require.Len(t, emails, 1)
-	assert.Equal(t, "ru", emails[0].Locale)
+	calls := h.Emails.EnqueueAccountEmailCalls()
+	require.Len(t, calls, 1)
+	assert.Equal(t, "ru", calls[0].Locale)
 }
 
 func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
@@ -83,11 +84,13 @@ func TestCreateMagicLinkAnswersTheSameForAnUnknownEmail(t *testing.T) {
 
 	assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
-	assert.Empty(t, h.Enqueuer.AccountEmails())
+	assert.Empty(t, h.Emails.EnqueueAccountEmailCalls())
 	assert.Equal(t, before, h.DB.User.Query().CountX(t.Context()), "no account is created")
 }
 
-func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
+// The cooldown is River's uniqueness over the job args (jobs.AccountEmailArgs),
+// not the handler's: the handler asks the queue every time.
+func TestCreateMagicLinkTwiceAsksTheQueueEachTime(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	createEmailUser(t, h, "magic-twice@example.com")
 
@@ -97,7 +100,7 @@ func TestCreateMagicLinkTwiceWithinTheCooldownEnqueuesOnce(t *testing.T) {
 		assert.IsType(t, &api.CreateMagicLinkNoContent{}, res)
 	}
 
-	assert.Len(t, h.Enqueuer.AccountEmails(), 1)
+	assert.Len(t, h.Emails.EnqueueAccountEmailCalls(), 2)
 }
 
 // Following the link signs in exactly as a password does: the session cookie,
