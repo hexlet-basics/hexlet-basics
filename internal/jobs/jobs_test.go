@@ -20,12 +20,13 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 
+	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport/testdb"
 )
 
 // TestQueueBackbone proves the river backbone and its telemetry end to end
-// against the test DB: an insert-only client enqueues a ping job, the worker
+// against the test DB: an insert-only client enqueues a job, the worker
 // runs it, W3C trace context crosses the queue, and both clients emit signals.
 // It uses a real pool (not the harness's rolled-back transaction), so it cleans up the
 // river_job rows it creates.
@@ -35,12 +36,10 @@ func TestQueueBackbone(t *testing.T) {
 	db, err := sql.Open("pgx", testdb.DatabaseURL())
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind = 'ping'")
+		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind = 'account_email'")
 		_ = db.Close()
 	})
 
-	// nil loader: this smoke test only exercises the ping worker, so the
-	// exercise-build worker (and its db/blob deps) is intentionally not registered.
 	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
 	require.NoError(t, err)
 
@@ -55,15 +54,11 @@ func TestQueueBackbone(t *testing.T) {
 
 	workerClient, err := jobs.NewWorkerClient(
 		db,
-		nil,
-		nil,
-		nil,
-		nil,
-		nil,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
 		jobs.NewErrorHandler(sentryClient),
 		tracerProvider,
 		meterProvider,
+		jobs.AccountEmail(emailSenderStub{}),
 	)
 	require.NoError(t, err)
 	insertClient, err := jobs.NewInsertOnlyClient(
@@ -85,19 +80,19 @@ func TestQueueBackbone(t *testing.T) {
 		_ = workerClient.Stop(stopCtx)
 	})
 
-	_, err = insertClient.Insert(ctx, jobs.PingArgs{}, nil)
+	_, err = insertClient.Insert(ctx, jobs.AccountEmailArgs{Purpose: "magic_link", UserID: 1}, nil)
 	require.NoError(t, err)
 
 	select {
 	case ev := <-events:
 		require.Equal(t, rivertype.JobStateCompleted, ev.Job.State)
-		require.Equal(t, "ping", ev.Job.Kind)
+		require.Equal(t, "account_email", ev.Job.Kind)
 
 		var metadata map[string]any
 		require.NoError(t, json.Unmarshal(ev.Job.Metadata, &metadata))
 		require.NotEmpty(t, metadata["traceparent"])
 	case <-time.After(10 * time.Second):
-		t.Fatal("ping job did not complete within 10s")
+		t.Fatal("account_email job did not complete within 10s")
 	}
 
 	var insertSpan, workSpan sdktrace.ReadOnlySpan
@@ -128,3 +123,89 @@ func TestQueueBackbone(t *testing.T) {
 	require.True(t, slices.Contains(metricNames, "river.insert_count"))
 	require.True(t, slices.Contains(metricNames, "river.work_count"))
 }
+
+// A worker without LLM credentials registers no review worker. The job must
+// stay available for a configured worker instead of being fetched and failed
+// with UnknownJobKindError, which would burn its attempts.
+func TestWorkerLeavesKindsItCannotRunQueued(t *testing.T) {
+	ctx := context.Background()
+
+	db, err := sql.Open("pgx", testdb.DatabaseURL())
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_, _ = db.ExecContext(context.Background(), "DELETE FROM river_job WHERE kind IN ('review_lesson', 'account_email')")
+		_ = db.Close()
+	})
+
+	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	sentryClient, err := sentry.NewClient(sentry.ClientOptions{})
+	require.NoError(t, err)
+	workerClient, err := jobs.NewWorkerClient(
+		db, logger, jobs.NewErrorHandler(sentryClient),
+		sdktrace.NewTracerProvider(), sdkmetric.NewMeterProvider(),
+		jobs.AccountEmail(emailSenderStub{}),
+	)
+	require.NoError(t, err)
+	insertClient, err := jobs.NewInsertOnlyClient(db, logger, sdktrace.NewTracerProvider(), sdkmetric.NewMeterProvider())
+	require.NoError(t, err)
+
+	completed, cancel := workerClient.Subscribe(river.EventKindJobCompleted)
+	defer cancel()
+	require.NoError(t, workerClient.Start(ctx))
+	t.Cleanup(func() {
+		stopCtx, c := context.WithTimeout(context.Background(), 10*time.Second)
+		defer c()
+		_ = workerClient.Stop(stopCtx)
+	})
+
+	review, err := insertClient.Insert(ctx, jobs.ReviewLessonArgs{LessonInfoID: 1}, nil)
+	require.NoError(t, err)
+	// The account_email job completing proves the worker has fetched after the review
+	// was inserted, so the review's survival is not a race with the poll.
+	_, err = insertClient.Insert(ctx, jobs.AccountEmailArgs{Purpose: "magic_link", UserID: 1}, nil)
+	require.NoError(t, err)
+	select {
+	case <-completed:
+	case <-time.After(10 * time.Second):
+		t.Fatal("account_email job did not complete within 10s")
+	}
+
+	got, err := insertClient.JobGet(ctx, review.Job.ID)
+	require.NoError(t, err)
+	require.Equal(t, rivertype.JobStateAvailable, got.State)
+	require.Zero(t, got.Attempt)
+	require.Equal(t, 3, got.MaxAttempts)
+}
+
+// Each job kind lands on the queue that isolates its class of work, and the
+// worker runs every one of those queues.
+func TestJobKindsLandOnTheirQueues(t *testing.T) {
+	ctx := context.Background()
+
+	db, err := sql.Open("pgx", testdb.DatabaseURL())
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_, _ = db.ExecContext(context.Background(),
+			"DELETE FROM river_job WHERE kind IN ('account_email', 'exercise_loader', 'review_lesson', 'suggest_related_courses', 'reap_stuck_version_builds')")
+		_ = db.Close()
+	})
+	client, err := jobs.NewInsertOnlyClient(db, slog.New(slog.NewTextHandler(io.Discard, nil)),
+		sdktrace.NewTracerProvider(), sdkmetric.NewMeterProvider())
+	require.NoError(t, err)
+
+	for args, queue := range map[river.JobArgs]string{
+		jobs.AccountEmailArgs{Purpose: "magic_link", UserID: 1}: jobs.QueueMail,
+		jobs.ExerciseLoaderArgs{VersionID: 1}:                   jobs.QueueBuilds,
+		jobs.ReapStuckVersionBuildsArgs{}:                       jobs.QueueBuilds,
+		jobs.ReviewLessonArgs{LessonInfoID: 1}:                  jobs.QueueLLM,
+		jobs.SuggestRelatedCoursesArgs{BlogPostID: 1}:           jobs.QueueLLM,
+	} {
+		res, err := client.Insert(ctx, args, nil)
+		require.NoError(t, err)
+		require.Equal(t, queue, res.Job.Queue, args.Kind())
+	}
+}
+
+type emailSenderStub struct{}
+
+func (emailSenderStub) Send(context.Context, emailtokens.Purpose, int, string) error { return nil }

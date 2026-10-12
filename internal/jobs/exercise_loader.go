@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"context"
+	"time"
 
 	"github.com/riverqueue/river"
 
@@ -28,15 +29,31 @@ func (ExerciseLoaderArgs) Kind() string { return "exercise_loader" }
 func (ExerciseLoaderArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		MaxAttempts: 1,
+		Queue:       QueueBuilds,
 		UniqueOpts: river.UniqueOpts{
 			ByArgs: true,
 		},
 	}
 }
 
+// ExerciseLoader runs course-version builds with loader.
+func ExerciseLoader(loader *courseloader.Loader) Module {
+	return module(&exerciseLoaderWorker{loader: loader})
+}
+
 type exerciseLoaderWorker struct {
 	river.WorkerDefaults[ExerciseLoaderArgs]
 	loader *courseloader.Loader
+}
+
+// exerciseLoaderTimeout bounds one build. River's default job timeout is one
+// minute, far below a git fetch plus parse plus image uploads, and the build's
+// single attempt would be cancelled mid-way.
+const exerciseLoaderTimeout = 15 * time.Minute
+
+// Timeout overrides River's one-minute default for course builds.
+func (*exerciseLoaderWorker) Timeout(*river.Job[ExerciseLoaderArgs]) time.Duration {
+	return exerciseLoaderTimeout
 }
 
 // Work runs the loader for the job's version. The loader records failure state on

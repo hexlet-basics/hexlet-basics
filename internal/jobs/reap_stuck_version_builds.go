@@ -24,6 +24,11 @@ type ReapStuckVersionBuildsArgs struct{}
 // Kind is River's stable job discriminator; do not rename once jobs are enqueued.
 func (ReapStuckVersionBuildsArgs) Kind() string { return "reap_stuck_version_builds" }
 
+// InsertOpts runs the sweep on the builds queue, next to the builds it repairs.
+func (ReapStuckVersionBuildsArgs) InsertOpts() river.InsertOpts {
+	return river.InsertOpts{Queue: QueueBuilds}
+}
+
 type reapStuckVersionBuildsWorker struct {
 	river.WorkerDefaults[ReapStuckVersionBuildsArgs]
 	loader *courseloader.Loader
@@ -43,24 +48,28 @@ func (w *reapStuckVersionBuildsWorker) Work(ctx context.Context, _ *river.Job[Re
 	return err
 }
 
-// periodicJobs lists the worker's recurring jobs. River runs the scheduler only
+// ReapStuckVersionBuilds sweeps builds whose worker died, hourly. It runs
+// wherever builds run, since it writes the same version rows.
+func ReapStuckVersionBuilds(loader *courseloader.Loader, logger *slog.Logger) Module {
+	return module(&reapStuckVersionBuildsWorker{loader: loader, logger: logger}, reapStuckVersionBuildsSchedule())
+}
+
+// reapStuckVersionBuildsSchedule is the sweep's recurring insert. River runs the scheduler only
 // on the elected leader, so each tick inserts one job across all worker
 // replicas. RunOnStart hedges against the scheduler's in-memory state: every
 // deploy or leader change restarts the hourly countdown, and without it a
 // frequently restarted worker could never reach its first tick. The job takes
 // no unique options on purpose — with empty args, River's default unique states
 // (which include `completed`) would block every run after the first.
-func periodicJobs() []*river.PeriodicJob {
-	return []*river.PeriodicJob{
-		river.NewPeriodicJob(
-			river.PeriodicInterval(reapStuckVersionBuildsInterval),
-			func() (river.JobArgs, *river.InsertOpts) {
-				return ReapStuckVersionBuildsArgs{}, nil
-			},
-			&river.PeriodicJobOpts{
-				ID:         ReapStuckVersionBuildsArgs{}.Kind(),
-				RunOnStart: true,
-			},
-		),
-	}
+func reapStuckVersionBuildsSchedule() *river.PeriodicJob {
+	return river.NewPeriodicJob(
+		river.PeriodicInterval(reapStuckVersionBuildsInterval),
+		func() (river.JobArgs, *river.InsertOpts) {
+			return ReapStuckVersionBuildsArgs{}, nil
+		},
+		&river.PeriodicJobOpts{
+			ID:         ReapStuckVersionBuildsArgs{}.Kind(),
+			RunOnStart: true,
+		},
+	)
 }

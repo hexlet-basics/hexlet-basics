@@ -59,15 +59,11 @@ func TestWorkerReapsStuckVersionBuildsPeriodically(t *testing.T) {
 	// assets, fetcher or progress module.
 	workerClient, err := jobs.NewWorkerClient(
 		sqlDB,
-		courseloader.NewLoader(db, nil, nil, nil, nil),
-		nil,
-		nil,
-		nil,
-		nil,
 		slog.New(slog.NewTextHandler(io.Discard, nil)),
 		jobs.NewErrorHandler(sentryClient),
 		nooptrace.NewTracerProvider(),
 		noopmetric.NewMeterProvider(),
+		jobs.ReapStuckVersionBuilds(courseloader.NewLoader(db, nil, nil, nil, nil), slog.New(slog.NewTextHandler(io.Discard, nil))),
 	)
 	require.NoError(t, err)
 

@@ -181,26 +181,26 @@ var workerPackage = do.Package(
 		// Without OpenAI credentials the LLM workers stay unregistered: enqueued
 		// review and related-courses jobs wait in the queue instead of failing
 		// against a dead client. Both share one client.
-		var (
-			reviewer  jobs.LessonReviewer
-			suggester jobs.RelatedCoursesSuggester
-		)
+		modules := []jobs.Module{
+			jobs.ExerciseLoader(loader),
+			jobs.ReapStuckVersionBuilds(loader, logger),
+			jobs.AmoCRMLead(amoCRMClient),
+			jobs.AccountEmail(emailSender),
+		}
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)
-			reviewer = lessonreviews.NewReviewer(entClient, llm)
-			suggester = relatedcourses.NewSuggester(entClient, relatedCoursesSet, llm, logger)
+			modules = append(modules,
+				jobs.ReviewLesson(lessonreviews.NewReviewer(entClient, llm)),
+				jobs.SuggestRelatedCourses(relatedcourses.NewSuggester(entClient, relatedCoursesSet, llm, logger)),
+			)
 		}
 		return jobs.NewWorkerClient(
 			db,
-			loader,
-			amoCRMClient,
-			reviewer,
-			suggester,
-			emailSender,
 			logger,
 			jobs.NewErrorHandler(sentryClient),
 			otelSDK.TracerProvider(),
 			otelSDK.MeterProvider(),
+			modules...,
 		)
 	}),
 	do.Lazy[*events.Runtime](func(i do.Injector) (*events.Runtime, error) {

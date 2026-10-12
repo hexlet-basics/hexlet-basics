@@ -41,11 +41,17 @@ func (AccountEmailArgs) Kind() string { return "account_email" }
 func (AccountEmailArgs) InsertOpts() river.InsertOpts {
 	return river.InsertOpts{
 		MaxAttempts: 5,
+		Queue:       QueueMail,
 		UniqueOpts: river.UniqueOpts{
 			ByArgs:   true,
 			ByPeriod: accountEmailCooldown,
 		},
 	}
+}
+
+// AccountEmail delivers account emails through sender.
+func AccountEmail(sender AccountEmailSender) Module {
+	return module(&accountEmailWorker{sender: sender})
 }
 
 type accountEmailWorker struct {

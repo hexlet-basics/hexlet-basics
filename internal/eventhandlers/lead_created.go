@@ -24,9 +24,7 @@ func LeadCreated(client inserter) cqrs.EventHandler {
 	return cqrs.NewEventHandler(
 		leadCreatedHandlerName,
 		func(ctx context.Context, event *events.LeadCreated) error {
-			_, err := client.Insert(ctx, jobs.AmoCRMLeadArgs{Event: *event}, &river.InsertOpts{
-				UniqueOpts: river.UniqueOpts{ByArgs: true},
-			})
+			_, err := client.Insert(ctx, jobs.AmoCRMLeadArgs{Event: *event}, nil)
 			return err
 		},
 	)

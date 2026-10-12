@@ -1,17 +1,13 @@
 // Package jobs wires the river background-job queue (ADR-0004): jobs are
-// "do this" commands (exercise-version builds, AI lesson review, mail/SMS),
-// distinct from watermill domain events.
+// "do this" commands (exercise-version builds, AI lesson review, mail, amoCRM
+// sync), distinct from watermill domain events.
 //
-// This is the queue BACKBONE only. The real domain jobs (AI lesson review for
-// the course/lesson review actions, exercise-version builds for createVersion)
-// land in later waves — each needs work on top of the queue (the lesson
-// version-info graph, the AI integration, the exercise builder). The single
-// worker here (`ping`) exists to prove the enqueue -> work -> complete pipeline
-// end to end; it is not a domain job.
+// Each job kind lives in its own file: its Args (with the insert policy —
+// queue, attempts, uniqueness), its worker, and a Module constructor that the
+// worker process passes to NewWorkerClient.
 package jobs
 
 import (
-	"context"
 	"database/sql"
 	"log/slog"
 
@@ -21,63 +17,50 @@ import (
 	"github.com/riverqueue/rivercontrib/otelriver"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
-
-	"hexletbasics/internal/courseloader"
 )
 
-// defaultMaxWorkers bounds concurrency on the default queue. Tune per-queue when
-// real jobs (some heavy, e.g. exercise builds) arrive.
-const defaultMaxWorkers = 10
+// Queues isolate classes of work so a burst in one cannot starve another: a
+// course-wide batch of LLM reviews must not delay the sign-in email a visitor
+// is waiting for. Each job kind names its queue in its InsertOpts; the worker
+// process runs every queue below.
+const (
+	// QueueMail carries transactional email the user is waiting on.
+	QueueMail = "mail"
+	// QueueBuilds carries course-version builds and their maintenance.
+	QueueBuilds = "builds"
+	// QueueLLM carries paid, rate-limited LLM calls.
+	QueueLLM = "llm"
+)
 
-// PingArgs is a no-op job used to smoke-test the queue backbone end to end. It is
-// NOT a domain job — see the package doc.
-type PingArgs struct{}
-
-// Kind is river's stable job discriminator.
-func (PingArgs) Kind() string { return "ping" }
-
-type pingWorker struct {
-	river.WorkerDefaults[PingArgs]
+// queues is the worker's concurrency budget per queue. Builds are heavy (git,
+// parsing, uploads) so few run at once; LLM concurrency stays under provider
+// rate limits; River's default queue keeps the remaining light jobs.
+func queues() map[string]river.QueueConfig {
+	return map[string]river.QueueConfig{
+		river.QueueDefault: {MaxWorkers: 10},
+		QueueMail:          {MaxWorkers: 5},
+		QueueBuilds:        {MaxWorkers: 2},
+		QueueLLM:           {MaxWorkers: 3},
+	}
 }
 
-func (*pingWorker) Work(_ context.Context, _ *river.Job[PingArgs]) error { return nil }
+// Module is one job kind's registration in the worker process: its worker and,
+// for recurring work, its schedule. A module exists only when its dependencies
+// do, so the process composition (di) decides what runs, for example no LLM
+// modules without credentials, instead of nil checks inside this package.
+type Module struct {
+	register func(*river.Workers)
+	periodic []*river.PeriodicJob
+}
 
-// Workers builds the worker registry. The exercise loader is registered when a
-// loader is supplied; a nil loader (insert-only clients that never Start) skips
-// it, since only the worker process needs the loader's db/blob dependencies.
-// The lesson reviewer is likewise nil-skipped when no LLM credentials are
-// configured — its jobs then wait in the queue for a configured worker, and
-// the related-courses suggester shares that gate for the same reason. The
-// account email sender is nil-skipped the same way for clients that never
-// Start. The stuck-build reaper shares the loader's gate: it writes the same
-// version rows, so it runs wherever builds run.
-func Workers(
-	loader *courseloader.Loader,
-	leadSyncer LeadSyncer,
-	reviewer LessonReviewer,
-	suggester RelatedCoursesSuggester,
-	emailSender AccountEmailSender,
-	logger *slog.Logger,
-) *river.Workers {
-	w := river.NewWorkers()
-	river.AddWorker(w, &pingWorker{})
-	if loader != nil {
-		river.AddWorker(w, &exerciseLoaderWorker{loader: loader})
-		river.AddWorker(w, &reapStuckVersionBuildsWorker{loader: loader, logger: logger})
+// module registers w and, optionally, the schedule that inserts its jobs.
+// Periodic jobs travel with their worker: a periodic kind without a registered
+// worker would be inserted and then fail every tick.
+func module[A river.JobArgs](w river.Worker[A], periodic ...*river.PeriodicJob) Module {
+	return Module{
+		register: func(ws *river.Workers) { river.AddWorker(ws, w) },
+		periodic: periodic,
 	}
-	if leadSyncer != nil {
-		river.AddWorker(w, &amoCRMLeadWorker{syncer: leadSyncer})
-	}
-	if reviewer != nil {
-		river.AddWorker(w, &reviewLessonWorker{reviewer: reviewer})
-	}
-	if suggester != nil {
-		river.AddWorker(w, &suggestRelatedCoursesWorker{suggester: suggester})
-	}
-	if emailSender != nil {
-		river.AddWorker(w, &accountEmailWorker{sender: emailSender})
-	}
-	return w
 }
 
 // NewInsertOnlyClient builds the River adapter used by synchronous callers.
@@ -97,35 +80,33 @@ func NewInsertOnlyClient(
 }
 
 // NewWorkerClient builds the River runtime used only by the worker process.
-// The caller owns Start and Stop. Worker dependencies stay behind this
-// constructor so an HTTP process cannot accidentally execute background jobs.
-// Periodic jobs are scheduled only alongside their workers: a periodic kind
-// without a registered worker would be inserted and then fail every tick.
+// The caller owns Start and Stop. Worker dependencies stay behind the modules
+// so an HTTP process cannot accidentally execute background jobs. The client
+// fetches only the kinds its modules register, so a job whose module is absent
+// (for example an LLM job on a worker without credentials) waits in the queue
+// for a worker that has it instead of failing with UnknownJobKindError.
 func NewWorkerClient(
 	db *sql.DB,
-	loader *courseloader.Loader,
-	leadSyncer LeadSyncer,
-	reviewer LessonReviewer,
-	suggester RelatedCoursesSuggester,
-	emailSender AccountEmailSender,
 	logger *slog.Logger,
 	errorHandler *ErrorHandler,
 	tracerProvider trace.TracerProvider,
 	meterProvider metric.MeterProvider,
+	modules ...Module,
 ) (*river.Client[*sql.Tx], error) {
+	workers := river.NewWorkers()
 	var periodic []*river.PeriodicJob
-	if loader != nil {
-		periodic = periodicJobs()
+	for _, m := range modules {
+		m.register(workers)
+		periodic = append(periodic, m.periodic...)
 	}
 	return river.NewClient(riverdatabasesql.New(db), &river.Config{
-		ErrorHandler: errorHandler,
-		Logger:       logger,
-		PeriodicJobs: periodic,
-		Plugins:      openTelemetryPlugins(tracerProvider, meterProvider),
-		Queues: map[string]river.QueueConfig{
-			river.QueueDefault: {MaxWorkers: defaultMaxWorkers},
-		},
-		Workers: Workers(loader, leadSyncer, reviewer, suggester, emailSender, logger),
+		ErrorHandler:        errorHandler,
+		FetchOnlyKnownKinds: true,
+		Logger:              logger,
+		PeriodicJobs:        periodic,
+		Plugins:             openTelemetryPlugins(tracerProvider, meterProvider),
+		Queues:              queues(),
+		Workers:             workers,
 	})
 }
 
