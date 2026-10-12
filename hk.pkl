@@ -9,6 +9,41 @@ hooks {
       ["gitleaks"] {
         check = "gitleaks git --staged --redact --no-banner"
       }
+      // Fast checks on the staged files only; whole-project ones (tsc, knip,
+      // govulncheck, go test) run in the pre-push hook and in CI.
+      ["oxlint"] {
+        glob = List("src/**/*.ts", "src/**/*.tsx")
+        check = "pnpm exec oxlint --no-error-on-unmatched-pattern {{files}}"
+        fix = "pnpm exec oxlint --fix --no-error-on-unmatched-pattern {{files}}"
+      }
+      ["oxfmt"] {
+        glob = List("src/**/*.ts", "src/**/*.tsx", "api-spec/*.tsp", "*.json", "*.toml", ".github/**/*.yml")
+        check = "pnpm exec oxfmt --check --no-error-on-unmatched-pattern {{files}}"
+        fix = "pnpm exec oxfmt --no-error-on-unmatched-pattern {{files}}"
+      }
+      // golangci-lint needs whole packages, so it runs once, not per file.
+      ["golangci-lint"] {
+        glob = List("**/*.go")
+        check = "golangci-lint run"
+        fix = "golangci-lint run --fix"
+        exclusive = true
+      }
+      ["typos"] {
+        check = "typos --force-exclude {{files}}"
+        fix = "typos --force-exclude --write-changes {{files}}"
+      }
+      ["shellcheck"] {
+        glob = List("scripts/*.sh", "scripts/oneoff/*/*.sh")
+        check = "shellcheck -x {{files}}"
+      }
+      ["zizmor"] {
+        glob = List(".github/workflows/*.yml")
+        check = "zizmor --no-progress {{files}}"
+      }
+      ["jactionlint"] {
+        glob = List(".github/workflows/*.yml")
+        check = "jactionlint {{files}}"
+      }
     }
   }
   ["commit-msg"] {

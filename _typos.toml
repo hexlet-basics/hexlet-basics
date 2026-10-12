@@ -3,6 +3,8 @@
 [files]
 extend-exclude = [
   "legacy",
+  ".agents",
+  ".claude",
   "node_modules",
   "dist",
   "src/client",

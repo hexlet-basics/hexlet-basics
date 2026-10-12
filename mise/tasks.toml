@@ -221,6 +221,7 @@ run = [
   "golangci-lint run --fix || true",
   "pnpm lint:fix",
   "pnpm format",
+  "typos --write-changes",
 ]
 
 # --- test --------------------------------------------------------------------------
