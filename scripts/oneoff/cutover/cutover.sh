@@ -463,6 +463,45 @@ s_enrollments() {
     "[[ \$(psql \"\$PROD_DATABASE_URL\" -XAt -c 'SELECT count(*) FROM (SELECT 1 FROM language_members GROUP BY user_id, language_id HAVING count(*) > 1) d') == 0 ]]"
 }
 
+# unique_index_checks: "label|SELECT ..." rows, one per cutover migration that
+# adds a UNIQUE INDEX to a legacy table. Each query lists the groups that would
+# make CREATE UNIQUE INDEX fail, and must return no rows. They mirror the
+# PRE-DEPLOY comments in migrations/; NULLs are excluded exactly where the
+# index treats them as distinct (language_categories uses NULLS NOT DISTINCT
+# for slug+locale, so GROUP BY's NULL grouping matches it).
+unique_index_checks() {
+  cat <<'CHECKS'
+language_categories.name|SELECT name, count(*) FROM language_categories GROUP BY name HAVING count(*) > 1
+language_categories.header|SELECT header, count(*) FROM language_categories GROUP BY header HAVING count(*) > 1
+language_categories.slug+locale|SELECT slug, locale, count(*) FROM language_categories GROUP BY slug, locale HAVING count(*) > 1
+staff_member_roles.name|SELECT name, count(*) FROM staff_member_roles GROUP BY name HAVING count(*) > 1
+language_modules.language_id+slug|SELECT language_id, slug, count(*) FROM language_modules WHERE language_id IS NOT NULL AND slug IS NOT NULL GROUP BY language_id, slug HAVING count(*) > 1
+CHECKS
+}
+
+s_unique_preflight() {
+  stage "Unique indexes: no duplicates before the migrations run"
+  say "The migrations add UNIQUE INDEXes to tables that held no such constraint in"
+  say "Rails. A duplicate makes atlas fail halfway through the cutover night, so"
+  say "each is counted here first (read-only)."
+  local label query rows bad=0
+  while IFS='|' read -r label query; do
+    rows=$(sql_value -F ' x ' -c "$query")
+    if [[ -z "$rows" ]]; then
+      ok "$label: no duplicates"
+    else
+      fail "$label: duplicates (value x count):"
+      printf '%s\n' "$rows" | sed 's/^/      /'
+      bad=1
+    fi
+  done < <(unique_index_checks)
+  if (( bad )); then
+    warn "Collapsing these rows is a decision (which row survives, what references the"
+    warn "losers), so the wizard does not do it. Resolve them, then re-run."
+    exit 1
+  fi
+}
+
 s_migrate() {
   stage "Schema: atlas baseline, then the pending migrations"
   local status; status=$(atlas_status 2>&1 || true)
@@ -658,11 +697,11 @@ s_after() {
 # ── Plan ──────────────────────────────────────────────────────────────────
 
 if [[ -n "$REHEARSAL" ]]; then
-  PLAN=(s_preflight s_db s_enrollments s_migrate s_blog s_rehearse_apps)
+  PLAN=(s_preflight s_db s_enrollments s_unique_preflight s_migrate s_blog s_rehearse_apps)
   TITLE="Cutover rehearsal on a production copy"
 else
   PLAN=(s_preflight s_cluster s_postbox s_secrets s_db s_enrollments
-        s_migrate s_blog s_legacy_on_new_schema s_book s_dry_run s_deploy
+        s_unique_preflight s_migrate s_blog s_legacy_on_new_schema s_book s_dry_run s_deploy
         s_routing s_auth_email s_check s_webhook s_lead s_after)
   TITLE="code-basics cutover: Rails → Go"
 fi

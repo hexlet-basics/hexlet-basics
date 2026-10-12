@@ -39,25 +39,28 @@ scripts/oneoff/cutover/cutover.sh
    echoed.
 6. Duplicate enrollments (#765): `count.sql`, then its decision rule, then
    `collapse.sql`.
-7. atlas: `migrate apply --baseline 20260727053619` by hand, then
+7. Unique-index preflight: the migrations that add a UNIQUE INDEX to
+   `language_categories`, `staff_member_roles` and `language_modules` must find
+   no duplicates (five checks). Read-only; it stops and lists the rows, collapsing is your call.
+8. atlas: `migrate apply --baseline 20260727053619` by hand, then
    `schema-verify.sql`.
-8. Blog bodies: ActionText goes into `rich_body` (`blog-bodies-*.sql`). Posts
+9. Blog bodies: ActionText goes into `rich_body` (`blog-bodies-*.sql`). Posts
    with `<action-text-attachment>` are listed for a hand fix.
-9. Legacy is still healthy on the migrated schema. This is what a rollback
+10. Legacy is still healthy on the migrated schema. This is what a rollback
    relies on.
-10. Upload `book.pdf` to the bucket (#804).
-11. A server-side dry run of the rendered chart.
-12. `make -C k8s helm-upgrade-app`, which is the switch, followed by the rollout
+11. Upload `book.pdf` to the bucket (#804).
+12. A server-side dry run of the rendered chart.
+13. `make -C k8s helm-upgrade-app`, which is the switch, followed by the rollout
     status of each deployment.
-13. Routing: `/`, `/api`, both feed URLs (#805) and the `/webhooks/github`
+14. Routing: `/`, `/api`, both feed URLs (#805) and the `/webhooks/github`
     alias. The legacy nginx 301s are recorded but not enforced, because #811
     left them as an open decision.
-14. Password sign-in, Magic Link email (the `account_email` River job), and the
+15. Password sign-in, Magic Link email (the `account_email` River job), and the
     book download.
-15. A lesson check on `api-check`, which also warms the course images (#767).
-16. GitHub webhook redelivery.
-17. A lead reaching amoCRM (the `amocrm_lead` River job).
-18. Sentry, the blog hand-fixes, and the rollback card.
+16. A lesson check on `api-check`, which also warms the course images (#767).
+17. GitHub webhook redelivery.
+18. A lead reaching amoCRM (the `amocrm_lead` River job).
+19. Sentry, the blog hand-fixes, and the rollback card.
 
 ## Why atlas runs by hand and not in the Helm hook
 
