@@ -1,0 +1,15 @@
+name: hexlet-basics CodeQL
+# Generated code is owned by the generators, not reviewed by hand; legacy/ is
+# the Rails app being retired.
+paths-ignore:
+  - legacy
+  - ent/*.go
+  - ent/*/
+  - internal/api
+  - internal/amocrm/generated
+  - internal/apiconv/apiconv.gen.go
+  - '**/*_gen.go'
+  - src/client
+  - src/routeTree.gen.ts
+  - api-spec/dist
+  - '**/dist'
