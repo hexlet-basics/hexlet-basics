@@ -52,7 +52,7 @@ description = "Stop the API, worker and Vite daemons (never the database: it is 
 run = "mise daemons stop api worker web"
 
 ["dev:api"]
-description = "Run only the Go API server in the foreground with live-reload (:3001)"
+description = "Run only the Go API server in the foreground with live-reload (port from API_PORT)"
 depends = ["db:up"]
 run = "go tool air"
 

@@ -48,6 +48,17 @@ run = "go mod download"
 [settings]
 experimental = true
 
+# Real environment variables win over .env, so these steer the dev stack's ports without
+# touching the committed .env.example.
+[env]
+ADDR = ":{{ env.API_PORT }}"
+API_URL = "http://localhost:{{ env.API_PORT }}"
+SITE_URL = "http://localhost:{{ env.WEB_PORT }}"
+# The postgres preset exports DATABASE_URL (and PG*) for its own `postgres` database, which
+# would beat .env; point the app at the development database instead.
+DATABASE_URL = "postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable"
+PGDATABASE = "code_basics_development"
+
 # Development stack: `mise run dev` starts everything below, `mise run dev:down` stops
 # the app processes (never the database: it is a standing service, see `db`).
 # The port stays 54330 (not 5432) to avoid clashing with a local PostgreSQL;
@@ -58,10 +69,16 @@ preset = "postgres"
 version = "18"
 port = 54330
 
+# api and web take a free port (`auto`, starting at the base): the base when it is free,
+# the next free one when another project already holds it. The chosen port is exported as
+# <NAME>_PORT (API_PORT, WEB_PORT), and [env] below feeds it to the Go server (ADDR), to
+# Vite's /api proxy and SSR client (API_URL) and to the links in emails (SITE_URL).
+# `ready_cmd` cannot be templated, so readiness reads the variable. 3001 is the production
+# port, so development starts at 3002.
 [daemons.api]
 run = "exec go tool air"
-port = 3001
-ready_cmd = "nc -z localhost 3001"
+port = { auto = true, base = 3002 }
+ready_cmd = "nc -z localhost $API_PORT"
 depends = ["db"]
 
 [daemons.worker]
@@ -69,9 +86,9 @@ run = "exec go tool air -c .air.worker.toml"
 depends = ["db"]
 
 [daemons.web]
-run = "exec pnpm exec vite dev"
-port = 5173
-ready_cmd = "nc -z localhost 5173"
+run = "exec pnpm exec vite dev --port $WEB_PORT --strictPort"
+port = { auto = true, base = 5173 }
+ready_cmd = "nc -z localhost $WEB_PORT"
 
 [task_config]
 includes = ["mise/tasks.toml"]

@@ -47,10 +47,11 @@ with its own README and Makefile.
    mise run db:prepare
    ```
 
-   The server reads `DATABASE_URL` / `ADDR` from the environment but defaults
-   to the local development DB and `:3001`.
+   Under mise, `DATABASE_URL` points at the local development DB and the API/Vite
+   ports are dynamic (`mise env | grep PORT`): API from `3002`, Vite from `5173`,
+   the next free port when one is taken.
 
-3. Run the stack (Go API on `:3001`, asynchronous worker, and Vite frontend):
+3. Run the stack (Go API, asynchronous worker, and Vite frontend):
 
    ```bash
    mise run dev

@@ -106,8 +106,10 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   development database.
 - `mise run dev` — start the API, async worker (both air live-reload), and Vite
   as daemons; `mise run dev:down` stops them (never the database).
-  `mise daemons logs <api|worker|web|db>` shows output. If a daemon port is
-  taken by another project, override it in the gitignored `mise.local.toml`.
+  `mise daemons logs <api|worker|web|db>` shows output. The api and web ports
+  are dynamic (base `3002` / `5173`, next free when taken; see `mise env | grep PORT`),
+  and `mise.toml` pins `DATABASE_URL` to the development DB because the postgres
+  preset would export its own.
 - `mise run dev:api` / `dev:worker` / `dev:web` — one process in the foreground.
 - `mise run dev:spec` — watch TypeSpec and re-emit OpenAPI on change.
 - Go tooling that is cheap to build is pinned by `tool` directives in `go.mod`

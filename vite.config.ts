@@ -14,7 +14,7 @@ export default defineConfig({
   // (ADR-0015); in development Vite stands in for the production ingress.
   server: {
     proxy: {
-      "/api": "http://localhost:3001",
+      "/api": process.env.API_URL ?? "http://localhost:3001",
     },
   },
   resolve: {
