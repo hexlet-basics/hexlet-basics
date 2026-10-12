@@ -10,6 +10,8 @@ import (
 
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
+	"hexletbasics/ent/course"
+	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -83,6 +85,31 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 
 	assert.Equal(t, []string{"learning-ruby", "oldest-post"}, blogSlugs(view.RecommendedPosts),
 		"newest first, never the post being read")
+}
+
+// A promoted course whose main landing page is not public — a draft here — is
+// left out of the post's related list rather than linking readers to it.
+func TestGetBlogPostOmitsRelatedCoursesWithoutAPublicMainPage(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+	h.DB.LandingPage.Update().
+		Where(
+			landingpage.MainEQ(true),
+			landingpage.LocaleEQ("ru"),
+			landingpage.HasCourseWith(course.Slug("javascript")),
+		).
+		SetState("draft").
+		ExecX(t.Context())
+
+	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
+	require.NoError(t, err)
+	view := res.(*api.BlogPostView)
+
+	related := make([]string, len(view.RelatedLandingPages))
+	for i, lp := range view.RelatedLandingPages {
+		related[i] = lp.Course.Slug
+	}
+	assert.Equal(t, []string{"ruby", "python"}, related)
 }
 
 func TestGetBlogPostIsNotFoundOutsidePublishedPostsOfTheLocale(t *testing.T) {

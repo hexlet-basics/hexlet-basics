@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/landingpages"
 )
 
 // The public blog (legacy `Web::BlogPostsController`, `Web::BlogPosts::
@@ -95,7 +96,9 @@ func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) 
 
 // relatedLandingPages is legacy `related_main_language_landing_pages`: for each
 // promoted course, its main landing page in the request locale; a course without
-// one is skipped. The course ids arrive already in the post's display order
+// one is skipped. Legacy's `has_one :main_landing_page` filtered only on main and
+// locale, so a draft page could stand in; the public Web scope is applied here
+// instead of linking readers to a page they cannot open. The course ids arrive already in the post's display order
 // (blogRelatedCourseIDs orders them in SQL), so the pages are put back in that
 // order here rather than joining the items table again for a handful of rows.
 // A course with several main pages in one locale (legacy `has_one` picked one
@@ -111,7 +114,7 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 		Where(
 			landingpage.CourseIDIn(ids...),
 			landingpage.MainEQ(true),
-			landingpage.LocaleEQ(s.i18n.Locale(ctx)),
+			landingpages.Web(s.i18n.Locale(ctx)),
 		).
 		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
 		Order(landingpage.ByID()).
