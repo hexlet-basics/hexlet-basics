@@ -127,7 +127,7 @@
     "node-addon-api": "^8.9.0",
     "node-gyp": "^13.0.1",
     "npm-check-updates": "^22.2.9",
-    "postcss": "^8.5.22",
+    "postcss": "^8.5.23",
     "postcss-preset-mantine": "^1.18.0",
     "rollup-plugin-visualizer": "^7.0.1",
     "simple-git-hooks": "^2.13.1",
