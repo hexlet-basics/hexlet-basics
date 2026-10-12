@@ -558,7 +558,7 @@ s_rehearse_apps() {
   note "  cd legacy && DATABASE_URL=<copy> bin/dev                 # browse, open a lesson, a blog post"
   human_check "db:prepare changed nothing and legacy pages render?"
   say "Then the Go stack against the copy:"
-  note "  DATABASE_URL=<copy> make dev   # browse http://localhost:5173"
+  note "  DATABASE_URL=<copy> mise run dev   # browse the web port from: mise env | grep WEB_PORT"
   step "Sign in with a real account's password (bcrypt carried over), open /blog posts,"
   step "open a lesson and run a check, fetch /api/feeds/yandex_courses.xml."
   human_check "Go renders the copy: sign-in, blog bodies, a lesson check, the feed?"
