@@ -100,6 +100,12 @@ func (h *APIErrorHandler) Write(ctx context.Context, w http.ResponseWriter, r *h
 	}
 }
 
+// statusClientClosedRequest is nginx's 499: the caller went away (closed the
+// tab, navigated off a lesson) and cancelled the request context. Nobody reads
+// the response, and it is not a server failure, so it stays out of the error
+// log and Sentry (report only looks at 5xx).
+const statusClientClosedRequest = 499
+
 func errorStatus(err error) int {
 	var ogenErr ogenerrors.Error
 	var statusErr interface{ HTTPStatus() int }
@@ -108,6 +114,8 @@ func errorStatus(err error) int {
 		return statusErr.HTTPStatus()
 	case errors.As(err, &ogenErr):
 		return ogenErr.Code()
+	case errors.Is(err, context.Canceled):
+		return statusClientClosedRequest
 	case ent.IsNotFound(err):
 		return http.StatusNotFound
 	case ent.IsConstraintError(err):

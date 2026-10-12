@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -114,6 +115,31 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 		"title":"Bad Request",
 		"status":400
 	}`, recorder.Body.String())
+	assert.Empty(t, logs.String())
+	assert.Empty(t, transport.Events())
+}
+
+// A caller that leaves mid-request cancels the context; that is not a server
+// failure, so it must not land in the error log or Sentry.
+func TestAPIErrorHandlerDoesNotReportClientCancellation(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+
+	var logs bytes.Buffer
+	logger := slog.New(slog.NewJSONHandler(&logs, nil))
+	transport := &sentry.MockTransport{}
+	client, err := sentry.NewClient(sentry.ClientOptions{
+		Dsn:       "https://public@example.com/1",
+		Transport: transport,
+	})
+	require.NoError(t, err)
+
+	handler := handlers.NewAPIErrorHandler(translator, logger)
+	ctx := sentry.SetHubOnContext(t.Context(), sentry.NewHub(client, sentry.NewScope()))
+
+	response := handler.NewError(ctx, fmt.Errorf("query lesson: %w", context.Canceled))
+
+	assert.Equal(t, 499, response.StatusCode)
 	assert.Empty(t, logs.String())
 	assert.Empty(t, transport.Events())
 }
