@@ -152,22 +152,10 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 		return oops.Wrapf(err, "load blog post %d", blogPostID)
 	}
 
-	// Not filtered by `listed`, like legacy; ordered by id only so the prompt
-	// is deterministic (legacy left the order to the database).
-	pages, err := s.db.LandingPage.Query().
-		Where(
-			landingpage.StateEQ(landingpages.StatePublished),
-			landingpage.Main(true),
-			landingpage.LocaleEQ(lo.FromPtr(post.Locale)),
-		).
-		Order(ent.Asc(landingpage.FieldID)).
-		All(ctx)
+	candidates, err := offeredCandidates(ctx, s.db, lo.FromPtr(post.Locale))
 	if err != nil {
 		return oops.Wrapf(err, "load course candidates for post %d", blogPostID)
 	}
-	candidates := lo.Map(pages, func(p *ent.LandingPage, _ int) candidate {
-		return candidate{ID: p.CourseID, Name: p.Header}
-	})
 
 	prompt, err := suggestPrompt(post.RichBody, candidates)
 	if err != nil {
@@ -190,6 +178,27 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 	offered := lo.SliceToMap(candidates, func(c candidate) (int, struct{}) { return c.ID, struct{}{} })
 	known := lo.Filter(courseIDs, func(id int, _ int) bool { _, ok := offered[id]; return ok })
 	return s.replacer.Replace(ctx, blogPostID, known)
+}
+
+// offeredCandidates are the courses the model may choose from: the published
+// main landing pages of the post's locale. Not filtered by `listed`, like
+// legacy; ordered by id only so the prompt is deterministic (legacy left the
+// order to the database).
+func offeredCandidates(ctx context.Context, db *ent.Client, locale string) ([]candidate, error) {
+	pages, err := db.LandingPage.Query().
+		Where(
+			landingpage.StateEQ(landingpages.StatePublished),
+			landingpage.Main(true),
+			landingpage.LocaleEQ(locale),
+		).
+		Order(ent.Asc(landingpage.FieldID)).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return lo.Map(pages, func(p *ent.LandingPage, _ int) candidate {
+		return candidate{ID: p.CourseID, Name: p.Header}
+	}), nil
 }
 
 // suggestPrompt assembles the legacy user message: the truncated plain text,

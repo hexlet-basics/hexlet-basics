@@ -2,6 +2,9 @@ package courseloader_test
 
 import (
 	"context"
+	"errors"
+	"io"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"testing"
@@ -24,18 +27,23 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// fakeFetcher returns a fixed directory instead of cloning, so the loader runs
-// fully offline against the committed fixture course.
-type fakeFetcher struct{ dir string }
-
-func (f fakeFetcher) Fetch(_ context.Context, _ string) (string, func(), error) {
-	return f.dir, func() {}, nil
+// repoFetcher is the git boundary answering with a local checkout instead of
+// cloning, so the loader runs fully offline against a fixture course.
+func repoFetcher(dir string) *testsupport.FetcherMock {
+	return &testsupport.FetcherMock{
+		FetchFunc: func(context.Context, string) (string, func(), error) { return dir, func() {}, nil },
+	}
 }
 
-type panicFetcher struct{}
-
-func (panicFetcher) Fetch(context.Context, string) (string, func(), error) {
-	panic("fetch must not run for an already-claimed version")
+// unreachableFetcher is a git boundary that fails. A build that reaches it ends
+// in an error, so a test of a version that must not be built passes only if the
+// loader never gets that far.
+func unreachableFetcher() *testsupport.FetcherMock {
+	return &testsupport.FetcherMock{
+		FetchFunc: func(context.Context, string) (string, func(), error) {
+			return "", nil, errors.New("git is unreachable")
+		},
+	}
 }
 
 func newLoaderWith(
@@ -45,7 +53,8 @@ func newLoaderWith(
 	fetcher courseloader.Fetcher,
 ) *courseloader.Loader {
 	t.Helper()
-	return newLoaderWithCompletion(t, db, txStore, fetcher, &recordingPublisher{})
+	return newLoaderWithCompletion(t, db, txStore, fetcher,
+		events.NewPublisher(txStore, slog.New(slog.NewTextHandler(io.Discard, nil))))
 }
 
 // newLoaderWithCompletion builds a loader whose promotion re-evaluates
@@ -71,7 +80,7 @@ func newLoaderWithCompletion(
 // newLoader builds a loader that fetches the committed fixture course.
 func newLoader(t *testing.T, db *ent.Client, txStore store.Transactor) *courseloader.Loader {
 	t.Helper()
-	return newLoaderWith(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)})
+	return newLoaderWith(t, db, txStore, repoFetcher(fixtureRepo(t)))
 }
 
 func TestLoaderBuildsAndPromotesVersion(t *testing.T) {
@@ -135,7 +144,7 @@ func TestLoaderSkipsNonCreatedVersion(t *testing.T) {
 		SetResult("Success").
 		SaveX(ctx)
 
-	loader := newLoaderWith(t, db, txStore, panicFetcher{})
+	loader := newLoaderWith(t, db, txStore, unreachableFetcher())
 	require.NoError(t, loader.Run(ctx, version.ID))
 
 	version = db.CourseVersion.GetX(ctx, version.ID)
@@ -193,7 +202,7 @@ func TestLoaderFailedRebuildKeepsLiveVersion(t *testing.T) {
 	require.Equal(t, v1.ID, *course.CurrentVersionID)
 
 	// v2 fails: an empty checkout has no spec.yml, so Parse errors.
-	badLoader := newLoaderWith(t, db, txStore, fakeFetcher{dir: t.TempDir()})
+	badLoader := newLoaderWith(t, db, txStore, repoFetcher(t.TempDir()))
 	v2 := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.Error(t, badLoader.Run(ctx, v2.ID))
 
@@ -221,7 +230,7 @@ func TestLoaderRejectsUnsupportedTheoryImage(t *testing.T) {
 
 	course := db.Course.Create().SetSlug("loader-invalid-image-lang").SetName("Invalid Image").SaveX(ctx)
 	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	loader := newLoaderWith(t, db, txStore, fakeFetcher{dir: repo})
+	loader := newLoaderWith(t, db, txStore, repoFetcher(repo))
 
 	err := loader.Run(ctx, version.ID)
 
@@ -251,7 +260,7 @@ func TestLoaderRejectsTheoryImageSymlinkEscapingCheckout(t *testing.T) {
 
 	course := db.Course.Create().SetSlug("loader-image-escape-lang").SetName("Image Escape").SaveX(ctx)
 	version := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
-	loader := newLoaderWith(t, db, txStore, fakeFetcher{dir: repo})
+	loader := newLoaderWith(t, db, txStore, repoFetcher(repo))
 
 	err = loader.Run(ctx, version.ID)
 

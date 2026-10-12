@@ -12,18 +12,21 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// fakeCompleter records the single call and returns a canned summary.
-type fakeCompleter struct {
-	calls        int
-	instructions string
-	prompt       string
+// reviewingModel is the LLM boundary answering with a fixed summary.
+func reviewingModel() *testsupport.CompleterMock {
+	return &testsupport.CompleterMock{
+		CompleteFunc: func(context.Context, string, string) (string, error) { return "AI summary", nil },
+	}
 }
 
-func (f *fakeCompleter) Complete(_ context.Context, instructions, prompt string) (string, error) {
-	f.calls++
-	f.instructions = instructions
-	f.prompt = prompt
-	return "AI summary", nil
+// echoingModel answers with the instructions and prompt it was given, so the
+// stored summary shows what the reviewer asked the model.
+func echoingModel() *testsupport.CompleterMock {
+	return &testsupport.CompleterMock{
+		CompleteFunc: func(_ context.Context, instructions, prompt string) (string, error) {
+			return instructions + "\n" + prompt, nil
+		},
+	}
 }
 
 // Info 2002 = hello-world (lesson 1001) en. Its lesson's assistant chat holds
@@ -33,14 +36,9 @@ func TestReviewLessonUpdatesExistingReview(t *testing.T) {
 	db := testsupport.NewClient(t)
 	ctx := context.Background()
 
-	llm := &fakeCompleter{}
-	reviewer := lessonreviews.NewReviewer(db, llm)
+	reviewer := lessonreviews.NewReviewer(db, echoingModel())
 
 	require.NoError(t, reviewer.ReviewLesson(ctx, 2002))
-
-	assert.Equal(t, 1, llm.calls)
-	assert.Contains(t, llm.instructions, "Проанализируй вопросы")
-	assert.Contains(t, llm.prompt, "How do I print a string?", "the student question feeds the prompt")
 
 	review := db.CourseLessonReview.Query().
 		Where(
@@ -49,7 +47,8 @@ func TestReviewLessonUpdatesExistingReview(t *testing.T) {
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
-	assert.Equal(t, "AI summary", review.Summary)
+	assert.Contains(t, review.Summary, "Проанализируй вопросы")
+	assert.Contains(t, review.Summary, "How do I print a string?", "the student question feeds the prompt")
 	assert.Equal(t, 2002, review.CourseLessonTranslationID)
 }
 
@@ -60,12 +59,9 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 	db := testsupport.NewClient(t)
 	ctx := context.Background()
 
-	llm := &fakeCompleter{}
-	reviewer := lessonreviews.NewReviewer(db, llm)
+	reviewer := lessonreviews.NewReviewer(db, reviewingModel())
 
 	require.NoError(t, reviewer.ReviewLesson(ctx, 2001))
-
-	assert.Zero(t, llm.calls, "no questions -> no LLM call")
 
 	review := db.CourseLessonReview.Query().
 		Where(
@@ -74,7 +70,7 @@ func TestReviewLessonWithoutQuestionsSkipsLLM(t *testing.T) {
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
-	assert.Equal(t, "", review.Summary)
+	assert.Equal(t, "", review.Summary, "no questions: the model is not asked, so its answer is not stored")
 }
 
 // Info 2003 = variables (lesson 1002) en. Deleting the fixture review row
@@ -94,13 +90,9 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 		Exec(ctx)
 	require.NoError(t, err)
 
-	llm := &fakeCompleter{}
-	reviewer := lessonreviews.NewReviewer(db, llm)
+	reviewer := lessonreviews.NewReviewer(db, echoingModel())
 
 	require.NoError(t, reviewer.ReviewLesson(ctx, 2003))
-
-	assert.Equal(t, 1, llm.calls)
-	assert.Contains(t, llm.prompt, "What is a variable?")
 
 	review := db.CourseLessonReview.Query().
 		Where(
@@ -109,6 +101,6 @@ func TestReviewLessonCreatesMissingReview(t *testing.T) {
 			courselessonreview.LocaleEQ("en"),
 		).
 		OnlyX(ctx)
-	assert.Equal(t, "AI summary", review.Summary)
+	assert.Contains(t, review.Summary, "What is a variable?")
 	assert.Equal(t, 965227299, review.CourseLessonVersionID, "the version of the lesson reviewed")
 }

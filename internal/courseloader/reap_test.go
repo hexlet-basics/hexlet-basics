@@ -35,7 +35,7 @@ func TestReapStuckFailsOnlyBuildsIdlePastThreshold(t *testing.T) {
 	// The result quotes the timestamp as stored, before the reap bumps it.
 	staleAt := db.CourseVersion.GetX(ctx, stuck).UpdatedAt
 
-	loader := newLoaderWith(t, db, txStore, panicFetcher{})
+	loader := newLoaderWith(t, db, txStore, unreachableFetcher())
 	reaped, err := loader.ReapStuck(ctx)
 	require.NoError(t, err)
 	require.Len(t, reaped, 1)

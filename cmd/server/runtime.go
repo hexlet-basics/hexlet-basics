@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -28,6 +29,8 @@ type application struct {
 	http     httpRuntime
 	httpAddr string
 	logger   *slog.Logger
+	// shutdownTimeout overrides the package default; zero means the default.
+	shutdownTimeout time.Duration
 }
 
 func (a *application) run(signalCtx context.Context, stopSignals func()) error {
@@ -65,7 +68,11 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 }
 
 func (a *application) shutdown(cancelProcess context.CancelFunc) error {
-	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	timeout := a.shutdownTimeout
+	if timeout == 0 {
+		timeout = shutdownTimeout
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	if a.logger != nil {

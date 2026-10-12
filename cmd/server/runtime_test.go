@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"errors"
+	"net"
 	"net/http"
-	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -12,107 +12,94 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRuntimeStartsHTTPAndStopsOnSignal(t *testing.T) {
-	httpServer := newFakeHTTPRuntime()
-	app := application{http: httpServer}
+const eventually = 5 * time.Second
+
+// freeAddr is a loopback address nothing listens on yet.
+func freeAddr(t *testing.T) string {
+	t.Helper()
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	addr := listener.Addr().String()
+	require.NoError(t, listener.Close())
+	return addr
+}
+
+func get(url string) (*http.Response, error) {
+	client := &http.Client{Transport: &http.Transport{DisableKeepAlives: true}}
+	return client.Get(url)
+}
+
+func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
+	addr := freeAddr(t)
+	server := &http.Server{Addr: addr, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	})}
+	app := application{http: server, httpAddr: addr}
 	signalCtx, signal := context.WithCancel(context.Background())
-	stopSignalsCalled := make(chan struct{})
+	var stopSignalsCalled atomic.Bool
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- app.run(signalCtx, func() { close(stopSignalsCalled) })
+		errCh <- app.run(signalCtx, func() { stopSignalsCalled.Store(true) })
 	}()
 
-	select {
-	case <-httpServer.started:
-	case <-time.After(time.Second):
-		t.Fatal("HTTP server did not start")
-	}
+	require.Eventually(t, func() bool {
+		res, err := get("http://" + addr)
+		if err != nil {
+			return false
+		}
+		_ = res.Body.Close()
+		return res.StatusCode == http.StatusNoContent
+	}, eventually, 20*time.Millisecond, "the server answers requests")
+
 	signal()
 
 	select {
 	case err := <-errCh:
 		require.ErrorIs(t, err, errRuntimeSignal)
-	case <-time.After(time.Second):
+	case <-time.After(eventually):
 		t.Fatal("runtime did not stop after signal")
 	}
 
-	assert.True(t, httpServer.wasStopped())
-	assertClosed(t, stopSignalsCalled)
+	_, err := get("http://" + addr)
+	require.Error(t, err, "the port no longer accepts connections")
+	assert.True(t, stopSignalsCalled.Load())
 }
 
 func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
-	drainErr := errors.New("drain timed out")
-	httpServer := newFakeHTTPRuntime()
-	httpServer.shutdownErr = drainErr
-	app := application{http: httpServer}
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	release := make(chan struct{})
+	t.Cleanup(func() { close(release) })
+	inFlight := make(chan struct{})
+	server := &http.Server{Handler: http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
+		close(inFlight)
+		<-release
+	})}
+	go func() { _ = server.Serve(listener) }()
+	app := application{http: server, shutdownTimeout: 200 * time.Millisecond}
 
-	err := app.shutdown(func() {})
-
-	require.ErrorIs(t, err, drainErr)
-	assert.True(t, httpServer.wasForceClosed())
-}
-
-func assertClosed(t *testing.T, ch <-chan struct{}) {
-	t.Helper()
+	clientErr := make(chan error, 1)
+	go func() {
+		res, err := get("http://" + listener.Addr().String())
+		if err == nil {
+			_ = res.Body.Close()
+		}
+		clientErr <- err
+	}()
 	select {
-	case <-ch:
-	default:
-		t.Fatal("channel was not closed")
+	case <-inFlight:
+	case <-time.After(eventually):
+		t.Fatal("request did not reach the handler")
 	}
-}
 
-type fakeHTTPRuntime struct {
-	started chan struct{}
-	stopped chan struct{}
+	err = app.shutdown(func() {})
 
-	startOnce   sync.Once
-	stopOnce    sync.Once
-	mu          sync.Mutex
-	shutdownErr error
-	forceClosed bool
-}
-
-func newFakeHTTPRuntime() *fakeHTTPRuntime {
-	return &fakeHTTPRuntime{
-		started: make(chan struct{}),
-		stopped: make(chan struct{}),
-	}
-}
-
-func (r *fakeHTTPRuntime) ListenAndServe() error {
-	r.startOnce.Do(func() { close(r.started) })
-	<-r.stopped
-	return http.ErrServerClosed
-}
-
-func (r *fakeHTTPRuntime) Shutdown(context.Context) error {
-	if r.shutdownErr != nil {
-		return r.shutdownErr
-	}
-	r.stopOnce.Do(func() { close(r.stopped) })
-	return nil
-}
-
-func (r *fakeHTTPRuntime) Close() error {
-	r.mu.Lock()
-	r.forceClosed = true
-	r.mu.Unlock()
-	r.stopOnce.Do(func() { close(r.stopped) })
-	return nil
-}
-
-func (r *fakeHTTPRuntime) wasStopped() bool {
+	require.ErrorIs(t, err, context.DeadlineExceeded, "the drain gave up")
 	select {
-	case <-r.stopped:
-		return true
-	default:
-		return false
+	case err := <-clientErr:
+		require.Error(t, err, "the in-flight request was cut off")
+	case <-time.After(eventually):
+		t.Fatal("the in-flight request was not closed")
 	}
-}
-
-func (r *fakeHTTPRuntime) wasForceClosed() bool {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	return r.forceClosed
 }

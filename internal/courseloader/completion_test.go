@@ -2,7 +2,6 @@ package courseloader_test
 
 import (
 	"context"
-	"database/sql"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -17,37 +16,16 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// recordingPublisher keeps the facts a promotion emitted, without touching the
-// outbox — Watermill's write is production's job, not this test's subject.
-type recordingPublisher struct {
-	published []events.Event
-}
-
-func (p *recordingPublisher) Publish(_ context.Context, _ *sql.Tx, event events.Event) error {
-	p.published = append(p.published, event)
-	return nil
-}
-
-func (p *recordingPublisher) finishedCourses() []events.CourseFinished {
-	var found []events.CourseFinished
-	for _, event := range p.published {
-		if finished, ok := event.(events.CourseFinished); ok {
-			found = append(found, finished)
-		}
-	}
-	return found
-}
-
 // A learner who has finished every lesson the newly promoted version contains
 // is finished by the promotion itself. Completion is otherwise only evaluated
 // on a submission, and this learner has nothing left to submit.
 func TestPromotionFinishesALearnerWhoHasCompletedTheNewVersion(t *testing.T) {
-	db, txStore := testsupport.NewClientWithTransactor(t)
+	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
-	publisher := &recordingPublisher{}
+	services := testsupport.NewServices(t, tx, txStore)
 
 	course := db.Course.Create().SetSlug("loader-completion-lang").SetName("Completion").SaveX(ctx)
-	loader := newLoaderWithCompletion(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)}, publisher)
+	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 
 	// A first build gives the course its lesson, which the learner finishes.
 	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
@@ -63,7 +41,7 @@ func TestPromotionFinishesALearnerWhoHasCompletedTheNewVersion(t *testing.T) {
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
 
-	finished := publisher.finishedCourses()
+	finished := testsupport.PublishedEvents[events.CourseFinished](t, services)
 	require.Len(t, finished, 1)
 	assert.Equal(t, "loader-completion-lang", finished[0].Slug)
 	assert.Equal(t, 1, finished[0].OccurrenceCount, "the learner's finished enrollments")
@@ -72,12 +50,12 @@ func TestPromotionFinishesALearnerWhoHasCompletedTheNewVersion(t *testing.T) {
 // A learner with an unfinished lesson in the new version stays in progress: the
 // re-evaluation only ever moves an enrollment forward.
 func TestPromotionLeavesAnUnfinishedLearnerInProgress(t *testing.T) {
-	db, txStore := testsupport.NewClientWithTransactor(t)
+	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
-	publisher := &recordingPublisher{}
+	services := testsupport.NewServices(t, tx, txStore)
 
 	course := db.Course.Create().SetSlug("loader-incomplete-lang").SetName("Incomplete").SaveX(ctx)
-	loader := newLoaderWithCompletion(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)}, publisher)
+	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 
 	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, first.ID))
@@ -89,18 +67,18 @@ func TestPromotionLeavesAnUnfinishedLearnerInProgress(t *testing.T) {
 	require.NoError(t, loader.Run(ctx, second.ID))
 
 	assert.Equal(t, "started", *db.Enrollment.GetX(ctx, learner.ID).State)
-	assert.Empty(t, publisher.finishedCourses())
+	assert.Empty(t, testsupport.PublishedEvents[events.CourseFinished](t, services))
 }
 
 // A learner already finished is not selected again, so the fact is not
 // published twice by a later build.
 func TestPromotionDoesNotRepublishForAnAlreadyFinishedLearner(t *testing.T) {
-	db, txStore := testsupport.NewClientWithTransactor(t)
+	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
-	publisher := &recordingPublisher{}
+	services := testsupport.NewServices(t, tx, txStore)
 
 	course := db.Course.Create().SetSlug("loader-refinish-lang").SetName("Refinish").SaveX(ctx)
-	loader := newLoaderWithCompletion(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)}, publisher)
+	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 
 	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, first.ID))
@@ -111,12 +89,12 @@ func TestPromotionDoesNotRepublishForAnAlreadyFinishedLearner(t *testing.T) {
 
 	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, second.ID))
-	require.Len(t, publisher.finishedCourses(), 1)
+	require.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
 
 	third := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, third.ID))
 
-	assert.Len(t, publisher.finishedCourses(), 1, "the second promotion finds nothing to finish")
+	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1, "the second promotion finds nothing to finish")
 }
 
 // seedLearner creates the account the enrollment's FK requires.
@@ -150,14 +128,14 @@ func finishLessonFor(t *testing.T, db *ent.Client, enrolled *ent.Enrollment, les
 // left to submit, so a submission — the only other thing that evaluates
 // completion — can never notice.
 func TestPromotionFinishesLearnersWhenAVersionDropsALesson(t *testing.T) {
-	db, txStore := testsupport.NewClientWithTransactor(t)
+	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
-	publisher := &recordingPublisher{}
+	services := testsupport.NewServices(t, tx, txStore)
 
 	course := db.Course.Create().SetSlug("loader-shrink-lang").SetName("Shrink").SaveX(ctx)
 
 	// First build carries two lessons; the learner finishes only the first.
-	wide := newLoaderWithCompletion(t, db, txStore, fakeFetcher{dir: twoLessonRepo(t)}, publisher)
+	wide := newLoaderWithCompletion(t, db, txStore, repoFetcher(twoLessonRepo(t)), services.Events)
 	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, wide.Run(ctx, first.ID))
 
@@ -171,24 +149,24 @@ func TestPromotionFinishesLearnersWhenAVersionDropsALesson(t *testing.T) {
 		"still in progress while the second lesson exists")
 
 	// The next build drops the second lesson, which completes them.
-	narrow := newLoaderWithCompletion(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)}, publisher)
+	narrow := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 	second := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, narrow.Run(ctx, second.ID))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
-	require.Len(t, publisher.finishedCourses(), 1)
-	assert.Equal(t, "loader-shrink-lang", publisher.finishedCourses()[0].Slug)
+	require.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
+	assert.Equal(t, "loader-shrink-lang", testsupport.PublishedEvents[events.CourseFinished](t, services)[0].Slug)
 }
 
 // A learner whose state column is NULL is started — the legacy baseline allows
 // NULL and rows predating AASM's writes exist. They must be able to complete.
 func TestPromotionFinishesALearnerWhoseStateIsNull(t *testing.T) {
-	db, txStore := testsupport.NewClientWithTransactor(t)
+	db, tx, txStore := testsupport.NewClientWithTxAndTransactor(t)
 	ctx := context.Background()
-	publisher := &recordingPublisher{}
+	services := testsupport.NewServices(t, tx, txStore)
 
 	course := db.Course.Create().SetSlug("loader-nullstate-lang").SetName("Null").SaveX(ctx)
-	loader := newLoaderWithCompletion(t, db, txStore, fakeFetcher{dir: fixtureRepo(t)}, publisher)
+	loader := newLoaderWithCompletion(t, db, txStore, repoFetcher(fixtureRepo(t)), services.Events)
 
 	first := db.CourseVersion.Create().SetCourseID(course.ID).SetState("created").SaveX(ctx)
 	require.NoError(t, loader.Run(ctx, first.ID))
@@ -202,7 +180,7 @@ func TestPromotionFinishesALearnerWhoseStateIsNull(t *testing.T) {
 	require.NoError(t, loader.Run(ctx, second.ID))
 
 	assert.Equal(t, "finished", *db.Enrollment.GetX(ctx, learner.ID).State)
-	assert.Len(t, publisher.finishedCourses(), 1)
+	assert.Len(t, testsupport.PublishedEvents[events.CourseFinished](t, services), 1)
 }
 
 // twoLessonRepo is the committed fixture course with its single lesson

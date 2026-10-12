@@ -2,173 +2,139 @@ package main
 
 import (
 	"context"
-	"errors"
-	"sync"
+	"database/sql"
+	"io"
+	"log/slog"
 	"testing"
 	"time"
 
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
+	"github.com/riverqueue/river"
+	"github.com/riverqueue/river/riverdriver/riverdatabasesql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"hexletbasics/internal/jobs"
+	"hexletbasics/internal/store"
+	"hexletbasics/internal/testsupport/testdb"
 )
 
-func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
-	watermillErr := errors.New("subscriber startup failed")
-	recorder := &lifecycleRecorder{}
-	jobs := newFakeJobRuntime(recorder)
-	events := &fakeEventRuntime{recorder: recorder, runErr: watermillErr}
-	app := application{jobs: jobs, events: events}
+const eventually = 10 * time.Second
 
-	errCh := make(chan error, 1)
-	go func() {
-		errCh <- app.run(context.Background(), func() {})
-	}()
-
-	select {
-	case err := <-errCh:
-		require.ErrorIs(t, err, watermillErr)
-	case <-time.After(time.Second):
-		t.Fatal("worker did not stop after Watermill failed")
-	}
-
-	assert.Equal(t, []string{
-		"river-start",
-		"watermill-start",
-		"watermill-stop",
-		"river-stop",
-	}, recorder.events())
+// newRiver is a real worker client over the test database with one no-op worker.
+func newRiver(t *testing.T) *river.Client[*sql.Tx] {
+	t.Helper()
+	workers := river.NewWorkers()
+	river.AddWorker(workers, river.WorkFunc(func(context.Context, *river.Job[jobs.AccountEmailArgs]) error {
+		return nil
+	}))
+	return newRiverWith(t, workers)
 }
 
-func TestRuntimeStartsAndStopsAsyncComponentsInOrder(t *testing.T) {
-	recorder := &lifecycleRecorder{}
-	jobs := newFakeJobRuntime(recorder)
-	events := &fakeEventRuntime{
-		recorder: recorder,
-		started:  make(chan struct{}),
-		closed:   make(chan struct{}),
+func newRiverWith(t *testing.T, workers *river.Workers) *river.Client[*sql.Tx] {
+	t.Helper()
+	pool, err := store.NewDB(testdb.DatabaseURL())
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = pool.Close() })
+
+	client, err := river.NewClient(riverdatabasesql.New(pool), &river.Config{
+		Queues:  map[string]river.QueueConfig{river.QueueDefault: {MaxWorkers: 1}},
+		Workers: workers,
+	})
+	require.NoError(t, err)
+	return client
+}
+
+// newRouter is a real Watermill router with one handler over an in-memory
+// pub/sub.
+func newRouter(t *testing.T) *message.Router {
+	t.Helper()
+	logger := watermill.NewSlogLogger(slog.New(slog.NewTextHandler(io.Discard, nil)))
+	pubsub := gochannel.NewGoChannel(gochannel.Config{}, logger)
+	router, err := message.NewRouter(message.RouterConfig{CloseTimeout: time.Second}, logger)
+	require.NoError(t, err)
+	router.AddConsumerHandler("test_consumer", "test_topic", pubsub, func(*message.Message) error { return nil })
+	t.Cleanup(func() { _ = router.Close() })
+	return router
+}
+
+func stopped(ch <-chan struct{}) bool {
+	select {
+	case <-ch:
+		return true
+	default:
+		return false
 	}
-	app := application{jobs: jobs, events: events}
+}
+
+func TestRuntimeStopsBothComponentsOnSignal(t *testing.T) {
+	jobQueue := newRiver(t)
+	router := newRouter(t)
+	app := application{jobs: jobQueue, events: router}
 	signalCtx, signal := context.WithCancel(context.Background())
-	stopSignalsCalled := make(chan struct{})
+	var stopSignalsCalled bool
 
 	errCh := make(chan error, 1)
-	go func() {
-		errCh <- app.run(signalCtx, func() { close(stopSignalsCalled) })
-	}()
+	go func() { errCh <- app.run(signalCtx, func() { stopSignalsCalled = true }) }()
 
 	select {
-	case <-events.started:
-	case <-time.After(time.Second):
-		t.Fatal("Watermill did not start")
+	case <-router.Running():
+	case <-time.After(eventually):
+		t.Fatal("the event router did not start")
 	}
 	signal()
 
 	select {
 	case err := <-errCh:
 		require.ErrorIs(t, err, errRuntimeSignal)
-	case <-time.After(time.Second):
+	case <-time.After(eventually):
 		t.Fatal("worker did not stop after signal")
 	}
 
-	assert.Equal(t, []string{
-		"river-start",
-		"watermill-start",
-		"watermill-stop",
-		"river-stop",
-	}, recorder.events())
-	assertClosed(t, stopSignalsCalled)
+	assert.True(t, stopped(jobQueue.Stopped()), "the job queue is stopped")
+	assert.True(t, router.IsClosed(), "the event router is closed")
+	assert.True(t, stopSignalsCalled)
+}
+
+func TestRuntimeStopsRiverWhenWatermillFails(t *testing.T) {
+	jobQueue := newRiver(t)
+	router := newRouter(t)
+	// A router that is already running cannot be run again, so Run fails.
+	go func() { _ = router.Run(t.Context()) }()
+	select {
+	case <-router.Running():
+	case <-time.After(eventually):
+		t.Fatal("the event router did not start")
+	}
+	app := application{jobs: jobQueue, events: router}
+
+	errCh := make(chan error, 1)
+	go func() { errCh <- app.run(context.Background(), func() {}) }()
+
+	select {
+	case err := <-errCh:
+		require.ErrorContains(t, err, "router is already running")
+	case <-time.After(eventually):
+		t.Fatal("worker did not stop after the event router failed")
+	}
+
+	assert.True(t, stopped(jobQueue.Stopped()), "the job queue is stopped")
 }
 
 func TestRuntimeDoesNotStartWatermillWhenRiverFails(t *testing.T) {
-	startErr := errors.New("database unavailable")
-	recorder := &lifecycleRecorder{}
-	jobs := newFakeJobRuntime(recorder)
-	jobs.startErr = startErr
-	events := &fakeEventRuntime{recorder: recorder}
-	app := application{jobs: jobs, events: events}
+	// A worker bundle with no workers is a configuration River refuses to start.
+	jobQueue := newRiverWith(t, river.NewWorkers())
+	router := newRouter(t)
+	app := application{jobs: jobQueue, events: router}
 
 	err := app.run(context.Background(), func() {})
 
-	require.ErrorIs(t, err, startErr)
-	assert.Equal(t, []string{"river-start"}, recorder.events())
-}
-
-func assertClosed(t *testing.T, ch <-chan struct{}) {
-	t.Helper()
+	require.ErrorContains(t, err, "at least one Worker must be added")
 	select {
-	case <-ch:
+	case <-router.Running():
+		t.Fatal("the event router started although the job queue failed")
 	default:
-		t.Fatal("channel was not closed")
 	}
-}
-
-type lifecycleRecorder struct {
-	mu     sync.Mutex
-	values []string
-}
-
-func (r *lifecycleRecorder) record(value string) {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	r.values = append(r.values, value)
-}
-
-func (r *lifecycleRecorder) events() []string {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	return append([]string(nil), r.values...)
-}
-
-type fakeJobRuntime struct {
-	recorder *lifecycleRecorder
-	stopped  chan struct{}
-	stopOnce sync.Once
-	startErr error
-}
-
-func newFakeJobRuntime(recorder *lifecycleRecorder) *fakeJobRuntime {
-	return &fakeJobRuntime{recorder: recorder, stopped: make(chan struct{})}
-}
-
-func (r *fakeJobRuntime) Start(context.Context) error {
-	r.recorder.record("river-start")
-	return r.startErr
-}
-
-func (r *fakeJobRuntime) Stop(context.Context) error {
-	r.recorder.record("river-stop")
-	r.stopOnce.Do(func() { close(r.stopped) })
-	return nil
-}
-
-func (r *fakeJobRuntime) Stopped() <-chan struct{} { return r.stopped }
-
-type fakeEventRuntime struct {
-	recorder  *lifecycleRecorder
-	runErr    error
-	started   chan struct{}
-	closed    chan struct{}
-	startOnce sync.Once
-	closeOnce sync.Once
-}
-
-func (r *fakeEventRuntime) Run(context.Context) error {
-	r.recorder.record("watermill-start")
-	if r.started != nil {
-		r.startOnce.Do(func() { close(r.started) })
-	}
-	if r.runErr != nil {
-		return r.runErr
-	}
-	if r.closed != nil {
-		<-r.closed
-	}
-	return nil
-}
-
-func (r *fakeEventRuntime) Close() error {
-	r.recorder.record("watermill-stop")
-	if r.closed != nil {
-		r.closeOnce.Do(func() { close(r.closed) })
-	}
-	return nil
 }
