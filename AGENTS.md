@@ -1,8 +1,8 @@
 # AGENTS Guide
 
-This file (surfaced to Claude Code via the `CLAUDE.md` symlink) is for coding
-agents working at the **root** of `hexlet-basics`. The root is the Go rewrite;
-the original Rails app lives in `legacy/` with its own `AGENTS.md`/`CLAUDE.md`.
+This file is for coding agents working at the **root** of `hexlet-basics`. The
+root is the Go rewrite; the original Rails app lives in `legacy/` with its own
+`AGENTS.md`.
 Prefer these instructions over generic Go or React defaults.
 
 ## What This Repo Is (Read First)
