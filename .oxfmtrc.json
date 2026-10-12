@@ -13,6 +13,7 @@
     "public/**",
     "src/client/**",
     "src/routeTree.gen.ts",
+    "src/types/resources.d.ts",
     "stats.html"
   ]
 }
