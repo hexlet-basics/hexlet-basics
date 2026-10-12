@@ -167,9 +167,52 @@ depends = [
 description = "Spelling in code, docs and comments (_typos.toml)"
 run = "typos"
 
+["lint:i18n"]
+description = "i18n: resources.d.ts is current, no hardcoded strings outside the per-language pages, no key missing from a locale catalog (i18next.config.ts)"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+pnpm exec i18next-cli types --ci
+pnpm exec i18next-cli lint
+# `extract --ci` also exits 1 for array-valued keys it only re-serializes (a "~"
+# line whose before and after are identical), so only its "+" lines, a key
+# missing from a catalog, are a failure here.
+missing=$(pnpm exec i18next-cli extract --ci --dry-run 2>&1 | grep -E '\[(ru|es|en)\]$|^ +\+ ' || true)
+if echo "$missing" | grep -q '^ *+ '; then
+  echo "keys missing from a locale catalog (add them, or run: pnpm exec i18next-cli sync):"
+  echo "$missing"
+  exit 1
+fi
+'''
+
 ["lint:unused"]
 description = "Unused files, exports and dependencies of the frontend (knip.ts)"
 run = "pnpm exec knip"
+
+["lint:helm"]
+description = "Helm chart: lint, then render with the CI placeholder values (and the cutover baseline) and validate every manifest against the Kubernetes schemas"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+chart=k8s/app-chart
+set=(--set secrets.docker.config=placeholder --set secrets.code_basics.env.DATABASE_URL=placeholder)
+kc=(kubeconform -strict -summary -ignore-missing-schemas)
+helm lint "$chart" "${set[@]}"
+helm template codebasics "$chart" "${set[@]}" | "${kc[@]}"
+helm template codebasics "$chart" "${set[@]}" --set migrate.baseline=20260727053619 | "${kc[@]}"
+'''
+
+["lint:infra"]
+description = "Terraform (legacy/terraform): fmt --check and validate; init runs without the backend, so no credentials or state are needed"
+run = [
+  "terraform -chdir=legacy/terraform fmt -check -diff -recursive",
+  "terraform -chdir=legacy/terraform init -backend=false -input=false -lockfile=readonly",
+  "terraform -chdir=legacy/terraform validate",
+]
+
+["lint:size"]
+description = "Client bundle budgets (size-limit config in package.json); builds the web app first"
+run = ["pnpm build", "pnpm exec size-limit"]
 
 ["lint:shell"]
 description = "shellcheck the scripts under scripts/ (the legacy and third-party skill scripts are not ours)"

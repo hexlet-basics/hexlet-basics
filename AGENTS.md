@@ -141,7 +141,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   contextcheck/noctx/errorlint/bodyclose among others) + frontend (`oxlint`,
   `oxfmt --check`, `tsc -b`) + ADR number uniqueness + `lint:deps` (`go mod tidy
   -diff`, `govulncheck`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
-  + `lint:shell` (shellcheck) + `lint:unused` (knip). CI runs the same task. The
+  + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
+  types current, no hardcoded strings outside `src/components/pages`, no key missing
+  from a locale catalog). CI runs the same task. The
   pre-push hook runs the Go, frontend and ADR checks; the pre-commit hook runs
   gitleaks, oxlint, oxfmt, golangci-lint, typos, shellcheck, zizmor and
   jactionlint on the staged files. Pushes need them clean.
