@@ -199,10 +199,10 @@ func init() {
 	course.DefaultUpdatedAt = courseDescUpdatedAt.Default.(func() time.Time)
 	// course.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	course.UpdateDefaultUpdatedAt = courseDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// courseDescMembersCount is the schema descriptor for members_count field.
-	courseDescMembersCount := courseFields[5].Descriptor()
-	// course.DefaultMembersCount holds the default value on creation for the members_count field.
-	course.DefaultMembersCount = courseDescMembersCount.Default.(int)
+	// courseDescEnrollmentsCount is the schema descriptor for enrollments_count field.
+	courseDescEnrollmentsCount := courseFields[5].Descriptor()
+	// course.DefaultEnrollmentsCount holds the default value on creation for the enrollments_count field.
+	course.DefaultEnrollmentsCount = courseDescEnrollmentsCount.Default.(int)
 	// courseDescLessonsCount is the schema descriptor for lessons_count field.
 	courseDescLessonsCount := courseFields[6].Descriptor()
 	// course.DefaultLessonsCount holds the default value on creation for the lessons_count field.

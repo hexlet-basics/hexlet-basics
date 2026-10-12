@@ -160,7 +160,7 @@ func TestDashboardRefusesAGuest(t *testing.T) {
 // it is saved, so a test can make it a draft or move it to another locale.
 func giveCatalogueCardForID(t *testing.T, h *testsupport.Harness, courseID int, adjust ...func(*ent.LandingPageCreate)) {
 	t.Helper()
-	h.DB.Course.UpdateOneID(courseID).SetProgress("completed").ExecX(t.Context())
+	h.DB.Course.UpdateOneID(courseID).SetReadiness("completed").ExecX(t.Context())
 	create := h.DB.LandingPage.Create().
 		SetCourseID(courseID).
 		SetSlug("card-" + strconv.Itoa(courseID)).

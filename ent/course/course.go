@@ -24,12 +24,12 @@ const (
 	FieldName = "name"
 	// FieldLearnAs holds the string denoting the learn_as field in the database.
 	FieldLearnAs = "learn_as"
-	// FieldProgress holds the string denoting the progress field in the database.
-	FieldProgress = "progress"
+	// FieldReadiness holds the string denoting the readiness field in the database.
+	FieldReadiness = "progress"
 	// FieldHexletProgramLandingPage holds the string denoting the hexlet_program_landing_page field in the database.
 	FieldHexletProgramLandingPage = "hexlet_program_landing_page"
-	// FieldMembersCount holds the string denoting the members_count field in the database.
-	FieldMembersCount = "members_count"
+	// FieldEnrollmentsCount holds the string denoting the enrollments_count field in the database.
+	FieldEnrollmentsCount = "members_count"
 	// FieldLessonsCount holds the string denoting the lessons_count field in the database.
 	FieldLessonsCount = "lessons_count"
 	// FieldCategoryID holds the string denoting the category_id field in the database.
@@ -68,9 +68,9 @@ var Columns = []string{
 	FieldSlug,
 	FieldName,
 	FieldLearnAs,
-	FieldProgress,
+	FieldReadiness,
 	FieldHexletProgramLandingPage,
-	FieldMembersCount,
+	FieldEnrollmentsCount,
 	FieldLessonsCount,
 	FieldCategoryID,
 	FieldCurrentVersionID,
@@ -94,8 +94,8 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
-	// DefaultMembersCount holds the default value on creation for the "members_count" field.
-	DefaultMembersCount int
+	// DefaultEnrollmentsCount holds the default value on creation for the "enrollments_count" field.
+	DefaultEnrollmentsCount int
 	// DefaultLessonsCount holds the default value on creation for the "lessons_count" field.
 	DefaultLessonsCount int
 )
@@ -133,9 +133,9 @@ func ByLearnAs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLearnAs, opts...).ToFunc()
 }
 
-// ByProgress orders the results by the progress field.
-func ByProgress(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProgress, opts...).ToFunc()
+// ByReadiness orders the results by the readiness field.
+func ByReadiness(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReadiness, opts...).ToFunc()
 }
 
 // ByHexletProgramLandingPage orders the results by the hexlet_program_landing_page field.
@@ -143,9 +143,9 @@ func ByHexletProgramLandingPage(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHexletProgramLandingPage, opts...).ToFunc()
 }
 
-// ByMembersCount orders the results by the members_count field.
-func ByMembersCount(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMembersCount, opts...).ToFunc()
+// ByEnrollmentsCount orders the results by the enrollments_count field.
+func ByEnrollmentsCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEnrollmentsCount, opts...).ToFunc()
 }
 
 // ByLessonsCount orders the results by the lessons_count field.

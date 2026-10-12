@@ -82,7 +82,7 @@ func TestGetPublicCourseCategoryLeavesOutHiddenPagesAndUnfinishedCourses(t *test
 		Exec(ctx))
 	require.NoError(t, h.DB.Course.Update().
 		Where(course.SlugEQ("typescript")).
-		SetProgress("in_development").
+		SetReadiness("in_development").
 		Exec(ctx))
 
 	view := getCategoryView(t, h, "programming-ru")

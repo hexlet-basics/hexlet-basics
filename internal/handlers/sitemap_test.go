@@ -70,7 +70,7 @@ func TestGetSitemapLeavesOutUnlistedAndSpanishPages(t *testing.T) {
 		Exec(ctx))
 	require.NoError(t, h.DB.Course.Update().
 		Where(course.SlugEQ("javascript")).
-		SetProgress("in_development").
+		SetReadiness("in_development").
 		Exec(ctx))
 
 	sitemap := getSitemap(t, h)

@@ -7649,10 +7649,10 @@ type CourseMutation struct {
 	slug                        *string
 	name                        *string
 	learn_as                    *string
-	progress                    *string
+	readiness                   *string
 	hexlet_program_landing_page *string
-	members_count               *int
-	addmembers_count            *int
+	enrollments_count           *int
+	addenrollments_count        *int
 	lessons_count               *int
 	addlessons_count            *int
 	category_id                 *int
@@ -7987,53 +7987,53 @@ func (m *CourseMutation) ResetLearnAs() {
 	delete(m.clearedFields, course.FieldLearnAs)
 }
 
-// SetProgress sets the "progress" field.
-func (m *CourseMutation) SetProgress(s string) {
-	m.progress = &s
+// SetReadiness sets the "readiness" field.
+func (m *CourseMutation) SetReadiness(s string) {
+	m.readiness = &s
 }
 
-// Progress returns the value of the "progress" field in the mutation.
-func (m *CourseMutation) Progress() (r string, exists bool) {
-	v := m.progress
+// Readiness returns the value of the "readiness" field in the mutation.
+func (m *CourseMutation) Readiness() (r string, exists bool) {
+	v := m.readiness
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldProgress returns the old "progress" field's value of the Course entity.
+// OldReadiness returns the old "readiness" field's value of the Course entity.
 // If the Course object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseMutation) OldProgress(ctx context.Context) (v *string, err error) {
+func (m *CourseMutation) OldReadiness(ctx context.Context) (v *string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProgress is only allowed on UpdateOne operations")
+		return v, errors.New("OldReadiness is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProgress requires an ID field in the mutation")
+		return v, errors.New("OldReadiness requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProgress: %w", err)
+		return v, fmt.Errorf("querying old value for OldReadiness: %w", err)
 	}
-	return oldValue.Progress, nil
+	return oldValue.Readiness, nil
 }
 
-// ClearProgress clears the value of the "progress" field.
-func (m *CourseMutation) ClearProgress() {
-	m.progress = nil
-	m.clearedFields[course.FieldProgress] = struct{}{}
+// ClearReadiness clears the value of the "readiness" field.
+func (m *CourseMutation) ClearReadiness() {
+	m.readiness = nil
+	m.clearedFields[course.FieldReadiness] = struct{}{}
 }
 
-// ProgressCleared returns if the "progress" field was cleared in this mutation.
-func (m *CourseMutation) ProgressCleared() bool {
-	_, ok := m.clearedFields[course.FieldProgress]
+// ReadinessCleared returns if the "readiness" field was cleared in this mutation.
+func (m *CourseMutation) ReadinessCleared() bool {
+	_, ok := m.clearedFields[course.FieldReadiness]
 	return ok
 }
 
-// ResetProgress resets all changes to the "progress" field.
-func (m *CourseMutation) ResetProgress() {
-	m.progress = nil
-	delete(m.clearedFields, course.FieldProgress)
+// ResetReadiness resets all changes to the "readiness" field.
+func (m *CourseMutation) ResetReadiness() {
+	m.readiness = nil
+	delete(m.clearedFields, course.FieldReadiness)
 }
 
 // SetHexletProgramLandingPage sets the "hexlet_program_landing_page" field.
@@ -8085,60 +8085,60 @@ func (m *CourseMutation) ResetHexletProgramLandingPage() {
 	delete(m.clearedFields, course.FieldHexletProgramLandingPage)
 }
 
-// SetMembersCount sets the "members_count" field.
-func (m *CourseMutation) SetMembersCount(i int) {
-	m.members_count = &i
-	m.addmembers_count = nil
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (m *CourseMutation) SetEnrollmentsCount(i int) {
+	m.enrollments_count = &i
+	m.addenrollments_count = nil
 }
 
-// MembersCount returns the value of the "members_count" field in the mutation.
-func (m *CourseMutation) MembersCount() (r int, exists bool) {
-	v := m.members_count
+// EnrollmentsCount returns the value of the "enrollments_count" field in the mutation.
+func (m *CourseMutation) EnrollmentsCount() (r int, exists bool) {
+	v := m.enrollments_count
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMembersCount returns the old "members_count" field's value of the Course entity.
+// OldEnrollmentsCount returns the old "enrollments_count" field's value of the Course entity.
 // If the Course object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CourseMutation) OldMembersCount(ctx context.Context) (v int, err error) {
+func (m *CourseMutation) OldEnrollmentsCount(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMembersCount is only allowed on UpdateOne operations")
+		return v, errors.New("OldEnrollmentsCount is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMembersCount requires an ID field in the mutation")
+		return v, errors.New("OldEnrollmentsCount requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMembersCount: %w", err)
+		return v, fmt.Errorf("querying old value for OldEnrollmentsCount: %w", err)
 	}
-	return oldValue.MembersCount, nil
+	return oldValue.EnrollmentsCount, nil
 }
 
-// AddMembersCount adds i to the "members_count" field.
-func (m *CourseMutation) AddMembersCount(i int) {
-	if m.addmembers_count != nil {
-		*m.addmembers_count += i
+// AddEnrollmentsCount adds i to the "enrollments_count" field.
+func (m *CourseMutation) AddEnrollmentsCount(i int) {
+	if m.addenrollments_count != nil {
+		*m.addenrollments_count += i
 	} else {
-		m.addmembers_count = &i
+		m.addenrollments_count = &i
 	}
 }
 
-// AddedMembersCount returns the value that was added to the "members_count" field in this mutation.
-func (m *CourseMutation) AddedMembersCount() (r int, exists bool) {
-	v := m.addmembers_count
+// AddedEnrollmentsCount returns the value that was added to the "enrollments_count" field in this mutation.
+func (m *CourseMutation) AddedEnrollmentsCount() (r int, exists bool) {
+	v := m.addenrollments_count
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetMembersCount resets all changes to the "members_count" field.
-func (m *CourseMutation) ResetMembersCount() {
-	m.members_count = nil
-	m.addmembers_count = nil
+// ResetEnrollmentsCount resets all changes to the "enrollments_count" field.
+func (m *CourseMutation) ResetEnrollmentsCount() {
+	m.enrollments_count = nil
+	m.addenrollments_count = nil
 }
 
 // SetLessonsCount sets the "lessons_count" field.
@@ -8517,14 +8517,14 @@ func (m *CourseMutation) Fields() []string {
 	if m.learn_as != nil {
 		fields = append(fields, course.FieldLearnAs)
 	}
-	if m.progress != nil {
-		fields = append(fields, course.FieldProgress)
+	if m.readiness != nil {
+		fields = append(fields, course.FieldReadiness)
 	}
 	if m.hexlet_program_landing_page != nil {
 		fields = append(fields, course.FieldHexletProgramLandingPage)
 	}
-	if m.members_count != nil {
-		fields = append(fields, course.FieldMembersCount)
+	if m.enrollments_count != nil {
+		fields = append(fields, course.FieldEnrollmentsCount)
 	}
 	if m.lessons_count != nil {
 		fields = append(fields, course.FieldLessonsCount)
@@ -8556,12 +8556,12 @@ func (m *CourseMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case course.FieldLearnAs:
 		return m.LearnAs()
-	case course.FieldProgress:
-		return m.Progress()
+	case course.FieldReadiness:
+		return m.Readiness()
 	case course.FieldHexletProgramLandingPage:
 		return m.HexletProgramLandingPage()
-	case course.FieldMembersCount:
-		return m.MembersCount()
+	case course.FieldEnrollmentsCount:
+		return m.EnrollmentsCount()
 	case course.FieldLessonsCount:
 		return m.LessonsCount()
 	case course.FieldCategoryID:
@@ -8589,12 +8589,12 @@ func (m *CourseMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldName(ctx)
 	case course.FieldLearnAs:
 		return m.OldLearnAs(ctx)
-	case course.FieldProgress:
-		return m.OldProgress(ctx)
+	case course.FieldReadiness:
+		return m.OldReadiness(ctx)
 	case course.FieldHexletProgramLandingPage:
 		return m.OldHexletProgramLandingPage(ctx)
-	case course.FieldMembersCount:
-		return m.OldMembersCount(ctx)
+	case course.FieldEnrollmentsCount:
+		return m.OldEnrollmentsCount(ctx)
 	case course.FieldLessonsCount:
 		return m.OldLessonsCount(ctx)
 	case course.FieldCategoryID:
@@ -8647,12 +8647,12 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLearnAs(v)
 		return nil
-	case course.FieldProgress:
+	case course.FieldReadiness:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetProgress(v)
+		m.SetReadiness(v)
 		return nil
 	case course.FieldHexletProgramLandingPage:
 		v, ok := value.(string)
@@ -8661,12 +8661,12 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetHexletProgramLandingPage(v)
 		return nil
-	case course.FieldMembersCount:
+	case course.FieldEnrollmentsCount:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMembersCount(v)
+		m.SetEnrollmentsCount(v)
 		return nil
 	case course.FieldLessonsCount:
 		v, ok := value.(int)
@@ -8704,8 +8704,8 @@ func (m *CourseMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *CourseMutation) AddedFields() []string {
 	var fields []string
-	if m.addmembers_count != nil {
-		fields = append(fields, course.FieldMembersCount)
+	if m.addenrollments_count != nil {
+		fields = append(fields, course.FieldEnrollmentsCount)
 	}
 	if m.addlessons_count != nil {
 		fields = append(fields, course.FieldLessonsCount)
@@ -8724,8 +8724,8 @@ func (m *CourseMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *CourseMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case course.FieldMembersCount:
-		return m.AddedMembersCount()
+	case course.FieldEnrollmentsCount:
+		return m.AddedEnrollmentsCount()
 	case course.FieldLessonsCount:
 		return m.AddedLessonsCount()
 	case course.FieldCategoryID:
@@ -8741,12 +8741,12 @@ func (m *CourseMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *CourseMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case course.FieldMembersCount:
+	case course.FieldEnrollmentsCount:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddMembersCount(v)
+		m.AddEnrollmentsCount(v)
 		return nil
 	case course.FieldLessonsCount:
 		v, ok := value.(int)
@@ -8786,8 +8786,8 @@ func (m *CourseMutation) ClearedFields() []string {
 	if m.FieldCleared(course.FieldLearnAs) {
 		fields = append(fields, course.FieldLearnAs)
 	}
-	if m.FieldCleared(course.FieldProgress) {
-		fields = append(fields, course.FieldProgress)
+	if m.FieldCleared(course.FieldReadiness) {
+		fields = append(fields, course.FieldReadiness)
 	}
 	if m.FieldCleared(course.FieldHexletProgramLandingPage) {
 		fields = append(fields, course.FieldHexletProgramLandingPage)
@@ -8824,8 +8824,8 @@ func (m *CourseMutation) ClearField(name string) error {
 	case course.FieldLearnAs:
 		m.ClearLearnAs()
 		return nil
-	case course.FieldProgress:
-		m.ClearProgress()
+	case course.FieldReadiness:
+		m.ClearReadiness()
 		return nil
 	case course.FieldHexletProgramLandingPage:
 		m.ClearHexletProgramLandingPage()
@@ -8862,14 +8862,14 @@ func (m *CourseMutation) ResetField(name string) error {
 	case course.FieldLearnAs:
 		m.ResetLearnAs()
 		return nil
-	case course.FieldProgress:
-		m.ResetProgress()
+	case course.FieldReadiness:
+		m.ResetReadiness()
 		return nil
 	case course.FieldHexletProgramLandingPage:
 		m.ResetHexletProgramLandingPage()
 		return nil
-	case course.FieldMembersCount:
-		m.ResetMembersCount()
+	case course.FieldEnrollmentsCount:
+		m.ResetEnrollmentsCount()
 		return nil
 	case course.FieldLessonsCount:
 		m.ResetLessonsCount()

@@ -94,16 +94,16 @@ func (_c *CourseCreate) SetNillableLearnAs(v *string) *CourseCreate {
 	return _c
 }
 
-// SetProgress sets the "progress" field.
-func (_c *CourseCreate) SetProgress(v string) *CourseCreate {
-	_c.mutation.SetProgress(v)
+// SetReadiness sets the "readiness" field.
+func (_c *CourseCreate) SetReadiness(v string) *CourseCreate {
+	_c.mutation.SetReadiness(v)
 	return _c
 }
 
-// SetNillableProgress sets the "progress" field if the given value is not nil.
-func (_c *CourseCreate) SetNillableProgress(v *string) *CourseCreate {
+// SetNillableReadiness sets the "readiness" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableReadiness(v *string) *CourseCreate {
 	if v != nil {
-		_c.SetProgress(*v)
+		_c.SetReadiness(*v)
 	}
 	return _c
 }
@@ -122,16 +122,16 @@ func (_c *CourseCreate) SetNillableHexletProgramLandingPage(v *string) *CourseCr
 	return _c
 }
 
-// SetMembersCount sets the "members_count" field.
-func (_c *CourseCreate) SetMembersCount(v int) *CourseCreate {
-	_c.mutation.SetMembersCount(v)
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (_c *CourseCreate) SetEnrollmentsCount(v int) *CourseCreate {
+	_c.mutation.SetEnrollmentsCount(v)
 	return _c
 }
 
-// SetNillableMembersCount sets the "members_count" field if the given value is not nil.
-func (_c *CourseCreate) SetNillableMembersCount(v *int) *CourseCreate {
+// SetNillableEnrollmentsCount sets the "enrollments_count" field if the given value is not nil.
+func (_c *CourseCreate) SetNillableEnrollmentsCount(v *int) *CourseCreate {
 	if v != nil {
-		_c.SetMembersCount(*v)
+		_c.SetEnrollmentsCount(*v)
 	}
 	return _c
 }
@@ -255,9 +255,9 @@ func (_c *CourseCreate) defaults() {
 		v := course.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
-	if _, ok := _c.mutation.MembersCount(); !ok {
-		v := course.DefaultMembersCount
-		_c.mutation.SetMembersCount(v)
+	if _, ok := _c.mutation.EnrollmentsCount(); !ok {
+		v := course.DefaultEnrollmentsCount
+		_c.mutation.SetEnrollmentsCount(v)
 	}
 	if _, ok := _c.mutation.LessonsCount(); !ok {
 		v := course.DefaultLessonsCount
@@ -273,8 +273,8 @@ func (_c *CourseCreate) check() error {
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Course.updated_at"`)}
 	}
-	if _, ok := _c.mutation.MembersCount(); !ok {
-		return &ValidationError{Name: "members_count", err: errors.New(`ent: missing required field "Course.members_count"`)}
+	if _, ok := _c.mutation.EnrollmentsCount(); !ok {
+		return &ValidationError{Name: "enrollments_count", err: errors.New(`ent: missing required field "Course.enrollments_count"`)}
 	}
 	if _, ok := _c.mutation.LessonsCount(); !ok {
 		return &ValidationError{Name: "lessons_count", err: errors.New(`ent: missing required field "Course.lessons_count"`)}
@@ -326,17 +326,17 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 		_spec.SetField(course.FieldLearnAs, field.TypeString, value)
 		_node.LearnAs = &value
 	}
-	if value, ok := _c.mutation.Progress(); ok {
-		_spec.SetField(course.FieldProgress, field.TypeString, value)
-		_node.Progress = &value
+	if value, ok := _c.mutation.Readiness(); ok {
+		_spec.SetField(course.FieldReadiness, field.TypeString, value)
+		_node.Readiness = &value
 	}
 	if value, ok := _c.mutation.HexletProgramLandingPage(); ok {
 		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
 		_node.HexletProgramLandingPage = &value
 	}
-	if value, ok := _c.mutation.MembersCount(); ok {
-		_spec.SetField(course.FieldMembersCount, field.TypeInt, value)
-		_node.MembersCount = value
+	if value, ok := _c.mutation.EnrollmentsCount(); ok {
+		_spec.SetField(course.FieldEnrollmentsCount, field.TypeInt, value)
+		_node.EnrollmentsCount = value
 	}
 	if value, ok := _c.mutation.LessonsCount(); ok {
 		_spec.SetField(course.FieldLessonsCount, field.TypeInt, value)
@@ -501,21 +501,21 @@ func (u *CourseUpsert) ClearLearnAs() *CourseUpsert {
 	return u
 }
 
-// SetProgress sets the "progress" field.
-func (u *CourseUpsert) SetProgress(v string) *CourseUpsert {
-	u.Set(course.FieldProgress, v)
+// SetReadiness sets the "readiness" field.
+func (u *CourseUpsert) SetReadiness(v string) *CourseUpsert {
+	u.Set(course.FieldReadiness, v)
 	return u
 }
 
-// UpdateProgress sets the "progress" field to the value that was provided on create.
-func (u *CourseUpsert) UpdateProgress() *CourseUpsert {
-	u.SetExcluded(course.FieldProgress)
+// UpdateReadiness sets the "readiness" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateReadiness() *CourseUpsert {
+	u.SetExcluded(course.FieldReadiness)
 	return u
 }
 
-// ClearProgress clears the value of the "progress" field.
-func (u *CourseUpsert) ClearProgress() *CourseUpsert {
-	u.SetNull(course.FieldProgress)
+// ClearReadiness clears the value of the "readiness" field.
+func (u *CourseUpsert) ClearReadiness() *CourseUpsert {
+	u.SetNull(course.FieldReadiness)
 	return u
 }
 
@@ -537,21 +537,21 @@ func (u *CourseUpsert) ClearHexletProgramLandingPage() *CourseUpsert {
 	return u
 }
 
-// SetMembersCount sets the "members_count" field.
-func (u *CourseUpsert) SetMembersCount(v int) *CourseUpsert {
-	u.Set(course.FieldMembersCount, v)
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (u *CourseUpsert) SetEnrollmentsCount(v int) *CourseUpsert {
+	u.Set(course.FieldEnrollmentsCount, v)
 	return u
 }
 
-// UpdateMembersCount sets the "members_count" field to the value that was provided on create.
-func (u *CourseUpsert) UpdateMembersCount() *CourseUpsert {
-	u.SetExcluded(course.FieldMembersCount)
+// UpdateEnrollmentsCount sets the "enrollments_count" field to the value that was provided on create.
+func (u *CourseUpsert) UpdateEnrollmentsCount() *CourseUpsert {
+	u.SetExcluded(course.FieldEnrollmentsCount)
 	return u
 }
 
-// AddMembersCount adds v to the "members_count" field.
-func (u *CourseUpsert) AddMembersCount(v int) *CourseUpsert {
-	u.Add(course.FieldMembersCount, v)
+// AddEnrollmentsCount adds v to the "enrollments_count" field.
+func (u *CourseUpsert) AddEnrollmentsCount(v int) *CourseUpsert {
+	u.Add(course.FieldEnrollmentsCount, v)
 	return u
 }
 
@@ -761,24 +761,24 @@ func (u *CourseUpsertOne) ClearLearnAs() *CourseUpsertOne {
 	})
 }
 
-// SetProgress sets the "progress" field.
-func (u *CourseUpsertOne) SetProgress(v string) *CourseUpsertOne {
+// SetReadiness sets the "readiness" field.
+func (u *CourseUpsertOne) SetReadiness(v string) *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
-		s.SetProgress(v)
+		s.SetReadiness(v)
 	})
 }
 
-// UpdateProgress sets the "progress" field to the value that was provided on create.
-func (u *CourseUpsertOne) UpdateProgress() *CourseUpsertOne {
+// UpdateReadiness sets the "readiness" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateReadiness() *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
-		s.UpdateProgress()
+		s.UpdateReadiness()
 	})
 }
 
-// ClearProgress clears the value of the "progress" field.
-func (u *CourseUpsertOne) ClearProgress() *CourseUpsertOne {
+// ClearReadiness clears the value of the "readiness" field.
+func (u *CourseUpsertOne) ClearReadiness() *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
-		s.ClearProgress()
+		s.ClearReadiness()
 	})
 }
 
@@ -803,24 +803,24 @@ func (u *CourseUpsertOne) ClearHexletProgramLandingPage() *CourseUpsertOne {
 	})
 }
 
-// SetMembersCount sets the "members_count" field.
-func (u *CourseUpsertOne) SetMembersCount(v int) *CourseUpsertOne {
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (u *CourseUpsertOne) SetEnrollmentsCount(v int) *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
-		s.SetMembersCount(v)
+		s.SetEnrollmentsCount(v)
 	})
 }
 
-// AddMembersCount adds v to the "members_count" field.
-func (u *CourseUpsertOne) AddMembersCount(v int) *CourseUpsertOne {
+// AddEnrollmentsCount adds v to the "enrollments_count" field.
+func (u *CourseUpsertOne) AddEnrollmentsCount(v int) *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
-		s.AddMembersCount(v)
+		s.AddEnrollmentsCount(v)
 	})
 }
 
-// UpdateMembersCount sets the "members_count" field to the value that was provided on create.
-func (u *CourseUpsertOne) UpdateMembersCount() *CourseUpsertOne {
+// UpdateEnrollmentsCount sets the "enrollments_count" field to the value that was provided on create.
+func (u *CourseUpsertOne) UpdateEnrollmentsCount() *CourseUpsertOne {
 	return u.Update(func(s *CourseUpsert) {
-		s.UpdateMembersCount()
+		s.UpdateEnrollmentsCount()
 	})
 }
 
@@ -1210,24 +1210,24 @@ func (u *CourseUpsertBulk) ClearLearnAs() *CourseUpsertBulk {
 	})
 }
 
-// SetProgress sets the "progress" field.
-func (u *CourseUpsertBulk) SetProgress(v string) *CourseUpsertBulk {
+// SetReadiness sets the "readiness" field.
+func (u *CourseUpsertBulk) SetReadiness(v string) *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
-		s.SetProgress(v)
+		s.SetReadiness(v)
 	})
 }
 
-// UpdateProgress sets the "progress" field to the value that was provided on create.
-func (u *CourseUpsertBulk) UpdateProgress() *CourseUpsertBulk {
+// UpdateReadiness sets the "readiness" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateReadiness() *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
-		s.UpdateProgress()
+		s.UpdateReadiness()
 	})
 }
 
-// ClearProgress clears the value of the "progress" field.
-func (u *CourseUpsertBulk) ClearProgress() *CourseUpsertBulk {
+// ClearReadiness clears the value of the "readiness" field.
+func (u *CourseUpsertBulk) ClearReadiness() *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
-		s.ClearProgress()
+		s.ClearReadiness()
 	})
 }
 
@@ -1252,24 +1252,24 @@ func (u *CourseUpsertBulk) ClearHexletProgramLandingPage() *CourseUpsertBulk {
 	})
 }
 
-// SetMembersCount sets the "members_count" field.
-func (u *CourseUpsertBulk) SetMembersCount(v int) *CourseUpsertBulk {
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (u *CourseUpsertBulk) SetEnrollmentsCount(v int) *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
-		s.SetMembersCount(v)
+		s.SetEnrollmentsCount(v)
 	})
 }
 
-// AddMembersCount adds v to the "members_count" field.
-func (u *CourseUpsertBulk) AddMembersCount(v int) *CourseUpsertBulk {
+// AddEnrollmentsCount adds v to the "enrollments_count" field.
+func (u *CourseUpsertBulk) AddEnrollmentsCount(v int) *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
-		s.AddMembersCount(v)
+		s.AddEnrollmentsCount(v)
 	})
 }
 
-// UpdateMembersCount sets the "members_count" field to the value that was provided on create.
-func (u *CourseUpsertBulk) UpdateMembersCount() *CourseUpsertBulk {
+// UpdateEnrollmentsCount sets the "enrollments_count" field to the value that was provided on create.
+func (u *CourseUpsertBulk) UpdateEnrollmentsCount() *CourseUpsertBulk {
 	return u.Update(func(s *CourseUpsert) {
-		s.UpdateMembersCount()
+		s.UpdateEnrollmentsCount()
 	})
 }
 

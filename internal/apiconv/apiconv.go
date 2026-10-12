@@ -48,7 +48,7 @@ type Converter interface {
 	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
 
 	// goverter:map Edges.Course Course
-	// goverter:map Edges.Course.MembersCount EnrollmentsCount
+	// goverter:map Edges.Course.EnrollmentsCount EnrollmentsCount
 	// goverter:map . CoverUrl | coverURLNull
 	// goverter:ignore Duration
 	ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem
@@ -58,10 +58,6 @@ type Converter interface {
 	// current_version association, and the serializer's computed fields as bridges
 	// below. Only the ActiveStorage cover variants stay deferred (same reason as
 	// CourseCatalogItem.CoverUrl — blob assets are not migrated yet).
-	// The two legacy column names the contract renamed: `progress` carries
-	// Course Readiness, `members_count` counts Enrollments.
-	// goverter:map Progress Readiness
-	// goverter:map MembersCount EnrollmentsCount
 	// goverter:map CategoryID CategoryId
 	// goverter:map CurrentVersionID CurrentVersionId
 	// goverter:map Edges.CurrentVersion CurrentVersion
@@ -154,7 +150,7 @@ type Converter interface {
 	// goverter:map CourseID CourseId
 	// goverter:map LandingPageToRedirectID LandingPageToRedirectId
 	// goverter:map Edges.Course.Slug CourseSlug
-	// goverter:map Edges.Course.MembersCount EnrollmentsCount
+	// goverter:map Edges.Course.EnrollmentsCount EnrollmentsCount
 	// goverter:map Edges.Course Duration | courseDuration
 	// goverter:map . OutcomesImage | landingOutcomesImageNull
 	ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage

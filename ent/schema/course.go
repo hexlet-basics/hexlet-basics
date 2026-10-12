@@ -34,14 +34,14 @@ func (Course) Fields() []ent.Field {
 		field.String("learn_as").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		// Course Readiness; the column keeps the retired name.
-		field.String("progress").Optional().Nillable().
-			Annotations(AdminInputField{Rename: "Readiness"}),
+		field.String("readiness").StorageKey("progress").Optional().Nillable().
+			Annotations(AdminInputField{}),
 		field.String("hexlet_program_landing_page").Optional().Nillable().
 			Annotations(AdminInputField{}),
 		// Counters maintained by the app; the baseline columns are NOT NULL
 		// DEFAULT 0, so a newly-created course starts at 0 without the admin
 		// create path having to supply them.
-		field.Int("members_count").Default(0),
+		field.Int("enrollments_count").StorageKey("members_count").Default(0),
 		field.Int("lessons_count").Default(0),
 		field.Int("category_id").Optional().Nillable(),
 		field.Int("current_version_id").Optional().Nillable(),

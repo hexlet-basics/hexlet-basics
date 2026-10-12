@@ -41,7 +41,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 			// Legacy `.current`: the info's course version must be selected as
 			// current by a completed course.
 			courselessontranslation.HasCourseVersionWith(
-				courseversion.HasCurrentCoursesWith(course.ProgressEQ(landingpages.CourseCompleted)),
+				courseversion.HasCurrentCoursesWith(course.ReadinessEQ(landingpages.CourseCompleted)),
 			),
 		)
 	}

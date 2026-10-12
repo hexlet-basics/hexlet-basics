@@ -32,7 +32,7 @@ func Web(locale string) predicate.LandingPage {
 	return landingpage.And(
 		landingpage.StateEQ(StatePublished),
 		landingpage.LocaleEQ(locale),
-		landingpage.HasCourseWith(course.ProgressEQ(CourseCompleted)),
+		landingpage.HasCourseWith(course.ReadinessEQ(CourseCompleted)),
 	)
 }
 

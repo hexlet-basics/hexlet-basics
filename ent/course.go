@@ -28,12 +28,12 @@ type Course struct {
 	Name *string `json:"name,omitempty"`
 	// LearnAs holds the value of the "learn_as" field.
 	LearnAs *string `json:"learn_as,omitempty"`
-	// Progress holds the value of the "progress" field.
-	Progress *string `json:"progress,omitempty"`
+	// Readiness holds the value of the "readiness" field.
+	Readiness *string `json:"readiness,omitempty"`
 	// HexletProgramLandingPage holds the value of the "hexlet_program_landing_page" field.
 	HexletProgramLandingPage *string `json:"hexlet_program_landing_page,omitempty"`
-	// MembersCount holds the value of the "members_count" field.
-	MembersCount int `json:"members_count,omitempty"`
+	// EnrollmentsCount holds the value of the "enrollments_count" field.
+	EnrollmentsCount int `json:"enrollments_count,omitempty"`
 	// LessonsCount holds the value of the "lessons_count" field.
 	LessonsCount int `json:"lessons_count,omitempty"`
 	// CategoryID holds the value of the "category_id" field.
@@ -84,9 +84,9 @@ func (*Course) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case course.FieldID, course.FieldMembersCount, course.FieldLessonsCount, course.FieldCategoryID, course.FieldCurrentVersionID, course.FieldOrder:
+		case course.FieldID, course.FieldEnrollmentsCount, course.FieldLessonsCount, course.FieldCategoryID, course.FieldCurrentVersionID, course.FieldOrder:
 			values[i] = new(sql.NullInt64)
-		case course.FieldSlug, course.FieldName, course.FieldLearnAs, course.FieldProgress, course.FieldHexletProgramLandingPage:
+		case course.FieldSlug, course.FieldName, course.FieldLearnAs, course.FieldReadiness, course.FieldHexletProgramLandingPage:
 			values[i] = new(sql.NullString)
 		case course.FieldCreatedAt, course.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -144,12 +144,12 @@ func (_m *Course) assignValues(columns []string, values []any) error {
 				_m.LearnAs = new(string)
 				*_m.LearnAs = value.String
 			}
-		case course.FieldProgress:
+		case course.FieldReadiness:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field progress", values[i])
+				return fmt.Errorf("unexpected type %T for field readiness", values[i])
 			} else if value.Valid {
-				_m.Progress = new(string)
-				*_m.Progress = value.String
+				_m.Readiness = new(string)
+				*_m.Readiness = value.String
 			}
 		case course.FieldHexletProgramLandingPage:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -158,11 +158,11 @@ func (_m *Course) assignValues(columns []string, values []any) error {
 				_m.HexletProgramLandingPage = new(string)
 				*_m.HexletProgramLandingPage = value.String
 			}
-		case course.FieldMembersCount:
+		case course.FieldEnrollmentsCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field members_count", values[i])
+				return fmt.Errorf("unexpected type %T for field enrollments_count", values[i])
 			} else if value.Valid {
-				_m.MembersCount = int(value.Int64)
+				_m.EnrollmentsCount = int(value.Int64)
 			}
 		case course.FieldLessonsCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -258,8 +258,8 @@ func (_m *Course) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := _m.Progress; v != nil {
-		builder.WriteString("progress=")
+	if v := _m.Readiness; v != nil {
+		builder.WriteString("readiness=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
@@ -268,8 +268,8 @@ func (_m *Course) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	builder.WriteString("members_count=")
-	builder.WriteString(fmt.Sprintf("%v", _m.MembersCount))
+	builder.WriteString("enrollments_count=")
+	builder.WriteString(fmt.Sprintf("%v", _m.EnrollmentsCount))
 	builder.WriteString(", ")
 	builder.WriteString("lessons_count=")
 	builder.WriteString(fmt.Sprintf("%v", _m.LessonsCount))

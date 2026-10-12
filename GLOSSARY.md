@@ -173,12 +173,12 @@ schema does not exist yet.
 | --- | --- | --- |
 | Enrollment | `language_members` | `finished_lessons_count`, `state`; Completion is computed, not stored |
 | Lesson Progress | `language_lesson_members` | `language_member_id`, `lesson_id`, `state`, `UNIQUE (user_id, lesson_id)` |
-| Course | `languages` | `members_count` (Enrollment count), `progress` (Course Readiness) |
+| Course | `languages` | `members_count` (ent `enrollments_count`), `progress` (ent `readiness`) |
 | Course Lesson | `language_lessons` | `language_id`, `module_id` |
 | Course Version | `language_versions` | `language_id` |
 | Course Module | `language_modules` | `language_id` |
 | Course Category | `language_categories` | — |
-| Course Category Item | `language_category_items` | `language_category_id`, `language_landing_page_id`; no ent schema yet |
+| Course Category Item | `language_category_items` | `language_category_id`, `language_landing_page_id` |
 | Course Landing Page | `language_landing_pages` | `language_id` |
 | Course Lesson Review | `language_lesson_reviews` | `language_lesson_version_id` |
 | Staff Member | `staff_members` | — |

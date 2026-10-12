@@ -80,9 +80,9 @@ func LearnAs(v string) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldLearnAs, v))
 }
 
-// Progress applies equality check predicate on the "progress" field. It's identical to ProgressEQ.
-func Progress(v string) predicate.Course {
-	return predicate.Course(sql.FieldEQ(FieldProgress, v))
+// Readiness applies equality check predicate on the "readiness" field. It's identical to ReadinessEQ.
+func Readiness(v string) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldReadiness, v))
 }
 
 // HexletProgramLandingPage applies equality check predicate on the "hexlet_program_landing_page" field. It's identical to HexletProgramLandingPageEQ.
@@ -90,9 +90,9 @@ func HexletProgramLandingPage(v string) predicate.Course {
 	return predicate.Course(sql.FieldEQ(FieldHexletProgramLandingPage, v))
 }
 
-// MembersCount applies equality check predicate on the "members_count" field. It's identical to MembersCountEQ.
-func MembersCount(v int) predicate.Course {
-	return predicate.Course(sql.FieldEQ(FieldMembersCount, v))
+// EnrollmentsCount applies equality check predicate on the "enrollments_count" field. It's identical to EnrollmentsCountEQ.
+func EnrollmentsCount(v int) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldEnrollmentsCount, v))
 }
 
 // LessonsCount applies equality check predicate on the "lessons_count" field. It's identical to LessonsCountEQ.
@@ -420,79 +420,79 @@ func LearnAsContainsFold(v string) predicate.Course {
 	return predicate.Course(sql.FieldContainsFold(FieldLearnAs, v))
 }
 
-// ProgressEQ applies the EQ predicate on the "progress" field.
-func ProgressEQ(v string) predicate.Course {
-	return predicate.Course(sql.FieldEQ(FieldProgress, v))
+// ReadinessEQ applies the EQ predicate on the "readiness" field.
+func ReadinessEQ(v string) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldReadiness, v))
 }
 
-// ProgressNEQ applies the NEQ predicate on the "progress" field.
-func ProgressNEQ(v string) predicate.Course {
-	return predicate.Course(sql.FieldNEQ(FieldProgress, v))
+// ReadinessNEQ applies the NEQ predicate on the "readiness" field.
+func ReadinessNEQ(v string) predicate.Course {
+	return predicate.Course(sql.FieldNEQ(FieldReadiness, v))
 }
 
-// ProgressIn applies the In predicate on the "progress" field.
-func ProgressIn(vs ...string) predicate.Course {
-	return predicate.Course(sql.FieldIn(FieldProgress, vs...))
+// ReadinessIn applies the In predicate on the "readiness" field.
+func ReadinessIn(vs ...string) predicate.Course {
+	return predicate.Course(sql.FieldIn(FieldReadiness, vs...))
 }
 
-// ProgressNotIn applies the NotIn predicate on the "progress" field.
-func ProgressNotIn(vs ...string) predicate.Course {
-	return predicate.Course(sql.FieldNotIn(FieldProgress, vs...))
+// ReadinessNotIn applies the NotIn predicate on the "readiness" field.
+func ReadinessNotIn(vs ...string) predicate.Course {
+	return predicate.Course(sql.FieldNotIn(FieldReadiness, vs...))
 }
 
-// ProgressGT applies the GT predicate on the "progress" field.
-func ProgressGT(v string) predicate.Course {
-	return predicate.Course(sql.FieldGT(FieldProgress, v))
+// ReadinessGT applies the GT predicate on the "readiness" field.
+func ReadinessGT(v string) predicate.Course {
+	return predicate.Course(sql.FieldGT(FieldReadiness, v))
 }
 
-// ProgressGTE applies the GTE predicate on the "progress" field.
-func ProgressGTE(v string) predicate.Course {
-	return predicate.Course(sql.FieldGTE(FieldProgress, v))
+// ReadinessGTE applies the GTE predicate on the "readiness" field.
+func ReadinessGTE(v string) predicate.Course {
+	return predicate.Course(sql.FieldGTE(FieldReadiness, v))
 }
 
-// ProgressLT applies the LT predicate on the "progress" field.
-func ProgressLT(v string) predicate.Course {
-	return predicate.Course(sql.FieldLT(FieldProgress, v))
+// ReadinessLT applies the LT predicate on the "readiness" field.
+func ReadinessLT(v string) predicate.Course {
+	return predicate.Course(sql.FieldLT(FieldReadiness, v))
 }
 
-// ProgressLTE applies the LTE predicate on the "progress" field.
-func ProgressLTE(v string) predicate.Course {
-	return predicate.Course(sql.FieldLTE(FieldProgress, v))
+// ReadinessLTE applies the LTE predicate on the "readiness" field.
+func ReadinessLTE(v string) predicate.Course {
+	return predicate.Course(sql.FieldLTE(FieldReadiness, v))
 }
 
-// ProgressContains applies the Contains predicate on the "progress" field.
-func ProgressContains(v string) predicate.Course {
-	return predicate.Course(sql.FieldContains(FieldProgress, v))
+// ReadinessContains applies the Contains predicate on the "readiness" field.
+func ReadinessContains(v string) predicate.Course {
+	return predicate.Course(sql.FieldContains(FieldReadiness, v))
 }
 
-// ProgressHasPrefix applies the HasPrefix predicate on the "progress" field.
-func ProgressHasPrefix(v string) predicate.Course {
-	return predicate.Course(sql.FieldHasPrefix(FieldProgress, v))
+// ReadinessHasPrefix applies the HasPrefix predicate on the "readiness" field.
+func ReadinessHasPrefix(v string) predicate.Course {
+	return predicate.Course(sql.FieldHasPrefix(FieldReadiness, v))
 }
 
-// ProgressHasSuffix applies the HasSuffix predicate on the "progress" field.
-func ProgressHasSuffix(v string) predicate.Course {
-	return predicate.Course(sql.FieldHasSuffix(FieldProgress, v))
+// ReadinessHasSuffix applies the HasSuffix predicate on the "readiness" field.
+func ReadinessHasSuffix(v string) predicate.Course {
+	return predicate.Course(sql.FieldHasSuffix(FieldReadiness, v))
 }
 
-// ProgressIsNil applies the IsNil predicate on the "progress" field.
-func ProgressIsNil() predicate.Course {
-	return predicate.Course(sql.FieldIsNull(FieldProgress))
+// ReadinessIsNil applies the IsNil predicate on the "readiness" field.
+func ReadinessIsNil() predicate.Course {
+	return predicate.Course(sql.FieldIsNull(FieldReadiness))
 }
 
-// ProgressNotNil applies the NotNil predicate on the "progress" field.
-func ProgressNotNil() predicate.Course {
-	return predicate.Course(sql.FieldNotNull(FieldProgress))
+// ReadinessNotNil applies the NotNil predicate on the "readiness" field.
+func ReadinessNotNil() predicate.Course {
+	return predicate.Course(sql.FieldNotNull(FieldReadiness))
 }
 
-// ProgressEqualFold applies the EqualFold predicate on the "progress" field.
-func ProgressEqualFold(v string) predicate.Course {
-	return predicate.Course(sql.FieldEqualFold(FieldProgress, v))
+// ReadinessEqualFold applies the EqualFold predicate on the "readiness" field.
+func ReadinessEqualFold(v string) predicate.Course {
+	return predicate.Course(sql.FieldEqualFold(FieldReadiness, v))
 }
 
-// ProgressContainsFold applies the ContainsFold predicate on the "progress" field.
-func ProgressContainsFold(v string) predicate.Course {
-	return predicate.Course(sql.FieldContainsFold(FieldProgress, v))
+// ReadinessContainsFold applies the ContainsFold predicate on the "readiness" field.
+func ReadinessContainsFold(v string) predicate.Course {
+	return predicate.Course(sql.FieldContainsFold(FieldReadiness, v))
 }
 
 // HexletProgramLandingPageEQ applies the EQ predicate on the "hexlet_program_landing_page" field.
@@ -570,44 +570,44 @@ func HexletProgramLandingPageContainsFold(v string) predicate.Course {
 	return predicate.Course(sql.FieldContainsFold(FieldHexletProgramLandingPage, v))
 }
 
-// MembersCountEQ applies the EQ predicate on the "members_count" field.
-func MembersCountEQ(v int) predicate.Course {
-	return predicate.Course(sql.FieldEQ(FieldMembersCount, v))
+// EnrollmentsCountEQ applies the EQ predicate on the "enrollments_count" field.
+func EnrollmentsCountEQ(v int) predicate.Course {
+	return predicate.Course(sql.FieldEQ(FieldEnrollmentsCount, v))
 }
 
-// MembersCountNEQ applies the NEQ predicate on the "members_count" field.
-func MembersCountNEQ(v int) predicate.Course {
-	return predicate.Course(sql.FieldNEQ(FieldMembersCount, v))
+// EnrollmentsCountNEQ applies the NEQ predicate on the "enrollments_count" field.
+func EnrollmentsCountNEQ(v int) predicate.Course {
+	return predicate.Course(sql.FieldNEQ(FieldEnrollmentsCount, v))
 }
 
-// MembersCountIn applies the In predicate on the "members_count" field.
-func MembersCountIn(vs ...int) predicate.Course {
-	return predicate.Course(sql.FieldIn(FieldMembersCount, vs...))
+// EnrollmentsCountIn applies the In predicate on the "enrollments_count" field.
+func EnrollmentsCountIn(vs ...int) predicate.Course {
+	return predicate.Course(sql.FieldIn(FieldEnrollmentsCount, vs...))
 }
 
-// MembersCountNotIn applies the NotIn predicate on the "members_count" field.
-func MembersCountNotIn(vs ...int) predicate.Course {
-	return predicate.Course(sql.FieldNotIn(FieldMembersCount, vs...))
+// EnrollmentsCountNotIn applies the NotIn predicate on the "enrollments_count" field.
+func EnrollmentsCountNotIn(vs ...int) predicate.Course {
+	return predicate.Course(sql.FieldNotIn(FieldEnrollmentsCount, vs...))
 }
 
-// MembersCountGT applies the GT predicate on the "members_count" field.
-func MembersCountGT(v int) predicate.Course {
-	return predicate.Course(sql.FieldGT(FieldMembersCount, v))
+// EnrollmentsCountGT applies the GT predicate on the "enrollments_count" field.
+func EnrollmentsCountGT(v int) predicate.Course {
+	return predicate.Course(sql.FieldGT(FieldEnrollmentsCount, v))
 }
 
-// MembersCountGTE applies the GTE predicate on the "members_count" field.
-func MembersCountGTE(v int) predicate.Course {
-	return predicate.Course(sql.FieldGTE(FieldMembersCount, v))
+// EnrollmentsCountGTE applies the GTE predicate on the "enrollments_count" field.
+func EnrollmentsCountGTE(v int) predicate.Course {
+	return predicate.Course(sql.FieldGTE(FieldEnrollmentsCount, v))
 }
 
-// MembersCountLT applies the LT predicate on the "members_count" field.
-func MembersCountLT(v int) predicate.Course {
-	return predicate.Course(sql.FieldLT(FieldMembersCount, v))
+// EnrollmentsCountLT applies the LT predicate on the "enrollments_count" field.
+func EnrollmentsCountLT(v int) predicate.Course {
+	return predicate.Course(sql.FieldLT(FieldEnrollmentsCount, v))
 }
 
-// MembersCountLTE applies the LTE predicate on the "members_count" field.
-func MembersCountLTE(v int) predicate.Course {
-	return predicate.Course(sql.FieldLTE(FieldMembersCount, v))
+// EnrollmentsCountLTE applies the LTE predicate on the "enrollments_count" field.
+func EnrollmentsCountLTE(v int) predicate.Course {
+	return predicate.Course(sql.FieldLTE(FieldEnrollmentsCount, v))
 }
 
 // LessonsCountEQ applies the EQ predicate on the "lessons_count" field.

@@ -96,23 +96,23 @@ func (_u *CourseUpdate) ClearLearnAs() *CourseUpdate {
 	return _u
 }
 
-// SetProgress sets the "progress" field.
-func (_u *CourseUpdate) SetProgress(v string) *CourseUpdate {
-	_u.mutation.SetProgress(v)
+// SetReadiness sets the "readiness" field.
+func (_u *CourseUpdate) SetReadiness(v string) *CourseUpdate {
+	_u.mutation.SetReadiness(v)
 	return _u
 }
 
-// SetNillableProgress sets the "progress" field if the given value is not nil.
-func (_u *CourseUpdate) SetNillableProgress(v *string) *CourseUpdate {
+// SetNillableReadiness sets the "readiness" field if the given value is not nil.
+func (_u *CourseUpdate) SetNillableReadiness(v *string) *CourseUpdate {
 	if v != nil {
-		_u.SetProgress(*v)
+		_u.SetReadiness(*v)
 	}
 	return _u
 }
 
-// ClearProgress clears the value of the "progress" field.
-func (_u *CourseUpdate) ClearProgress() *CourseUpdate {
-	_u.mutation.ClearProgress()
+// ClearReadiness clears the value of the "readiness" field.
+func (_u *CourseUpdate) ClearReadiness() *CourseUpdate {
+	_u.mutation.ClearReadiness()
 	return _u
 }
 
@@ -136,24 +136,24 @@ func (_u *CourseUpdate) ClearHexletProgramLandingPage() *CourseUpdate {
 	return _u
 }
 
-// SetMembersCount sets the "members_count" field.
-func (_u *CourseUpdate) SetMembersCount(v int) *CourseUpdate {
-	_u.mutation.ResetMembersCount()
-	_u.mutation.SetMembersCount(v)
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (_u *CourseUpdate) SetEnrollmentsCount(v int) *CourseUpdate {
+	_u.mutation.ResetEnrollmentsCount()
+	_u.mutation.SetEnrollmentsCount(v)
 	return _u
 }
 
-// SetNillableMembersCount sets the "members_count" field if the given value is not nil.
-func (_u *CourseUpdate) SetNillableMembersCount(v *int) *CourseUpdate {
+// SetNillableEnrollmentsCount sets the "enrollments_count" field if the given value is not nil.
+func (_u *CourseUpdate) SetNillableEnrollmentsCount(v *int) *CourseUpdate {
 	if v != nil {
-		_u.SetMembersCount(*v)
+		_u.SetEnrollmentsCount(*v)
 	}
 	return _u
 }
 
-// AddMembersCount adds value to the "members_count" field.
-func (_u *CourseUpdate) AddMembersCount(v int) *CourseUpdate {
-	_u.mutation.AddMembersCount(v)
+// AddEnrollmentsCount adds value to the "enrollments_count" field.
+func (_u *CourseUpdate) AddEnrollmentsCount(v int) *CourseUpdate {
+	_u.mutation.AddEnrollmentsCount(v)
 	return _u
 }
 
@@ -370,11 +370,11 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.LearnAsCleared() {
 		_spec.ClearField(course.FieldLearnAs, field.TypeString)
 	}
-	if value, ok := _u.mutation.Progress(); ok {
-		_spec.SetField(course.FieldProgress, field.TypeString, value)
+	if value, ok := _u.mutation.Readiness(); ok {
+		_spec.SetField(course.FieldReadiness, field.TypeString, value)
 	}
-	if _u.mutation.ProgressCleared() {
-		_spec.ClearField(course.FieldProgress, field.TypeString)
+	if _u.mutation.ReadinessCleared() {
+		_spec.ClearField(course.FieldReadiness, field.TypeString)
 	}
 	if value, ok := _u.mutation.HexletProgramLandingPage(); ok {
 		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
@@ -382,11 +382,11 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.HexletProgramLandingPageCleared() {
 		_spec.ClearField(course.FieldHexletProgramLandingPage, field.TypeString)
 	}
-	if value, ok := _u.mutation.MembersCount(); ok {
-		_spec.SetField(course.FieldMembersCount, field.TypeInt, value)
+	if value, ok := _u.mutation.EnrollmentsCount(); ok {
+		_spec.SetField(course.FieldEnrollmentsCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedMembersCount(); ok {
-		_spec.AddField(course.FieldMembersCount, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedEnrollmentsCount(); ok {
+		_spec.AddField(course.FieldEnrollmentsCount, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.LessonsCount(); ok {
 		_spec.SetField(course.FieldLessonsCount, field.TypeInt, value)
@@ -572,23 +572,23 @@ func (_u *CourseUpdateOne) ClearLearnAs() *CourseUpdateOne {
 	return _u
 }
 
-// SetProgress sets the "progress" field.
-func (_u *CourseUpdateOne) SetProgress(v string) *CourseUpdateOne {
-	_u.mutation.SetProgress(v)
+// SetReadiness sets the "readiness" field.
+func (_u *CourseUpdateOne) SetReadiness(v string) *CourseUpdateOne {
+	_u.mutation.SetReadiness(v)
 	return _u
 }
 
-// SetNillableProgress sets the "progress" field if the given value is not nil.
-func (_u *CourseUpdateOne) SetNillableProgress(v *string) *CourseUpdateOne {
+// SetNillableReadiness sets the "readiness" field if the given value is not nil.
+func (_u *CourseUpdateOne) SetNillableReadiness(v *string) *CourseUpdateOne {
 	if v != nil {
-		_u.SetProgress(*v)
+		_u.SetReadiness(*v)
 	}
 	return _u
 }
 
-// ClearProgress clears the value of the "progress" field.
-func (_u *CourseUpdateOne) ClearProgress() *CourseUpdateOne {
-	_u.mutation.ClearProgress()
+// ClearReadiness clears the value of the "readiness" field.
+func (_u *CourseUpdateOne) ClearReadiness() *CourseUpdateOne {
+	_u.mutation.ClearReadiness()
 	return _u
 }
 
@@ -612,24 +612,24 @@ func (_u *CourseUpdateOne) ClearHexletProgramLandingPage() *CourseUpdateOne {
 	return _u
 }
 
-// SetMembersCount sets the "members_count" field.
-func (_u *CourseUpdateOne) SetMembersCount(v int) *CourseUpdateOne {
-	_u.mutation.ResetMembersCount()
-	_u.mutation.SetMembersCount(v)
+// SetEnrollmentsCount sets the "enrollments_count" field.
+func (_u *CourseUpdateOne) SetEnrollmentsCount(v int) *CourseUpdateOne {
+	_u.mutation.ResetEnrollmentsCount()
+	_u.mutation.SetEnrollmentsCount(v)
 	return _u
 }
 
-// SetNillableMembersCount sets the "members_count" field if the given value is not nil.
-func (_u *CourseUpdateOne) SetNillableMembersCount(v *int) *CourseUpdateOne {
+// SetNillableEnrollmentsCount sets the "enrollments_count" field if the given value is not nil.
+func (_u *CourseUpdateOne) SetNillableEnrollmentsCount(v *int) *CourseUpdateOne {
 	if v != nil {
-		_u.SetMembersCount(*v)
+		_u.SetEnrollmentsCount(*v)
 	}
 	return _u
 }
 
-// AddMembersCount adds value to the "members_count" field.
-func (_u *CourseUpdateOne) AddMembersCount(v int) *CourseUpdateOne {
-	_u.mutation.AddMembersCount(v)
+// AddEnrollmentsCount adds value to the "enrollments_count" field.
+func (_u *CourseUpdateOne) AddEnrollmentsCount(v int) *CourseUpdateOne {
+	_u.mutation.AddEnrollmentsCount(v)
 	return _u
 }
 
@@ -876,11 +876,11 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 	if _u.mutation.LearnAsCleared() {
 		_spec.ClearField(course.FieldLearnAs, field.TypeString)
 	}
-	if value, ok := _u.mutation.Progress(); ok {
-		_spec.SetField(course.FieldProgress, field.TypeString, value)
+	if value, ok := _u.mutation.Readiness(); ok {
+		_spec.SetField(course.FieldReadiness, field.TypeString, value)
 	}
-	if _u.mutation.ProgressCleared() {
-		_spec.ClearField(course.FieldProgress, field.TypeString)
+	if _u.mutation.ReadinessCleared() {
+		_spec.ClearField(course.FieldReadiness, field.TypeString)
 	}
 	if value, ok := _u.mutation.HexletProgramLandingPage(); ok {
 		_spec.SetField(course.FieldHexletProgramLandingPage, field.TypeString, value)
@@ -888,11 +888,11 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 	if _u.mutation.HexletProgramLandingPageCleared() {
 		_spec.ClearField(course.FieldHexletProgramLandingPage, field.TypeString)
 	}
-	if value, ok := _u.mutation.MembersCount(); ok {
-		_spec.SetField(course.FieldMembersCount, field.TypeInt, value)
+	if value, ok := _u.mutation.EnrollmentsCount(); ok {
+		_spec.SetField(course.FieldEnrollmentsCount, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedMembersCount(); ok {
-		_spec.AddField(course.FieldMembersCount, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedEnrollmentsCount(); ok {
+		_spec.AddField(course.FieldEnrollmentsCount, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.LessonsCount(); ok {
 		_spec.SetField(course.FieldLessonsCount, field.TypeInt, value)
