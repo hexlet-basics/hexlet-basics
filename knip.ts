@@ -15,6 +15,8 @@ const config: KnipConfig = {
   ],
   ignoreExportsUsedInFile: true,
   entry: ["i18next.config.ts", "src/routes/**/*.{ts,tsx}"],
+  // The end-to-end suite keeps its Playwright config beside its tests.
+  playwright: { config: ["e2e/playwright.config.ts"], entry: ["e2e/tests/**/*.spec.ts"] },
 };
 
 export default config;
