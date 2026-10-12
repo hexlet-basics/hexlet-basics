@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 
-
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"

@@ -5,6 +5,11 @@
 package landingpages
 
 import (
+	"context"
+
+	"entgo.io/ent/dialect/sql"
+
+	"hexletbasics/ent"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
@@ -30,4 +35,43 @@ func Listed(locale string) predicate.LandingPage {
 		landingpage.Listed(true),
 		landingpage.HasCourseWith(course.ProgressEQ(CourseCompleted)),
 	)
+}
+
+// Catalog reads the public course catalog: the listed landing pages a visitor
+// is shown, in the order the catalog displays them. It holds the one copy of
+// that query, so the course list and a category page cannot drift apart on
+// scope, ordering or eager loading.
+type Catalog struct {
+	db *ent.Client
+}
+
+// NewCatalog builds the catalog over an ent client.
+func NewCatalog(db *ent.Client) *Catalog {
+	return &Catalog{db: db}
+}
+
+// Pages returns the Listed landing pages of locale, each with its Course and
+// that Course's current Version loaded. within narrows the set (a category) and
+// never widens it: the catalog scope always applies.
+//
+// Order is the Course display order (NULLS LAST), then Course id, then landing
+// page id. Legacy `Language.ordered` had no tie-breaker among a Course's several
+// listed pages, leaving their order undefined; the last two terms make it
+// deterministic. Ordering happens in SQL.
+func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.LandingPage) ([]*ent.LandingPage, error) {
+	return c.db.LandingPage.Query().
+		Where(Listed(locale)).
+		Where(within...).
+		// The current Version populates Course.currentVersion in apiconv; without
+		// eager-loading it the edge is nil and the field serializes as null.
+		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
+		Order(
+			landingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
+			// language_id is the FK to Course, so it equals the Course id: order by
+			// it directly instead of joining the edge again for its id.
+			landingpage.ByCourseID(),
+			// The edge ordering joins `languages`, so a bare `id` is ambiguous.
+			func(s *sql.Selector) { s.OrderBy(s.C(landingpage.FieldID)) },
+		).
+		All(ctx)
 }
