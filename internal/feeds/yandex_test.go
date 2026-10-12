@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/coursecategory"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/feeds"
 	"hexletbasics/internal/testsupport"
 )
@@ -33,8 +33,8 @@ func TestYandexGolden(t *testing.T) {
 	ctx := t.Context()
 
 	frontend := db.CourseCategory.Query().Where(coursecategory.SlugEQ("frontend-ru")).OnlyX(ctx)
-	db.LandingPage.Update().
-		Where(landingpage.SlugEQ("javascript-ru")).
+	db.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ("javascript-ru")).
 		SetLanguageCategoryID(frontend.ID).
 		ExecX(ctx)
 

@@ -7,11 +7,11 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courselessonversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
@@ -105,11 +105,11 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 // NULLS LAST explicitly: Postgres sorts nulls first under a bare DESC, which
 // would hand the canonical slot to whichever page is merely unflagged.
 func (s *Server) mainLandingPage(ctx context.Context, crs *ent.Course) (api.NilCourseLandingPage, error) {
-	page, err := s.db.LandingPage.Query().
-		Where(landingpage.CourseID(crs.ID)).
+	page, err := s.db.CourseLandingPage.Query().
+		Where(courselandingpage.CourseID(crs.ID)).
 		Order(
-			landingpage.ByMain(sql.OrderDesc(), sql.OrderNullsLast()),
-			landingpage.ByID(),
+			courselandingpage.ByMain(sql.OrderDesc(), sql.OrderNullsLast()),
+			courselandingpage.ByID(),
 		).
 		WithCourse().
 		First(ctx)

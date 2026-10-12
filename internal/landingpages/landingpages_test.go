@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -67,11 +67,11 @@ func TestCatalogWithinNeverWidensTheScope(t *testing.T) {
 	all, err := catalog.Pages(t.Context(), "ru")
 	require.NoError(t, err)
 
-	widened, err := catalog.Pages(t.Context(), "ru", landingpage.Or(landingpage.SlugEQ("nodejs-ru"), landingpage.SlugNEQ("")))
+	widened, err := catalog.Pages(t.Context(), "ru", courselandingpage.Or(courselandingpage.SlugEQ("nodejs-ru"), courselandingpage.SlugNEQ("")))
 	require.NoError(t, err)
 	assert.Len(t, widened, len(all))
 
-	one, err := catalog.Pages(t.Context(), "ru", landingpage.SlugEQ("typescript-ru"))
+	one, err := catalog.Pages(t.Context(), "ru", courselandingpage.SlugEQ("typescript-ru"))
 	require.NoError(t, err)
 	require.Len(t, one, 1)
 }

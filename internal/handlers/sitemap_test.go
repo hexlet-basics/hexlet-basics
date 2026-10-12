@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselessontranslation"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -60,12 +60,12 @@ func TestGetSitemapLeavesOutUnlistedAndSpanishPages(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := t.Context()
 
-	require.NoError(t, h.DB.LandingPage.Update().
-		Where(landingpage.SlugEQ("frontend-ru")).
+	require.NoError(t, h.DB.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ("frontend-ru")).
 		SetListed(false).
 		Exec(ctx))
-	require.NoError(t, h.DB.LandingPage.Update().
-		Where(landingpage.SlugEQ("frontend-en")).
+	require.NoError(t, h.DB.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ("frontend-en")).
 		SetLocale("es").
 		Exec(ctx))
 	require.NoError(t, h.DB.Course.Update().

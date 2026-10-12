@@ -37,8 +37,8 @@ const (
 	CategoryColumn = "language_category_id"
 	// LandingPageTable is the table that holds the landing_page relation/edge.
 	LandingPageTable = "language_category_items"
-	// LandingPageInverseTable is the table name for the LandingPage entity.
-	// It exists in this package in order to avoid circular dependency with the "landingpage" package.
+	// LandingPageInverseTable is the table name for the CourseLandingPage entity.
+	// It exists in this package in order to avoid circular dependency with the "courselandingpage" package.
 	LandingPageInverseTable = "language_landing_pages"
 	// LandingPageColumn is the table column denoting the landing_page relation/edge.
 	LandingPageColumn = "language_landing_page_id"

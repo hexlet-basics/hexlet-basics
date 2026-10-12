@@ -113,7 +113,7 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 		return nil, err
 	}
 
-	ordered := make([]*ent.LandingPage, 0, len(byCourse))
+	ordered := make([]*ent.CourseLandingPage, 0, len(byCourse))
 	for _, id := range lo.Uniq(ids) {
 		if p, ok := byCourse[id]; ok {
 			ordered = append(ordered, p)

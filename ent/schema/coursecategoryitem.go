@@ -39,7 +39,7 @@ func (CourseCategoryItem) Edges() []ent.Edge {
 			Field("course_category_id").
 			Unique().
 			Required(),
-		edge.From("landing_page", LandingPage.Type).
+		edge.From("landing_page", CourseLandingPage.Type).
 			Ref("category_items").
 			Field("landing_page_id").
 			Unique().

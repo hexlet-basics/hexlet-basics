@@ -11,7 +11,7 @@ import (
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -92,11 +92,11 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 func TestGetBlogPostOmitsRelatedCoursesWithoutAPublicMainPage(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
-	h.DB.LandingPage.Update().
+	h.DB.CourseLandingPage.Update().
 		Where(
-			landingpage.MainEQ(true),
-			landingpage.LocaleEQ("ru"),
-			landingpage.HasCourseWith(course.Slug("javascript")),
+			courselandingpage.MainEQ(true),
+			courselandingpage.LocaleEQ("ru"),
+			courselandingpage.HasCourseWith(course.Slug("javascript")),
 		).
 		SetState("draft").
 		ExecX(t.Context())

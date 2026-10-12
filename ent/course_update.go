@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"time"
 
@@ -252,14 +252,14 @@ func (_u *CourseUpdate) ClearOrder() *CourseUpdate {
 	return _u
 }
 
-// AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
+// AddLandingPageIDs adds the "landing_pages" edge to the CourseLandingPage entity by IDs.
 func (_u *CourseUpdate) AddLandingPageIDs(ids ...int) *CourseUpdate {
 	_u.mutation.AddLandingPageIDs(ids...)
 	return _u
 }
 
-// AddLandingPages adds the "landing_pages" edges to the LandingPage entity.
-func (_u *CourseUpdate) AddLandingPages(v ...*LandingPage) *CourseUpdate {
+// AddLandingPages adds the "landing_pages" edges to the CourseLandingPage entity.
+func (_u *CourseUpdate) AddLandingPages(v ...*CourseLandingPage) *CourseUpdate {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -277,20 +277,20 @@ func (_u *CourseUpdate) Mutation() *CourseMutation {
 	return _u.mutation
 }
 
-// ClearLandingPages clears all "landing_pages" edges to the LandingPage entity.
+// ClearLandingPages clears all "landing_pages" edges to the CourseLandingPage entity.
 func (_u *CourseUpdate) ClearLandingPages() *CourseUpdate {
 	_u.mutation.ClearLandingPages()
 	return _u
 }
 
-// RemoveLandingPageIDs removes the "landing_pages" edge to LandingPage entities by IDs.
+// RemoveLandingPageIDs removes the "landing_pages" edge to CourseLandingPage entities by IDs.
 func (_u *CourseUpdate) RemoveLandingPageIDs(ids ...int) *CourseUpdate {
 	_u.mutation.RemoveLandingPageIDs(ids...)
 	return _u
 }
 
-// RemoveLandingPages removes "landing_pages" edges to LandingPage entities.
-func (_u *CourseUpdate) RemoveLandingPages(v ...*LandingPage) *CourseUpdate {
+// RemoveLandingPages removes "landing_pages" edges to CourseLandingPage entities.
+func (_u *CourseUpdate) RemoveLandingPages(v ...*CourseLandingPage) *CourseUpdate {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -420,7 +420,7 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -433,7 +433,7 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -449,7 +449,7 @@ func (_u *CourseUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -728,14 +728,14 @@ func (_u *CourseUpdateOne) ClearOrder() *CourseUpdateOne {
 	return _u
 }
 
-// AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
+// AddLandingPageIDs adds the "landing_pages" edge to the CourseLandingPage entity by IDs.
 func (_u *CourseUpdateOne) AddLandingPageIDs(ids ...int) *CourseUpdateOne {
 	_u.mutation.AddLandingPageIDs(ids...)
 	return _u
 }
 
-// AddLandingPages adds the "landing_pages" edges to the LandingPage entity.
-func (_u *CourseUpdateOne) AddLandingPages(v ...*LandingPage) *CourseUpdateOne {
+// AddLandingPages adds the "landing_pages" edges to the CourseLandingPage entity.
+func (_u *CourseUpdateOne) AddLandingPages(v ...*CourseLandingPage) *CourseUpdateOne {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -753,20 +753,20 @@ func (_u *CourseUpdateOne) Mutation() *CourseMutation {
 	return _u.mutation
 }
 
-// ClearLandingPages clears all "landing_pages" edges to the LandingPage entity.
+// ClearLandingPages clears all "landing_pages" edges to the CourseLandingPage entity.
 func (_u *CourseUpdateOne) ClearLandingPages() *CourseUpdateOne {
 	_u.mutation.ClearLandingPages()
 	return _u
 }
 
-// RemoveLandingPageIDs removes the "landing_pages" edge to LandingPage entities by IDs.
+// RemoveLandingPageIDs removes the "landing_pages" edge to CourseLandingPage entities by IDs.
 func (_u *CourseUpdateOne) RemoveLandingPageIDs(ids ...int) *CourseUpdateOne {
 	_u.mutation.RemoveLandingPageIDs(ids...)
 	return _u
 }
 
-// RemoveLandingPages removes "landing_pages" edges to LandingPage entities.
-func (_u *CourseUpdateOne) RemoveLandingPages(v ...*LandingPage) *CourseUpdateOne {
+// RemoveLandingPages removes "landing_pages" edges to CourseLandingPage entities.
+func (_u *CourseUpdateOne) RemoveLandingPages(v ...*CourseLandingPage) *CourseUpdateOne {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -926,7 +926,7 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -939,7 +939,7 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -955,7 +955,7 @@ func (_u *CourseUpdateOne) sqlSave(ctx context.Context) (_node *Course, err erro
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

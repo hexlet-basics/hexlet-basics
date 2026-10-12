@@ -109,11 +109,11 @@ func TestDashboardSkipsCoursesWhoseMainCardIsNotPublicInTheLocale(t *testing.T) 
 
 	draft := seedCourse(t, h, "dashboard-draft", "intro")
 	enrollActingUser(t, h, *draft.CourseID, "started")
-	giveCatalogueCardForID(t, h, *draft.CourseID, func(c *ent.LandingPageCreate) { c.SetState("draft") })
+	giveCatalogueCardForID(t, h, *draft.CourseID, func(c *ent.CourseLandingPageCreate) { c.SetState("draft") })
 
 	foreign := seedCourse(t, h, "dashboard-foreign", "intro")
 	enrollActingUser(t, h, *foreign.CourseID, "started")
-	giveCatalogueCardForID(t, h, *foreign.CourseID, func(c *ent.LandingPageCreate) { c.SetLocale("en") })
+	giveCatalogueCardForID(t, h, *foreign.CourseID, func(c *ent.CourseLandingPageCreate) { c.SetLocale("en") })
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
@@ -132,7 +132,7 @@ func TestDashboardKeepsACourseWhoseMainCardIsUnlisted(t *testing.T) {
 
 	hidden := seedCourse(t, h, "dashboard-unlisted", "intro")
 	enrollActingUser(t, h, *hidden.CourseID, "started")
-	giveCatalogueCardForID(t, h, *hidden.CourseID, func(c *ent.LandingPageCreate) { c.SetListed(false) })
+	giveCatalogueCardForID(t, h, *hidden.CourseID, func(c *ent.CourseLandingPageCreate) { c.SetListed(false) })
 
 	res, err := h.Client.GetMyDashboard(t.Context())
 	require.NoError(t, err)
@@ -158,10 +158,10 @@ func TestDashboardRefusesAGuest(t *testing.T) {
 // and finishing the course the way every public one is. The fixture JavaScript
 // course already has one; seeded courses do not. adjust edits the page before
 // it is saved, so a test can make it a draft or move it to another locale.
-func giveCatalogueCardForID(t *testing.T, h *testsupport.Harness, courseID int, adjust ...func(*ent.LandingPageCreate)) {
+func giveCatalogueCardForID(t *testing.T, h *testsupport.Harness, courseID int, adjust ...func(*ent.CourseLandingPageCreate)) {
 	t.Helper()
 	h.DB.Course.UpdateOneID(courseID).SetReadiness("completed").ExecX(t.Context())
-	create := h.DB.LandingPage.Create().
+	create := h.DB.CourseLandingPage.Create().
 		SetCourseID(courseID).
 		SetSlug("card-" + strconv.Itoa(courseID)).
 		SetName("Card").

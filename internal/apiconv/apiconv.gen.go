@@ -45,7 +45,7 @@ func (c *ConverterImpl) ToBanners(source []*ent.Banner) []api.Banner {
 	}
 	return apiBannerList
 }
-func (c *ConverterImpl) ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem {
+func (c *ConverterImpl) ToCatalogItem(source *ent.CourseLandingPage) api.CourseCatalogItem {
 	var apiCourseCatalogItem api.CourseCatalogItem
 	if source != nil {
 		apiCourseCatalogItem.ID = Int32FromInt((*source).ID)
@@ -63,7 +63,7 @@ func (c *ConverterImpl) ToCatalogItem(source *ent.LandingPage) api.CourseCatalog
 	}
 	return apiCourseCatalogItem
 }
-func (c *ConverterImpl) ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem {
+func (c *ConverterImpl) ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem {
 	var apiCourseCatalogItemList []api.CourseCatalogItem
 	if source != nil {
 		apiCourseCatalogItemList = make([]api.CourseCatalogItem, len(source))
@@ -138,7 +138,7 @@ func (c *ConverterImpl) ToCourseCategory(source *ent.CourseCategory) api.CourseC
 	}
 	return apiCourseCategory
 }
-func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage {
+func (c *ConverterImpl) ToCourseLandingPage(source *ent.CourseLandingPage) api.CourseLandingPage {
 	var apiCourseLandingPage api.CourseLandingPage
 	if source != nil {
 		apiCourseLandingPage.ID = Int32FromInt((*source).ID)
@@ -176,7 +176,7 @@ func (c *ConverterImpl) ToCourseLandingPage(source *ent.LandingPage) api.CourseL
 	}
 	return apiCourseLandingPage
 }
-func (c *ConverterImpl) ToCourseLandingPages(source []*ent.LandingPage) []api.CourseLandingPage {
+func (c *ConverterImpl) ToCourseLandingPages(source []*ent.CourseLandingPage) []api.CourseLandingPage {
 	var apiCourseLandingPageList []api.CourseLandingPage
 	if source != nil {
 		apiCourseLandingPageList = make([]api.CourseLandingPage, len(source))
@@ -451,7 +451,7 @@ func (c *ConverterImpl) ToSitemapBlogPosts(source []*ent.BlogPost) []api.Sitemap
 	}
 	return apiSitemapBlogPostList
 }
-func (c *ConverterImpl) ToSitemapCourseLandingPage(source *ent.LandingPage) api.SitemapCourseLandingPage {
+func (c *ConverterImpl) ToSitemapCourseLandingPage(source *ent.CourseLandingPage) api.SitemapCourseLandingPage {
 	var apiSitemapCourseLandingPage api.SitemapCourseLandingPage
 	if source != nil {
 		apiSitemapCourseLandingPage.ID = Int32FromInt((*source).ID)
@@ -462,7 +462,7 @@ func (c *ConverterImpl) ToSitemapCourseLandingPage(source *ent.LandingPage) api.
 	}
 	return apiSitemapCourseLandingPage
 }
-func (c *ConverterImpl) ToSitemapCourseLandingPages(source []*ent.LandingPage) []api.SitemapCourseLandingPage {
+func (c *ConverterImpl) ToSitemapCourseLandingPages(source []*ent.CourseLandingPage) []api.SitemapCourseLandingPage {
 	var apiSitemapCourseLandingPageList []api.SitemapCourseLandingPage
 	if source != nil {
 		apiSitemapCourseLandingPageList = make([]api.SitemapCourseLandingPage, len(source))

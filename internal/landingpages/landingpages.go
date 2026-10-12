@@ -11,7 +11,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/predicate"
 )
 
@@ -28,18 +28,18 @@ const CourseCompleted = "completed"
 // Web is legacy `Language::LandingPage.web`: published landing pages in locale
 // whose Course is completed. Every public read starts here; callers add their
 // own narrowing (`listed`, `main`, a category) and ordering.
-func Web(locale string) predicate.LandingPage {
-	return landingpage.And(
-		landingpage.StateEQ(StatePublished),
-		landingpage.LocaleEQ(locale),
-		landingpage.HasCourseWith(course.ReadinessEQ(CourseCompleted)),
+func Web(locale string) predicate.CourseLandingPage {
+	return courselandingpage.And(
+		courselandingpage.StateEQ(StatePublished),
+		courselandingpage.LocaleEQ(locale),
+		courselandingpage.HasCourseWith(course.ReadinessEQ(CourseCompleted)),
 	)
 }
 
 // Listed is legacy `Language::LandingPage.web.where(listed: true)`: the Web
 // scope narrowed to the pages flagged for the public lists.
-func Listed(locale string) predicate.LandingPage {
-	return landingpage.And(Web(locale), landingpage.Listed(true))
+func Listed(locale string) predicate.CourseLandingPage {
+	return courselandingpage.And(Web(locale), courselandingpage.Listed(true))
 }
 
 // Catalog reads the public course catalog: the listed landing pages a visitor
@@ -63,20 +63,20 @@ func NewCatalog(db *ent.Client) *Catalog {
 // page id. Legacy `Language.ordered` had no tie-breaker among a Course's several
 // listed pages, leaving their order undefined; the last two terms make it
 // deterministic. Ordering happens in SQL.
-func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.LandingPage) ([]*ent.LandingPage, error) {
-	return c.db.LandingPage.Query().
+func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.CourseLandingPage) ([]*ent.CourseLandingPage, error) {
+	return c.db.CourseLandingPage.Query().
 		Where(Listed(locale)).
 		Where(within...).
 		// The current Version populates Course.currentVersion in apiconv; without
 		// eager-loading it the edge is nil and the field serializes as null.
 		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
 		Order(
-			landingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
+			courselandingpage.ByCourseField(course.FieldOrder, sql.OrderNullsLast()),
 			// language_id is the FK to Course, so it equals the Course id: order by
 			// it directly instead of joining the edge again for its id.
-			landingpage.ByCourseID(),
+			courselandingpage.ByCourseID(),
 			// The edge ordering joins `languages`, so a bare `id` is ambiguous.
-			func(s *sql.Selector) { s.OrderBy(s.C(landingpage.FieldID)) },
+			func(s *sql.Selector) { s.OrderBy(s.C(courselandingpage.FieldID)) },
 		).
 		All(ctx)
 }
@@ -89,25 +89,25 @@ func (c *Catalog) Pages(ctx context.Context, locale string, within ...predicate.
 // Legacy's `has_one` picked arbitrarily among several main pages in one locale;
 // the oldest is kept here, so the answer does not depend on row order. Each page
 // arrives with its Course and current Version, as Pages does.
-func (c *Catalog) MainPages(ctx context.Context, locale string, courseIDs ...int) (map[int]*ent.LandingPage, error) {
+func (c *Catalog) MainPages(ctx context.Context, locale string, courseIDs ...int) (map[int]*ent.CourseLandingPage, error) {
 	if len(courseIDs) == 0 {
-		return map[int]*ent.LandingPage{}, nil
+		return map[int]*ent.CourseLandingPage{}, nil
 	}
 
-	pages, err := c.db.LandingPage.Query().
+	pages, err := c.db.CourseLandingPage.Query().
 		Where(
 			Web(locale),
-			landingpage.MainEQ(true),
-			landingpage.CourseIDIn(courseIDs...),
+			courselandingpage.MainEQ(true),
+			courselandingpage.CourseIDIn(courseIDs...),
 		).
 		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
-		Order(landingpage.ByID()).
+		Order(courselandingpage.ByID()).
 		All(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	byCourse := make(map[int]*ent.LandingPage, len(pages))
+	byCourse := make(map[int]*ent.CourseLandingPage, len(pages))
 	for _, page := range pages {
 		if _, seen := byCourse[page.CourseID]; !seen {
 			byCourse[page.CourseID] = page

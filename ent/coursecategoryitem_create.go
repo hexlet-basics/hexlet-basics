@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -75,8 +75,8 @@ func (_c *CourseCategoryItemCreate) SetCategory(v *CourseCategory) *CourseCatego
 	return _c.SetCategoryID(v.ID)
 }
 
-// SetLandingPage sets the "landing_page" edge to the LandingPage entity.
-func (_c *CourseCategoryItemCreate) SetLandingPage(v *LandingPage) *CourseCategoryItemCreate {
+// SetLandingPage sets the "landing_page" edge to the CourseLandingPage entity.
+func (_c *CourseCategoryItemCreate) SetLandingPage(v *CourseLandingPage) *CourseCategoryItemCreate {
 	return _c.SetLandingPageID(v.ID)
 }
 
@@ -205,7 +205,7 @@ func (_c *CourseCategoryItemCreate) createSpec() (*CourseCategoryItem, *sqlgraph
 			Columns: []string{coursecategoryitem.LandingPageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

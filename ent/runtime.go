@@ -15,6 +15,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -24,7 +25,6 @@ import (
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
@@ -237,6 +237,21 @@ func init() {
 	coursecategoryitem.DefaultUpdatedAt = coursecategoryitemDescUpdatedAt.Default.(func() time.Time)
 	// coursecategoryitem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	coursecategoryitem.UpdateDefaultUpdatedAt = coursecategoryitemDescUpdatedAt.UpdateDefault.(func() time.Time)
+	courselandingpageMixin := schema.CourseLandingPage{}.Mixin()
+	courselandingpageMixinFields0 := courselandingpageMixin[0].Fields()
+	_ = courselandingpageMixinFields0
+	courselandingpageFields := schema.CourseLandingPage{}.Fields()
+	_ = courselandingpageFields
+	// courselandingpageDescCreatedAt is the schema descriptor for created_at field.
+	courselandingpageDescCreatedAt := courselandingpageMixinFields0[0].Descriptor()
+	// courselandingpage.DefaultCreatedAt holds the default value on creation for the created_at field.
+	courselandingpage.DefaultCreatedAt = courselandingpageDescCreatedAt.Default.(func() time.Time)
+	// courselandingpageDescUpdatedAt is the schema descriptor for updated_at field.
+	courselandingpageDescUpdatedAt := courselandingpageMixinFields0[1].Descriptor()
+	// courselandingpage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	courselandingpage.DefaultUpdatedAt = courselandingpageDescUpdatedAt.Default.(func() time.Time)
+	// courselandingpage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	courselandingpage.UpdateDefaultUpdatedAt = courselandingpageDescUpdatedAt.UpdateDefault.(func() time.Time)
 	courselessonMixin := schema.CourseLesson{}.Mixin()
 	courselessonMixinFields0 := courselessonMixin[0].Fields()
 	_ = courselessonMixinFields0
@@ -380,21 +395,6 @@ func init() {
 	enrollmentDescFinishedLessonsCount := enrollmentFields[3].Descriptor()
 	// enrollment.DefaultFinishedLessonsCount holds the default value on creation for the finished_lessons_count field.
 	enrollment.DefaultFinishedLessonsCount = enrollmentDescFinishedLessonsCount.Default.(int)
-	landingpageMixin := schema.LandingPage{}.Mixin()
-	landingpageMixinFields0 := landingpageMixin[0].Fields()
-	_ = landingpageMixinFields0
-	landingpageFields := schema.LandingPage{}.Fields()
-	_ = landingpageFields
-	// landingpageDescCreatedAt is the schema descriptor for created_at field.
-	landingpageDescCreatedAt := landingpageMixinFields0[0].Descriptor()
-	// landingpage.DefaultCreatedAt holds the default value on creation for the created_at field.
-	landingpage.DefaultCreatedAt = landingpageDescCreatedAt.Default.(func() time.Time)
-	// landingpageDescUpdatedAt is the schema descriptor for updated_at field.
-	landingpageDescUpdatedAt := landingpageMixinFields0[1].Descriptor()
-	// landingpage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	landingpage.DefaultUpdatedAt = landingpageDescUpdatedAt.Default.(func() time.Time)
-	// landingpage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	landingpage.UpdateDefaultUpdatedAt = landingpageDescUpdatedAt.UpdateDefault.(func() time.Time)
 	landingpageqnaitemMixin := schema.LandingPageQnaItem{}.Mixin()
 	landingpageqnaitemMixinFields0 := landingpageqnaitemMixin[0].Fields()
 	_ = landingpageqnaitemMixinFields0

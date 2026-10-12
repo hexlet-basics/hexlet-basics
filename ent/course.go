@@ -51,7 +51,7 @@ type Course struct {
 // CourseEdges holds the relations/edges for other nodes in the graph.
 type CourseEdges struct {
 	// LandingPages holds the value of the landing_pages edge.
-	LandingPages []*LandingPage `json:"landing_pages,omitempty"`
+	LandingPages []*CourseLandingPage `json:"landing_pages,omitempty"`
 	// CurrentVersion holds the value of the current_version edge.
 	CurrentVersion *CourseVersion `json:"current_version,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -61,7 +61,7 @@ type CourseEdges struct {
 
 // LandingPagesOrErr returns the LandingPages value or an error if the edge
 // was not loaded in eager-loading.
-func (e CourseEdges) LandingPagesOrErr() ([]*LandingPage, error) {
+func (e CourseEdges) LandingPagesOrErr() ([]*CourseLandingPage, error) {
 	if e.loadedTypes[0] {
 		return e.LandingPages, nil
 	}
@@ -205,7 +205,7 @@ func (_m *Course) Value(name string) (ent.Value, error) {
 }
 
 // QueryLandingPages queries the "landing_pages" edge of the Course entity.
-func (_m *Course) QueryLandingPages() *LandingPageQuery {
+func (_m *Course) QueryLandingPages() *CourseLandingPageQuery {
 	return NewCourseClient(_m.config).QueryLandingPages(_m)
 }
 

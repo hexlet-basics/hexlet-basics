@@ -6,7 +6,7 @@ import (
 	"hexletbasics/ent/categoryqnaitem"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/api"
 )
 
@@ -45,7 +45,7 @@ func (s *Server) GetPublicCourseCategory(ctx context.Context, params api.GetPubl
 	// .merge(Language.ordered)`: the catalog narrowed to the pages grouped under
 	// the category through `language_category_items`.
 	pages, err := s.catalog.Pages(ctx, locale,
-		landingpage.HasCategoryItemsWith(coursecategoryitem.CourseCategoryID(category.ID)))
+		courselandingpage.HasCategoryItemsWith(coursecategoryitem.CourseCategoryID(category.ID)))
 	if err != nil {
 		return nil, err
 	}

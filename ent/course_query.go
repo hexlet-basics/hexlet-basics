@@ -7,8 +7,8 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/predicate"
 	"math"
 
@@ -25,7 +25,7 @@ type CourseQuery struct {
 	order              []course.OrderOption
 	inters             []Interceptor
 	predicates         []predicate.Course
-	withLandingPages   *LandingPageQuery
+	withLandingPages   *CourseLandingPageQuery
 	withCurrentVersion *CourseVersionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -64,8 +64,8 @@ func (_q *CourseQuery) Order(o ...course.OrderOption) *CourseQuery {
 }
 
 // QueryLandingPages chains the current query on the "landing_pages" edge.
-func (_q *CourseQuery) QueryLandingPages() *LandingPageQuery {
-	query := (&LandingPageClient{config: _q.config}).Query()
+func (_q *CourseQuery) QueryLandingPages() *CourseLandingPageQuery {
+	query := (&CourseLandingPageClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,7 +76,7 @@ func (_q *CourseQuery) QueryLandingPages() *LandingPageQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(course.Table, course.FieldID, selector),
-			sqlgraph.To(landingpage.Table, landingpage.FieldID),
+			sqlgraph.To(courselandingpage.Table, courselandingpage.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, course.LandingPagesTable, course.LandingPagesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
@@ -309,8 +309,8 @@ func (_q *CourseQuery) Clone() *CourseQuery {
 
 // WithLandingPages tells the query-builder to eager-load the nodes that are connected to
 // the "landing_pages" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *CourseQuery) WithLandingPages(opts ...func(*LandingPageQuery)) *CourseQuery {
-	query := (&LandingPageClient{config: _q.config}).Query()
+func (_q *CourseQuery) WithLandingPages(opts ...func(*CourseLandingPageQuery)) *CourseQuery {
+	query := (&CourseLandingPageClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -432,8 +432,8 @@ func (_q *CourseQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cours
 	}
 	if query := _q.withLandingPages; query != nil {
 		if err := _q.loadLandingPages(ctx, query, nodes,
-			func(n *Course) { n.Edges.LandingPages = []*LandingPage{} },
-			func(n *Course, e *LandingPage) { n.Edges.LandingPages = append(n.Edges.LandingPages, e) }); err != nil {
+			func(n *Course) { n.Edges.LandingPages = []*CourseLandingPage{} },
+			func(n *Course, e *CourseLandingPage) { n.Edges.LandingPages = append(n.Edges.LandingPages, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -446,7 +446,7 @@ func (_q *CourseQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Cours
 	return nodes, nil
 }
 
-func (_q *CourseQuery) loadLandingPages(ctx context.Context, query *LandingPageQuery, nodes []*Course, init func(*Course), assign func(*Course, *LandingPage)) error {
+func (_q *CourseQuery) loadLandingPages(ctx context.Context, query *CourseLandingPageQuery, nodes []*Course, init func(*Course), assign func(*Course, *CourseLandingPage)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Course)
 	for i := range nodes {
@@ -457,9 +457,9 @@ func (_q *CourseQuery) loadLandingPages(ctx context.Context, query *LandingPageQ
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(landingpage.FieldCourseID)
+		query.ctx.AppendFieldOnce(courselandingpage.FieldCourseID)
 	}
-	query.Where(predicate.LandingPage(func(s *sql.Selector) {
+	query.Where(predicate.CourseLandingPage(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(course.LandingPagesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)

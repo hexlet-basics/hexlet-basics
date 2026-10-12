@@ -48,6 +48,9 @@ type CourseCategory func(*sql.Selector)
 // CourseCategoryItem is the predicate function for coursecategoryitem builders.
 type CourseCategoryItem func(*sql.Selector)
 
+// CourseLandingPage is the predicate function for courselandingpage builders.
+type CourseLandingPage func(*sql.Selector)
+
 // CourseLesson is the predicate function for courselesson builders.
 type CourseLesson func(*sql.Selector)
 
@@ -74,9 +77,6 @@ type CourseVersion func(*sql.Selector)
 
 // Enrollment is the predicate function for enrollment builders.
 type Enrollment func(*sql.Selector)
-
-// LandingPage is the predicate function for landingpage builders.
-type LandingPage func(*sql.Selector)
 
 // LandingPageQnaItem is the predicate function for landingpageqnaitem builders.
 type LandingPageQnaItem func(*sql.Selector)

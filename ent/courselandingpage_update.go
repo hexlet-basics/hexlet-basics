@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategoryitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/predicate"
 	"time"
 
@@ -17,33 +17,33 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// LandingPageUpdate is the builder for updating LandingPage entities.
-type LandingPageUpdate struct {
+// CourseLandingPageUpdate is the builder for updating CourseLandingPage entities.
+type CourseLandingPageUpdate struct {
 	config
 	hooks    []Hook
-	mutation *LandingPageMutation
+	mutation *CourseLandingPageMutation
 }
 
-// Where appends a list predicates to the LandingPageUpdate builder.
-func (_u *LandingPageUpdate) Where(ps ...predicate.LandingPage) *LandingPageUpdate {
+// Where appends a list predicates to the CourseLandingPageUpdate builder.
+func (_u *CourseLandingPageUpdate) Where(ps ...predicate.CourseLandingPage) *CourseLandingPageUpdate {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_u *LandingPageUpdate) SetUpdatedAt(v time.Time) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetUpdatedAt(v time.Time) *CourseLandingPageUpdate {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
 // SetCourseID sets the "course_id" field.
-func (_u *LandingPageUpdate) SetCourseID(v int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetCourseID(v int) *CourseLandingPageUpdate {
 	_u.mutation.SetCourseID(v)
 	return _u
 }
 
 // SetNillableCourseID sets the "course_id" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableCourseID(v *int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableCourseID(v *int) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetCourseID(*v)
 	}
@@ -51,13 +51,13 @@ func (_u *LandingPageUpdate) SetNillableCourseID(v *int) *LandingPageUpdate {
 }
 
 // SetSlug sets the "slug" field.
-func (_u *LandingPageUpdate) SetSlug(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetSlug(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetSlug(v)
 	return _u
 }
 
 // SetNillableSlug sets the "slug" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableSlug(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableSlug(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetSlug(*v)
 	}
@@ -65,19 +65,19 @@ func (_u *LandingPageUpdate) SetNillableSlug(v *string) *LandingPageUpdate {
 }
 
 // ClearSlug clears the value of the "slug" field.
-func (_u *LandingPageUpdate) ClearSlug() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearSlug() *CourseLandingPageUpdate {
 	_u.mutation.ClearSlug()
 	return _u
 }
 
 // SetHeader sets the "header" field.
-func (_u *LandingPageUpdate) SetHeader(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetHeader(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetHeader(v)
 	return _u
 }
 
 // SetNillableHeader sets the "header" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableHeader(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableHeader(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetHeader(*v)
 	}
@@ -85,19 +85,19 @@ func (_u *LandingPageUpdate) SetNillableHeader(v *string) *LandingPageUpdate {
 }
 
 // ClearHeader clears the value of the "header" field.
-func (_u *LandingPageUpdate) ClearHeader() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearHeader() *CourseLandingPageUpdate {
 	_u.mutation.ClearHeader()
 	return _u
 }
 
 // SetName sets the "name" field.
-func (_u *LandingPageUpdate) SetName(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetName(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetName(v)
 	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableName(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableName(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetName(*v)
 	}
@@ -105,19 +105,19 @@ func (_u *LandingPageUpdate) SetNillableName(v *string) *LandingPageUpdate {
 }
 
 // ClearName clears the value of the "name" field.
-func (_u *LandingPageUpdate) ClearName() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearName() *CourseLandingPageUpdate {
 	_u.mutation.ClearName()
 	return _u
 }
 
 // SetLocale sets the "locale" field.
-func (_u *LandingPageUpdate) SetLocale(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetLocale(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetLocale(v)
 	return _u
 }
 
 // SetNillableLocale sets the "locale" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableLocale(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableLocale(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetLocale(*v)
 	}
@@ -125,19 +125,19 @@ func (_u *LandingPageUpdate) SetNillableLocale(v *string) *LandingPageUpdate {
 }
 
 // ClearLocale clears the value of the "locale" field.
-func (_u *LandingPageUpdate) ClearLocale() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearLocale() *CourseLandingPageUpdate {
 	_u.mutation.ClearLocale()
 	return _u
 }
 
 // SetListed sets the "listed" field.
-func (_u *LandingPageUpdate) SetListed(v bool) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetListed(v bool) *CourseLandingPageUpdate {
 	_u.mutation.SetListed(v)
 	return _u
 }
 
 // SetNillableListed sets the "listed" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableListed(v *bool) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableListed(v *bool) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetListed(*v)
 	}
@@ -145,19 +145,19 @@ func (_u *LandingPageUpdate) SetNillableListed(v *bool) *LandingPageUpdate {
 }
 
 // ClearListed clears the value of the "listed" field.
-func (_u *LandingPageUpdate) ClearListed() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearListed() *CourseLandingPageUpdate {
 	_u.mutation.ClearListed()
 	return _u
 }
 
 // SetMain sets the "main" field.
-func (_u *LandingPageUpdate) SetMain(v bool) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetMain(v bool) *CourseLandingPageUpdate {
 	_u.mutation.SetMain(v)
 	return _u
 }
 
 // SetNillableMain sets the "main" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableMain(v *bool) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableMain(v *bool) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetMain(*v)
 	}
@@ -165,19 +165,19 @@ func (_u *LandingPageUpdate) SetNillableMain(v *bool) *LandingPageUpdate {
 }
 
 // ClearMain clears the value of the "main" field.
-func (_u *LandingPageUpdate) ClearMain() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearMain() *CourseLandingPageUpdate {
 	_u.mutation.ClearMain()
 	return _u
 }
 
 // SetState sets the "state" field.
-func (_u *LandingPageUpdate) SetState(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetState(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableState(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableState(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetState(*v)
 	}
@@ -185,19 +185,19 @@ func (_u *LandingPageUpdate) SetNillableState(v *string) *LandingPageUpdate {
 }
 
 // ClearState clears the value of the "state" field.
-func (_u *LandingPageUpdate) ClearState() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearState() *CourseLandingPageUpdate {
 	_u.mutation.ClearState()
 	return _u
 }
 
 // SetOrder sets the "order" field.
-func (_u *LandingPageUpdate) SetOrder(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetOrder(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetOrder(v)
 	return _u
 }
 
 // SetNillableOrder sets the "order" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableOrder(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableOrder(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetOrder(*v)
 	}
@@ -205,19 +205,19 @@ func (_u *LandingPageUpdate) SetNillableOrder(v *string) *LandingPageUpdate {
 }
 
 // ClearOrder clears the value of the "order" field.
-func (_u *LandingPageUpdate) ClearOrder() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearOrder() *CourseLandingPageUpdate {
 	_u.mutation.ClearOrder()
 	return _u
 }
 
 // SetMetaTitle sets the "meta_title" field.
-func (_u *LandingPageUpdate) SetMetaTitle(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetMetaTitle(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetMetaTitle(v)
 	return _u
 }
 
 // SetNillableMetaTitle sets the "meta_title" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableMetaTitle(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableMetaTitle(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetMetaTitle(*v)
 	}
@@ -225,19 +225,19 @@ func (_u *LandingPageUpdate) SetNillableMetaTitle(v *string) *LandingPageUpdate 
 }
 
 // ClearMetaTitle clears the value of the "meta_title" field.
-func (_u *LandingPageUpdate) ClearMetaTitle() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearMetaTitle() *CourseLandingPageUpdate {
 	_u.mutation.ClearMetaTitle()
 	return _u
 }
 
 // SetMetaDescription sets the "meta_description" field.
-func (_u *LandingPageUpdate) SetMetaDescription(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetMetaDescription(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetMetaDescription(v)
 	return _u
 }
 
 // SetNillableMetaDescription sets the "meta_description" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableMetaDescription(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableMetaDescription(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetMetaDescription(*v)
 	}
@@ -245,19 +245,19 @@ func (_u *LandingPageUpdate) SetNillableMetaDescription(v *string) *LandingPageU
 }
 
 // ClearMetaDescription clears the value of the "meta_description" field.
-func (_u *LandingPageUpdate) ClearMetaDescription() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearMetaDescription() *CourseLandingPageUpdate {
 	_u.mutation.ClearMetaDescription()
 	return _u
 }
 
 // SetDescription sets the "description" field.
-func (_u *LandingPageUpdate) SetDescription(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetDescription(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetDescription(v)
 	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableDescription(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableDescription(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetDescription(*v)
 	}
@@ -265,19 +265,19 @@ func (_u *LandingPageUpdate) SetNillableDescription(v *string) *LandingPageUpdat
 }
 
 // ClearDescription clears the value of the "description" field.
-func (_u *LandingPageUpdate) ClearDescription() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearDescription() *CourseLandingPageUpdate {
 	_u.mutation.ClearDescription()
 	return _u
 }
 
 // SetUsedInHeader sets the "used_in_header" field.
-func (_u *LandingPageUpdate) SetUsedInHeader(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetUsedInHeader(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetUsedInHeader(v)
 	return _u
 }
 
 // SetNillableUsedInHeader sets the "used_in_header" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableUsedInHeader(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableUsedInHeader(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetUsedInHeader(*v)
 	}
@@ -285,19 +285,19 @@ func (_u *LandingPageUpdate) SetNillableUsedInHeader(v *string) *LandingPageUpda
 }
 
 // ClearUsedInHeader clears the value of the "used_in_header" field.
-func (_u *LandingPageUpdate) ClearUsedInHeader() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearUsedInHeader() *CourseLandingPageUpdate {
 	_u.mutation.ClearUsedInHeader()
 	return _u
 }
 
 // SetUsedInDescription sets the "used_in_description" field.
-func (_u *LandingPageUpdate) SetUsedInDescription(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetUsedInDescription(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetUsedInDescription(v)
 	return _u
 }
 
 // SetNillableUsedInDescription sets the "used_in_description" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableUsedInDescription(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableUsedInDescription(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetUsedInDescription(*v)
 	}
@@ -305,19 +305,19 @@ func (_u *LandingPageUpdate) SetNillableUsedInDescription(v *string) *LandingPag
 }
 
 // ClearUsedInDescription clears the value of the "used_in_description" field.
-func (_u *LandingPageUpdate) ClearUsedInDescription() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearUsedInDescription() *CourseLandingPageUpdate {
 	_u.mutation.ClearUsedInDescription()
 	return _u
 }
 
 // SetOutcomesHeader sets the "outcomes_header" field.
-func (_u *LandingPageUpdate) SetOutcomesHeader(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetOutcomesHeader(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetOutcomesHeader(v)
 	return _u
 }
 
 // SetNillableOutcomesHeader sets the "outcomes_header" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableOutcomesHeader(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableOutcomesHeader(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetOutcomesHeader(*v)
 	}
@@ -325,19 +325,19 @@ func (_u *LandingPageUpdate) SetNillableOutcomesHeader(v *string) *LandingPageUp
 }
 
 // ClearOutcomesHeader clears the value of the "outcomes_header" field.
-func (_u *LandingPageUpdate) ClearOutcomesHeader() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearOutcomesHeader() *CourseLandingPageUpdate {
 	_u.mutation.ClearOutcomesHeader()
 	return _u
 }
 
 // SetOutcomesDescription sets the "outcomes_description" field.
-func (_u *LandingPageUpdate) SetOutcomesDescription(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetOutcomesDescription(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetOutcomesDescription(v)
 	return _u
 }
 
 // SetNillableOutcomesDescription sets the "outcomes_description" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableOutcomesDescription(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableOutcomesDescription(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetOutcomesDescription(*v)
 	}
@@ -345,19 +345,19 @@ func (_u *LandingPageUpdate) SetNillableOutcomesDescription(v *string) *LandingP
 }
 
 // ClearOutcomesDescription clears the value of the "outcomes_description" field.
-func (_u *LandingPageUpdate) ClearOutcomesDescription() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearOutcomesDescription() *CourseLandingPageUpdate {
 	_u.mutation.ClearOutcomesDescription()
 	return _u
 }
 
 // SetFooter sets the "footer" field.
-func (_u *LandingPageUpdate) SetFooter(v bool) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetFooter(v bool) *CourseLandingPageUpdate {
 	_u.mutation.SetFooter(v)
 	return _u
 }
 
 // SetNillableFooter sets the "footer" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableFooter(v *bool) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableFooter(v *bool) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetFooter(*v)
 	}
@@ -365,19 +365,19 @@ func (_u *LandingPageUpdate) SetNillableFooter(v *bool) *LandingPageUpdate {
 }
 
 // ClearFooter clears the value of the "footer" field.
-func (_u *LandingPageUpdate) ClearFooter() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearFooter() *CourseLandingPageUpdate {
 	_u.mutation.ClearFooter()
 	return _u
 }
 
 // SetFooterName sets the "footer_name" field.
-func (_u *LandingPageUpdate) SetFooterName(v string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetFooterName(v string) *CourseLandingPageUpdate {
 	_u.mutation.SetFooterName(v)
 	return _u
 }
 
 // SetNillableFooterName sets the "footer_name" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableFooterName(v *string) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableFooterName(v *string) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetFooterName(*v)
 	}
@@ -385,20 +385,20 @@ func (_u *LandingPageUpdate) SetNillableFooterName(v *string) *LandingPageUpdate
 }
 
 // ClearFooterName clears the value of the "footer_name" field.
-func (_u *LandingPageUpdate) ClearFooterName() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearFooterName() *CourseLandingPageUpdate {
 	_u.mutation.ClearFooterName()
 	return _u
 }
 
 // SetLanguageCategoryID sets the "language_category_id" field.
-func (_u *LandingPageUpdate) SetLanguageCategoryID(v int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetLanguageCategoryID(v int) *CourseLandingPageUpdate {
 	_u.mutation.ResetLanguageCategoryID()
 	_u.mutation.SetLanguageCategoryID(v)
 	return _u
 }
 
 // SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableLanguageCategoryID(v *int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableLanguageCategoryID(v *int) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetLanguageCategoryID(*v)
 	}
@@ -406,26 +406,26 @@ func (_u *LandingPageUpdate) SetNillableLanguageCategoryID(v *int) *LandingPageU
 }
 
 // AddLanguageCategoryID adds value to the "language_category_id" field.
-func (_u *LandingPageUpdate) AddLanguageCategoryID(v int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) AddLanguageCategoryID(v int) *CourseLandingPageUpdate {
 	_u.mutation.AddLanguageCategoryID(v)
 	return _u
 }
 
 // ClearLanguageCategoryID clears the value of the "language_category_id" field.
-func (_u *LandingPageUpdate) ClearLanguageCategoryID() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearLanguageCategoryID() *CourseLandingPageUpdate {
 	_u.mutation.ClearLanguageCategoryID()
 	return _u
 }
 
 // SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
-func (_u *LandingPageUpdate) SetLandingPageToRedirectID(v int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetLandingPageToRedirectID(v int) *CourseLandingPageUpdate {
 	_u.mutation.ResetLandingPageToRedirectID()
 	_u.mutation.SetLandingPageToRedirectID(v)
 	return _u
 }
 
 // SetNillableLandingPageToRedirectID sets the "landing_page_to_redirect_id" field if the given value is not nil.
-func (_u *LandingPageUpdate) SetNillableLandingPageToRedirectID(v *int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetNillableLandingPageToRedirectID(v *int) *CourseLandingPageUpdate {
 	if v != nil {
 		_u.SetLandingPageToRedirectID(*v)
 	}
@@ -433,30 +433,30 @@ func (_u *LandingPageUpdate) SetNillableLandingPageToRedirectID(v *int) *Landing
 }
 
 // AddLandingPageToRedirectID adds value to the "landing_page_to_redirect_id" field.
-func (_u *LandingPageUpdate) AddLandingPageToRedirectID(v int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) AddLandingPageToRedirectID(v int) *CourseLandingPageUpdate {
 	_u.mutation.AddLandingPageToRedirectID(v)
 	return _u
 }
 
 // ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
-func (_u *LandingPageUpdate) ClearLandingPageToRedirectID() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearLandingPageToRedirectID() *CourseLandingPageUpdate {
 	_u.mutation.ClearLandingPageToRedirectID()
 	return _u
 }
 
 // SetCourse sets the "course" edge to the Course entity.
-func (_u *LandingPageUpdate) SetCourse(v *Course) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) SetCourse(v *Course) *CourseLandingPageUpdate {
 	return _u.SetCourseID(v.ID)
 }
 
 // AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by IDs.
-func (_u *LandingPageUpdate) AddCategoryItemIDs(ids ...int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) AddCategoryItemIDs(ids ...int) *CourseLandingPageUpdate {
 	_u.mutation.AddCategoryItemIDs(ids...)
 	return _u
 }
 
 // AddCategoryItems adds the "category_items" edges to the CourseCategoryItem entity.
-func (_u *LandingPageUpdate) AddCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) AddCategoryItems(v ...*CourseCategoryItem) *CourseLandingPageUpdate {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -464,31 +464,31 @@ func (_u *LandingPageUpdate) AddCategoryItems(v ...*CourseCategoryItem) *Landing
 	return _u.AddCategoryItemIDs(ids...)
 }
 
-// Mutation returns the LandingPageMutation object of the builder.
-func (_u *LandingPageUpdate) Mutation() *LandingPageMutation {
+// Mutation returns the CourseLandingPageMutation object of the builder.
+func (_u *CourseLandingPageUpdate) Mutation() *CourseLandingPageMutation {
 	return _u.mutation
 }
 
 // ClearCourse clears the "course" edge to the Course entity.
-func (_u *LandingPageUpdate) ClearCourse() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearCourse() *CourseLandingPageUpdate {
 	_u.mutation.ClearCourse()
 	return _u
 }
 
 // ClearCategoryItems clears all "category_items" edges to the CourseCategoryItem entity.
-func (_u *LandingPageUpdate) ClearCategoryItems() *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) ClearCategoryItems() *CourseLandingPageUpdate {
 	_u.mutation.ClearCategoryItems()
 	return _u
 }
 
 // RemoveCategoryItemIDs removes the "category_items" edge to CourseCategoryItem entities by IDs.
-func (_u *LandingPageUpdate) RemoveCategoryItemIDs(ids ...int) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) RemoveCategoryItemIDs(ids ...int) *CourseLandingPageUpdate {
 	_u.mutation.RemoveCategoryItemIDs(ids...)
 	return _u
 }
 
 // RemoveCategoryItems removes "category_items" edges to CourseCategoryItem entities.
-func (_u *LandingPageUpdate) RemoveCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdate {
+func (_u *CourseLandingPageUpdate) RemoveCategoryItems(v ...*CourseCategoryItem) *CourseLandingPageUpdate {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -497,13 +497,13 @@ func (_u *LandingPageUpdate) RemoveCategoryItems(v ...*CourseCategoryItem) *Land
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *LandingPageUpdate) Save(ctx context.Context) (int, error) {
+func (_u *CourseLandingPageUpdate) Save(ctx context.Context) (int, error) {
 	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *LandingPageUpdate) SaveX(ctx context.Context) int {
+func (_u *CourseLandingPageUpdate) SaveX(ctx context.Context) int {
 	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -512,39 +512,39 @@ func (_u *LandingPageUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *LandingPageUpdate) Exec(ctx context.Context) error {
+func (_u *CourseLandingPageUpdate) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *LandingPageUpdate) ExecX(ctx context.Context) {
+func (_u *CourseLandingPageUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *LandingPageUpdate) defaults() {
+func (_u *CourseLandingPageUpdate) defaults() {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
-		v := landingpage.UpdateDefaultUpdatedAt()
+		v := courselandingpage.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *LandingPageUpdate) check() error {
+func (_u *CourseLandingPageUpdate) check() error {
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "LandingPage.course"`)
+		return errors.New(`ent: clearing a required unique edge "CourseLandingPage.course"`)
 	}
 	return nil
 }
 
-func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+func (_u *CourseLandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(landingpage.Table, landingpage.Columns, sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(courselandingpage.Table, courselandingpage.Columns, sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -553,134 +553,134 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		}
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(courselandingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Slug(); ok {
-		_spec.SetField(landingpage.FieldSlug, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldSlug, field.TypeString, value)
 	}
 	if _u.mutation.SlugCleared() {
-		_spec.ClearField(landingpage.FieldSlug, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldSlug, field.TypeString)
 	}
 	if value, ok := _u.mutation.Header(); ok {
-		_spec.SetField(landingpage.FieldHeader, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldHeader, field.TypeString, value)
 	}
 	if _u.mutation.HeaderCleared() {
-		_spec.ClearField(landingpage.FieldHeader, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldHeader, field.TypeString)
 	}
 	if value, ok := _u.mutation.Name(); ok {
-		_spec.SetField(landingpage.FieldName, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldName, field.TypeString, value)
 	}
 	if _u.mutation.NameCleared() {
-		_spec.ClearField(landingpage.FieldName, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldName, field.TypeString)
 	}
 	if value, ok := _u.mutation.Locale(); ok {
-		_spec.SetField(landingpage.FieldLocale, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldLocale, field.TypeString, value)
 	}
 	if _u.mutation.LocaleCleared() {
-		_spec.ClearField(landingpage.FieldLocale, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldLocale, field.TypeString)
 	}
 	if value, ok := _u.mutation.Listed(); ok {
-		_spec.SetField(landingpage.FieldListed, field.TypeBool, value)
+		_spec.SetField(courselandingpage.FieldListed, field.TypeBool, value)
 	}
 	if _u.mutation.ListedCleared() {
-		_spec.ClearField(landingpage.FieldListed, field.TypeBool)
+		_spec.ClearField(courselandingpage.FieldListed, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Main(); ok {
-		_spec.SetField(landingpage.FieldMain, field.TypeBool, value)
+		_spec.SetField(courselandingpage.FieldMain, field.TypeBool, value)
 	}
 	if _u.mutation.MainCleared() {
-		_spec.ClearField(landingpage.FieldMain, field.TypeBool)
+		_spec.ClearField(courselandingpage.FieldMain, field.TypeBool)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(landingpage.FieldState, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldState, field.TypeString, value)
 	}
 	if _u.mutation.StateCleared() {
-		_spec.ClearField(landingpage.FieldState, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldState, field.TypeString)
 	}
 	if value, ok := _u.mutation.Order(); ok {
-		_spec.SetField(landingpage.FieldOrder, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldOrder, field.TypeString, value)
 	}
 	if _u.mutation.OrderCleared() {
-		_spec.ClearField(landingpage.FieldOrder, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldOrder, field.TypeString)
 	}
 	if value, ok := _u.mutation.MetaTitle(); ok {
-		_spec.SetField(landingpage.FieldMetaTitle, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldMetaTitle, field.TypeString, value)
 	}
 	if _u.mutation.MetaTitleCleared() {
-		_spec.ClearField(landingpage.FieldMetaTitle, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldMetaTitle, field.TypeString)
 	}
 	if value, ok := _u.mutation.MetaDescription(); ok {
-		_spec.SetField(landingpage.FieldMetaDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldMetaDescription, field.TypeString, value)
 	}
 	if _u.mutation.MetaDescriptionCleared() {
-		_spec.ClearField(landingpage.FieldMetaDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldMetaDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.Description(); ok {
-		_spec.SetField(landingpage.FieldDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldDescription, field.TypeString, value)
 	}
 	if _u.mutation.DescriptionCleared() {
-		_spec.ClearField(landingpage.FieldDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.UsedInHeader(); ok {
-		_spec.SetField(landingpage.FieldUsedInHeader, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldUsedInHeader, field.TypeString, value)
 	}
 	if _u.mutation.UsedInHeaderCleared() {
-		_spec.ClearField(landingpage.FieldUsedInHeader, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldUsedInHeader, field.TypeString)
 	}
 	if value, ok := _u.mutation.UsedInDescription(); ok {
-		_spec.SetField(landingpage.FieldUsedInDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldUsedInDescription, field.TypeString, value)
 	}
 	if _u.mutation.UsedInDescriptionCleared() {
-		_spec.ClearField(landingpage.FieldUsedInDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldUsedInDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.OutcomesHeader(); ok {
-		_spec.SetField(landingpage.FieldOutcomesHeader, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldOutcomesHeader, field.TypeString, value)
 	}
 	if _u.mutation.OutcomesHeaderCleared() {
-		_spec.ClearField(landingpage.FieldOutcomesHeader, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldOutcomesHeader, field.TypeString)
 	}
 	if value, ok := _u.mutation.OutcomesDescription(); ok {
-		_spec.SetField(landingpage.FieldOutcomesDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldOutcomesDescription, field.TypeString, value)
 	}
 	if _u.mutation.OutcomesDescriptionCleared() {
-		_spec.ClearField(landingpage.FieldOutcomesDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldOutcomesDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.Footer(); ok {
-		_spec.SetField(landingpage.FieldFooter, field.TypeBool, value)
+		_spec.SetField(courselandingpage.FieldFooter, field.TypeBool, value)
 	}
 	if _u.mutation.FooterCleared() {
-		_spec.ClearField(landingpage.FieldFooter, field.TypeBool)
+		_spec.ClearField(courselandingpage.FieldFooter, field.TypeBool)
 	}
 	if value, ok := _u.mutation.FooterName(); ok {
-		_spec.SetField(landingpage.FieldFooterName, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldFooterName, field.TypeString, value)
 	}
 	if _u.mutation.FooterNameCleared() {
-		_spec.ClearField(landingpage.FieldFooterName, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldFooterName, field.TypeString)
 	}
 	if value, ok := _u.mutation.LanguageCategoryID(); ok {
-		_spec.SetField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+		_spec.SetField(courselandingpage.FieldLanguageCategoryID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.AddedLanguageCategoryID(); ok {
-		_spec.AddField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+		_spec.AddField(courselandingpage.FieldLanguageCategoryID, field.TypeInt, value)
 	}
 	if _u.mutation.LanguageCategoryIDCleared() {
-		_spec.ClearField(landingpage.FieldLanguageCategoryID, field.TypeInt)
+		_spec.ClearField(courselandingpage.FieldLanguageCategoryID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.LandingPageToRedirectID(); ok {
-		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+		_spec.SetField(courselandingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.AddedLandingPageToRedirectID(); ok {
-		_spec.AddField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+		_spec.AddField(courselandingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
 	}
 	if _u.mutation.LandingPageToRedirectIDCleared() {
-		_spec.ClearField(landingpage.FieldLandingPageToRedirectID, field.TypeInt)
+		_spec.ClearField(courselandingpage.FieldLandingPageToRedirectID, field.TypeInt)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   landingpage.CourseTable,
-			Columns: []string{landingpage.CourseColumn},
+			Table:   courselandingpage.CourseTable,
+			Columns: []string{courselandingpage.CourseColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
@@ -692,8 +692,8 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   landingpage.CourseTable,
-			Columns: []string{landingpage.CourseColumn},
+			Table:   courselandingpage.CourseTable,
+			Columns: []string{courselandingpage.CourseColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
@@ -708,8 +708,8 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   landingpage.CategoryItemsTable,
-			Columns: []string{landingpage.CategoryItemsColumn},
+			Table:   courselandingpage.CategoryItemsTable,
+			Columns: []string{courselandingpage.CategoryItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
@@ -721,8 +721,8 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   landingpage.CategoryItemsTable,
-			Columns: []string{landingpage.CategoryItemsColumn},
+			Table:   courselandingpage.CategoryItemsTable,
+			Columns: []string{courselandingpage.CategoryItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
@@ -737,8 +737,8 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   landingpage.CategoryItemsTable,
-			Columns: []string{landingpage.CategoryItemsColumn},
+			Table:   courselandingpage.CategoryItemsTable,
+			Columns: []string{courselandingpage.CategoryItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
@@ -751,7 +751,7 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{landingpage.Label}
+			err = &NotFoundError{courselandingpage.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -761,28 +761,28 @@ func (_u *LandingPageUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	return _node, nil
 }
 
-// LandingPageUpdateOne is the builder for updating a single LandingPage entity.
-type LandingPageUpdateOne struct {
+// CourseLandingPageUpdateOne is the builder for updating a single CourseLandingPage entity.
+type CourseLandingPageUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *LandingPageMutation
+	mutation *CourseLandingPageMutation
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (_u *LandingPageUpdateOne) SetUpdatedAt(v time.Time) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetUpdatedAt(v time.Time) *CourseLandingPageUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
 // SetCourseID sets the "course_id" field.
-func (_u *LandingPageUpdateOne) SetCourseID(v int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetCourseID(v int) *CourseLandingPageUpdateOne {
 	_u.mutation.SetCourseID(v)
 	return _u
 }
 
 // SetNillableCourseID sets the "course_id" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableCourseID(v *int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableCourseID(v *int) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetCourseID(*v)
 	}
@@ -790,13 +790,13 @@ func (_u *LandingPageUpdateOne) SetNillableCourseID(v *int) *LandingPageUpdateOn
 }
 
 // SetSlug sets the "slug" field.
-func (_u *LandingPageUpdateOne) SetSlug(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetSlug(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetSlug(v)
 	return _u
 }
 
 // SetNillableSlug sets the "slug" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableSlug(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableSlug(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetSlug(*v)
 	}
@@ -804,19 +804,19 @@ func (_u *LandingPageUpdateOne) SetNillableSlug(v *string) *LandingPageUpdateOne
 }
 
 // ClearSlug clears the value of the "slug" field.
-func (_u *LandingPageUpdateOne) ClearSlug() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearSlug() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearSlug()
 	return _u
 }
 
 // SetHeader sets the "header" field.
-func (_u *LandingPageUpdateOne) SetHeader(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetHeader(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetHeader(v)
 	return _u
 }
 
 // SetNillableHeader sets the "header" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableHeader(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableHeader(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetHeader(*v)
 	}
@@ -824,19 +824,19 @@ func (_u *LandingPageUpdateOne) SetNillableHeader(v *string) *LandingPageUpdateO
 }
 
 // ClearHeader clears the value of the "header" field.
-func (_u *LandingPageUpdateOne) ClearHeader() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearHeader() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearHeader()
 	return _u
 }
 
 // SetName sets the "name" field.
-func (_u *LandingPageUpdateOne) SetName(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetName(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetName(v)
 	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableName(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableName(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetName(*v)
 	}
@@ -844,19 +844,19 @@ func (_u *LandingPageUpdateOne) SetNillableName(v *string) *LandingPageUpdateOne
 }
 
 // ClearName clears the value of the "name" field.
-func (_u *LandingPageUpdateOne) ClearName() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearName() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearName()
 	return _u
 }
 
 // SetLocale sets the "locale" field.
-func (_u *LandingPageUpdateOne) SetLocale(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetLocale(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetLocale(v)
 	return _u
 }
 
 // SetNillableLocale sets the "locale" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableLocale(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableLocale(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetLocale(*v)
 	}
@@ -864,19 +864,19 @@ func (_u *LandingPageUpdateOne) SetNillableLocale(v *string) *LandingPageUpdateO
 }
 
 // ClearLocale clears the value of the "locale" field.
-func (_u *LandingPageUpdateOne) ClearLocale() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearLocale() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearLocale()
 	return _u
 }
 
 // SetListed sets the "listed" field.
-func (_u *LandingPageUpdateOne) SetListed(v bool) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetListed(v bool) *CourseLandingPageUpdateOne {
 	_u.mutation.SetListed(v)
 	return _u
 }
 
 // SetNillableListed sets the "listed" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableListed(v *bool) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableListed(v *bool) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetListed(*v)
 	}
@@ -884,19 +884,19 @@ func (_u *LandingPageUpdateOne) SetNillableListed(v *bool) *LandingPageUpdateOne
 }
 
 // ClearListed clears the value of the "listed" field.
-func (_u *LandingPageUpdateOne) ClearListed() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearListed() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearListed()
 	return _u
 }
 
 // SetMain sets the "main" field.
-func (_u *LandingPageUpdateOne) SetMain(v bool) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetMain(v bool) *CourseLandingPageUpdateOne {
 	_u.mutation.SetMain(v)
 	return _u
 }
 
 // SetNillableMain sets the "main" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableMain(v *bool) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableMain(v *bool) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetMain(*v)
 	}
@@ -904,19 +904,19 @@ func (_u *LandingPageUpdateOne) SetNillableMain(v *bool) *LandingPageUpdateOne {
 }
 
 // ClearMain clears the value of the "main" field.
-func (_u *LandingPageUpdateOne) ClearMain() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearMain() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearMain()
 	return _u
 }
 
 // SetState sets the "state" field.
-func (_u *LandingPageUpdateOne) SetState(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetState(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetState(v)
 	return _u
 }
 
 // SetNillableState sets the "state" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableState(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableState(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetState(*v)
 	}
@@ -924,19 +924,19 @@ func (_u *LandingPageUpdateOne) SetNillableState(v *string) *LandingPageUpdateOn
 }
 
 // ClearState clears the value of the "state" field.
-func (_u *LandingPageUpdateOne) ClearState() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearState() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearState()
 	return _u
 }
 
 // SetOrder sets the "order" field.
-func (_u *LandingPageUpdateOne) SetOrder(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetOrder(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetOrder(v)
 	return _u
 }
 
 // SetNillableOrder sets the "order" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableOrder(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableOrder(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetOrder(*v)
 	}
@@ -944,19 +944,19 @@ func (_u *LandingPageUpdateOne) SetNillableOrder(v *string) *LandingPageUpdateOn
 }
 
 // ClearOrder clears the value of the "order" field.
-func (_u *LandingPageUpdateOne) ClearOrder() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearOrder() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearOrder()
 	return _u
 }
 
 // SetMetaTitle sets the "meta_title" field.
-func (_u *LandingPageUpdateOne) SetMetaTitle(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetMetaTitle(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetMetaTitle(v)
 	return _u
 }
 
 // SetNillableMetaTitle sets the "meta_title" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableMetaTitle(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableMetaTitle(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetMetaTitle(*v)
 	}
@@ -964,19 +964,19 @@ func (_u *LandingPageUpdateOne) SetNillableMetaTitle(v *string) *LandingPageUpda
 }
 
 // ClearMetaTitle clears the value of the "meta_title" field.
-func (_u *LandingPageUpdateOne) ClearMetaTitle() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearMetaTitle() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearMetaTitle()
 	return _u
 }
 
 // SetMetaDescription sets the "meta_description" field.
-func (_u *LandingPageUpdateOne) SetMetaDescription(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetMetaDescription(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetMetaDescription(v)
 	return _u
 }
 
 // SetNillableMetaDescription sets the "meta_description" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableMetaDescription(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableMetaDescription(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetMetaDescription(*v)
 	}
@@ -984,19 +984,19 @@ func (_u *LandingPageUpdateOne) SetNillableMetaDescription(v *string) *LandingPa
 }
 
 // ClearMetaDescription clears the value of the "meta_description" field.
-func (_u *LandingPageUpdateOne) ClearMetaDescription() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearMetaDescription() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearMetaDescription()
 	return _u
 }
 
 // SetDescription sets the "description" field.
-func (_u *LandingPageUpdateOne) SetDescription(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetDescription(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetDescription(v)
 	return _u
 }
 
 // SetNillableDescription sets the "description" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableDescription(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableDescription(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetDescription(*v)
 	}
@@ -1004,19 +1004,19 @@ func (_u *LandingPageUpdateOne) SetNillableDescription(v *string) *LandingPageUp
 }
 
 // ClearDescription clears the value of the "description" field.
-func (_u *LandingPageUpdateOne) ClearDescription() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearDescription() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearDescription()
 	return _u
 }
 
 // SetUsedInHeader sets the "used_in_header" field.
-func (_u *LandingPageUpdateOne) SetUsedInHeader(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetUsedInHeader(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetUsedInHeader(v)
 	return _u
 }
 
 // SetNillableUsedInHeader sets the "used_in_header" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableUsedInHeader(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableUsedInHeader(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetUsedInHeader(*v)
 	}
@@ -1024,19 +1024,19 @@ func (_u *LandingPageUpdateOne) SetNillableUsedInHeader(v *string) *LandingPageU
 }
 
 // ClearUsedInHeader clears the value of the "used_in_header" field.
-func (_u *LandingPageUpdateOne) ClearUsedInHeader() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearUsedInHeader() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearUsedInHeader()
 	return _u
 }
 
 // SetUsedInDescription sets the "used_in_description" field.
-func (_u *LandingPageUpdateOne) SetUsedInDescription(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetUsedInDescription(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetUsedInDescription(v)
 	return _u
 }
 
 // SetNillableUsedInDescription sets the "used_in_description" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableUsedInDescription(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableUsedInDescription(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetUsedInDescription(*v)
 	}
@@ -1044,19 +1044,19 @@ func (_u *LandingPageUpdateOne) SetNillableUsedInDescription(v *string) *Landing
 }
 
 // ClearUsedInDescription clears the value of the "used_in_description" field.
-func (_u *LandingPageUpdateOne) ClearUsedInDescription() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearUsedInDescription() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearUsedInDescription()
 	return _u
 }
 
 // SetOutcomesHeader sets the "outcomes_header" field.
-func (_u *LandingPageUpdateOne) SetOutcomesHeader(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetOutcomesHeader(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetOutcomesHeader(v)
 	return _u
 }
 
 // SetNillableOutcomesHeader sets the "outcomes_header" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableOutcomesHeader(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableOutcomesHeader(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetOutcomesHeader(*v)
 	}
@@ -1064,19 +1064,19 @@ func (_u *LandingPageUpdateOne) SetNillableOutcomesHeader(v *string) *LandingPag
 }
 
 // ClearOutcomesHeader clears the value of the "outcomes_header" field.
-func (_u *LandingPageUpdateOne) ClearOutcomesHeader() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearOutcomesHeader() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearOutcomesHeader()
 	return _u
 }
 
 // SetOutcomesDescription sets the "outcomes_description" field.
-func (_u *LandingPageUpdateOne) SetOutcomesDescription(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetOutcomesDescription(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetOutcomesDescription(v)
 	return _u
 }
 
 // SetNillableOutcomesDescription sets the "outcomes_description" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableOutcomesDescription(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableOutcomesDescription(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetOutcomesDescription(*v)
 	}
@@ -1084,19 +1084,19 @@ func (_u *LandingPageUpdateOne) SetNillableOutcomesDescription(v *string) *Landi
 }
 
 // ClearOutcomesDescription clears the value of the "outcomes_description" field.
-func (_u *LandingPageUpdateOne) ClearOutcomesDescription() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearOutcomesDescription() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearOutcomesDescription()
 	return _u
 }
 
 // SetFooter sets the "footer" field.
-func (_u *LandingPageUpdateOne) SetFooter(v bool) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetFooter(v bool) *CourseLandingPageUpdateOne {
 	_u.mutation.SetFooter(v)
 	return _u
 }
 
 // SetNillableFooter sets the "footer" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableFooter(v *bool) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableFooter(v *bool) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetFooter(*v)
 	}
@@ -1104,19 +1104,19 @@ func (_u *LandingPageUpdateOne) SetNillableFooter(v *bool) *LandingPageUpdateOne
 }
 
 // ClearFooter clears the value of the "footer" field.
-func (_u *LandingPageUpdateOne) ClearFooter() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearFooter() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearFooter()
 	return _u
 }
 
 // SetFooterName sets the "footer_name" field.
-func (_u *LandingPageUpdateOne) SetFooterName(v string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetFooterName(v string) *CourseLandingPageUpdateOne {
 	_u.mutation.SetFooterName(v)
 	return _u
 }
 
 // SetNillableFooterName sets the "footer_name" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableFooterName(v *string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableFooterName(v *string) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetFooterName(*v)
 	}
@@ -1124,20 +1124,20 @@ func (_u *LandingPageUpdateOne) SetNillableFooterName(v *string) *LandingPageUpd
 }
 
 // ClearFooterName clears the value of the "footer_name" field.
-func (_u *LandingPageUpdateOne) ClearFooterName() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearFooterName() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearFooterName()
 	return _u
 }
 
 // SetLanguageCategoryID sets the "language_category_id" field.
-func (_u *LandingPageUpdateOne) SetLanguageCategoryID(v int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetLanguageCategoryID(v int) *CourseLandingPageUpdateOne {
 	_u.mutation.ResetLanguageCategoryID()
 	_u.mutation.SetLanguageCategoryID(v)
 	return _u
 }
 
 // SetNillableLanguageCategoryID sets the "language_category_id" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableLanguageCategoryID(v *int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableLanguageCategoryID(v *int) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetLanguageCategoryID(*v)
 	}
@@ -1145,26 +1145,26 @@ func (_u *LandingPageUpdateOne) SetNillableLanguageCategoryID(v *int) *LandingPa
 }
 
 // AddLanguageCategoryID adds value to the "language_category_id" field.
-func (_u *LandingPageUpdateOne) AddLanguageCategoryID(v int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) AddLanguageCategoryID(v int) *CourseLandingPageUpdateOne {
 	_u.mutation.AddLanguageCategoryID(v)
 	return _u
 }
 
 // ClearLanguageCategoryID clears the value of the "language_category_id" field.
-func (_u *LandingPageUpdateOne) ClearLanguageCategoryID() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearLanguageCategoryID() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearLanguageCategoryID()
 	return _u
 }
 
 // SetLandingPageToRedirectID sets the "landing_page_to_redirect_id" field.
-func (_u *LandingPageUpdateOne) SetLandingPageToRedirectID(v int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetLandingPageToRedirectID(v int) *CourseLandingPageUpdateOne {
 	_u.mutation.ResetLandingPageToRedirectID()
 	_u.mutation.SetLandingPageToRedirectID(v)
 	return _u
 }
 
 // SetNillableLandingPageToRedirectID sets the "landing_page_to_redirect_id" field if the given value is not nil.
-func (_u *LandingPageUpdateOne) SetNillableLandingPageToRedirectID(v *int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetNillableLandingPageToRedirectID(v *int) *CourseLandingPageUpdateOne {
 	if v != nil {
 		_u.SetLandingPageToRedirectID(*v)
 	}
@@ -1172,30 +1172,30 @@ func (_u *LandingPageUpdateOne) SetNillableLandingPageToRedirectID(v *int) *Land
 }
 
 // AddLandingPageToRedirectID adds value to the "landing_page_to_redirect_id" field.
-func (_u *LandingPageUpdateOne) AddLandingPageToRedirectID(v int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) AddLandingPageToRedirectID(v int) *CourseLandingPageUpdateOne {
 	_u.mutation.AddLandingPageToRedirectID(v)
 	return _u
 }
 
 // ClearLandingPageToRedirectID clears the value of the "landing_page_to_redirect_id" field.
-func (_u *LandingPageUpdateOne) ClearLandingPageToRedirectID() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearLandingPageToRedirectID() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearLandingPageToRedirectID()
 	return _u
 }
 
 // SetCourse sets the "course" edge to the Course entity.
-func (_u *LandingPageUpdateOne) SetCourse(v *Course) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) SetCourse(v *Course) *CourseLandingPageUpdateOne {
 	return _u.SetCourseID(v.ID)
 }
 
 // AddCategoryItemIDs adds the "category_items" edge to the CourseCategoryItem entity by IDs.
-func (_u *LandingPageUpdateOne) AddCategoryItemIDs(ids ...int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) AddCategoryItemIDs(ids ...int) *CourseLandingPageUpdateOne {
 	_u.mutation.AddCategoryItemIDs(ids...)
 	return _u
 }
 
 // AddCategoryItems adds the "category_items" edges to the CourseCategoryItem entity.
-func (_u *LandingPageUpdateOne) AddCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) AddCategoryItems(v ...*CourseCategoryItem) *CourseLandingPageUpdateOne {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -1203,31 +1203,31 @@ func (_u *LandingPageUpdateOne) AddCategoryItems(v ...*CourseCategoryItem) *Land
 	return _u.AddCategoryItemIDs(ids...)
 }
 
-// Mutation returns the LandingPageMutation object of the builder.
-func (_u *LandingPageUpdateOne) Mutation() *LandingPageMutation {
+// Mutation returns the CourseLandingPageMutation object of the builder.
+func (_u *CourseLandingPageUpdateOne) Mutation() *CourseLandingPageMutation {
 	return _u.mutation
 }
 
 // ClearCourse clears the "course" edge to the Course entity.
-func (_u *LandingPageUpdateOne) ClearCourse() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearCourse() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearCourse()
 	return _u
 }
 
 // ClearCategoryItems clears all "category_items" edges to the CourseCategoryItem entity.
-func (_u *LandingPageUpdateOne) ClearCategoryItems() *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) ClearCategoryItems() *CourseLandingPageUpdateOne {
 	_u.mutation.ClearCategoryItems()
 	return _u
 }
 
 // RemoveCategoryItemIDs removes the "category_items" edge to CourseCategoryItem entities by IDs.
-func (_u *LandingPageUpdateOne) RemoveCategoryItemIDs(ids ...int) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) RemoveCategoryItemIDs(ids ...int) *CourseLandingPageUpdateOne {
 	_u.mutation.RemoveCategoryItemIDs(ids...)
 	return _u
 }
 
 // RemoveCategoryItems removes "category_items" edges to CourseCategoryItem entities.
-func (_u *LandingPageUpdateOne) RemoveCategoryItems(v ...*CourseCategoryItem) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) RemoveCategoryItems(v ...*CourseCategoryItem) *CourseLandingPageUpdateOne {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -1235,27 +1235,27 @@ func (_u *LandingPageUpdateOne) RemoveCategoryItems(v ...*CourseCategoryItem) *L
 	return _u.RemoveCategoryItemIDs(ids...)
 }
 
-// Where appends a list predicates to the LandingPageUpdate builder.
-func (_u *LandingPageUpdateOne) Where(ps ...predicate.LandingPage) *LandingPageUpdateOne {
+// Where appends a list predicates to the CourseLandingPageUpdate builder.
+func (_u *CourseLandingPageUpdateOne) Where(ps ...predicate.CourseLandingPage) *CourseLandingPageUpdateOne {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *LandingPageUpdateOne) Select(field string, fields ...string) *LandingPageUpdateOne {
+func (_u *CourseLandingPageUpdateOne) Select(field string, fields ...string) *CourseLandingPageUpdateOne {
 	_u.fields = append([]string{field}, fields...)
 	return _u
 }
 
-// Save executes the query and returns the updated LandingPage entity.
-func (_u *LandingPageUpdateOne) Save(ctx context.Context) (*LandingPage, error) {
+// Save executes the query and returns the updated CourseLandingPage entity.
+func (_u *CourseLandingPageUpdateOne) Save(ctx context.Context) (*CourseLandingPage, error) {
 	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *LandingPageUpdateOne) SaveX(ctx context.Context) *LandingPage {
+func (_u *CourseLandingPageUpdateOne) SaveX(ctx context.Context) *CourseLandingPage {
 	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -1264,52 +1264,52 @@ func (_u *LandingPageUpdateOne) SaveX(ctx context.Context) *LandingPage {
 }
 
 // Exec executes the query on the entity.
-func (_u *LandingPageUpdateOne) Exec(ctx context.Context) error {
+func (_u *CourseLandingPageUpdateOne) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *LandingPageUpdateOne) ExecX(ctx context.Context) {
+func (_u *CourseLandingPageUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *LandingPageUpdateOne) defaults() {
+func (_u *CourseLandingPageUpdateOne) defaults() {
 	if _, ok := _u.mutation.UpdatedAt(); !ok {
-		v := landingpage.UpdateDefaultUpdatedAt()
+		v := courselandingpage.UpdateDefaultUpdatedAt()
 		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_u *LandingPageUpdateOne) check() error {
+func (_u *CourseLandingPageUpdateOne) check() error {
 	if _u.mutation.CourseCleared() && len(_u.mutation.CourseIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "LandingPage.course"`)
+		return errors.New(`ent: clearing a required unique edge "CourseLandingPage.course"`)
 	}
 	return nil
 }
 
-func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage, err error) {
+func (_u *CourseLandingPageUpdateOne) sqlSave(ctx context.Context) (_node *CourseLandingPage, err error) {
 	if err := _u.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(landingpage.Table, landingpage.Columns, sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(courselandingpage.Table, courselandingpage.Columns, sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt))
 	id, ok := _u.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "LandingPage.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "CourseLandingPage.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, landingpage.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, courselandingpage.FieldID)
 		for _, f := range fields {
-			if !landingpage.ValidColumn(f) {
+			if !courselandingpage.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != landingpage.FieldID {
+			if f != courselandingpage.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -1322,134 +1322,134 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 		}
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
-		_spec.SetField(landingpage.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(courselandingpage.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Slug(); ok {
-		_spec.SetField(landingpage.FieldSlug, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldSlug, field.TypeString, value)
 	}
 	if _u.mutation.SlugCleared() {
-		_spec.ClearField(landingpage.FieldSlug, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldSlug, field.TypeString)
 	}
 	if value, ok := _u.mutation.Header(); ok {
-		_spec.SetField(landingpage.FieldHeader, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldHeader, field.TypeString, value)
 	}
 	if _u.mutation.HeaderCleared() {
-		_spec.ClearField(landingpage.FieldHeader, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldHeader, field.TypeString)
 	}
 	if value, ok := _u.mutation.Name(); ok {
-		_spec.SetField(landingpage.FieldName, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldName, field.TypeString, value)
 	}
 	if _u.mutation.NameCleared() {
-		_spec.ClearField(landingpage.FieldName, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldName, field.TypeString)
 	}
 	if value, ok := _u.mutation.Locale(); ok {
-		_spec.SetField(landingpage.FieldLocale, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldLocale, field.TypeString, value)
 	}
 	if _u.mutation.LocaleCleared() {
-		_spec.ClearField(landingpage.FieldLocale, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldLocale, field.TypeString)
 	}
 	if value, ok := _u.mutation.Listed(); ok {
-		_spec.SetField(landingpage.FieldListed, field.TypeBool, value)
+		_spec.SetField(courselandingpage.FieldListed, field.TypeBool, value)
 	}
 	if _u.mutation.ListedCleared() {
-		_spec.ClearField(landingpage.FieldListed, field.TypeBool)
+		_spec.ClearField(courselandingpage.FieldListed, field.TypeBool)
 	}
 	if value, ok := _u.mutation.Main(); ok {
-		_spec.SetField(landingpage.FieldMain, field.TypeBool, value)
+		_spec.SetField(courselandingpage.FieldMain, field.TypeBool, value)
 	}
 	if _u.mutation.MainCleared() {
-		_spec.ClearField(landingpage.FieldMain, field.TypeBool)
+		_spec.ClearField(courselandingpage.FieldMain, field.TypeBool)
 	}
 	if value, ok := _u.mutation.State(); ok {
-		_spec.SetField(landingpage.FieldState, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldState, field.TypeString, value)
 	}
 	if _u.mutation.StateCleared() {
-		_spec.ClearField(landingpage.FieldState, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldState, field.TypeString)
 	}
 	if value, ok := _u.mutation.Order(); ok {
-		_spec.SetField(landingpage.FieldOrder, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldOrder, field.TypeString, value)
 	}
 	if _u.mutation.OrderCleared() {
-		_spec.ClearField(landingpage.FieldOrder, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldOrder, field.TypeString)
 	}
 	if value, ok := _u.mutation.MetaTitle(); ok {
-		_spec.SetField(landingpage.FieldMetaTitle, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldMetaTitle, field.TypeString, value)
 	}
 	if _u.mutation.MetaTitleCleared() {
-		_spec.ClearField(landingpage.FieldMetaTitle, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldMetaTitle, field.TypeString)
 	}
 	if value, ok := _u.mutation.MetaDescription(); ok {
-		_spec.SetField(landingpage.FieldMetaDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldMetaDescription, field.TypeString, value)
 	}
 	if _u.mutation.MetaDescriptionCleared() {
-		_spec.ClearField(landingpage.FieldMetaDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldMetaDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.Description(); ok {
-		_spec.SetField(landingpage.FieldDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldDescription, field.TypeString, value)
 	}
 	if _u.mutation.DescriptionCleared() {
-		_spec.ClearField(landingpage.FieldDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.UsedInHeader(); ok {
-		_spec.SetField(landingpage.FieldUsedInHeader, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldUsedInHeader, field.TypeString, value)
 	}
 	if _u.mutation.UsedInHeaderCleared() {
-		_spec.ClearField(landingpage.FieldUsedInHeader, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldUsedInHeader, field.TypeString)
 	}
 	if value, ok := _u.mutation.UsedInDescription(); ok {
-		_spec.SetField(landingpage.FieldUsedInDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldUsedInDescription, field.TypeString, value)
 	}
 	if _u.mutation.UsedInDescriptionCleared() {
-		_spec.ClearField(landingpage.FieldUsedInDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldUsedInDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.OutcomesHeader(); ok {
-		_spec.SetField(landingpage.FieldOutcomesHeader, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldOutcomesHeader, field.TypeString, value)
 	}
 	if _u.mutation.OutcomesHeaderCleared() {
-		_spec.ClearField(landingpage.FieldOutcomesHeader, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldOutcomesHeader, field.TypeString)
 	}
 	if value, ok := _u.mutation.OutcomesDescription(); ok {
-		_spec.SetField(landingpage.FieldOutcomesDescription, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldOutcomesDescription, field.TypeString, value)
 	}
 	if _u.mutation.OutcomesDescriptionCleared() {
-		_spec.ClearField(landingpage.FieldOutcomesDescription, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldOutcomesDescription, field.TypeString)
 	}
 	if value, ok := _u.mutation.Footer(); ok {
-		_spec.SetField(landingpage.FieldFooter, field.TypeBool, value)
+		_spec.SetField(courselandingpage.FieldFooter, field.TypeBool, value)
 	}
 	if _u.mutation.FooterCleared() {
-		_spec.ClearField(landingpage.FieldFooter, field.TypeBool)
+		_spec.ClearField(courselandingpage.FieldFooter, field.TypeBool)
 	}
 	if value, ok := _u.mutation.FooterName(); ok {
-		_spec.SetField(landingpage.FieldFooterName, field.TypeString, value)
+		_spec.SetField(courselandingpage.FieldFooterName, field.TypeString, value)
 	}
 	if _u.mutation.FooterNameCleared() {
-		_spec.ClearField(landingpage.FieldFooterName, field.TypeString)
+		_spec.ClearField(courselandingpage.FieldFooterName, field.TypeString)
 	}
 	if value, ok := _u.mutation.LanguageCategoryID(); ok {
-		_spec.SetField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+		_spec.SetField(courselandingpage.FieldLanguageCategoryID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.AddedLanguageCategoryID(); ok {
-		_spec.AddField(landingpage.FieldLanguageCategoryID, field.TypeInt, value)
+		_spec.AddField(courselandingpage.FieldLanguageCategoryID, field.TypeInt, value)
 	}
 	if _u.mutation.LanguageCategoryIDCleared() {
-		_spec.ClearField(landingpage.FieldLanguageCategoryID, field.TypeInt)
+		_spec.ClearField(courselandingpage.FieldLanguageCategoryID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.LandingPageToRedirectID(); ok {
-		_spec.SetField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+		_spec.SetField(courselandingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.AddedLandingPageToRedirectID(); ok {
-		_spec.AddField(landingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
+		_spec.AddField(courselandingpage.FieldLandingPageToRedirectID, field.TypeInt, value)
 	}
 	if _u.mutation.LandingPageToRedirectIDCleared() {
-		_spec.ClearField(landingpage.FieldLandingPageToRedirectID, field.TypeInt)
+		_spec.ClearField(courselandingpage.FieldLandingPageToRedirectID, field.TypeInt)
 	}
 	if _u.mutation.CourseCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   landingpage.CourseTable,
-			Columns: []string{landingpage.CourseColumn},
+			Table:   courselandingpage.CourseTable,
+			Columns: []string{courselandingpage.CourseColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
@@ -1461,8 +1461,8 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   landingpage.CourseTable,
-			Columns: []string{landingpage.CourseColumn},
+			Table:   courselandingpage.CourseTable,
+			Columns: []string{courselandingpage.CourseColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(course.FieldID, field.TypeInt),
@@ -1477,8 +1477,8 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   landingpage.CategoryItemsTable,
-			Columns: []string{landingpage.CategoryItemsColumn},
+			Table:   courselandingpage.CategoryItemsTable,
+			Columns: []string{courselandingpage.CategoryItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
@@ -1490,8 +1490,8 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   landingpage.CategoryItemsTable,
-			Columns: []string{landingpage.CategoryItemsColumn},
+			Table:   courselandingpage.CategoryItemsTable,
+			Columns: []string{courselandingpage.CategoryItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
@@ -1506,8 +1506,8 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   landingpage.CategoryItemsTable,
-			Columns: []string{landingpage.CategoryItemsColumn},
+			Table:   courselandingpage.CategoryItemsTable,
+			Columns: []string{courselandingpage.CategoryItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(coursecategoryitem.FieldID, field.TypeInt),
@@ -1518,12 +1518,12 @@ func (_u *LandingPageUpdateOne) sqlSave(ctx context.Context) (_node *LandingPage
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &LandingPage{config: _u.config}
+	_node = &CourseLandingPage{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{landingpage.Label}
+			err = &NotFoundError{courselandingpage.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

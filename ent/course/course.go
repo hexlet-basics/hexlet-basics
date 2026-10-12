@@ -46,8 +46,8 @@ const (
 	Table = "languages"
 	// LandingPagesTable is the table that holds the landing_pages relation/edge.
 	LandingPagesTable = "language_landing_pages"
-	// LandingPagesInverseTable is the table name for the LandingPage entity.
-	// It exists in this package in order to avoid circular dependency with the "landingpage" package.
+	// LandingPagesInverseTable is the table name for the CourseLandingPage entity.
+	// It exists in this package in order to avoid circular dependency with the "courselandingpage" package.
 	LandingPagesInverseTable = "language_landing_pages"
 	// LandingPagesColumn is the table column denoting the landing_pages relation/edge.
 	LandingPagesColumn = "language_id"

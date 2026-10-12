@@ -25,6 +25,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -34,7 +35,6 @@ import (
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
@@ -86,6 +86,8 @@ type Client struct {
 	CourseCategory *CourseCategoryClient
 	// CourseCategoryItem is the client for interacting with the CourseCategoryItem builders.
 	CourseCategoryItem *CourseCategoryItemClient
+	// CourseLandingPage is the client for interacting with the CourseLandingPage builders.
+	CourseLandingPage *CourseLandingPageClient
 	// CourseLesson is the client for interacting with the CourseLesson builders.
 	CourseLesson *CourseLessonClient
 	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
@@ -104,8 +106,6 @@ type Client struct {
 	CourseVersion *CourseVersionClient
 	// Enrollment is the client for interacting with the Enrollment builders.
 	Enrollment *EnrollmentClient
-	// LandingPage is the client for interacting with the LandingPage builders.
-	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
 	LandingPageQnaItem *LandingPageQnaItemClient
 	// Lead is the client for interacting with the Lead builders.
@@ -153,6 +153,7 @@ func (c *Client) init() {
 	c.Course = NewCourseClient(c.config)
 	c.CourseCategory = NewCourseCategoryClient(c.config)
 	c.CourseCategoryItem = NewCourseCategoryItemClient(c.config)
+	c.CourseLandingPage = NewCourseLandingPageClient(c.config)
 	c.CourseLesson = NewCourseLessonClient(c.config)
 	c.CourseLessonReview = NewCourseLessonReviewClient(c.config)
 	c.CourseLessonTranslation = NewCourseLessonTranslationClient(c.config)
@@ -162,7 +163,6 @@ func (c *Client) init() {
 	c.CourseModuleVersion = NewCourseModuleVersionClient(c.config)
 	c.CourseVersion = NewCourseVersionClient(c.config)
 	c.Enrollment = NewEnrollmentClient(c.config)
-	c.LandingPage = NewLandingPageClient(c.config)
 	c.LandingPageQnaItem = NewLandingPageQnaItemClient(c.config)
 	c.Lead = NewLeadClient(c.config)
 	c.LessonProgress = NewLessonProgressClient(c.config)
@@ -280,6 +280,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
 		CourseCategoryItem:        NewCourseCategoryItemClient(cfg),
+		CourseLandingPage:         NewCourseLandingPageClient(cfg),
 		CourseLesson:              NewCourseLessonClient(cfg),
 		CourseLessonReview:        NewCourseLessonReviewClient(cfg),
 		CourseLessonTranslation:   NewCourseLessonTranslationClient(cfg),
@@ -289,7 +290,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		CourseModuleVersion:       NewCourseModuleVersionClient(cfg),
 		CourseVersion:             NewCourseVersionClient(cfg),
 		Enrollment:                NewEnrollmentClient(cfg),
-		LandingPage:               NewLandingPageClient(cfg),
 		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
 		Lead:                      NewLeadClient(cfg),
 		LessonProgress:            NewLessonProgressClient(cfg),
@@ -334,6 +334,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Course:                    NewCourseClient(cfg),
 		CourseCategory:            NewCourseCategoryClient(cfg),
 		CourseCategoryItem:        NewCourseCategoryItemClient(cfg),
+		CourseLandingPage:         NewCourseLandingPageClient(cfg),
 		CourseLesson:              NewCourseLessonClient(cfg),
 		CourseLessonReview:        NewCourseLessonReviewClient(cfg),
 		CourseLessonTranslation:   NewCourseLessonTranslationClient(cfg),
@@ -343,7 +344,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		CourseModuleVersion:       NewCourseModuleVersionClient(cfg),
 		CourseVersion:             NewCourseVersionClient(cfg),
 		Enrollment:                NewEnrollmentClient(cfg),
-		LandingPage:               NewLandingPageClient(cfg),
 		LandingPageQnaItem:        NewLandingPageQnaItemClient(cfg),
 		Lead:                      NewLeadClient(cfg),
 		LessonProgress:            NewLessonProgressClient(cfg),
@@ -387,10 +387,10 @@ func (c *Client) Use(hooks ...Hook) {
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
-		c.CourseCategory, c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
-		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
-		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
-		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
+		c.CourseCategory, c.CourseCategoryItem, c.CourseLandingPage, c.CourseLesson,
+		c.CourseLessonReview, c.CourseLessonTranslation, c.CourseLessonVersion,
+		c.CourseModule, c.CourseModuleTranslation, c.CourseModuleVersion,
+		c.CourseVersion, c.Enrollment, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
 		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag, c.Tagging,
 		c.User, c.UserAccount,
 	} {
@@ -405,10 +405,10 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.ActiveStorageAttachment, c.ActiveStorageBlob, c.AiChat, c.AiMessage,
 		c.Attachment, c.Banner, c.BlogPost, c.BlogPostLike,
 		c.BlogPostRelatedCourseItem, c.BookRequest, c.CategoryQnaItem, c.Course,
-		c.CourseCategory, c.CourseCategoryItem, c.CourseLesson, c.CourseLessonReview,
-		c.CourseLessonTranslation, c.CourseLessonVersion, c.CourseModule,
-		c.CourseModuleTranslation, c.CourseModuleVersion, c.CourseVersion,
-		c.Enrollment, c.LandingPage, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
+		c.CourseCategory, c.CourseCategoryItem, c.CourseLandingPage, c.CourseLesson,
+		c.CourseLessonReview, c.CourseLessonTranslation, c.CourseLessonVersion,
+		c.CourseModule, c.CourseModuleTranslation, c.CourseModuleVersion,
+		c.CourseVersion, c.Enrollment, c.LandingPageQnaItem, c.Lead, c.LessonProgress,
 		c.Review, c.StaffMember, c.StaffRole, c.StaffRolePermission, c.Tag, c.Tagging,
 		c.User, c.UserAccount,
 	} {
@@ -447,6 +447,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.CourseCategory.mutate(ctx, m)
 	case *CourseCategoryItemMutation:
 		return c.CourseCategoryItem.mutate(ctx, m)
+	case *CourseLandingPageMutation:
+		return c.CourseLandingPage.mutate(ctx, m)
 	case *CourseLessonMutation:
 		return c.CourseLesson.mutate(ctx, m)
 	case *CourseLessonReviewMutation:
@@ -465,8 +467,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.CourseVersion.mutate(ctx, m)
 	case *EnrollmentMutation:
 		return c.Enrollment.mutate(ctx, m)
-	case *LandingPageMutation:
-		return c.LandingPage.mutate(ctx, m)
 	case *LandingPageQnaItemMutation:
 		return c.LandingPageQnaItem.mutate(ctx, m)
 	case *LeadMutation:
@@ -2178,13 +2178,13 @@ func (c *CourseClient) GetX(ctx context.Context, id int) *Course {
 }
 
 // QueryLandingPages queries the landing_pages edge of a Course.
-func (c *CourseClient) QueryLandingPages(_m *Course) *LandingPageQuery {
-	query := (&LandingPageClient{config: c.config}).Query()
+func (c *CourseClient) QueryLandingPages(_m *Course) *CourseLandingPageQuery {
+	query := (&CourseLandingPageClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(course.Table, course.FieldID, id),
-			sqlgraph.To(landingpage.Table, landingpage.FieldID),
+			sqlgraph.To(courselandingpage.Table, courselandingpage.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, course.LandingPagesTable, course.LandingPagesColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
@@ -2492,13 +2492,13 @@ func (c *CourseCategoryItemClient) QueryCategory(_m *CourseCategoryItem) *Course
 }
 
 // QueryLandingPage queries the landing_page edge of a CourseCategoryItem.
-func (c *CourseCategoryItemClient) QueryLandingPage(_m *CourseCategoryItem) *LandingPageQuery {
-	query := (&LandingPageClient{config: c.config}).Query()
+func (c *CourseCategoryItemClient) QueryLandingPage(_m *CourseCategoryItem) *CourseLandingPageQuery {
+	query := (&CourseLandingPageClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(coursecategoryitem.Table, coursecategoryitem.FieldID, id),
-			sqlgraph.To(landingpage.Table, landingpage.FieldID),
+			sqlgraph.To(courselandingpage.Table, courselandingpage.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, coursecategoryitem.LandingPageTable, coursecategoryitem.LandingPageColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
@@ -2529,6 +2529,171 @@ func (c *CourseCategoryItemClient) mutate(ctx context.Context, m *CourseCategory
 		return (&CourseCategoryItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown CourseCategoryItem mutation op: %q", m.Op())
+	}
+}
+
+// CourseLandingPageClient is a client for the CourseLandingPage schema.
+type CourseLandingPageClient struct {
+	config
+}
+
+// NewCourseLandingPageClient returns a client for the CourseLandingPage from the given config.
+func NewCourseLandingPageClient(c config) *CourseLandingPageClient {
+	return &CourseLandingPageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `courselandingpage.Hooks(f(g(h())))`.
+func (c *CourseLandingPageClient) Use(hooks ...Hook) {
+	c.hooks.CourseLandingPage = append(c.hooks.CourseLandingPage, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `courselandingpage.Intercept(f(g(h())))`.
+func (c *CourseLandingPageClient) Intercept(interceptors ...Interceptor) {
+	c.inters.CourseLandingPage = append(c.inters.CourseLandingPage, interceptors...)
+}
+
+// Create returns a builder for creating a CourseLandingPage entity.
+func (c *CourseLandingPageClient) Create() *CourseLandingPageCreate {
+	mutation := newCourseLandingPageMutation(c.config, OpCreate)
+	return &CourseLandingPageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CourseLandingPage entities.
+func (c *CourseLandingPageClient) CreateBulk(builders ...*CourseLandingPageCreate) *CourseLandingPageCreateBulk {
+	return &CourseLandingPageCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CourseLandingPageClient) MapCreateBulk(slice any, setFunc func(*CourseLandingPageCreate, int)) *CourseLandingPageCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CourseLandingPageCreateBulk{err: fmt.Errorf("calling to CourseLandingPageClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CourseLandingPageCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CourseLandingPageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CourseLandingPage.
+func (c *CourseLandingPageClient) Update() *CourseLandingPageUpdate {
+	mutation := newCourseLandingPageMutation(c.config, OpUpdate)
+	return &CourseLandingPageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CourseLandingPageClient) UpdateOne(_m *CourseLandingPage) *CourseLandingPageUpdateOne {
+	mutation := newCourseLandingPageMutation(c.config, OpUpdateOne, withCourseLandingPage(_m))
+	return &CourseLandingPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CourseLandingPageClient) UpdateOneID(id int) *CourseLandingPageUpdateOne {
+	mutation := newCourseLandingPageMutation(c.config, OpUpdateOne, withCourseLandingPageID(id))
+	return &CourseLandingPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CourseLandingPage.
+func (c *CourseLandingPageClient) Delete() *CourseLandingPageDelete {
+	mutation := newCourseLandingPageMutation(c.config, OpDelete)
+	return &CourseLandingPageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CourseLandingPageClient) DeleteOne(_m *CourseLandingPage) *CourseLandingPageDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CourseLandingPageClient) DeleteOneID(id int) *CourseLandingPageDeleteOne {
+	builder := c.Delete().Where(courselandingpage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CourseLandingPageDeleteOne{builder}
+}
+
+// Query returns a query builder for CourseLandingPage.
+func (c *CourseLandingPageClient) Query() *CourseLandingPageQuery {
+	return &CourseLandingPageQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCourseLandingPage},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a CourseLandingPage entity by its id.
+func (c *CourseLandingPageClient) Get(ctx context.Context, id int) (*CourseLandingPage, error) {
+	return c.Query().Where(courselandingpage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CourseLandingPageClient) GetX(ctx context.Context, id int) *CourseLandingPage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCourse queries the course edge of a CourseLandingPage.
+func (c *CourseLandingPageClient) QueryCourse(_m *CourseLandingPage) *CourseQuery {
+	query := (&CourseClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselandingpage.Table, courselandingpage.FieldID, id),
+			sqlgraph.To(course.Table, course.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, courselandingpage.CourseTable, courselandingpage.CourseColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCategoryItems queries the category_items edge of a CourseLandingPage.
+func (c *CourseLandingPageClient) QueryCategoryItems(_m *CourseLandingPage) *CourseCategoryItemQuery {
+	query := (&CourseCategoryItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(courselandingpage.Table, courselandingpage.FieldID, id),
+			sqlgraph.To(coursecategoryitem.Table, coursecategoryitem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, courselandingpage.CategoryItemsTable, courselandingpage.CategoryItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CourseLandingPageClient) Hooks() []Hook {
+	return c.hooks.CourseLandingPage
+}
+
+// Interceptors returns the client interceptors.
+func (c *CourseLandingPageClient) Interceptors() []Interceptor {
+	return c.inters.CourseLandingPage
+}
+
+func (c *CourseLandingPageClient) mutate(ctx context.Context, m *CourseLandingPageMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CourseLandingPageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CourseLandingPageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CourseLandingPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CourseLandingPageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown CourseLandingPage mutation op: %q", m.Op())
 	}
 }
 
@@ -3966,171 +4131,6 @@ func (c *EnrollmentClient) mutate(ctx context.Context, m *EnrollmentMutation) (V
 		return (&EnrollmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Enrollment mutation op: %q", m.Op())
-	}
-}
-
-// LandingPageClient is a client for the LandingPage schema.
-type LandingPageClient struct {
-	config
-}
-
-// NewLandingPageClient returns a client for the LandingPage from the given config.
-func NewLandingPageClient(c config) *LandingPageClient {
-	return &LandingPageClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `landingpage.Hooks(f(g(h())))`.
-func (c *LandingPageClient) Use(hooks ...Hook) {
-	c.hooks.LandingPage = append(c.hooks.LandingPage, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `landingpage.Intercept(f(g(h())))`.
-func (c *LandingPageClient) Intercept(interceptors ...Interceptor) {
-	c.inters.LandingPage = append(c.inters.LandingPage, interceptors...)
-}
-
-// Create returns a builder for creating a LandingPage entity.
-func (c *LandingPageClient) Create() *LandingPageCreate {
-	mutation := newLandingPageMutation(c.config, OpCreate)
-	return &LandingPageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of LandingPage entities.
-func (c *LandingPageClient) CreateBulk(builders ...*LandingPageCreate) *LandingPageCreateBulk {
-	return &LandingPageCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *LandingPageClient) MapCreateBulk(slice any, setFunc func(*LandingPageCreate, int)) *LandingPageCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &LandingPageCreateBulk{err: fmt.Errorf("calling to LandingPageClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*LandingPageCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &LandingPageCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for LandingPage.
-func (c *LandingPageClient) Update() *LandingPageUpdate {
-	mutation := newLandingPageMutation(c.config, OpUpdate)
-	return &LandingPageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *LandingPageClient) UpdateOne(_m *LandingPage) *LandingPageUpdateOne {
-	mutation := newLandingPageMutation(c.config, OpUpdateOne, withLandingPage(_m))
-	return &LandingPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *LandingPageClient) UpdateOneID(id int) *LandingPageUpdateOne {
-	mutation := newLandingPageMutation(c.config, OpUpdateOne, withLandingPageID(id))
-	return &LandingPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for LandingPage.
-func (c *LandingPageClient) Delete() *LandingPageDelete {
-	mutation := newLandingPageMutation(c.config, OpDelete)
-	return &LandingPageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *LandingPageClient) DeleteOne(_m *LandingPage) *LandingPageDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *LandingPageClient) DeleteOneID(id int) *LandingPageDeleteOne {
-	builder := c.Delete().Where(landingpage.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &LandingPageDeleteOne{builder}
-}
-
-// Query returns a query builder for LandingPage.
-func (c *LandingPageClient) Query() *LandingPageQuery {
-	return &LandingPageQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeLandingPage},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a LandingPage entity by its id.
-func (c *LandingPageClient) Get(ctx context.Context, id int) (*LandingPage, error) {
-	return c.Query().Where(landingpage.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *LandingPageClient) GetX(ctx context.Context, id int) *LandingPage {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryCourse queries the course edge of a LandingPage.
-func (c *LandingPageClient) QueryCourse(_m *LandingPage) *CourseQuery {
-	query := (&CourseClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(landingpage.Table, landingpage.FieldID, id),
-			sqlgraph.To(course.Table, course.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, landingpage.CourseTable, landingpage.CourseColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryCategoryItems queries the category_items edge of a LandingPage.
-func (c *LandingPageClient) QueryCategoryItems(_m *LandingPage) *CourseCategoryItemQuery {
-	query := (&CourseCategoryItemClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(landingpage.Table, landingpage.FieldID, id),
-			sqlgraph.To(coursecategoryitem.Table, coursecategoryitem.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, landingpage.CategoryItemsTable, landingpage.CategoryItemsColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *LandingPageClient) Hooks() []Hook {
-	return c.hooks.LandingPage
-}
-
-// Interceptors returns the client interceptors.
-func (c *LandingPageClient) Interceptors() []Interceptor {
-	return c.inters.LandingPage
-}
-
-func (c *LandingPageClient) mutate(ctx context.Context, m *LandingPageMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&LandingPageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&LandingPageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&LandingPageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&LandingPageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown LandingPage mutation op: %q", m.Op())
 	}
 }
 
@@ -5746,19 +5746,19 @@ type (
 	hooks struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
 		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
-		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLesson,
-		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
-		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
-		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
+		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLandingPage,
+		CourseLesson, CourseLessonReview, CourseLessonTranslation, CourseLessonVersion,
+		CourseModule, CourseModuleTranslation, CourseModuleVersion, CourseVersion,
+		Enrollment, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
 		StaffRole, StaffRolePermission, Tag, Tagging, User, UserAccount []ent.Hook
 	}
 	inters struct {
 		ActiveStorageAttachment, ActiveStorageBlob, AiChat, AiMessage, Attachment,
 		Banner, BlogPost, BlogPostLike, BlogPostRelatedCourseItem, BookRequest,
-		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLesson,
-		CourseLessonReview, CourseLessonTranslation, CourseLessonVersion, CourseModule,
-		CourseModuleTranslation, CourseModuleVersion, CourseVersion, Enrollment,
-		LandingPage, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
+		CategoryQnaItem, Course, CourseCategory, CourseCategoryItem, CourseLandingPage,
+		CourseLesson, CourseLessonReview, CourseLessonTranslation, CourseLessonVersion,
+		CourseModule, CourseModuleTranslation, CourseModuleVersion, CourseVersion,
+		Enrollment, LandingPageQnaItem, Lead, LessonProgress, Review, StaffMember,
 		StaffRole, StaffRolePermission, Tag, Tagging, User,
 		UserAccount []ent.Interceptor
 	}

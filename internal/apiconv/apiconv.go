@@ -45,13 +45,13 @@ import (
 // goverter:extend EnrollmentStateFromPtr
 // goverter:extend LocaleFromPtr
 type Converter interface {
-	ToCatalogItems(source []*ent.LandingPage) []api.CourseCatalogItem
+	ToCatalogItems(source []*ent.CourseLandingPage) []api.CourseCatalogItem
 
 	// goverter:map Edges.Course Course
 	// goverter:map Edges.Course.EnrollmentsCount EnrollmentsCount
 	// goverter:map . CoverUrl | coverURLNull
 	// goverter:ignore Duration
-	ToCatalogItem(source *ent.LandingPage) api.CourseCatalogItem
+	ToCatalogItem(source *ent.CourseLandingPage) api.CourseCatalogItem
 
 	// Every api.Course field maps from real ent data, mirroring LanguageResource:
 	// direct columns (createdAt, currentVersionId, hexletProgramLandingPage), the
@@ -73,9 +73,9 @@ type Converter interface {
 
 	// The sitemap's slim rows (legacy Sitemap*Resource): only what a link needs.
 	// goverter:map CourseID CourseId
-	ToSitemapCourseLandingPage(source *ent.LandingPage) api.SitemapCourseLandingPage
+	ToSitemapCourseLandingPage(source *ent.CourseLandingPage) api.SitemapCourseLandingPage
 
-	ToSitemapCourseLandingPages(source []*ent.LandingPage) []api.SitemapCourseLandingPage
+	ToSitemapCourseLandingPages(source []*ent.CourseLandingPage) []api.SitemapCourseLandingPage
 
 	ToSitemapBlogPost(source *ent.BlogPost) api.SitemapBlogPost
 
@@ -153,9 +153,9 @@ type Converter interface {
 	// goverter:map Edges.Course.EnrollmentsCount EnrollmentsCount
 	// goverter:map Edges.Course Duration | courseDuration
 	// goverter:map . OutcomesImage | landingOutcomesImageNull
-	ToCourseLandingPage(source *ent.LandingPage) api.CourseLandingPage
+	ToCourseLandingPage(source *ent.CourseLandingPage) api.CourseLandingPage
 
-	ToCourseLandingPages(source []*ent.LandingPage) []api.CourseLandingPage
+	ToCourseLandingPages(source []*ent.CourseLandingPage) []api.CourseLandingPage
 
 	// StaffRole is the list projection: permissionsCount is the size of the
 	// loaded permissions edge.
@@ -473,7 +473,7 @@ func NilReadinessFromPtr(v *string) api.NilCourseReadiness {
 }
 
 // coverURLNull keeps CoverUrl null until course cover assets are re-uploaded.
-func coverURLNull(*ent.LandingPage) api.NilString {
+func coverURLNull(*ent.CourseLandingPage) api.NilString {
 	return api.NilString{Null: true}
 }
 
@@ -582,7 +582,7 @@ func staffRolePermissionsCount(r *ent.StaffRole) int32 {
 // landingOutcomesImageNull keeps OutcomesImage null until the landing-page
 // outcomes image is migrated to blob storage (same deferral as the course
 // cover — see coverURLNull).
-func landingOutcomesImageNull(*ent.LandingPage) api.NilString {
+func landingOutcomesImageNull(*ent.CourseLandingPage) api.NilString {
 	return api.NilString{Null: true}
 }
 

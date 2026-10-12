@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/predicate"
 	"math"
 
@@ -25,7 +25,7 @@ type CourseCategoryItemQuery struct {
 	inters          []Interceptor
 	predicates      []predicate.CourseCategoryItem
 	withCategory    *CourseCategoryQuery
-	withLandingPage *LandingPageQuery
+	withLandingPage *CourseLandingPageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -85,8 +85,8 @@ func (_q *CourseCategoryItemQuery) QueryCategory() *CourseCategoryQuery {
 }
 
 // QueryLandingPage chains the current query on the "landing_page" edge.
-func (_q *CourseCategoryItemQuery) QueryLandingPage() *LandingPageQuery {
-	query := (&LandingPageClient{config: _q.config}).Query()
+func (_q *CourseCategoryItemQuery) QueryLandingPage() *CourseLandingPageQuery {
+	query := (&CourseLandingPageClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -97,7 +97,7 @@ func (_q *CourseCategoryItemQuery) QueryLandingPage() *LandingPageQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(coursecategoryitem.Table, coursecategoryitem.FieldID, selector),
-			sqlgraph.To(landingpage.Table, landingpage.FieldID),
+			sqlgraph.To(courselandingpage.Table, courselandingpage.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, coursecategoryitem.LandingPageTable, coursecategoryitem.LandingPageColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
@@ -319,8 +319,8 @@ func (_q *CourseCategoryItemQuery) WithCategory(opts ...func(*CourseCategoryQuer
 
 // WithLandingPage tells the query-builder to eager-load the nodes that are connected to
 // the "landing_page" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *CourseCategoryItemQuery) WithLandingPage(opts ...func(*LandingPageQuery)) *CourseCategoryItemQuery {
-	query := (&LandingPageClient{config: _q.config}).Query()
+func (_q *CourseCategoryItemQuery) WithLandingPage(opts ...func(*CourseLandingPageQuery)) *CourseCategoryItemQuery {
+	query := (&CourseLandingPageClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -437,7 +437,7 @@ func (_q *CourseCategoryItemQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 	}
 	if query := _q.withLandingPage; query != nil {
 		if err := _q.loadLandingPage(ctx, query, nodes, nil,
-			func(n *CourseCategoryItem, e *LandingPage) { n.Edges.LandingPage = e }); err != nil {
+			func(n *CourseCategoryItem, e *CourseLandingPage) { n.Edges.LandingPage = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -473,7 +473,7 @@ func (_q *CourseCategoryItemQuery) loadCategory(ctx context.Context, query *Cour
 	}
 	return nil
 }
-func (_q *CourseCategoryItemQuery) loadLandingPage(ctx context.Context, query *LandingPageQuery, nodes []*CourseCategoryItem, init func(*CourseCategoryItem), assign func(*CourseCategoryItem, *LandingPage)) error {
+func (_q *CourseCategoryItemQuery) loadLandingPage(ctx context.Context, query *CourseLandingPageQuery, nodes []*CourseCategoryItem, init func(*CourseCategoryItem), assign func(*CourseCategoryItem, *CourseLandingPage)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*CourseCategoryItem)
 	for i := range nodes {
@@ -486,7 +486,7 @@ func (_q *CourseCategoryItemQuery) loadLandingPage(ctx context.Context, query *L
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(landingpage.IDIn(ids...))
+	query.Where(courselandingpage.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err

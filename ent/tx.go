@@ -40,6 +40,8 @@ type Tx struct {
 	CourseCategory *CourseCategoryClient
 	// CourseCategoryItem is the client for interacting with the CourseCategoryItem builders.
 	CourseCategoryItem *CourseCategoryItemClient
+	// CourseLandingPage is the client for interacting with the CourseLandingPage builders.
+	CourseLandingPage *CourseLandingPageClient
 	// CourseLesson is the client for interacting with the CourseLesson builders.
 	CourseLesson *CourseLessonClient
 	// CourseLessonReview is the client for interacting with the CourseLessonReview builders.
@@ -58,8 +60,6 @@ type Tx struct {
 	CourseVersion *CourseVersionClient
 	// Enrollment is the client for interacting with the Enrollment builders.
 	Enrollment *EnrollmentClient
-	// LandingPage is the client for interacting with the LandingPage builders.
-	LandingPage *LandingPageClient
 	// LandingPageQnaItem is the client for interacting with the LandingPageQnaItem builders.
 	LandingPageQnaItem *LandingPageQnaItemClient
 	// Lead is the client for interacting with the Lead builders.
@@ -227,6 +227,7 @@ func (tx *Tx) init() {
 	tx.Course = NewCourseClient(tx.config)
 	tx.CourseCategory = NewCourseCategoryClient(tx.config)
 	tx.CourseCategoryItem = NewCourseCategoryItemClient(tx.config)
+	tx.CourseLandingPage = NewCourseLandingPageClient(tx.config)
 	tx.CourseLesson = NewCourseLessonClient(tx.config)
 	tx.CourseLessonReview = NewCourseLessonReviewClient(tx.config)
 	tx.CourseLessonTranslation = NewCourseLessonTranslationClient(tx.config)
@@ -236,7 +237,6 @@ func (tx *Tx) init() {
 	tx.CourseModuleVersion = NewCourseModuleVersionClient(tx.config)
 	tx.CourseVersion = NewCourseVersionClient(tx.config)
 	tx.Enrollment = NewEnrollmentClient(tx.config)
-	tx.LandingPage = NewLandingPageClient(tx.config)
 	tx.LandingPageQnaItem = NewLandingPageQnaItemClient(tx.config)
 	tx.Lead = NewLeadClient(tx.config)
 	tx.LessonProgress = NewLessonProgressClient(tx.config)

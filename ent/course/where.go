@@ -792,7 +792,7 @@ func HasLandingPages() predicate.Course {
 }
 
 // HasLandingPagesWith applies the HasEdge predicate on the "landing_pages" edge with a given conditions (other predicates).
-func HasLandingPagesWith(preds ...predicate.LandingPage) predicate.Course {
+func HasLandingPagesWith(preds ...predicate.CourseLandingPage) predicate.Course {
 	return predicate.Course(func(s *sql.Selector) {
 		step := newLandingPagesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

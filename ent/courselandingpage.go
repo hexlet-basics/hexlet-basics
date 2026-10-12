@@ -5,7 +5,7 @@ package ent
 import (
 	"fmt"
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"strings"
 	"time"
 
@@ -13,8 +13,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// LandingPage is the model entity for the LandingPage schema.
-type LandingPage struct {
+// CourseLandingPage is the model entity for the CourseLandingPage schema.
+type CourseLandingPage struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
@@ -63,13 +63,13 @@ type LandingPage struct {
 	// LandingPageToRedirectID holds the value of the "landing_page_to_redirect_id" field.
 	LandingPageToRedirectID *int `json:"landing_page_to_redirect_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the LandingPageQuery when eager-loading is set.
-	Edges        LandingPageEdges `json:"edges"`
+	// The values are being populated by the CourseLandingPageQuery when eager-loading is set.
+	Edges        CourseLandingPageEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
-// LandingPageEdges holds the relations/edges for other nodes in the graph.
-type LandingPageEdges struct {
+// CourseLandingPageEdges holds the relations/edges for other nodes in the graph.
+type CourseLandingPageEdges struct {
 	// Course holds the value of the course edge.
 	Course *Course `json:"course,omitempty"`
 	// CategoryItems holds the value of the category_items edge.
@@ -81,7 +81,7 @@ type LandingPageEdges struct {
 
 // CourseOrErr returns the Course value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e LandingPageEdges) CourseOrErr() (*Course, error) {
+func (e CourseLandingPageEdges) CourseOrErr() (*Course, error) {
 	if e.Course != nil {
 		return e.Course, nil
 	} else if e.loadedTypes[0] {
@@ -92,7 +92,7 @@ func (e LandingPageEdges) CourseOrErr() (*Course, error) {
 
 // CategoryItemsOrErr returns the CategoryItems value or an error if the edge
 // was not loaded in eager-loading.
-func (e LandingPageEdges) CategoryItemsOrErr() ([]*CourseCategoryItem, error) {
+func (e CourseLandingPageEdges) CategoryItemsOrErr() ([]*CourseCategoryItem, error) {
 	if e.loadedTypes[1] {
 		return e.CategoryItems, nil
 	}
@@ -100,17 +100,17 @@ func (e LandingPageEdges) CategoryItemsOrErr() ([]*CourseCategoryItem, error) {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*LandingPage) scanValues(columns []string) ([]any, error) {
+func (*CourseLandingPage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case landingpage.FieldListed, landingpage.FieldMain, landingpage.FieldFooter:
+		case courselandingpage.FieldListed, courselandingpage.FieldMain, courselandingpage.FieldFooter:
 			values[i] = new(sql.NullBool)
-		case landingpage.FieldID, landingpage.FieldCourseID, landingpage.FieldLanguageCategoryID, landingpage.FieldLandingPageToRedirectID:
+		case courselandingpage.FieldID, courselandingpage.FieldCourseID, courselandingpage.FieldLanguageCategoryID, courselandingpage.FieldLandingPageToRedirectID:
 			values[i] = new(sql.NullInt64)
-		case landingpage.FieldSlug, landingpage.FieldHeader, landingpage.FieldName, landingpage.FieldLocale, landingpage.FieldState, landingpage.FieldOrder, landingpage.FieldMetaTitle, landingpage.FieldMetaDescription, landingpage.FieldDescription, landingpage.FieldUsedInHeader, landingpage.FieldUsedInDescription, landingpage.FieldOutcomesHeader, landingpage.FieldOutcomesDescription, landingpage.FieldFooterName:
+		case courselandingpage.FieldSlug, courselandingpage.FieldHeader, courselandingpage.FieldName, courselandingpage.FieldLocale, courselandingpage.FieldState, courselandingpage.FieldOrder, courselandingpage.FieldMetaTitle, courselandingpage.FieldMetaDescription, courselandingpage.FieldDescription, courselandingpage.FieldUsedInHeader, courselandingpage.FieldUsedInDescription, courselandingpage.FieldOutcomesHeader, courselandingpage.FieldOutcomesDescription, courselandingpage.FieldFooterName:
 			values[i] = new(sql.NullString)
-		case landingpage.FieldCreatedAt, landingpage.FieldUpdatedAt:
+		case courselandingpage.FieldCreatedAt, courselandingpage.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -120,164 +120,164 @@ func (*LandingPage) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the LandingPage fields.
-func (_m *LandingPage) assignValues(columns []string, values []any) error {
+// to the CourseLandingPage fields.
+func (_m *CourseLandingPage) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case landingpage.FieldID:
+		case courselandingpage.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
-		case landingpage.FieldCreatedAt:
+		case courselandingpage.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
 			}
-		case landingpage.FieldUpdatedAt:
+		case courselandingpage.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case landingpage.FieldCourseID:
+		case courselandingpage.FieldCourseID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field course_id", values[i])
 			} else if value.Valid {
 				_m.CourseID = int(value.Int64)
 			}
-		case landingpage.FieldSlug:
+		case courselandingpage.FieldSlug:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field slug", values[i])
 			} else if value.Valid {
 				_m.Slug = new(string)
 				*_m.Slug = value.String
 			}
-		case landingpage.FieldHeader:
+		case courselandingpage.FieldHeader:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field header", values[i])
 			} else if value.Valid {
 				_m.Header = new(string)
 				*_m.Header = value.String
 			}
-		case landingpage.FieldName:
+		case courselandingpage.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				_m.Name = new(string)
 				*_m.Name = value.String
 			}
-		case landingpage.FieldLocale:
+		case courselandingpage.FieldLocale:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field locale", values[i])
 			} else if value.Valid {
 				_m.Locale = new(string)
 				*_m.Locale = value.String
 			}
-		case landingpage.FieldListed:
+		case courselandingpage.FieldListed:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field listed", values[i])
 			} else if value.Valid {
 				_m.Listed = new(bool)
 				*_m.Listed = value.Bool
 			}
-		case landingpage.FieldMain:
+		case courselandingpage.FieldMain:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field main", values[i])
 			} else if value.Valid {
 				_m.Main = new(bool)
 				*_m.Main = value.Bool
 			}
-		case landingpage.FieldState:
+		case courselandingpage.FieldState:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field state", values[i])
 			} else if value.Valid {
 				_m.State = new(string)
 				*_m.State = value.String
 			}
-		case landingpage.FieldOrder:
+		case courselandingpage.FieldOrder:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field order", values[i])
 			} else if value.Valid {
 				_m.Order = new(string)
 				*_m.Order = value.String
 			}
-		case landingpage.FieldMetaTitle:
+		case courselandingpage.FieldMetaTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field meta_title", values[i])
 			} else if value.Valid {
 				_m.MetaTitle = new(string)
 				*_m.MetaTitle = value.String
 			}
-		case landingpage.FieldMetaDescription:
+		case courselandingpage.FieldMetaDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field meta_description", values[i])
 			} else if value.Valid {
 				_m.MetaDescription = new(string)
 				*_m.MetaDescription = value.String
 			}
-		case landingpage.FieldDescription:
+		case courselandingpage.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				_m.Description = new(string)
 				*_m.Description = value.String
 			}
-		case landingpage.FieldUsedInHeader:
+		case courselandingpage.FieldUsedInHeader:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field used_in_header", values[i])
 			} else if value.Valid {
 				_m.UsedInHeader = new(string)
 				*_m.UsedInHeader = value.String
 			}
-		case landingpage.FieldUsedInDescription:
+		case courselandingpage.FieldUsedInDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field used_in_description", values[i])
 			} else if value.Valid {
 				_m.UsedInDescription = new(string)
 				*_m.UsedInDescription = value.String
 			}
-		case landingpage.FieldOutcomesHeader:
+		case courselandingpage.FieldOutcomesHeader:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field outcomes_header", values[i])
 			} else if value.Valid {
 				_m.OutcomesHeader = new(string)
 				*_m.OutcomesHeader = value.String
 			}
-		case landingpage.FieldOutcomesDescription:
+		case courselandingpage.FieldOutcomesDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field outcomes_description", values[i])
 			} else if value.Valid {
 				_m.OutcomesDescription = new(string)
 				*_m.OutcomesDescription = value.String
 			}
-		case landingpage.FieldFooter:
+		case courselandingpage.FieldFooter:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field footer", values[i])
 			} else if value.Valid {
 				_m.Footer = new(bool)
 				*_m.Footer = value.Bool
 			}
-		case landingpage.FieldFooterName:
+		case courselandingpage.FieldFooterName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field footer_name", values[i])
 			} else if value.Valid {
 				_m.FooterName = new(string)
 				*_m.FooterName = value.String
 			}
-		case landingpage.FieldLanguageCategoryID:
+		case courselandingpage.FieldLanguageCategoryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field language_category_id", values[i])
 			} else if value.Valid {
 				_m.LanguageCategoryID = new(int)
 				*_m.LanguageCategoryID = int(value.Int64)
 			}
-		case landingpage.FieldLandingPageToRedirectID:
+		case courselandingpage.FieldLandingPageToRedirectID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field landing_page_to_redirect_id", values[i])
 			} else if value.Valid {
@@ -291,44 +291,44 @@ func (_m *LandingPage) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the LandingPage.
+// Value returns the ent.Value that was dynamically selected and assigned to the CourseLandingPage.
 // This includes values selected through modifiers, order, etc.
-func (_m *LandingPage) Value(name string) (ent.Value, error) {
+func (_m *CourseLandingPage) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryCourse queries the "course" edge of the LandingPage entity.
-func (_m *LandingPage) QueryCourse() *CourseQuery {
-	return NewLandingPageClient(_m.config).QueryCourse(_m)
+// QueryCourse queries the "course" edge of the CourseLandingPage entity.
+func (_m *CourseLandingPage) QueryCourse() *CourseQuery {
+	return NewCourseLandingPageClient(_m.config).QueryCourse(_m)
 }
 
-// QueryCategoryItems queries the "category_items" edge of the LandingPage entity.
-func (_m *LandingPage) QueryCategoryItems() *CourseCategoryItemQuery {
-	return NewLandingPageClient(_m.config).QueryCategoryItems(_m)
+// QueryCategoryItems queries the "category_items" edge of the CourseLandingPage entity.
+func (_m *CourseLandingPage) QueryCategoryItems() *CourseCategoryItemQuery {
+	return NewCourseLandingPageClient(_m.config).QueryCategoryItems(_m)
 }
 
-// Update returns a builder for updating this LandingPage.
-// Note that you need to call LandingPage.Unwrap() before calling this method if this LandingPage
+// Update returns a builder for updating this CourseLandingPage.
+// Note that you need to call CourseLandingPage.Unwrap() before calling this method if this CourseLandingPage
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *LandingPage) Update() *LandingPageUpdateOne {
-	return NewLandingPageClient(_m.config).UpdateOne(_m)
+func (_m *CourseLandingPage) Update() *CourseLandingPageUpdateOne {
+	return NewCourseLandingPageClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the LandingPage entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the CourseLandingPage entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *LandingPage) Unwrap() *LandingPage {
+func (_m *CourseLandingPage) Unwrap() *CourseLandingPage {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: LandingPage is not a transactional entity")
+		panic("ent: CourseLandingPage is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *LandingPage) String() string {
+func (_m *CourseLandingPage) String() string {
 	var builder strings.Builder
-	builder.WriteString("LandingPage(")
+	builder.WriteString("CourseLandingPage(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
@@ -437,5 +437,5 @@ func (_m *LandingPage) String() string {
 	return builder.String()
 }
 
-// LandingPages is a parsable slice of LandingPage.
-type LandingPages []*LandingPage
+// CourseLandingPages is a parsable slice of CourseLandingPage.
+type CourseLandingPages []*CourseLandingPage

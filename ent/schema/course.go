@@ -53,7 +53,7 @@ func (Course) Fields() []ent.Field {
 
 func (Course) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("landing_pages", LandingPage.Type),
+		edge.To("landing_pages", CourseLandingPage.Type),
 		// current_version is the specific version a course points at via its
 		// `current_version_id` column (belongs-to), distinct from a course's
 		// full version history. The FK lives on this (languages) table, so the

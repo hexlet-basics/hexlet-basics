@@ -315,6 +315,46 @@ var (
 			},
 		},
 	}
+	// LanguageLandingPagesColumns holds the columns for the "language_landing_pages" table.
+	LanguageLandingPagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "slug", Type: field.TypeString, Nullable: true},
+		{Name: "header", Type: field.TypeString, Nullable: true},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "locale", Type: field.TypeString, Nullable: true},
+		{Name: "listed", Type: field.TypeBool, Nullable: true},
+		{Name: "main", Type: field.TypeBool, Nullable: true},
+		{Name: "state", Type: field.TypeString, Nullable: true},
+		{Name: "order", Type: field.TypeString, Nullable: true},
+		{Name: "meta_title", Type: field.TypeString, Nullable: true},
+		{Name: "meta_description", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "used_in_header", Type: field.TypeString, Nullable: true},
+		{Name: "used_in_description", Type: field.TypeString, Nullable: true},
+		{Name: "outcomes_header", Type: field.TypeString, Nullable: true},
+		{Name: "outcomes_description", Type: field.TypeString, Nullable: true},
+		{Name: "footer", Type: field.TypeBool, Nullable: true},
+		{Name: "footer_name", Type: field.TypeString, Nullable: true},
+		{Name: "language_category_id", Type: field.TypeInt, Nullable: true},
+		{Name: "landing_page_to_redirect_id", Type: field.TypeInt, Nullable: true},
+		{Name: "language_id", Type: field.TypeInt},
+	}
+	// LanguageLandingPagesTable holds the schema information for the "language_landing_pages" table.
+	LanguageLandingPagesTable = &schema.Table{
+		Name:       "language_landing_pages",
+		Columns:    LanguageLandingPagesColumns,
+		PrimaryKey: []*schema.Column{LanguageLandingPagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "language_landing_pages_languages_landing_pages",
+				Columns:    []*schema.Column{LanguageLandingPagesColumns[22]},
+				RefColumns: []*schema.Column{LanguagesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// LanguageLessonsColumns holds the columns for the "language_lessons" table.
 	LanguageLessonsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -575,46 +615,6 @@ var (
 			},
 		},
 	}
-	// LanguageLandingPagesColumns holds the columns for the "language_landing_pages" table.
-	LanguageLandingPagesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "slug", Type: field.TypeString, Nullable: true},
-		{Name: "header", Type: field.TypeString, Nullable: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "locale", Type: field.TypeString, Nullable: true},
-		{Name: "listed", Type: field.TypeBool, Nullable: true},
-		{Name: "main", Type: field.TypeBool, Nullable: true},
-		{Name: "state", Type: field.TypeString, Nullable: true},
-		{Name: "order", Type: field.TypeString, Nullable: true},
-		{Name: "meta_title", Type: field.TypeString, Nullable: true},
-		{Name: "meta_description", Type: field.TypeString, Nullable: true},
-		{Name: "description", Type: field.TypeString, Nullable: true},
-		{Name: "used_in_header", Type: field.TypeString, Nullable: true},
-		{Name: "used_in_description", Type: field.TypeString, Nullable: true},
-		{Name: "outcomes_header", Type: field.TypeString, Nullable: true},
-		{Name: "outcomes_description", Type: field.TypeString, Nullable: true},
-		{Name: "footer", Type: field.TypeBool, Nullable: true},
-		{Name: "footer_name", Type: field.TypeString, Nullable: true},
-		{Name: "language_category_id", Type: field.TypeInt, Nullable: true},
-		{Name: "landing_page_to_redirect_id", Type: field.TypeInt, Nullable: true},
-		{Name: "language_id", Type: field.TypeInt},
-	}
-	// LanguageLandingPagesTable holds the schema information for the "language_landing_pages" table.
-	LanguageLandingPagesTable = &schema.Table{
-		Name:       "language_landing_pages",
-		Columns:    LanguageLandingPagesColumns,
-		PrimaryKey: []*schema.Column{LanguageLandingPagesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "language_landing_pages_languages_landing_pages",
-				Columns:    []*schema.Column{LanguageLandingPagesColumns[22]},
-				RefColumns: []*schema.Column{LanguagesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
 	// LanguageLandingPageQnaItemsColumns holds the columns for the "language_landing_page_qna_items" table.
 	LanguageLandingPageQnaItemsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -871,6 +871,7 @@ var (
 		LanguagesTable,
 		LanguageCategoriesTable,
 		LanguageCategoryItemsTable,
+		LanguageLandingPagesTable,
 		LanguageLessonsTable,
 		LanguageLessonReviewsTable,
 		LanguageLessonVersionInfosTable,
@@ -880,7 +881,6 @@ var (
 		LanguageModuleVersionsTable,
 		LanguageVersionsTable,
 		LanguageMembersTable,
-		LanguageLandingPagesTable,
 		LanguageLandingPageQnaItemsTable,
 		LeadsTable,
 		LanguageLessonMembersTable,
@@ -927,6 +927,10 @@ func init() {
 	LanguageCategoryItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_category_items",
 	}
+	LanguageLandingPagesTable.ForeignKeys[0].RefTable = LanguagesTable
+	LanguageLandingPagesTable.Annotation = &entsql.Annotation{
+		Table: "language_landing_pages",
+	}
 	LanguageLessonsTable.Annotation = &entsql.Annotation{
 		Table: "language_lessons",
 	}
@@ -963,10 +967,6 @@ func init() {
 	LanguageMembersTable.ForeignKeys[1].RefTable = UsersTable
 	LanguageMembersTable.Annotation = &entsql.Annotation{
 		Table: "language_members",
-	}
-	LanguageLandingPagesTable.ForeignKeys[0].RefTable = LanguagesTable
-	LanguageLandingPagesTable.Annotation = &entsql.Annotation{
-		Table: "language_landing_pages",
 	}
 	LanguageLandingPageQnaItemsTable.Annotation = &entsql.Annotation{
 		Table: "language_landing_page_qna_items",

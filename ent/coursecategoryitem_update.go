@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/predicate"
 	"time"
 
@@ -75,8 +75,8 @@ func (_u *CourseCategoryItemUpdate) SetCategory(v *CourseCategory) *CourseCatego
 	return _u.SetCategoryID(v.ID)
 }
 
-// SetLandingPage sets the "landing_page" edge to the LandingPage entity.
-func (_u *CourseCategoryItemUpdate) SetLandingPage(v *LandingPage) *CourseCategoryItemUpdate {
+// SetLandingPage sets the "landing_page" edge to the CourseLandingPage entity.
+func (_u *CourseCategoryItemUpdate) SetLandingPage(v *CourseLandingPage) *CourseCategoryItemUpdate {
 	return _u.SetLandingPageID(v.ID)
 }
 
@@ -91,7 +91,7 @@ func (_u *CourseCategoryItemUpdate) ClearCategory() *CourseCategoryItemUpdate {
 	return _u
 }
 
-// ClearLandingPage clears the "landing_page" edge to the LandingPage entity.
+// ClearLandingPage clears the "landing_page" edge to the CourseLandingPage entity.
 func (_u *CourseCategoryItemUpdate) ClearLandingPage() *CourseCategoryItemUpdate {
 	_u.mutation.ClearLandingPage()
 	return _u
@@ -196,7 +196,7 @@ func (_u *CourseCategoryItemUpdate) sqlSave(ctx context.Context) (_node int, err
 			Columns: []string{coursecategoryitem.LandingPageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -209,7 +209,7 @@ func (_u *CourseCategoryItemUpdate) sqlSave(ctx context.Context) (_node int, err
 			Columns: []string{coursecategoryitem.LandingPageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -282,8 +282,8 @@ func (_u *CourseCategoryItemUpdateOne) SetCategory(v *CourseCategory) *CourseCat
 	return _u.SetCategoryID(v.ID)
 }
 
-// SetLandingPage sets the "landing_page" edge to the LandingPage entity.
-func (_u *CourseCategoryItemUpdateOne) SetLandingPage(v *LandingPage) *CourseCategoryItemUpdateOne {
+// SetLandingPage sets the "landing_page" edge to the CourseLandingPage entity.
+func (_u *CourseCategoryItemUpdateOne) SetLandingPage(v *CourseLandingPage) *CourseCategoryItemUpdateOne {
 	return _u.SetLandingPageID(v.ID)
 }
 
@@ -298,7 +298,7 @@ func (_u *CourseCategoryItemUpdateOne) ClearCategory() *CourseCategoryItemUpdate
 	return _u
 }
 
-// ClearLandingPage clears the "landing_page" edge to the LandingPage entity.
+// ClearLandingPage clears the "landing_page" edge to the CourseLandingPage entity.
 func (_u *CourseCategoryItemUpdateOne) ClearLandingPage() *CourseCategoryItemUpdateOne {
 	_u.mutation.ClearLandingPage()
 	return _u
@@ -433,7 +433,7 @@ func (_u *CourseCategoryItemUpdateOne) sqlSave(ctx context.Context) (_node *Cour
 			Columns: []string{coursecategoryitem.LandingPageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -446,7 +446,7 @@ func (_u *CourseCategoryItemUpdateOne) sqlSave(ctx context.Context) (_node *Cour
 			Columns: []string{coursecategoryitem.LandingPageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

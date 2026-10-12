@@ -17,7 +17,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpostrelatedcourseitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/htmltext"
 	"hexletbasics/internal/landingpages"
 	"hexletbasics/internal/store"
@@ -158,18 +158,18 @@ func (s *Suggester) SuggestRelatedCourses(ctx context.Context, blogPostID int) e
 // legacy; ordered by id only so the prompt is deterministic (legacy left the
 // order to the database).
 func offeredCandidates(ctx context.Context, db *ent.Client, locale string) ([]candidate, error) {
-	pages, err := db.LandingPage.Query().
+	pages, err := db.CourseLandingPage.Query().
 		Where(
-			landingpage.StateEQ(landingpages.StatePublished),
-			landingpage.Main(true),
-			landingpage.LocaleEQ(locale),
+			courselandingpage.StateEQ(landingpages.StatePublished),
+			courselandingpage.Main(true),
+			courselandingpage.LocaleEQ(locale),
 		).
-		Order(ent.Asc(landingpage.FieldID)).
+		Order(ent.Asc(courselandingpage.FieldID)).
 		All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return lo.Map(pages, func(p *ent.LandingPage, _ int) candidate {
+	return lo.Map(pages, func(p *ent.CourseLandingPage, _ int) candidate {
 		return candidate{ID: p.CourseID, Name: p.Header}
 	}), nil
 }

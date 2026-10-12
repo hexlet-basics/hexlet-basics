@@ -131,7 +131,7 @@ func TestAdminCreateCourseLandingPage(t *testing.T) {
 	assert.Equal(t, "ruby", created.CourseSlug) // embedded course reloaded
 	assert.Equal(t, api.LandingPageStateDraft, created.State.Value)
 
-	total, err := h.DB.LandingPage.Query().Count(ctx)
+	total, err := h.DB.CourseLandingPage.Query().Count(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, totalLandingPages+1, total)
 }
@@ -157,7 +157,7 @@ func TestAdminUpdateCourseLandingPage(t *testing.T) {
 	assert.Equal(t, api.LandingPageStateArchived, updated.State.Value)
 	assert.True(t, updated.Order.Null)
 
-	row, err := h.DB.LandingPage.Get(ctx, int(target.ID))
+	row, err := h.DB.CourseLandingPage.Get(ctx, int(target.ID))
 	require.NoError(t, err)
 	assert.Nil(t, row.Order, "null order should clear the column")
 }
@@ -178,7 +178,7 @@ func TestAdminDeleteCourseLandingPage(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 
-	total, err := h.DB.LandingPage.Query().Count(ctx)
+	total, err := h.DB.CourseLandingPage.Query().Count(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, totalLandingPages, total)
 }

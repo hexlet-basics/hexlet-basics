@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -111,7 +111,7 @@ func TestGetCourseLessonWithoutALandingPage(t *testing.T) {
 	ctx := t.Context()
 
 	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(ctx)
-	h.DB.LandingPage.Delete().Where(landingpage.CourseID(js.ID)).ExecX(ctx)
+	h.DB.CourseLandingPage.Delete().Where(courselandingpage.CourseID(js.ID)).ExecX(ctx)
 
 	res, err := h.Client.GetCourseLesson(ctx, api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,

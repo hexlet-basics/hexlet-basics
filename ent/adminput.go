@@ -179,7 +179,7 @@ func (u *CourseCategoryUpdateOne) SetInput(i *api.CourseCategoryInput) *CourseCa
 // SetInput applies the contract CourseLandingPageInput to the create builder: required
 // contract fields are set directly, nullable ones go through SetNillable so a
 // null leaves the column unset, set-only ones apply only when non-null.
-func (c *LandingPageCreate) SetInput(i *api.CourseLandingPageInput) *LandingPageCreate {
+func (c *CourseLandingPageCreate) SetInput(i *api.CourseLandingPageInput) *CourseLandingPageCreate {
 	c.SetCourseID(int(i.CourseId))
 	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
 	c.SetNillableHeader(inputconv.StringPtr(i.Header))
@@ -205,7 +205,7 @@ func (c *LandingPageCreate) SetInput(i *api.CourseLandingPageInput) *LandingPage
 // contract fields are set directly, a null nullable field clears the column
 // (the legacy assign_attributes semantics), a null set-only field leaves the
 // column untouched.
-func (u *LandingPageUpdateOne) SetInput(i *api.CourseLandingPageInput) *LandingPageUpdateOne {
+func (u *CourseLandingPageUpdateOne) SetInput(i *api.CourseLandingPageInput) *CourseLandingPageUpdateOne {
 	u.SetCourseID(int(i.CourseId))
 	if i.Slug.Null {
 		u.ClearSlug()

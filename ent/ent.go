@@ -20,6 +20,7 @@ import (
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselesson"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
@@ -29,7 +30,6 @@ import (
 	"hexletbasics/ent/coursemoduleversion"
 	"hexletbasics/ent/courseversion"
 	"hexletbasics/ent/enrollment"
-	"hexletbasics/ent/landingpage"
 	"hexletbasics/ent/landingpageqnaitem"
 	"hexletbasics/ent/lead"
 	"hexletbasics/ent/lessonprogress"
@@ -121,6 +121,7 @@ func checkColumn(t, c string) error {
 			course.Table:                    course.ValidColumn,
 			coursecategory.Table:            coursecategory.ValidColumn,
 			coursecategoryitem.Table:        coursecategoryitem.ValidColumn,
+			courselandingpage.Table:         courselandingpage.ValidColumn,
 			courselesson.Table:              courselesson.ValidColumn,
 			courselessonreview.Table:        courselessonreview.ValidColumn,
 			courselessontranslation.Table:   courselessontranslation.ValidColumn,
@@ -130,7 +131,6 @@ func checkColumn(t, c string) error {
 			coursemoduleversion.Table:       coursemoduleversion.ValidColumn,
 			courseversion.Table:             courseversion.ValidColumn,
 			enrollment.Table:                enrollment.ValidColumn,
-			landingpage.Table:               landingpage.ValidColumn,
 			landingpageqnaitem.Table:        landingpageqnaitem.ValidColumn,
 			lead.Table:                      lead.ValidColumn,
 			lessonprogress.Table:            lessonprogress.ValidColumn,

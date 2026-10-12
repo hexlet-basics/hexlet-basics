@@ -8,17 +8,17 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// LandingPage maps the legacy `language_landing_pages` table — a localized
+// CourseLandingPage maps the legacy `language_landing_pages` table — a localized
 // catalog entry for a Course. The public catalog reads a slim projection
 // (ToCatalogItem), while the admin surface reads/writes the full row
 // (ToCourseLandingPage), so all editable columns are mapped; nullable columns
 // mirror the schema with Optional().Nillable(). The Rails-owned timestamps are
 // supplied by ent because admin create/update writes this table.
-type LandingPage struct {
+type CourseLandingPage struct {
 	ent.Schema
 }
 
-func (LandingPage) Annotations() []schema.Annotation {
+func (CourseLandingPage) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "language_landing_pages"},
 		// The input's outcomesImageAttachmentId maps to nothing — the asset
@@ -28,7 +28,7 @@ func (LandingPage) Annotations() []schema.Annotation {
 	}
 }
 
-func (LandingPage) Fields() []ent.Field {
+func (CourseLandingPage) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("course_id").StorageKey("language_id").
 			Annotations(AdminInputField{Rename: "CourseId"}),
@@ -62,7 +62,7 @@ func (LandingPage) Fields() []ent.Field {
 	}
 }
 
-func (LandingPage) Edges() []ent.Edge {
+func (CourseLandingPage) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("course", Course.Type).
 			Ref("landing_pages").
@@ -75,6 +75,6 @@ func (LandingPage) Edges() []ent.Edge {
 	}
 }
 
-func (LandingPage) Mixin() []ent.Mixin {
+func (CourseLandingPage) Mixin() []ent.Mixin {
 	return []ent.Mixin{TimestampsMixin{}}
 }

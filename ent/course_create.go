@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/course"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courseversion"
-	"hexletbasics/ent/landingpage"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -192,14 +192,14 @@ func (_c *CourseCreate) SetNillableOrder(v *int) *CourseCreate {
 	return _c
 }
 
-// AddLandingPageIDs adds the "landing_pages" edge to the LandingPage entity by IDs.
+// AddLandingPageIDs adds the "landing_pages" edge to the CourseLandingPage entity by IDs.
 func (_c *CourseCreate) AddLandingPageIDs(ids ...int) *CourseCreate {
 	_c.mutation.AddLandingPageIDs(ids...)
 	return _c
 }
 
-// AddLandingPages adds the "landing_pages" edges to the LandingPage entity.
-func (_c *CourseCreate) AddLandingPages(v ...*LandingPage) *CourseCreate {
+// AddLandingPages adds the "landing_pages" edges to the CourseLandingPage entity.
+func (_c *CourseCreate) AddLandingPages(v ...*CourseLandingPage) *CourseCreate {
 	ids := make([]int, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -358,7 +358,7 @@ func (_c *CourseCreate) createSpec() (*Course, *sqlgraph.CreateSpec) {
 			Columns: []string{course.LandingPagesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(landingpage.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(courselandingpage.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"hexletbasics/ent/course"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/testsupport"
 )
@@ -72,12 +72,12 @@ func TestGetPublicCourseCategoryLeavesOutHiddenPagesAndUnfinishedCourses(t *test
 	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()
 
-	require.NoError(t, h.DB.LandingPage.Update().
-		Where(landingpage.SlugEQ("go-ru")).
+	require.NoError(t, h.DB.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ("go-ru")).
 		SetListed(false).
 		Exec(ctx))
-	require.NoError(t, h.DB.LandingPage.Update().
-		Where(landingpage.SlugEQ("ruby-ru")).
+	require.NoError(t, h.DB.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ("ruby-ru")).
 		SetState("archived").
 		Exec(ctx))
 	require.NoError(t, h.DB.Course.Update().

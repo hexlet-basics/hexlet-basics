@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/coursecategory"
 	"hexletbasics/ent/coursecategoryitem"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"strings"
 	"time"
 
@@ -38,7 +38,7 @@ type CourseCategoryItemEdges struct {
 	// Category holds the value of the category edge.
 	Category *CourseCategory `json:"category,omitempty"`
 	// LandingPage holds the value of the landing_page edge.
-	LandingPage *LandingPage `json:"landing_page,omitempty"`
+	LandingPage *CourseLandingPage `json:"landing_page,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -57,11 +57,11 @@ func (e CourseCategoryItemEdges) CategoryOrErr() (*CourseCategory, error) {
 
 // LandingPageOrErr returns the LandingPage value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e CourseCategoryItemEdges) LandingPageOrErr() (*LandingPage, error) {
+func (e CourseCategoryItemEdges) LandingPageOrErr() (*CourseLandingPage, error) {
 	if e.LandingPage != nil {
 		return e.LandingPage, nil
 	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: landingpage.Label}
+		return nil, &NotFoundError{label: courselandingpage.Label}
 	}
 	return nil, &NotLoadedError{edge: "landing_page"}
 }
@@ -139,7 +139,7 @@ func (_m *CourseCategoryItem) QueryCategory() *CourseCategoryQuery {
 }
 
 // QueryLandingPage queries the "landing_page" edge of the CourseCategoryItem entity.
-func (_m *CourseCategoryItem) QueryLandingPage() *LandingPageQuery {
+func (_m *CourseCategoryItem) QueryLandingPage() *CourseLandingPageQuery {
 	return NewCourseCategoryItemClient(_m.config).QueryLandingPage(_m)
 }
 

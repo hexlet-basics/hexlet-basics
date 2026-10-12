@@ -16,7 +16,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/coursecategory"
-	"hexletbasics/ent/landingpage"
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/curriculum"
 
 	"hexletbasics/internal/landingpages"
@@ -173,13 +173,13 @@ func (y *Yandex) categories(ctx context.Context) ([]set, error) {
 // Legacy had no ORDER BY here either; landing page id is the deterministic
 // stand-in.
 func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
-	pages, err := y.db.LandingPage.Query().
+	pages, err := y.db.CourseLandingPage.Query().
 		Where(
 			landingpages.Listed(feedLocale),
-			landingpage.Main(true),
+			courselandingpage.Main(true),
 		).
 		WithCourse().
-		Order(landingpage.ByID()).
+		Order(courselandingpage.ByID()).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("load feed landing pages: %w", err)
@@ -212,8 +212,8 @@ func (y *Yandex) offers(ctx context.Context) ([]offer, error) {
 // Legacy read `current_module_infos` without an ORDER BY, which in practice is
 // insertion order — and the loader inserts modules in build order. Ordering by
 // the module version's `order` says that outright; translation id breaks ties.
-func (y *Yandex) modules(ctx context.Context, pages []*ent.LandingPage) (map[int][]*ent.CourseModuleTranslation, error) {
-	versionIDs := lo.Uniq(lo.FilterMap(pages, func(p *ent.LandingPage, _ int) (int, bool) {
+func (y *Yandex) modules(ctx context.Context, pages []*ent.CourseLandingPage) (map[int][]*ent.CourseModuleTranslation, error) {
+	versionIDs := lo.Uniq(lo.FilterMap(pages, func(p *ent.CourseLandingPage, _ int) (int, bool) {
 		id := p.Edges.Course.CurrentVersionID
 		return lo.FromPtr(id), id != nil
 	}))
@@ -235,7 +235,7 @@ func (y *Yandex) modules(ctx context.Context, pages []*ent.LandingPage) (map[int
 // Legacy added a `picture` for a course with a cover. Course covers are not
 // wired in the Go stack yet, so no offer carries one; it comes back with the
 // covers.
-func (y *Yandex) offer(page *ent.LandingPage, crs *ent.Course, plan []*ent.CourseModuleTranslation) offer {
+func (y *Yandex) offer(page *ent.CourseLandingPage, crs *ent.Course, plan []*ent.CourseModuleTranslation) offer {
 	slug := lo.FromPtr(page.Slug)
 	utm := url.Values{
 		"utm_source":   {"yandex"},
