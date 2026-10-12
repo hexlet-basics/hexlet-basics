@@ -34,7 +34,7 @@ func TestTranslatorSelectsRequestLanguage(t *testing.T) {
 				assert.Equal(t, tt.locale, translator.Locale(r.Context()))
 				_, _ = w.Write([]byte(translator.Text(r.Context(), localization.WrongCredentials)))
 			}))
-			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 			req.Header.Set("Accept-Language", tt.header)
 			rec := httptest.NewRecorder()
 
@@ -53,7 +53,7 @@ func TestTranslatorLocalizesHTTPStatus(t *testing.T) {
 	handler := translator.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte(translator.StatusText(r.Context(), http.StatusNotFound)))
 	}))
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 	req.Header.Set("Accept-Language", "es-MX")
 	rec := httptest.NewRecorder()
 

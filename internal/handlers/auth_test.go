@@ -94,7 +94,7 @@ func doWithXSRF(
 	xsrf string,
 ) *http.Response {
 	t.Helper()
-	req := httptest.NewRequest(method, path, strings.NewReader(body))
+	req := httptest.NewRequestWithContext(t.Context(), method, path, strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
 	if cookie != nil {
 		req.AddCookie(cookie)
@@ -312,7 +312,7 @@ func TestAdminAuthorizationUsesCurrentDatabaseValue(t *testing.T) {
 
 func TestAuthValidationErrorUsesRequestLocale(t *testing.T) {
 	router := newAuthRouter(t)
-	req := httptest.NewRequest(http.MethodPost, "/api/session",
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/session",
 		strings.NewReader(`{"email":"missing@example.com","password":"wrong"}`))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept-Language", "ru-RU")

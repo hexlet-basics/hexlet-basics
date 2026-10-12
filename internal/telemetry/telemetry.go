@@ -39,7 +39,7 @@ func NewOpenTelemetrySDK(
 	logger *slog.Logger,
 ) (*otelconf.SDK, error) {
 	otel.SetErrorHandler(otel.ErrorHandlerFunc(func(err error) {
-		logger.ErrorContext(context.Background(), "OpenTelemetry error", "err", err)
+		logger.ErrorContext(context.WithoutCancel(ctx), "OpenTelemetry error", "err", err)
 	}))
 	sdk, err := otelconf.NewSDK(otelconf.WithContext(ctx))
 	if err != nil {

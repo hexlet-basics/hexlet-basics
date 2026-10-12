@@ -67,7 +67,7 @@ func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 			router := newPaginationRouter(t, handler)
 			rec := httptest.NewRecorder()
 
-			router.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, path, nil))
+			router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, path, nil))
 
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
 			assert.Zero(t, handler.calls, "generated decoder must reject the request before the handler")
@@ -77,7 +77,7 @@ func TestPaginationContractRejectsInvalidQuery(t *testing.T) {
 
 func TestPaginationContractErrorUsesRequestLocale(t *testing.T) {
 	router := newPaginationRouter(t, &paginationContractHandler{})
-	req := httptest.NewRequest(http.MethodGet, "/api/reviews?page=0", nil)
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/reviews?page=0", nil)
 	req.Header.Set("Accept-Language", "ru")
 	rec := httptest.NewRecorder()
 
@@ -118,7 +118,7 @@ func TestRouterErrorsUseRequestLocale(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := httptest.NewRequest(tt.method, tt.path, nil)
+			req := httptest.NewRequestWithContext(t.Context(), tt.method, tt.path, nil)
 			req.Header.Set("Accept-Language", "es")
 			rec := httptest.NewRecorder()
 
@@ -151,7 +151,7 @@ func TestPaginationContractAcceptsBoundsAndResolvesDefaults(t *testing.T) {
 			router := newPaginationRouter(t, handler)
 			rec := httptest.NewRecorder()
 
-			router.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, tt.path, nil))
+			router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, tt.path, nil))
 
 			require.Equal(t, http.StatusOK, rec.Code)
 			assert.Equal(t, 1, handler.calls)

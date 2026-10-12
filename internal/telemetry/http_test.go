@@ -25,7 +25,7 @@ func TestSentryHTTPHandlerReportsAndRepanics(t *testing.T) {
 		require.Same(t, client, hub.Client())
 		panic("boom")
 	}))
-	request := httptest.NewRequest(http.MethodPost, "/panic?source=test", nil)
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/panic?source=test", nil)
 
 	assert.PanicsWithValue(t, "boom", func() {
 		handler.ServeHTTP(httptest.NewRecorder(), request)
@@ -51,8 +51,8 @@ func TestSentryHTTPHandlerIsolatesRequestHubs(t *testing.T) {
 		hubs <- hub
 	}))
 
-	handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "/first", nil))
-	handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "/second", nil))
+	handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/first", nil))
+	handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/second", nil))
 
 	first := <-hubs
 	second := <-hubs

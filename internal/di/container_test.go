@@ -84,7 +84,7 @@ func TestHTTPHandlerReportsAndRepanics(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.PanicsWithValue(t, "router panic", func() {
-		handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "/panic", nil))
+		handler.ServeHTTP(httptest.NewRecorder(), httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/panic", nil))
 	})
 
 	events := transport.Events()

@@ -50,7 +50,7 @@ func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher) *Regis
 func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.User, err error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %v", ErrPasswordProcessing, err)
+		return nil, fmt.Errorf("%w: %w", ErrPasswordProcessing, err)
 	}
 
 	var u *ent.User

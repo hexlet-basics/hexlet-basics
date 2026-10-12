@@ -424,7 +424,7 @@ func (h *AuthHandler) DeleteSession(context.Context) (api.DeleteSessionRes, erro
 // Missing, invalid, or stale sessions are anonymous.
 func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentUserParams) (*api.CurrentUser, error) {
 	_ = params
-	authReq := httptest.NewRequest(http.MethodGet, "/me", nil).WithContext(ctx)
+	authReq := httptest.NewRequestWithContext(ctx, http.MethodGet, "/me", nil)
 	authUser, err := token.GetUserInfo(authReq)
 	if err != nil {
 		return anonymousCurrentUser(), nil

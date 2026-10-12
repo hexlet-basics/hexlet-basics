@@ -17,16 +17,20 @@ const eventually = 5 * time.Second
 // freeAddr is a loopback address nothing listens on yet.
 func freeAddr(t *testing.T) string {
 	t.Helper()
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	listener, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 	addr := listener.Addr().String()
 	require.NoError(t, listener.Close())
 	return addr
 }
 
-func get(url string) (*http.Response, error) {
+func get(ctx context.Context, url string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
 	client := &http.Client{Transport: &http.Transport{DisableKeepAlives: true}}
-	return client.Get(url)
+	return client.Do(req)
 }
 
 func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
@@ -44,7 +48,7 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 	}()
 
 	require.Eventually(t, func() bool {
-		res, err := get("http://" + addr)
+		res, err := get(t.Context(), "http://"+addr)
 		if err != nil {
 			return false
 		}
@@ -61,13 +65,16 @@ func TestRuntimeServesRequestsAndStopsOnSignal(t *testing.T) {
 		t.Fatal("runtime did not stop after signal")
 	}
 
-	_, err := get("http://" + addr)
+	res, err := get(t.Context(), "http://"+addr)
+	if res != nil {
+		_ = res.Body.Close()
+	}
 	require.Error(t, err, "the port no longer accepts connections")
 	assert.True(t, stopSignalsCalled.Load())
 }
 
 func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	listener, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
 	require.NoError(t, err)
 	release := make(chan struct{})
 	t.Cleanup(func() { close(release) })
@@ -81,7 +88,7 @@ func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 
 	clientErr := make(chan error, 1)
 	go func() {
-		res, err := get("http://" + listener.Addr().String())
+		res, err := get(t.Context(), "http://"+listener.Addr().String())
 		if err == nil {
 			_ = res.Body.Close()
 		}
@@ -93,7 +100,7 @@ func TestRuntimeForceClosesHTTPAfterDrainFailure(t *testing.T) {
 		t.Fatal("request did not reach the handler")
 	}
 
-	err = app.shutdown(func() {})
+	err = app.shutdown(t.Context(), func() {})
 
 	require.ErrorIs(t, err, context.DeadlineExceeded, "the drain gave up")
 	select {

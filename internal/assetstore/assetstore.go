@@ -109,10 +109,10 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 	closeErr := writer.Close()
 	if copyErr != nil || closeErr != nil {
 		cause := errors.Join(copyErr, closeErr)
-		return Attachment{}, s.compensate(key, fmt.Errorf("write blob %q: %w", key, cause))
+		return Attachment{}, s.compensate(ctx, key, fmt.Errorf("write blob %q: %w", key, cause))
 	}
 	if written > MaxUploadBytes {
-		return Attachment{}, s.compensate(key, ErrTooLarge)
+		return Attachment{}, s.compensate(ctx, key, ErrTooLarge)
 	}
 
 	record, err := s.db.Attachment.Create().
@@ -122,7 +122,7 @@ func (s *Store) Put(ctx context.Context, input Upload) (Attachment, error) {
 		SetByteSize(written).
 		Save(ctx)
 	if err != nil {
-		return Attachment{}, s.compensate(key, fmt.Errorf("record attachment %q: %w", key, err))
+		return Attachment{}, s.compensate(ctx, key, fmt.Errorf("record attachment %q: %w", key, err))
 	}
 
 	return Attachment{
@@ -189,8 +189,11 @@ func (s *Store) DownloadURL(ctx context.Context, key string, delivery Delivery) 
 	return signed, nil
 }
 
-func (s *Store) compensate(key string, cause error) error {
-	cleanupCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+// compensate deletes a partially written blob. A cancelled request must not
+// leave the blob behind, so the cleanup keeps the context's values but not its
+// cancellation, with a deadline of its own.
+func (s *Store) compensate(ctx context.Context, key string, cause error) error {
+	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 	defer cancel()
 
 	if err := s.bucket.Delete(cleanupCtx, key); err != nil && gcerrors.Code(err) != gcerrors.NotFound {

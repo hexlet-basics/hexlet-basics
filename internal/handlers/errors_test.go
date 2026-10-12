@@ -61,7 +61,7 @@ func TestAPIErrorHandlerReportsUnexpectedErrors(t *testing.T) {
 
 	handler := handlers.NewAPIErrorHandler(translator, logger)
 	recorder := httptest.NewRecorder()
-	request := httptest.NewRequest(http.MethodPost, "/api/admin/courses", nil).WithContext(ctx)
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/admin/courses", nil).WithContext(ctx)
 	cause := errors.New("database unavailable")
 	handler.Write(ctx, recorder, request, cause)
 
@@ -101,7 +101,7 @@ func TestAPIErrorHandlerDoesNotReportExpectedErrors(t *testing.T) {
 	handler := handlers.NewAPIErrorHandler(translator, logger)
 	recorder := httptest.NewRecorder()
 	ctx := sentry.SetHubOnContext(t.Context(), sentry.NewHub(client, sentry.NewScope()))
-	request := httptest.NewRequest(http.MethodGet, "/api/languages/missing", nil).WithContext(ctx)
+	request := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/languages/missing", nil).WithContext(ctx)
 	handler.Write(request.Context(), recorder, request, &ogenerrors.DecodeParamsError{
 		OperationContext: ogenerrors.OperationContext{Name: "ListCourses", ID: "listCourses"},
 		Err:              errors.New("invalid query"),

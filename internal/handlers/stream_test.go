@@ -50,7 +50,12 @@ func TestStreamResponsesFlushesEachWriteAndOutlivesTheWriteTimeout(t *testing.T)
 	}
 	arrived := make(chan firstChunk, 1)
 	go func() {
-		res, err := http.Get(server.URL)
+		req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, nil)
+		if err != nil {
+			arrived <- firstChunk{err: err}
+			return
+		}
+		res, err := http.DefaultClient.Do(req)
 		if err != nil {
 			arrived <- firstChunk{err: err}
 			return
@@ -92,7 +97,9 @@ func TestStreamResponsesAbortsOnAFailureAfterTheBodyStarted(t *testing.T) {
 	server := httptest.NewServer(handlers.StreamResponses(inner))
 	t.Cleanup(server.Close)
 
-	res, err := http.Get(server.URL)
+	req, err := http.NewRequestWithContext(t.Context(), http.MethodGet, server.URL, nil)
+	require.NoError(t, err)
+	res, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = res.Body.Close() })
 	assert.Equal(t, http.StatusOK, res.StatusCode)

@@ -3,7 +3,14 @@ version: "2"
 linters:
   default: standard
   enable:
+    - bodyclose
+    - contextcheck
+    - errorlint
     - forbidigo
+    - noctx
+    - rowserrcheck
+    - sqlclosecheck
+    - usetesting
   settings:
     forbidigo:
       forbid:
@@ -19,3 +26,7 @@ linters:
     rules:
       - path: _test\.go
         linters: [forbidigo]
+      # The handler tests read responses from httptest.ResponseRecorder, whose
+      # body is an in-memory buffer: there is nothing to close.
+      - path: internal/handlers/.*_test\.go
+        linters: [bodyclose]

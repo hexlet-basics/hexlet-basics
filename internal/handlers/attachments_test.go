@@ -142,7 +142,7 @@ func uploadRequest(t *testing.T, filename, contentType string, data []byte) *htt
 	require.NoError(t, err)
 	require.NoError(t, mw.Close())
 
-	req := httptest.NewRequest(http.MethodPost, "/api/admin/attachments", &body)
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/admin/attachments", &body)
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 	return req
 }
@@ -192,7 +192,7 @@ func TestUploadAttachmentAndDownload(t *testing.T) {
 
 	// The returned url must actually serve the stored bytes.
 	dl := httptest.NewRecorder()
-	router.ServeHTTP(dl, httptest.NewRequest(http.MethodGet, att.URL, nil))
+	router.ServeHTTP(dl, httptest.NewRequestWithContext(t.Context(), http.MethodGet, att.URL, nil))
 
 	require.Equal(t, http.StatusOK, dl.Code)
 	assert.Equal(t, "image/png", dl.Header().Get("Content-Type"))
@@ -262,13 +262,13 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	url := uploadAttachmentURL(t, router)
 
 	full := httptest.NewRecorder()
-	router.ServeHTTP(full, httptest.NewRequest(http.MethodGet, url, nil))
+	router.ServeHTTP(full, httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil))
 	require.Equal(t, http.StatusOK, full.Code)
 	lastModified := full.Header().Get("Last-Modified")
 	require.NotEmpty(t, lastModified)
 
 	t.Run("range", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1-8")
 		rec := httptest.NewRecorder()
 
@@ -282,7 +282,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	})
 
 	t.Run("invalid range", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1000-2000")
 		rec := httptest.NewRecorder()
 
@@ -296,7 +296,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	t.Run("head", func(t *testing.T) {
 		rec := httptest.NewRecorder()
 
-		router.ServeHTTP(rec, httptest.NewRequest(http.MethodHead, url, nil))
+		router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodHead, url, nil))
 
 		require.Equal(t, http.StatusOK, rec.Code)
 		assert.Equal(t, strconv.Itoa(len(tinyPNG)), rec.Header().Get("Content-Length"))
@@ -306,7 +306,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	})
 
 	t.Run("not modified", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("If-Modified-Since", lastModified)
 		rec := httptest.NewRecorder()
 
@@ -318,7 +318,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	})
 
 	t.Run("if range matches", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1-8")
 		req.Header.Set("If-Range", lastModified)
 		rec := httptest.NewRecorder()
@@ -330,7 +330,7 @@ func TestDownloadAttachmentHTTPFeatures(t *testing.T) {
 	})
 
 	t.Run("if range is stale", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, url, nil)
+		req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, url, nil)
 		req.Header.Set("Range", "bytes=1-8")
 		req.Header.Set("If-Range", "Mon, 02 Jan 2006 15:04:05 GMT")
 		rec := httptest.NewRecorder()
@@ -377,7 +377,7 @@ func TestUploadAttachmentRequiresFilePart(t *testing.T) {
 	mw := multipart.NewWriter(&body)
 	require.NoError(t, mw.WriteField("other", "x"))
 	require.NoError(t, mw.Close())
-	req := httptest.NewRequest(http.MethodPost, "/api/admin/attachments", &body)
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, "/api/admin/attachments", &body)
 	req.Header.Set("Content-Type", mw.FormDataContentType())
 
 	rec := httptest.NewRecorder()
@@ -393,7 +393,7 @@ func TestDownloadUnknownKeyIsNotFound(t *testing.T) {
 	router := newAttachmentRouter(t)
 
 	rec := httptest.NewRecorder()
-	router.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/storage/does-not-exist.png", nil))
+	router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/api/storage/does-not-exist.png", nil))
 
 	assert.Equal(t, http.StatusNotFound, rec.Code)
 	assert.Equal(t, "application/problem+json", rec.Header().Get("Content-Type"))

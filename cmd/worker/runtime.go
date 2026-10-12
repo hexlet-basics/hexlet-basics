@@ -37,7 +37,9 @@ type application struct {
 }
 
 func (a *application) run(signalCtx context.Context, stopSignals func()) error {
-	processCtx, cancelProcess := context.WithCancel(context.Background())
+	// The process context keeps the signal context's values but not its
+	// cancellation: shutdown has to run after the signal has fired.
+	processCtx, cancelProcess := context.WithCancel(context.WithoutCancel(signalCtx))
 	defer cancelProcess()
 
 	group, groupCtx := errgroup.WithContext(processCtx)
@@ -84,14 +86,16 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 
 	group.Go(func() error {
 		<-groupCtx.Done()
-		return a.shutdown(state, cancelProcess)
+		return a.shutdown(processCtx, state, cancelProcess)
 	})
 
 	return group.Wait()
 }
 
-func (a *application) shutdown(state *runtimeState, cancelProcess context.CancelFunc) error {
-	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+func (a *application) shutdown(parent context.Context, state *runtimeState, cancelProcess context.CancelFunc) error {
+	// The drain gets its own deadline: the process context is already
+	// cancelled by the time shutdown runs.
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(parent), shutdownTimeout)
 	defer cancel()
 
 	if a.logger != nil {
