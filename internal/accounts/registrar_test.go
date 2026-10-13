@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"strings"
 	"testing"
 	"time"
 
@@ -36,7 +37,7 @@ func TestRegistrarCommitsUserAndEventTogether(t *testing.T) {
 	registrar := NewRegistrar(txStore, events.NewPublisher(txStore, logger))
 	occurredAt := time.Date(2026, time.July, 29, 10, 11, 12, 0, time.UTC)
 	registrar.now = func() time.Time { return occurredAt }
-	email := fmt.Sprintf("watermill-%s@example.com", ids.New())
+	email := strings.ToLower(fmt.Sprintf("watermill-%s@example.com", ids.New()))
 	firstName := "Ada"
 
 	u, err := registrar.Register(t.Context(), Registration{

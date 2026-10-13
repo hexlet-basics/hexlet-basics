@@ -16,10 +16,8 @@ import (
 	"github.com/go-pkgz/auth/v2/provider"
 	"github.com/go-pkgz/auth/v2/token"
 	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
@@ -41,9 +39,8 @@ const (
 )
 
 var (
-	errInvalidCredentials = errors.New("invalid credentials")
-	errUnauthenticated    = errors.New("request is not authenticated")
-	errAdminRequired      = errors.New("administrator access is required")
+	errUnauthenticated = errors.New("request is not authenticated")
+	errAdminRequired   = errors.New("administrator access is required")
 )
 
 type authenticatedUserContext struct {
@@ -58,12 +55,13 @@ type authenticatedUserContextKey struct{}
 // response models declared in TypeSpec, so the public HTTP seam remains the
 // generated contract.
 type AuthHandler struct {
-	db    *ent.Client
-	conv  apiconv.Converter
-	jwt   *token.Service
-	auth  authmiddleware.Authenticator
-	i18n  *localization.Translator
-	users accounts.UserRegistrar
+	db          *ent.Client
+	conv        apiconv.Converter
+	jwt         *token.Service
+	auth        authmiddleware.Authenticator
+	i18n        *localization.Translator
+	users       accounts.UserRegistrar
+	credentials *accounts.Credentials
 	// remover deletes the signed-in user's account.
 	remover accounts.AccountRemover
 	events  events.StandalonePublisher
@@ -121,14 +119,15 @@ func NewAuthHandler(
 				errorHandler.Write(r.Context(), w, r, withHTTPStatus(status, err))
 			},
 		},
-		i18n:     translator,
-		users:    registrar,
-		remover:  remover,
-		events:   eventPublisher,
-		errors:   errorHandler,
-		guests:   tracker,
-		guestJar: progress.NewGuestCodec(cfg.JWTSecret),
-		secure:   strings.HasPrefix(cfg.PublicURL, "https://"),
+		i18n:        translator,
+		users:       registrar,
+		credentials: accounts.NewCredentials(db),
+		remover:     remover,
+		events:      eventPublisher,
+		errors:      errorHandler,
+		guests:      tracker,
+		guestJar:    progress.NewGuestCodec(cfg.JWTSecret),
+		secure:      strings.HasPrefix(cfg.PublicURL, "https://"),
 
 		jobs:        jobs,
 		emailTokens: emailtokens.New(cfg.EmailTokenSecret),
@@ -322,7 +321,7 @@ func (h *AuthHandler) loadAuthenticatedUser(ctx context.Context, rawJWT string) 
 	}
 	// A removed account is signed out everywhere at once: the JWT is stateless
 	// and lives on after the account, so the row decides, not the token.
-	u, err := h.db.User.Query().Where(user.ID(userID), accounts.NotRemoved()).Only(ctx)
+	u, err := accounts.ActiveUserByID(ctx, h.db, userID)
 	if ent.IsNotFound(err) {
 		return ctx, errUnauthenticated
 	}
@@ -340,8 +339,8 @@ func (h *AuthHandler) loadAuthenticatedUser(ctx context.Context, rawJWT string) 
 // claims and the response, keeping password login free of internal HTTP
 // round-trips and duplicate database queries.
 func (h *AuthHandler) CreateSession(ctx context.Context, req *api.SessionInput) (api.CreateSessionRes, error) {
-	u, err := h.authenticate(ctx, req.Email, req.Password)
-	if errors.Is(err, errInvalidCredentials) {
+	u, err := h.credentials.Authenticate(ctx, req.Email, req.Password)
+	if errors.Is(err, accounts.ErrInvalidCredentials) {
 		return validationError("password", h.i18n.Text(ctx, localization.WrongCredentials)), nil
 	}
 	if err != nil {
@@ -435,7 +434,7 @@ func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentU
 		return anonymousCurrentUser(), nil
 	}
 
-	u, err := h.db.User.Query().Where(user.ID(userID), accounts.NotRemoved()).Only(ctx)
+	u, err := accounts.ActiveUserByID(ctx, h.db, userID)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return anonymousCurrentUser(), nil
@@ -443,24 +442,6 @@ func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentU
 		return nil, err
 	}
 	return &api.CurrentUser{User: api.NewNilUser(h.conv.ToUser(u))}, nil
-}
-
-func (h *AuthHandler) authenticate(ctx context.Context, email, password string) (*ent.User, error) {
-	// Legacy kept only an active? user after authenticate_by.
-	u, err := h.db.User.Query().Where(user.Email(email), accounts.NotRemoved()).Only(ctx)
-	if ent.IsNotFound(err) {
-		return nil, errInvalidCredentials
-	}
-	if err != nil {
-		return nil, err
-	}
-	if u.PasswordDigest == nil {
-		return nil, errInvalidCredentials
-	}
-	if err := bcrypt.CompareHashAndPassword([]byte(*u.PasswordDigest), []byte(password)); err != nil {
-		return nil, errInvalidCredentials
-	}
-	return u, nil
 }
 
 func (h *AuthHandler) issueCookies(u *ent.User) ([]string, error) {

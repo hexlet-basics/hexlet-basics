@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"hexletbasics/ent"
 	"hexletbasics/internal/events"
 	"hexletbasics/internal/store"
@@ -48,16 +46,16 @@ func NewRegistrar(txStore store.Transactor, publisher events.TxPublisher) *Regis
 // Register creates the user and publishes the corresponding domain fact in the
 // same PostgreSQL transaction.
 func (r *Registrar) Register(ctx context.Context, input Registration) (_ *ent.User, err error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	hash, err := hashPassword(input.Password)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrPasswordProcessing, err)
+		return nil, err
 	}
 
 	var u *ent.User
 	err = r.store.WithinTx(ctx, func(tx *sql.Tx, txClient *ent.Client) error {
 		u, err = txClient.User.Create().
-			SetEmail(input.Email).
-			SetPasswordDigest(string(hash)).
+			SetEmail(NormalizeEmail(input.Email)).
+			SetPasswordDigest(hash).
 			SetNillableFirstName(input.FirstName).
 			Save(ctx)
 		if err != nil {

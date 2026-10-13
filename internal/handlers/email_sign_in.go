@@ -4,11 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"hexletbasics/ent"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/accountemails"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/emailtokens"
 	"hexletbasics/internal/jobs"
@@ -86,11 +84,10 @@ func (h *AuthHandler) UpdatePassword(
 	if err != nil {
 		return nil, err
 	}
-	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
+	u, err = h.credentials.SetPassword(ctx, u, req.Password)
+	if errors.Is(err, accounts.ErrPasswordProcessing) {
 		return validationError("password", h.i18n.Text(ctx, localization.PasswordProcessingFailed)), nil
 	}
-	u, err = u.Update().SetPasswordDigest(string(hash)).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -98,12 +95,10 @@ func (h *AuthHandler) UpdatePassword(
 }
 
 // requestAccountEmail enqueues the email for a registered address and does
-// nothing for an unknown one. The lookup ignores case, as legacy's did; the
-// contract's email format already rejects surrounding spaces.
+// nothing for an unknown one. The lookup normalizes the email the way registration
+// stores it, as legacy's did.
 func (h *AuthHandler) requestAccountEmail(ctx context.Context, purpose emailtokens.Purpose, email string) error {
-	u, err := h.db.User.Query().
-		Where(user.EmailEqualFold(email)).
-		First(ctx)
+	u, err := accounts.ActiveUserByEmail(ctx, h.db, email)
 	if ent.IsNotFound(err) {
 		return nil
 	}

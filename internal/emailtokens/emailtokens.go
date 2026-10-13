@@ -21,7 +21,6 @@ import (
 	"github.com/samber/oops"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/user"
 	"hexletbasics/internal/accounts"
 )
 
@@ -111,7 +110,7 @@ func (t *Tokens) Verify(ctx context.Context, db *ent.Client, purpose Purpose, ra
 	// digest already breaks most fingerprints, but not a Password Reset issued
 	// to a user who never had a password: its bound value was empty before and
 	// is empty after.
-	u, err := db.User.Query().Where(user.ID(id), accounts.NotRemoved()).Only(ctx)
+	u, err := accounts.ActiveUserByID(ctx, db, id)
 	if ent.IsNotFound(err) {
 		return nil, ErrInvalid
 	}
