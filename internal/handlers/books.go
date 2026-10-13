@@ -2,13 +2,10 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"time"
 
-	"hexletbasics/ent/bookrequest"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/assetstore"
-	"hexletbasics/internal/books"
 )
 
 // bookPath is the book page. Legacy routed it under the ru suffix only
@@ -33,9 +30,9 @@ func (s *Server) GetBook(ctx context.Context) (*api.BookView, error) {
 	if !ok {
 		return view, nil
 	}
-	requested, err := s.db.BookRequest.Query().Where(bookrequest.UserID(u.ID)).Exist(ctx)
+	requested, err := s.books.Requested(ctx, u.ID)
 	if err != nil {
-		return nil, fmt.Errorf("check book request of user %d: %w", u.ID, err)
+		return nil, err
 	}
 	view.Requested = requested
 	return view, nil
@@ -59,14 +56,11 @@ func (s *Server) CreateBookRequest(ctx context.Context) (api.CreateBookRequestRe
 // requested the book is sent back to the book page.
 func (s *Server) DownloadBook(ctx context.Context) (api.DownloadBookRes, error) {
 	u := MustAuthenticatedUser(ctx)
-	marked, err := s.db.BookRequest.Update().
-		Where(bookrequest.UserID(u.ID)).
-		SetState(books.StateDownloaded).
-		Save(ctx)
+	marked, err := s.books.MarkDownloaded(ctx, u.ID)
 	if err != nil {
-		return nil, fmt.Errorf("mark book downloaded for user %d: %w", u.ID, err)
+		return nil, err
 	}
-	if marked == 0 {
+	if !marked {
 		return &api.DownloadBookFound{Location: s.cfg.SiteURL + bookPath}, nil
 	}
 	location, err := s.assets.DownloadURL(ctx, s.cfg.BookBlobKey, bookDelivery)

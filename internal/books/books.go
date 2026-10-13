@@ -22,9 +22,15 @@ const (
 	StateDownloaded = "downloaded"
 )
 
-// Requester is the seam the handler depends on.
+// Requester is the seam the handlers depend on: the whole funnel, from the
+// request to the download.
 type Requester interface {
 	Request(ctx context.Context, userID int, locale string) error
+	// Requested reports whether the user has requested the book, in any state.
+	Requested(ctx context.Context, userID int) (bool, error)
+	// MarkDownloaded records a download and reports whether the user had
+	// requested the book; one who had not has nothing to mark.
+	MarkDownloaded(ctx context.Context, userID int) (bool, error)
 }
 
 // Recorder atomically stores a user's first book request and its
@@ -68,4 +74,34 @@ func (r *Recorder) Request(ctx context.Context, userID int, locale string) error
 		}
 		return nil
 	})
+}
+
+// Requested reports whether the user has requested the book, in any state: the
+// page picks the request or the download button by it.
+func (r *Recorder) Requested(ctx context.Context, userID int) (requested bool, err error) {
+	err = r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		requested, err = db.BookRequest.Query().Where(bookrequest.UserID(userID)).Exist(ctx)
+		return err
+	})
+	if err != nil {
+		return false, fmt.Errorf("check book request of user %d: %w", userID, err)
+	}
+	return requested, nil
+}
+
+// MarkDownloaded moves the user's request to downloaded, on every download as
+// legacy did, and reports whether there was a request to move.
+func (r *Recorder) MarkDownloaded(ctx context.Context, userID int) (marked bool, err error) {
+	err = r.store.WithinTx(ctx, func(_ *sql.Tx, db *ent.Client) error {
+		count, err := db.BookRequest.Update().
+			Where(bookrequest.UserID(userID)).
+			SetState(StateDownloaded).
+			Save(ctx)
+		marked = count > 0
+		return err
+	})
+	if err != nil {
+		return false, fmt.Errorf("mark book downloaded for user %d: %w", userID, err)
+	}
+	return marked, nil
 }
