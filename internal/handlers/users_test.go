@@ -223,5 +223,5 @@ func TestAdminStoresTheEmailTheWayRegistrationDoes(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	assert.Equal(t, "mixed.case@example.test", created.Email)
+	assert.Equal(t, api.NewNilString("mixed.case@example.test"), created.Email)
 }
