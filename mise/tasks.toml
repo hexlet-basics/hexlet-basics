@@ -231,8 +231,12 @@ description = "GitHub workflows: zizmor (security) and jactionlint (correctness)
 run = ["zizmor --no-progress .github", "jactionlint .github/workflows/*.yml"]
 
 ["lint:deps"]
-description = "go.mod is tidy and the code calls no known-vulnerable dependency or stdlib function (network: the vulnerability database)"
-run = ["go mod tidy -diff", "go tool govulncheck ./..."]
+description = "go.mod is tidy"
+run = "go mod tidy -diff"
+
+["lint:vulns"]
+description = "The code calls no known-vulnerable dependency or stdlib function (network: the vulnerability database). Not part of lint: a new advisory fails it with no change on our side, so the nightly workflow runs it"
+run = "go tool govulncheck ./..."
 
 ["lint:adr"]
 description = "ADR numbers are unique (a merge of main can bring a second ADR with the same number)"

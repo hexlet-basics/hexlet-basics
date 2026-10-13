@@ -140,7 +140,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - `mise run lint` — Go (`gofmt` check, `go vet`, `golangci-lint` with
   contextcheck/noctx/errorlint/bodyclose among others) + frontend (`oxlint`,
   `oxfmt --check`, `tsc -b`) + ADR number uniqueness + `lint:deps` (`go mod tidy
-  -diff`, `govulncheck`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
+  -diff`) + `lint:typos` + `lint:workflows` (zizmor, jactionlint)
   + `lint:shell` (shellcheck) + `lint:unused` (knip) + `lint:i18n` (generated
   types current, no hardcoded strings outside `src/components/pages`, no key missing
   from a locale catalog) + `lint:helm` (helm lint, render, kubeconform) +
@@ -160,6 +160,16 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 ## Test
 
 - `mise run test` — the Go suite (`go test ./...`).
+- `mise run test:cover` — the Go suite over `cmd/` and `internal/` with
+  coverage, failing under the total in `.testcoverage.yml` (generated code and
+  `testsupport` excluded). `pnpm test:coverage` does the same for the frontend
+  with the thresholds in `vite.config.ts`. Raise a floor when coverage rises;
+  never lower it.
+- **Nightly, not per PR.** `.github/workflows/nightly.yml` runs both coverage
+  gates and `mise run lint:vulns` (govulncheck) once a night and on demand
+  (`workflow_dispatch`). A new advisory can fail `lint:vulns` with no change
+  on our side, so it is deliberately not part of `lint`. Put a check there
+  when its result does not depend on the diff under review.
 - DB-dependent packages use testcontainers-go to start isolated PostgreSQL 18
   containers, apply the Atlas migrations, and load the committed `fixtures/`
   snapshot. Docker is required; no separate test DB preparation is needed.
