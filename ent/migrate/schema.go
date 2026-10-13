@@ -728,8 +728,8 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "allowed_locales", Type: field.TypeOther, SchemaType: map[string]string{"postgres": "varchar[]"}},
-		{Name: "user_id", Type: field.TypeInt},
 		{Name: "role_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt, Unique: true},
 	}
 	// StaffMembersTable holds the schema information for the "staff_members" table.
 	StaffMembersTable = &schema.Table{
@@ -738,15 +738,15 @@ var (
 		PrimaryKey: []*schema.Column{StaffMembersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "staff_members_users_user",
+				Symbol:     "staff_members_staff_member_roles_role",
 				Columns:    []*schema.Column{StaffMembersColumns[4]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
+				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
-				Symbol:     "staff_members_staff_member_roles_role",
+				Symbol:     "staff_members_users_staff_member",
 				Columns:    []*schema.Column{StaffMembersColumns[5]},
-				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -979,8 +979,8 @@ func init() {
 	}
 	ReviewsTable.ForeignKeys[0].RefTable = LanguagesTable
 	ReviewsTable.ForeignKeys[1].RefTable = UsersTable
-	StaffMembersTable.ForeignKeys[0].RefTable = UsersTable
-	StaffMembersTable.ForeignKeys[1].RefTable = StaffMemberRolesTable
+	StaffMembersTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
+	StaffMembersTable.ForeignKeys[1].RefTable = UsersTable
 	StaffMemberRolesTable.Annotation = &entsql.Annotation{
 		Table: "staff_member_roles",
 	}

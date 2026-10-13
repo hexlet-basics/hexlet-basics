@@ -190,8 +190,8 @@ func (_c *StaffMemberCreate) createSpec() (*StaffMember, *sqlgraph.CreateSpec) {
 	}
 	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
 			Table:   staffmember.UserTable,
 			Columns: []string{staffmember.UserColumn},
 			Bidi:    false,

@@ -165,8 +165,8 @@ func (_u *StaffMemberUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
 			Table:   staffmember.UserTable,
 			Columns: []string{staffmember.UserColumn},
 			Bidi:    false,
@@ -178,8 +178,8 @@ func (_u *StaffMemberUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
 			Table:   staffmember.UserTable,
 			Columns: []string{staffmember.UserColumn},
 			Bidi:    false,
@@ -405,8 +405,8 @@ func (_u *StaffMemberUpdateOne) sqlSave(ctx context.Context) (_node *StaffMember
 	}
 	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
 			Table:   staffmember.UserTable,
 			Columns: []string{staffmember.UserColumn},
 			Bidi:    false,
@@ -418,8 +418,8 @@ func (_u *StaffMemberUpdateOne) sqlSave(ctx context.Context) (_node *StaffMember
 	}
 	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
 			Table:   staffmember.UserTable,
 			Columns: []string{staffmember.UserColumn},
 			Bidi:    false,

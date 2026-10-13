@@ -27,6 +27,7 @@ import (
 	"hexletbasics/internal/ids"
 	"hexletbasics/internal/localization"
 	"hexletbasics/internal/progress"
+	"hexletbasics/internal/staffroles"
 )
 
 const (
@@ -62,6 +63,7 @@ type AuthHandler struct {
 	i18n        *localization.Translator
 	users       accounts.UserRegistrar
 	credentials *accounts.Credentials
+	policy      *staffroles.Policy
 	// remover deletes the signed-in user's account.
 	remover accounts.AccountRemover
 	events  events.StandalonePublisher
@@ -122,6 +124,7 @@ func NewAuthHandler(
 		i18n:        translator,
 		users:       registrar,
 		credentials: accounts.NewCredentials(db),
+		policy:      staffroles.NewPolicy(db),
 		remover:     remover,
 		events:      eventPublisher,
 		errors:      errorHandler,
@@ -264,7 +267,7 @@ func (h *AuthHandler) HandleUserSession(
 // always reads the current database value so revocation takes effect at once.
 func (h *AuthHandler) HandleAdminSession(
 	ctx context.Context,
-	_ api.OperationName,
+	operation api.OperationName,
 	session api.AdminSession,
 ) (context.Context, error) {
 	ctx, err := h.loadAuthenticatedUser(ctx, session.APIKey)
@@ -275,10 +278,11 @@ func (h *AuthHandler) HandleAdminSession(
 	if !ok {
 		return ctx, errUnauthenticated
 	}
-	if u.Admin == nil || !*u.Admin {
+	err = h.policy.Allow(ctx, u, h.i18n.Locale(ctx), operation)
+	if errors.Is(err, staffroles.ErrForbidden) {
 		return ctx, withHTTPStatus(http.StatusForbidden, errAdminRequired)
 	}
-	return ctx, nil
+	return ctx, err
 }
 
 // HandleXsrfToken completes the contract's AND security group. The session

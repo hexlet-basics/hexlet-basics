@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -39,8 +40,17 @@ const (
 	FieldPhone = "phone"
 	// FieldConfirmationToken holds the string denoting the confirmation_token field in the database.
 	FieldConfirmationToken = "confirmation_token"
+	// EdgeStaffMember holds the string denoting the staff_member edge name in mutations.
+	EdgeStaffMember = "staff_member"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// StaffMemberTable is the table that holds the staff_member relation/edge.
+	StaffMemberTable = "staff_members"
+	// StaffMemberInverseTable is the table name for the StaffMember entity.
+	// It exists in this package in order to avoid circular dependency with the "staffmember" package.
+	StaffMemberInverseTable = "staff_members"
+	// StaffMemberColumn is the table column denoting the staff_member relation/edge.
+	StaffMemberColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -151,4 +161,18 @@ func ByPhone(opts ...sql.OrderTermOption) OrderOption {
 // ByConfirmationToken orders the results by the confirmation_token field.
 func ByConfirmationToken(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldConfirmationToken, opts...).ToFunc()
+}
+
+// ByStaffMemberField orders the results by staff_member field.
+func ByStaffMemberField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStaffMemberStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newStaffMemberStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StaffMemberInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, StaffMemberTable, StaffMemberColumn),
+	)
 }

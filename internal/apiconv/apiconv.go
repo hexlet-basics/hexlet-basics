@@ -516,11 +516,11 @@ func userName(u *ent.User) api.NilString {
 	return api.NewNilString(joinName(u.FirstName, u.LastName))
 }
 
-// userCanAccessAdmin mirrors UserResource#can_access_admin. Staff membership is
-// not modeled yet, so this reflects the admin flag only; it will gain the staff
-// check once the management schema lands (parity TODO, like ratingCount).
+// userCanAccessAdmin mirrors UserResource#can_access_admin: an administrator or
+// a staff member. The staff record is read from the edge, so only users loaded
+// with it (the session and sign-in paths) report staff access.
 func userCanAccessAdmin(u *ent.User) bool {
-	return lo.FromPtr(u.Admin)
+	return lo.FromPtr(u.Admin) || u.Edges.StaffMember != nil
 }
 
 // userCreatedAtAsTimestamp mirrors UserResource#created_at_as_timestamp (a Unix

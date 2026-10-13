@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -57,6 +58,14 @@ func (User) Fields() []ent.Field {
 		field.String("nickname").Optional().Nillable(),
 		field.String("phone").Optional().Nillable(),
 		field.String("confirmation_token").Optional().Nillable().Sensitive(),
+	}
+}
+
+// Edges: a user who is an employee has
+// one staff record, with the role and locales the admin policy reads.
+func (User) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("staff_member", StaffMember.Type).Unique(),
 	}
 }
 

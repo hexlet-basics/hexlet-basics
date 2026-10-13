@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/predicate"
+	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/user"
 	"time"
 
@@ -261,9 +262,34 @@ func (_u *UserUpdate) ClearConfirmationToken() *UserUpdate {
 	return _u
 }
 
+// SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID.
+func (_u *UserUpdate) SetStaffMemberID(id int) *UserUpdate {
+	_u.mutation.SetStaffMemberID(id)
+	return _u
+}
+
+// SetNillableStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID if the given value is not nil.
+func (_u *UserUpdate) SetNillableStaffMemberID(id *int) *UserUpdate {
+	if id != nil {
+		_u = _u.SetStaffMemberID(*id)
+	}
+	return _u
+}
+
+// SetStaffMember sets the "staff_member" edge to the StaffMember entity.
+func (_u *UserUpdate) SetStaffMember(v *StaffMember) *UserUpdate {
+	return _u.SetStaffMemberID(v.ID)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearStaffMember clears the "staff_member" edge to the StaffMember entity.
+func (_u *UserUpdate) ClearStaffMember() *UserUpdate {
+	_u.mutation.ClearStaffMember()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -382,6 +408,35 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.ConfirmationTokenCleared() {
 		_spec.ClearField(user.FieldConfirmationToken, field.TypeString)
+	}
+	if _u.mutation.StaffMemberCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   user.StaffMemberTable,
+			Columns: []string{user.StaffMemberColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StaffMemberIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   user.StaffMemberTable,
+			Columns: []string{user.StaffMemberColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -636,9 +691,34 @@ func (_u *UserUpdateOne) ClearConfirmationToken() *UserUpdateOne {
 	return _u
 }
 
+// SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID.
+func (_u *UserUpdateOne) SetStaffMemberID(id int) *UserUpdateOne {
+	_u.mutation.SetStaffMemberID(id)
+	return _u
+}
+
+// SetNillableStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableStaffMemberID(id *int) *UserUpdateOne {
+	if id != nil {
+		_u = _u.SetStaffMemberID(*id)
+	}
+	return _u
+}
+
+// SetStaffMember sets the "staff_member" edge to the StaffMember entity.
+func (_u *UserUpdateOne) SetStaffMember(v *StaffMember) *UserUpdateOne {
+	return _u.SetStaffMemberID(v.ID)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
+}
+
+// ClearStaffMember clears the "staff_member" edge to the StaffMember entity.
+func (_u *UserUpdateOne) ClearStaffMember() *UserUpdateOne {
+	_u.mutation.ClearStaffMember()
+	return _u
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -787,6 +867,35 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.ConfirmationTokenCleared() {
 		_spec.ClearField(user.FieldConfirmationToken, field.TypeString)
+	}
+	if _u.mutation.StaffMemberCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   user.StaffMemberTable,
+			Columns: []string{user.StaffMemberColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.StaffMemberIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   user.StaffMemberTable,
+			Columns: []string{user.StaffMemberColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues

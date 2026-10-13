@@ -28220,6 +28220,8 @@ type UserMutation struct {
 	phone                       *string
 	confirmation_token          *string
 	clearedFields               map[string]struct{}
+	staff_member                *int
+	clearedstaff_member         bool
 	done                        bool
 	oldValue                    func(context.Context) (*User, error)
 	predicates                  []predicate.User
@@ -28955,6 +28957,45 @@ func (m *UserMutation) ResetConfirmationToken() {
 	delete(m.clearedFields, user.FieldConfirmationToken)
 }
 
+// SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by id.
+func (m *UserMutation) SetStaffMemberID(id int) {
+	m.staff_member = &id
+}
+
+// ClearStaffMember clears the "staff_member" edge to the StaffMember entity.
+func (m *UserMutation) ClearStaffMember() {
+	m.clearedstaff_member = true
+}
+
+// StaffMemberCleared reports if the "staff_member" edge to the StaffMember entity was cleared.
+func (m *UserMutation) StaffMemberCleared() bool {
+	return m.clearedstaff_member
+}
+
+// StaffMemberID returns the "staff_member" edge ID in the mutation.
+func (m *UserMutation) StaffMemberID() (id int, exists bool) {
+	if m.staff_member != nil {
+		return *m.staff_member, true
+	}
+	return
+}
+
+// StaffMemberIDs returns the "staff_member" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StaffMemberID instead. It exists only for internal usage by the builders.
+func (m *UserMutation) StaffMemberIDs() (ids []int) {
+	if id := m.staff_member; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStaffMember resets all changes to the "staff_member" edge.
+func (m *UserMutation) ResetStaffMember() {
+	m.staff_member = nil
+	m.clearedstaff_member = false
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -29376,19 +29417,28 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.staff_member != nil {
+		edges = append(edges, user.EdgeStaffMember)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *UserMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case user.EdgeStaffMember:
+		if id := m.staff_member; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -29400,25 +29450,42 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedstaff_member {
+		edges = append(edges, user.EdgeStaffMember)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *UserMutation) EdgeCleared(name string) bool {
+	switch name {
+	case user.EdgeStaffMember:
+		return m.clearedstaff_member
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *UserMutation) ClearEdge(name string) error {
+	switch name {
+	case user.EdgeStaffMember:
+		m.ClearStaffMember()
+		return nil
+	}
 	return fmt.Errorf("unknown User unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *UserMutation) ResetEdge(name string) error {
+	switch name {
+	case user.EdgeStaffMember:
+		m.ResetStaffMember()
+		return nil
+	}
 	return fmt.Errorf("unknown User edge %s", name)
 }
 

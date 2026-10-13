@@ -4862,7 +4862,7 @@ func (c *StaffMemberClient) QueryUser(_m *StaffMember) *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(staffmember.Table, staffmember.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, staffmember.UserTable, staffmember.UserColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, staffmember.UserTable, staffmember.UserColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -5581,6 +5581,22 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryStaffMember queries the staff_member edge of a User.
+func (c *UserClient) QueryStaffMember(_m *User) *StaffMemberQuery {
+	query := (&StaffMemberClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(staffmember.Table, staffmember.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, user.StaffMemberTable, user.StaffMemberColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

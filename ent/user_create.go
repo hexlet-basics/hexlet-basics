@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/user"
 	"time"
 
@@ -204,6 +205,25 @@ func (_c *UserCreate) SetNillableConfirmationToken(v *string) *UserCreate {
 	return _c
 }
 
+// SetStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID.
+func (_c *UserCreate) SetStaffMemberID(id int) *UserCreate {
+	_c.mutation.SetStaffMemberID(id)
+	return _c
+}
+
+// SetNillableStaffMemberID sets the "staff_member" edge to the StaffMember entity by ID if the given value is not nil.
+func (_c *UserCreate) SetNillableStaffMemberID(id *int) *UserCreate {
+	if id != nil {
+		_c = _c.SetStaffMemberID(*id)
+	}
+	return _c
+}
+
+// SetStaffMember sets the "staff_member" edge to the StaffMember entity.
+func (_c *UserCreate) SetStaffMember(v *StaffMember) *UserCreate {
+	return _c.SetStaffMemberID(v.ID)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_c *UserCreate) Mutation() *UserMutation {
 	return _c.mutation
@@ -335,6 +355,22 @@ func (_c *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ConfirmationToken(); ok {
 		_spec.SetField(user.FieldConfirmationToken, field.TypeString, value)
 		_node.ConfirmationToken = &value
+	}
+	if nodes := _c.mutation.StaffMemberIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   user.StaffMemberTable,
+			Columns: []string{user.StaffMemberColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffmember.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
