@@ -23,10 +23,7 @@ import (
 // scope: the dashboard renders course cards, and a course with no card to
 // render would be a row the client cannot draw.
 func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 
 	courses, err := s.dashboard.Courses(ctx, u.ID, s.i18n.Locale(ctx))
 	if err != nil {

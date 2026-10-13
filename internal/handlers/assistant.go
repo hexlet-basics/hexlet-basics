@@ -17,10 +17,7 @@ func (s *Server) ListAssistantMessages(
 	ctx context.Context,
 	params api.ListAssistantMessagesParams,
 ) (api.ListAssistantMessagesRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 
 	history, err := s.assistant.History(ctx, u.ID, int(params.LessonId))
 	switch {
@@ -44,10 +41,7 @@ func (s *Server) CreateAssistantMessage(
 	req *api.AssistantMessageInput,
 	params api.CreateAssistantMessageParams,
 ) (api.CreateAssistantMessageRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 
 	answer, err := s.assistant.Ask(ctx, assistant.Question{
 		UserID:   u.ID,

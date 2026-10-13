@@ -253,6 +253,19 @@ func AuthenticatedUser(ctx context.Context) (*ent.User, bool) {
 	return value.user, true
 }
 
+// MustAuthenticatedUser is AuthenticatedUser for an operation the contract
+// secures: ogen runs the security handler first and answers 401 itself, so a
+// request that reaches the handler has a user. Its absence means the operation
+// was declared without security while the handler assumes it, a mistake worth a
+// loud failure instead of a branch no request can take.
+func MustAuthenticatedUser(ctx context.Context) *ent.User {
+	u, ok := AuthenticatedUser(ctx)
+	if !ok {
+		panic("handlers: operation reached its handler without an authenticated user; declare @useAuth in the contract")
+	}
+	return u
+}
+
 // HandleUserSession implements ogen's generated user-session security seam.
 func (h *AuthHandler) HandleUserSession(
 	ctx context.Context,

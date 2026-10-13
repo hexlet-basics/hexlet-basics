@@ -90,10 +90,7 @@ func (s *Server) getAdminBlogPost(ctx context.Context, id int) (*api.BlogPost, e
 // admin-locale design gap), so the default locale is pinned like the lesson
 // lists do — thread the request locale through when it lands.
 func (s *Server) AdminCreateBlogPost(ctx context.Context, req *api.BlogPostInput) (api.AdminCreateBlogPostRes, error) {
-	creator, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	creator := MustAuthenticatedUser(ctx)
 
 	row, err := s.db.BlogPost.Create().
 		SetInput(req).

@@ -21,10 +21,7 @@ const (
 // GetProfile returns the signed-in user's editable profile. The contract
 // guarantees a session, so the user is always in the context here.
 func (h *AuthHandler) GetProfile(ctx context.Context) (api.GetProfileRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 	profile := h.conv.ToUser(u)
 	return &profile, nil
 }
@@ -34,10 +31,7 @@ func (h *AuthHandler) GetProfile(ctx context.Context) (api.GetProfileRes, error)
 // anything legacy's validations would have. A null clears the column, as
 // legacy's `update(struct.attributes)` did with a nil attribute.
 func (h *AuthHandler) UpdateProfile(ctx context.Context, req *api.ProfileInput) (api.UpdateProfileRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 
 	update := u.Update()
 	if value, ok := req.FirstName.Get(); ok {
@@ -63,10 +57,7 @@ func (h *AuthHandler) UpdateProfile(ctx context.Context, req *api.ProfileInput) 
 // device's session; here every other device's JWT stops working too, because
 // authentication refuses a removed user whatever token it carries.
 func (h *AuthHandler) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 	if err := h.remover.Remove(ctx, u.ID); err != nil {
 		return nil, err
 	}

@@ -113,10 +113,7 @@ func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPost
 // like is ignored rather than failing — the answer is the post, unchanged. Two
 // truly concurrent clicks can still both insert, as they could on legacy.
 func (s *Server) LikeBlogPost(ctx context.Context, params api.LikeBlogPostParams) (api.LikeBlogPostRes, error) {
-	liker, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	liker := MustAuthenticatedUser(ctx)
 
 	row, err := s.db.BlogPost.Query().
 		Where(blogpost.IDEQ(int(params.ID))).

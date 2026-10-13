@@ -17,10 +17,7 @@ import (
 // attribution comes from the form and the IP from the request, since ahoy is
 // not ported (ADR-0015); the recorder owns the write and the event together.
 func (s *Server) CreateLead(ctx context.Context, req *api.LeadInput) (api.CreateLeadRes, error) {
-	u, ok := AuthenticatedUser(ctx)
-	if !ok {
-		return nil, errUnauthenticated
-	}
+	u := MustAuthenticatedUser(ctx)
 
 	ip, hasIP := ClientIP(ctx)
 	created, err := s.leads.Create(ctx, leads.Submission{
