@@ -6,15 +6,8 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/review"
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/reviews"
 )
-
-// withReviewEdges loads the course (with its current version, which ToCourse
-// needs) and the user, both embedded in full by the Review API model.
-func withReviewEdges(q *ent.ReviewQuery) *ent.ReviewQuery {
-	return q.
-		WithCourse(func(cq *ent.CourseQuery) { cq.WithCurrentVersion() }).
-		WithUser()
-}
 
 // ListPublicReviews is the public reviews page (legacy `Web::ReviewsController
 // #index`): published reviews in the request locale, newest (highest id) first,
@@ -23,14 +16,7 @@ func withReviewEdges(q *ent.ReviewQuery) *ent.ReviewQuery {
 // empty page, not an error, as legacy's `with_locale` scope gave it.
 func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicReviewsParams) (*api.ReviewPage, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.ReviewQuery {
-			return withReviewEdges(s.db.Review.Query()).
-				Where(
-					review.StateEQ(string(api.ReviewStatePublished)),
-					review.LocaleEQ(s.i18n.Locale(ctx)),
-				).
-				Order(ent.Desc(review.FieldID))
-		},
+		func() *ent.ReviewQuery { return reviews.Public(s.db, s.i18n.Locale(ctx)) },
 		s.conv.ToReviews,
 		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
 			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
@@ -41,7 +27,7 @@ func (s *Server) ListPublicReviews(ctx context.Context, params api.ListPublicRev
 // AdminListReviews returns a page of reviews, newest first.
 func (s *Server) AdminListReviews(ctx context.Context, params api.AdminListReviewsParams) (api.AdminListReviewsRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
-		func() *ent.ReviewQuery { return withReviewEdges(s.db.Review.Query()).Order(ent.Desc(review.FieldID)) },
+		func() *ent.ReviewQuery { return reviews.WithEdges(s.db.Review.Query()).Order(ent.Desc(review.FieldID)) },
 		s.conv.ToReviews,
 		func(items []api.Review, total, page, perPage int32) *api.ReviewPage {
 			return &api.ReviewPage{Items: items, Total: total, Page: page, PerPage: perPage}
@@ -58,7 +44,7 @@ func (s *Server) AdminGetReview(ctx context.Context, params api.AdminGetReviewPa
 func (s *Server) getAdminReview(ctx context.Context, id int32) (*api.Review, error) {
 	return getOne(ctx, int(id),
 		func(ctx context.Context, id int) (*ent.Review, error) {
-			return withReviewEdges(s.db.Review.Query().Where(review.ID(id))).Only(ctx)
+			return reviews.WithEdges(s.db.Review.Query().Where(review.ID(id))).Only(ctx)
 		},
 		s.conv.ToReview,
 	)

@@ -8,7 +8,6 @@ import (
 	"hexletbasics/ent"
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
-	"hexletbasics/ent/predicate"
 	"hexletbasics/internal/api"
 )
 
@@ -19,28 +18,11 @@ import (
 // simply not found. The like is the exception: legacy looked the post up by slug
 // alone, so any existing post can be liked.
 
-// recommendedPostsLimit is how many other posts the post page offers (legacy
-// `.limit(2)`).
-const recommendedPostsLimit = 2
-
-// publishedInLocale is legacy `BlogPost.published_state.with_locale`.
-func (s *Server) publishedInLocale(ctx context.Context) predicate.BlogPost {
-	return blogpost.And(
-		blogpost.StateEQ(string(api.BlogPostStatePublished)),
-		blogpost.LocaleEQ(s.i18n.Locale(ctx)),
-	)
-}
-
 // ListBlogPosts returns a page of published posts in the request locale,
 // newest first (legacy `order(id: :desc)`, pagy's 20 per page).
 func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsParams) (*api.BlogPostPage, error) {
 	return listPageWith(ctx, params.Page, params.PerPage,
-		func() *ent.BlogPostQuery {
-			return s.db.BlogPost.Query().
-				Where(s.publishedInLocale(ctx)).
-				WithCreator().
-				Order(ent.Desc(blogpost.FieldID))
-		},
+		func() *ent.BlogPostQuery { return s.blogPublic.Query(s.i18n.Locale(ctx)) },
 		s.blogPostsToAPI,
 		func(items []api.BlogPost, total, page, perPage int32) *api.BlogPostPage {
 			return &api.BlogPostPage{Items: items, Total: total, Page: page, PerPage: perPage}
@@ -52,24 +34,12 @@ func (s *Server) ListBlogPosts(ctx context.Context, params api.ListBlogPostsPara
 // the courses it promotes. Keyed by slug, so the id-keyed getOne helper does not
 // fit; a miss is ent not-found, which the central handler maps to 404.
 func (s *Server) GetBlogPost(ctx context.Context, params api.GetBlogPostParams) (api.GetBlogPostRes, error) {
-	row, err := s.db.BlogPost.Query().
-		Where(s.publishedInLocale(ctx), blogpost.SlugEQ(params.Slug)).
-		WithCreator().
-		Only(ctx)
+	locale := s.i18n.Locale(ctx)
+	row, err := s.blogPublic.BySlug(ctx, locale, params.Slug)
 	if err != nil {
 		return nil, err
 	}
-
-	// Divergence, on purpose: legacy wrote `.except(blog_post)`, which is
-	// ActiveRecord's query-part remover, not a record exclusion — a no-op, so its
-	// two posts were unordered and could include the post being read. Excluding
-	// the current post and ordering newest first is what that line meant.
-	recommendedRows, err := s.db.BlogPost.Query().
-		Where(s.publishedInLocale(ctx), blogpost.IDNEQ(row.ID)).
-		WithCreator().
-		Order(ent.Desc(blogpost.FieldID)).
-		Limit(recommendedPostsLimit).
-		All(ctx)
+	recommendedRows, err := s.blogPublic.Recommended(ctx, locale, row)
 	if err != nil {
 		return nil, err
 	}
@@ -126,11 +96,7 @@ func (s *Server) relatedLandingPages(ctx context.Context, courseIDs []int32) ([]
 // published post in the request locale (id strictly below the given one). The
 // oldest post has no next one — 404, which ends the page's infinite scroll.
 func (s *Server) GetNextBlogPost(ctx context.Context, params api.GetNextBlogPostParams) (api.GetNextBlogPostRes, error) {
-	row, err := s.db.BlogPost.Query().
-		Where(s.publishedInLocale(ctx), blogpost.IDLT(int(params.ID))).
-		WithCreator().
-		Order(ent.Desc(blogpost.FieldID)).
-		First(ctx)
+	row, err := s.blogPublic.NextOlder(ctx, s.i18n.Locale(ctx), int(params.ID))
 	if err != nil {
 		return nil, err
 	}

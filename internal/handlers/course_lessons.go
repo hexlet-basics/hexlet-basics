@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselessonreview"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
@@ -41,7 +40,7 @@ func (s *Server) AdminListCourseLessons(ctx context.Context, params api.AdminLis
 			// Legacy `.current`: the info's course version must be selected as
 			// current by a completed course.
 			courselessontranslation.HasCourseVersionWith(
-				courseversion.HasCurrentCoursesWith(course.ReadinessEQ(landingpages.CourseCompleted)),
+				courseversion.HasCurrentCoursesWith(landingpages.Completed()),
 			),
 		)
 	}

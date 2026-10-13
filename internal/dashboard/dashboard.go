@@ -21,9 +21,16 @@ type Course struct {
 	State      *progress.CourseState
 }
 
+// Courses is the dashboard: what the learner is working on and what they have
+// finished, each newest enrollment first.
+type Courses struct {
+	Started  []Course
+	Finished []Course
+}
+
 // CourseLister is the dashboard seam the handlers depend on.
 type CourseLister interface {
-	Courses(ctx context.Context, userID int, locale string) ([]Course, error)
+	Courses(ctx context.Context, userID int, locale string) (Courses, error)
 }
 
 // Dashboard reads the learner's courses.
@@ -49,27 +56,37 @@ func New(db *ent.Client, catalog *landingpages.Catalog, tracker progress.Tracker
 // course's main landing page in locale, legacy `LandingPage.web.where(main:
 // true)`: the dashboard scope, which unlike the public lists does not require
 // `listed`. One query serves every enrollment.
-func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) ([]Course, error) {
+func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Courses, error) {
 	enrollments, err := d.db.Enrollment.Query().
 		Where(enrollment.UserID(userID)).
 		Order(ent.Desc(enrollment.FieldID)).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return Courses{}, err
 	}
 
 	courseIDs := lo.Map(enrollments, func(e *ent.Enrollment, _ int) int { return e.CourseID })
 	cards, err := d.catalog.MainPages(ctx, locale, courseIDs...)
 	if err != nil {
-		return nil, err
+		return Courses{}, err
 	}
 	states, err := d.progress.CourseStates(ctx, userID, courseIDs)
 	if err != nil {
-		return nil, err
+		return Courses{}, err
 	}
 
-	return lo.FilterMap(enrollments, func(e *ent.Enrollment, _ int) (Course, bool) {
+	var dashboard Courses
+	for _, e := range enrollments {
 		card, ok := cards[e.CourseID]
-		return Course{Enrollment: e, Card: card, State: states[e.CourseID]}, ok
-	}), nil
+		if !ok {
+			continue
+		}
+		course := Course{Enrollment: e, Card: card, State: states[e.CourseID]}
+		if course.State.State == progress.StateFinished {
+			dashboard.Finished = append(dashboard.Finished, course)
+		} else {
+			dashboard.Started = append(dashboard.Started, course)
+		}
+	}
+	return dashboard, nil
 }

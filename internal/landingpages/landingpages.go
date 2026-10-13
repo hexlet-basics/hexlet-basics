@@ -25,6 +25,13 @@ const StatePublished = "published"
 // courses stay off the public lists.
 const CourseCompleted = "completed"
 
+// Completed is a Course whose content is finished (legacy `Language.completed`):
+// in-development and draft courses stay off public lists and out of the admin's
+// current lesson views.
+func Completed() predicate.Course {
+	return course.ReadinessEQ(CourseCompleted)
+}
+
 // Published is the part of the public scope that does not look at the Course:
 // published landing pages in locale. Web narrows it; the sitemap, which lists
 // pages of courses that are not completed yet, builds on it directly.
@@ -41,7 +48,7 @@ func Published(locale string) predicate.CourseLandingPage {
 func Web(locale string) predicate.CourseLandingPage {
 	return courselandingpage.And(
 		Published(locale),
-		courselandingpage.HasCourseWith(course.ReadinessEQ(CourseCompleted)),
+		courselandingpage.HasCourseWith(Completed()),
 	)
 }
 

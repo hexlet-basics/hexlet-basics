@@ -63,6 +63,8 @@ type Server struct {
 	catalog *landingpages.Catalog
 	// assistant is the in-lesson chat: quota, prompt, stream and storage.
 	assistant *assistant.Chat
+	// blogPublic reads the posts a visitor may open.
+	blogPublic *blogposts.Public
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover blogposts.PostRemover
 	// permissions writes a role's permission matrix.
@@ -122,6 +124,7 @@ func NewServer(deps Deps) *Server {
 		catalog:     landingpages.NewCatalog(deps.DB),
 		assistant:   deps.Assistant,
 		postRemover: deps.PostRemover,
+		blogPublic:  blogposts.NewPublic(deps.DB),
 		permissions: deps.Permissions,
 		dashboard:   deps.Dashboard,
 		sitemap:     deps.Sitemap,

@@ -11,6 +11,7 @@ import (
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courseversion"
+	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/landingpages"
 )
 
@@ -19,9 +20,6 @@ import (
 // only ever rendered for ru). es is left out because its links did not work
 // on the legacy site.
 var Locales = []string{"ru", "en"}
-
-// PublishedState is the `state` of a blog post open to readers.
-const PublishedState = "published"
 
 // Page is what the sitemap lists.
 type Page struct {
@@ -81,7 +79,7 @@ func (s *Sitemap) Read(ctx context.Context) (*Page, error) {
 	// Legacy `BlogPost.published_state.order(id: :desc)`, every locale; the page
 	// renders only the sitemap locales' groups.
 	posts, err := s.db.BlogPost.Query().
-		Where(blogpost.StateEQ(PublishedState)).
+		Where(blogpost.StateEQ(blogposts.StatePublished)).
 		Order(ent.Desc(blogpost.FieldID)).
 		// Skip the post bodies; the page shows only titles.
 		Select(blogpost.FieldID, blogpost.FieldName, blogpost.FieldSlug, blogpost.FieldLocale).

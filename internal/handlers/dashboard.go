@@ -6,7 +6,7 @@ import (
 
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/apiconv"
-	"hexletbasics/internal/progress"
+	"hexletbasics/internal/dashboard"
 )
 
 // GetMyDashboard returns the learner's courses, split into what they are
@@ -38,16 +38,19 @@ func (s *Server) GetMyDashboard(ctx context.Context) (api.GetMyDashboardRes, err
 		FinishedEnrollments:    []api.Enrollment{},
 		LandingPagesByCourseId: api.MyDashboardLandingPagesByCourseId{},
 	}
-	for _, c := range courses {
-		item := apiconv.ToEnrollment(c.Enrollment, c.State)
-		if c.State.State == progress.StateFinished {
-			dashboard.FinishedEnrollments = append(dashboard.FinishedEnrollments, item)
-		} else {
-			dashboard.StartedEnrollments = append(dashboard.StartedEnrollments, item)
-		}
-		// Keyed by course id as a string: JSON object keys are strings, and the
-		// client pairs each card with the enrollment's courseId.
-		dashboard.LandingPagesByCourseId[strconv.Itoa(c.Enrollment.CourseID)] = s.conv.ToCatalogItem(c.Card)
+	for _, c := range courses.Started {
+		dashboard.StartedEnrollments = append(dashboard.StartedEnrollments, apiconv.ToEnrollment(c.Enrollment, c.State))
+		s.addCard(dashboard, c)
+	}
+	for _, c := range courses.Finished {
+		dashboard.FinishedEnrollments = append(dashboard.FinishedEnrollments, apiconv.ToEnrollment(c.Enrollment, c.State))
+		s.addCard(dashboard, c)
 	}
 	return dashboard, nil
+}
+
+// addCard keys the course's card by course id as a string: JSON object keys are
+// strings, and the client pairs each card with the enrollment's courseId.
+func (s *Server) addCard(out *api.MyDashboard, c dashboard.Course) {
+	out.LandingPagesByCourseId[strconv.Itoa(c.Enrollment.CourseID)] = s.conv.ToCatalogItem(c.Card)
 }
