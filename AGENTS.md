@@ -80,7 +80,7 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 - **ent ORM** lives in `ent/`; schema is `ent/schema/*.go`. Regenerate the
   client with `mise run gen:ent` (`go generate ./ent`) after editing a schema.
 - Other `internal/` packages: `config/` (env config via `caarlos0/env`),
-  `logging/` (`slog` + `tint`), `store/` (ent client construction), `slugs/`,
+  `logging/` (`slog` + `tint`), `store/` (ent client construction),
   `ids/`, `apiconv/`, `testsupport/`.
 
 ## Database & Migrations (atlas owns the schema)
