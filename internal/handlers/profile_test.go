@@ -61,6 +61,7 @@ func TestUpdateProfile(t *testing.T) {
 
 func TestDeleteAccount(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	giveSecondAdmin(t, h)
 	u := h.DB.User.UpdateOneID(h.UserID).SetNickname("ally").SetPhone("+10000000001").SaveX(t.Context())
 	h.DB.UserAccount.Create().SetUserID(u.ID).SetProvider("github").SetUID("alice-gh").SaveX(t.Context())
 	other := h.DB.UserAccount.Create().SetUserID(h.DB.User.Query().
@@ -101,6 +102,7 @@ func TestDeleteAccount(t *testing.T) {
 // naming anyone once the account is gone.
 func TestRemovedAccountIsSignedOutEverywhere(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	giveSecondAdmin(t, h)
 	_, err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
 
@@ -116,6 +118,7 @@ func TestRemovedAccountIsSignedOutEverywhere(t *testing.T) {
 // Removal frees the email: the same address registers again as a new account.
 func TestRemovedAccountEmailCanRegisterAgain(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	giveSecondAdmin(t, h)
 	email := lo.FromPtr(h.DB.User.GetX(t.Context(), h.UserID).Email)
 	_, err := h.Client.DeleteAccount(t.Context())
 	require.NoError(t, err)
@@ -212,4 +215,21 @@ func TestSwitchLocaleRemembersAVisitorsChoiceInACookie(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, h.LastStatus())
 	assert.Equal(t, "en", localeCookieFrom(t, h).Value)
 	assert.Nil(t, h.DB.User.GetX(t.Context(), h.UserID).Locale)
+}
+
+// giveSecondAdmin makes the harness user (the fixtures' only administrator) not
+// the last one, so a test can remove their account.
+func giveSecondAdmin(t *testing.T, h *testsupport.Harness) {
+	t.Helper()
+	h.DB.User.Create().SetEmail("second-admin@example.test").SetAdmin(true).SaveX(t.Context())
+}
+
+func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	_, err := h.Client.DeleteAccount(t.Context())
+
+	require.Error(t, err)
+	assert.Equal(t, http.StatusConflict, h.LastStatus())
+	assert.True(t, h.DB.User.Query().Where(user.ID(h.UserID), user.StateIsNil()).ExistX(t.Context()))
 }

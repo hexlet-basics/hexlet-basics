@@ -2,9 +2,12 @@ package handlers
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/user"
+	"hexletbasics/internal/accounts"
 	"hexletbasics/internal/api"
 )
 
@@ -59,6 +62,7 @@ func (s *Server) AdminGetUser(ctx context.Context, params api.AdminGetUserParams
 // Email uniqueness is enforced by the baseline unique index, not a pre-check: a
 // violation returns ent's constraint error, mapped to 409 centrally (race-free).
 func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.AdminCreateUserRes, error) {
+	req.Email = accounts.NormalizeEmail(req.Email)
 	row, err := s.db.User.Create().SetInput(req).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -72,7 +76,7 @@ func (s *Server) AdminCreateUser(ctx context.Context, req *api.UserInput) (api.A
 // (mapped to 404 centrally). The generated SetInput clears a column on null,
 // matching the legacy assign_attributes semantics.
 func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params api.AdminUpdateUserParams) (api.AdminUpdateUserRes, error) {
-	row, err := s.db.User.UpdateOneID(int(params.ID)).SetInput(req).Save(ctx)
+	row, err := s.updateUser(ctx, int(params.ID), req)
 	if err != nil {
 		return nil, err
 	}
@@ -81,9 +85,33 @@ func (s *Server) AdminUpdateUser(ctx context.Context, req *api.UserInput, params
 	return &item, nil
 }
 
+// updateUser is the write shared by the two admin surfaces over users. The email
+// is stored the way registration stores it, or the account could not be found
+// at sign-in; clearing the administrator flag is refused for the last one.
+func (s *Server) updateUser(ctx context.Context, id int, req *api.UserInput) (*ent.User, error) {
+	req.Email = accounts.NormalizeEmail(req.Email)
+	if req.Admin.Null || !req.Admin.Value {
+		if err := accounts.EnsureAnotherAdmin(ctx, s.db, id); err != nil {
+			return nil, lastAdminError(err)
+		}
+	}
+	return s.db.User.UpdateOneID(id).SetInput(req).Save(ctx)
+}
+
+// lastAdminError gives the refusal its 409; any other error passes through.
+func lastAdminError(err error) error {
+	if errors.Is(err, accounts.ErrLastAdmin) {
+		return withHTTPStatus(http.StatusConflict, err)
+	}
+	return err
+}
+
 // AdminDeleteUser removes a user by id. A missing id returns ent's not-found
 // error (mapped to 404 centrally).
 func (s *Server) AdminDeleteUser(ctx context.Context, params api.AdminDeleteUserParams) (api.AdminDeleteUserRes, error) {
+	if err := accounts.EnsureAnotherAdmin(ctx, s.db, int(params.ID)); err != nil {
+		return nil, lastAdminError(err)
+	}
 	if err := s.db.User.DeleteOneID(int(params.ID)).Exec(ctx); err != nil {
 		return nil, err
 	}

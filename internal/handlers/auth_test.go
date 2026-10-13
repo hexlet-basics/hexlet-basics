@@ -58,7 +58,9 @@ func newAuthRouterWithDB(t *testing.T, db *ent.Client, tx *sql.Tx, transactor st
 		api.WithMethodNotAllowed(handlers.NewMethodNotAllowedHandler(translator)),
 	)
 	require.NoError(t, err)
-	return translator.Middleware(handler.AuthHandler().Trace(server))
+	auth := handler.AuthHandler()
+	// The same chain as production: Trace, then the optional identity.
+	return translator.Middleware(auth.Trace(auth.Identify(server)))
 }
 
 // jwtCookie returns the JWT auth cookie from a response, or nil if absent.

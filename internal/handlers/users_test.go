@@ -187,3 +187,41 @@ func TestAdminDeleteUser(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, totalUsers-1, total)
 }
+
+func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	ctx := t.Context()
+	input := &api.UserInput{
+		Email:     "alice@example.com",
+		FirstName: api.NilString{Null: true},
+		LastName:  api.NilString{Null: true},
+		Admin:     api.NewNilBool(false),
+	}
+
+	_, err := h.Client.AdminUpdateUser(ctx, input, api.AdminUpdateUserParams{ID: int32(h.UserID)})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusConflict, h.LastStatus())
+
+	err = h.Client.AdminDeleteUser(ctx, api.AdminDeleteUserParams{ID: int32(h.UserID)})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusConflict, h.LastStatus())
+
+	// With a second administrator the same changes go through.
+	h.DB.User.Create().SetEmail("second-admin@example.test").SetAdmin(true).SaveX(ctx)
+	_, err = h.Client.AdminUpdateUser(ctx, input, api.AdminUpdateUserParams{ID: int32(h.UserID)})
+	require.NoError(t, err)
+}
+
+func TestAdminStoresTheEmailTheWayRegistrationDoes(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	created, err := h.Client.AdminCreateUser(t.Context(), &api.UserInput{
+		Email:     "Mixed.Case@Example.TEST",
+		FirstName: api.NilString{Null: true},
+		LastName:  api.NilString{Null: true},
+		Admin:     api.NilBool{Null: true},
+	})
+	require.NoError(t, err)
+
+	assert.Equal(t, "mixed.case@example.test", created.Email)
+}

@@ -47,6 +47,9 @@ func NewRemover(txStore store.Transactor) *Remover {
 // an account half-erased.
 func (r *Remover) Remove(ctx context.Context, userID int) error {
 	return r.store.WithinTx(ctx, func(_ *sql.Tx, tx *ent.Client) error {
+		if err := EnsureAnotherAdmin(ctx, tx, userID); err != nil {
+			return err
+		}
 		if _, err := tx.UserAccount.Delete().Where(useraccount.UserID(userID)).Exec(ctx); err != nil {
 			return fmt.Errorf("delete linked accounts: %w", err)
 		}

@@ -436,27 +436,13 @@ func (h *AuthHandler) DeleteSession(context.Context) (api.DeleteSessionRes, erro
 	return &api.DeleteSessionNoContent{SetCookie: cookies}, nil
 }
 
-// GetCurrentUser resolves the user populated by go-pkgz/auth's Trace middleware.
-// Missing, invalid, or stale sessions are anonymous.
-func (h *AuthHandler) GetCurrentUser(ctx context.Context, params api.GetCurrentUserParams) (*api.CurrentUser, error) {
-	_ = params
-	authReq := httptest.NewRequestWithContext(ctx, http.MethodGet, "/me", nil)
-	authUser, err := token.GetUserInfo(authReq)
-	if err != nil {
+// GetCurrentUser answers who is signed in: the user the Identify middleware
+// loaded, or anonymous. A missing, invalid, stale or removed session is
+// anonymous, not an error.
+func (h *AuthHandler) GetCurrentUser(ctx context.Context, _ api.GetCurrentUserParams) (*api.CurrentUser, error) {
+	u, ok := AuthenticatedUser(ctx)
+	if !ok {
 		return anonymousCurrentUser(), nil
-	}
-
-	userID, err := strconv.Atoi(authUser.ID)
-	if err != nil {
-		return anonymousCurrentUser(), nil
-	}
-
-	u, err := accounts.ActiveUserByID(ctx, h.db, userID)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return anonymousCurrentUser(), nil
-		}
-		return nil, err
 	}
 	return &api.CurrentUser{User: api.NewNilUser(h.conv.ToUser(u))}, nil
 }

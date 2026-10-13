@@ -59,7 +59,7 @@ func (h *AuthHandler) UpdateProfile(ctx context.Context, req *api.ProfileInput) 
 func (h *AuthHandler) DeleteAccount(ctx context.Context) (api.DeleteAccountRes, error) {
 	u := MustAuthenticatedUser(ctx)
 	if err := h.remover.Remove(ctx, u.ID); err != nil {
-		return nil, err
+		return nil, lastAdminError(err)
 	}
 
 	rec := httptest.NewRecorder()
