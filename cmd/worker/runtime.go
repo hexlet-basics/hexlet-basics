@@ -24,6 +24,8 @@ type jobRuntime interface {
 
 type eventRuntime interface {
 	Run(context.Context) error
+	// Running is closed once the router has started every handler.
+	Running() <-chan struct{}
 	Close() error
 }
 
@@ -44,6 +46,11 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 
 	group, groupCtx := errgroup.WithContext(processCtx)
 	riverReady := make(chan struct{})
+	// jobsStartSettled is closed once starting the job queue has either succeeded
+	// or failed. A shutdown waits for it before asking whether the queue was
+	// started: a signal that lands in the middle of the start would otherwise skip
+	// stopping a queue that then finishes starting, and nothing would ever stop it.
+	jobsStartSettled := make(chan struct{})
 	state := &runtimeState{}
 
 	group.Go(func() error {
@@ -57,10 +64,14 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 	})
 
 	group.Go(func() error {
-		if err := a.jobs.Start(processCtx); err != nil {
+		err := a.jobs.Start(processCtx)
+		if err == nil {
+			state.markJobsStarted()
+		}
+		close(jobsStartSettled)
+		if err != nil {
 			return fmt.Errorf("start job queue: %w", err)
 		}
-		state.markJobsStarted()
 		close(riverReady)
 
 		<-a.jobs.Stopped()
@@ -74,7 +85,18 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 			return nil
 		}
 
-		state.markEventsStarted()
+		// The router counts as started only once it reports itself running.
+		// Watermill's Close waits for the handlers to come up, so closing a
+		// router that has not got there yet blocks for its whole close timeout;
+		// a shutdown that arrives earlier relies on the cancelled process
+		// context to stop it instead.
+		go func() {
+			select {
+			case <-a.events.Running():
+				state.markEventsStarted()
+			case <-groupCtx.Done():
+			}
+		}()
 		if a.logger != nil {
 			a.logger.Info("async worker started")
 		}
@@ -86,6 +108,7 @@ func (a *application) run(signalCtx context.Context, stopSignals func()) error {
 
 	group.Go(func() error {
 		<-groupCtx.Done()
+		<-jobsStartSettled
 		return a.shutdown(processCtx, state, cancelProcess)
 	})
 

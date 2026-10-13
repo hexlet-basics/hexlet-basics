@@ -47,9 +47,16 @@ func newRiverWith(t *testing.T, workers *river.Workers) *river.Client[*sql.Tx] {
 	return client
 }
 
+// watermillRouter is a Watermill router as the application's event runtime: the
+// router reports readiness on a bidirectional channel, the runtime on a
+// receive-only one.
+type watermillRouter struct{ *message.Router }
+
+func (r watermillRouter) Running() <-chan struct{} { return r.Router.Running() }
+
 // newRouter is a real Watermill router with one handler over an in-memory
 // pub/sub.
-func newRouter(t *testing.T) *message.Router {
+func newRouter(t *testing.T) watermillRouter {
 	t.Helper()
 	logger := watermill.NewSlogLogger(slog.New(slog.NewTextHandler(io.Discard, nil)))
 	pubsub := gochannel.NewGoChannel(gochannel.Config{}, logger)
@@ -57,7 +64,7 @@ func newRouter(t *testing.T) *message.Router {
 	require.NoError(t, err)
 	router.AddConsumerHandler("test_consumer", "test_topic", pubsub, func(*message.Message) error { return nil })
 	t.Cleanup(func() { _ = router.Close() })
-	return router
+	return watermillRouter{router}
 }
 
 func stopped(ch <-chan struct{}) bool {
