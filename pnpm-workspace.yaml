@@ -1,4 +1,9 @@
 overrides:
+  # Transitive copies that sat below the patched releases: undici comes in
+  # through TypeSpec's @scalar/json-magic (build time), dompurify through
+  # monaco-editor (ships to the browser as its HTML sanitizer).
+  undici@7: ^7.29.1
+  dompurify@3: ^3.4.16
   # postcss (build-time only) pins nanoid ^3.3.16; the fix for the
   # zero-size infinite loop (GHSA) landed in 3.3.17. Scoped to the 3.x line so
   # nothing gets dragged onto nanoid 6.
