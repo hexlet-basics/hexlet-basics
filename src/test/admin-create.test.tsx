@@ -2,12 +2,12 @@ import type { AnyRoute } from "@tanstack/react-router";
 import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
-import type { User } from "@/client/types.gen";
 import { Route as blogPostRoute } from "@/routes/{-$locale}/admin/blog_posts/new";
 import { Route as courseLandingPageRoute } from "@/routes/{-$locale}/admin/course_landing_pages/new";
 import { Route as courseRoute } from "@/routes/{-$locale}/admin/courses/new";
 import { Route as roleRoute } from "@/routes/{-$locale}/admin/management/roles/new";
 import { Route as staffMemberRoute } from "@/routes/{-$locale}/admin/management/staff_members/new";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
@@ -15,20 +15,6 @@ import { renderRoute } from "@/test/renderRoute";
 // guard: an admin fills the form, the API receives what was typed, and the page
 // goes back to the resource's list. The forms are one engine (CrudForm) fed by a
 // field spec per resource, so each case covers a resource's spec and its route.
-
-const admin: User = {
-  id: 1,
-  firstName: "Ada",
-  lastName: null,
-  name: "Ada",
-  email: "ada@example.com",
-  admin: true,
-  canAccessAdmin: true,
-  assistantMessagesCount: 0,
-  createdAt: "2026-01-01T00:00:00Z",
-  createdAtAsTimestamp: null,
-  type: "user",
-};
 
 type Case = {
   name: string;

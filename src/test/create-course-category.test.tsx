@@ -2,12 +2,10 @@ import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type { CourseCategoryInput } from "@/client/types.gen";
-// Route components live under the `{-$locale}` directory, whose braces break
-// Vitest's transform when a *test* lives there — so the flow tests sit in
-// src/test/ and import the page components across the alias.
-import { NewCourseCategory } from "@/routes/{-$locale}/admin/course_categories/new";
+import { Route } from "@/routes/{-$locale}/admin/course_categories/new";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
-import { renderWithRouter } from "@/test/renderWithRouter";
+import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case: an admin fills the create form, it POSTs the
 // right body to the API, and the app confirms + navigates back to the list.
@@ -28,7 +26,11 @@ test("creates a course category", async () => {
     }),
   );
 
-  const { navigate } = await renderWithRouter(<NewCourseCategory />);
+  const { router } = await renderRoute(Route, {
+    path: "/{-$locale}/admin/course_categories/new",
+    initialPath: "/admin/course_categories/new",
+    user: admin,
+  });
 
   await page.getByLabelText("Name *").fill("Frontend");
   await page.getByLabelText("Header *").fill("Frontend courses");
@@ -41,7 +43,5 @@ test("creates a course category", async () => {
     header: "Frontend courses",
     slug: "frontend",
   });
-  expect(navigate).toHaveBeenCalledWith(
-    expect.objectContaining({ to: "/{-$locale}/admin/course_categories" }),
-  );
+  await expect.poll(() => router.state.location.pathname).toBe("/admin/course_categories");
 });

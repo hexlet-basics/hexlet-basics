@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/blog_posts/new")({
   component: NewBlogPost,
 });
 
-export function NewBlogPost() {
+function NewBlogPost() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useBlogPostFields();

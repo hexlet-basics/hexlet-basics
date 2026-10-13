@@ -881,7 +881,7 @@ export default function PrivacyEn() {
             </tr>
             <tr>
               <td>L. Sensitive personal Information </td>
-              <td />
+              <td>&nbsp;</td>
               <td>NO</td>
             </tr>
           </tbody>

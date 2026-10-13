@@ -154,13 +154,7 @@ export default interface Resources {
         },
         "qna_item": {
           "answer": "Ответ",
-          "footer": "Выводить в футере",
-          "footer_name": "Имя в футере",
-          "listed": "Отображать в списках",
-          "main": "Основной",
-          "order": "Order",
-          "question": "Вопрос",
-          "slug": "Slug"
+          "question": "Вопрос"
         },
         "review": {
           "body": "Отзыв",
@@ -1445,13 +1439,7 @@ export default interface Resources {
         },
         "qna_item": {
           "answer": "Ответ",
-          "footer": "Выводить в футере",
-          "footer_name": "Имя в футере",
-          "listed": "Отображать в списках",
-          "main": "Основной",
-          "order": "Order",
-          "question": "Вопрос",
-          "slug": "Slug"
+          "question": "Вопрос"
         },
         "remind_password_form": {
           "email": "Email"

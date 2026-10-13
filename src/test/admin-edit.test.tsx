@@ -6,10 +6,10 @@ import type {
   QnaItem,
   RolePermissionsInput,
   StaffRoleDetail,
-  User,
 } from "@/client/types.gen";
 import { Route as categoryRoute } from "@/routes/{-$locale}/admin/course_categories/$id";
 import { Route as roleRoute } from "@/routes/{-$locale}/admin/management/roles/$id";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
@@ -17,20 +17,6 @@ import { renderRoute } from "@/test/renderRoute";
 // through their real routes under the real admin guard: the role's permission
 // matrix and a category's FAQ. The API is faked at the HTTP boundary; asserted is
 // what an admin sees and what the API is sent.
-
-const admin: User = {
-  id: 1,
-  firstName: "Ada",
-  lastName: null,
-  name: "Ada",
-  email: "ada@example.com",
-  admin: true,
-  canAccessAdmin: true,
-  assistantMessagesCount: 0,
-  createdAt: "2026-01-01T00:00:00Z",
-  createdAtAsTimestamp: null,
-  type: "user",
-};
 
 const role: StaffRoleDetail = {
   id: 5,

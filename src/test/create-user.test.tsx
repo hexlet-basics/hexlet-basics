@@ -2,9 +2,10 @@ import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type { UserInput } from "@/client/types.gen";
-import { NewUser } from "@/routes/{-$locale}/admin/users/new";
+import { Route } from "@/routes/{-$locale}/admin/users/new";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
-import { renderWithRouter } from "@/test/renderWithRouter";
+import { renderRoute } from "@/test/renderRoute";
 
 // Positive create flow for the users resource — also exercises the engine's
 // checkbox field type (admin flag) end to end.
@@ -23,7 +24,11 @@ test("creates a user", async () => {
     }),
   );
 
-  const { navigate } = await renderWithRouter(<NewUser />);
+  const { router } = await renderRoute(Route, {
+    path: "/{-$locale}/admin/users/new",
+    initialPath: "/admin/users/new",
+    user: admin,
+  });
 
   await page.getByLabelText("Email *").fill("dora@example.com");
   await page.getByLabelText("First name").fill("Dora");
@@ -36,5 +41,5 @@ test("creates a user", async () => {
     firstName: "Dora",
     admin: true,
   });
-  expect(navigate).toHaveBeenCalledWith(expect.objectContaining({ to: "/{-$locale}/admin/users" }));
+  await expect.poll(() => router.state.location.pathname).toBe("/admin/users");
 });

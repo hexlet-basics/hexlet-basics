@@ -22,7 +22,7 @@ export const Route = createFileRoute("/{-$locale}/admin/course_categories/")({
   component: CourseCategoriesList,
 });
 
-export function CourseCategoriesList() {
+function CourseCategoriesList() {
   const { t } = useTranslation();
   const confirmDelete = useDeleteConfirmation();
 

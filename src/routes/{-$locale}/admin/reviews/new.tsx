@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/reviews/new")({
   component: NewReview,
 });
 
-export function NewReview() {
+function NewReview() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useReviewFields();

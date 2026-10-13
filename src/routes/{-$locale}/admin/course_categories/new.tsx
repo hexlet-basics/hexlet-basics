@@ -17,7 +17,7 @@ export const Route = createFileRoute("/{-$locale}/admin/course_categories/new")(
   component: NewCourseCategory,
 });
 
-export function NewCourseCategory() {
+function NewCourseCategory() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseCategoryFields();

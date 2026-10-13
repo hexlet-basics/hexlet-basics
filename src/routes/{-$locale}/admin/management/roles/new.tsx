@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/management/roles/new")({
   component: NewRole,
 });
 
-export function NewRole() {
+function NewRole() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffRoleFields();

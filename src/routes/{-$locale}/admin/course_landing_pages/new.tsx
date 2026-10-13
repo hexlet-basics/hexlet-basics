@@ -17,7 +17,7 @@ export const Route = createFileRoute("/{-$locale}/admin/course_landing_pages/new
   component: NewCourseLandingPage,
 });
 
-export function NewCourseLandingPage() {
+function NewCourseLandingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseLandingPageFields();

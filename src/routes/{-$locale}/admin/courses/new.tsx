@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/courses/new")({
   component: NewCourse,
 });
 
-export function NewCourse() {
+function NewCourse() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useCourseFields();

@@ -2,9 +2,10 @@ import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type { ReviewInput } from "@/client/types.gen";
-import { NewReview } from "@/routes/{-$locale}/admin/reviews/new";
+import { Route } from "@/routes/{-$locale}/admin/reviews/new";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
-import { renderWithRouter } from "@/test/renderWithRouter";
+import { renderRoute } from "@/test/renderRoute";
 
 // Positive create flow for the reviews resource — also exercises the engine's
 // number field type (courseId): a filled number submits as a number, an empty
@@ -32,7 +33,11 @@ test("creates a review", async () => {
     }),
   );
 
-  const { navigate } = await renderWithRouter(<NewReview />);
+  const { router } = await renderRoute(Route, {
+    path: "/{-$locale}/admin/reviews/new",
+    initialPath: "/admin/reviews/new",
+    user: admin,
+  });
 
   await page.getByLabelText("Course").fill("42");
   await page.getByLabelText("First name").fill("Eva");
@@ -47,7 +52,5 @@ test("creates a review", async () => {
     body: "Great course",
     firstName: "Eva",
   });
-  expect(navigate).toHaveBeenCalledWith(
-    expect.objectContaining({ to: "/{-$locale}/admin/reviews" }),
-  );
+  await expect.poll(() => router.state.location.pathname).toBe("/admin/reviews");
 });

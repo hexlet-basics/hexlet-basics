@@ -2,9 +2,10 @@ import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type { BannerInput } from "@/client/types.gen";
-import { NewBanner } from "@/routes/{-$locale}/admin/banners/new";
+import { Route } from "@/routes/{-$locale}/admin/banners/new";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
-import { renderWithRouter } from "@/test/renderWithRouter";
+import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case exercising the select + datetime field types: the
 // enum defaults ride along in the payload, blank dates serialize as null, and the
@@ -28,7 +29,11 @@ test("creates a banner with the default enum selections", async () => {
     }),
   );
 
-  const { navigate } = await renderWithRouter(<NewBanner />);
+  const { router } = await renderRoute(Route, {
+    path: "/{-$locale}/admin/banners/new",
+    initialPath: "/admin/banners/new",
+    user: admin,
+  });
 
   await page.getByLabelText("Text (Markdown) *").fill("Promo");
   await page.getByRole("button", { name: "Create" }).click();
@@ -42,7 +47,5 @@ test("creates a banner with the default enum selections", async () => {
     startsAt: null,
     finishesAt: null,
   });
-  expect(navigate).toHaveBeenCalledWith(
-    expect.objectContaining({ to: "/{-$locale}/admin/banners" }),
-  );
+  await expect.poll(() => router.state.location.pathname).toBe("/admin/banners");
 });

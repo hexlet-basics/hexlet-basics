@@ -1,9 +1,10 @@
 import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
-import { CourseCategoriesList } from "@/routes/{-$locale}/admin/course_categories/index";
+import { Route } from "@/routes/{-$locale}/admin/course_categories/index";
+import { admin } from "@/test/fixtures";
 import { worker } from "@/test/msw";
-import { renderWithRouter } from "@/test/renderWithRouter";
+import { renderRoute } from "@/test/renderRoute";
 
 // Positive full-cycle use-case for the read half of the CRUD engine: the list
 // hook fetches a server-paginated page and CrudList renders its rows and pager.
@@ -43,7 +44,11 @@ test("renders a server-paginated list through the CRUD engine", async () => {
     ),
   );
 
-  await renderWithRouter(<CourseCategoriesList />);
+  await renderRoute(Route, {
+    path: "/{-$locale}/admin/course_categories/",
+    initialPath: "/admin/course_categories",
+    user: admin,
+  });
 
   // Cell role with `exact`, because getByText matches case-insensitively and
   // each row carries the same word in both its name and its slug.

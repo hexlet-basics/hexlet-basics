@@ -153,13 +153,7 @@ export default {
         },
         qna_item: {
           answer: "Answer",
-          footer: "Выводить в футере",
-          footer_name: "Имя в футере",
-          listed: "Отображать в списках",
-          main: "Основной",
-          order: "Order",
           question: "Question",
-          slug: "Slug",
         },
         review: {
           body: "Review",
@@ -1574,13 +1568,7 @@ export default {
         },
         qna_item: {
           answer: "Answer",
-          footer: "Выводить в футере",
-          footer_name: "Имя в футере",
-          listed: "Отображать в списках",
-          main: "Основной",
-          order: "Order",
           question: "Question",
-          slug: "Slug",
         },
         remind_password_form: {
           email: "Email",

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/users/new")({
   component: NewUser,
 });
 
-export function NewUser() {
+function NewUser() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useUserFields();

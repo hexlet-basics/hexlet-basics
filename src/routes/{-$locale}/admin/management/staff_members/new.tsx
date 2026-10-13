@@ -14,7 +14,7 @@ export const Route = createFileRoute("/{-$locale}/admin/management/staff_members
   component: NewStaffMember,
 });
 
-export function NewStaffMember() {
+function NewStaffMember() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const fields = useStaffMemberFields();
