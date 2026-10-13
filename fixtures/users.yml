@@ -24,3 +24,10 @@
   admin:
   created_at: '2026-07-26 20:50:31'
   updated_at: '2026-07-26 20:50:31'
+- id: 1004
+  email: dana@example.com
+  first_name: Dana
+  last_name: Drake
+  admin: true
+  created_at: '2026-07-26 20:50:32'
+  updated_at: '2026-07-26 20:50:32'

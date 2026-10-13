@@ -13,7 +13,7 @@ import (
 )
 
 // users.yml seeds these three.
-const totalUsers = 3
+const totalUsers = 4
 
 // userByEmail resolves a fixture user by its email (a stable business key),
 // reading its id back rather than hard-coding it.
@@ -191,6 +191,8 @@ func TestAdminDeleteUser(t *testing.T) {
 func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := t.Context()
+	// The fixtures have two administrators, alice (the caller) and dana.
+	h.DB.User.UpdateOneID(danaID).SetAdmin(false).ExecX(ctx)
 	input := &api.UserInput{
 		Email:     "alice@example.com",
 		FirstName: api.NilString{Null: true},
@@ -207,7 +209,7 @@ func TestAdminCannotRemoveOrDemoteTheLastAdministrator(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 
 	// With a second administrator the same changes go through.
-	h.DB.User.Create().SetEmail("second-admin@example.test").SetAdmin(true).SaveX(ctx)
+	h.DB.User.UpdateOneID(danaID).SetAdmin(true).ExecX(ctx)
 	_, err = h.Client.AdminUpdateUser(ctx, input, api.AdminUpdateUserParams{ID: int32(h.UserID)})
 	require.NoError(t, err)
 }
