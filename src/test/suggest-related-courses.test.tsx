@@ -59,9 +59,11 @@ test("enqueues the related-courses suggestion for the post", async () => {
   await renderRoute(editRoute, {
     path: "/{-$locale}/admin/blog_posts/$id",
     initialPath: "/admin/blog_posts/10",
+    user: author,
   });
 
-  await page.getByRole("button", { name: "Suggest courses" }).click();
+  const suggest = page.getByRole("button", { name: "Suggest courses" });
+  await suggest.click();
 
   await expect
     .element(page.getByText("Course suggestion started — reload the page shortly"))

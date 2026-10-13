@@ -35,7 +35,9 @@ export function renderWithProviders(
     return (
       <QueryClientProvider client={queryClient}>
         <I18nextProvider i18n={i18n}>
-          <MantineProvider>
+          {/* env="test": no transitions and portals rendered in place, so nothing
+              of a test (a modal still closing when it ends) outlives its tree. */}
+          <MantineProvider env="test">
             <ModalsProvider>
               <Notifications position="top-right" />
               {children}

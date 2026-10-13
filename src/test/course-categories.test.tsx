@@ -105,9 +105,9 @@ test("the index links every category the API returns", async () => {
   await expect
     .element(page.getByRole("heading", { name: "Course categories", level: 1 }))
     .toBeVisible();
-  await expect
-    .element(page.getByRole("link", { name: /Programming/ }))
-    .toHaveAttribute("href", "/language_categories/programming");
+  // The footer lists the same categories, after the page's own card.
+  const category = page.getByRole("link", { name: /Programming/ }).first();
+  await expect.element(category).toHaveAttribute("href", "/language_categories/programming");
 
   const meta = router.state.matches.at(-1)?.meta;
   expect(meta).toContainEqual({ title: "CodeBasics | Course categories" });

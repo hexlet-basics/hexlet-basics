@@ -122,3 +122,24 @@ test("a load that fails is the 500 page", async () => {
 
   await expect.element(page.getByRole("heading", { name: "Server Error" })).toBeVisible();
 });
+
+// Every page body, in both languages it is written in, through the real route:
+// the title heading and a body that is not empty. The legal texts are long
+// hardcoded markup, so a broken tag or an import that no longer resolves is
+// what this catches.
+const PAGE_IDS = ["about", "authors", "cookie_policy", "privacy", "tos"];
+const LOCALES = [
+  { locale: undefined, prefix: "" },
+  { locale: "ru" as const, prefix: "/ru" },
+];
+
+test.each(PAGE_IDS.flatMap((id) => LOCALES.map((l) => ({ id, ...l }))))(
+  "the $id page renders its body in $prefix",
+  async ({ id, locale, prefix }) => {
+    await renderPage(`${prefix}/pages/${id}`, locale);
+
+    const title = page.getByRole("heading", { level: 1 });
+    await expect.element(title).toBeVisible();
+    await expect.poll(() => document.body.textContent?.length ?? 0).toBeGreaterThan(500);
+  },
+);

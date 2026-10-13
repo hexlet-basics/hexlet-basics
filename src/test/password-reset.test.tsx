@@ -26,9 +26,8 @@ function openLink(token: string) {
   return renderRoute(editRoute, {
     path: "/{-$locale}/password/$token/edit",
     initialPath: `/ru/password/${token}/edit`,
-    // The /ru prefix is what the redirect must keep; the copy asserted here is
-    // the English one.
-    locale: "en",
+    // The /ru prefix is what the redirect must keep, and the layout renders the
+    // page in the language of that prefix.
   });
 }
 
@@ -53,9 +52,9 @@ test("a valid link signs the visitor in with the new password and takes them hom
   const { router, queryClient } = await openLink("good");
 
   // The six-character rule is on the field before anything is submitted.
-  await expect.element(page.getByText("At least 6 characters")).toBeVisible();
-  await page.getByLabelText("New password *").fill("new-password");
-  await page.getByRole("button", { name: "Save password" }).click();
+  await expect.element(page.getByText("Не меньше 6 символов")).toBeVisible();
+  await page.getByLabelText("Новый пароль *").fill("new-password");
+  await page.getByRole("button", { name: "Сохранить пароль" }).click();
 
   await expect.poll(() => router.state.location.pathname).toBe("/ru");
   expect(received).toEqual([{ password: "new-password" }]);
@@ -87,11 +86,11 @@ test("a short password is refused before it is sent", async () => {
 
   const { router } = await openLink("short");
 
-  await page.getByLabelText("New password *").fill("12345");
-  await page.getByRole("button", { name: "Save password" }).click();
+  await page.getByLabelText("Новый пароль *").fill("12345");
+  await page.getByRole("button", { name: "Сохранить пароль" }).click();
 
   await expect
-    .element(page.getByLabelText("New password *"))
+    .element(page.getByLabelText("Новый пароль *"))
     .toHaveAttribute("aria-invalid", "true");
   expect(submitted).toBe(false);
   expect(router.state.location.pathname).toBe("/ru/password/short/edit");

@@ -138,20 +138,12 @@ const learner: AuthUser = {
 };
 
 // The real route at a real URL, so the loader and the route's chrome run as they
-// do for a visitor.
-//
-// The player needs a container with a real height: the two panes divide the
-// space they are given, and a zero-height box renders nothing a learner sees.
-function renderPlayer(lessonSlug: string, user: AuthUser | null = null, screenSize = desktop) {
+// do for a visitor. The lesson layout gives the panes the viewport to divide.
+function renderPlayer(lessonSlug: string, user: AuthUser | null = null) {
   return renderRoute(lessonRoute, {
     path: "/{-$locale}/languages/$slug/lessons/$lessonSlug",
     initialPath: `/languages/javascript/lessons/${lessonSlug}`,
     user,
-    wrap: (element) => (
-      <div style={{ height: `${screenSize.height}px`, width: `${screenSize.width}px` }}>
-        {element}
-      </div>
-    ),
   });
 }
 
@@ -969,7 +961,7 @@ test("tells a guest nothing on a lesson they finished before, but lets them sign
 // The player at a phone's viewport, in a container of the same size.
 async function renderOnPhone(lessonSlug: string, user: AuthUser | null = null) {
   await page.viewport(phone.width, phone.height);
-  return renderPlayer(lessonSlug, user, phone);
+  return renderPlayer(lessonSlug, user);
 }
 
 // The two panes — theory and navigation, then the workspace — as locators, and

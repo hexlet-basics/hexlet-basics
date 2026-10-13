@@ -334,7 +334,7 @@ test("keeps the URL locale when entering the course", async () => {
 
   const { router } = await renderCourse(null, "/ru/languages/javascript");
 
-  await page.getByRole("button").first().click();
+  await page.getByRole("button", { name: "Начать обучение" }).click();
   await expect
     .poll(() => router.state.location.pathname)
     .toBe("/ru/languages/javascript/lessons/hello-world");
