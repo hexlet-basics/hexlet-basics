@@ -23,15 +23,6 @@ import (
 	"hexletbasics/internal/store"
 )
 
-// DailyQuota is how many questions a learner may ask per UTC day. The panel
-// promises seven; legacy's policy compared `count <= 7` before storing and so
-// actually admitted an eighth, which is the one place this port does not copy
-// it.
-const DailyQuota = 7
-
-// ErrQuotaExceeded refuses a question once today's quota is used up.
-var ErrQuotaExceeded = errors.New("assistant daily quota exceeded")
-
 // The roles the chat stores and sends. Production rows also hold RubyLLM's
 // system and tool roles; only user and assistant turns are the conversation.
 const (
@@ -58,18 +49,14 @@ type Streamer interface {
 	Stream(ctx context.Context, turns []Turn, onDelta func(string) error) (Usage, error)
 }
 
-// LessonStarter starts the lesson a question is about (progress.Progress).
-type LessonStarter interface {
-	StartLesson(ctx context.Context, learner progress.Learner, lessonID int, locale string) (*progress.CourseState, error)
-}
-
 // Chat is the in-lesson assistant: a learner's conversation per lesson, over
 // the legacy ai_chats/ai_messages tables, answered synchronously as a stream —
 // no job, no out-of-band delivery (see the assistant port design).
 type Chat struct {
 	db      *ent.Client
 	tx      store.Transactor
-	lessons LessonStarter
+	lessons progress.Tracker
+	quota   *Quota
 	llm     Streamer
 	i18n    *localization.Translator
 	now     func() time.Time
@@ -79,11 +66,11 @@ type Chat struct {
 func NewChat(
 	db *ent.Client,
 	txStore store.Transactor,
-	lessons LessonStarter,
+	lessons progress.Tracker,
 	llm Streamer,
 	translator *localization.Translator,
 ) *Chat {
-	return &Chat{db: db, tx: txStore, lessons: lessons, llm: llm, i18n: translator, now: time.Now}
+	return &Chat{db: db, tx: txStore, lessons: lessons, quota: NewQuota(db), llm: llm, i18n: translator, now: time.Now}
 }
 
 // History is a learner's chat on one lesson.
@@ -126,11 +113,11 @@ func (c *Chat) History(ctx context.Context, userID, lessonID int) (*History, err
 		return nil, oops.Wrapf(err, "load assistant chat for lesson %d", lessonID)
 	}
 
-	asked, err := c.askedToday(ctx, userID)
+	exhausted, err := c.quota.Exhausted(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
-	return &History{Messages: messages, QuotaExceeded: asked >= DailyQuota}, nil
+	return &History{Messages: messages, QuotaExceeded: exhausted}, nil
 }
 
 // Question is one learner question with the editor state it is about.
@@ -157,11 +144,11 @@ type Question struct {
 // Returns ErrQuotaExceeded, progress.ErrLessonNotAvailable, or an ent
 // not-found error for a lesson outside the course's current build.
 func (c *Chat) Ask(ctx context.Context, q Question) (io.ReadCloser, error) {
-	asked, err := c.askedToday(ctx, q.UserID)
+	exhausted, err := c.quota.Exhausted(ctx, q.UserID)
 	if err != nil {
 		return nil, err
 	}
-	if asked >= DailyQuota {
+	if exhausted {
 		return nil, ErrQuotaExceeded
 	}
 
@@ -356,22 +343,4 @@ func (c *Chat) conversation(chat predicate.AiChat) *ent.AiMessageQuery {
 			aimessage.HasChatWith(chat),
 		).
 		Order(ent.Asc(aimessage.FieldID))
-}
-
-// askedToday counts the learner's questions since the start of the UTC day —
-// legacy's Date.current under the default UTC time zone. The columns are
-// `timestamp` without a zone, holding UTC wall-clock time as Rails wrote it,
-// which is why the rows above are stamped in UTC explicitly: the mixin's
-// time.Now default would store the process's local wall clock, and a question
-// asked late in the evening west of Greenwich would land on yesterday.
-func (c *Chat) askedToday(ctx context.Context, userID int) (int, error) {
-	dayStart := c.now().UTC().Truncate(24 * time.Hour)
-	count, err := c.db.AiMessage.Query().
-		Where(
-			aimessage.UserID(userID),
-			aimessage.RoleEQ(RoleUser),
-			aimessage.CreatedAtGTE(dayStart),
-		).
-		Count(ctx)
-	return count, oops.Wrapf(err, "count today's assistant questions")
 }
