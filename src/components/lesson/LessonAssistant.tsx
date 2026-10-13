@@ -201,9 +201,13 @@ function assistantTransport(lessonId: number) {
       return { body: input };
     },
     fetch: async (_url, init) => {
+      // The AI SDK serializes the prepared body to a JSON string.
+      if (typeof init?.body !== "string") {
+        throw new TypeError("assistant transport expects a JSON string body");
+      }
       const response = await createAssistantMessage({
         path: { lessonId },
-        body: JSON.parse(String(init?.body)),
+        body: JSON.parse(init.body),
         adapter: "fetch",
         responseType: "stream",
         // Every status is handed to the transport, which reports a refusal
