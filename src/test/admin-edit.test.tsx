@@ -115,12 +115,12 @@ test("an admin adds a question to a category's FAQ", async () => {
 
   await openCategory();
 
-  const existing = page.getByLabelText("Вопрос").first();
+  const existing = page.getByLabelText("Question").first();
   await expect.element(existing).toHaveValue("Is it free?");
 
-  const question = page.getByLabelText("Вопрос").last();
+  const question = page.getByLabelText("Question").last();
   await question.fill("Why?");
-  const answer = page.getByLabelText("Ответ").last();
+  const answer = page.getByLabelText("Answer").last();
   await answer.fill("Because.");
   const create = page.getByRole("button", { name: "Create" }).last();
   await create.click();
@@ -143,7 +143,7 @@ test("an admin edits a question and is told it was saved", async () => {
 
   await openCategory();
 
-  const answer = page.getByLabelText("Ответ").first();
+  const answer = page.getByLabelText("Answer").first();
   await answer.fill("Always.");
   const save = page.getByRole("button", { name: "Save" }).nth(1);
   await save.click();

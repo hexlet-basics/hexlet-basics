@@ -152,13 +152,13 @@ export default {
           whatsapp: "WhatsApp",
         },
         qna_item: {
-          answer: "Ответ",
+          answer: "Respuesta",
           footer: "Выводить в футере",
           footer_name: "Имя в футере",
           listed: "Отображать в списках",
           main: "Основной",
           order: "Order",
-          question: "Вопрос",
+          question: "Pregunta",
           slug: "Slug",
         },
         review: {
@@ -1574,13 +1574,13 @@ export default {
           whatsapp: "WhatsApp",
         },
         qna_item: {
-          answer: "Ответ",
+          answer: "Respuesta",
           footer: "Выводить в футере",
           footer_name: "Имя в футере",
           listed: "Отображать в списках",
           main: "Основной",
           order: "Order",
-          question: "Вопрос",
+          question: "Pregunta",
           slug: "Slug",
         },
         remind_password_form: {
