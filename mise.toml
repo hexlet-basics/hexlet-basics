@@ -24,7 +24,7 @@ golangci-lint = "2.14.0"
 atlas-community = "1.3.0"
 # hk: git hooks (hk.pkl); pkl evaluates that config. hk's version must match the
 # package:// import at the top of hk.pkl.
-hk = "2.5.0"
+hk = "2.6.0"
 pkl = "0.32.1"
 # pitchfork runs the [daemons] below (`mise daemons ...`).
 pitchfork = "2.30.1"
