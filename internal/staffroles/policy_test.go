@@ -51,7 +51,8 @@ func TestPolicyFollowsTheRoleMatrix(t *testing.T) {
 
 func TestPolicyRefusesAUserWhoIsNotStaff(t *testing.T) {
 	db := testsupport.NewClient(t)
-	u := db.User.Create().SetEmail("plain@example.test").SaveX(t.Context())
+	// carol (1003) is neither an administrator nor staff.
+	u := db.User.GetX(t.Context(), 1003)
 
 	err := staffroles.NewPolicy(db).Allow(t.Context(), u, "ru", "AdminListBanners")
 
