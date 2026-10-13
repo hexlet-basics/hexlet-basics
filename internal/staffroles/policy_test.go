@@ -9,6 +9,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
+	"hexletbasics/ent/staffmember"
+	"hexletbasics/ent/staffrolepermission"
+	"hexletbasics/ent/user"
 	"hexletbasics/internal/staffroles"
 	"hexletbasics/internal/testsupport"
 )
@@ -85,4 +88,62 @@ func TestEveryAdminOperationIsClassified(t *testing.T) {
 		}
 	}
 	assert.Empty(t, unclassified, "classify these in staffroles/rules.go")
+}
+
+// A staff record loaded with the user is used as it is; the answer is the same
+// as when the policy loads it itself.
+func TestPolicyUsesTheStaffRecordLoadedWithTheUser(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	bob := db.User.Query().Where(user.ID(bobID)).WithStaffMember().OnlyX(t.Context())
+
+	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminListBlogPosts"))
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminCreateBlogPost"), staffroles.ErrForbidden)
+}
+
+// Each bit of the matrix answers for its own action: update and destroy are
+// refused until the role is given them, and then allowed — and only them.
+func TestPolicyGrantsUpdateAndDestroyOnlyWhenTheRoleHasThem(t *testing.T) {
+	db := testsupport.NewClient(t)
+	policy := staffroles.NewPolicy(db)
+	bob := db.User.GetX(t.Context(), bobID)
+	staff := bob.QueryStaffMember().OnlyX(t.Context())
+
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminUpdateBlogPost"), staffroles.ErrForbidden)
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
+
+	db.StaffRolePermission.Update().
+		Where(staffrolepermission.RoleID(staff.RoleID), staffrolepermission.Resource("blog_posts")).
+		SetCanUpdate(true).
+		ExecX(t.Context())
+	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminUpdateBlogPost"))
+	assert.ErrorIs(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"), staffroles.ErrForbidden)
+
+	db.StaffRolePermission.Update().
+		Where(staffrolepermission.RoleID(staff.RoleID), staffrolepermission.Resource("blog_posts")).
+		SetCanDestroy(true).
+		ExecX(t.Context())
+	assert.NoError(t, policy.Allow(t.Context(), bob, "ru", "AdminDeleteBlogPost"))
+}
+
+// A database that fails is an error, never a quiet refusal and never a quiet
+// grant: the caller must be able to tell "not allowed" from "could not check".
+func TestPolicyReportsAStorageFailureAsAnError(t *testing.T) {
+	for name, table := range map[string]string{
+		"staff record":  staffmember.Table,
+		"role's matrix": staffrolepermission.Table,
+	} {
+		t.Run(name, func(t *testing.T) {
+			db, tx := testsupport.NewClientWithTx(t)
+			bob := db.User.GetX(t.Context(), bobID)
+			_, err := tx.ExecContext(t.Context(),
+				`ALTER TABLE "`+table+`" RENAME TO "`+table+`_gone"`)
+			require.NoError(t, err)
+
+			err = staffroles.NewPolicy(db).Allow(t.Context(), bob, "ru", "AdminListBlogPosts")
+
+			require.Error(t, err)
+			assert.NotErrorIs(t, err, staffroles.ErrForbidden)
+		})
+	}
 }

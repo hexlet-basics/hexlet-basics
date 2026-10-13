@@ -52,3 +52,9 @@ stats.html
 .vitest-attachments/
 **/__screenshots__/
 .vitest/
+
+# vitest --coverage output
+/coverage/
+
+# go test -coverprofile output
+/cover.out

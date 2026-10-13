@@ -398,3 +398,23 @@ func seedLesson(t *testing.T, h *testsupport.Harness, crs *ent.Course, slug stri
 		SaveX(ctx)
 	return lesson
 }
+
+// A solution that never terminates is its own answer, not a plain failure: the
+// learner is told to look for a loop, and the lesson stays started.
+func TestCheckReportsASolutionThatNeverTerminatedAsItsOwnResult(t *testing.T) {
+	h := testsupport.NewHarness(t)
+	h.Runner.RunFunc = func(context.Context, progress.Submission) (progress.Outcome, error) {
+		return progress.Outcome{Result: progress.ResultFailedInfinity, Status: 124}, nil
+	}
+	lesson := lessonBySlug(t, h, secondLessonSlug)
+
+	result := submitSolution(t, h, lesson)
+
+	assert.False(t, result.Response.Passed)
+	assert.Equal(t, api.LessonCheckingResponseResultFailedInfinity, result.Response.Result)
+	assert.False(t, result.Response.LessonHasBeenFinished)
+	row := h.DB.LessonProgress.Query().
+		Where(lessonprogress.LessonID(lesson.ID), lessonprogress.UserID(actingUserID(t, h))).
+		OnlyX(t.Context())
+	assert.Equal(t, "started", *row.State)
+}

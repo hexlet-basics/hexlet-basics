@@ -101,6 +101,30 @@ func TestWithinTxNormalizesLifecycleErrors(t *testing.T) {
 	})
 }
 
+// The ent client handed to the callback is bound to the caller's transaction, so
+// what the callback does with it must not end that transaction or close the pool:
+// a nested Tx joins the outer one and Close leaves the connection alone.
+func TestWithinTxClientNeitherOwnsTheTransactionNorClosesThePool(t *testing.T) {
+	state := &transactionState{}
+	db := openTransactionDB(t, state)
+
+	err := New(db).WithinTx(t.Context(), func(tx *sql.Tx, txClient *ent.Client) error {
+		nested, err := txClient.Tx(t.Context())
+		require.NoError(t, err)
+		require.NoError(t, nested.Commit())
+		require.NoError(t, txClient.Close())
+
+		_, execErr := tx.ExecContext(t.Context(), "write")
+		return execErr
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, 1, state.begins, "the nested Tx joined the outer transaction")
+	assert.Equal(t, 1, state.commits, "only the outer transaction committed")
+	assert.Equal(t, 1, state.execs)
+	require.NoError(t, db.PingContext(t.Context()), "the pool is still open")
+}
+
 type transactionState struct {
 	mu          sync.Mutex
 	begins      int

@@ -227,3 +227,24 @@ func TestLastAdministratorCannotRemoveTheirOwnAccount(t *testing.T) {
 	assert.Equal(t, http.StatusConflict, h.LastStatus())
 	assert.True(t, h.DB.User.Query().Where(user.ID(h.UserID), user.StateIsNil()).ExistX(t.Context()))
 }
+
+// A null first name clears the column, as a null last name does: the profile
+// form sends null for exactly the names the learner emptied.
+func TestUpdateProfileClearsAFirstNameSentAsNull(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	var noFirstName api.NilProfileName
+	noFirstName.SetToNull()
+	res, err := h.Client.UpdateProfile(t.Context(), &api.ProfileInput{
+		FirstName: noFirstName,
+		LastName:  api.NewNilProfileName("Anderson"),
+	})
+	require.NoError(t, err)
+
+	profile, ok := res.(*api.User)
+	require.True(t, ok, "got %T", res)
+	assert.True(t, profile.FirstName.Null)
+	u := h.DB.User.GetX(t.Context(), h.UserID)
+	assert.Nil(t, u.FirstName)
+	assert.Equal(t, "Anderson", lo.FromPtr(u.LastName))
+}

@@ -5,13 +5,16 @@ import (
 	"context"
 	"errors"
 	"io"
+	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/memblob"
+	_ "gocloud.dev/blob/s3blob"
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/assetstore"
@@ -167,4 +170,91 @@ func assertBucketEmpty(t *testing.T, bucket *blob.Bucket) {
 	t.Helper()
 	_, err := bucket.List(nil).Next(context.Background())
 	require.ErrorIs(t, err, io.EOF)
+}
+
+// Where the bucket cannot presign (memblob here, fileblob in development) the
+// browser is sent to the API's own read route, which streams the same bytes.
+func TestDownloadURLFallsBackToTheReadRoute(t *testing.T) {
+	store, _, _ := newStore(t)
+
+	got, err := store.DownloadURL(context.Background(), "a b.pdf", assetstore.Delivery{
+		ContentType: "application/pdf",
+		Expiry:      time.Minute,
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, "https://assets.example.test/api/storage/a%20b.pdf", got)
+}
+
+// On S3 the browser goes straight to the bucket, and the presigned request
+// overrides how the object is shown, so the object's own metadata does not
+// decide it. Presigning is local arithmetic, so no bucket is needed.
+func TestDownloadURLPresignsAnS3ObjectWithTheDeliveryHeaders(t *testing.T) {
+	t.Setenv("AWS_ACCESS_KEY_ID", "test-key")
+	t.Setenv("AWS_SECRET_ACCESS_KEY", "test-secret")
+	ctx := context.Background()
+	bucket, err := blob.OpenBucket(ctx,
+		"s3://books?region=us-east-1&endpoint=http://127.0.0.1:1&use_path_style=true&disable_https=true")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = bucket.Close() })
+	store := assetstore.New(testsupport.NewClient(t), bucket, "https://assets.example.test")
+
+	got, err := store.DownloadURL(ctx, "book.pdf", assetstore.Delivery{
+		ContentType:        "application/pdf",
+		ContentDisposition: `inline; filename="book.pdf"`,
+		Expiry:             time.Minute,
+	})
+
+	require.NoError(t, err)
+	parsed, err := url.Parse(got)
+	require.NoError(t, err)
+	assert.Equal(t, "/books/book.pdf", parsed.Path)
+	assert.Equal(t, "application/pdf", parsed.Query().Get("response-content-type"))
+	assert.Equal(t, `inline; filename="book.pdf"`, parsed.Query().Get("response-content-disposition"))
+	assert.NotEmpty(t, parsed.Query().Get("X-Amz-Signature"))
+}
+
+// A bucket that fails is a failure to sign, not a silent fallback to the API.
+func TestDownloadURLReportsABucketThatFails(t *testing.T) {
+	store, _, bucket := newStore(t)
+	require.NoError(t, bucket.Close())
+
+	_, err := store.DownloadURL(context.Background(), "book.pdf", assetstore.Delivery{Expiry: time.Minute})
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "sign download url")
+}
+
+// An upload that cannot even be read for its first bytes is reported as such,
+// before anything is written.
+func TestPutReportsAnUnreadableUpload(t *testing.T) {
+	store, _, bucket := newStore(t)
+
+	_, err := store.Put(context.Background(), assetstore.Upload{
+		Filename: "broken.png",
+		Body:     &failAfterFirstRead{read: true},
+	})
+
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "inspect asset")
+	assertBucketEmpty(t, bucket)
+}
+
+// A bucket that cannot be written to fails the upload and leaves no record.
+func TestPutAndOpenReportABucketThatFails(t *testing.T) {
+	store, db, bucket := newStore(t)
+	require.NoError(t, bucket.Close())
+	data := append(append([]byte{}, pngHeader...), bytes.Repeat([]byte{0}, 600)...)
+
+	_, err := store.Put(context.Background(), assetstore.Upload{
+		Filename: "x.png",
+		Body:     bytes.NewReader(data),
+	})
+	require.Error(t, err)
+	assert.ErrorContains(t, err, "open blob writer")
+	assert.Zero(t, db.Attachment.Query().CountX(context.Background()))
+
+	_, err = store.Open(context.Background(), "x.png")
+	require.Error(t, err)
+	assert.NotErrorIs(t, err, assetstore.ErrNotFound, "a failing bucket is not a missing asset")
 }

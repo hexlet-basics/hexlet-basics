@@ -6,7 +6,9 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -241,6 +243,79 @@ func TestCreateLeadTreatsMissingConfigurationAsPermanent(t *testing.T) {
 	var classified interface{ Retryable() bool }
 	require.True(t, errors.As(err, &classified))
 	assert.False(t, classified.Retryable())
+}
+
+// An account endpoint that redirects is configuration drift: the redirect is
+// reported, not followed, so one attempt stays one request to one host.
+func TestCreateLeadDoesNotFollowARedirect(t *testing.T) {
+	var landed int
+	elsewhere := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { landed++ }))
+	t.Cleanup(elsewhere.Close)
+	var asked int
+	moved := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		asked++
+		http.Redirect(w, r, elsewhere.URL, http.StatusFound)
+	}))
+	t.Cleanup(moved.Close)
+
+	err := NewClient(moved.URL, "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+
+	require.ErrorContains(t, err, strconv.Itoa(http.StatusFound))
+	assert.Equal(t, 1, asked)
+	assert.Zero(t, landed, "the redirect target is never called")
+}
+
+// A client that could not be built says so, permanently — a retry would build
+// the same client — and keeps the cause for the logs.
+func TestCreateLeadReportsAClientThatCouldNotBeBuilt(t *testing.T) {
+	err := NewClient("http://[::1", "secret", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+
+	require.ErrorContains(t, err, "initialization failed")
+	var classified interface{ Retryable() bool }
+	require.True(t, errors.As(err, &classified))
+	assert.False(t, classified.Retryable())
+	assert.Error(t, errors.Unwrap(err), "the cause is kept")
+}
+
+func TestCreateLeadSaysWhenAmoCRMIsNotConfigured(t *testing.T) {
+	err := NewClient("", "", "").CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+
+	require.EqualError(t, err, "amoCRM is not configured")
+	assert.NoError(t, errors.Unwrap(err))
+}
+
+func TestCreateLeadKeepsTheTransportErrorAsItsCause(t *testing.T) {
+	reset := errors.New("connection reset")
+	client := NewClient("https://example.amocrm.test", "secret", "")
+	client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) { return nil, reset })
+
+	err := client.CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+
+	assert.ErrorIs(t, err, reset)
+}
+
+// A refusal that says nothing still says something, and one that says too much
+// is cut: the message ends up in a job's error column.
+func TestCreateLeadWordsARefusalForTheLogs(t *testing.T) {
+	problem := func(body string) *Client {
+		client := NewClient("https://example.amocrm.test", "secret", "")
+		client.http.Transport = roundTripFunc(func(*http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode:    http.StatusBadRequest,
+				Body:          io.NopCloser(bytes.NewBufferString(body)),
+				ContentLength: int64(len(body)),
+				Header:        http.Header{"Content-Type": []string{"application/problem+json"}},
+			}, nil
+		})
+		return client
+	}
+
+	empty := problem(`{}`).CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	require.EqualError(t, empty, "amoCRM returned 400: request failed")
+
+	long := problem(`{"detail":"`+strings.Repeat("x", 5000)+`"}`).CreateLead(t.Context(), events.LeadCreated{LeadID: 1})
+	require.Error(t, long)
+	assert.LessOrEqual(t, len(long.Error()), maxErrorMessageBytes+len("amoCRM returned 400: "))
 }
 
 type roundTripFunc func(*http.Request) (*http.Response, error)

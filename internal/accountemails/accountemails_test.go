@@ -90,3 +90,30 @@ func TestEnqueueIsUniquePerUserAndPurposeForAMinute(t *testing.T) {
 	assert.True(t, again.UniqueSkippedAsDuplicate)
 	assert.False(t, reset.UniqueSkippedAsDuplicate, "the other email kind has its own cooldown")
 }
+
+func TestSenderRefusesAnUnknownPurpose(t *testing.T) {
+	db, _ := testsupport.NewClientWithTx(t)
+	u, err := db.User.Create().SetEmail("mail-sender-purpose@example.com").Save(t.Context())
+	require.NoError(t, err)
+	recorder := &mailer.Recorder{}
+	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
+		testsupport.NewTranslator(t), siteURL)
+
+	err = sender.Send(t.Context(), emailtokens.Purpose("newsletter"), u.ID, "en")
+
+	require.ErrorContains(t, err, "unknown account email purpose")
+	assert.Empty(t, recorder.Sent())
+}
+
+func TestSenderSkipsAUserWithoutAnEmail(t *testing.T) {
+	db, _ := testsupport.NewClientWithTx(t)
+	u, err := db.User.Create().Save(t.Context())
+	require.NoError(t, err)
+	recorder := &mailer.Recorder{}
+	sender := accountemails.NewSender(db, emailtokens.New("test-email-secret"), recorder,
+		testsupport.NewTranslator(t), siteURL)
+
+	require.NoError(t, sender.Send(t.Context(), emailtokens.MagicLink, u.ID, "en"))
+
+	assert.Empty(t, recorder.Sent(), "there is nobody to mail, and no retry is wanted")
+}

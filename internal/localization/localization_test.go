@@ -1,6 +1,7 @@
 package localization_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -68,4 +69,36 @@ func TestTranslatorTranslatesForExplicitLocale(t *testing.T) {
 
 	assert.Equal(t, "Ссылка для входа", translator.TextIn("ru", localization.MagicLinkSubject))
 	assert.Equal(t, "Restablecer contraseña", translator.TextIn("es", localization.PasswordResetSubject))
+}
+
+func TestTranslatorSpeaksEnglishOutsideAnHTTPRequest(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+	ctx := context.Background()
+
+	assert.Equal(t, "en", translator.Locale(ctx))
+	assert.Equal(t, "Wrong email or password", translator.Text(ctx, localization.WrongCredentials))
+}
+
+func TestTranslatorAnswersAStatusItHasNoTextFor(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+	ctx := context.Background()
+
+	// net/http knows no text for this status either, so the answer is the
+	// generic server error, never an empty string or an internal message.
+	const unknownStatus = 799
+	assert.Equal(t,
+		translator.Text(ctx, localization.InternalServerError),
+		translator.StatusText(ctx, unknownStatus))
+	assert.NotEmpty(t, translator.StatusText(ctx, unknownStatus))
+}
+
+func TestTranslatorKeepsNetHTTPTextForAStatusItHasNoCatalogEntryFor(t *testing.T) {
+	translator, err := localization.New()
+	require.NoError(t, err)
+
+	// A real status the catalog does not translate reads as net/http's English
+	// text, rather than hiding behind the generic server error.
+	assert.Equal(t, "I'm a teapot", translator.StatusText(context.Background(), http.StatusTeapot))
 }

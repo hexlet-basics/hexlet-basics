@@ -1,0 +1,17 @@
+# go-test-coverage config (mise run test:cover). The profile is taken over cmd/
+# and internal/ with -coverpkg, so a package is credited for what every test in
+# the repo runs through it, not only its own tests.
+profile: cover.out
+threshold:
+  # The floor the suite holds; raise it when coverage rises, never lower it.
+  total: 91
+exclude:
+  paths:
+    # Generated code: ogen server and client, goverter converters, moq mocks.
+    - ^hexletbasics/internal/api/
+    - ^hexletbasics/internal/amocrm/generated/
+    - ^hexletbasics/internal/apigen/
+    - \.gen\.go$
+    - _gen\.go$
+    # The test harness is test code, not product code.
+    - ^hexletbasics/internal/testsupport/

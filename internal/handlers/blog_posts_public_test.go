@@ -10,6 +10,7 @@ import (
 
 	"hexletbasics/ent/blogpost"
 	"hexletbasics/ent/blogpostlike"
+	"hexletbasics/ent/blogpostrelatedcourseitem"
 	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/internal/api"
@@ -85,6 +86,26 @@ func TestGetBlogPostReturnsThePostPage(t *testing.T) {
 
 	assert.Equal(t, []string{"learning-ruby", "oldest-post"}, blogSlugs(view.RecommendedPosts),
 		"newest first, never the post being read")
+}
+
+// A post that promotes no course has no related landing pages, and the page
+// still carries the post and its reading suggestions.
+func TestGetBlogPostWithoutPromotedCourses(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+	post := h.DB.BlogPost.Query().Where(blogpost.Slug("hello-world")).OnlyX(t.Context())
+	h.DB.BlogPostRelatedCourseItem.Delete().
+		Where(blogpostrelatedcourseitem.BlogPostID(post.ID)).
+		ExecX(t.Context())
+
+	res, err := h.Client.GetBlogPost(t.Context(), api.GetBlogPostParams{Slug: "hello-world"})
+	require.NoError(t, err)
+	view, ok := res.(*api.BlogPostView)
+	require.True(t, ok, "got %T", res)
+
+	assert.Equal(t, "hello-world", view.Post.Slug.Value)
+	assert.Empty(t, view.RelatedLandingPages)
+	assert.NotEmpty(t, view.RecommendedPosts)
 }
 
 // A promoted course whose main landing page is not public — a draft here — is

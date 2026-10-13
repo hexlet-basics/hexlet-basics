@@ -2,6 +2,7 @@ package relatedcourses_test
 
 import (
 	"context"
+	"errors"
 	"io"
 	"log/slog"
 	"testing"
@@ -94,4 +95,31 @@ func TestSuggestRelatedCoursesFailsOnAnUnreadableAnswer(t *testing.T) {
 	require.Error(t, newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001))
 
 	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
+}
+
+// A model that cannot answer fails the job too, so River retries it later, and
+// the post keeps the courses it has.
+func TestSuggestRelatedCoursesFailsWhenTheModelCannotAnswer(t *testing.T) {
+	db, transactor := testsupport.NewClientWithTransactor(t)
+	llm := &testsupport.CompleterMock{
+		CompleteFunc: func(context.Context, string, string) (string, error) {
+			return "", errors.New("model unavailable")
+		},
+	}
+
+	err := newSuggester(db, transactor, llm).SuggestRelatedCourses(t.Context(), 6001)
+
+	require.ErrorContains(t, err, "model unavailable")
+	assert.Equal(t, []string{"javascript", "ruby", "python"}, relatedSlugs(t, db, 6001))
+}
+
+// A post deleted after the job was enqueued is an error the job reports, not a
+// silent success, and nothing is written for it.
+func TestSuggestRelatedCoursesFailsForAPostThatIsGone(t *testing.T) {
+	db, transactor := testsupport.NewClientWithTransactor(t)
+
+	err := newSuggester(db, transactor, answeringModel("[207281424]")).SuggestRelatedCourses(t.Context(), 999999)
+
+	require.Error(t, err)
+	assert.Empty(t, relatedSlugs(t, db, 999999))
 }

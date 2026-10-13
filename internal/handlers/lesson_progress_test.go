@@ -319,3 +319,15 @@ func publishedOf[T events.Event](t *testing.T, h *testsupport.Harness) []T {
 	t.Helper()
 	return testsupport.PublishedEvents[T](t, h.Services)
 }
+
+// A lesson that does not exist is told apart from one that is not yet
+// available: the client can stop looking rather than wait for it to unlock.
+func TestStartLessonAnswersAnUnknownLessonAsNotFound(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	res, err := h.Client.StartLesson(t.Context(), api.StartLessonParams{ID: 2_000_000_000})
+	require.NoError(t, err)
+
+	assert.IsType(t, &api.NotFoundError{}, res)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}

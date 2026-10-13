@@ -164,7 +164,12 @@ type Harness struct {
 	// UserID is the fixture user the harness authenticates as, so a test can
 	// assert on rows belonging to the caller without hard-coding a fixture id.
 	UserID int
-	doer   *inProcessDoer
+	// Tx is the transaction behind DB and the handlers, for the test that makes
+	// the storage fail on purpose (renaming a table inside it) to see how an
+	// operation answers a database error. DDL is transactional, so the rollback
+	// at cleanup undoes it.
+	Tx   *sql.Tx
+	doer *inProcessDoer
 }
 
 // HarnessUser reports the user every harness request is authenticated as.
@@ -266,7 +271,7 @@ func NewHarness(t *testing.T) *Harness {
 	}
 
 	return &Harness{
-		Client: &Client{Client: client}, DB: db, doer: doer,
+		Client: &Client{Client: client}, DB: db, Tx: tx, doer: doer,
 		Services: services, Mocks: mocks,
 		UserID: security.userID,
 	}
