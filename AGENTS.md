@@ -99,9 +99,11 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 - Tasks live in `mise/tasks.toml` (`mise tasks` lists them) and the dev stack is
   the `[daemons]` table in `mise.toml`; there is no Makefile at the root.
-- `mise run setup` — toolchain + git hooks, seed `.env`, `go mod download` +
-  `pnpm install` (root package.json is shared by the frontend and the api-spec
-  tooling).
+- `mise run setup` — the one task a fresh checkout needs: toolchain + git hooks,
+  seed `.env`, then the separate `install` task (dependencies) and `db:fixtures`
+  (db daemon, migrations, `fixtures/`), so `mise run dev` shows a populated site.
+- `mise run install` — only the dependencies: `go mod download` + `pnpm install`
+  (root package.json is shared by the frontend and the api-spec tooling).
 - `mise run db:up` — start the Postgres daemon; idempotently creates the
   development database.
 - `mise run dev` — start the API, async worker (both air live-reload), and Vite
@@ -174,6 +176,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   containers, apply the Atlas migrations, and load the committed `fixtures/`
   snapshot. Docker is required; no separate test DB preparation is needed.
 - `mise run db:prepare` prepares the development DB without replacing its data.
+- `mise run db:fixtures` migrates the development DB and loads `fixtures/` into it
+  (replaces the fixture tables' data; the old `rails db:fixtures:load`). A fresh
+  development DB shows an empty site until this has run.
 - `mise run test:e2e` — the Playwright suite in `e2e/`: Chromium against the
   built Go API and SSR frontend on a throw-away `code_basics_e2e_test` database
   (migrations + `fixtures/`, `test:e2e:db`). Needs the db daemon (`mise run

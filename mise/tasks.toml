@@ -14,8 +14,14 @@ description = "Install project dependencies (go modules + frontend/api-spec via 
 run = ["go mod download", "pnpm install"]
 
 [setup]
-description = "Full local bootstrap: toolchain + git hooks, seed .env, install deps"
-run = ["mise install", "hk install --mise", "cp -n .env.example .env || true", { task = "install" }]
+description = "Full local bootstrap from scratch: toolchain + git hooks, seed .env, then the `install` task (dependencies) and the `db:fixtures` task (db daemon, migrations, starting data)"
+run = [
+  "mise install",
+  "hk install --mise",
+  "cp -n .env.example .env || true",
+  { task = "install" },
+  { task = "db:fixtures" },
+]
 
 # --- dev stack (daemons in mise.toml) ---------------------------------------------
 
@@ -87,6 +93,11 @@ run = 'atlas migrate apply --env local --url "${DEV_DB_URL:-postgres://postgres:
 ["db:prepare"]
 description = "Create and migrate the development DB without replacing its data"
 run = [{ task = "db:up" }, { task = "db:migrate" }]
+
+["db:fixtures"]
+description = "Migrate the development DB and load fixtures/ into it, replacing the data in the fixture tables (the old `rails db:fixtures:load`)"
+depends = ["db:migrate"]
+run = 'testfixtures --dialect postgres --dangerous-no-test-database-check --conn "${DEV_DB_URL:-postgres://postgres:postgres@127.0.0.1:54330/code_basics_development?sslmode=disable}" --dir fixtures'
 
 # --- code generation (contract is the source of truth, ADR-0001) -------------------
 

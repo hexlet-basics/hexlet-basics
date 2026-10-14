@@ -25,27 +25,24 @@ with its own README and Makefile.
 
 ### Run
 
-1. Install dependencies (Go modules + frontend/api-spec packages):
+1. Bootstrap everything from scratch with one task: toolchain, git hooks, `.env`,
+   then `install` (dependencies) and `db:fixtures` (Postgres daemon, migrations,
+   starting data from `fixtures/`) as separate tasks it composes:
 
    ```bash
    mise run setup
-   ```
-
-2. Start local Postgres (a mise daemon):
-
-   ```bash
-   mise run db:up
    ```
 
    PostgreSQL 18 is published on port `54330` so it does not conflict with a
    local database on `5432`. This service is only for development; Go tests
    create their own disposable databases.
 
-   Prepare the development schema:
-
-   ```bash
-   mise run db:prepare
-   ```
+   Dependencies alone: `mise run install` (Go modules + frontend/api-spec
+   packages). The database steps are also available on their own: `mise run db:up` starts
+   Postgres, `mise run db:prepare` creates and migrates the schema without
+   touching data, and `mise run db:fixtures` loads the starting data (it replaces
+   what the fixture tables hold, like `rails db:fixtures:load` did; without it the
+   site shows nothing). Running `setup` again reloads the fixtures.
 
    Under mise, `DATABASE_URL` points at the local development DB and the API/Vite
    ports are dynamic (`mise env | grep PORT`): API from `3002`, Vite from `5173`,
