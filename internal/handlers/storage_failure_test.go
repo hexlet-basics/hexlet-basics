@@ -224,7 +224,8 @@ func TestBlogPostsAnswerAStorageFailureAsAServerError(t *testing.T) {
 
 func TestCourseAnswersAStorageFailureAsAServerError(t *testing.T) {
 	get := func(ctx context.Context, h *testsupport.Harness) error {
-		_, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+		testsupport.SpeakTo(h, "ru")
+		_, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 		return err
 	}
 

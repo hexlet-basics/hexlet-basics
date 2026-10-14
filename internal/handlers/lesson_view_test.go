@@ -59,13 +59,15 @@ func TestGetCourseLessonReturnsThePlayerPayload(t *testing.T) {
 // The player titles the page with the course's landing copy, not with the
 // course's own name — two different strings, and the marketing one is what a
 // learner recognises. The page flagged main wins, exactly as the course read
-// picks the canonical one.
+// picks the canonical one, and it is the one of the request's locale: the course
+// page is served only under its own locale, so the link back must name that one.
 func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 
 	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
 		CourseSlug: jsCourseSlug,
-		Slug:       secondLessonSlug,
+		Slug:       firstLessonSlug,
 	})
 	require.NoError(t, err)
 	view := res.(*api.CourseLessonView)
@@ -77,6 +79,20 @@ func TestGetCourseLessonCarriesTheCoursesMainLandingPage(t *testing.T) {
 	assert.Equal(t, "JavaScript", landing.Name)
 	assert.NotEqual(t, view.Lesson.Course.Name.Value, landing.Name,
 		"the two names are what makes this field necessary")
+}
+
+func TestGetCourseLessonCarriesTheLandingPageOfTheRequestLocale(t *testing.T) {
+	h := testsupport.NewHarness(t)
+
+	res, err := h.Client.GetCourseLesson(t.Context(), api.GetCourseLessonParams{
+		CourseSlug: jsCourseSlug,
+		Slug:       secondLessonSlug,
+	})
+	require.NoError(t, err)
+	view := res.(*api.CourseLessonView)
+
+	require.False(t, view.LandingPage.Null)
+	assert.Equal(t, jsEnglishLandingSlug, view.LandingPage.Value.Slug)
 }
 
 // The navigation tab's rows: every lesson of the current version, in course

@@ -102,8 +102,11 @@ export default function LessonWorkspace({
       // invalidation would not refetch it and the completion page's
       // queryClient.query would serve it as it was — still unfinished, bouncing
       // the learner back. The entry is dropped so the next read is fresh.
-      if (outcome.passed) {
-        queryClient.removeQueries({ queryKey: getCourseQueryKey({ path: { slug: courseSlug } }) });
+      // The Course page is read by its landing page's slug, so that is the key.
+      if (outcome.passed && view.landingPage) {
+        queryClient.removeQueries({
+          queryKey: getCourseQueryKey({ path: { slug: view.landingPage.slug } }),
+        });
       }
     },
     // A network failure must never read as a wrong answer, so it says what it

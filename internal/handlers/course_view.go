@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 
 	"hexletbasics/ent"
-	"hexletbasics/ent/course"
 	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/courselessontranslation"
 	"hexletbasics/ent/courselessonversion"
@@ -22,6 +21,14 @@ import (
 // course, its landing copy, the lessons of its current version, and — for a
 // signed-in learner — where they stand.
 //
+// The slug is a landing page's, not the course's, in the request locale: that
+// is what legacy's `languages#show` resolved (`LandingPage.with_locale.find_by
+// (slug:)`), and what every public link to the page carries (`/languages/
+// javascript-ru`), so existing URLs keep working (ADR-0002). A course has one
+// landing page per locale, which is why the same slug under another locale is a
+// 404 rather than the other locale's copy. The page shown is the one the URL
+// names, not the course's main page, so a secondary page keeps its own copy.
+//
 // The lesson list model stays the shared one; per-learner state travels in the
 // progress payload instead, because the same list model feeds the admin lesson
 // index where a learner's state is meaningless.
@@ -29,18 +36,18 @@ import (
 // An anonymous request is not an error: it returns the same payload with no
 // enrollment, which is exactly what the page renders for a visitor today.
 func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api.GetCourseRes, error) {
-	crs, err := s.db.Course.Query().
-		Where(course.SlugEQ(params.Slug)).
-		WithCurrentVersion().
+	page, err := s.db.CourseLandingPage.Query().
+		Where(
+			courselandingpage.SlugEQ(params.Slug),
+			courselandingpage.LocaleEQ(s.i18n.Locale(ctx)),
+		).
+		WithCourse(func(q *ent.CourseQuery) { q.WithCurrentVersion() }).
 		Only(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	landing, err := s.mainLandingPage(ctx, crs)
-	if err != nil {
-		return nil, err
-	}
+	crs := page.Edges.Course
+	landing := api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page))
 
 	lessons, err := s.currentLessonList(ctx, crs)
 	if err != nil {
@@ -98,15 +105,21 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 	return view, nil
 }
 
-// mainLandingPage is the course's own landing copy: the page flagged main, and
-// otherwise the oldest one, mirroring how legacy picks the canonical page.
+// mainLandingPage is the course's own landing copy in the request locale: the
+// page flagged main, and otherwise the oldest one, mirroring how legacy picks the
+// canonical page. The locale matters beyond the copy: the course page is served
+// only under its landing page's own locale (GetCourse), so a link built from a
+// page of another locale would lead to a 404.
 //
 // `main` is nullable and most pages leave it null, so the ordering has to say
 // NULLS LAST explicitly: Postgres sorts nulls first under a bare DESC, which
 // would hand the canonical slot to whichever page is merely unflagged.
 func (s *Server) mainLandingPage(ctx context.Context, crs *ent.Course) (api.NilCourseLandingPage, error) {
 	page, err := s.db.CourseLandingPage.Query().
-		Where(courselandingpage.CourseID(crs.ID)).
+		Where(
+			courselandingpage.CourseID(crs.ID),
+			courselandingpage.LocaleEQ(s.i18n.Locale(ctx)),
+		).
 		Order(
 			courselandingpage.ByMain(sql.OrderDesc(), sql.OrderNullsLast()),
 			courselandingpage.ByID(),

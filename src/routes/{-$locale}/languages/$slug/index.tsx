@@ -18,7 +18,8 @@ import {
 } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
@@ -49,11 +50,20 @@ import { seoHead } from "@/lib/seo-head";
 // survives a server-side redirect.
 export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
-  loader: ({ context, params }) =>
-    context.queryClient.query({
-      ...getCourseOptions({ path: { slug: params.slug } }),
-      staleTime: "static",
-    }),
+  loader: async ({ context, params }) => {
+    try {
+      return await context.queryClient.query({
+        ...getCourseOptions({ path: { slug: params.slug } }),
+        staleTime: "static",
+      });
+    } catch (error) {
+      // The slug is a landing page's, in this locale's site: an unknown one and
+      // one of another locale are the same to a visitor, there is no such page.
+      // Thrown here, not left to the error page, so the answer is a 404.
+      if (isAxiosError(error) && error.response?.status === 404) throw notFound();
+      throw error;
+    }
+  },
   // Legacy languages#show meta: the landing page's meta title and description,
   // the canonical link, the social block with the course cover, and Open Graph
   // typed as a website in the page's locale.

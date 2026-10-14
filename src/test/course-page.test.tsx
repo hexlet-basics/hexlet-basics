@@ -329,6 +329,18 @@ test("a first-time visitor sees the first lesson open and the rest locked", asyn
   expect(starts).toEqual([{ id: "1001", pathname: "/languages/javascript" }]);
 });
 
+test("a landing page slug that is not served here is not found", async () => {
+  worker.use(
+    http.get("*/languages/javascript-en", () =>
+      HttpResponse.json({ status: 404, title: "Not Found" }, { status: 404 }),
+    ),
+  );
+
+  await renderCourse(null, "/languages/javascript-en");
+
+  await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+});
+
 test("keeps the URL locale when entering the course", async () => {
   worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(firstVisit))));
 

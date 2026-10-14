@@ -79,7 +79,11 @@ interface Courses {
   @operationId("listCourses")
   list(): CourseCatalogItem[] | ApiError;
 
-  /** Course landing page by slug. */
+  /**
+   * The course page, by the slug of one of its landing pages in the request
+   * locale — the slug in every public link (`/languages/javascript-ru`), not the
+   * course's own. The same slug under another locale is a 404.
+   */
   @get
   @route("/{slug}")
   @operationId("getCourse")

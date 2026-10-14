@@ -46,29 +46,16 @@ func TestAdminGetBlogPostWithoutAState(t *testing.T) {
 // position, rather than a failed read.
 func TestGetCourseWithoutABuiltVersion(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	h.DB.Course.Update().Where(course.SlugEQ(jsCourseSlug)).ClearCurrentVersionID().ExecX(t.Context())
 
-	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)
 
 	assert.Empty(t, view.Lessons)
 	assert.Empty(t, view.Modules)
-}
-
-// Without landing copy a course has no questions either.
-func TestGetCourseWithoutALandingPageHasNoQuestions(t *testing.T) {
-	h := testsupport.NewHarness(t)
-	js := h.DB.Course.Query().Where(course.SlugEQ(jsCourseSlug)).OnlyX(t.Context())
-	h.DB.CourseLandingPage.Delete().Where(courselandingpage.CourseID(js.ID)).ExecX(t.Context())
-
-	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsCourseSlug})
-	require.NoError(t, err)
-	view := res.(*api.CourseView)
-
-	assert.True(t, view.LandingPage.Null)
-	assert.Empty(t, view.QnaItems)
 }
 
 // A lesson of an unknown course is the not-found answer, as is one of a course
@@ -120,6 +107,7 @@ func TestGetCourseLessonWithoutASourcePathHasNoSourceLink(t *testing.T) {
 // says so with null, not with an empty record.
 func TestGetCourseForALearnerWhoNeverStartedIt(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := t.Context()
 	started := h.DB.Enrollment.Query().
 		Where(enrollment.UserID(h.UserID)).
@@ -127,7 +115,11 @@ func TestGetCourseForALearnerWhoNeverStartedIt(t *testing.T) {
 		IntsX(ctx)
 	untouched := h.DB.Course.Query().Where(course.IDNotIn(started...)).FirstX(ctx)
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: lo.FromPtr(untouched.Slug)})
+	landing := h.DB.CourseLandingPage.Query().
+		Where(courselandingpage.CourseID(untouched.ID), courselandingpage.LocaleEQ("ru")).
+		FirstX(ctx)
+
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: lo.FromPtr(landing.Slug)})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)

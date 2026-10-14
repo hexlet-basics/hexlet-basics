@@ -17571,7 +17571,9 @@ func (s *Server) handleGetBookRequest(args [0]string, argsEscaped bool, w http.R
 
 // handleGetCourseRequest handles getCourse operation.
 //
-// Course landing page by slug.
+// The course page, by the slug of one of its landing pages in the request locale — the slug in every
+// public link (`/languages/javascript-ru`), not the course's own. The same slug under another locale
+// is a 404.
 //
 // GET /api/languages/{slug}
 func (s *Server) handleGetCourseRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {

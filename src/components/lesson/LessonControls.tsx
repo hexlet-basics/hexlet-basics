@@ -138,10 +138,11 @@ function ForwardButton({
       <StepLink
         enabled={passed}
         label={t(($) => $.courses.lessons.show.finish)}
-        linkOptions={{
-          to: "/{-$locale}/languages/$slug/success",
-          params: { slug: courseSlug },
-        }}
+        linkOptions={
+          view.landingPage
+            ? { to: "/{-$locale}/languages/$slug/success", params: { slug: view.landingPage.slug } }
+            : { to: "/{-$locale}/languages" }
+        }
       />
     );
   }

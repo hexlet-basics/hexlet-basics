@@ -29,9 +29,15 @@ export default function LessonTheory({ view }: { view: CourseLessonView }) {
   return (
     <Box p="lg">
       <Breadcrumbs homeLabel={t(($) => $.courses.lessons.show.to_home_title)}>
-        <TextLink to="/{-$locale}/languages/$slug" params={{ slug: courseSlug }} size="sm">
-          {landingPage?.header ?? courseName}
-        </TextLink>
+        {landingPage ? (
+          <TextLink to="/{-$locale}/languages/$slug" params={{ slug: landingPage.slug }} size="sm">
+            {landingPage.header ?? courseName}
+          </TextLink>
+        ) : (
+          <TextLink to="/{-$locale}/languages" size="sm">
+            {courseName}
+          </TextLink>
+        )}
         <CurrentCrumb>{lesson.name}</CurrentCrumb>
       </Breadcrumbs>
 

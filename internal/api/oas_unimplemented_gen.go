@@ -724,7 +724,9 @@ func (UnimplementedHandler) GetBook(ctx context.Context) (r *BookView, _ error) 
 
 // GetCourse implements getCourse operation.
 //
-// Course landing page by slug.
+// The course page, by the slug of one of its landing pages in the request locale — the slug in every
+// public link (`/languages/javascript-ru`), not the course's own. The same slug under another locale
+// is a 404.
 //
 // GET /api/languages/{slug}
 func (UnimplementedHandler) GetCourse(ctx context.Context, params GetCourseParams) (r GetCourseRes, _ error) {

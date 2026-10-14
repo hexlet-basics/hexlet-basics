@@ -844,8 +844,9 @@ test("says so on the last lesson, and leads to the completion page", async () =>
   worker.use(
     http.get("*/languages/javascript/lessons/strings", () => HttpResponse.json(lastLessonView())),
     http.post("*/lessons/1003/check", () => HttpResponse.json(checkResult())),
-    // The pass has finished the Enrollment on the server.
-    http.get("*/api/languages/javascript", () => HttpResponse.json(courseView("finished"))),
+    // The pass has finished the Enrollment on the server. The course is read by
+    // its landing page's slug, which is what the completion page is addressed by.
+    http.get("*/api/languages/javascript-ru", () => HttpResponse.json(courseView("finished"))),
   );
 
   const { router, queryClient } = await renderRoute(lessonRoute, {
@@ -860,7 +861,7 @@ test("says so on the last lesson, and leads to the completion page", async () =>
   // A course read left from an earlier visit to the Course page, taken before
   // the pass: served as it is, it would bounce the learner back as unfinished.
   queryClient.setQueryData(
-    getCourseQueryKey({ path: { slug: "javascript" } }),
+    getCourseQueryKey({ path: { slug: "javascript-ru" } }),
     courseView("started"),
   );
   await expect.element(page.getByLabelText("Code editor"), editorLoad).toBeVisible();
@@ -872,13 +873,13 @@ test("says so on the last lesson, and leads to the completion page", async () =>
   await expect.element(page.getByText("Tests passed")).toBeVisible();
 
   const finish = page.getByRole("link", { name: "Finish" });
-  await expect.element(finish).toHaveAttribute("href", "/languages/javascript/success");
+  await expect.element(finish).toHaveAttribute("href", "/languages/javascript-ru/success");
   await finish.click();
 
   await expect
     .element(page.getByRole("heading", { name: "Congratulations, you completed the course!" }))
     .toBeVisible();
-  expect(router.state.location.pathname).toBe("/languages/javascript/success");
+  expect(router.state.location.pathname).toBe("/languages/javascript-ru/success");
 });
 
 test("offers a guest sign-up rather than Finish on the last lesson", async () => {

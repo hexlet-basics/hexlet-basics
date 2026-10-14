@@ -488,7 +488,9 @@ type Invoker interface {
 	GetBook(ctx context.Context) (*BookView, error)
 	// GetCourse invokes getCourse operation.
 	//
-	// Course landing page by slug.
+	// The course page, by the slug of one of its landing pages in the request locale — the slug in every
+	// public link (`/languages/javascript-ru`), not the course's own. The same slug under another locale
+	// is a 404.
 	//
 	// GET /api/languages/{slug}
 	GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error)
@@ -12460,7 +12462,9 @@ func (c *Client) sendGetBook(ctx context.Context) (res *BookView, err error) {
 
 // GetCourse invokes getCourse operation.
 //
-// Course landing page by slug.
+// The course page, by the slug of one of its landing pages in the request locale — the slug in every
+// public link (`/languages/javascript-ru`), not the course's own. The same slug under another locale
+// is a 404.
 //
 // GET /api/languages/{slug}
 func (c *Client) GetCourse(ctx context.Context, params GetCourseParams) (GetCourseRes, error) {

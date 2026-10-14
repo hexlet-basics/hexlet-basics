@@ -19,9 +19,10 @@ import (
 // acting user has finished the first of the three current lessons.
 func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)
@@ -52,10 +53,11 @@ func TestGetCourseReturnsProgressForASignedInLearner(t *testing.T) {
 // unfinished.
 func TestGetCourseTreatsAGapAsProgressNotAsABlock(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 	finishLesson(t, h, thirdLessonSlug)
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
 	progress := view.Enrollment.Value.Progress
@@ -75,7 +77,7 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	ctx := context.Background()
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsEnglishLandingSlug})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)
@@ -86,8 +88,7 @@ func TestGetCourseReturnsTheStartingPositionForAnonymousVisitors(t *testing.T) {
 	assert.Len(t, view.Lessons, 3, "the public lesson list does not depend on a session")
 
 	require.False(t, view.LandingPage.Null)
-	assert.Equal(t, "javascript-ru", view.LandingPage.Value.Slug,
-		"the page flagged main is the canonical copy, though the archived one has the lower id")
+	assert.Equal(t, jsEnglishLandingSlug, view.LandingPage.Value.Slug, "the page the URL names")
 
 	require.False(t, view.Progress.Null)
 	progress := view.Progress.Value
@@ -106,7 +107,7 @@ func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
 	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)
@@ -128,8 +129,9 @@ func TestGetCourseReturnsTheModulesInCourseOrder(t *testing.T) {
 // first, and only the course's own.
 func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: "go"})
+	res, err := h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: "go-ru"})
 	require.NoError(t, err)
 	view, ok := res.(*api.CourseView)
 	require.True(t, ok, "got %T", res)
@@ -140,7 +142,7 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 	}
 	assert.Equal(t, []string{"Сколько длится курс Go?", "Есть ли сертификат?"}, questions)
 
-	res, err = h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsCourseSlug})
+	res, err = h.Client.GetCourse(t.Context(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	assert.Empty(t, res.(*api.CourseView).QnaItems, "a landing page with no questions has none")
 }
@@ -150,9 +152,10 @@ func TestGetCourseReturnsTheLandingPageQuestions(t *testing.T) {
 // finished, the next one is open.
 func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, secondLessonSlug))
+	testsupport.SpeakTo(h, "ru")
 	ctx := context.Background()
 
-	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
 
@@ -173,8 +176,9 @@ func TestGetCourseReturnsTheSameShapeForAGuest(t *testing.T) {
 // so the guest starts that course over rather than being stranded.
 func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 	h := testsupport.NewVisitorHarness(t, progressCookie(jsCourseSlug, "removed-in-a-later-build"))
+	testsupport.SpeakTo(h, "ru")
 
-	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
 
@@ -188,9 +192,10 @@ func TestGetCourseResetsAGuestPositionTheCurrentVersionDropped(t *testing.T) {
 // visitor where a first visit leaves them.
 func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
 	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
 	testsupport.ForgeGuestCookie(t, h, progressCookie(jsCourseSlug, thirdLessonSlug))
 
-	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsCourseSlug})
+	res, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: jsLandingSlug})
 	require.NoError(t, err)
 	view := res.(*api.CourseView)
 
@@ -202,10 +207,40 @@ func TestGetCourseIgnoresAForgedGuestCookie(t *testing.T) {
 // An unknown slug is a 404, not an empty page.
 func TestGetCourseIsNotFoundForAnUnknownSlug(t *testing.T) {
 	h := testsupport.NewHarness(t)
+	testsupport.SpeakTo(h, "ru")
 
 	_, err := h.Client.GetCourse(context.Background(), api.GetCourseParams{Slug: "no-such-course"})
 	require.Error(t, err)
 	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+}
+
+// The slug names a landing page, as in legacy: the course's own slug is not a
+// URL, and a landing page of another locale is not served under this one. The
+// page that comes back is the one the slug names, whichever course page that is.
+func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+	ctx := t.Context()
+
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
+	require.NoError(t, err)
+	view, ok := res.(*api.CourseView)
+	require.True(t, ok, "got %T", res)
+	assert.Equal(t, jsCourseSlug, view.Course.Slug)
+	assert.Equal(t, jsLandingSlug, view.LandingPage.Value.Slug)
+
+	_, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsCourseSlug})
+	require.Error(t, err, "the course slug is not a landing page slug")
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+
+	_, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "go-en"})
+	require.Error(t, err, "an English landing page is not served to a Russian request")
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
+
+	res, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "frontend-ru"})
+	require.NoError(t, err)
+	assert.Equal(t, "frontend-ru", res.(*api.CourseView).LandingPage.Value.Slug,
+		"a secondary landing page keeps its own copy, not the course's main page")
 }
 
 // progressCookie is a visitor's whole state: the furthest lesson they finished

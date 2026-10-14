@@ -27,6 +27,12 @@ const (
 	secondLessonSlug = "variables"   // position 2, the next available one
 	thirdLessonSlug  = "strings"     // position 3, beyond the gate
 	jsCourseSlug     = "javascript"
+	// jsLandingSlug is the public URL of the JavaScript course's Russian landing
+	// page, the slug GetCourse resolves (legacy `/languages/javascript-ru`).
+	jsLandingSlug = "javascript-ru"
+	// jsEnglishLandingSlug is the English one, the locale the lesson fixtures are
+	// written in.
+	jsEnglishLandingSlug = "frontend-en"
 )
 
 // Starting the lesson one past the furthest finished one records it and

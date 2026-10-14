@@ -1962,7 +1962,9 @@ export const getCourseLessonOptions = (options: Options<GetCourseLessonData>) =>
 export const getCourseQueryKey = (options: Options<GetCourseData>) => createQueryKey('getCourse', options);
 
 /**
- * Course landing page by slug.
+ * The course page, by the slug of one of its landing pages in the request
+ * locale — the slug in every public link (`/languages/javascript-ru`), not the
+ * course's own. The same slug under another locale is a 404.
  */
 export const getCourseOptions = (options: Options<GetCourseData>) => queryOptions<GetCourseResponse, AxiosError<GetCourseError>, GetCourseResponse, ReturnType<typeof getCourseQueryKey>>({
   queryFn: async ({ queryKey, signal }) => {
