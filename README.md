@@ -25,40 +25,35 @@ with its own README and Makefile.
 
 ### Run
 
-1. Bootstrap everything from scratch with one task: toolchain, git hooks, `.env`,
-   then `install` (dependencies), `db:fixtures` (Postgres daemon, migrations,
-   starting data from `fixtures/`) and `dev` (API, worker and Vite daemons) as
-   separate tasks it composes, so the project is up when it finishes:
+1. After cloning, run one task. It installs the toolchain and git hooks, creates
+   `.env`, then runs the separate tasks `install` (dependencies), `db:fixtures`
+   (Postgres daemon, migrations, starting data from `fixtures/`) and `dev` (API,
+   worker and Vite daemons), so the project is up when it finishes:
 
    ```bash
-   mise run setup
+   mise run setup   # or just: mise setup
    ```
 
    PostgreSQL 18 is published on port `54330` so it does not conflict with a
    local database on `5432`. This service is only for development; Go tests
    create their own disposable databases.
 
-   Dependencies alone: `mise run install` (Go modules + frontend/api-spec
-   packages). The database steps are also available on their own: `mise run db:up` starts
-   Postgres, `mise run db:prepare` creates and migrates the schema without
-   touching data, and `mise run db:fixtures` loads the starting data (it replaces
-   what the fixture tables hold, like `rails db:fixtures:load` did; without it the
-   site shows nothing). Running `setup` again reloads the fixtures.
-
    Under mise, `DATABASE_URL` points at the local development DB and the API/Vite
    ports are dynamic (`mise env | grep PORT`): API from `3002`, Vite from `5173`,
    the next free port when one is taken.
 
-3. Run the stack (Go API, asynchronous worker, and Vite frontend):
+2. Day to day, the steps are also available on their own:
 
-   ```bash
-   mise run dev
-   ```
-
-   `mise run dev` starts them as background daemons (`mise daemons ls`,
-   `mise daemons logs api`, `mise run dev:down` to stop). Run one process alone in
-   the foreground with `mise run dev:api`, `mise run dev:worker`, or
-   `mise run dev:web`.
+   - `mise run install` — Go modules and frontend/api-spec packages.
+   - `mise run db:up` — start Postgres.
+   - `mise run db:prepare` — create and migrate the schema without touching data.
+   - `mise run db:fixtures` — load the starting data. It replaces what the fixture
+     tables hold, like `rails db:fixtures:load` did; without it the site shows
+     nothing. `setup` runs it too, so running `setup` again reloads the fixtures.
+   - `mise run dev` — start the Go API, asynchronous worker and Vite as background
+     daemons (`mise daemons ls`, `mise daemons logs api`, `mise run dev:down` to
+     stop). Run one process alone in the foreground with `mise run dev:api`,
+     `mise run dev:worker`, or `mise run dev:web`.
 
 ## Code Generation
 
