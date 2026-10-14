@@ -101,7 +101,8 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   the `[daemons]` table in `mise.toml`; there is no Makefile at the root.
 - `mise run setup` — the one task a fresh checkout needs: toolchain + git hooks,
   seed `.env`, then the separate `install` task (dependencies) and `db:fixtures`
-  (db daemon, migrations, `fixtures/`), so `mise run dev` shows a populated site.
+  (db daemon, migrations, `fixtures/`) and `dev`: after a clone, `mise setup`
+  alone brings the whole project up with a populated site.
 - `mise run install` — only the dependencies: `go mod download` + `pnpm install`
   (root package.json is shared by the frontend and the api-spec tooling).
 - `mise run db:up` — start the Postgres daemon; idempotently creates the

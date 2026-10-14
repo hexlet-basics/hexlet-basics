@@ -26,8 +26,9 @@ with its own README and Makefile.
 ### Run
 
 1. Bootstrap everything from scratch with one task: toolchain, git hooks, `.env`,
-   then `install` (dependencies) and `db:fixtures` (Postgres daemon, migrations,
-   starting data from `fixtures/`) as separate tasks it composes:
+   then `install` (dependencies), `db:fixtures` (Postgres daemon, migrations,
+   starting data from `fixtures/`) and `dev` (API, worker and Vite daemons) as
+   separate tasks it composes, so the project is up when it finishes:
 
    ```bash
    mise run setup

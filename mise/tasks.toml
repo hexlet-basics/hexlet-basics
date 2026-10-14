@@ -14,13 +14,14 @@ description = "Install project dependencies (go modules + frontend/api-spec via 
 run = ["go mod download", "pnpm install"]
 
 [setup]
-description = "Full local bootstrap from scratch: toolchain + git hooks, seed .env, then the `install` task (dependencies) and the `db:fixtures` task (db daemon, migrations, starting data)"
+description = "Full local bootstrap from scratch: toolchain + git hooks, seed .env, then the `install` task (dependencies), `db:fixtures` (db daemon, migrations, starting data) and `dev` (API, worker and Vite daemons)"
 run = [
   "mise install",
   "hk install --mise",
   "cp -n .env.example .env || true",
   { task = "install" },
   { task = "db:fixtures" },
+  { task = "dev" },
 ]
 
 # --- dev stack (daemons in mise.toml) ---------------------------------------------
