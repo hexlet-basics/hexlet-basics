@@ -31,6 +31,7 @@ with its own README and Makefile.
    worker and Vite daemons), so the project is up when it finishes:
 
    ```bash
+   mise trust       # once: let mise read this repo's mise.toml
    mise run setup   # or just: mise setup
    ```
 
@@ -75,7 +76,6 @@ mise run lint          # gofmt + go vet + golangci-lint, and tsc
 mise run lint:fix      # auto-fix Go formatting and lint findings
 
 mise run test          # go test ./... with disposable PostgreSQL 18 containers
-mise run db:prepare   # create/migrate dev DB without replacing development data
 ```
 
 `mise run test` requires Docker. Each DB-dependent Go package starts an independent
