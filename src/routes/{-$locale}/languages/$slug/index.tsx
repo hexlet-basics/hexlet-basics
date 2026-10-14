@@ -18,7 +18,7 @@ import {
 } from "@mantine/core";
 import { IconClock, IconUsers } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -52,10 +52,20 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/")({
   validateSearch: z.object({ unfinished: z.boolean().optional() }),
   loader: async ({ context, params }) => {
     try {
-      return await context.queryClient.query({
+      const view = await context.queryClient.query({
         ...getCourseOptions({ path: { slug: params.slug } }),
         staleTime: "static",
       });
+      // An archived landing page moved: legacy answered it with a permanent
+      // redirect, which keeps old links and search results pointing somewhere.
+      if (view.movedTo) {
+        throw redirect({
+          to: "/{-$locale}/languages/$slug",
+          params: { ...params, slug: view.movedTo },
+          statusCode: 301,
+        });
+      }
+      return view;
     } catch (error) {
       // The slug is a landing page's, in this locale's site: an unknown one and
       // one of another locale are the same to a visitor, there is no such page.

@@ -824,6 +824,7 @@ function courseView(state: EnrollmentState): CourseView {
   return {
     course,
     landingPage,
+    movedTo: null,
     lessons: [],
     modules: [],
     qnaItems: [],

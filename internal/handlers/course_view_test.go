@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent/courselandingpage"
 	"hexletbasics/ent/enrollment"
 	"hexletbasics/internal/api"
 	"hexletbasics/internal/progress"
@@ -241,6 +242,49 @@ func TestGetCourseResolvesALandingPageSlugInTheRequestLocale(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "frontend-ru", res.(*api.CourseView).LandingPage.Value.Slug,
 		"a secondary landing page keeps its own copy, not the course's main page")
+}
+
+// A landing page that was archived says where its URL moved, as legacy's
+// redirect_archived_language chose: the page it names, else the course's main
+// page in the request locale. A live page moves nowhere.
+func TestGetCourseSaysWhereAnArchivedLandingPageMoved(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+	ctx := t.Context()
+
+	res, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: jsLandingSlug})
+	require.NoError(t, err)
+	assert.True(t, res.(*api.CourseView).MovedTo.Null, "a live page stays where it is")
+
+	res, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "javascript-ru-archived"})
+	require.NoError(t, err)
+	assert.Equal(t, jsLandingSlug, res.(*api.CourseView).MovedTo.Value,
+		"with no page named, it moves to the course's main page")
+
+	named := h.DB.CourseLandingPage.Query().
+		Where(courselandingpage.SlugEQ("nodejs-ru")).OnlyX(ctx)
+	h.DB.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ("javascript-ru-archived")).
+		SetLandingPageToRedirectID(named.ID).ExecX(ctx)
+
+	res, err = h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "javascript-ru-archived"})
+	require.NoError(t, err)
+	assert.Equal(t, "nodejs-ru", res.(*api.CourseView).MovedTo.Value,
+		"the page it names wins over the main one")
+}
+
+// An archived page with nowhere to go is gone, not an empty redirect.
+func TestGetCourseIsNotFoundForAnArchivedPageWithNowhereToGo(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+	ctx := t.Context()
+	h.DB.CourseLandingPage.Update().
+		Where(courselandingpage.SlugEQ(jsLandingSlug)).
+		SetMain(false).ExecX(ctx)
+
+	_, err := h.Client.GetCourse(ctx, api.GetCourseParams{Slug: "javascript-ru-archived"})
+	require.Error(t, err)
+	assert.Equal(t, http.StatusNotFound, h.LastStatus())
 }
 
 // progressCookie is a visitor's whole state: the furthest lesson they finished

@@ -26,6 +26,13 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
         ...getCourseOptions({ path: { slug: params.slug } }),
         staleTime: "static",
       });
+      if (view.movedTo) {
+        throw redirect({
+          to: "/{-$locale}/languages/$slug/success",
+          params: { ...params, slug: view.movedTo },
+          statusCode: 301,
+        });
+      }
       if (view.enrollment?.state !== "finished") {
         throw redirect({
           to: "/{-$locale}/languages/$slug",

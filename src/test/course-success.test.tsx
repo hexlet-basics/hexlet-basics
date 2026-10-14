@@ -91,6 +91,7 @@ function courseView(state: EnrollmentState | null): CourseView {
   return {
     course,
     landingPage,
+    movedTo: null,
     lessons: [{ id: 1001, name: "Hello, World!", description: null, slug: "hello-world" }],
     modules: [],
     qnaItems: [],

@@ -20,6 +20,19 @@ namespace HexletBasics;
 model CourseView {
   course: Course;
   landingPage: CourseLandingPage | null;
+
+  /**
+   * Set when the landing page was archived: the landing page slug its URL moved
+   * to — the page the archived one names, else the course's main page in the
+   * request locale — which the page answers with a permanent redirect, as
+   * legacy's `languages#show` did. An archived page with neither is a 404, where
+   * legacy sent the visitor to the site root: a page that is gone says so. It
+   * travels in the body rather than as a 3xx because the HTTP clients on both
+   * ends follow redirects themselves, so the visitor's browser would never see
+   * one. Null for a live page.
+   */
+  movedTo: string | null;
+
   lessons: CourseLessonListItem[];
 
   /**

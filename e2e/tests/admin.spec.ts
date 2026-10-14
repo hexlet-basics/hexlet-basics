@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { admin, header, learner, signIn, visit } from "../support/app";
+import { admin, header, learner, outsider, signIn, visit } from "../support/app";
 
 test("a guest is sent to sign in and returns to the admin afterwards", async ({ page }) => {
   await visit(page, "/admin");
@@ -8,13 +8,13 @@ test("a guest is sent to sign in and returns to the admin afterwards", async ({ 
   await expect(page.getByRole("heading", { level: 1, name: "Sign In" })).toBeVisible();
 });
 
-test("a signed-in user who is not an admin is refused", async ({ page }) => {
-  await signIn(page, learner.email, learner.name);
+test("a signed-in user who is neither an admin nor staff is refused", async ({ page }) => {
+  await signIn(page, outsider.email, outsider.name);
 
   await visit(page, "/admin");
 
   await expect(page).toHaveURL("/");
-  await expect(header(page).getByRole("button", { name: learner.name })).toBeVisible();
+  await expect(header(page).getByRole("button", { name: outsider.name })).toBeVisible();
 });
 
 test("an admin sees the back office and its lists", async ({ page }) => {

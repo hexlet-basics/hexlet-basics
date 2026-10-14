@@ -26,9 +26,9 @@ testfixtures --dialect postgres --conn "$dsn" --dir fixtures
 
 # The fixtures carry no password digests (the Go tests mint sessions directly),
 # but a browser has to sign in. This is the bcrypt digest of the public,
-# throw-away password "e2e-password", given to the fixture admin and to a
-# fixture user who is not one.
+# throw-away password "e2e-password", given to the fixture admin, to a staff
+# editor and to a user who is neither.
 # shellcheck disable=SC2016 # the dollars are part of the bcrypt digest, not expansions
 digest='$2a$10$igu.GskpHZdOZgUlOQ7.5u/TZus5zank/0OQiVpwIUJkg4bJjL5Ge'
-run -d "$name" -c "update users set password_digest = '$digest' where email in ('alice@example.com', 'bob@example.com')"
+run -d "$name" -c "update users set password_digest = '$digest' where email in ('alice@example.com', 'bob@example.com', 'carol@example.com')"
 echo "e2e db ready: $name on $host:$port"

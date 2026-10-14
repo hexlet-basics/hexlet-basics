@@ -46,3 +46,10 @@ test("a landing page slug of another locale is not found", async ({ page }) => {
   expect(response?.status()).toBe(404);
   await expect(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
 });
+
+test("an archived landing page redirects to the course's main page", async ({ page }) => {
+  await visit(page, "/ru/languages/javascript-ru-archived");
+
+  await expect(page).toHaveURL("/ru/languages/javascript-ru");
+  await expect(page.getByRole("heading", { level: 1, name: "Курс JavaScript" })).toBeVisible();
+});

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/samber/lo"
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/courselandingpage"
@@ -49,6 +50,11 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 	crs := page.Edges.Course
 	landing := api.NewNilCourseLandingPage(s.conv.ToCourseLandingPage(page))
 
+	movedTo, err := s.archivedPageTarget(ctx, page)
+	if err != nil {
+		return nil, err
+	}
+
 	lessons, err := s.currentLessonList(ctx, crs)
 	if err != nil {
 		return nil, err
@@ -67,6 +73,7 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 	view := &api.CourseView{
 		Course:      s.conv.ToCourse(crs),
 		LandingPage: landing,
+		MovedTo:     movedTo,
 		Lessons:     lessons,
 		Modules:     modules,
 		QnaItems:    qnaItems,
@@ -103,6 +110,33 @@ func (s *Server) GetCourse(ctx context.Context, params api.GetCourseParams) (api
 	}
 	view.Enrollment = api.NewNilEnrollment(apiconv.ToEnrollment(enrolled, state))
 	return view, nil
+}
+
+// archivedPageTarget is where an archived landing page's URL moved, as legacy's
+// redirect_archived_language chose it: the page the archived one names, else the
+// course's main page in the request locale. Null for a page that is not
+// archived. An archived page with neither has nowhere to go, which is a 404.
+func (s *Server) archivedPageTarget(ctx context.Context, page *ent.CourseLandingPage) (api.NilString, error) {
+	if page.State == nil || *page.State != "archived" {
+		return api.NilString{Null: true}, nil
+	}
+
+	query := s.db.CourseLandingPage.Query()
+	if page.LandingPageToRedirectID != nil {
+		query = query.Where(courselandingpage.ID(*page.LandingPageToRedirectID))
+	} else {
+		query = query.Where(
+			courselandingpage.CourseID(page.CourseID),
+			courselandingpage.LocaleEQ(s.i18n.Locale(ctx)),
+			courselandingpage.Main(true),
+			courselandingpage.IDNEQ(page.ID),
+		)
+	}
+	target, err := query.First(ctx)
+	if err != nil {
+		return api.NilString{}, err
+	}
+	return api.NewNilString(lo.FromPtr(target.Slug)), nil
 }
 
 // mainLandingPage is the course's own landing copy in the request locale: the

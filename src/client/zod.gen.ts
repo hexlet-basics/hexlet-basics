@@ -743,6 +743,7 @@ export const zCourseCategoryView = z.object({
 export const zCourseView = z.object({
   course: zCourse,
   landingPage: zCourseLandingPage.nullable(),
+  movedTo: z.string().nullable(),
   lessons: z.array(zCourseLessonListItem),
   modules: z.array(zCourseModuleListItem),
   qnaItems: z.array(zQnaItem),

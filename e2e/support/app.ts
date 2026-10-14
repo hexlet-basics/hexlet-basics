@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 /**
- * The public password scripts/e2e_db.sh gives the two fixture users below. The
+ * The public password scripts/e2e_db.sh gives the fixture users below. The
  * fixtures themselves carry no password digests.
  */
 export const password = "e2e-password";
@@ -9,8 +9,11 @@ export const password = "e2e-password";
 /** A fixture user who is an admin. */
 export const admin = { email: "alice@example.com", name: "Alice Anderson" };
 
-/** A fixture user who is not. */
+/** A fixture user who is not (an editor on the staff, so the back office is open to them). */
 export const learner = { email: "bob@example.com", name: "Bob Brown" };
+
+/** A fixture user with neither the admin flag nor a staff record. */
+export const outsider = { email: "carol@example.com", name: "Carol Clark" };
 
 /**
  * Opens a page and waits for it to settle. The server renders every page, but

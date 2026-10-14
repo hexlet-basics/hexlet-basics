@@ -117,6 +117,7 @@ const lessonView: CourseLessonView = {
 const courseView: CourseView = {
   course,
   landingPage,
+  movedTo: null,
   lessons,
   modules: [],
   qnaItems: [],

@@ -3696,9 +3696,16 @@ func (*CourseVersion) adminCreateCourseVersionRes() {}
 // Everything the public course landing needs in one payload.
 // Ref: #/components/schemas/CourseView
 type CourseView struct {
-	Course      Course                 `json:"course"`
-	LandingPage NilCourseLandingPage   `json:"landingPage"`
-	Lessons     []CourseLessonListItem `json:"lessons"`
+	Course      Course               `json:"course"`
+	LandingPage NilCourseLandingPage `json:"landingPage"`
+	// Set when the landing page was archived: the landing page slug its URL moved to — the page the
+	// archived one names, else the course's main page in the request locale — which the page answers
+	// with a permanent redirect, as legacy's `languages#show` did. An empty string means there is neither,
+	// and the visitor goes to the site root. It travels in the body rather than as a 3xx because the HTTP
+	// clients on both ends follow redirects themselves, so the visitor's browser would never see one. Null
+	// for a live page.
+	MovedTo NilString              `json:"movedTo"`
+	Lessons []CourseLessonListItem `json:"lessons"`
 	// The modules of the course's current version in the request locale, in course order — the learning
 	// program's accordion. Each names its lessons by slug, joined to `lessons` for names, so the flat list
 	// stays the one source of lesson rows the page and the player share.
@@ -3722,6 +3729,11 @@ func (s *CourseView) GetCourse() Course {
 // GetLandingPage returns the value of LandingPage.
 func (s *CourseView) GetLandingPage() NilCourseLandingPage {
 	return s.LandingPage
+}
+
+// GetMovedTo returns the value of MovedTo.
+func (s *CourseView) GetMovedTo() NilString {
+	return s.MovedTo
 }
 
 // GetLessons returns the value of Lessons.
@@ -3757,6 +3769,11 @@ func (s *CourseView) SetCourse(val Course) {
 // SetLandingPage sets the value of LandingPage.
 func (s *CourseView) SetLandingPage(val NilCourseLandingPage) {
 	s.LandingPage = val
+}
+
+// SetMovedTo sets the value of MovedTo.
+func (s *CourseView) SetMovedTo(val NilString) {
+	s.MovedTo = val
 }
 
 // SetLessons sets the value of Lessons.

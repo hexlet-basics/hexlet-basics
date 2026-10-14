@@ -112,6 +112,7 @@ function courseView(progress: CourseProgress): CourseView {
   return {
     course,
     landingPage,
+    movedTo: null,
     lessons: [
       { id: 1001, name: "Hello, World!", description: null, slug: "hello-world" },
       { id: 1002, name: "Variables", description: null, slug: "variables" },
@@ -339,6 +340,22 @@ test("a landing page slug that is not served here is not found", async () => {
   await renderCourse(null, "/languages/javascript-en");
 
   await expect.element(page.getByRole("heading", { name: "Page Not Found" })).toBeVisible();
+});
+
+test("an archived landing page sends the visitor on to the page it moved to", async () => {
+  worker.use(
+    http.get("*/languages/javascript-old", () =>
+      HttpResponse.json({ ...courseView(firstVisit), movedTo: "javascript-ru" }),
+    ),
+    http.get("*/languages/javascript-ru", () => HttpResponse.json(courseView(firstVisit))),
+  );
+
+  const { router } = await renderCourse(null, "/languages/javascript-old");
+
+  await expect.poll(() => router.state.location.pathname).toBe("/languages/javascript-ru");
+  await expect
+    .element(page.getByRole("heading", { level: 1, name: "JavaScript course" }))
+    .toBeVisible();
 });
 
 test("keeps the URL locale when entering the course", async () => {
