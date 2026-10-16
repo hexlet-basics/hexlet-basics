@@ -3,8 +3,11 @@ import {
   Alert,
   Box,
   Button,
+  type ButtonProps,
+  Card,
   Center,
   Container,
+  Flex,
   Grid,
   Group,
   Image,
@@ -25,6 +28,7 @@ import { z } from "zod";
 import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
+import learningVideo from "@/assets/course-landing-page/learning_ru.mp4";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import LessonMark from "@/components/lesson/LessonMark";
@@ -120,7 +124,7 @@ function Show() {
     );
   }
 
-  const { course, landingPage, progress } = view;
+  const { course, landingPage, progress, enrollment } = view;
   const header = landingPage?.header ?? course.name ?? course.slug;
   const name = landingPage?.name ?? course.name ?? course.slug;
   const updatedAt = course.currentVersion?.createdAt;
@@ -211,14 +215,25 @@ function Show() {
         </SimpleGrid>
       )}
 
+      <Card withBorder my={{ base: "lg", sm: "xxl" }} p="xl">
+        <Group justify="space-between">
+          <Text fz="h3">{t(($) => $.courses.show.course_graduates)}</Text>
+          <EnterButton view={view} bg="dark" size="xl">
+            {t(($) => $.courses.show.start, { name })}
+          </EnterButton>
+        </Group>
+      </Card>
+
       <Box my="xl">
         <Title order={2} size="h1" mb="md">
           {t(($) => $.courses.show.learning_program, { name })}
         </Title>
 
         {/* Completion as the server computed it: a share of the current
-            version's lessons, which this page has no business recounting. */}
-        {progress && (
+            version's lessons, which this page has no business recounting. A
+            visitor who has not started has nothing to show, so only an
+            enrolled learner sees it. */}
+        {progress && enrollment && (
           <Stack gap={4} mb="md" maw={320}>
             <Text size="sm">
               {t(($) => $.courses.show.progress.completion, { completion: progress.completion })}
@@ -234,13 +249,40 @@ function Show() {
         <Title order={2} fz="h1" mb="xl">
           {t(($) => $.courses.show.about_learning)}
         </Title>
-        <Text fw="bold">{t(($) => $.courses.show["convenient format"])}</Text>
-        <Text mb="md">{t(($) => $.courses.show.learning_conveniently)}</Text>
-        <Text fw="bold">{t(($) => $.courses.show.browser_practice)}</Text>
-        <Text mb="md">{t(($) => $.courses.show.real_life_challenges)}</Text>
-        <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
-        <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
+        <SimpleGrid cols={{ base: 1, lg: i18n.language === "ru" ? 2 : 1 }}>
+          <Box>
+            <Text fw="bold">{t(($) => $.courses.show["convenient format"])}</Text>
+            <Text mb="md">{t(($) => $.courses.show.learning_conveniently)}</Text>
+            <Text fw="bold">{t(($) => $.courses.show.browser_practice)}</Text>
+            <Text mb="md">{t(($) => $.courses.show.real_life_challenges)}</Text>
+            <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
+            <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
+          </Box>
+          {i18n.language === "ru" && (
+            <Box
+              component="video"
+              h="100%"
+              w="100%"
+              src={learningVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          )}
+        </SimpleGrid>
       </Box>
+
+      <Card bg="indigo.0" p="xl">
+        <Group justify="space-between">
+          <Text fz="h3">{t(($) => $.courses.show.demo_description)}</Text>
+          <Flex h="100%" justify="end">
+            <EnterButton view={view} my="auto" size="xl">
+              {t(($) => $.courses.show.demo_start)}
+            </EnterButton>
+          </Flex>
+        </Group>
+      </Card>
 
       <QnaBlock items={view.qnaItems} />
     </Container>
@@ -354,6 +396,18 @@ function CourseAction({ view }: { view: CourseView }) {
         : t(($) => $.courses.show.continue)}
     </Button>
   );
+}
+
+// A secondary way into the course, as legacy's page had two more beside the
+// hero's: it goes through the same start command as the hero button, into the
+// learner's Next Lesson (the first one for a visitor), so none of them is a
+// way in that skips the start.
+function EnterButton({ view, ...props }: { view: CourseView } & ButtonProps) {
+  const { enter, isPending } = useEnterLesson(view.course.slug);
+  const next = view.progress?.nextLessonSlug;
+  const lesson = view.lessons.find((item) => item.slug === next) ?? view.lessons[0];
+  if (!lesson) return null;
+  return <Button {...props} loading={isPending} onClick={() => enter(lesson)} />;
 }
 
 // The Hexlet program the course leads on to, tagged as a referral from here as
