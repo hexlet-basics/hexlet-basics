@@ -3,10 +3,6 @@
     "mantine": {
       "command": "pnpm",
       "args": ["dlx", "@mantine/mcp-server@9.7.2"]
-    },
-    "tanstack": {
-      "command": "pnpm",
-      "args": ["dlx", "@tanstack/cli@0.71.1", "mcp"]
     }
   }
 }
