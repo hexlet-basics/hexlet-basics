@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Avatar,
   Anchor,
   Box,
   Burger,
@@ -33,7 +34,7 @@ import {
   IconSchool,
   IconSun,
   IconTarget,
-  IconUser,
+  IconShieldCog,
   IconUserCog,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -211,30 +212,48 @@ function AuthLinks() {
   }
 
   return (
-    <Menu shadow="md" width={250}>
+    <Menu shadow="md" width={260} position="bottom-end">
       <Menu.Target>
-        <NavButton
-          leftSection={<IconUser size={18} />}
-          rightSection={<IconChevronDown size={14} />}
-        >
-          {user.name}
-        </NavButton>
+        <UnstyledButton aria-label={user.name ?? user.email ?? undefined}>
+          <Group gap={6} wrap="nowrap">
+            <Avatar name={user.name ?? user.email ?? ""} color="initials" size="sm" radius="xl" />
+            <IconChevronDown size={14} />
+          </Group>
+        </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>
-        {user.email && (
-          <Menu.Label>
-            <Text size="xs" c="dimmed">
-              {user.email}
-            </Text>
-          </Menu.Label>
-        )}
+        <Group p="xs" gap="sm" wrap="nowrap">
+          <Avatar name={user.name ?? user.email ?? ""} color="initials" radius="xl" />
+          <Box miw={0}>
+            {user.name && (
+              <Text fw={500} size="sm" truncate>
+                {user.name}
+              </Text>
+            )}
+            {user.email && (
+              <Text size="xs" c="dimmed" truncate>
+                {user.email}
+              </Text>
+            )}
+          </Box>
+        </Group>
+        <Menu.Divider />
         <Menu.Item
-          leftSection={<IconUserCog size={14} />}
-          renderRoot={(props) => <Link to="/{-$locale}/account/profile/edit" {...props} />}
+          leftSection={<IconUserCog size={16} />}
+          renderRoot={(props) => <Link to="/{-$locale}/account/profile/edit" params {...props} />}
         >
           {t(($) => $.layouts.shared.nav.profile)}
         </Menu.Item>
-        <Menu.Item leftSection={<IconLogout2 size={14} />} onClick={() => logout({})}>
+        {user.canAccessAdmin && (
+          <Menu.Item
+            leftSection={<IconShieldCog size={16} />}
+            renderRoot={(props) => <Link to="/{-$locale}/admin" params {...props} />}
+          >
+            {t(($) => $.layouts.shared.nav.admin)}
+          </Menu.Item>
+        )}
+        <Menu.Divider />
+        <Menu.Item color="red" leftSection={<IconLogout2 size={16} />} onClick={() => logout({})}>
           {t(($) => $.layouts.shared.nav.sign_out)}
         </Menu.Item>
       </Menu.Dropdown>
