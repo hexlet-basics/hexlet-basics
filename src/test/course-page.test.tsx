@@ -404,6 +404,8 @@ function variablesView(progress: CourseProgress): CourseLessonView {
       preparedCode: "",
       originalCode: "",
       testCode: "",
+      exerciseExtension: null,
+      testExtension: null,
       sourceCodeUrl: null,
       createdAt: "2026-01-01T00:00:00Z",
     },

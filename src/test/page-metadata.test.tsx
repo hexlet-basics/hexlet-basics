@@ -106,6 +106,8 @@ const lessonView: CourseLessonView = {
     preparedCode: "let greeting = '';\n",
     originalCode: null,
     testCode: null,
+    exerciseExtension: null,
+    testExtension: null,
     sourceCodeUrl: null,
     createdAt: "2026-01-01T00:00:00Z",
   },

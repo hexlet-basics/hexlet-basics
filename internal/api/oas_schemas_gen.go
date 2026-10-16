@@ -2847,24 +2847,31 @@ func (s *CourseLearnAs) UnmarshalText(data []byte) error {
 // A single lesson (legacy: `LanguageLesson`).
 // Ref: #/components/schemas/CourseLesson
 type CourseLesson struct {
-	Course        Course             `json:"course"`
-	ID            int32              `json:"id"`
-	Name          NilString          `json:"name"`
-	Slug          string             `json:"slug"`
-	Locale        NilString          `json:"locale"`
-	NaturalOrder  int32              `json:"naturalOrder"`
-	VersionId     int32              `json:"versionId"`
-	Version       NilInt32           `json:"version"`
-	Description   NilString          `json:"description"`
-	Instructions  NilString          `json:"instructions"`
-	Theory        NilString          `json:"theory"`
-	Definitions   []LessonDefinition `json:"definitions"`
-	Tips          []string           `json:"tips"`
-	PreparedCode  NilString          `json:"preparedCode"`
-	OriginalCode  NilString          `json:"originalCode"`
-	TestCode      NilString          `json:"testCode"`
-	SourceCodeUrl NilString          `json:"sourceCodeUrl"`
-	CreatedAt     time.Time          `json:"createdAt"`
+	Course       Course             `json:"course"`
+	ID           int32              `json:"id"`
+	Name         NilString          `json:"name"`
+	Slug         string             `json:"slug"`
+	Locale       NilString          `json:"locale"`
+	NaturalOrder int32              `json:"naturalOrder"`
+	VersionId    int32              `json:"versionId"`
+	Version      NilInt32           `json:"version"`
+	Description  NilString          `json:"description"`
+	Instructions NilString          `json:"instructions"`
+	Theory       NilString          `json:"theory"`
+	Definitions  []LessonDefinition `json:"definitions"`
+	Tips         []string           `json:"tips"`
+	PreparedCode NilString          `json:"preparedCode"`
+	OriginalCode NilString          `json:"originalCode"`
+	TestCode     NilString          `json:"testCode"`
+	// File extension of the solution file, without the dot (`rb`, `md`), from the course build's spec.yml.
+	// Highlighting follows it, not the course slug: a course's code and tests need not be in the language
+	// its slug names. Null when the build records none.
+	ExerciseExtension NilString `json:"exerciseExtension"`
+	// File extension of the test file, without the dot (`js`), taken from the build's
+	// `exercise_test_filename`. Null when that name has no extension.
+	TestExtension NilString `json:"testExtension"`
+	SourceCodeUrl NilString `json:"sourceCodeUrl"`
+	CreatedAt     time.Time `json:"createdAt"`
 }
 
 // GetCourse returns the value of Course.
@@ -2945,6 +2952,16 @@ func (s *CourseLesson) GetOriginalCode() NilString {
 // GetTestCode returns the value of TestCode.
 func (s *CourseLesson) GetTestCode() NilString {
 	return s.TestCode
+}
+
+// GetExerciseExtension returns the value of ExerciseExtension.
+func (s *CourseLesson) GetExerciseExtension() NilString {
+	return s.ExerciseExtension
+}
+
+// GetTestExtension returns the value of TestExtension.
+func (s *CourseLesson) GetTestExtension() NilString {
+	return s.TestExtension
 }
 
 // GetSourceCodeUrl returns the value of SourceCodeUrl.
@@ -3035,6 +3052,16 @@ func (s *CourseLesson) SetOriginalCode(val NilString) {
 // SetTestCode sets the value of TestCode.
 func (s *CourseLesson) SetTestCode(val NilString) {
 	s.TestCode = val
+}
+
+// SetExerciseExtension sets the value of ExerciseExtension.
+func (s *CourseLesson) SetExerciseExtension(val NilString) {
+	s.ExerciseExtension = val
+}
+
+// SetTestExtension sets the value of TestExtension.
+func (s *CourseLesson) SetTestExtension(val NilString) {
+	s.TestExtension = val
 }
 
 // SetSourceCodeUrl sets the value of SourceCodeUrl.
@@ -3700,10 +3727,10 @@ type CourseView struct {
 	LandingPage NilCourseLandingPage `json:"landingPage"`
 	// Set when the landing page was archived: the landing page slug its URL moved to — the page the
 	// archived one names, else the course's main page in the request locale — which the page answers
-	// with a permanent redirect, as legacy's `languages#show` did. An empty string means there is neither,
-	// and the visitor goes to the site root. It travels in the body rather than as a 3xx because the HTTP
-	// clients on both ends follow redirects themselves, so the visitor's browser would never see one. Null
-	// for a live page.
+	// with a permanent redirect, as legacy's `languages#show` did. An archived page with neither is a 404,
+	// where legacy sent the visitor to the site root: a page that is gone says so. It travels in the body
+	// rather than as a 3xx because the HTTP clients on both ends follow redirects themselves, so the
+	// visitor's browser would never see one. Null for a live page.
 	MovedTo NilString              `json:"movedTo"`
 	Lessons []CourseLessonListItem `json:"lessons"`
 	// The modules of the course's current version in the request locale, in course order — the learning

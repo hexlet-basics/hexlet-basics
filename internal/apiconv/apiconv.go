@@ -7,6 +7,8 @@
 package apiconv
 
 import (
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/lib/pq"
@@ -298,6 +300,10 @@ type LessonContent struct {
 func ToCourseLesson(content LessonContent, course api.Course) api.CourseLesson {
 	version := content.Version
 	translation := content.Translation
+	build := content.Course.Edges.CurrentVersion
+	if build == nil {
+		build = &ent.CourseVersion{}
+	}
 
 	return api.CourseLesson{
 		Course:       course,
@@ -314,14 +320,30 @@ func ToCourseLesson(content LessonContent, course api.Course) api.CourseLesson {
 		// versionId and version both carry the Lesson Version id, as the legacy
 		// serializer emitted them: one from the Translation's FK column, one from
 		// the row it points at. The check operation reads the former.
-		VersionId:     int32(version.ID),
-		Version:       api.NewNilInt32(int32(version.ID)),
-		PreparedCode:  NilStringFromPtr(version.PreparedCode),
-		OriginalCode:  NilStringFromPtr(version.OriginalCode),
-		TestCode:      NilStringFromPtr(version.TestCode),
-		SourceCodeUrl: NilStringFromPtr(&content.SourceCodeURL),
-		CreatedAt:     content.Lesson.CreatedAt,
+		VersionId:    int32(version.ID),
+		Version:      api.NewNilInt32(int32(version.ID)),
+		PreparedCode: NilStringFromPtr(version.PreparedCode),
+		OriginalCode: NilStringFromPtr(version.OriginalCode),
+		TestCode:     NilStringFromPtr(version.TestCode),
+		// The build's own file names say what language the code and the tests are
+		// in; the course slug does not (the AI course is markdown with JS tests).
+		ExerciseExtension: nilExtension(lo.FromPtr(build.Extension)),
+		TestExtension:     nilExtension(filepath.Ext(lo.FromPtr(build.ExerciseTestFilename))),
+		SourceCodeUrl:     NilStringFromPtr(&content.SourceCodeURL),
+		CreatedAt:         content.Lesson.CreatedAt,
 	}
+}
+
+// nilExtension is a bare extension (no dot) or null. The spec's `extension:` is
+// already bare; a test filename is not, so callers pass the file's Ext. An empty
+// value is null so the client falls back to the course slug instead of
+// highlighting by a made-up language.
+func nilExtension(ext string) api.NilString {
+	ext = strings.TrimPrefix(ext, ".")
+	if ext == "" {
+		return api.NilString{Null: true}
+	}
+	return api.NewNilString(ext)
 }
 
 // lessonTips and lessonDefinitions decode the two columns the loader writes as

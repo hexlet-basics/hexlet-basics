@@ -425,6 +425,18 @@ export type CourseLesson = {
   preparedCode: string | null;
   originalCode: string | null;
   testCode: string | null;
+  /**
+   * File extension of the solution file, without the dot (`rb`, `md`), from
+   *       the course build's spec.yml. Highlighting follows it, not the course slug:
+   *       a course's code and tests need not be in the language its slug names. Null
+   *       when the build records none.
+   */
+  exerciseExtension: string | null;
+  /**
+   * File extension of the test file, without the dot (`js`), taken from the
+   *       build's `exercise_test_filename`. Null when that name has no extension.
+   */
+  testExtension: string | null;
   sourceCodeUrl: string | null;
   createdAt: string;
 };
@@ -626,10 +638,11 @@ export type CourseView = {
    * Set when the landing page was archived: the landing page slug its URL moved
    * to — the page the archived one names, else the course's main page in the
    * request locale — which the page answers with a permanent redirect, as
-   * legacy's `languages#show` did. An empty string means there is neither, and
-   * the visitor goes to the site root. It travels in the body rather than as a
-   * 3xx because the HTTP clients on both ends follow redirects themselves, so
-   * the visitor's browser would never see one. Null for a live page.
+   * legacy's `languages#show` did. An archived page with neither is a 404, where
+   * legacy sent the visitor to the site root: a page that is gone says so. It
+   * travels in the body rather than as a 3xx because the HTTP clients on both
+   * ends follow redirects themselves, so the visitor's browser would never see
+   * one. Null for a live page.
    */
   movedTo: string | null;
   lessons: Array<CourseLessonListItem>;

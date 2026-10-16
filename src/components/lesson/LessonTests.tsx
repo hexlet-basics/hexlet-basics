@@ -1,7 +1,7 @@
 import { CodeHighlight } from "@mantine/code-highlight";
 import { Center, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { getEditorSettings } from "@/lib/editor-languages";
+import { getTestLanguage } from "@/lib/editor-languages";
 import { toSupportedLanguage } from "@/lib/shiki";
 
 // The lesson tests, readable at any time by anyone — deliberately, as in legacy:
@@ -9,13 +9,16 @@ import { toSupportedLanguage } from "@/lib/shiki";
 // which is the thing they are being asked to satisfy.
 export default function LessonTests({
   courseSlug,
+  testExtension,
   testCode,
 }: {
   courseSlug: string;
+  // The test file's own extension: the tests need not be in the course's language.
+  testExtension: string | null;
   testCode: string;
 }) {
   const { t } = useTranslation();
-  const { language } = getEditorSettings(courseSlug);
+  const language = getTestLanguage(courseSlug, testExtension);
 
   return (
     <Stack p="xs">

@@ -91,6 +91,8 @@ const lesson: CourseLesson = {
   preparedCode: "let greeting = '';\n",
   originalCode: "let greeting = 'hello'; // the author's answer\n",
   testCode: "assert.equal(greeting, 'hello');\n",
+  exerciseExtension: "js",
+  testExtension: "js",
   sourceCodeUrl: "https://github.com/hexlet-basics/exercises-javascript",
   createdAt: "2026-01-01T00:00:00Z",
 };

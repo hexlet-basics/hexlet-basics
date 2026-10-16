@@ -179,6 +179,7 @@ export default function LessonWorkspace({
                 // has to give it a new editor rather than a new prop.
                 key={lesson.slug}
                 courseSlug={courseSlug}
+                extension={lesson.exerciseExtension}
                 initialCode={code}
                 onChange={setCode}
                 starterCode={starterCode}
@@ -210,7 +211,11 @@ export default function LessonWorkspace({
 
         <Tabs.Panel value="tests" h="100%" mih={0}>
           <ScrollArea h="100%">
-            <LessonTests courseSlug={courseSlug} testCode={lesson.testCode ?? ""} />
+            <LessonTests
+              courseSlug={courseSlug}
+              testExtension={lesson.testExtension}
+              testCode={lesson.testCode ?? ""}
+            />
           </ScrollArea>
         </Tabs.Panel>
 
@@ -218,6 +223,7 @@ export default function LessonWorkspace({
           <ScrollArea h="100%">
             <LessonSolution
               courseSlug={courseSlug}
+              extension={lesson.exerciseExtension}
               referenceSolution={lesson.originalCode ?? ""}
               learnerCode={code}
               unlocked={solutionUnlocked}

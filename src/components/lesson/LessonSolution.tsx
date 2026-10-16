@@ -20,17 +20,19 @@ const waitingTime = 20 * 60 * 1000;
 // rather than quietly fixed, so this port has one variable and not several.
 export default function LessonSolution({
   courseSlug,
+  extension,
   referenceSolution,
   learnerCode,
   unlocked,
 }: {
   courseSlug: string;
+  extension: string | null;
   referenceSolution: string;
   learnerCode: string;
   unlocked: boolean;
 }) {
   const { t } = useTranslation();
-  const { language } = getEditorSettings(courseSlug);
+  const { language } = getEditorSettings(courseSlug, extension);
   const codeLanguage = toSupportedLanguage(language);
 
   const [revealed, setRevealed] = useState(false);

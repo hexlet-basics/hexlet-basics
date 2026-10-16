@@ -293,6 +293,16 @@ model CourseLesson {
   preparedCode: string | null;
   originalCode: string | null;
   testCode: string | null;
+
+  /** File extension of the solution file, without the dot (`rb`, `md`), from
+      the course build's spec.yml. Highlighting follows it, not the course slug:
+      a course's code and tests need not be in the language its slug names. Null
+      when the build records none. */
+  exerciseExtension: string | null;
+
+  /** File extension of the test file, without the dot (`js`), taken from the
+      build's `exercise_test_filename`. Null when that name has no extension. */
+  testExtension: string | null;
   sourceCodeUrl: string | null;
   createdAt: utcDateTime;
 }

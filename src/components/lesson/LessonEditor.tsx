@@ -21,6 +21,8 @@ const MonacoEditor = lazy(async () => {
 
 type LessonEditorProps = {
   courseSlug: string;
+  // The solution file's extension, which names the language the learner writes.
+  extension: string | null;
   // The buffer as it stands when the pane mounts. Monaco owns it from then on
   // and reports changes back through `onChange`: driving `value` on every
   // keystroke made monaco replace its model mid-word and drop characters.
@@ -47,6 +49,7 @@ export default function LessonEditor(props: LessonEditorProps) {
 
 function EditorPane({
   courseSlug,
+  extension,
   initialCode,
   onChange,
   starterCode,
@@ -73,7 +76,7 @@ function EditorPane({
   });
 
   const [instance, setInstance] = useState<editor.IStandaloneCodeEditor>();
-  const settings = getEditorSettings(courseSlug);
+  const settings = getEditorSettings(courseSlug, extension);
 
   // Monaco keeps the callback it is given for the life of the command, so the
   // command calls through a stable ref-backed callback rather than closing over

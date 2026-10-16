@@ -10,13 +10,51 @@ const languageBySlug: Record<string, string> = {
   css: "html",
   racket: "scheme",
   clang: "c",
-  dlang: "d",
   bash: "shell",
   "layout-designer": "html",
   "pre-course-java": "java",
   "pre-course-python": "python",
   "pre-course-javascript": "javascript",
   csConsole: "csharp",
+};
+
+// What a file extension says about the language of its contents. The build's
+// spec.yml names the extension of the solution and of the test file, which is
+// the truth about the code on screen; the course slug is only a guess that holds
+// while a course's slug is its language (the AI course is markdown with
+// JavaScript tests). Values are monaco ids. Anything absent falls back to the
+// slug-derived language.
+const languageByExtension: Record<string, string> = {
+  rb: "ruby",
+  py: "python",
+  js: "javascript",
+  mjs: "javascript",
+  jsx: "javascript",
+  ts: "typescript",
+  tsx: "typescript",
+  java: "java",
+  kt: "kotlin",
+  go: "go",
+  php: "php",
+  cs: "csharp",
+  c: "c",
+  h: "c",
+  cpp: "cpp",
+  rs: "rust",
+  swift: "swift",
+  hs: "haskell",
+  ex: "elixir",
+  exs: "elixir",
+  clj: "clojure",
+  pl: "perl",
+  lua: "lua",
+  rkt: "scheme",
+  scm: "scheme",
+  sh: "shell",
+  md: "markdown",
+  html: "html",
+  css: "css",
+  json: "json",
 };
 
 // Indentation is a property of a language's community, not of the editor, so it
@@ -93,11 +131,25 @@ export type EditorSettings = {
   insertSpaces: boolean;
 };
 
+function languageFor(courseSlug: string, extension?: string | null): string {
+  const fromExtension = extension ? languageByExtension[extension.toLowerCase()] : undefined;
+  return fromExtension ?? languageBySlug[courseSlug] ?? courseSlug;
+}
+
+// The language of the test file, which can differ from the solution's. Without a
+// usable extension it is the course's language, as before.
+export function getTestLanguage(courseSlug: string, testExtension?: string | null): string {
+  return languageFor(courseSlug, testExtension);
+}
+
 // The three travel together — a course is opened in one language, with one
 // indentation — so they are looked up once rather than three times.
-export function getEditorSettings(courseSlug: string): EditorSettings {
+//
+// `extension` is the solution file's, from the build; it wins over the slug for
+// the language, while indentation stays a property of the course.
+export function getEditorSettings(courseSlug: string, extension?: string | null): EditorSettings {
   return {
-    language: languageBySlug[courseSlug] ?? courseSlug,
+    language: languageFor(courseSlug, extension),
     tabSize: tabSizeBySlug[courseSlug] ?? defaultTabSize,
     insertSpaces: spacesBySlug[courseSlug] ?? false,
   };

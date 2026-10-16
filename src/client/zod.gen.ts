@@ -518,6 +518,8 @@ export const zCourseLesson = z.object({
   preparedCode: z.string().nullable(),
   originalCode: z.string().nullable(),
   testCode: z.string().nullable(),
+  exerciseExtension: z.string().nullable(),
+  testExtension: z.string().nullable(),
   sourceCodeUrl: z.string().nullable(),
   createdAt: z.iso.datetime()
 });

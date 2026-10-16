@@ -10058,6 +10058,14 @@ func (s *CourseLesson) encodeFields(e *jx.Encoder) {
 		s.TestCode.Encode(e)
 	}
 	{
+		e.FieldStart("exerciseExtension")
+		s.ExerciseExtension.Encode(e)
+	}
+	{
+		e.FieldStart("testExtension")
+		s.TestExtension.Encode(e)
+	}
+	{
 		e.FieldStart("sourceCodeUrl")
 		s.SourceCodeUrl.Encode(e)
 	}
@@ -10067,7 +10075,7 @@ func (s *CourseLesson) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCourseLesson = [18]string{
+var jsonFieldsNameOfCourseLesson = [20]string{
 	0:  "course",
 	1:  "id",
 	2:  "name",
@@ -10084,8 +10092,10 @@ var jsonFieldsNameOfCourseLesson = [18]string{
 	13: "preparedCode",
 	14: "originalCode",
 	15: "testCode",
-	16: "sourceCodeUrl",
-	17: "createdAt",
+	16: "exerciseExtension",
+	17: "testExtension",
+	18: "sourceCodeUrl",
+	19: "createdAt",
 }
 
 // Decode decodes CourseLesson from json.
@@ -10283,8 +10293,28 @@ func (s *CourseLesson) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"testCode\"")
 			}
-		case "sourceCodeUrl":
+		case "exerciseExtension":
 			requiredBitSet[2] |= 1 << 0
+			if err := func() error {
+				if err := s.ExerciseExtension.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"exerciseExtension\"")
+			}
+		case "testExtension":
+			requiredBitSet[2] |= 1 << 1
+			if err := func() error {
+				if err := s.TestExtension.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"testExtension\"")
+			}
+		case "sourceCodeUrl":
+			requiredBitSet[2] |= 1 << 2
 			if err := func() error {
 				if err := s.SourceCodeUrl.Decode(d); err != nil {
 					return err
@@ -10294,7 +10324,7 @@ func (s *CourseLesson) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"sourceCodeUrl\"")
 			}
 		case "createdAt":
-			requiredBitSet[2] |= 1 << 1
+			requiredBitSet[2] |= 1 << 3
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -10317,7 +10347,7 @@ func (s *CourseLesson) Decode(d *jx.Decoder) error {
 	for i, mask := range [3]uint8{
 		0b11111111,
 		0b11111111,
-		0b00000011,
+		0b00001111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
