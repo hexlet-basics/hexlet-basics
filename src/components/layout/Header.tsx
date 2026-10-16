@@ -3,7 +3,8 @@ import {
   Anchor,
   Box,
   Burger,
-  Center,
+  Button,
+  type ButtonProps,
   Divider,
   Drawer,
   Group,
@@ -12,13 +13,13 @@ import {
   Menu,
   NavLink,
   SimpleGrid,
-  Space,
   Stack,
   Text,
   ThemeIcon,
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
+import { ButtonLink } from "@/components/RouterLink";
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconBlocks,
@@ -55,6 +56,17 @@ import type { CourseCatalogItem, Locale, User } from "@/client/types.gen";
 // preserved automatically, so links carry no explicit locale. Links point only
 // at routes that exist today; auth-gated destinations (dashboard) are added as
 // those pages are ported.
+// The top-bar controls, as Mantine's header examples do them: a subtle button
+// whose hover is a background tint, not an underline, and which keeps a focus
+// ring. `gray` keeps the label in the body text colour in both schemes.
+const navButtonProps = { variant: "subtle", color: "gray", c: "inherit", fw: 500 } as const;
+
+function NavButton(props: ButtonProps) {
+  return <Button {...navButtonProps} {...props} />;
+}
+
+const NavButtonLink: typeof ButtonLink = (props) => <ButtonLink {...navButtonProps} {...props} />;
+
 export default function Header() {
   const { i18n } = useTranslation();
   const [opened, { toggle }] = useDisclosure();
@@ -124,12 +136,9 @@ function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
       withinPortal
     >
       <Menu.Target>
-        <UnstyledButton>
-          <Center inline>
-            <Text me={5}>{t(($) => $.layouts.shared.nav.courses)}</Text>
-            <IconChevronDown size={16} />
-          </Center>
-        </UnstyledButton>
+        <NavButton rightSection={<IconChevronDown size={16} />}>
+          {t(($) => $.layouts.shared.nav.courses)}
+        </NavButton>
       </Menu.Target>
       <Menu.Dropdown>
         <NavLink
@@ -154,14 +163,16 @@ function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
                 />
               )}
               leftSection={
-                <Image
-                  w={18}
-                  radius="sm"
-                  fit="contain"
-                  loading="lazy"
-                  src={item.coverUrl}
-                  alt={item.name ?? item.slug}
-                />
+                item.coverUrl ? (
+                  <Image
+                    w={18}
+                    radius="sm"
+                    fit="contain"
+                    loading="lazy"
+                    src={item.coverUrl}
+                    alt={item.name ?? item.slug}
+                  />
+                ) : undefined
               }
             >
               <Text fz="sm">{item.name}</Text>
@@ -189,12 +200,12 @@ function AuthLinks() {
   if (!user) {
     return (
       <>
-        <Anchor variant="nav" component={Link} to="/{-$locale}/session/new" params>
+        <NavButtonLink to="/{-$locale}/session/new" params>
           {t(($) => $.layouts.shared.nav.sign_in)}
-        </Anchor>
-        <Anchor variant="nav" component={Link} to="/{-$locale}/users/new" params>
+        </NavButtonLink>
+        <NavButtonLink to="/{-$locale}/users/new" params>
           {t(($) => $.layouts.shared.nav.registration)}
-        </Anchor>
+        </NavButtonLink>
       </>
     );
   }
@@ -202,18 +213,12 @@ function AuthLinks() {
   return (
     <Menu shadow="md" width={250}>
       <Menu.Target>
-        <UnstyledButton>
-          <Center>
-            <IconUser size={18} />
-            {user.name && (
-              <>
-                <Space me="xs" />
-                <Text>{user.name}</Text>
-              </>
-            )}
-            <IconChevronDown size={14} />
-          </Center>
-        </UnstyledButton>
+        <NavButton
+          leftSection={<IconUser size={18} />}
+          rightSection={<IconChevronDown size={14} />}
+        >
+          {user.name}
+        </NavButton>
       </Menu.Target>
       <Menu.Dropdown>
         {user.email && (
@@ -268,12 +273,7 @@ function LocaleSwitcher() {
   return (
     <Menu shadow="md" width={160}>
       <Menu.Target>
-        <UnstyledButton>
-          <Center>
-            <Text me={5}>{current.label}</Text>
-            <IconChevronDown size={14} />
-          </Center>
-        </UnstyledButton>
+        <NavButton rightSection={<IconChevronDown size={14} />}>{current.label}</NavButton>
       </Menu.Target>
       <Menu.Dropdown>
         {LOCALES.map((locale) => (
@@ -388,12 +388,9 @@ function SolutionsMenu() {
   return (
     <HoverCard width={600} radius="md" shadow="md" withinPortal>
       <HoverCard.Target>
-        <UnstyledButton>
-          <Center inline>
-            <Text mr={5}>{t(($) => $.layouts.shared.nav.cases)}</Text>
-            <IconChevronDown size={16} />
-          </Center>
-        </UnstyledButton>
+        <NavButton rightSection={<IconChevronDown size={16} />}>
+          {t(($) => $.layouts.shared.nav.cases)}
+        </NavButton>
       </HoverCard.Target>
       <HoverCard.Dropdown>
         <Group justify="space-between" px="md" mb="sm">
