@@ -15,6 +15,22 @@ func (s *ProblemDetailsStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// The banner shown above the pages that carry one, or null when none is live.
+// Ref: #/components/schemas/ActiveBanner
+type ActiveBanner struct {
+	Banner NilBanner `json:"banner"`
+}
+
+// GetBanner returns the value of Banner.
+func (s *ActiveBanner) GetBanner() NilBanner {
+	return s.Banner
+}
+
+// SetBanner sets the value of Banner.
+func (s *ActiveBanner) SetBanner(val NilBanner) {
+	s.Banner = val
+}
+
 type AdminCreateBannerForbidden ProblemDetails
 
 func (*AdminCreateBannerForbidden) adminCreateBannerRes() {}
@@ -5212,6 +5228,51 @@ func (s *MyDashboardLandingPagesByCourseId) init() MyDashboardLandingPagesByCour
 		*s = m
 	}
 	return m
+}
+
+// NewNilBanner returns new NilBanner with value set to v.
+func NewNilBanner(v Banner) NilBanner {
+	return NilBanner{
+		Value: v,
+	}
+}
+
+// NilBanner is nullable Banner.
+type NilBanner struct {
+	Value Banner
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilBanner) SetTo(v Banner) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilBanner) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilBanner) SetToNull() {
+	o.Null = true
+	var v Banner
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilBanner) Get() (v Banner, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilBanner) Or(d Banner) Banner {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewNilBlogPostState returns new NilBlogPostState with value set to v.

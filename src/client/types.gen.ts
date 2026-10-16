@@ -5,6 +5,13 @@ export type ClientOptions = {
 };
 
 /**
+ * The banner shown above the pages that carry one, or null when none is live.
+ */
+export type ActiveBanner = {
+  banner: Banner | null;
+};
+
+/**
  * A prompt to the in-lesson assistant, carrying the editor context.
  */
 export type AssistantMessageInput = {
@@ -4290,6 +4297,34 @@ export type CreateAssistantMessageResponses = {
 };
 
 export type CreateAssistantMessageResponse = CreateAssistantMessageResponses[keyof CreateAssistantMessageResponses];
+
+export type GetActiveBannerData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/banner';
+};
+
+export type GetActiveBannerErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type GetActiveBannerError = GetActiveBannerErrors[keyof GetActiveBannerErrors];
+
+export type GetActiveBannerResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: ActiveBanner;
+};
+
+export type GetActiveBannerResponse = GetActiveBannerResponses[keyof GetActiveBannerResponses];
 
 export type ListBlogPostsData = {
   body?: never;

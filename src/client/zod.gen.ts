@@ -64,6 +64,13 @@ export const zBanner = z.object({
   createdAt: z.iso.datetime()
 });
 
+/**
+ * The banner shown above the pages that carry one, or null when none is live.
+ */
+export const zActiveBanner = z.object({
+  banner: zBanner.nullable()
+});
+
 export const zBannerInput = z.object({
   state: zBannerState,
   background: zBannerBackground,
@@ -1770,6 +1777,11 @@ export const zCreateAssistantMessagePath = z.object({
  * reads a plain text stream directly.
  */
 export const zCreateAssistantMessageResponse = z.string();
+
+/**
+ * The request has succeeded.
+ */
+export const zGetActiveBannerResponse = zActiveBanner;
 
 export const zListBlogPostsQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),

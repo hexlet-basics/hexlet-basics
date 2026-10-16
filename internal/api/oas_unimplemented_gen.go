@@ -704,6 +704,16 @@ func (UnimplementedHandler) DownloadBook(ctx context.Context) (r DownloadBookRes
 	return r, ht.ErrNotImplemented
 }
 
+// GetActiveBanner implements getActiveBanner operation.
+//
+// The newest published banner of the request locale whose window is open now: it started (or has no
+// start) and has not finished (or has no finish).
+//
+// GET /api/banner
+func (UnimplementedHandler) GetActiveBanner(ctx context.Context) (r *ActiveBanner, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetBlogPost implements getBlogPost operation.
 //
 // A published post in the request locale, by slug, with its page data.

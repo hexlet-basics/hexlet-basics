@@ -23,3 +23,37 @@
   finishes_at:
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
+# The live en banner: published, no window.
+- id: 3
+  background: blue
+  body: Free programming courses — start learning today
+  locale: en
+  state: published
+  url: https://code-basics.com/languages
+  starts_at:
+  finishes_at:
+  created_at: '2026-07-26 20:50:31'
+  updated_at: '2026-07-26 20:50:31'
+# Published but already over, and newer than the live ru banner: the window,
+# not recency, keeps it off the page.
+- id: 4
+  background: dark
+  body: Распродажа закончилась
+  locale: ru
+  state: published
+  url:
+  starts_at: '2020-01-01 00:00:00'
+  finishes_at: '2020-02-01 00:00:00'
+  created_at: '2026-07-26 20:50:32'
+  updated_at: '2026-07-26 20:50:32'
+# Published but not started yet.
+- id: 5
+  background: cta_gradient
+  body: Скоро большая акция
+  locale: ru
+  state: published
+  url:
+  starts_at: '2099-01-01 00:00:00'
+  finishes_at:
+  created_at: '2026-07-26 20:50:33'
+  updated_at: '2026-07-26 20:50:33'

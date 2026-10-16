@@ -31,8 +31,8 @@ func bannerByBody(t *testing.T, h *testsupport.Harness, body string) api.Banner 
 	return api.Banner{}
 }
 
-// banners.yml seeds these two.
-const totalBanners = 2
+// banners.yml seeds these.
+const totalBanners = 5
 
 func TestAdminListBanners(t *testing.T) {
 	h := testsupport.NewHarness(t)
@@ -181,4 +181,44 @@ func TestAdminDeleteBanner(t *testing.T) {
 	total, err := h.DB.Banner.Query().Count(ctx)
 	require.NoError(t, err)
 	assert.Equal(t, totalBanners-1, total)
+}
+
+// The page shows the request locale's live banner: published, inside its
+// window. The ru fixtures also hold an over banner (newer than the live one)
+// and one that has not started, and neither is chosen.
+func TestGetActiveBannerPicksTheLiveBannerOfTheLocale(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "ru")
+
+	view, err := h.Client.GetActiveBanner(t.Context())
+	require.NoError(t, err)
+
+	banner, ok := view.Banner.Get()
+	require.True(t, ok)
+	assert.Equal(t, "Скидка 50% на все курсы", banner.Body)
+}
+
+func TestGetActiveBannerInEnglishSkipsTheDraft(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "en")
+
+	view, err := h.Client.GetActiveBanner(t.Context())
+	require.NoError(t, err)
+
+	banner, ok := view.Banner.Get()
+	require.True(t, ok)
+	assert.Equal(t, "Free programming courses — start learning today", banner.Body)
+}
+
+// No banner targets es, so the answer is a null banner, not an error.
+func TestGetActiveBannerWithoutOneIsNull(t *testing.T) {
+	h := testsupport.NewAnonymousHarness(t)
+	testsupport.SpeakTo(h, "es")
+
+	view, err := h.Client.GetActiveBanner(t.Context())
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, h.LastStatus())
+
+	_, ok := view.Banner.Get()
+	assert.False(t, ok)
 }

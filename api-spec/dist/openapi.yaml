@@ -23,6 +23,7 @@ tags:
   - name: Courses
   - name: Course Categories
   - name: Blog
+  - name: Banners
   - name: Reviews
   - name: Leads
   - name: Marketing
@@ -3434,6 +3435,32 @@ paths:
       security:
         - UserSession: []
           XsrfToken: []
+  /api/banner:
+    get:
+      operationId: getActiveBanner
+      description: |-
+        The newest published banner of the request locale whose window is open
+        now: it started (or has no start) and has not finished (or has no finish).
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActiveBanner'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Banners
   /api/blog_posts:
     get:
       operationId: listBlogPosts
@@ -4617,6 +4644,17 @@ components:
           - desc
       explode: false
   schemas:
+    ActiveBanner:
+      type: object
+      required:
+        - banner
+      properties:
+        banner:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Banner'
+          nullable: true
+      description: The banner shown above the pages that carry one, or null when none is live.
     AssistantMessageInput:
       type: object
       required:

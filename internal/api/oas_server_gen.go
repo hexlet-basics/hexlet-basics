@@ -453,6 +453,13 @@ type Handler interface {
 	//
 	// GET /api/book/download
 	DownloadBook(ctx context.Context) (DownloadBookRes, error)
+	// GetActiveBanner implements getActiveBanner operation.
+	//
+	// The newest published banner of the request locale whose window is open now: it started (or has no
+	// start) and has not finished (or has no finish).
+	//
+	// GET /api/banner
+	GetActiveBanner(ctx context.Context) (*ActiveBanner, error)
 	// GetBlogPost implements getBlogPost operation.
 	//
 	// A published post in the request locale, by slug, with its page data.

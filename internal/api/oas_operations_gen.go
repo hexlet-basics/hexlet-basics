@@ -88,6 +88,7 @@ const (
 	DeleteAccountOperation                      OperationName = "DeleteAccount"
 	DeleteSessionOperation                      OperationName = "DeleteSession"
 	DownloadBookOperation                       OperationName = "DownloadBook"
+	GetActiveBannerOperation                    OperationName = "GetActiveBanner"
 	GetBlogPostOperation                        OperationName = "GetBlogPost"
 	GetBookOperation                            OperationName = "GetBook"
 	GetCourseOperation                          OperationName = "GetCourse"

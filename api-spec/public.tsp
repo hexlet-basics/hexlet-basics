@@ -208,6 +208,23 @@ interface Blog {
   } | NotFoundError | UnauthorizedError | ApiError;
 }
 
+/** The banner shown above the pages that carry one, or null when none is live. */
+model ActiveBanner {
+  banner: Banner | null;
+}
+
+@route("/banner")
+@tag("Banners")
+interface PublicBanner {
+  /**
+   * The newest published banner of the request locale whose window is open
+   * now: it started (or has no start) and has not finished (or has no finish).
+   */
+  @get
+  @operationId("getActiveBanner")
+  get(): ActiveBanner | ApiError;
+}
+
 @route("/reviews")
 @tag("Reviews")
 interface PublicReviews {

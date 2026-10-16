@@ -118,7 +118,7 @@ var (
 	rn78AllowedHeaders = map[string]string{
 		"POST": "Content-Type,X-Xsrf-Token",
 	}
-	rn111AllowedHeaders = map[string]string{
+	rn112AllowedHeaders = map[string]string{
 		"POST": "X-Xsrf-Token",
 	}
 	rn79AllowedHeaders = map[string]string{
@@ -133,7 +133,7 @@ var (
 	rn82AllowedHeaders = map[string]string{
 		"POST": "Content-Type",
 	}
-	rn99AllowedHeaders = map[string]string{
+	rn100AllowedHeaders = map[string]string{
 		"GET": "Cookie",
 	}
 	rn71AllowedHeaders = map[string]string{
@@ -1759,6 +1759,31 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				switch elem[0] {
+				case 'a': // Prefix: "anner"
+
+					if l := len("anner"); len(elem) >= l && elem[0:l] == "anner" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleGetActiveBannerRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET",
+								allowedHeaders: nil,
+								acceptPost:     "",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+
 				case 'l': // Prefix: "log_posts"
 
 					if l := len("log_posts"); len(elem) >= l && elem[0:l] == "log_posts" {
@@ -1848,7 +1873,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 									default:
 										s.notAllowed(w, r, notAllowedParams{
 											allowedMethods: "POST",
-											allowedHeaders: rn111AllowedHeaders,
+											allowedHeaders: rn112AllowedHeaders,
 											acceptPost:     "",
 											acceptPatch:    "",
 										})
@@ -2507,7 +2532,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						default:
 							s.notAllowed(w, r, notAllowedParams{
 								allowedMethods: "GET",
-								allowedHeaders: rn99AllowedHeaders,
+								allowedHeaders: rn100AllowedHeaders,
 								acceptPost:     "",
 								acceptPatch:    "",
 							})
@@ -4524,6 +4549,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					break
 				}
 				switch elem[0] {
+				case 'a': // Prefix: "anner"
+
+					if l := len("anner"); len(elem) >= l && elem[0:l] == "anner" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = GetActiveBannerOperation
+							r.summary = ""
+							r.operationID = "getActiveBanner"
+							r.operationGroup = ""
+							r.pathPattern = "/api/banner"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
 				case 'l': // Prefix: "log_posts"
 
 					if l := len("log_posts"); len(elem) >= l && elem[0:l] == "log_posts" {
