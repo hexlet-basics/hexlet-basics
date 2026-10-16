@@ -64,10 +64,17 @@ export default function Footer() {
             </Stack>
 
             <Stack gap="sm">
-              <Anchor variant="nav" component={Link} to="/languages" fw="bold" fz="sm">
+              <Anchor
+                variant="nav"
+                component={Link}
+                to="/{-$locale}/languages"
+                params
+                fw="bold"
+                fz="sm"
+              >
                 {t(($) => $.layouts.shared.all_courses)}
               </Anchor>
-              <Anchor variant="nav" component={Link} to="/reviews" fz="sm">
+              <Anchor variant="nav" component={Link} to="/{-$locale}/reviews" params fz="sm">
                 {t(($) => $.layouts.shared.footer.reviews)}
               </Anchor>
             </Stack>
@@ -85,7 +92,11 @@ export default function Footer() {
                     key={lp.id}
                     fz="sm"
                     renderRoot={(props) => (
-                      <Link to="/languages/$slug" params={{ slug: lp.slug }} {...props} />
+                      <Link
+                        to="/{-$locale}/languages/$slug"
+                        params={(prev) => ({ ...prev, slug: lp.slug })}
+                        {...props}
+                      />
                     )}
                   >
                     {lp.name}

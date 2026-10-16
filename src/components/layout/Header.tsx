@@ -64,7 +64,7 @@ export default function Header() {
   return (
     <>
       <Group h="100%" px="md">
-        <Anchor variant="nav" component={Link} to="/">
+        <Anchor variant="nav" component={Link} to="/{-$locale}" params>
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
         </Anchor>
 
@@ -134,7 +134,8 @@ function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
       <Menu.Dropdown>
         <NavLink
           component={Link}
-          to="/languages"
+          to="/{-$locale}/languages"
+          params
           fw="bold"
           label={t(($) => $.layouts.shared.all_courses)}
           rightSection={<IconChevronRight size={14} />}
@@ -146,7 +147,11 @@ function CourseMenu({ courses }: { courses: CourseCatalogItem[] }) {
             <Menu.Item
               key={item.id}
               renderRoot={(props) => (
-                <Link to="/languages/$slug" params={{ slug: item.slug }} {...props} />
+                <Link
+                  to="/{-$locale}/languages/$slug"
+                  params={(prev) => ({ ...prev, slug: item.slug })}
+                  {...props}
+                />
               )}
               leftSection={
                 <Image
@@ -184,10 +189,10 @@ function AuthLinks() {
   if (!user) {
     return (
       <>
-        <Anchor variant="nav" component={Link} to="/session/new">
+        <Anchor variant="nav" component={Link} to="/{-$locale}/session/new" params>
           {t(($) => $.layouts.shared.nav.sign_in)}
         </Anchor>
-        <Anchor variant="nav" component={Link} to="/users/new">
+        <Anchor variant="nav" component={Link} to="/{-$locale}/users/new" params>
           {t(($) => $.layouts.shared.nav.registration)}
         </Anchor>
       </>
