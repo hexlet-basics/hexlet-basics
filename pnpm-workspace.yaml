@@ -131,11 +131,11 @@ minimumReleaseAgeExclude:
   - '@tiptap/starter-kit@3.30.1'
   - zustand@5.0.15
   - monaco-editor@0.57.0
-  - '@ai-sdk/gateway@4.0.111'
-  - '@ai-sdk/mcp@2.0.74'
-  - '@ai-sdk/provider-utils@5.0.59'
-  - '@ai-sdk/provider@4.0.27'
-  - '@ai-sdk/react@4.0.141'
+  - '@ai-sdk/gateway@4.0.111 || 4.0.116'
+  - '@ai-sdk/mcp@2.0.74 || 2.0.78'
+  - '@ai-sdk/provider-utils@5.0.59 || 5.0.62'
+  - '@ai-sdk/provider@4.0.27 || 4.0.29'
+  - '@ai-sdk/react@4.0.141 || 4.0.147'
   - '@tanstack/query-core@5.104.2'
   - '@tanstack/react-query@5.104.2'
   - '@vitest/browser-playwright@5.0.4'
@@ -145,11 +145,12 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@5.0.4'
   - '@vitest/ui@5.0.4'
   - '@vitest/utils@5.0.4'
-  - ai@7.0.138
-  - i18next@26.4.4
+  - ai@7.0.138 || 7.0.143
+  - i18next@26.4.4 || 26.4.7
   - vitest@5.0.4
   - zod@4.6.7
   - '@vitest/coverage-v8@5.0.4'
+  - react-i18next@17.0.20
 onlyBuiltDependencies:
   - '@swc/core'
   - msw

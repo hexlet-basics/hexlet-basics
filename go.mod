@@ -36,7 +36,7 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	github.com/ogen-go/ogen v1.24.0
 	github.com/oklog/ulid/v2 v2.1.2
-	github.com/openai/openai-go/v3 v3.77.0
+	github.com/openai/openai-go/v3 v3.78.0
 	github.com/riverqueue/river v0.49.0
 	github.com/riverqueue/river/riverdriver/riverdatabasesql v0.49.0
 	github.com/riverqueue/river/rivertype v0.49.0
@@ -55,7 +55,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.47.0
 	go.opentelemetry.io/otel/trace v1.47.0
 	go.opentelemetry.io/proto/otlp v1.11.1
-	gocloud.dev v0.46.0
+	gocloud.dev v0.47.0
 	golang.org/x/crypto v0.58.0
 	golang.org/x/net v0.61.0
 	golang.org/x/sync v0.24.0
@@ -67,9 +67,9 @@ require (
 require (
 	cloud.google.com/go/compute/metadata v0.10.0 // indirect
 	dario.cat/mergo v1.0.2 // indirect
-	github.com/Azure/go-ansiterm v0.0.0-20261008234032-65faa4be4f89 // indirect
+	github.com/Azure/go-ansiterm v0.0.0-20261013165250-51075c6ea6bc // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
-	github.com/Microsoft/go-winio v0.6.3 // indirect
+	github.com/Microsoft/go-winio v0.6.4 // indirect
 	github.com/ProtonMail/go-crypto v1.5.2 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/air-verse/air v1.67.4 // indirect
@@ -148,7 +148,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/google/wire v0.7.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.26.2 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.31.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.32.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.25.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -246,7 +246,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/exp v0.0.0-20261011100332-faecfb24eb49 // indirect
+	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
 	golang.org/x/image v0.47.0 // indirect
 	golang.org/x/mod v0.42.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
@@ -255,7 +255,7 @@ require (
 	golang.org/x/tools v0.52.0 // indirect
 	golang.org/x/vuln v1.9.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
-	google.golang.org/api v0.302.0 // indirect
+	google.golang.org/api v0.304.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20261012220534-4341edf3f941 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261012220534-4341edf3f941 // indirect
 	google.golang.org/grpc v1.84.0 // indirect
