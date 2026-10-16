@@ -1029,7 +1029,7 @@ export default interface Resources {
       },
       "sessions": {
         "create": {
-          "error": "В форме есть ошибки",
+          "error": "Неверная почта или пароль",
           "success": "Внутри лучше чем снаружи. Запоминаем прогресс и ведем к свету"
         }
       },

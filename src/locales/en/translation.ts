@@ -944,7 +944,7 @@ export default {
       },
       sessions: {
         create: {
-          error: "В форме есть ошибки",
+          error: "Invalid email or password",
           success: "You have signed in successfully. You can start learning now.",
         },
       },
