@@ -126,7 +126,7 @@ function Show() {
   const updatedAt = course.currentVersion?.createdAt;
 
   return (
-    <Container size="lg">
+    <Container size="lg" my="xl">
       {unfinished && (
         <Alert color="yellow" mb="md">
           {t(($) => $.flash.courses.success.warning)}
