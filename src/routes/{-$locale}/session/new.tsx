@@ -1,4 +1,5 @@
 import { Alert, Anchor, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -27,6 +28,10 @@ function New() {
     ...createSessionMutation(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+      notifications.show({
+        color: "green",
+        message: t(($) => $.flash.sessions.create.success),
+      });
       void navigate({ to: "/{-$locale}" });
     },
     onError: () => setServerError(t(($) => $.flash.sessions.create.error)),

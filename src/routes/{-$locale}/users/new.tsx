@@ -1,4 +1,5 @@
 import { Alert, Anchor, Box, Button, Card, Container, Stack, Text, Title } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
@@ -54,6 +55,10 @@ function New() {
       queryClient.removeQueries({ queryKey: [{ _id: "getCourse" }] });
       queryClient.removeQueries({ queryKey: [{ _id: "getCourseLesson" }] });
       await queryClient.invalidateQueries({ queryKey: getCurrentUserQueryKey() });
+      notifications.show({
+        color: "green",
+        message: t(($) => $.flash.users.create.success),
+      });
       if (redirect) await navigate({ href: redirect });
       else await navigate({ to: "/{-$locale}" });
     },

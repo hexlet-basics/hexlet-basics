@@ -1,3 +1,4 @@
+import { notifications } from "@mantine/notifications";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
 import { getCurrentUserQueryKey } from "@/client/@tanstack/react-query.gen";
@@ -23,6 +24,12 @@ export const Route = createFileRoute("/{-$locale}/magic_links/$token")({
       // than refetched: the root beforeLoad reads it through queryClient.query,
       // which would otherwise keep serving the guest it resolved on arrival.
       context.queryClient.setQueryData(getCurrentUserQueryKey(), { user });
+      // Legacy had no message of its own for this one and fell back to the
+      // application's generic success; the loader runs in the browser only.
+      notifications.show({
+        color: "green",
+        message: context.i18n.t(($) => $.flash.application.base.success),
+      });
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {
         throw redirect({

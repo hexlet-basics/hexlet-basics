@@ -1,4 +1,5 @@
 import { Alert, Button, Card, Container, Stack, Title } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
@@ -48,6 +49,10 @@ function Edit() {
       // Seeded from the response, as after a Magic Link: the root guard reads
       // the current user through queryClient.query and would keep the guest.
       queryClient.setQueryData(getCurrentUserQueryKey(), { user });
+      notifications.show({
+        color: "green",
+        message: t(($) => $.flash.passwords.update.success),
+      });
       void navigate({ to: "/{-$locale}", params: { locale } });
     },
     onError: (error) => {
