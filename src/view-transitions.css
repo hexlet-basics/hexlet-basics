@@ -1,0 +1,9 @@
+/* React's <ViewTransition> animates with the browser's default cross-fade; it
+   does not honour the reduced-motion preference on its own. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
