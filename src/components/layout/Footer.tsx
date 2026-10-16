@@ -52,22 +52,22 @@ export default function Footer() {
               </Text>
               {/* The sitemap exists on the ru site only, as in legacy. */}
               {i18n.language === "ru" && (
-                <Anchor component={Link} to="/{-$locale}/map" fz="sm">
+                <Anchor variant="nav" component={Link} to="/{-$locale}/map" fz="sm">
                   {t(($) => $.layouts.shared.footer.sitemap)}
                 </Anchor>
               )}
               <PageLink id="about">{t(($) => $.layouts.shared.footer.about)}</PageLink>
-              <Anchor component={Link} to="/{-$locale}/blog_posts" fz="sm">
+              <Anchor variant="nav" component={Link} to="/{-$locale}/blog_posts" fz="sm">
                 {t(($) => $.layouts.shared.footer.blog)}
               </Anchor>
               <PageLink id="authors">{t(($) => $.layouts.shared.footer.authors)}</PageLink>
             </Stack>
 
             <Stack gap="sm">
-              <Anchor component={Link} to="/languages" fw="bold" fz="sm">
+              <Anchor variant="nav" component={Link} to="/languages" fw="bold" fz="sm">
                 {t(($) => $.layouts.shared.all_courses)}
               </Anchor>
-              <Anchor component={Link} to="/reviews" fz="sm">
+              <Anchor variant="nav" component={Link} to="/reviews" fz="sm">
                 {t(($) => $.layouts.shared.footer.reviews)}
               </Anchor>
             </Stack>
@@ -81,6 +81,7 @@ export default function Footer() {
                 </Text>
                 {group.map((lp) => (
                   <Anchor
+                    variant="nav"
                     key={lp.id}
                     fz="sm"
                     renderRoot={(props) => (
@@ -94,11 +95,18 @@ export default function Footer() {
             ))}
 
             <Stack gap="sm">
-              <Anchor component={Link} to="/{-$locale}/language_categories" fw="bold" fz="sm">
+              <Anchor
+                variant="nav"
+                component={Link}
+                to="/{-$locale}/language_categories"
+                fw="bold"
+                fz="sm"
+              >
                 {t(($) => $.layouts.shared.footer.course_categories)}
               </Anchor>
               {(categories ?? []).map((category) => (
                 <Anchor
+                  variant="nav"
                   key={category.id}
                   fz="sm"
                   renderRoot={(props) => (
@@ -121,6 +129,7 @@ export default function Footer() {
             <Stack>
               <Group align="top">
                 <Anchor
+                  variant="nav"
                   href="https://github.com/hexlet-basics"
                   underline="never"
                   aria-label="Project Repository On GitHub"
@@ -131,6 +140,7 @@ export default function Footer() {
                 </Anchor>
                 <Tooltip label={t(($) => $.common.telegram_channel)}>
                   <Anchor
+                    variant="nav"
                     href="https://t.me/hexlet_ru"
                     underline="never"
                     aria-label={t(($) => $.common.telegram_channel)}
@@ -141,6 +151,7 @@ export default function Footer() {
                   </Anchor>
                 </Tooltip>
                 <Anchor
+                  variant="nav"
                   href="https://www.youtube.com/@HexletOrg"
                   underline="never"
                   aria-label="Youtube Channel"
@@ -150,12 +161,18 @@ export default function Footer() {
                   <IconBrandYoutube />
                 </Anchor>
               </Group>
-              <Anchor href="mailto:support@hexlet.io">support@hexlet.io</Anchor>
+              <Anchor variant="nav" href="mailto:support@hexlet.io">
+                support@hexlet.io
+              </Anchor>
             </Stack>
 
             <Stack gap="xs">
-              <Anchor href="tel:+78001002247">8 800 100 22 47</Anchor>
-              <Anchor href="tel:+74950852162">+7 495 085 21 62</Anchor>
+              <Anchor variant="nav" href="tel:+78001002247">
+                8 800 100 22 47
+              </Anchor>
+              <Anchor variant="nav" href="tel:+74950852162">
+                +7 495 085 21 62
+              </Anchor>
             </Stack>
 
             <Stack gap="xs">
@@ -169,6 +186,7 @@ export default function Footer() {
             {i18n.language === "ru" && (
               <Stack gap={0}>
                 <Anchor
+                  variant="nav"
                   href="https://ru.hexlet.io"
                   fz="sm"
                   mb="xs"
@@ -195,6 +213,7 @@ export default function Footer() {
 function PageLink({ id, children }: PropsWithChildren<{ id: string }>) {
   return (
     <Anchor
+      variant="nav"
       fz="sm"
       renderRoot={(props) => <Link to="/{-$locale}/pages/$id" params={{ id }} {...props} />}
     >

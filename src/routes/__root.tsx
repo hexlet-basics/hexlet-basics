@@ -15,7 +15,9 @@ import { NotFoundPage } from "@/components/ErrorPage";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import { type AuthUser, resolveCurrentUser } from "@/lib/auth";
 import { recordFirstVisit } from "@/lib/first-visit";
+import { localeFromPathname } from "@/lib/locale-path";
 import { SITE_NAME } from "@/lib/seo-head";
+import { theme } from "@/theme";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -27,9 +29,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   // Resolve the current user from the httpOnly JWT cookie server-side, so
   // authenticated pages (and the admin guard) render on the server (ADR-0008).
   // Cached in the shared QueryClient, so this is one fetch per request.
-  beforeLoad: async ({ context }) => ({
-    user: await resolveCurrentUser(context.queryClient),
-  }),
+  //
+  // The language is also set here from the URL prefix: a miss under `/ru/...`
+  // is rendered without the `{-$locale}` layout's beforeLoad having run, and
+  // its 404 would otherwise come out in the `en` default.
+  beforeLoad: async ({ context, location }) => {
+    await context.i18n.changeLanguage(localeFromPathname(location.pathname));
+    return { user: await resolveCurrentUser(context.queryClient) };
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -76,7 +83,7 @@ function RootDocument({ children, lang }: { children: ReactNode; lang: string })
         <HeadContent />
       </head>
       <body>
-        <MantineProvider>
+        <MantineProvider theme={theme}>
           <Notifications />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>

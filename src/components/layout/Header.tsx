@@ -65,7 +65,7 @@ export default function Header() {
   return (
     <>
       <Group h="100%" px="md">
-        <Anchor component={Link} to="/">
+        <Anchor variant="nav" component={Link} to="/">
           <Image src={logoImg} w={30} h={30} fit="contain" alt="Logo" />
         </Anchor>
 
@@ -185,10 +185,10 @@ function AuthLinks() {
   if (!user) {
     return (
       <>
-        <Anchor component={Link} to="/session/new">
+        <Anchor variant="nav" component={Link} to="/session/new">
           {t(($) => $.layouts.shared.nav.sign_in)}
         </Anchor>
-        <Anchor component={Link} to="/users/new">
+        <Anchor variant="nav" component={Link} to="/users/new">
           {t(($) => $.layouts.shared.nav.registration)}
         </Anchor>
       </>
@@ -361,13 +361,13 @@ function SolutionsMenu() {
         </ThemeIcon>
         <Box>
           {"to" in item ? (
-            <Anchor component={Link} to={item.to} target="_blank" rel="noreferrer">
+            <Anchor variant="nav" component={Link} to={item.to} target="_blank" rel="noreferrer">
               <Text fz="sm" fw="bold">
                 {item.title}
               </Text>
             </Anchor>
           ) : (
-            <Anchor href={item.href} target="_blank" rel="noreferrer">
+            <Anchor variant="nav" href={item.href} target="_blank" rel="noreferrer">
               <Text fz="sm" fw="bold">
                 {item.title}
               </Text>
