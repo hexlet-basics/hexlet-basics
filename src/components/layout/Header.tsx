@@ -17,7 +17,6 @@ import {
   Text,
   ThemeIcon,
   UnstyledButton,
-  useComputedColorScheme,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -290,19 +289,19 @@ function LocaleSwitcher() {
   );
 }
 
+// Both icons are rendered and the colour scheme hides one by CSS
+// (Mantine's `mantine-light-hidden`/`mantine-dark-hidden`): the server cannot know the browser's scheme, so
+// choosing the icon in JS would differ between the server and the first client
+// render and fail hydration for every dark-theme visitor.
 export function ThemeSwitcher() {
   const { t } = useTranslation();
-  const computedColorScheme = useComputedColorScheme("light", {
-    getInitialValueInEffect: false,
-  });
   const { toggleColorScheme } = useMantineColorScheme();
-
-  const isDark = computedColorScheme === "dark";
   const label = t(($) => $.layouts.shared.nav.switch_theme);
 
   return (
     <ActionIcon aria-label={label} onClick={toggleColorScheme} size="sm" variant="transparent">
-      {isDark ? <IconSun stroke={1.2} size={14} /> : <IconMoon stroke={1.2} size={14} />}
+      <IconSun stroke={1.2} size={14} className="mantine-light-hidden" />
+      <IconMoon stroke={1.2} size={14} className="mantine-dark-hidden" />
     </ActionIcon>
   );
 }
