@@ -31,6 +31,17 @@
   language_lesson_id: 1001
   language_version_id: 965227298
   version_id: 965227298
+  theory: |
+    Every programming journey starts with a program that prints a greeting.
+    In JavaScript, `console.log` writes a line to the output.
+  instructions: Print `Hello, World!` using `console.log`.
+  tips: |
+    ---
+    - Text in JavaScript is written in quotes
+  definitions: |
+    ---
+    - name: console.log
+      description: Prints its argument to the output
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # Carries the prose the lesson-player read serves. tips and definitions are
@@ -77,5 +88,16 @@
   language_lesson_id: 1001
   language_version_id: 965227298
   version_id: 965227298
+  theory: |
+    Любое знакомство с программированием начинается с программы, которая выводит приветствие.
+    В JavaScript строку в вывод печатает `console.log`.
+  instructions: Выведите на экран `Hello, World!` с помощью `console.log`.
+  tips: |
+    ---
+    - Текст в JavaScript записывается в кавычках
+  definitions: |
+    ---
+    - name: console.log
+      description: Выводит свой аргумент на экран
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'

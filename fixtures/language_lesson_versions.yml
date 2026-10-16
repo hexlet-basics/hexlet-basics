@@ -25,6 +25,9 @@
   module_version_id: 1
   natural_order: 1
   path_to_code: /exercises-javascript/modules/10-basics/10-hello-world
+  prepared_code: "// Print the greeting\n"
+  original_code: "console.log('Hello, World!');\n"
+  test_code: "assert.equal(output, 'Hello, World!\\n');\n"
   created_at: '2026-07-26 20:50:29'
   updated_at: '2026-07-26 20:50:29'
 # The lesson-player read serves this one: it carries the code, the tests and
