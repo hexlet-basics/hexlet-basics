@@ -26,6 +26,7 @@ import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
+import MarkdownViewer from "@/components/MarkdownViewer";
 import LessonMark from "@/components/lesson/LessonMark";
 import { useEnterLesson } from "@/components/lesson/useEnterLesson";
 import QnaBlock from "@/components/QnaBlock";
@@ -145,9 +146,9 @@ function Show() {
           <Title order={1} mb="lg" fz={48}>
             {header}
           </Title>
-          <Text size="lg" mb="sm">
-            {landingPage?.description}
-          </Text>
+          <Box fz="lg" mb="sm">
+            <MarkdownViewer>{landingPage?.description ?? ""}</MarkdownViewer>
+          </Box>
           <Group mb="xl">
             <Group me="lg">
               <IconUsers size={16} />
@@ -181,7 +182,7 @@ function Show() {
             <Title order={2} size="h1" mb="md">
               {landingPage.usedInHeader}
             </Title>
-            <Text>{landingPage.usedInDescription}</Text>
+            <MarkdownViewer>{landingPage.usedInDescription ?? ""}</MarkdownViewer>
           </Grid.Col>
         </Grid>
       )}
@@ -205,7 +206,7 @@ function Show() {
             <Title order={2} size="h1" mb="md">
               {landingPage.outcomesHeader}
             </Title>
-            <Text>{landingPage.outcomesDescription}</Text>
+            <MarkdownViewer>{landingPage.outcomesDescription ?? ""}</MarkdownViewer>
           </Box>
         </SimpleGrid>
       )}
