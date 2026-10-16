@@ -218,6 +218,11 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   `fetch`. If an endpoint is missing, add it in TypeSpec and regenerate.
 - State: `zustand`; validation: `zod`; i18n: `i18next` + `react-i18next`
   (`src/locales/`, config via `i18next-cli`). Animation: `motion`.
+- **Library docs, ask the source before guessing an API.** TanStack (Router,
+  Start, Query, Form, Table): `pnpm exec tanstack search-docs "<query>"
+  [--library router]`, then `pnpm exec tanstack doc <library> <path>` for the
+  page. Mantine: the `mantine` MCP server in `.mcp.json` (`search_docs`,
+  `get_item_props`). The TanStack CLI has no `mcp` command anymore.
 
 ## Generated / Do-Not-Edit Files (root)
 

@@ -10,6 +10,8 @@ const config: KnipConfig = {
     // The frontend state library the plan names (docs/FRONTEND_PLAN.md), not
     // used by any screen yet.
     "zustand",
+    // Run as `pnpm exec tanstack search-docs`, never imported (see AGENTS.md).
+    "@tanstack/cli",
     // TypeSpec packages are loaded by the compiler from api-spec/*.tsp.
     "@typespec/.*",
   ],
