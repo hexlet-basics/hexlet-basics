@@ -32,6 +32,7 @@ export default function CourseBlock({ item, lazy, ...props }: Props) {
         )}
         shadow="sm"
         td="none"
+        h="100%"
         {...props}
       >
         <Card.Section>
