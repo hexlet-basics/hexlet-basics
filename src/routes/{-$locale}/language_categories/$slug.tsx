@@ -1,4 +1,4 @@
-import { Card, Center, Container, Grid, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Container, Grid, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { isAxiosError } from "axios";
@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { getPublicCourseCategoryOptions } from "@/client/@tanstack/react-query.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import CourseBlock from "@/components/CourseBlock";
-import LeadFormBlock from "@/components/LeadFormBlock";
 import QnaBlock from "@/components/QnaBlock";
 import { TextLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
@@ -46,8 +45,7 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
 });
 
 function Show() {
-  const { t, i18n } = useTranslation();
-  const { user } = Route.useRouteContext();
+  const { t } = useTranslation();
   const { slug } = Route.useParams();
   const { data } = useQuery(getPublicCourseCategoryOptions({ path: { slug } }));
   if (!data) return null;
@@ -78,24 +76,6 @@ function Show() {
           <CourseBlock key={item.id} item={item} />
         ))}
       </SimpleGrid>
-
-      {/* Legacy offered the consultation only to signed-in ru visitors. */}
-      {user && i18n.language === "ru" && (
-        <Grid align="center" justify="space-between" gap={0}>
-          <Grid.Col span={{ base: 12, xs: 7 }}>
-            <Center>
-              <Text fz={40} mb="xs" fw="bold">
-                {t(($) => $.home.index.consultation)}
-              </Text>
-            </Center>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, sm: 5 }}>
-            <Card withBorder shadow="sm" p="xl">
-              <LeadFormBlock />
-            </Card>
-          </Grid.Col>
-        </Grid>
-      )}
 
       <QnaBlock items={qnaItems} />
     </Container>

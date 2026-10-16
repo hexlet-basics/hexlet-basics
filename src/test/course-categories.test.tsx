@@ -1,5 +1,4 @@
 import { http, HttpResponse } from "msw";
-import { I18nextProvider } from "react-i18next";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
 import type {
@@ -7,9 +6,7 @@ import type {
   CourseCatalogItem,
   CourseCategory,
   CourseCategoryView,
-  User,
 } from "@/client/types.gen";
-import { createI18n } from "@/lib/i18n";
 import { Route as showRoute } from "@/routes/{-$locale}/language_categories/$slug";
 import { Route as indexRoute } from "@/routes/{-$locale}/language_categories/index";
 import { worker } from "@/test/msw";
@@ -17,22 +14,8 @@ import { renderRoute } from "@/test/renderRoute";
 
 // The public course categories, driven through their real routes with the API
 // faked at the HTTP boundary. Asserted is what a visitor sees: the categories,
-// a category's courses and questions, whether the consultation form is offered,
+// a category's courses and questions
 // and the page's head.
-
-const user: User = {
-  id: 1,
-  firstName: "Alice",
-  lastName: null,
-  name: "Alice",
-  email: "alice@example.com",
-  admin: false,
-  canAccessAdmin: false,
-  assistantMessagesCount: null,
-  createdAt: "2026-01-01T00:00:00Z",
-  createdAtAsTimestamp: null,
-  type: "user",
-};
 
 const programming: CourseCategory = {
   id: 1,
@@ -86,14 +69,6 @@ function serveCategory() {
   worker.use(http.get("*/api/language_categories/programming", () => HttpResponse.json(view)));
 }
 
-// The ru copy, for the form legacy offered only on the ru site: the router's
-// own i18n stays English, so this wraps the page in a Russian one.
-function inRussian() {
-  const ru = createI18n();
-  void ru.changeLanguage("ru");
-  return (element: React.ReactNode) => <I18nextProvider i18n={ru}>{element}</I18nextProvider>;
-}
-
 test("the index links every category the API returns", async () => {
   worker.use(http.get("*/api/language_categories", () => HttpResponse.json([programming])));
 
@@ -142,33 +117,6 @@ test("a category shows its courses and questions, with the legacy head", async (
     rel: "canonical",
     href: `${window.location.origin}/language_categories/programming`,
   });
-});
-
-test("a signed-in visitor on the ru site is offered a consultation", async () => {
-  serveCategory();
-
-  await renderRoute(showRoute, {
-    path: "/{-$locale}/language_categories/$slug",
-    initialPath: "/ru/language_categories/programming",
-    user,
-    wrap: inRussian(),
-  });
-
-  await expect.element(page.getByText("Нужна помощь? Оставьте заявку, мы поможем")).toBeVisible();
-  await expect.element(page.getByRole("button", { name: "Отправить" })).toBeVisible();
-});
-
-test("a guest is not offered a consultation", async () => {
-  serveCategory();
-
-  await renderRoute(showRoute, {
-    path: "/{-$locale}/language_categories/$slug",
-    initialPath: "/ru/language_categories/programming",
-    wrap: inRussian(),
-  });
-
-  await expect.element(page.getByRole("heading", { name: "Programming", level: 1 })).toBeVisible();
-  expect(page.getByText("Нужна помощь? Оставьте заявку, мы поможем").query()).toBeNull();
 });
 
 test("a category that is not in this locale is not found", async () => {

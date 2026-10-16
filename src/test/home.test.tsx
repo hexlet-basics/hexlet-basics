@@ -1,13 +1,14 @@
 import { http, HttpResponse } from "msw";
 import { expect, test } from "vitest";
 import { page } from "vitest/browser";
-import type { Course, CourseCatalogItem } from "@/client/types.gen";
+import type { BlogPost, Course, CourseCatalogItem } from "@/client/types.gen";
 import { Route as homeRoute } from "@/routes/{-$locale}/index";
 import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
-// The home page through its real route, inside the real site layout: the course
-// catalog a visitor picks a course from, and the ru-only block of Hexlet programs.
+// The home page through its real route, inside the real site layout: the hero,
+// the course grid a visitor picks a course from, the latest posts and the
+// registration form.
 
 function catalogItem(id: number, slug: string, name: string): CourseCatalogItem {
   const course: Course = {
@@ -44,12 +45,40 @@ function catalogItem(id: number, slug: string, name: string): CourseCatalogItem 
 
 const courses = [catalogItem(1, "javascript", "JavaScript"), catalogItem(2, "python", "Python")];
 
-test("lists every course the API returns, each linking to its page", async () => {
-  worker.use(http.get("*/languages", () => HttpResponse.json(courses)));
+const blogPost: BlogPost = {
+  id: 10,
+  creator: { id: 1, firstName: "Alice", lastName: null, name: "Alice" },
+  name: "Hello world",
+  slug: "hello-world",
+  description: "The very first post",
+  state: "published",
+  locale: "en",
+  richBodyHtml: "<p>Hello</p>",
+  readingTime: 0,
+  likesCount: 2,
+  relatedCourseItemsCount: 0,
+  relatedCourseIds: [],
+  coverThumbVariant: null,
+  coverListVariant: null,
+  coverMainVariant: null,
+  createdAt: "2026-01-01T00:00:00Z",
+};
+
+function serveHome() {
+  worker.use(
+    http.get("*/languages", () => HttpResponse.json(courses)),
+    http.get("*/api/blog_posts", () =>
+      HttpResponse.json({ items: [blogPost], total: 1, page: 1, perPage: 3 }),
+    ),
+  );
+}
+
+test("greets a visitor with the hero and the course grid, each course linking to its page", async () => {
+  serveHome();
 
   await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
 
-  const heading = page.getByRole("heading", { name: "Programming language courses", level: 1 });
+  const heading = page.getByRole("heading", { level: 1 });
   await expect.element(heading).toBeVisible();
 
   const main = page.getByRole("main");
@@ -59,20 +88,18 @@ test("lists every course the API returns, each linking to its page", async () =>
   await expect.element(python).toHaveAttribute("href", "/languages/python");
 });
 
-test("offers the Hexlet programs on the ru site only", async () => {
-  worker.use(http.get("*/languages", () => HttpResponse.json(courses)));
+test("shows the latest blog posts and the registration form to a visitor", async () => {
+  serveHome();
 
-  await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/ru" });
+  await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });
 
-  const python = page.getByRole("link", { name: "Python", exact: true });
-  await expect.element(python.first()).toBeVisible();
-  const goProgram = page.getByRole("link", { name: /Go/ });
-  await expect
-    .element(goProgram.first())
-    .toHaveAttribute("href", "https://ru.hexlet.io/programs/go");
+  const post = page.getByRole("link", { name: /Hello world/ });
+  await expect.element(post.first()).toHaveAttribute("href", "/blog_posts/hello-world");
+  const email = page.getByRole("textbox", { name: /Email/ });
+  await expect.element(email.first()).toBeVisible();
 });
 
-test("answers a catalog that cannot be loaded with the server error page", async () => {
+test("answers a page that cannot be loaded with the server error page", async () => {
   worker.use(http.get("*/languages", () => HttpResponse.json({ status: 500 }, { status: 500 })));
 
   await renderRoute(homeRoute, { path: "/{-$locale}/", initialPath: "/" });

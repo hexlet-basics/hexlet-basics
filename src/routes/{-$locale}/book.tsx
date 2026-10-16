@@ -1,15 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Image,
-  Paper,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Box, Button, Container, Divider, Grid, Image, Stack, Text, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconCompass, IconFileText, IconList, IconUsers } from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,7 +12,6 @@ import {
   getBookQueryKey,
 } from "@/client/@tanstack/react-query.gen";
 import type { DownloadBookData } from "@/client/types.gen";
-import LeadFormBlock from "@/components/LeadFormBlock";
 import { ButtonLink } from "@/components/RouterLink";
 import bookToc from "@/lib/book";
 import { seoHead } from "@/lib/seo-head";
@@ -167,20 +155,6 @@ function Show() {
           {index !== bookToc.length - 1 && <Divider my="md" />}
         </Box>
       ))}
-
-      {/* Legacy also required ru here; the page exists for ru only. */}
-      {user && (
-        <Grid align="center" mt={60}>
-          <Grid.Col span={{ base: 12, lg: 7 }}>
-            <Title order={2}>{t(($) => $.home.index.consultation)}</Title>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, lg: 5 }}>
-            <Paper p="lg" radius="md" withBorder>
-              <LeadFormBlock />
-            </Paper>
-          </Grid.Col>
-        </Grid>
-      )}
     </Container>
   );
 }

@@ -76,8 +76,6 @@ test("a user requests the book and then gets the download link", async () => {
   const download = page.getByRole("link", { name: "Скачать книгу" });
   await expect.element(download).toHaveAttribute("href", "/api/book/download");
   await expect.element(download).toHaveAttribute("target", "_blank");
-  // The consultation form is offered to a signed-in user.
-  await expect.element(page.getByRole("button", { name: "Отправить" })).toBeVisible();
 });
 
 test("the book is not a page outside ru", async () => {
