@@ -33,10 +33,7 @@ export default function LessonSolution({
   const { language } = getEditorSettings(courseSlug);
   const codeLanguage = toSupportedLanguage(language);
 
-  const [expiresAt] = useState(() => Date.now() + waitingTime);
-  const [remaining, setRemaining] = useState(waitingTime);
   const [revealed, setRevealed] = useState(false);
-  useInterval(() => setRemaining(Math.max(0, expiresAt - Date.now())), 1000, { autoInvoke: true });
 
   if (unlocked || revealed) {
     return (
@@ -53,6 +50,19 @@ export default function LessonSolution({
       </Stack>
     );
   }
+
+  return <SolutionWait onReveal={() => setRevealed(true)} />;
+}
+
+// The countdown lives in its own component so its once-a-second tick re-renders
+// only the clock. Held by LessonSolution, the tick re-rendered the highlighted
+// code too, which replaced its DOM and dropped the learner's text selection
+// (issue #742).
+function SolutionWait({ onReveal }: { onReveal: () => void }) {
+  const { t } = useTranslation();
+  const [expiresAt] = useState(() => Date.now() + waitingTime);
+  const [remaining, setRemaining] = useState(waitingTime);
+  useInterval(() => setRemaining(Math.max(0, expiresAt - Date.now())), 1000, { autoInvoke: true });
 
   if (remaining > 0) {
     const seconds = Math.ceil(remaining / 1000);
@@ -72,7 +82,7 @@ export default function LessonSolution({
     <Stack p="xs">
       <Text>{t(($) => $.common.solutionNotice)}</Text>
       <Center>
-        <Button variant="light" px="xl" onClick={() => setRevealed(true)}>
+        <Button variant="light" px="xl" onClick={() => onReveal()}>
           {t(($) => $.common.showSolution)}
         </Button>
       </Center>
