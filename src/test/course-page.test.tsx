@@ -108,7 +108,9 @@ const firstVisit: CourseProgress = {
   ],
 };
 
-function courseView(progress: CourseProgress): CourseView {
+// `enrolled` is a learner who has started the course: only they have a completion
+// to show on its landing page.
+function courseView(progress: CourseProgress, enrolled = false): CourseView {
   return {
     course,
     landingPage,
@@ -120,7 +122,17 @@ function courseView(progress: CourseProgress): CourseView {
     ],
     modules: [],
     qnaItems: [],
-    enrollment: null,
+    enrollment: enrolled
+      ? {
+          id: 1,
+          userId: 7,
+          courseId: course.id,
+          state: "started",
+          completion: progress.completion,
+          nextLessonName: null,
+          progress,
+        }
+      : null,
     progress,
   };
 }
@@ -184,7 +196,9 @@ function lessonNames() {
 }
 
 test("a learner mid-course sees the landing copy, the marked lessons, and Continue", async () => {
-  worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse))));
+  worker.use(
+    http.get("*/languages/javascript", () => HttpResponse.json(courseView(midCourse, true))),
+  );
 
   const { router, starts } = await renderCourse(learner);
 
@@ -220,7 +234,9 @@ test("a learner mid-course sees the landing copy, the marked lessons, and Contin
 });
 
 test("a finished learner is told so and offered no lesson", async () => {
-  worker.use(http.get("*/languages/javascript", () => HttpResponse.json(courseView(finished))));
+  worker.use(
+    http.get("*/languages/javascript", () => HttpResponse.json(courseView(finished, true))),
+  );
 
   await renderCourse(learner);
 
@@ -297,7 +313,9 @@ test("a guest carrying progress sees the same page and the same action", async (
 
   const { router, starts } = await renderCourse(null);
 
-  await expect.element(page.getByText("Completed 33%")).toBeVisible();
+  // A landing page shows no completion to someone who has not started.
+  await expect.element(page.getByRole("button", { name: "Continue Learning" })).toBeVisible();
+  expect(page.getByText("Completed 33%").elements()).toHaveLength(0);
   expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);
   await expect.element(page.getByRole("link", { name: "Finished Hello, World!" })).toBeVisible();
   await expect.element(page.getByRole("link", { name: "Locked Strings" })).toBeVisible();
@@ -316,7 +334,8 @@ test("a first-time visitor sees the first lesson open and the rest locked", asyn
 
   const { router, starts } = await renderCourse(null);
 
-  await expect.element(page.getByText("Completed 0%")).toBeVisible();
+  await expect.element(page.getByRole("button", { name: "Try It" })).toBeVisible();
+  expect(page.getByText("Completed 0%").elements()).toHaveLength(0);
   expect(page.getByLabelText("Finished").elements()).toHaveLength(0);
   expect(page.getByLabelText("Locked").elements()).toHaveLength(2);
   expect(lessonNames()).toEqual(["Hello, World!", "Variables", "Strings"]);

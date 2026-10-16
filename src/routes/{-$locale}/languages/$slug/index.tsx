@@ -29,6 +29,7 @@ import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import type { CourseView } from "@/client/types.gen";
 import codeIllustration from "@/assets/code.svg";
 import learningVideo from "@/assets/course-landing-page/learning_ru.mp4";
+import { Banner } from "@/components/Banner";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
 import MarkdownViewer from "@/components/MarkdownViewer";
 import LessonMark from "@/components/lesson/LessonMark";
@@ -130,162 +131,165 @@ function Show() {
   const updatedAt = course.currentVersion?.createdAt;
 
   return (
-    <Container size="lg" my="xl">
-      {unfinished && (
-        <Alert color="yellow" mb="md">
-          {t(($) => $.flash.courses.success.warning)}
-        </Alert>
-      )}
-      <Box mb="lg">
-        <Breadcrumbs homeLabel={t(($) => $.courses.show.to_home_title)}>
-          <CurrentCrumb>{header}</CurrentCrumb>
-        </Breadcrumbs>
-      </Box>
+    <>
+      <Banner />
+      <Container size="lg" my="xl">
+        {unfinished && (
+          <Alert color="yellow" mb="md">
+            {t(($) => $.flash.courses.success.warning)}
+          </Alert>
+        )}
+        <Box mb="lg">
+          <Breadcrumbs homeLabel={t(($) => $.courses.show.to_home_title)}>
+            <CurrentCrumb>{header}</CurrentCrumb>
+          </Breadcrumbs>
+        </Box>
 
-      <Grid>
-        <Grid.Col span={{ base: 12, sm: 7 }}>
-          <Text size="sm" c="dimmed">
-            {t(($) => $.courses.show.free_course, { name: header })}
-          </Text>
-          <Title order={1} mb="lg" fz={48}>
-            {header}
-          </Title>
-          <Box fz="lg" mb="sm">
-            <MarkdownViewer>{landingPage?.description ?? ""}</MarkdownViewer>
-          </Box>
-          <Group mb="xl">
-            <Group me="lg">
-              <IconUsers size={16} />
-              <NumberFormatter thousandSeparator value={course.enrollmentsCount} />
-            </Group>
-            {updatedAt && (
-              <Group>
-                <IconClock size={16} />
-                {t(($) => $.courses.show.updated_at, {
-                  // UTC on both sides, so the server's date and the browser's
-                  // hydrated one cannot disagree across a midnight.
-                  date: new Date(updatedAt).toLocaleDateString(i18n.language, {
-                    dateStyle: "long",
-                    timeZone: "UTC",
-                  }),
-                })}
-              </Group>
-            )}
-          </Group>
-
-          <CourseAction view={view} />
-        </Grid.Col>
-        <Grid.Col visibleFrom="sm" span={{ base: 12, sm: 5 }}>
-          <Image src={codeIllustration} fit="cover" alt={t(($) => $.courses.show.cover_image)} />
-        </Grid.Col>
-      </Grid>
-
-      {landingPage?.usedInHeader && (
-        <Grid my="xl">
-          <Grid.Col span={{ base: 12, lg: 9 }}>
-            <Title order={2} size="h1" mb="md">
-              {landingPage.usedInHeader}
+        <Grid>
+          <Grid.Col span={{ base: 12, sm: 7 }}>
+            <Text size="sm" c="dimmed">
+              {t(($) => $.courses.show.free_course, { name: header })}
+            </Text>
+            <Title order={1} mb="lg" fz={48}>
+              {header}
             </Title>
-            <MarkdownViewer>{landingPage.usedInDescription ?? ""}</MarkdownViewer>
+            <Box fz="lg" mb="sm">
+              <MarkdownViewer>{landingPage?.description ?? ""}</MarkdownViewer>
+            </Box>
+            <Group mb="xl">
+              <Group me="lg">
+                <IconUsers size={16} />
+                <NumberFormatter thousandSeparator value={course.enrollmentsCount} />
+              </Group>
+              {updatedAt && (
+                <Group>
+                  <IconClock size={16} />
+                  {t(($) => $.courses.show.updated_at, {
+                    // UTC on both sides, so the server's date and the browser's
+                    // hydrated one cannot disagree across a midnight.
+                    date: new Date(updatedAt).toLocaleDateString(i18n.language, {
+                      dateStyle: "long",
+                      timeZone: "UTC",
+                    }),
+                  })}
+                </Group>
+              )}
+            </Group>
+
+            <CourseAction view={view} />
+          </Grid.Col>
+          <Grid.Col visibleFrom="sm" span={{ base: 12, sm: 5 }}>
+            <Image src={codeIllustration} fit="cover" alt={t(($) => $.courses.show.cover_image)} />
           </Grid.Col>
         </Grid>
-      )}
 
-      {landingPage?.outcomesHeader && (
-        <SimpleGrid cols={{ base: 1, lg: 2 }} py="xl">
-          {landingPage.outcomesImage && (
-            <Image
-              src={landingPage.outcomesImage}
-              width="100%"
-              height="auto"
-              loading="lazy"
-              alt={t(($) => $.courses.show.learning_preview)}
-              style={{
-                borderRadius: "var(--mantine-radius-xl)",
-                boxShadow: "var(--mantine-shadow-lg)",
-              }}
-            />
-          )}
-          <Box>
-            <Title order={2} size="h1" mb="md">
-              {landingPage.outcomesHeader}
-            </Title>
-            <MarkdownViewer>{landingPage.outcomesDescription ?? ""}</MarkdownViewer>
-          </Box>
-        </SimpleGrid>
-      )}
+        {landingPage?.usedInHeader && (
+          <Grid my="xl">
+            <Grid.Col span={{ base: 12, lg: 9 }}>
+              <Title order={2} size="h1" mb="md">
+                {landingPage.usedInHeader}
+              </Title>
+              <MarkdownViewer>{landingPage.usedInDescription ?? ""}</MarkdownViewer>
+            </Grid.Col>
+          </Grid>
+        )}
 
-      <Card withBorder my={{ base: "lg", sm: "xxl" }} p="xl">
-        <Group justify="space-between">
-          <Text fz="h3">{t(($) => $.courses.show.course_graduates)}</Text>
-          <EnterButton view={view} bg="dark" size="xl">
-            {t(($) => $.courses.show.start, { name })}
-          </EnterButton>
-        </Group>
-      </Card>
+        {landingPage?.outcomesHeader && (
+          <SimpleGrid cols={{ base: 1, lg: 2 }} py="xl">
+            {landingPage.outcomesImage && (
+              <Image
+                src={landingPage.outcomesImage}
+                width="100%"
+                height="auto"
+                loading="lazy"
+                alt={t(($) => $.courses.show.learning_preview)}
+                style={{
+                  borderRadius: "var(--mantine-radius-xl)",
+                  boxShadow: "var(--mantine-shadow-lg)",
+                }}
+              />
+            )}
+            <Box>
+              <Title order={2} size="h1" mb="md">
+                {landingPage.outcomesHeader}
+              </Title>
+              <MarkdownViewer>{landingPage.outcomesDescription ?? ""}</MarkdownViewer>
+            </Box>
+          </SimpleGrid>
+        )}
 
-      <Box my="xl">
-        <Title order={2} size="h1" mb="md">
-          {t(($) => $.courses.show.learning_program, { name })}
-        </Title>
+        <Card withBorder my={{ base: "lg", sm: "xxl" }} p="xl">
+          <Group justify="space-between">
+            <Text fz="h3">{t(($) => $.courses.show.course_graduates)}</Text>
+            <EnterButton view={view} bg="dark" size="xl">
+              {t(($) => $.courses.show.start, { name })}
+            </EnterButton>
+          </Group>
+        </Card>
 
-        {/* Completion as the server computed it: a share of the current
+        <Box my="xl">
+          <Title order={2} size="h1" mb="md">
+            {t(($) => $.courses.show.learning_program, { name })}
+          </Title>
+
+          {/* Completion as the server computed it: a share of the current
             version's lessons, which this page has no business recounting. A
             visitor who has not started has nothing to show, so only an
             enrolled learner sees it. */}
-        {progress && enrollment && (
-          <Stack gap={4} mb="md" maw={320}>
-            <Text size="sm">
-              {t(($) => $.courses.show.progress.completion, { completion: progress.completion })}
-            </Text>
-            <Progress value={progress.completion} aria-hidden="true" />
-          </Stack>
-        )}
-
-        <LearningProgram view={view} />
-      </Box>
-
-      <Box my={{ base: "lg", sm: "xxl" }}>
-        <Title order={2} fz="h1" mb="xl">
-          {t(($) => $.courses.show.about_learning)}
-        </Title>
-        <SimpleGrid cols={{ base: 1, lg: i18n.language === "ru" ? 2 : 1 }}>
-          <Box>
-            <Text fw="bold">{t(($) => $.courses.show["convenient format"])}</Text>
-            <Text mb="md">{t(($) => $.courses.show.learning_conveniently)}</Text>
-            <Text fw="bold">{t(($) => $.courses.show.browser_practice)}</Text>
-            <Text mb="md">{t(($) => $.courses.show.real_life_challenges)}</Text>
-            <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
-            <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
-          </Box>
-          {i18n.language === "ru" && (
-            <Box
-              component="video"
-              h="100%"
-              w="100%"
-              src={learningVideo}
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
+          {progress && enrollment && (
+            <Stack gap={4} mb="md" maw={320}>
+              <Text size="sm">
+                {t(($) => $.courses.show.progress.completion, { completion: progress.completion })}
+              </Text>
+              <Progress value={progress.completion} aria-hidden="true" />
+            </Stack>
           )}
-        </SimpleGrid>
-      </Box>
 
-      <Card bg="indigo.0" p="xl">
-        <Group justify="space-between">
-          <Text fz="h3">{t(($) => $.courses.show.demo_description)}</Text>
-          <Flex h="100%" justify="end">
-            <EnterButton view={view} my="auto" size="xl">
-              {t(($) => $.courses.show.demo_start)}
-            </EnterButton>
-          </Flex>
-        </Group>
-      </Card>
+          <LearningProgram view={view} />
+        </Box>
 
-      <QnaBlock items={view.qnaItems} />
-    </Container>
+        <Box my={{ base: "lg", sm: "xxl" }}>
+          <Title order={2} fz="h1" mb="xl">
+            {t(($) => $.courses.show.about_learning)}
+          </Title>
+          <SimpleGrid cols={{ base: 1, lg: i18n.language === "ru" ? 2 : 1 }}>
+            <Box>
+              <Text fw="bold">{t(($) => $.courses.show["convenient format"])}</Text>
+              <Text mb="md">{t(($) => $.courses.show.learning_conveniently)}</Text>
+              <Text fw="bold">{t(($) => $.courses.show.browser_practice)}</Text>
+              <Text mb="md">{t(($) => $.courses.show.real_life_challenges)}</Text>
+              <Text fw="bold">{t(($) => $.courses.show.ai_without_limits)}</Text>
+              <Text mb="md">{t(($) => $.courses.show.ai_explanation)}</Text>
+            </Box>
+            {i18n.language === "ru" && (
+              <Box
+                component="video"
+                h="100%"
+                w="100%"
+                src={learningVideo}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            )}
+          </SimpleGrid>
+        </Box>
+
+        <Card bg="indigo.0" p="xl">
+          <Group justify="space-between">
+            <Text fz="h3">{t(($) => $.courses.show.demo_description)}</Text>
+            <Flex h="100%" justify="end">
+              <EnterButton view={view} my="auto" size="xl">
+                {t(($) => $.courses.show.demo_start)}
+              </EnterButton>
+            </Flex>
+          </Group>
+        </Card>
+
+        <QnaBlock items={view.qnaItems} />
+      </Container>
+    </>
   );
 }
 
