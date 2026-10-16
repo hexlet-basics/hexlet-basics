@@ -20,11 +20,14 @@ const getRequestLocale = createIsomorphicFn()
 // The generated hey-api client is a singleton, and every contract path starts
 // with `/api` (ADR-0015). In the browser the API is the site's own origin — the
 // ingress routes `/api/*` to Go in production and the Vite proxy does it in
-// development — so the base URL is empty. During SSR the Node process reaches
-// Go over the internal network (API_URL). The dead branch is stripped per build
-// target, so `process` never leaks into the client bundle.
+// development — so the base URL is empty. The config stays empty during SSR
+// too: hey-api puts `baseURL` into every query key, so a server-only value would
+// make the dehydrated keys differ from the browser's, the hydrated cache would
+// never match, and each page would refetch and fail hydration. The server
+// reaches Go over the internal network (API_URL) through the request
+// interceptor below instead.
 client.setConfig({
-  baseURL: import.meta.env.SSR ? (process.env.API_URL ?? "http://localhost:3001") : "",
+  baseURL: "",
   // Axios owns the browser-side XSRF protocol: on a same-origin request it
   // copies the cookie into the header by default, matching go-pkgz/auth.
   xsrfCookieName: "XSRF-TOKEN",
@@ -37,6 +40,9 @@ client.setConfig({
 // request-scoped isomorphic fn (Start's async request context), not by mutating
 // shared client state.
 client.instance.interceptors.request.use((request) => {
+  // The dead branch is stripped per build target, so `process` never leaks
+  // into the client bundle.
+  if (import.meta.env.SSR) request.baseURL = process.env.API_URL ?? "http://localhost:3001";
   const cookie = getRequestCookie();
   if (cookie) request.headers.set("cookie", cookie);
   request.headers.set("accept-language", getRequestLocale());
