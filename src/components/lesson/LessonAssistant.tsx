@@ -134,16 +134,23 @@ function AssistantChat({
     <Stack p="lg">
       <MarkdownViewer>{t(($) => $.courses.lessons.show.chat.hi)}</MarkdownViewer>
 
-      {messages.map((message) => (
-        <Paper
-          key={message.id}
-          p="sm"
-          withBorder={message.role === "user"}
-          bg={message.role === "user" ? undefined : "var(--mantine-color-default-hover)"}
-        >
-          <MarkdownViewer>{textOf(message)}</MarkdownViewer>
-        </Paper>
-      ))}
+      {messages.map((message) => {
+        const own = message.role === "user";
+        // Messenger layout: the learner's replies are filled and sit on the
+        // right, the assistant's are neutral and sit on the left.
+        return (
+          <Group key={message.id} justify={own ? "flex-end" : "flex-start"}>
+            <Paper
+              p="sm"
+              radius="lg"
+              maw="85%"
+              bg={own ? "var(--mantine-primary-color-light)" : "var(--mantine-color-default-hover)"}
+            >
+              <MarkdownViewer>{textOf(message)}</MarkdownViewer>
+            </Paper>
+          </Group>
+        );
+      })}
 
       {quotaExceeded ? (
         <Text>
