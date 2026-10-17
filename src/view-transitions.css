@@ -1,5 +1,6 @@
-/* React's <ViewTransition> animates with the browser's default cross-fade; it
-   does not honour the reduced-motion preference on its own. */
+/* Page navigations animate through the router's defaultViewTransition with the
+   browser's default cross-fade, which does not honour the reduced-motion
+   preference on its own. */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),

@@ -1,5 +1,4 @@
 import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-router";
-import { ViewTransition } from "react";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import LessonLayout from "@/components/layout/LessonLayout";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/lib/i18n";
@@ -42,11 +41,7 @@ function LocaleLayout() {
 
   return (
     <Layout>
-      {/* TanStack Router navigates inside React.startTransition, which is what makes
-          React animate this boundary (a cross-fade) when the page changes. */}
-      <ViewTransition>
-        <Outlet />
-      </ViewTransition>
+      <Outlet />
     </Layout>
   );
 }

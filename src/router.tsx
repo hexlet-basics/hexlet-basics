@@ -29,6 +29,7 @@ export function getRouter() {
     defaultNotFoundComponent: NotFoundPage,
     defaultErrorComponent: ServerErrorPage,
     scrollRestoration: true,
+    defaultViewTransition: true,
     // On hydration the client does not rerun beforeLoad — it adopts the
     // server's results — so the `{-$locale}` layout never calls changeLanguage
     // on the browser's own i18n instance, and every page repaints in the `en`
