@@ -28,6 +28,11 @@ import (
 // administrator with no Staff Role.
 var editor = fixtures.ID("staff_role_editor")
 
+// adminStaff is an administrator who is also a staff member, on the editor role
+// (user_admin_staff): alice has no staff record, and must not (the cases lean on it);
+// a record cannot be made for oneself.
+var adminStaff = fixtures.ID("user_admin_staff")
+
 // bannerInput is a valid body of adminUpdateBanner.
 func bannerInput(body string) map[string]any {
 	return map[string]any{
@@ -246,11 +251,9 @@ func TestAnAdministratorDoesNotGetMCPImplicitly(t *testing.T) {
 		assertRefused(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}))
 	})
 
-	// A staff record whose role holds mcp.read but not mcp.write.
-	//nolint:forbidigo // the scenario's own role, grants or staff record: what the test varies is exactly what it creates, not a case a fixture could name
-	o.DB.StaffMember.Create().SetUserID(alice).SetRoleID(editor).SetAllowedLocales([]string{"ru", "en"}).ExecX(t.Context())
+	// An administrator who is staff, on a role that holds mcp.read but not mcp.write.
 	o.Grant(editor, "mcp.read")
-	session, _ := admin(t, o, alice)
+	session, _ := admin(t, o, adminStaff)
 
 	assert.False(t, call(t, session, "adminListBanners", map[string]any{"locale": "en"}).IsError, "read is granted")
 	write := call(t, session, "adminUpdateBanner", map[string]any{
