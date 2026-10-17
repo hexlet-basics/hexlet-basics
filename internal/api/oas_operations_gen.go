@@ -109,7 +109,6 @@ const (
 	ListPublicCourseCategoriesOperation         OperationName = "ListPublicCourseCategories"
 	ListPublicReviewsOperation                  OperationName = "ListPublicReviews"
 	StartLessonOperation                        OperationName = "StartLesson"
-	SwitchLocaleOperation                       OperationName = "SwitchLocale"
 	UpdatePasswordOperation                     OperationName = "UpdatePassword"
 	UpdateProfileOperation                      OperationName = "UpdateProfile"
 )

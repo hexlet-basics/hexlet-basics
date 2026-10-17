@@ -2377,31 +2377,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-				case 'o': // Prefix: "ocale/switch"
-
-					if l := len("ocale/switch"); len(elem) >= l && elem[0:l] == "ocale/switch" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch r.Method {
-						case "GET":
-							s.handleSwitchLocaleRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, notAllowedParams{
-								allowedMethods: "GET",
-								allowedHeaders: nil,
-								acceptPost:     "",
-								acceptPatch:    "",
-							})
-						}
-
-						return
-					}
-
 				}
 
 			case 'm': // Prefix: "m"
@@ -5179,31 +5154,6 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 						}
 
-					}
-
-				case 'o': // Prefix: "ocale/switch"
-
-					if l := len("ocale/switch"); len(elem) >= l && elem[0:l] == "ocale/switch" {
-						elem = elem[l:]
-					} else {
-						break
-					}
-
-					if len(elem) == 0 {
-						// Leaf node.
-						switch method {
-						case "GET":
-							r.name = SwitchLocaleOperation
-							r.summary = ""
-							r.operationID = "switchLocale"
-							r.operationGroup = ""
-							r.pathPattern = "/api/locale/switch"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
-						}
 					}
 
 				}

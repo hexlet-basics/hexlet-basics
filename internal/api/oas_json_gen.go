@@ -6764,10 +6764,6 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 		e.Int32(s.LikesCount)
 	}
 	{
-		e.FieldStart("relatedCourseItemsCount")
-		e.Int32(s.RelatedCourseItemsCount)
-	}
-	{
 		e.FieldStart("relatedCourseIds")
 		e.ArrStart()
 		for _, elem := range s.RelatedCourseIds {
@@ -6776,16 +6772,8 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 		e.ArrEnd()
 	}
 	{
-		e.FieldStart("coverThumbVariant")
-		s.CoverThumbVariant.Encode(e)
-	}
-	{
-		e.FieldStart("coverListVariant")
-		s.CoverListVariant.Encode(e)
-	}
-	{
-		e.FieldStart("coverMainVariant")
-		s.CoverMainVariant.Encode(e)
+		e.FieldStart("coverUrl")
+		s.CoverUrl.Encode(e)
 	}
 	{
 		e.FieldStart("createdAt")
@@ -6793,7 +6781,7 @@ func (s *BlogPost) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfBlogPost = [16]string{
+var jsonFieldsNameOfBlogPost = [13]string{
 	0:  "id",
 	1:  "creator",
 	2:  "name",
@@ -6804,12 +6792,9 @@ var jsonFieldsNameOfBlogPost = [16]string{
 	7:  "richBodyHtml",
 	8:  "readingTime",
 	9:  "likesCount",
-	10: "relatedCourseItemsCount",
-	11: "relatedCourseIds",
-	12: "coverThumbVariant",
-	13: "coverListVariant",
-	14: "coverMainVariant",
-	15: "createdAt",
+	10: "relatedCourseIds",
+	11: "coverUrl",
+	12: "createdAt",
 }
 
 // Decode decodes BlogPost from json.
@@ -6929,20 +6914,8 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"likesCount\"")
 			}
-		case "relatedCourseItemsCount":
-			requiredBitSet[1] |= 1 << 2
-			if err := func() error {
-				v, err := d.Int32()
-				s.RelatedCourseItemsCount = int32(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"relatedCourseItemsCount\"")
-			}
 		case "relatedCourseIds":
-			requiredBitSet[1] |= 1 << 3
+			requiredBitSet[1] |= 1 << 2
 			if err := func() error {
 				s.RelatedCourseIds = make([]int32, 0)
 				if err := d.Arr(func(d *jx.Decoder) error {
@@ -6961,38 +6934,18 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"relatedCourseIds\"")
 			}
-		case "coverThumbVariant":
-			requiredBitSet[1] |= 1 << 4
+		case "coverUrl":
+			requiredBitSet[1] |= 1 << 3
 			if err := func() error {
-				if err := s.CoverThumbVariant.Decode(d); err != nil {
+				if err := s.CoverUrl.Decode(d); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"coverThumbVariant\"")
-			}
-		case "coverListVariant":
-			requiredBitSet[1] |= 1 << 5
-			if err := func() error {
-				if err := s.CoverListVariant.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"coverListVariant\"")
-			}
-		case "coverMainVariant":
-			requiredBitSet[1] |= 1 << 6
-			if err := func() error {
-				if err := s.CoverMainVariant.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"coverMainVariant\"")
+				return errors.Wrap(err, "decode field \"coverUrl\"")
 			}
 		case "createdAt":
-			requiredBitSet[1] |= 1 << 7
+			requiredBitSet[1] |= 1 << 4
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -7014,7 +6967,7 @@ func (s *BlogPost) Decode(d *jx.Decoder) error {
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
 		0b11111111,
-		0b11111111,
+		0b00011111,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

@@ -1,6 +1,7 @@
 import { createFileRoute, notFound, Outlet, useMatches } from "@tanstack/react-router";
 import ApplicationLayout from "@/components/layout/ApplicationLayout";
 import LessonLayout from "@/components/layout/LessonLayout";
+import { rememberLocale } from "@/lib/detect-locale";
 import { DEFAULT_LOCALE, isPrefixedLocale, type Locale } from "@/lib/i18n";
 
 // A route can ask for chrome other than the site layout. Declared per route
@@ -16,7 +17,7 @@ declare module "@tanstack/react-router" {
 // (legacy `scope "(:suffix)", suffix: /es|ru/`). Only `ru`/`es` are valid
 // prefixes; any other segment (e.g. `/xx`) is a 404, never rendered as a locale.
 export const Route = createFileRoute("/{-$locale}")({
-  beforeLoad: async ({ params, context }) => {
+  beforeLoad: async ({ params, context, location }) => {
     const prefix = params.locale;
     if (prefix !== undefined && !isPrefixedLocale(prefix)) {
       // `en` is the unprefixed default, so `/en/...` is not a valid URL either.
@@ -25,6 +26,8 @@ export const Route = createFileRoute("/{-$locale}")({
 
     const locale: Locale = prefix ?? DEFAULT_LOCALE;
     await context.i18n.changeLanguage(locale);
+    // The root `/` remembers the locale itself, after deciding whether to redirect.
+    if (prefix !== undefined || location.pathname !== "/") rememberLocale(locale);
 
     return { locale };
   },

@@ -4039,42 +4039,6 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Lesson Player
-  /api/locale/switch:
-    get:
-      operationId: switchLocale
-      description: |-
-        Remember the chosen UI locale: on the signed-in user, and in a cookie the
-        site root reads to pick the locale it redirects to. The page navigates
-        itself afterwards.
-      parameters:
-        - name: locale
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/Locale'
-          explode: false
-      responses:
-        '204':
-          description: A remembered locale choice and the cookie that carries it.
-          headers:
-            Set-Cookie:
-              required: true
-              schema:
-                type: array
-                items:
-                  type: string
-        default:
-          description: |-
-            Default error response shared by every operation.
-
-            `@error` emits an OpenAPI `default` response, keeping central transport
-            failures typed without enumerating every status on every operation.
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-      tags:
-        - Auth
   /api/magic_links:
     post:
       operationId: createMagicLink
@@ -4745,11 +4709,8 @@ components:
         - richBodyHtml
         - readingTime
         - likesCount
-        - relatedCourseItemsCount
         - relatedCourseIds
-        - coverThumbVariant
-        - coverListVariant
-        - coverMainVariant
+        - coverUrl
         - createdAt
       properties:
         id:
@@ -4781,9 +4742,6 @@ components:
         likesCount:
           type: integer
           format: int32
-        relatedCourseItemsCount:
-          type: integer
-          format: int32
         relatedCourseIds:
           type: array
           items:
@@ -4792,15 +4750,10 @@ components:
           description: |-
             Promoted-course ids in display order, so the admin related-courses
                   editor can round-trip the set it writes.
-        coverThumbVariant:
+        coverUrl:
           type: string
           nullable: true
-        coverListVariant:
-          type: string
-          nullable: true
-        coverMainVariant:
-          type: string
-          nullable: true
+          description: The cover image, served by the asset store; null for a post without one.
         createdAt:
           type: string
           format: date-time

@@ -1,11 +1,11 @@
 import { Alert, Anchor, Card, Container, Grid, List, Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
 import { Trans, useTranslation } from "react-i18next";
 import { getCourseOptions } from "@/client/@tanstack/react-query.gen";
 import LeadFormBlock from "@/components/LeadFormBlock";
 import { requireAuth } from "@/lib/auth";
+import { isApiError } from "@/lib/api-error";
 
 // The course completion page, ported from legacy languages#success: where the
 // lesson player sends a learner who finished the Course.
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/{-$locale}/languages/$slug/success")({
       }
     } catch (error) {
       // Legacy sent an unknown course to the catalog.
-      if (isAxiosError(error) && error.response?.status === 404) {
+      if (isApiError(error, 404)) {
         throw redirect({ to: "/{-$locale}/languages", params: { locale: params.locale } });
       }
       throw error;

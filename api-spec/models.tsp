@@ -471,15 +471,13 @@ model BlogPost {
   richBodyHtml: string;
   readingTime: int32;
   likesCount: int32;
-  relatedCourseItemsCount: int32;
 
   /** Promoted-course ids in display order, so the admin related-courses
       editor can round-trip the set it writes. */
   relatedCourseIds: int32[];
 
-  coverThumbVariant: string | null;
-  coverListVariant: string | null;
-  coverMainVariant: string | null;
+  /** The cover image, served by the asset store; null for a post without one. */
+  coverUrl: string | null;
   createdAt: utcDateTime;
 }
 

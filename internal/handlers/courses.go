@@ -67,8 +67,6 @@ type Server struct {
 	emailTokens *emailtokens.Tokens
 	// guests is the visitor-progress cookie.
 	guests *guestCookies
-	// secure marks cookies Secure when the site is served over https.
-	secure bool
 	// leads stores a lead and raises LeadCreated in one transaction.
 	leads leads.Creator
 	// books stores a book request and raises BookRequested in one transaction.
@@ -85,6 +83,10 @@ type Server struct {
 	assistant *assistant.Chat
 	// blogPublic reads the posts a visitor may open.
 	blogPublic *blogposts.Public
+	// blogReader assembles posts (cover, likes, courses, reading time) for the
+	// admin and the public lists alike; blogLikes records a like.
+	blogReader *blogposts.Reader
+	blogLikes  *blogposts.Liker
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover blogposts.PostRemover
 	// permissions writes a role's permission matrix.
@@ -145,7 +147,6 @@ func NewServer(deps Deps) *Server {
 		events:            deps.Events,
 		emailTokens:       emailtokens.New(deps.Config.EmailTokenSecret),
 		guests:            guests,
-		secure:            secure,
 		i18n:              deps.I18n,
 		leads:             deps.Leads,
 		books:             deps.Books,
@@ -156,6 +157,8 @@ func NewServer(deps Deps) *Server {
 		assistant:         deps.Assistant,
 		postRemover:       deps.PostRemover,
 		blogPublic:        blogposts.NewPublic(deps.DB),
+		blogReader:        blogposts.NewReader(deps.DB, deps.Config.PublicURL),
+		blogLikes:         blogposts.NewLiker(deps.DB),
 		permissions:       deps.Permissions,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,

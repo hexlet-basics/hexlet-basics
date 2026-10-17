@@ -1,13 +1,13 @@
-import { isAxiosError } from "axios";
 import { zValidationError } from "@/client/zod.gen";
+import { isApiError } from "@/lib/api-error";
 
 // The API answers a write that fails validation with 422 and a generated
 // `ValidationError` body: messages keyed by field, covering rules the Zod
 // schema cannot express (an email already taken). Parsing it with the generated
 // `zValidationError` keeps this in step with the contract.
 function validationErrors(error: unknown): Record<string, string[]> | undefined {
-  if (!isAxiosError(error) || error.response?.status !== 422) return undefined;
-  const parsed = zValidationError.safeParse(error.response.data);
+  if (!isApiError(error, 422)) return undefined;
+  const parsed = zValidationError.safeParse(error.body);
   return parsed.success ? parsed.data.errors : undefined;
 }
 

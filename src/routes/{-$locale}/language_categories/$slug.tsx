@@ -1,7 +1,6 @@
 import { Container, Grid, SimpleGrid, Stack, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
+import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { getPublicCourseCategoryOptions } from "@/client/@tanstack/react-query.gen";
 import Breadcrumbs, { CurrentCrumb } from "@/components/Breadcrumbs";
@@ -9,6 +8,7 @@ import CourseBlock from "@/components/CourseBlock";
 import QnaBlock from "@/components/QnaBlock";
 import { AnchorLink } from "@/components/RouterLink";
 import { seoHead } from "@/lib/seo-head";
+import { rethrowMissingAsNotFound } from "@/lib/api-error";
 
 // A course category, at its legacy URL, ported from legacy
 // language_categories/show: the category's courses, a consultation form for
@@ -23,8 +23,7 @@ export const Route = createFileRoute("/{-$locale}/language_categories/$slug")({
     } catch (error) {
       // A missing slug and a category of another language are the same to a
       // visitor: there is no such page.
-      if (isAxiosError(error) && error.response?.status === 404) throw notFound();
-      throw error;
+      rethrowMissingAsNotFound(error);
     }
   },
   // Legacy meta: title and description built around the category header, the
