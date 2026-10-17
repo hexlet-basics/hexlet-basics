@@ -9,6 +9,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/fixtures"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -17,12 +18,8 @@ import (
 func TestADeleteRecordsTheOldValuesOfTheRow(t *testing.T) {
 	client := testsupport.NewClient(t)
 	ctx, recorder := audit.WithRecorder(t.Context())
-	//nolint:forbidigo // an extra account that exists only to be deleted or promoted by the case
-	user := client.User.Create().
-		SetEmail("doomed@example.com").
-		SetFirstName("Doomed").
-		SetPasswordDigest("$2a$10$secret-hash").
-		SaveX(t.Context())
+	// A learner with a password and nothing attached, so that the delete goes through.
+	user := client.User.GetX(t.Context(), fixtures.ID("user_with_password"))
 
 	require.NoError(t, client.User.DeleteOneID(user.ID).Exec(ctx))
 
@@ -35,8 +32,8 @@ func TestADeleteRecordsTheOldValuesOfTheRow(t *testing.T) {
 	for _, f := range changes[0].Fields {
 		byName[f.Name] = f
 	}
-	assert.JSONEq(t, `"doomed@example.com"`, string(byName["email"].Old))
-	assert.JSONEq(t, `"Doomed"`, string(byName["first_name"].Old))
+	assert.JSONEq(t, `"with-password@example.com"`, string(byName["email"].Old))
+	assert.JSONEq(t, `"Password"`, string(byName["first_name"].Old))
 	assert.Empty(t, byName["email"].New)
 
 	digest, ok := byName["password_digest"]

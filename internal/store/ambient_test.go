@@ -11,6 +11,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/ent/auditrecord"
+	"hexletbasics/internal/audit"
 	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport/testdb"
 )
@@ -21,11 +22,19 @@ import (
 
 func openPool(t *testing.T) (*store.Store, *ent.Client) {
 	t.Helper()
-	//nolint:forbidigo // the case is about separate connections (concurrent transactions), so the test needs a pool of its own
-	db, err := store.NewDB(testdb.DatabaseURL())
-	require.NoError(t, err)
-	t.Cleanup(func() { _ = db.Close() })
+	db := testdb.Open(t)
 	return store.New(db), store.NewClient(db)
+}
+
+// probe writes an Audit Record, through the production writer, as the row whose
+// visibility the cases look at: a small insert the ambient transaction has to
+// capture without the caller knowing.
+func probe(ctx context.Context, client *ent.Client, operation string) error {
+	return audit.Write(ctx, client, audit.Entry{
+		Source:    audit.Source{Channel: audit.ChannelWeb},
+		Operation: operation,
+		Outcome:   audit.OutcomeSucceeded,
+	}, nil)
 }
 
 func countOf(ctx context.Context, t *testing.T, client *ent.Client, operation string) int {
@@ -45,9 +54,7 @@ func TestAClientStatementJoinsTheAmbientTransaction(t *testing.T) {
 
 		// Written through the pooled client, yet inside the transaction: the
 		// handler's plain `s.db` takes part without knowing.
-		//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
-		require.NoError(t, client.AuditRecord.Create().
-			SetChannel("web").SetOperation(operation).SetOutcome("succeeded").Exec(ctx))
+		require.NoError(t, probe(ctx, client, operation))
 		// A read in the same operation sees the write ...
 		assert.Equal(t, 1, countOf(ctx, t, client, operation))
 		// ... while another connection does not, because nothing committed.
@@ -70,9 +77,7 @@ func TestWithinTxJoinsTheAmbientTransactionInsteadOfOpeningAnother(t *testing.T)
 		// A module that owns an atomic step commits it on its own when it is
 		// called alone; called inside an operation it must not.
 		require.NoError(t, txStore.WithinTx(ctx, func(_ *sql.Tx, inner *ent.Client) error {
-			//nolint:forbidigo // the test chooses the Audit Record's instant, fields or partition, which is what it exercises
-			return inner.AuditRecord.Create().
-				SetChannel("web").SetOperation(operation).SetOutcome("succeeded").Exec(ctx)
+			return probe(ctx, inner, operation)
 		}))
 		return boom
 	})

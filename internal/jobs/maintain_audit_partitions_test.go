@@ -10,6 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"hexletbasics/ent"
+	"hexletbasics/ent/auditrecord"
 	"hexletbasics/internal/audit"
 	"hexletbasics/internal/jobs"
 	"hexletbasics/internal/testsupport"
@@ -34,10 +36,15 @@ func TestMaintainAuditPartitionsJobDropsTheExpiredAndCreatesTheNext(t *testing.T
 	old := time.Now().UTC().AddDate(-1, 0, 0)
 	partitions := audit.NewPartitions(tx)
 	require.NoError(t, partitions.EnsureAhead(t.Context(), old))
-	//nolint:forbidigo // the row lands in a partition this test has just created, which no fixture can hold
-	oldRecord := db.AuditRecord.Create().
-		SetOccurredAt(old).SetChannel("web").SetOperation("AdminUpdateBlogPost").SetOutcome("succeeded").
-		SaveX(t.Context())
+	// The record is written through the production writer, which takes the
+	// instant: it lands in the partition just created.
+	require.NoError(t, audit.Write(t.Context(), db, audit.Entry{
+		OccurredAt: old,
+		Source:     audit.Source{Channel: audit.ChannelWeb},
+		Operation:  "AdminUpdateBlogPost",
+		Outcome:    audit.OutcomeSucceeded,
+	}, nil))
+	oldRecord := db.AuditRecord.Query().Order(ent.Desc(auditrecord.FieldID)).FirstX(t.Context())
 	oldName := "audit_records_p" + old.Format("200601")
 	require.True(t, auditPartitionExists(t, tx, oldName))
 
