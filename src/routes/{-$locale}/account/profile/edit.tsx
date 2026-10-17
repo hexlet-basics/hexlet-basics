@@ -26,8 +26,7 @@ export const Route = createFileRoute("/{-$locale}/account/profile/edit")({
   beforeLoad: ({ context, location }) => {
     requireAuth(context.user, location.href);
   },
-  loader: ({ context }) =>
-    context.queryClient.query({ ...getProfileOptions(), staleTime: "static" }),
+  loader: ({ context }) => context.queryClient.query(getProfileOptions()),
   head: ({ match }) => {
     const { t } = match.context.i18n;
     return {

@@ -14,6 +14,7 @@ export type AuthUser = User;
 // 200 with `{ user: null }` for anonymous requests (never 401), so this never
 // throws and every page — public or guarded — can rely on it.
 export async function resolveCurrentUser(queryClient: QueryClient): Promise<AuthUser | null> {
+  // Static: the identity-changed operation re-seeds this query when it changes.
   const { user } = await queryClient.query({ ...getCurrentUserOptions(), staleTime: "static" });
   return user;
 }
