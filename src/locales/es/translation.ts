@@ -271,10 +271,6 @@ export default {
         versionQueued: "Compilación de versión iniciada",
       },
       permissions: {
-        canCreate: "Crear",
-        canDestroy: "Eliminar",
-        canIndex: "Ver",
-        canUpdate: "Actualizar",
         kindRead: "Lectura",
         kindWrite: "Escritura",
         title: "Permisos",

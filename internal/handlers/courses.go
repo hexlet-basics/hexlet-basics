@@ -79,7 +79,7 @@ type Server struct {
 	blogPublic *blogposts.Public
 	// postRemover deletes a post with its dependents in one transaction.
 	postRemover PostRemover
-	// permissions writes a role's permission matrix.
+	// permissions writes a role's grants.
 	permissions PermissionWriter
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard CourseLister

@@ -511,28 +511,9 @@ func (c *ConverterImpl) ToStaffRoleDetail(source *ent.StaffRole) api.StaffRoleDe
 		apiStaffRoleDetail.ID = Int32FromInt((*source).ID)
 		apiStaffRoleDetail.Name = (*source).Name
 		apiStaffRoleDetail.Description = NilStringFromPtr((*source).Description)
-		if (*source).Edges.Permissions != nil {
-			apiStaffRoleDetail.Permissions = make([]api.StaffRolePermission, len((*source).Edges.Permissions))
-			for i := 0; i < len((*source).Edges.Permissions); i++ {
-				apiStaffRoleDetail.Permissions[i] = c.ToStaffRolePermission((*source).Edges.Permissions[i])
-			}
-		}
 		apiStaffRoleDetail.Grants = grantNames((*source).Edges.Grants)
 	}
 	return apiStaffRoleDetail
-}
-func (c *ConverterImpl) ToStaffRolePermission(source *ent.StaffRolePermission) api.StaffRolePermission {
-	var apiStaffRolePermission api.StaffRolePermission
-	if source != nil {
-		apiStaffRolePermission.ID = Int32FromInt((*source).ID)
-		apiStaffRolePermission.RoleId = Int32FromInt((*source).RoleID)
-		apiStaffRolePermission.Resource = PermissionResourceFromString((*source).Resource)
-		apiStaffRolePermission.CanIndex = (*source).CanIndex
-		apiStaffRolePermission.CanCreate = (*source).CanCreate
-		apiStaffRolePermission.CanUpdate = (*source).CanUpdate
-		apiStaffRolePermission.CanDestroy = (*source).CanDestroy
-	}
-	return apiStaffRolePermission
 }
 func (c *ConverterImpl) ToStaffRoles(source []*ent.StaffRole) []api.StaffRole {
 	var apiStaffRoleList []api.StaffRole

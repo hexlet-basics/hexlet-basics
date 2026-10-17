@@ -6446,78 +6446,6 @@ func (s *PermissionKind) UnmarshalText(data []byte) error {
 	}
 }
 
-// Admin resources a staff role can be granted permissions on through the create/read/update/delete
-// matrix. Resources that moved to declared Permissions (ADR-0017) leave this list as they move.
-// Ref: #/components/schemas/PermissionResource
-type PermissionResource string
-
-const (
-	PermissionResourceLanguageCategories    PermissionResource = "language_categories"
-	PermissionResourceLanguageLessons       PermissionResource = "language_lessons"
-	PermissionResourceLanguageLessonReviews PermissionResource = "language_lesson_reviews"
-	PermissionResourceLanguageLessonMembers PermissionResource = "language_lesson_members"
-	PermissionResourceLanguages             PermissionResource = "languages"
-	PermissionResourceLanguageLandingPages  PermissionResource = "language_landing_pages"
-)
-
-// AllValues returns all PermissionResource values.
-func (PermissionResource) AllValues() []PermissionResource {
-	return []PermissionResource{
-		PermissionResourceLanguageCategories,
-		PermissionResourceLanguageLessons,
-		PermissionResourceLanguageLessonReviews,
-		PermissionResourceLanguageLessonMembers,
-		PermissionResourceLanguages,
-		PermissionResourceLanguageLandingPages,
-	}
-}
-
-// MarshalText implements encoding.TextMarshaler.
-func (s PermissionResource) MarshalText() ([]byte, error) {
-	switch s {
-	case PermissionResourceLanguageCategories:
-		return []byte(s), nil
-	case PermissionResourceLanguageLessons:
-		return []byte(s), nil
-	case PermissionResourceLanguageLessonReviews:
-		return []byte(s), nil
-	case PermissionResourceLanguageLessonMembers:
-		return []byte(s), nil
-	case PermissionResourceLanguages:
-		return []byte(s), nil
-	case PermissionResourceLanguageLandingPages:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *PermissionResource) UnmarshalText(data []byte) error {
-	switch PermissionResource(data) {
-	case PermissionResourceLanguageCategories:
-		*s = PermissionResourceLanguageCategories
-		return nil
-	case PermissionResourceLanguageLessons:
-		*s = PermissionResourceLanguageLessons
-		return nil
-	case PermissionResourceLanguageLessonReviews:
-		*s = PermissionResourceLanguageLessonReviews
-		return nil
-	case PermissionResourceLanguageLessonMembers:
-		*s = PermissionResourceLanguageLessonMembers
-		return nil
-	case PermissionResourceLanguages:
-		*s = PermissionResourceLanguages
-		return nil
-	case PermissionResourceLanguageLandingPages:
-		*s = PermissionResourceLanguageLandingPages
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
-}
-
 // RFC 9457 problem details returned by the transport when request decoding, authorization,
 // persistence, or an unexpected server failure prevents an operation from producing its declared
 // domain response.
@@ -7197,88 +7125,17 @@ func (s *RoleInput) SetDescription(val NilString) {
 	s.Description = val
 }
 
-// One permission row to set on a role.
-// Ref: #/components/schemas/RolePermissionInput
-type RolePermissionInput struct {
-	Resource   PermissionResource `json:"resource"`
-	CanIndex   bool               `json:"canIndex"`
-	CanCreate  bool               `json:"canCreate"`
-	CanUpdate  bool               `json:"canUpdate"`
-	CanDestroy bool               `json:"canDestroy"`
-}
-
-// GetResource returns the value of Resource.
-func (s *RolePermissionInput) GetResource() PermissionResource {
-	return s.Resource
-}
-
-// GetCanIndex returns the value of CanIndex.
-func (s *RolePermissionInput) GetCanIndex() bool {
-	return s.CanIndex
-}
-
-// GetCanCreate returns the value of CanCreate.
-func (s *RolePermissionInput) GetCanCreate() bool {
-	return s.CanCreate
-}
-
-// GetCanUpdate returns the value of CanUpdate.
-func (s *RolePermissionInput) GetCanUpdate() bool {
-	return s.CanUpdate
-}
-
-// GetCanDestroy returns the value of CanDestroy.
-func (s *RolePermissionInput) GetCanDestroy() bool {
-	return s.CanDestroy
-}
-
-// SetResource sets the value of Resource.
-func (s *RolePermissionInput) SetResource(val PermissionResource) {
-	s.Resource = val
-}
-
-// SetCanIndex sets the value of CanIndex.
-func (s *RolePermissionInput) SetCanIndex(val bool) {
-	s.CanIndex = val
-}
-
-// SetCanCreate sets the value of CanCreate.
-func (s *RolePermissionInput) SetCanCreate(val bool) {
-	s.CanCreate = val
-}
-
-// SetCanUpdate sets the value of CanUpdate.
-func (s *RolePermissionInput) SetCanUpdate(val bool) {
-	s.CanUpdate = val
-}
-
-// SetCanDestroy sets the value of CanDestroy.
-func (s *RolePermissionInput) SetCanDestroy(val bool) {
-	s.CanDestroy = val
-}
-
-// The full permission matrix submitted for a role.
+// The Permissions submitted for a role.
 // Ref: #/components/schemas/RolePermissionsInput
 type RolePermissionsInput struct {
-	Permissions []RolePermissionInput `json:"permissions"`
 	// The declared Permissions the role holds, replacing its current set. Names must come from the catalog
 	// (`GET /admin/management/permissions`).
 	Grants []string `json:"grants"`
 }
 
-// GetPermissions returns the value of Permissions.
-func (s *RolePermissionsInput) GetPermissions() []RolePermissionInput {
-	return s.Permissions
-}
-
 // GetGrants returns the value of Grants.
 func (s *RolePermissionsInput) GetGrants() []string {
 	return s.Grants
-}
-
-// SetPermissions sets the value of Permissions.
-func (s *RolePermissionsInput) SetPermissions(val []RolePermissionInput) {
-	s.Permissions = val
 }
 
 // SetGrants sets the value of Grants.
@@ -7730,13 +7587,12 @@ func (s *StaffRole) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-// A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
+// A staff role with the Permissions it holds (legacy: `StaffRoleCrud`).
 // Ref: #/components/schemas/StaffRoleDetail
 type StaffRoleDetail struct {
-	ID          int32                 `json:"id"`
-	Name        string                `json:"name"`
-	Description NilString             `json:"description"`
-	Permissions []StaffRolePermission `json:"permissions"`
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	Description NilString `json:"description"`
 	// Names of the declared Permissions the role holds (see `Permission`).
 	Grants []string `json:"grants"`
 }
@@ -7754,11 +7610,6 @@ func (s *StaffRoleDetail) GetName() string {
 // GetDescription returns the value of Description.
 func (s *StaffRoleDetail) GetDescription() NilString {
 	return s.Description
-}
-
-// GetPermissions returns the value of Permissions.
-func (s *StaffRoleDetail) GetPermissions() []StaffRolePermission {
-	return s.Permissions
 }
 
 // GetGrants returns the value of Grants.
@@ -7779,11 +7630,6 @@ func (s *StaffRoleDetail) SetName(val string) {
 // SetDescription sets the value of Description.
 func (s *StaffRoleDetail) SetDescription(val NilString) {
 	s.Description = val
-}
-
-// SetPermissions sets the value of Permissions.
-func (s *StaffRoleDetail) SetPermissions(val []StaffRolePermission) {
-	s.Permissions = val
 }
 
 // SetGrants sets the value of Grants.
@@ -7851,88 +7697,6 @@ func (s *StaffRolePage) SetPerPage(val int32) {
 }
 
 func (*StaffRolePage) adminListRolesRes() {}
-
-// One resource's permission bits for a role (legacy: `StaffRolePermission`).
-// Ref: #/components/schemas/StaffRolePermission
-type StaffRolePermission struct {
-	ID         int32              `json:"id"`
-	RoleId     int32              `json:"roleId"`
-	Resource   PermissionResource `json:"resource"`
-	CanIndex   bool               `json:"canIndex"`
-	CanCreate  bool               `json:"canCreate"`
-	CanUpdate  bool               `json:"canUpdate"`
-	CanDestroy bool               `json:"canDestroy"`
-}
-
-// GetID returns the value of ID.
-func (s *StaffRolePermission) GetID() int32 {
-	return s.ID
-}
-
-// GetRoleId returns the value of RoleId.
-func (s *StaffRolePermission) GetRoleId() int32 {
-	return s.RoleId
-}
-
-// GetResource returns the value of Resource.
-func (s *StaffRolePermission) GetResource() PermissionResource {
-	return s.Resource
-}
-
-// GetCanIndex returns the value of CanIndex.
-func (s *StaffRolePermission) GetCanIndex() bool {
-	return s.CanIndex
-}
-
-// GetCanCreate returns the value of CanCreate.
-func (s *StaffRolePermission) GetCanCreate() bool {
-	return s.CanCreate
-}
-
-// GetCanUpdate returns the value of CanUpdate.
-func (s *StaffRolePermission) GetCanUpdate() bool {
-	return s.CanUpdate
-}
-
-// GetCanDestroy returns the value of CanDestroy.
-func (s *StaffRolePermission) GetCanDestroy() bool {
-	return s.CanDestroy
-}
-
-// SetID sets the value of ID.
-func (s *StaffRolePermission) SetID(val int32) {
-	s.ID = val
-}
-
-// SetRoleId sets the value of RoleId.
-func (s *StaffRolePermission) SetRoleId(val int32) {
-	s.RoleId = val
-}
-
-// SetResource sets the value of Resource.
-func (s *StaffRolePermission) SetResource(val PermissionResource) {
-	s.Resource = val
-}
-
-// SetCanIndex sets the value of CanIndex.
-func (s *StaffRolePermission) SetCanIndex(val bool) {
-	s.CanIndex = val
-}
-
-// SetCanCreate sets the value of CanCreate.
-func (s *StaffRolePermission) SetCanCreate(val bool) {
-	s.CanCreate = val
-}
-
-// SetCanUpdate sets the value of CanUpdate.
-func (s *StaffRolePermission) SetCanUpdate(val bool) {
-	s.CanUpdate = val
-}
-
-// SetCanDestroy sets the value of CanDestroy.
-func (s *StaffRolePermission) SetCanDestroy(val bool) {
-	s.CanDestroy = val
-}
 
 // SwitchLocaleNoContent is response for SwitchLocale operation.
 type SwitchLocaleNoContent struct {

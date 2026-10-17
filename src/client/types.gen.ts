@@ -974,13 +974,6 @@ export type PermissionCatalog = {
 export type PermissionKind = 'read' | 'write';
 
 /**
- * Admin resources a staff role can be granted permissions on through the
- * create/read/update/delete matrix. Resources that moved to declared
- * Permissions (ADR-0017) leave this list as they move.
- */
-export type PermissionResource = 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
-
-/**
  * RFC 9457 problem details returned by the transport when request decoding,
  * authorization, persistence, or an unexpected server failure prevents an
  * operation from producing its declared domain response.
@@ -1124,21 +1117,9 @@ export type RoleInput = {
 };
 
 /**
- * One permission row to set on a role.
- */
-export type RolePermissionInput = {
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
-};
-
-/**
- * The full permission matrix submitted for a role.
+ * The Permissions submitted for a role.
  */
 export type RolePermissionsInput = {
-  permissions: Array<RolePermissionInput>;
   /**
    * The declared Permissions the role holds, replacing its current set. Names
    * must come from the catalog (`GET /admin/management/permissions`).
@@ -1249,13 +1230,12 @@ export type StaffRole = {
 };
 
 /**
- * A staff role with its full permission matrix (legacy: `StaffRoleCrud`).
+ * A staff role with the Permissions it holds (legacy: `StaffRoleCrud`).
  */
 export type StaffRoleDetail = {
   id: number;
   name: string;
   description: string | null;
-  permissions: Array<StaffRolePermission>;
   /**
    * Names of the declared Permissions the role holds (see `Permission`).
    */
@@ -1280,19 +1260,6 @@ export type StaffRolePage = {
    * Page size used for this response.
    */
   perPage: number;
-};
-
-/**
- * One resource's permission bits for a role (legacy: `StaffRolePermission`).
- */
-export type StaffRolePermission = {
-  id: number;
-  roleId: number;
-  resource: PermissionResource;
-  canIndex: boolean;
-  canCreate: boolean;
-  canUpdate: boolean;
-  canDestroy: boolean;
 };
 
 /**

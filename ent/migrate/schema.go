@@ -914,32 +914,6 @@ var (
 			},
 		},
 	}
-	// StaffMemberRolePermissionsColumns holds the columns for the "staff_member_role_permissions" table.
-	StaffMemberRolePermissionsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "resource", Type: field.TypeString},
-		{Name: "can_index", Type: field.TypeBool, Default: false},
-		{Name: "can_create", Type: field.TypeBool, Default: false},
-		{Name: "can_update", Type: field.TypeBool, Default: false},
-		{Name: "can_destroy", Type: field.TypeBool, Default: false},
-		{Name: "role_id", Type: field.TypeInt},
-	}
-	// StaffMemberRolePermissionsTable holds the schema information for the "staff_member_role_permissions" table.
-	StaffMemberRolePermissionsTable = &schema.Table{
-		Name:       "staff_member_role_permissions",
-		Columns:    StaffMemberRolePermissionsColumns,
-		PrimaryKey: []*schema.Column{StaffMemberRolePermissionsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "staff_member_role_permissions_staff_member_roles_permissions",
-				Columns:    []*schema.Column{StaffMemberRolePermissionsColumns[8]},
-				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
 	// TagsColumns holds the columns for the "tags" table.
 	TagsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -1044,7 +1018,6 @@ var (
 		StaffMembersTable,
 		StaffMemberRolesTable,
 		StaffMemberRoleGrantsTable,
-		StaffMemberRolePermissionsTable,
 		TagsTable,
 		TaggingsTable,
 		UsersTable,
@@ -1162,10 +1135,6 @@ func init() {
 	StaffMemberRoleGrantsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
 	StaffMemberRoleGrantsTable.Annotation = &entsql.Annotation{
 		Table: "staff_member_role_grants",
-	}
-	StaffMemberRolePermissionsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
-	StaffMemberRolePermissionsTable.Annotation = &entsql.Annotation{
-		Table: "staff_member_role_permissions",
 	}
 	UserAccountsTable.Annotation = &entsql.Annotation{
 		Table: "user_accounts",

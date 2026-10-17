@@ -415,31 +415,6 @@ func (u *StaffRoleUpdateOne) SetInput(i *api.RoleInput) *StaffRoleUpdateOne {
 	return u
 }
 
-// SetInput applies the contract RolePermissionInput to the create builder: required
-// contract fields are set directly, nullable ones go through SetNillable so a
-// null leaves the column unset, set-only ones apply only when non-null.
-func (c *StaffRolePermissionCreate) SetInput(i *api.RolePermissionInput) *StaffRolePermissionCreate {
-	c.SetResource(string(i.Resource))
-	c.SetCanIndex(i.CanIndex)
-	c.SetCanCreate(i.CanCreate)
-	c.SetCanUpdate(i.CanUpdate)
-	c.SetCanDestroy(i.CanDestroy)
-	return c
-}
-
-// SetInput applies the contract RolePermissionInput to the update builder: required
-// contract fields are set directly, a null nullable field clears the column
-// (the legacy assign_attributes semantics), a null set-only field leaves the
-// column untouched.
-func (u *StaffRolePermissionUpdateOne) SetInput(i *api.RolePermissionInput) *StaffRolePermissionUpdateOne {
-	u.SetResource(string(i.Resource))
-	u.SetCanIndex(i.CanIndex)
-	u.SetCanCreate(i.CanCreate)
-	u.SetCanUpdate(i.CanUpdate)
-	u.SetCanDestroy(i.CanDestroy)
-	return u
-}
-
 // SetInput applies the contract UserInput to the create builder: required
 // contract fields are set directly, nullable ones go through SetNillable so a
 // null leaves the column unset, set-only ones apply only when non-null.

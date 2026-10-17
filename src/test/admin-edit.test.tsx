@@ -14,36 +14,26 @@ import { worker } from "@/test/msw";
 import { renderRoute } from "@/test/renderRoute";
 
 // The admin edit pages that carry a nested editor under the record's own form,
-// through their real routes under the real admin guard: the role's permission
-// matrix and a category's FAQ. The API is faked at the HTTP boundary; asserted is
+// through their real routes under the real admin guard: the role's permissions
+// and a category's FAQ. The API is faked at the HTTP boundary; asserted is
 // what an admin sees and what the API is sent.
 
 const role: StaffRoleDetail = {
   id: 5,
   name: "Editor",
   description: null,
-  permissions: [
-    {
-      id: 1,
-      roleId: 5,
-      resource: "languages",
-      canIndex: true,
-      canCreate: false,
-      canUpdate: false,
-      canDestroy: false,
-    },
-  ],
   grants: ["blog_posts.read"],
 };
 
 const catalog = {
   permissions: [
+    { name: "banners.read", kind: "read" },
     { name: "blog_posts.create", kind: "write" },
     { name: "blog_posts.read", kind: "read" },
   ],
 };
 
-test("a role's permissions are saved as the grid the admin ticked", async () => {
+test("a role's permissions are shown by resource and saved as the admin ticked them", async () => {
   let received: RolePermissionsInput | undefined;
   worker.use(
     http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
@@ -61,39 +51,9 @@ test("a role's permissions are saved as the grid the admin ticked", async () => 
     user: admin,
   });
 
-  // What the role already has is ticked; nothing else is.
-  const viewLanguages = page.getByRole("checkbox", { name: "languages canIndex" });
-  await expect.element(viewLanguages).toBeChecked();
-  const createLanguages = page.getByRole("checkbox", { name: "languages canCreate" });
-  await expect.element(createLanguages).not.toBeChecked();
-
-  await createLanguages.click();
-  const save = page.getByRole("button", { name: "Save" }).last();
-  await save.click();
-
-  const confirmation = page.getByText("Record updated");
-  await expect.element(confirmation).toBeVisible();
-  const languages = received?.permissions.find((row) => row.resource === "languages");
-  expect(languages).toMatchObject({ canIndex: true, canCreate: true, canUpdate: false });
-});
-
-test("a role's blog post permissions are shown and saved as the admin ticked them", async () => {
-  let received: RolePermissionsInput | undefined;
-  worker.use(
-    http.get("*/admin/management/roles/5", () => HttpResponse.json(role)),
-    http.get("*/admin/management/permissions", () => HttpResponse.json(catalog)),
-    http.get("*/admin/management/role_permissions/5", () => HttpResponse.json(role)),
-    http.put("*/admin/management/role_permissions/5", async ({ request }) => {
-      received = (await request.json()) as RolePermissionsInput;
-      return HttpResponse.json(role);
-    }),
-  );
-
-  await renderRoute(roleRoute, {
-    path: "/{-$locale}/admin/management/roles/$id",
-    initialPath: "/admin/management/roles/5",
-    user: admin,
-  });
+  // Permissions are listed under the resource they belong to.
+  await expect.element(page.getByText("banners", { exact: true })).toBeVisible();
+  await expect.element(page.getByText("blog_posts", { exact: true })).toBeVisible();
 
   // The role reads blog posts and may not create them yet.
   const read = page.getByRole("checkbox", { name: "blog_posts.read" });

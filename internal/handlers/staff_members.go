@@ -13,7 +13,7 @@ import (
 func withStaffMemberEdges(q *ent.StaffMemberQuery) *ent.StaffMemberQuery {
 	return q.
 		WithUser().
-		WithRole(func(rq *ent.StaffRoleQuery) { rq.WithPermissions() })
+		WithRole(func(rq *ent.StaffRoleQuery) { rq.WithGrants() })
 }
 
 func (s *Server) AdminListStaffMembers(ctx context.Context, params api.AdminListStaffMembersParams) (api.AdminListStaffMembersRes, error) {

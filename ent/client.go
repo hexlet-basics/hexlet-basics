@@ -44,7 +44,6 @@ import (
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
 	"hexletbasics/ent/staffrolegrant"
-	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
 	"hexletbasics/ent/user"
@@ -127,8 +126,6 @@ type Client struct {
 	StaffRole *StaffRoleClient
 	// StaffRoleGrant is the client for interacting with the StaffRoleGrant builders.
 	StaffRoleGrant *StaffRoleGrantClient
-	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
-	StaffRolePermission *StaffRolePermissionClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// Tagging is the client for interacting with the Tagging builders.
@@ -181,7 +178,6 @@ func (c *Client) init() {
 	c.StaffMember = NewStaffMemberClient(c.config)
 	c.StaffRole = NewStaffRoleClient(c.config)
 	c.StaffRoleGrant = NewStaffRoleGrantClient(c.config)
-	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
 	c.Tag = NewTagClient(c.config)
 	c.Tagging = NewTaggingClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -311,7 +307,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRoleGrant:            NewStaffRoleGrantClient(cfg),
-		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
 		Tag:                       NewTagClient(cfg),
 		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
@@ -368,7 +363,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
 		StaffRoleGrant:            NewStaffRoleGrantClient(cfg),
-		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
 		Tag:                       NewTagClient(cfg),
 		Tagging:                   NewTaggingClient(cfg),
 		User:                      NewUserClient(cfg),
@@ -503,8 +497,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.StaffRole.mutate(ctx, m)
 	case *StaffRoleGrantMutation:
 		return c.StaffRoleGrant.mutate(ctx, m)
-	case *StaffRolePermissionMutation:
-		return c.StaffRolePermission.mutate(ctx, m)
 	case *TagMutation:
 		return c.Tag.mutate(ctx, m)
 	case *TaggingMutation:
@@ -5309,22 +5301,6 @@ func (c *StaffRoleClient) GetX(ctx context.Context, id int) *StaffRole {
 	return obj
 }
 
-// QueryPermissions queries the permissions edge of a StaffRole.
-func (c *StaffRoleClient) QueryPermissions(_m *StaffRole) *StaffRolePermissionQuery {
-	query := (&StaffRolePermissionClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(staffrole.Table, staffrole.FieldID, id),
-			sqlgraph.To(staffrolepermission.Table, staffrolepermission.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.PermissionsTable, staffrole.PermissionsColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryGrants queries the grants edge of a StaffRole.
 func (c *StaffRoleClient) QueryGrants(_m *StaffRole) *StaffRoleGrantQuery {
 	query := (&StaffRoleGrantClient{config: c.config}).Query()
@@ -5512,155 +5488,6 @@ func (c *StaffRoleGrantClient) mutate(ctx context.Context, m *StaffRoleGrantMuta
 		return (&StaffRoleGrantDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown StaffRoleGrant mutation op: %q", m.Op())
-	}
-}
-
-// StaffRolePermissionClient is a client for the StaffRolePermission schema.
-type StaffRolePermissionClient struct {
-	config
-}
-
-// NewStaffRolePermissionClient returns a client for the StaffRolePermission from the given config.
-func NewStaffRolePermissionClient(c config) *StaffRolePermissionClient {
-	return &StaffRolePermissionClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `staffrolepermission.Hooks(f(g(h())))`.
-func (c *StaffRolePermissionClient) Use(hooks ...Hook) {
-	c.hooks.StaffRolePermission = append(c.hooks.StaffRolePermission, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `staffrolepermission.Intercept(f(g(h())))`.
-func (c *StaffRolePermissionClient) Intercept(interceptors ...Interceptor) {
-	c.inters.StaffRolePermission = append(c.inters.StaffRolePermission, interceptors...)
-}
-
-// Create returns a builder for creating a StaffRolePermission entity.
-func (c *StaffRolePermissionClient) Create() *StaffRolePermissionCreate {
-	mutation := newStaffRolePermissionMutation(c.config, OpCreate)
-	return &StaffRolePermissionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of StaffRolePermission entities.
-func (c *StaffRolePermissionClient) CreateBulk(builders ...*StaffRolePermissionCreate) *StaffRolePermissionCreateBulk {
-	return &StaffRolePermissionCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *StaffRolePermissionClient) MapCreateBulk(slice any, setFunc func(*StaffRolePermissionCreate, int)) *StaffRolePermissionCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &StaffRolePermissionCreateBulk{err: fmt.Errorf("calling to StaffRolePermissionClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*StaffRolePermissionCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &StaffRolePermissionCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for StaffRolePermission.
-func (c *StaffRolePermissionClient) Update() *StaffRolePermissionUpdate {
-	mutation := newStaffRolePermissionMutation(c.config, OpUpdate)
-	return &StaffRolePermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *StaffRolePermissionClient) UpdateOne(_m *StaffRolePermission) *StaffRolePermissionUpdateOne {
-	mutation := newStaffRolePermissionMutation(c.config, OpUpdateOne, withStaffRolePermission(_m))
-	return &StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *StaffRolePermissionClient) UpdateOneID(id int) *StaffRolePermissionUpdateOne {
-	mutation := newStaffRolePermissionMutation(c.config, OpUpdateOne, withStaffRolePermissionID(id))
-	return &StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for StaffRolePermission.
-func (c *StaffRolePermissionClient) Delete() *StaffRolePermissionDelete {
-	mutation := newStaffRolePermissionMutation(c.config, OpDelete)
-	return &StaffRolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *StaffRolePermissionClient) DeleteOne(_m *StaffRolePermission) *StaffRolePermissionDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *StaffRolePermissionClient) DeleteOneID(id int) *StaffRolePermissionDeleteOne {
-	builder := c.Delete().Where(staffrolepermission.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &StaffRolePermissionDeleteOne{builder}
-}
-
-// Query returns a query builder for StaffRolePermission.
-func (c *StaffRolePermissionClient) Query() *StaffRolePermissionQuery {
-	return &StaffRolePermissionQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeStaffRolePermission},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a StaffRolePermission entity by its id.
-func (c *StaffRolePermissionClient) Get(ctx context.Context, id int) (*StaffRolePermission, error) {
-	return c.Query().Where(staffrolepermission.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *StaffRolePermissionClient) GetX(ctx context.Context, id int) *StaffRolePermission {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryRole queries the role edge of a StaffRolePermission.
-func (c *StaffRolePermissionClient) QueryRole(_m *StaffRolePermission) *StaffRoleQuery {
-	query := (&StaffRoleClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(staffrolepermission.Table, staffrolepermission.FieldID, id),
-			sqlgraph.To(staffrole.Table, staffrole.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, staffrolepermission.RoleTable, staffrolepermission.RoleColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *StaffRolePermissionClient) Hooks() []Hook {
-	return c.hooks.StaffRolePermission
-}
-
-// Interceptors returns the client interceptors.
-func (c *StaffRolePermissionClient) Interceptors() []Interceptor {
-	return c.inters.StaffRolePermission
-}
-
-func (c *StaffRolePermissionClient) mutate(ctx context.Context, m *StaffRolePermissionMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&StaffRolePermissionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&StaffRolePermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&StaffRolePermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&StaffRolePermissionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown StaffRolePermission mutation op: %q", m.Op())
 	}
 }
 

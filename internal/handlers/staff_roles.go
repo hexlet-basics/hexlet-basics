@@ -12,13 +12,13 @@ import (
 	"hexletbasics/internal/permissions"
 )
 
-// roleDetail fetches a role with its permission matrix and converts it to the
+// roleDetail fetches a role with its grants and converts it to the
 // StaffRoleDetail projection returned by create/update/get and the permission
 // endpoints. A missing id surfaces as ent's not-found error (404 centrally).
 func (s *Server) roleDetail(ctx context.Context, id int) (*api.StaffRoleDetail, error) {
 	return getOne(ctx, id,
 		func(ctx context.Context, id int) (*ent.StaffRole, error) {
-			return s.db.StaffRole.Query().Where(staffrole.ID(id)).WithPermissions().WithGrants().Only(ctx)
+			return s.db.StaffRole.Query().Where(staffrole.ID(id)).WithGrants().Only(ctx)
 		},
 		s.conv.ToStaffRoleDetail,
 	)
@@ -27,11 +27,11 @@ func (s *Server) roleDetail(ctx context.Context, id int) (*api.StaffRoleDetail, 
 // --- Roles ------------------------------------------------------------------
 
 // AdminListRoles returns roles ordered by name (legacy `order(:name)`), each
-// with its permission count.
+// with its Permission count.
 func (s *Server) AdminListRoles(ctx context.Context, params api.AdminListRolesParams) (api.AdminListRolesRes, error) {
 	return listPage(ctx, params.Page, params.PerPage,
 		func() *ent.StaffRoleQuery {
-			return s.db.StaffRole.Query().WithPermissions().WithGrants().Order(ent.Asc(staffrole.FieldName))
+			return s.db.StaffRole.Query().WithGrants().Order(ent.Asc(staffrole.FieldName))
 		},
 		s.conv.ToStaffRoles,
 		func(items []api.StaffRole, total, page, perPage int32) *api.StaffRolePage {
@@ -76,8 +76,8 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 	return s.roleDetail(ctx, int(params.RoleId))
 }
 
-// AdminUpdateRolePermissions applies the submitted matrix and grants; the
-// permissions module writes them in one transaction.
+// AdminUpdateRolePermissions replaces the role's grants with the submitted set;
+// the permissions module writes them in one transaction.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
@@ -92,7 +92,7 @@ func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePe
 		return validationError("grants", "unknown permission: "+strings.Join(unknown, ", ")), nil
 	}
 
-	if err := s.permissions.Apply(ctx, roleID, req.Permissions, req.Grants); err != nil {
+	if err := s.permissions.Apply(ctx, roleID, req.Grants); err != nil {
 		return nil, err
 	}
 	return s.roleDetail(ctx, roleID)
