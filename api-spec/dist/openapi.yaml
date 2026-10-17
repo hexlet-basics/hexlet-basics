@@ -32,6 +32,7 @@ tags:
   - name: Courses
   - name: Course Categories
   - name: Blog
+  - name: Search
   - name: Banners
   - name: Reviews
   - name: Leads
@@ -5700,6 +5701,53 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       tags:
         - Reviews
+  /api/search:
+    get:
+      operationId: searchCatalogue
+      description: |-
+        Search the public catalogue (courses, lessons and blog posts) by what they
+        say, in the request locale. The text is a web search query: words are
+        matched by their stems in the language of the locale, a phrase in quotes
+        is kept together, `or` and a leading `-` work as people expect, and nothing
+        typed is an error. The best matches come first. Only what a visitor can read
+        on the website is found: no draft, unpublished post or unlisted page.
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          explode: false
+        - name: type
+          in: query
+          required: false
+          description: Only this kind of record; every kind when absent.
+          schema:
+            $ref: '#/components/schemas/SearchResultType'
+          explode: false
+        - $ref: '#/components/parameters/ListQuery.page'
+        - $ref: '#/components/parameters/ListQuery.perPage'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultPage'
+        default:
+          description: |-
+            Default error response shared by every operation.
+
+            `@error` emits an OpenAPI `default` response, keeping central transport
+            failures typed without enumerating every status on every operation.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Search
   /api/session:
     post:
       operationId: createSession
@@ -8250,6 +8298,77 @@ components:
             The declared Permissions the role holds, replacing its current set. Names
             must come from the catalog (`GET /admin/management/permissions`).
       description: The Permissions submitted for a role.
+    SearchResult:
+      type: object
+      required:
+        - type
+        - id
+        - title
+        - snippet
+        - path
+      properties:
+        type:
+          $ref: '#/components/schemas/SearchResultType'
+        id:
+          type: string
+          description: |-
+            A typed, stable id made of what the page's URL carries.
+            A course is `course:LANDING_SLUG`, the slug `getCourse` takes.
+            A lesson is `lesson:COURSE_SLUG/LESSON_SLUG`, the two slugs `getCourseLesson` takes.
+            A post is `post:SLUG`, the slug `getBlogPost` takes.
+        title:
+          type: string
+        snippet:
+          type: string
+          description: |-
+            A few words of the record's text around the match, plain text; empty when
+                  only the title matched and the record has no text.
+        path:
+          type: string
+          description: |-
+            The record's page on the website: the locale prefix and the path, with no
+                  origin.
+      description: |-
+        One record the catalogue search found: compact, to be read as a list entry and
+        opened by its id or its path.
+
+        Only text the site's authors wrote is searched, so everything here is the
+        site's own copy; no learner-written text (reviews, messages to the assistant)
+        ever appears.
+    SearchResultPage:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - perPage
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+        total:
+          type: integer
+          format: int32
+          description: Total rows across all pages (before pagination).
+        page:
+          type: integer
+          format: int32
+          description: 1-based page number this response represents.
+        perPage:
+          type: integer
+          format: int32
+          description: Page size used for this response.
+      description: |-
+        A page of results. Generic envelope reused by every admin list so the CRUD
+        engine (TanStack Table) can read pagination uniformly.
+    SearchResultType:
+      type: string
+      enum:
+        - course
+        - lesson
+        - post
+      description: The kinds of record the catalogue search finds.
     SessionInput:
       type: object
       required:

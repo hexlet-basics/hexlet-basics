@@ -1116,6 +1116,19 @@ func (UnimplementedHandler) RevokeConnectedApp(ctx context.Context, params Revok
 	return r, ht.ErrNotImplemented
 }
 
+// SearchCatalogue implements searchCatalogue operation.
+//
+// Search the public catalogue (courses, lessons and blog posts) by what they say, in the request
+// locale. The text is a web search query: words are matched by their stems in the language of the
+// locale, a phrase in quotes is kept together, `or` and a leading `-` work as people expect, and
+// nothing typed is an error. The best matches come first. Only what a visitor can read on the website
+// is found: no draft, unpublished post or unlisted page.
+//
+// GET /api/search
+func (UnimplementedHandler) SearchCatalogue(ctx context.Context, params SearchCatalogueParams) (r *SearchResultPage, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // StartLesson implements startLesson operation.
 //
 // Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson

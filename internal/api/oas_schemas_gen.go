@@ -7257,6 +7257,52 @@ func (o OptNilFirstVisit) Or(d FirstVisit) FirstVisit {
 	return d
 }
 
+// NewOptSearchResultType returns new OptSearchResultType with value set to v.
+func NewOptSearchResultType(v SearchResultType) OptSearchResultType {
+	return OptSearchResultType{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSearchResultType is optional SearchResultType.
+type OptSearchResultType struct {
+	Value SearchResultType
+	Set   bool
+}
+
+// IsSet returns true if OptSearchResultType was set.
+func (o OptSearchResultType) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSearchResultType) Reset() {
+	var v SearchResultType
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSearchResultType) SetTo(v SearchResultType) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSearchResultType) Get() (v SearchResultType, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSearchResultType) Or(d SearchResultType) SearchResultType {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
 	return OptString{
@@ -8102,6 +8148,179 @@ func (s *RolePermissionsInput) GetGrants() []string {
 // SetGrants sets the value of Grants.
 func (s *RolePermissionsInput) SetGrants(val []string) {
 	s.Grants = val
+}
+
+// One record the catalogue search found: compact, to be read as a list entry and opened by its id or
+// its path.
+//
+// Only text the site's authors wrote is searched, so everything here is the site's own copy; no
+// learner-written text (reviews, messages to the assistant) ever appears.
+// Ref: #/components/schemas/SearchResult
+type SearchResult struct {
+	Type SearchResultType `json:"type"`
+	// A typed, stable id made of what the page's URL carries. A course is `course:LANDING_SLUG`, the slug
+	// `getCourse` takes. A lesson is `lesson:COURSE_SLUG/LESSON_SLUG`, the two slugs `getCourseLesson`
+	// takes. A post is `post:SLUG`, the slug `getBlogPost` takes.
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	// A few words of the record's text around the match, plain text; empty when only the title matched and
+	// the record has no text.
+	Snippet string `json:"snippet"`
+	// The record's page on the website: the locale prefix and the path, with no origin.
+	Path string `json:"path"`
+}
+
+// GetType returns the value of Type.
+func (s *SearchResult) GetType() SearchResultType {
+	return s.Type
+}
+
+// GetID returns the value of ID.
+func (s *SearchResult) GetID() string {
+	return s.ID
+}
+
+// GetTitle returns the value of Title.
+func (s *SearchResult) GetTitle() string {
+	return s.Title
+}
+
+// GetSnippet returns the value of Snippet.
+func (s *SearchResult) GetSnippet() string {
+	return s.Snippet
+}
+
+// GetPath returns the value of Path.
+func (s *SearchResult) GetPath() string {
+	return s.Path
+}
+
+// SetType sets the value of Type.
+func (s *SearchResult) SetType(val SearchResultType) {
+	s.Type = val
+}
+
+// SetID sets the value of ID.
+func (s *SearchResult) SetID(val string) {
+	s.ID = val
+}
+
+// SetTitle sets the value of Title.
+func (s *SearchResult) SetTitle(val string) {
+	s.Title = val
+}
+
+// SetSnippet sets the value of Snippet.
+func (s *SearchResult) SetSnippet(val string) {
+	s.Snippet = val
+}
+
+// SetPath sets the value of Path.
+func (s *SearchResult) SetPath(val string) {
+	s.Path = val
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/SearchResultPage
+type SearchResultPage struct {
+	Items []SearchResult `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *SearchResultPage) GetItems() []SearchResult {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *SearchResultPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *SearchResultPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *SearchResultPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *SearchResultPage) SetItems(val []SearchResult) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *SearchResultPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *SearchResultPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *SearchResultPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+// The kinds of record the catalogue search finds.
+// Ref: #/components/schemas/SearchResultType
+type SearchResultType string
+
+const (
+	SearchResultTypeCourse SearchResultType = "course"
+	SearchResultTypeLesson SearchResultType = "lesson"
+	SearchResultTypePost   SearchResultType = "post"
+)
+
+// AllValues returns all SearchResultType values.
+func (SearchResultType) AllValues() []SearchResultType {
+	return []SearchResultType{
+		SearchResultTypeCourse,
+		SearchResultTypeLesson,
+		SearchResultTypePost,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SearchResultType) MarshalText() ([]byte, error) {
+	switch s {
+	case SearchResultTypeCourse:
+		return []byte(s), nil
+	case SearchResultTypeLesson:
+		return []byte(s), nil
+	case SearchResultTypePost:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SearchResultType) UnmarshalText(data []byte) error {
+	switch SearchResultType(data) {
+	case SearchResultTypeCourse:
+		*s = SearchResultTypeCourse
+		return nil
+	case SearchResultTypeLesson:
+		*s = SearchResultTypeLesson
+		return nil
+	case SearchResultTypePost:
+		*s = SearchResultTypePost
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Email + password login.

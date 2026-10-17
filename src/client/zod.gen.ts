@@ -1004,6 +1004,42 @@ export const zRolePermissionsInput = z.object({
 });
 
 /**
+ * The kinds of record the catalogue search finds.
+ */
+export const zSearchResultType = z.enum([
+  'course',
+  'lesson',
+  'post'
+]);
+
+/**
+ * One record the catalogue search found: compact, to be read as a list entry and
+ * opened by its id or its path.
+ *
+ * Only text the site's authors wrote is searched, so everything here is the
+ * site's own copy; no learner-written text (reviews, messages to the assistant)
+ * ever appears.
+ */
+export const zSearchResult = z.object({
+  type: zSearchResultType,
+  id: z.string(),
+  title: z.string(),
+  snippet: z.string(),
+  path: z.string()
+});
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export const zSearchResultPage = z.object({
+  items: z.array(zSearchResult),
+  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
  * Email + password login.
  */
 export const zSessionInput = z.object({
@@ -2353,6 +2389,18 @@ export const zListPublicReviewsQuery = z.object({
  * The request has succeeded.
  */
 export const zListPublicReviewsResponse = zReviewPage;
+
+export const zSearchCatalogueQuery = z.object({
+  q: z.string().min(1).max(200),
+  type: zSearchResultType.optional(),
+  page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+  perPage: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zSearchCatalogueResponse = zSearchResultPage;
 
 /**
  * A successful sign-out; the session cookie is expired by the server.

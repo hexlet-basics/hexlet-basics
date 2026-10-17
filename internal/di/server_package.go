@@ -39,6 +39,7 @@ import (
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/reviews"
+	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
@@ -94,6 +95,7 @@ type handlerServices struct {
 	CourseReadiness   *courses.Readiness          `do:""`
 	Dashboard         *dashboard.Dashboard        `do:""`
 	Sitemap           *sitemap.Sitemap            `do:""`
+	Search            *search.Catalogue           `do:""`
 	LessonReviews     *lessonreviews.Scheduler    `do:""`
 	RelatedSuggester  *relatedcourses.Scheduler   `do:""`
 	LandingPageQna    *qnaitems.LandingPage       `do:""`
@@ -321,6 +323,13 @@ var serverPackage = do.Package(
 		}
 		return relatedcourses.NewScheduler(db, enqueuer), nil
 	}),
+	do.Lazy[*search.Catalogue](func(i do.Injector) (*search.Catalogue, error) {
+		db, err := do.Invoke[*ent.Client](i)
+		if err != nil {
+			return nil, err
+		}
+		return search.NewCatalogue(db), nil
+	}),
 	do.Lazy[*sitemap.Sitemap](func(i do.Injector) (*sitemap.Sitemap, error) {
 		db, err := do.Invoke[*ent.Client](i)
 		if err != nil {
@@ -463,6 +472,7 @@ var serverPackage = do.Package(
 			CourseReadiness:   services.CourseReadiness,
 			Dashboard:         services.Dashboard,
 			Sitemap:           services.Sitemap,
+			Search:            services.Search,
 			LessonReviews:     services.LessonReviews,
 			RelatedSuggester:  services.RelatedSuggester,
 			LandingPageQna:    services.LandingPageQna,

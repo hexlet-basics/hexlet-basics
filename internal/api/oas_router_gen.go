@@ -3405,31 +3405,70 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-			case 's': // Prefix: "session"
+			case 's': // Prefix: "se"
 
-				if l := len("session"); len(elem) >= l && elem[0:l] == "session" {
+				if l := len("se"); len(elem) >= l && elem[0:l] == "se" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "DELETE":
-						s.handleDeleteSessionRequest([0]string{}, elemIsEscaped, w, r)
-					case "POST":
-						s.handleCreateSessionRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, notAllowedParams{
-							allowedMethods: "DELETE,POST",
-							allowedHeaders: rn111AllowedHeaders,
-							acceptPost:     "application/json",
-							acceptPatch:    "",
-						})
+					break
+				}
+				switch elem[0] {
+				case 'a': // Prefix: "arch"
+
+					if l := len("arch"); len(elem) >= l && elem[0:l] == "arch" {
+						elem = elem[l:]
+					} else {
+						break
 					}
 
-					return
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleSearchCatalogueRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "GET",
+								allowedHeaders: nil,
+								acceptPost:     "",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+
+				case 's': // Prefix: "ssion"
+
+					if l := len("ssion"); len(elem) >= l && elem[0:l] == "ssion" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "DELETE":
+							s.handleDeleteSessionRequest([0]string{}, elemIsEscaped, w, r)
+						case "POST":
+							s.handleCreateSessionRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, notAllowedParams{
+								allowedMethods: "DELETE,POST",
+								allowedHeaders: rn111AllowedHeaders,
+								acceptPost:     "application/json",
+								acceptPatch:    "",
+							})
+						}
+
+						return
+					}
+
 				}
 
 			case 'u': // Prefix: "users"
@@ -6873,38 +6912,77 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 				}
 
-			case 's': // Prefix: "session"
+			case 's': // Prefix: "se"
 
-				if l := len("session"); len(elem) >= l && elem[0:l] == "session" {
+				if l := len("se"); len(elem) >= l && elem[0:l] == "se" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch method {
-					case "DELETE":
-						r.name = DeleteSessionOperation
-						r.summary = ""
-						r.operationID = "deleteSession"
-						r.operationGroup = ""
-						r.pathPattern = "/api/session"
-						r.args = args
-						r.count = 0
-						return r, true
-					case "POST":
-						r.name = CreateSessionOperation
-						r.summary = ""
-						r.operationID = "createSession"
-						r.operationGroup = ""
-						r.pathPattern = "/api/session"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
+					break
+				}
+				switch elem[0] {
+				case 'a': // Prefix: "arch"
+
+					if l := len("arch"); len(elem) >= l && elem[0:l] == "arch" {
+						elem = elem[l:]
+					} else {
+						break
 					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = SearchCatalogueOperation
+							r.summary = ""
+							r.operationID = "searchCatalogue"
+							r.operationGroup = ""
+							r.pathPattern = "/api/search"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+				case 's': // Prefix: "ssion"
+
+					if l := len("ssion"); len(elem) >= l && elem[0:l] == "ssion" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "DELETE":
+							r.name = DeleteSessionOperation
+							r.summary = ""
+							r.operationID = "deleteSession"
+							r.operationGroup = ""
+							r.pathPattern = "/api/session"
+							r.args = args
+							r.count = 0
+							return r, true
+						case "POST":
+							r.name = CreateSessionOperation
+							r.summary = ""
+							r.operationID = "createSession"
+							r.operationGroup = ""
+							r.pathPattern = "/api/session"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
 				}
 
 			case 'u': // Prefix: "users"

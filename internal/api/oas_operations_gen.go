@@ -131,6 +131,7 @@ const (
 	ListPublicCourseCategoriesOperation         OperationName = "ListPublicCourseCategories"
 	ListPublicReviewsOperation                  OperationName = "ListPublicReviews"
 	RevokeConnectedAppOperation                 OperationName = "RevokeConnectedApp"
+	SearchCatalogueOperation                    OperationName = "SearchCatalogue"
 	StartLessonOperation                        OperationName = "StartLesson"
 	UpdatePasswordOperation                     OperationName = "UpdatePassword"
 	UpdateProfileOperation                      OperationName = "UpdateProfile"

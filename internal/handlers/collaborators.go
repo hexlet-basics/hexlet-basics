@@ -14,6 +14,7 @@ import (
 	"hexletbasics/internal/leads"
 	"hexletbasics/internal/progress"
 	"hexletbasics/internal/qnaitems"
+	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sitemap"
 )
@@ -36,6 +37,12 @@ type ProgressTracker interface {
 // SitemapReader reads the rows behind the sitemap page.
 type SitemapReader interface {
 	Read(ctx context.Context) (*sitemap.Page, error)
+}
+
+// CatalogueSearcher finds records of the public catalogue by what they say: the
+// hits of one window, best first, and how many records match in all.
+type CatalogueSearcher interface {
+	Search(ctx context.Context, cmd search.SearchCatalogue) ([]search.Hit, int, error)
 }
 
 // PermissionWriter writes what a role may do: its grants. Check judges a

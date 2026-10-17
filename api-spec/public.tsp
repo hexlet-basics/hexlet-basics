@@ -203,6 +203,66 @@ interface Blog {
   } | NotFoundError | UnauthorizedError | ApiError;
 }
 
+/** The kinds of record the catalogue search finds. */
+enum SearchResultType {
+  course: "course",
+  lesson: "lesson",
+  post: "post",
+}
+
+/**
+ * One record the catalogue search found: compact, to be read as a list entry and
+ * opened by its id or its path.
+ *
+ * Only text the site's authors wrote is searched, so everything here is the
+ * site's own copy; no learner-written text (reviews, messages to the assistant)
+ * ever appears.
+ */
+model SearchResult {
+  type: SearchResultType;
+
+  /**
+   * A typed, stable id made of what the page's URL carries.
+   * A course is `course:LANDING_SLUG`, the slug `getCourse` takes.
+   * A lesson is `lesson:COURSE_SLUG/LESSON_SLUG`, the two slugs `getCourseLesson` takes.
+   * A post is `post:SLUG`, the slug `getBlogPost` takes.
+   */
+  id: string;
+
+  title: string;
+
+  /** A few words of the record's text around the match, plain text; empty when
+      only the title matched and the record has no text. */
+  snippet: string;
+
+  /** The record's page on the website: the locale prefix and the path, with no
+      origin. */
+  path: string;
+}
+
+@route("/search")
+@tag("Search")
+interface CatalogueSearch {
+  /**
+   * Search the public catalogue (courses, lessons and blog posts) by what they
+   * say, in the request locale. The text is a web search query: words are
+   * matched by their stems in the language of the locale, a phrase in quotes
+   * is kept together, `or` and a leading `-` work as people expect, and nothing
+   * typed is an error. The best matches come first. Only what a visitor can read
+   * on the website is found: no draft, unpublished post or unlisted page.
+   */
+  @get
+  @operationId("searchCatalogue")
+  search(
+    @query @minLength(1) @maxLength(200) q: string,
+
+    /** Only this kind of record; every kind when absent. */
+    @query type?: SearchResultType,
+
+    ...ListQuery,
+  ): Page<SearchResult> | ApiError;
+}
+
 /** The banner shown above the pages that carry one, or null when none is live. */
 model ActiveBanner {
   banner: Banner | null;

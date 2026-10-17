@@ -98,7 +98,9 @@ type Server struct {
 	// dashboard assembles the learner's courses with cards and progress.
 	dashboard CourseLister
 	// sitemap reads the rows behind the sitemap page.
-	sitemap           SitemapReader
+	sitemap SitemapReader
+	// searcher finds records of the public catalogue by text.
+	searcher          CatalogueSearcher
 	lessonReviews     LessonReviewScheduler
 	relatedSuggester  RelatedCoursesScheduler
 	landingPageQna    LandingPageQna
@@ -149,6 +151,7 @@ type Deps struct {
 	CourseReadiness   ReadinessMarker
 	Dashboard         CourseLister
 	Sitemap           SitemapReader
+	Search            CatalogueSearcher
 	LessonReviews     LessonReviewScheduler
 	RelatedSuggester  RelatedCoursesScheduler
 	LandingPageQna    LandingPageQna
@@ -207,6 +210,7 @@ func NewServer(deps Deps) *Server {
 		courseReadiness:   deps.CourseReadiness,
 		dashboard:         deps.Dashboard,
 		sitemap:           deps.Sitemap,
+		searcher:          deps.Search,
 		lessonReviews:     deps.LessonReviews,
 		relatedSuggester:  deps.RelatedSuggester,
 		landingPageQna:    deps.LandingPageQna,

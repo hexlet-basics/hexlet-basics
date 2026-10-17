@@ -757,6 +757,16 @@ type Invoker interface {
 	//
 	// DELETE /api/oauth/connected_apps/{id}
 	RevokeConnectedApp(ctx context.Context, params RevokeConnectedAppParams) (RevokeConnectedAppRes, error)
+	// SearchCatalogue invokes searchCatalogue operation.
+	//
+	// Search the public catalogue (courses, lessons and blog posts) by what they say, in the request
+	// locale. The text is a web search query: words are matched by their stems in the language of the
+	// locale, a phrase in quotes is kept together, `or` and a leading `-` work as people expect, and
+	// nothing typed is an error. The best matches come first. Only what a visitor can read on the website
+	// is found: no draft, unpublished post or unlisted page.
+	//
+	// GET /api/search
+	SearchCatalogue(ctx context.Context, params SearchCatalogueParams) (*SearchResultPage, error)
 	// StartLesson invokes startLesson operation.
 	//
 	// Start a lesson: enroll the learner in its course if they are not enrolled yet, and mark the lesson
@@ -16745,6 +16755,159 @@ func (c *Client) sendRevokeConnectedApp(ctx context.Context, params RevokeConnec
 
 	stage = "DecodeResponse"
 	result, err := decodeRevokeConnectedAppResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// SearchCatalogue invokes searchCatalogue operation.
+//
+// Search the public catalogue (courses, lessons and blog posts) by what they say, in the request
+// locale. The text is a web search query: words are matched by their stems in the language of the
+// locale, a phrase in quotes is kept together, `or` and a leading `-` work as people expect, and
+// nothing typed is an error. The best matches come first. Only what a visitor can read on the website
+// is found: no draft, unpublished post or unlisted page.
+//
+// GET /api/search
+func (c *Client) SearchCatalogue(ctx context.Context, params SearchCatalogueParams) (*SearchResultPage, error) {
+	res, err := c.sendSearchCatalogue(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendSearchCatalogue(ctx context.Context, params SearchCatalogueParams) (res *SearchResultPage, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("searchCatalogue"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.URLTemplateKey.String("/api/search"),
+	}
+	otelAttrs = append(otelAttrs, c.cfg.Attributes...)
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, SearchCatalogueOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "q" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "q",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(params.Q))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "type" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "type",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Type.Get(); ok {
+				return e.EncodeValue(conv.StringToString(string(val)))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "page" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "page",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Page.Get(); ok {
+				return e.EncodeValue(conv.Int32ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "perPage" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "perPage",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.PerPage.Get(); ok {
+				return e.EncodeValue(conv.Int32ToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	body := resp.Body
+	defer func() {
+		// Drain the body to EOF before closing, so the underlying
+		// connection can be reused by the Transport regardless of the
+		// response status code. See https://github.com/ogen-go/ogen/issues/1670.
+		_, _ = io.Copy(io.Discard, body)
+		_ = body.Close()
+	}()
+
+	stage = "DecodeResponse"
+	result, err := decodeSearchCatalogueResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

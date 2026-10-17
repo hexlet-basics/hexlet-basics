@@ -47,6 +47,7 @@ import (
 	"hexletbasics/internal/qnaitems"
 	"hexletbasics/internal/relatedcourses"
 	"hexletbasics/internal/reviews"
+	"hexletbasics/internal/search"
 	"hexletbasics/internal/selfprotection"
 	"hexletbasics/internal/sessions"
 	"hexletbasics/internal/sitemap"
@@ -376,6 +377,7 @@ func handlerDeps(
 		CourseReadiness:   courses.NewReadiness(db),
 		Dashboard:         dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:           sitemap.New(db),
+		Search:            search.NewCatalogue(db),
 		LessonReviews:     lessonreviews.NewScheduler(db, services.Jobs),
 		RelatedSuggester:  relatedcourses.NewScheduler(db, services.Jobs),
 		LandingPageQna:    qnaitems.NewLandingPage(db),

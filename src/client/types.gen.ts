@@ -1321,6 +1321,61 @@ export type RolePermissionsInput = {
 };
 
 /**
+ * One record the catalogue search found: compact, to be read as a list entry and
+ * opened by its id or its path.
+ *
+ * Only text the site's authors wrote is searched, so everything here is the
+ * site's own copy; no learner-written text (reviews, messages to the assistant)
+ * ever appears.
+ */
+export type SearchResult = {
+  type: SearchResultType;
+  /**
+   * A typed, stable id made of what the page's URL carries.
+   * A course is `course:LANDING_SLUG`, the slug `getCourse` takes.
+   * A lesson is `lesson:COURSE_SLUG/LESSON_SLUG`, the two slugs `getCourseLesson` takes.
+   * A post is `post:SLUG`, the slug `getBlogPost` takes.
+   */
+  id: string;
+  title: string;
+  /**
+   * A few words of the record's text around the match, plain text; empty when
+   *       only the title matched and the record has no text.
+   */
+  snippet: string;
+  /**
+   * The record's page on the website: the locale prefix and the path, with no
+   *       origin.
+   */
+  path: string;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type SearchResultPage = {
+  items: Array<SearchResult>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
+ * The kinds of record the catalogue search finds.
+ */
+export type SearchResultType = 'course' | 'lesson' | 'post';
+
+/**
  * Email + password login.
  */
 export type SessionInput = {
@@ -6271,6 +6326,42 @@ export type ListPublicReviewsResponses = {
 };
 
 export type ListPublicReviewsResponse = ListPublicReviewsResponses[keyof ListPublicReviewsResponses];
+
+export type SearchCatalogueData = {
+  body?: never;
+  path?: never;
+  query: {
+    q: string;
+    /**
+     * Only this kind of record; every kind when absent.
+     */
+    type?: SearchResultType;
+    page?: number;
+    perPage?: number;
+  };
+  url: '/api/search';
+};
+
+export type SearchCatalogueErrors = {
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type SearchCatalogueError = SearchCatalogueErrors[keyof SearchCatalogueErrors];
+
+export type SearchCatalogueResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: SearchResultPage;
+};
+
+export type SearchCatalogueResponse = SearchCatalogueResponses[keyof SearchCatalogueResponses];
 
 export type DeleteSessionData = {
   body?: never;
