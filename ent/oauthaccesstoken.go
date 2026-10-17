@@ -30,6 +30,8 @@ type OAuthAccessToken struct {
 	Scopes pq.StringArray `json:"scopes,omitempty"`
 	// RefreshTokenID holds the value of the "refresh_token_id" field.
 	RefreshTokenID *string `json:"refresh_token_id,omitempty"`
+	// FamilyID holds the value of the "family_id" field.
+	FamilyID string `json:"family_id,omitempty"`
 	// ExpiresAt holds the value of the "expires_at" field.
 	ExpiresAt    time.Time `json:"expires_at,omitempty"`
 	selectValues sql.SelectValues
@@ -44,7 +46,7 @@ func (*OAuthAccessToken) scanValues(columns []string) ([]any, error) {
 			values[i] = new(pq.StringArray)
 		case oauthaccesstoken.FieldUserID:
 			values[i] = new(sql.NullInt64)
-		case oauthaccesstoken.FieldID, oauthaccesstoken.FieldClientID, oauthaccesstoken.FieldRefreshTokenID:
+		case oauthaccesstoken.FieldID, oauthaccesstoken.FieldClientID, oauthaccesstoken.FieldRefreshTokenID, oauthaccesstoken.FieldFamilyID:
 			values[i] = new(sql.NullString)
 		case oauthaccesstoken.FieldCreatedAt, oauthaccesstoken.FieldUpdatedAt, oauthaccesstoken.FieldExpiresAt:
 			values[i] = new(sql.NullTime)
@@ -105,6 +107,12 @@ func (_m *OAuthAccessToken) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.RefreshTokenID = new(string)
 				*_m.RefreshTokenID = value.String
+			}
+		case oauthaccesstoken.FieldFamilyID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field family_id", values[i])
+			} else if value.Valid {
+				_m.FamilyID = value.String
 			}
 		case oauthaccesstoken.FieldExpiresAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -167,6 +175,9 @@ func (_m *OAuthAccessToken) String() string {
 		builder.WriteString("refresh_token_id=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	builder.WriteString("family_id=")
+	builder.WriteString(_m.FamilyID)
 	builder.WriteString(", ")
 	builder.WriteString("expires_at=")
 	builder.WriteString(_m.ExpiresAt.Format(time.ANSIC))

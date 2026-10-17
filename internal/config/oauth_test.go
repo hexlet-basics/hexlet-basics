@@ -82,3 +82,40 @@ func TestLoadGivesTheRegistrationLimitADefaultAndRejectsADisabledOne(t *testing.
 	_, err = Load()
 	require.ErrorContains(t, err, "OAUTH_REGISTRATION_LIMIT")
 }
+
+func TestLoadGivesTheTokenLifetimesDefaultsAndRejectsBadOnes(t *testing.T) {
+	setRequiredSecrets(t)
+	t.Setenv("OAUTH_ENABLED", "true")
+	t.Setenv("OAUTH_ISSUER", "https://code-basics.com")
+	t.Setenv("OAUTH_ENCRYPTION_KEY", validOAuthKey)
+
+	cfg, err := Load()
+	require.NoError(t, err)
+	require.Equal(t, time.Hour, cfg.OAuth.AccessTokenTTL)
+	require.Equal(t, 30*24*time.Hour, cfg.OAuth.RefreshTokenTTL)
+
+	t.Setenv("OAUTH_ACCESS_TOKEN_TTL", "2h")
+	t.Setenv("OAUTH_REFRESH_TOKEN_TTL", "48h")
+	cfg, err = Load()
+	require.NoError(t, err)
+	require.Equal(t, 2*time.Hour, cfg.OAuth.AccessTokenTTL)
+	require.Equal(t, 48*time.Hour, cfg.OAuth.RefreshTokenTTL)
+
+	for name, env := range map[string][2]string{
+		"zero access":           {"0s", "48h"},
+		"refresh not outliving": {"2h", "2h"},
+		"refresh shorter":       {"2h", "1h"},
+		"access under a minute": {"30s", "48h"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Setenv("OAUTH_ACCESS_TOKEN_TTL", env[0])
+			t.Setenv("OAUTH_REFRESH_TOKEN_TTL", env[1])
+			_, err := Load()
+			require.ErrorContains(t, err, "OAUTH_ACCESS_TOKEN_TTL")
+		})
+	}
+
+	t.Setenv("OAUTH_ACCESS_TOKEN_TTL", "soon")
+	_, err = Load()
+	require.Error(t, err, "an unparsable duration is a config error")
+}

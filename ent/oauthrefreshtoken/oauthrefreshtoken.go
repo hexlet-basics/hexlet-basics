@@ -29,6 +29,10 @@ const (
 	FieldAuthTime = "auth_time"
 	// FieldAccessTokenID holds the string denoting the access_token_id field in the database.
 	FieldAccessTokenID = "access_token_id"
+	// FieldFamilyID holds the string denoting the family_id field in the database.
+	FieldFamilyID = "family_id"
+	// FieldUsedAt holds the string denoting the used_at field in the database.
+	FieldUsedAt = "used_at"
 	// FieldExpiresAt holds the string denoting the expires_at field in the database.
 	FieldExpiresAt = "expires_at"
 	// Table holds the table name of the oauthrefreshtoken in the database.
@@ -46,6 +50,8 @@ var Columns = []string{
 	FieldScopes,
 	FieldAuthTime,
 	FieldAccessTokenID,
+	FieldFamilyID,
+	FieldUsedAt,
 	FieldExpiresAt,
 }
 
@@ -70,6 +76,8 @@ var (
 	TokenHashValidator func(string) error
 	// ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
 	ClientIDValidator func(string) error
+	// FamilyIDValidator is a validator for the "family_id" field. It is called by the builders before save.
+	FamilyIDValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(string) error
 )
@@ -120,6 +128,16 @@ func ByAuthTime(opts ...sql.OrderTermOption) OrderOption {
 // ByAccessTokenID orders the results by the access_token_id field.
 func ByAccessTokenID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAccessTokenID, opts...).ToFunc()
+}
+
+// ByFamilyID orders the results by the family_id field.
+func ByFamilyID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFamilyID, opts...).ToFunc()
+}
+
+// ByUsedAt orders the results by the used_at field.
+func ByUsedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUsedAt, opts...).ToFunc()
 }
 
 // ByExpiresAt orders the results by the expires_at field.

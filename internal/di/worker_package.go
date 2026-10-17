@@ -182,6 +182,7 @@ var workerPackage = do.Package(
 			jobs.AccountEmail(emailSender),
 			jobs.ReapExpiredSessions(manager, logger),
 			jobs.MaintainAuditPartitions(audit.NewPartitions(db), cfg.AuditRetentionMonths, logger),
+			jobs.PurgeOAuthTokens(entClient, logger),
 		}
 		if cfg.OpenAIAccessToken != "" {
 			llm := assistant.NewOpenAI(cfg.OpenAIAccessToken, cfg.OpenAIModel)

@@ -105,6 +105,16 @@ func AccessTokenID(v string) predicate.OAuthRefreshToken {
 	return predicate.OAuthRefreshToken(sql.FieldEQ(FieldAccessTokenID, v))
 }
 
+// FamilyID applies equality check predicate on the "family_id" field. It's identical to FamilyIDEQ.
+func FamilyID(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldEQ(FieldFamilyID, v))
+}
+
+// UsedAt applies equality check predicate on the "used_at" field. It's identical to UsedAtEQ.
+func UsedAt(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldEQ(FieldUsedAt, v))
+}
+
 // ExpiresAt applies equality check predicate on the "expires_at" field. It's identical to ExpiresAtEQ.
 func ExpiresAt(v time.Time) predicate.OAuthRefreshToken {
 	return predicate.OAuthRefreshToken(sql.FieldEQ(FieldExpiresAt, v))
@@ -513,6 +523,121 @@ func AccessTokenIDEqualFold(v string) predicate.OAuthRefreshToken {
 // AccessTokenIDContainsFold applies the ContainsFold predicate on the "access_token_id" field.
 func AccessTokenIDContainsFold(v string) predicate.OAuthRefreshToken {
 	return predicate.OAuthRefreshToken(sql.FieldContainsFold(FieldAccessTokenID, v))
+}
+
+// FamilyIDEQ applies the EQ predicate on the "family_id" field.
+func FamilyIDEQ(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldEQ(FieldFamilyID, v))
+}
+
+// FamilyIDNEQ applies the NEQ predicate on the "family_id" field.
+func FamilyIDNEQ(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldNEQ(FieldFamilyID, v))
+}
+
+// FamilyIDIn applies the In predicate on the "family_id" field.
+func FamilyIDIn(vs ...string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldIn(FieldFamilyID, vs...))
+}
+
+// FamilyIDNotIn applies the NotIn predicate on the "family_id" field.
+func FamilyIDNotIn(vs ...string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldNotIn(FieldFamilyID, vs...))
+}
+
+// FamilyIDGT applies the GT predicate on the "family_id" field.
+func FamilyIDGT(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldGT(FieldFamilyID, v))
+}
+
+// FamilyIDGTE applies the GTE predicate on the "family_id" field.
+func FamilyIDGTE(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldGTE(FieldFamilyID, v))
+}
+
+// FamilyIDLT applies the LT predicate on the "family_id" field.
+func FamilyIDLT(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldLT(FieldFamilyID, v))
+}
+
+// FamilyIDLTE applies the LTE predicate on the "family_id" field.
+func FamilyIDLTE(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldLTE(FieldFamilyID, v))
+}
+
+// FamilyIDContains applies the Contains predicate on the "family_id" field.
+func FamilyIDContains(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldContains(FieldFamilyID, v))
+}
+
+// FamilyIDHasPrefix applies the HasPrefix predicate on the "family_id" field.
+func FamilyIDHasPrefix(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldHasPrefix(FieldFamilyID, v))
+}
+
+// FamilyIDHasSuffix applies the HasSuffix predicate on the "family_id" field.
+func FamilyIDHasSuffix(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldHasSuffix(FieldFamilyID, v))
+}
+
+// FamilyIDEqualFold applies the EqualFold predicate on the "family_id" field.
+func FamilyIDEqualFold(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldEqualFold(FieldFamilyID, v))
+}
+
+// FamilyIDContainsFold applies the ContainsFold predicate on the "family_id" field.
+func FamilyIDContainsFold(v string) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldContainsFold(FieldFamilyID, v))
+}
+
+// UsedAtEQ applies the EQ predicate on the "used_at" field.
+func UsedAtEQ(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldEQ(FieldUsedAt, v))
+}
+
+// UsedAtNEQ applies the NEQ predicate on the "used_at" field.
+func UsedAtNEQ(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldNEQ(FieldUsedAt, v))
+}
+
+// UsedAtIn applies the In predicate on the "used_at" field.
+func UsedAtIn(vs ...time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldIn(FieldUsedAt, vs...))
+}
+
+// UsedAtNotIn applies the NotIn predicate on the "used_at" field.
+func UsedAtNotIn(vs ...time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldNotIn(FieldUsedAt, vs...))
+}
+
+// UsedAtGT applies the GT predicate on the "used_at" field.
+func UsedAtGT(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldGT(FieldUsedAt, v))
+}
+
+// UsedAtGTE applies the GTE predicate on the "used_at" field.
+func UsedAtGTE(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldGTE(FieldUsedAt, v))
+}
+
+// UsedAtLT applies the LT predicate on the "used_at" field.
+func UsedAtLT(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldLT(FieldUsedAt, v))
+}
+
+// UsedAtLTE applies the LTE predicate on the "used_at" field.
+func UsedAtLTE(v time.Time) predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldLTE(FieldUsedAt, v))
+}
+
+// UsedAtIsNil applies the IsNil predicate on the "used_at" field.
+func UsedAtIsNil() predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldIsNull(FieldUsedAt))
+}
+
+// UsedAtNotNil applies the NotNil predicate on the "used_at" field.
+func UsedAtNotNil() predicate.OAuthRefreshToken {
+	return predicate.OAuthRefreshToken(sql.FieldNotNull(FieldUsedAt))
 }
 
 // ExpiresAtEQ applies the EQ predicate on the "expires_at" field.

@@ -96,6 +96,26 @@ func (_c *OAuthRefreshTokenCreate) SetNillableAccessTokenID(v *string) *OAuthRef
 	return _c
 }
 
+// SetFamilyID sets the "family_id" field.
+func (_c *OAuthRefreshTokenCreate) SetFamilyID(v string) *OAuthRefreshTokenCreate {
+	_c.mutation.SetFamilyID(v)
+	return _c
+}
+
+// SetUsedAt sets the "used_at" field.
+func (_c *OAuthRefreshTokenCreate) SetUsedAt(v time.Time) *OAuthRefreshTokenCreate {
+	_c.mutation.SetUsedAt(v)
+	return _c
+}
+
+// SetNillableUsedAt sets the "used_at" field if the given value is not nil.
+func (_c *OAuthRefreshTokenCreate) SetNillableUsedAt(v *time.Time) *OAuthRefreshTokenCreate {
+	if v != nil {
+		_c.SetUsedAt(*v)
+	}
+	return _c
+}
+
 // SetExpiresAt sets the "expires_at" field.
 func (_c *OAuthRefreshTokenCreate) SetExpiresAt(v time.Time) *OAuthRefreshTokenCreate {
 	_c.mutation.SetExpiresAt(v)
@@ -186,6 +206,14 @@ func (_c *OAuthRefreshTokenCreate) check() error {
 	if _, ok := _c.mutation.AuthTime(); !ok {
 		return &ValidationError{Name: "auth_time", err: errors.New(`ent: missing required field "OAuthRefreshToken.auth_time"`)}
 	}
+	if _, ok := _c.mutation.FamilyID(); !ok {
+		return &ValidationError{Name: "family_id", err: errors.New(`ent: missing required field "OAuthRefreshToken.family_id"`)}
+	}
+	if v, ok := _c.mutation.FamilyID(); ok {
+		if err := oauthrefreshtoken.FamilyIDValidator(v); err != nil {
+			return &ValidationError{Name: "family_id", err: fmt.Errorf(`ent: validator failed for field "OAuthRefreshToken.family_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.ExpiresAt(); !ok {
 		return &ValidationError{Name: "expires_at", err: errors.New(`ent: missing required field "OAuthRefreshToken.expires_at"`)}
 	}
@@ -261,6 +289,14 @@ func (_c *OAuthRefreshTokenCreate) createSpec() (*OAuthRefreshToken, *sqlgraph.C
 	if value, ok := _c.mutation.AccessTokenID(); ok {
 		_spec.SetField(oauthrefreshtoken.FieldAccessTokenID, field.TypeString, value)
 		_node.AccessTokenID = &value
+	}
+	if value, ok := _c.mutation.FamilyID(); ok {
+		_spec.SetField(oauthrefreshtoken.FieldFamilyID, field.TypeString, value)
+		_node.FamilyID = value
+	}
+	if value, ok := _c.mutation.UsedAt(); ok {
+		_spec.SetField(oauthrefreshtoken.FieldUsedAt, field.TypeTime, value)
+		_node.UsedAt = &value
 	}
 	if value, ok := _c.mutation.ExpiresAt(); ok {
 		_spec.SetField(oauthrefreshtoken.FieldExpiresAt, field.TypeTime, value)
@@ -384,6 +420,24 @@ func (u *OAuthRefreshTokenUpsert) ClearAccessTokenID() *OAuthRefreshTokenUpsert 
 	return u
 }
 
+// SetUsedAt sets the "used_at" field.
+func (u *OAuthRefreshTokenUpsert) SetUsedAt(v time.Time) *OAuthRefreshTokenUpsert {
+	u.Set(oauthrefreshtoken.FieldUsedAt, v)
+	return u
+}
+
+// UpdateUsedAt sets the "used_at" field to the value that was provided on create.
+func (u *OAuthRefreshTokenUpsert) UpdateUsedAt() *OAuthRefreshTokenUpsert {
+	u.SetExcluded(oauthrefreshtoken.FieldUsedAt)
+	return u
+}
+
+// ClearUsedAt clears the value of the "used_at" field.
+func (u *OAuthRefreshTokenUpsert) ClearUsedAt() *OAuthRefreshTokenUpsert {
+	u.SetNull(oauthrefreshtoken.FieldUsedAt)
+	return u
+}
+
 // SetExpiresAt sets the "expires_at" field.
 func (u *OAuthRefreshTokenUpsert) SetExpiresAt(v time.Time) *OAuthRefreshTokenUpsert {
 	u.Set(oauthrefreshtoken.FieldExpiresAt, v)
@@ -421,6 +475,9 @@ func (u *OAuthRefreshTokenUpsertOne) UpdateNewValues() *OAuthRefreshTokenUpsertO
 		}
 		if _, exists := u.create.mutation.UserID(); exists {
 			s.SetIgnore(oauthrefreshtoken.FieldUserID)
+		}
+		if _, exists := u.create.mutation.FamilyID(); exists {
+			s.SetIgnore(oauthrefreshtoken.FieldFamilyID)
 		}
 	}))
 	return u
@@ -527,6 +584,27 @@ func (u *OAuthRefreshTokenUpsertOne) UpdateAccessTokenID() *OAuthRefreshTokenUps
 func (u *OAuthRefreshTokenUpsertOne) ClearAccessTokenID() *OAuthRefreshTokenUpsertOne {
 	return u.Update(func(s *OAuthRefreshTokenUpsert) {
 		s.ClearAccessTokenID()
+	})
+}
+
+// SetUsedAt sets the "used_at" field.
+func (u *OAuthRefreshTokenUpsertOne) SetUsedAt(v time.Time) *OAuthRefreshTokenUpsertOne {
+	return u.Update(func(s *OAuthRefreshTokenUpsert) {
+		s.SetUsedAt(v)
+	})
+}
+
+// UpdateUsedAt sets the "used_at" field to the value that was provided on create.
+func (u *OAuthRefreshTokenUpsertOne) UpdateUsedAt() *OAuthRefreshTokenUpsertOne {
+	return u.Update(func(s *OAuthRefreshTokenUpsert) {
+		s.UpdateUsedAt()
+	})
+}
+
+// ClearUsedAt clears the value of the "used_at" field.
+func (u *OAuthRefreshTokenUpsertOne) ClearUsedAt() *OAuthRefreshTokenUpsertOne {
+	return u.Update(func(s *OAuthRefreshTokenUpsert) {
+		s.ClearUsedAt()
 	})
 }
 
@@ -736,6 +814,9 @@ func (u *OAuthRefreshTokenUpsertBulk) UpdateNewValues() *OAuthRefreshTokenUpsert
 			if _, exists := b.mutation.UserID(); exists {
 				s.SetIgnore(oauthrefreshtoken.FieldUserID)
 			}
+			if _, exists := b.mutation.FamilyID(); exists {
+				s.SetIgnore(oauthrefreshtoken.FieldFamilyID)
+			}
 		}
 	}))
 	return u
@@ -842,6 +923,27 @@ func (u *OAuthRefreshTokenUpsertBulk) UpdateAccessTokenID() *OAuthRefreshTokenUp
 func (u *OAuthRefreshTokenUpsertBulk) ClearAccessTokenID() *OAuthRefreshTokenUpsertBulk {
 	return u.Update(func(s *OAuthRefreshTokenUpsert) {
 		s.ClearAccessTokenID()
+	})
+}
+
+// SetUsedAt sets the "used_at" field.
+func (u *OAuthRefreshTokenUpsertBulk) SetUsedAt(v time.Time) *OAuthRefreshTokenUpsertBulk {
+	return u.Update(func(s *OAuthRefreshTokenUpsert) {
+		s.SetUsedAt(v)
+	})
+}
+
+// UpdateUsedAt sets the "used_at" field to the value that was provided on create.
+func (u *OAuthRefreshTokenUpsertBulk) UpdateUsedAt() *OAuthRefreshTokenUpsertBulk {
+	return u.Update(func(s *OAuthRefreshTokenUpsert) {
+		s.UpdateUsedAt()
+	})
+}
+
+// ClearUsedAt clears the value of the "used_at" field.
+func (u *OAuthRefreshTokenUpsertBulk) ClearUsedAt() *OAuthRefreshTokenUpsertBulk {
+	return u.Update(func(s *OAuthRefreshTokenUpsert) {
+		s.ClearUsedAt()
 	})
 }
 

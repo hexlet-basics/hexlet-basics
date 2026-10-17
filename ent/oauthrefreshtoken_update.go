@@ -89,6 +89,26 @@ func (_u *OAuthRefreshTokenUpdate) ClearAccessTokenID() *OAuthRefreshTokenUpdate
 	return _u
 }
 
+// SetUsedAt sets the "used_at" field.
+func (_u *OAuthRefreshTokenUpdate) SetUsedAt(v time.Time) *OAuthRefreshTokenUpdate {
+	_u.mutation.SetUsedAt(v)
+	return _u
+}
+
+// SetNillableUsedAt sets the "used_at" field if the given value is not nil.
+func (_u *OAuthRefreshTokenUpdate) SetNillableUsedAt(v *time.Time) *OAuthRefreshTokenUpdate {
+	if v != nil {
+		_u.SetUsedAt(*v)
+	}
+	return _u
+}
+
+// ClearUsedAt clears the value of the "used_at" field.
+func (_u *OAuthRefreshTokenUpdate) ClearUsedAt() *OAuthRefreshTokenUpdate {
+	_u.mutation.ClearUsedAt()
+	return _u
+}
+
 // SetExpiresAt sets the "expires_at" field.
 func (_u *OAuthRefreshTokenUpdate) SetExpiresAt(v time.Time) *OAuthRefreshTokenUpdate {
 	_u.mutation.SetExpiresAt(v)
@@ -184,6 +204,12 @@ func (_u *OAuthRefreshTokenUpdate) sqlSave(ctx context.Context) (_node int, err 
 	if _u.mutation.AccessTokenIDCleared() {
 		_spec.ClearField(oauthrefreshtoken.FieldAccessTokenID, field.TypeString)
 	}
+	if value, ok := _u.mutation.UsedAt(); ok {
+		_spec.SetField(oauthrefreshtoken.FieldUsedAt, field.TypeTime, value)
+	}
+	if _u.mutation.UsedAtCleared() {
+		_spec.ClearField(oauthrefreshtoken.FieldUsedAt, field.TypeTime)
+	}
 	if value, ok := _u.mutation.ExpiresAt(); ok {
 		_spec.SetField(oauthrefreshtoken.FieldExpiresAt, field.TypeTime, value)
 	}
@@ -264,6 +290,26 @@ func (_u *OAuthRefreshTokenUpdateOne) SetNillableAccessTokenID(v *string) *OAuth
 // ClearAccessTokenID clears the value of the "access_token_id" field.
 func (_u *OAuthRefreshTokenUpdateOne) ClearAccessTokenID() *OAuthRefreshTokenUpdateOne {
 	_u.mutation.ClearAccessTokenID()
+	return _u
+}
+
+// SetUsedAt sets the "used_at" field.
+func (_u *OAuthRefreshTokenUpdateOne) SetUsedAt(v time.Time) *OAuthRefreshTokenUpdateOne {
+	_u.mutation.SetUsedAt(v)
+	return _u
+}
+
+// SetNillableUsedAt sets the "used_at" field if the given value is not nil.
+func (_u *OAuthRefreshTokenUpdateOne) SetNillableUsedAt(v *time.Time) *OAuthRefreshTokenUpdateOne {
+	if v != nil {
+		_u.SetUsedAt(*v)
+	}
+	return _u
+}
+
+// ClearUsedAt clears the value of the "used_at" field.
+func (_u *OAuthRefreshTokenUpdateOne) ClearUsedAt() *OAuthRefreshTokenUpdateOne {
+	_u.mutation.ClearUsedAt()
 	return _u
 }
 
@@ -391,6 +437,12 @@ func (_u *OAuthRefreshTokenUpdateOne) sqlSave(ctx context.Context) (_node *OAuth
 	}
 	if _u.mutation.AccessTokenIDCleared() {
 		_spec.ClearField(oauthrefreshtoken.FieldAccessTokenID, field.TypeString)
+	}
+	if value, ok := _u.mutation.UsedAt(); ok {
+		_spec.SetField(oauthrefreshtoken.FieldUsedAt, field.TypeTime, value)
+	}
+	if _u.mutation.UsedAtCleared() {
+		_spec.ClearField(oauthrefreshtoken.FieldUsedAt, field.TypeTime)
 	}
 	if value, ok := _u.mutation.ExpiresAt(); ok {
 		_spec.SetField(oauthrefreshtoken.FieldExpiresAt, field.TypeTime, value)

@@ -34,6 +34,10 @@ type OAuthRefreshToken struct {
 	AuthTime time.Time `json:"auth_time,omitempty"`
 	// AccessTokenID holds the value of the "access_token_id" field.
 	AccessTokenID *string `json:"access_token_id,omitempty"`
+	// FamilyID holds the value of the "family_id" field.
+	FamilyID string `json:"family_id,omitempty"`
+	// UsedAt holds the value of the "used_at" field.
+	UsedAt *time.Time `json:"used_at,omitempty"`
 	// ExpiresAt holds the value of the "expires_at" field.
 	ExpiresAt    time.Time `json:"expires_at,omitempty"`
 	selectValues sql.SelectValues
@@ -48,9 +52,9 @@ func (*OAuthRefreshToken) scanValues(columns []string) ([]any, error) {
 			values[i] = new(pq.StringArray)
 		case oauthrefreshtoken.FieldUserID:
 			values[i] = new(sql.NullInt64)
-		case oauthrefreshtoken.FieldID, oauthrefreshtoken.FieldTokenHash, oauthrefreshtoken.FieldClientID, oauthrefreshtoken.FieldAccessTokenID:
+		case oauthrefreshtoken.FieldID, oauthrefreshtoken.FieldTokenHash, oauthrefreshtoken.FieldClientID, oauthrefreshtoken.FieldAccessTokenID, oauthrefreshtoken.FieldFamilyID:
 			values[i] = new(sql.NullString)
-		case oauthrefreshtoken.FieldCreatedAt, oauthrefreshtoken.FieldUpdatedAt, oauthrefreshtoken.FieldAuthTime, oauthrefreshtoken.FieldExpiresAt:
+		case oauthrefreshtoken.FieldCreatedAt, oauthrefreshtoken.FieldUpdatedAt, oauthrefreshtoken.FieldAuthTime, oauthrefreshtoken.FieldUsedAt, oauthrefreshtoken.FieldExpiresAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -122,6 +126,19 @@ func (_m *OAuthRefreshToken) assignValues(columns []string, values []any) error 
 				_m.AccessTokenID = new(string)
 				*_m.AccessTokenID = value.String
 			}
+		case oauthrefreshtoken.FieldFamilyID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field family_id", values[i])
+			} else if value.Valid {
+				_m.FamilyID = value.String
+			}
+		case oauthrefreshtoken.FieldUsedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field used_at", values[i])
+			} else if value.Valid {
+				_m.UsedAt = new(time.Time)
+				*_m.UsedAt = value.Time
+			}
 		case oauthrefreshtoken.FieldExpiresAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field expires_at", values[i])
@@ -187,6 +204,14 @@ func (_m *OAuthRefreshToken) String() string {
 	if v := _m.AccessTokenID; v != nil {
 		builder.WriteString("access_token_id=")
 		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("family_id=")
+	builder.WriteString(_m.FamilyID)
+	builder.WriteString(", ")
+	if v := _m.UsedAt; v != nil {
+		builder.WriteString("used_at=")
+		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
 	builder.WriteString("expires_at=")

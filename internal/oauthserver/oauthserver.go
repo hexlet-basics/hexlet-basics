@@ -51,9 +51,10 @@ const (
 	metadataPath      = "/.well-known/oauth-authorization-server"
 	openIDMetadataURI = "/.well-known/openid-configuration"
 
-	authRequestLifetime  = 10 * time.Minute
-	accessTokenLifetime  = time.Hour
-	refreshTokenLifetime = 30 * 24 * time.Hour
+	authRequestLifetime = 10 * time.Minute
+	// Defaults of Config.AccessTokenLifetime and Config.RefreshTokenLifetime.
+	defaultAccessTokenLifetime  = time.Hour
+	defaultRefreshTokenLifetime = 30 * 24 * time.Hour
 )
 
 // Scopes a user can consent to (ADR-0019). They record what was consented to and
@@ -90,6 +91,10 @@ type Config struct {
 	// make per RegistrationWindow; zero values mean the package defaults.
 	RegistrationLimit  int
 	RegistrationWindow time.Duration
+	// AccessTokenLifetime and RefreshTokenLifetime default to an hour and thirty
+	// days when zero.
+	AccessTokenLifetime  time.Duration
+	RefreshTokenLifetime time.Duration
 }
 
 // Deps are the collaborators of the Server.
@@ -137,6 +142,12 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 	if deps.Now == nil {
 		deps.Now = time.Now
 	}
+	if deps.Config.AccessTokenLifetime <= 0 {
+		deps.Config.AccessTokenLifetime = defaultAccessTokenLifetime
+	}
+	if deps.Config.RefreshTokenLifetime <= 0 {
+		deps.Config.RefreshTokenLifetime = defaultRefreshTokenLifetime
+	}
 	issuer, err := url.Parse(deps.Config.Issuer)
 	if err != nil {
 		return nil, fmt.Errorf("oauthserver: parse issuer: %w", err)
@@ -151,6 +162,9 @@ func New(deps Deps, opts ...Option) (*Server, error) {
 		resource: deps.Config.Issuer + mcpPath,
 		now:      deps.Now,
 		signing:  signing,
+
+		accessLifetime:  deps.Config.AccessTokenLifetime,
+		refreshLifetime: deps.Config.RefreshTokenLifetime,
 	}
 
 	providerOpts := []op.Option{

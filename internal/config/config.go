@@ -128,6 +128,12 @@ type OAuthConfig struct {
 	RegistrationLimit int `env:"REGISTRATION_LIMIT" envDefault:"10"`
 	// RegistrationWindow is the period RegistrationLimit counts over.
 	RegistrationWindow time.Duration `env:"REGISTRATION_WINDOW" envDefault:"1h"`
+	// AccessTokenTTL is how long an access token lives. Short, because a bearer
+	// token cannot be recalled once stolen except by revoking its row.
+	AccessTokenTTL time.Duration `env:"ACCESS_TOKEN_TTL" envDefault:"1h"`
+	// RefreshTokenTTL is how long a refresh token (and so a connection that is not
+	// used) lives. Each refresh issues a new token with a fresh full lifetime.
+	RefreshTokenTTL time.Duration `env:"REFRESH_TOKEN_TTL" envDefault:"720h"`
 }
 
 // OAuthMinKeyLength is the shortest accepted EncryptionKey.
@@ -264,6 +270,11 @@ func validateOAuth(cfg OAuthConfig) error {
 	// the anonymous registration endpoint cannot be switched off by accident.
 	if cfg.RegistrationLimit < 1 || cfg.RegistrationWindow < time.Second {
 		return oops.Errorf("OAUTH_REGISTRATION_LIMIT must be at least 1 and OAUTH_REGISTRATION_WINDOW at least 1s")
+	}
+	// A shorter access lifetime would issue tokens that are born expired, and a
+	// refresh token that does not outlive its access token could never refresh.
+	if cfg.AccessTokenTTL < time.Minute || cfg.RefreshTokenTTL <= cfg.AccessTokenTTL {
+		return oops.Errorf("OAUTH_ACCESS_TOKEN_TTL must be at least 1m and OAUTH_REFRESH_TOKEN_TTL longer than it")
 	}
 	return nil
 }

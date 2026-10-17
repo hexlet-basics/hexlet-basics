@@ -25521,6 +25521,7 @@ type OAuthAccessTokenMutation struct {
 	adduser_id       *int
 	scopes           *pq.StringArray
 	refresh_token_id *string
+	family_id        *string
 	expires_at       *time.Time
 	clearedFields    map[string]struct{}
 	done             bool
@@ -25881,6 +25882,42 @@ func (m *OAuthAccessTokenMutation) ResetRefreshTokenID() {
 	delete(m.clearedFields, oauthaccesstoken.FieldRefreshTokenID)
 }
 
+// SetFamilyID sets the "family_id" field.
+func (m *OAuthAccessTokenMutation) SetFamilyID(s string) {
+	m.family_id = &s
+}
+
+// FamilyID returns the value of the "family_id" field in the mutation.
+func (m *OAuthAccessTokenMutation) FamilyID() (r string, exists bool) {
+	v := m.family_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFamilyID returns the old "family_id" field's value of the OAuthAccessToken entity.
+// If the OAuthAccessToken object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthAccessTokenMutation) OldFamilyID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFamilyID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFamilyID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFamilyID: %w", err)
+	}
+	return oldValue.FamilyID, nil
+}
+
+// ResetFamilyID resets all changes to the "family_id" field.
+func (m *OAuthAccessTokenMutation) ResetFamilyID() {
+	m.family_id = nil
+}
+
 // SetExpiresAt sets the "expires_at" field.
 func (m *OAuthAccessTokenMutation) SetExpiresAt(t time.Time) {
 	m.expires_at = &t
@@ -25951,7 +25988,7 @@ func (m *OAuthAccessTokenMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OAuthAccessTokenMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, oauthaccesstoken.FieldCreatedAt)
 	}
@@ -25969,6 +26006,9 @@ func (m *OAuthAccessTokenMutation) Fields() []string {
 	}
 	if m.refresh_token_id != nil {
 		fields = append(fields, oauthaccesstoken.FieldRefreshTokenID)
+	}
+	if m.family_id != nil {
+		fields = append(fields, oauthaccesstoken.FieldFamilyID)
 	}
 	if m.expires_at != nil {
 		fields = append(fields, oauthaccesstoken.FieldExpiresAt)
@@ -25993,6 +26033,8 @@ func (m *OAuthAccessTokenMutation) Field(name string) (ent.Value, bool) {
 		return m.Scopes()
 	case oauthaccesstoken.FieldRefreshTokenID:
 		return m.RefreshTokenID()
+	case oauthaccesstoken.FieldFamilyID:
+		return m.FamilyID()
 	case oauthaccesstoken.FieldExpiresAt:
 		return m.ExpiresAt()
 	}
@@ -26016,6 +26058,8 @@ func (m *OAuthAccessTokenMutation) OldField(ctx context.Context, name string) (e
 		return m.OldScopes(ctx)
 	case oauthaccesstoken.FieldRefreshTokenID:
 		return m.OldRefreshTokenID(ctx)
+	case oauthaccesstoken.FieldFamilyID:
+		return m.OldFamilyID(ctx)
 	case oauthaccesstoken.FieldExpiresAt:
 		return m.OldExpiresAt(ctx)
 	}
@@ -26068,6 +26112,13 @@ func (m *OAuthAccessTokenMutation) SetField(name string, value ent.Value) error 
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRefreshTokenID(v)
+		return nil
+	case oauthaccesstoken.FieldFamilyID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFamilyID(v)
 		return nil
 	case oauthaccesstoken.FieldExpiresAt:
 		v, ok := value.(time.Time)
@@ -26166,6 +26217,9 @@ func (m *OAuthAccessTokenMutation) ResetField(name string) error {
 		return nil
 	case oauthaccesstoken.FieldRefreshTokenID:
 		m.ResetRefreshTokenID()
+		return nil
+	case oauthaccesstoken.FieldFamilyID:
+		m.ResetFamilyID()
 		return nil
 	case oauthaccesstoken.FieldExpiresAt:
 		m.ResetExpiresAt()
@@ -28094,6 +28148,8 @@ type OAuthRefreshTokenMutation struct {
 	scopes          *pq.StringArray
 	auth_time       *time.Time
 	access_token_id *string
+	family_id       *string
+	used_at         *time.Time
 	expires_at      *time.Time
 	clearedFields   map[string]struct{}
 	done            bool
@@ -28526,6 +28582,91 @@ func (m *OAuthRefreshTokenMutation) ResetAccessTokenID() {
 	delete(m.clearedFields, oauthrefreshtoken.FieldAccessTokenID)
 }
 
+// SetFamilyID sets the "family_id" field.
+func (m *OAuthRefreshTokenMutation) SetFamilyID(s string) {
+	m.family_id = &s
+}
+
+// FamilyID returns the value of the "family_id" field in the mutation.
+func (m *OAuthRefreshTokenMutation) FamilyID() (r string, exists bool) {
+	v := m.family_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFamilyID returns the old "family_id" field's value of the OAuthRefreshToken entity.
+// If the OAuthRefreshToken object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthRefreshTokenMutation) OldFamilyID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFamilyID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFamilyID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFamilyID: %w", err)
+	}
+	return oldValue.FamilyID, nil
+}
+
+// ResetFamilyID resets all changes to the "family_id" field.
+func (m *OAuthRefreshTokenMutation) ResetFamilyID() {
+	m.family_id = nil
+}
+
+// SetUsedAt sets the "used_at" field.
+func (m *OAuthRefreshTokenMutation) SetUsedAt(t time.Time) {
+	m.used_at = &t
+}
+
+// UsedAt returns the value of the "used_at" field in the mutation.
+func (m *OAuthRefreshTokenMutation) UsedAt() (r time.Time, exists bool) {
+	v := m.used_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUsedAt returns the old "used_at" field's value of the OAuthRefreshToken entity.
+// If the OAuthRefreshToken object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OAuthRefreshTokenMutation) OldUsedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUsedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUsedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUsedAt: %w", err)
+	}
+	return oldValue.UsedAt, nil
+}
+
+// ClearUsedAt clears the value of the "used_at" field.
+func (m *OAuthRefreshTokenMutation) ClearUsedAt() {
+	m.used_at = nil
+	m.clearedFields[oauthrefreshtoken.FieldUsedAt] = struct{}{}
+}
+
+// UsedAtCleared returns if the "used_at" field was cleared in this mutation.
+func (m *OAuthRefreshTokenMutation) UsedAtCleared() bool {
+	_, ok := m.clearedFields[oauthrefreshtoken.FieldUsedAt]
+	return ok
+}
+
+// ResetUsedAt resets all changes to the "used_at" field.
+func (m *OAuthRefreshTokenMutation) ResetUsedAt() {
+	m.used_at = nil
+	delete(m.clearedFields, oauthrefreshtoken.FieldUsedAt)
+}
+
 // SetExpiresAt sets the "expires_at" field.
 func (m *OAuthRefreshTokenMutation) SetExpiresAt(t time.Time) {
 	m.expires_at = &t
@@ -28596,7 +28737,7 @@ func (m *OAuthRefreshTokenMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OAuthRefreshTokenMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, oauthrefreshtoken.FieldCreatedAt)
 	}
@@ -28620,6 +28761,12 @@ func (m *OAuthRefreshTokenMutation) Fields() []string {
 	}
 	if m.access_token_id != nil {
 		fields = append(fields, oauthrefreshtoken.FieldAccessTokenID)
+	}
+	if m.family_id != nil {
+		fields = append(fields, oauthrefreshtoken.FieldFamilyID)
+	}
+	if m.used_at != nil {
+		fields = append(fields, oauthrefreshtoken.FieldUsedAt)
 	}
 	if m.expires_at != nil {
 		fields = append(fields, oauthrefreshtoken.FieldExpiresAt)
@@ -28648,6 +28795,10 @@ func (m *OAuthRefreshTokenMutation) Field(name string) (ent.Value, bool) {
 		return m.AuthTime()
 	case oauthrefreshtoken.FieldAccessTokenID:
 		return m.AccessTokenID()
+	case oauthrefreshtoken.FieldFamilyID:
+		return m.FamilyID()
+	case oauthrefreshtoken.FieldUsedAt:
+		return m.UsedAt()
 	case oauthrefreshtoken.FieldExpiresAt:
 		return m.ExpiresAt()
 	}
@@ -28675,6 +28826,10 @@ func (m *OAuthRefreshTokenMutation) OldField(ctx context.Context, name string) (
 		return m.OldAuthTime(ctx)
 	case oauthrefreshtoken.FieldAccessTokenID:
 		return m.OldAccessTokenID(ctx)
+	case oauthrefreshtoken.FieldFamilyID:
+		return m.OldFamilyID(ctx)
+	case oauthrefreshtoken.FieldUsedAt:
+		return m.OldUsedAt(ctx)
 	case oauthrefreshtoken.FieldExpiresAt:
 		return m.OldExpiresAt(ctx)
 	}
@@ -28742,6 +28897,20 @@ func (m *OAuthRefreshTokenMutation) SetField(name string, value ent.Value) error
 		}
 		m.SetAccessTokenID(v)
 		return nil
+	case oauthrefreshtoken.FieldFamilyID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFamilyID(v)
+		return nil
+	case oauthrefreshtoken.FieldUsedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUsedAt(v)
+		return nil
 	case oauthrefreshtoken.FieldExpiresAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -28797,6 +28966,9 @@ func (m *OAuthRefreshTokenMutation) ClearedFields() []string {
 	if m.FieldCleared(oauthrefreshtoken.FieldAccessTokenID) {
 		fields = append(fields, oauthrefreshtoken.FieldAccessTokenID)
 	}
+	if m.FieldCleared(oauthrefreshtoken.FieldUsedAt) {
+		fields = append(fields, oauthrefreshtoken.FieldUsedAt)
+	}
 	return fields
 }
 
@@ -28813,6 +28985,9 @@ func (m *OAuthRefreshTokenMutation) ClearField(name string) error {
 	switch name {
 	case oauthrefreshtoken.FieldAccessTokenID:
 		m.ClearAccessTokenID()
+		return nil
+	case oauthrefreshtoken.FieldUsedAt:
+		m.ClearUsedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown OAuthRefreshToken nullable field %s", name)
@@ -28845,6 +29020,12 @@ func (m *OAuthRefreshTokenMutation) ResetField(name string) error {
 		return nil
 	case oauthrefreshtoken.FieldAccessTokenID:
 		m.ResetAccessTokenID()
+		return nil
+	case oauthrefreshtoken.FieldFamilyID:
+		m.ResetFamilyID()
+		return nil
+	case oauthrefreshtoken.FieldUsedAt:
+		m.ResetUsedAt()
 		return nil
 	case oauthrefreshtoken.FieldExpiresAt:
 		m.ResetExpiresAt()

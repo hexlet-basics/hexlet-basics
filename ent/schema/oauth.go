@@ -119,6 +119,9 @@ func (OAuthAccessToken) Fields() []ent.Field {
 		field.Other("scopes", pq.StringArray{}).
 			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
 		field.String("refresh_token_id").Optional().Nillable(),
+		// The authorization this token descends from; revoking the family
+		// deletes every access token carrying it.
+		field.String("family_id").NotEmpty().Immutable(),
 		field.Time("expires_at").Immutable(),
 	}
 }
@@ -129,7 +132,8 @@ func (OAuthAccessToken) Mixin() []ent.Mixin {
 
 // OAuthRefreshToken is a refresh token the client holds. Its value is chosen by
 // the server's storage, so only a SHA-256 hash is kept: the row can verify a
-// presented token but never reproduce one.
+// presented token but never reproduce one. A rotated token is marked used, not
+// deleted: it is the tombstone that makes a replay detectable.
 type OAuthRefreshToken struct {
 	ent.Schema
 }
@@ -148,6 +152,13 @@ func (OAuthRefreshToken) Fields() []ent.Field {
 			SchemaType(map[string]string{dialect.Postgres: "varchar[]"}),
 		field.Time("auth_time"),
 		field.String("access_token_id").Optional().Nillable(),
+		// The authorization the token descends from. Every rotation keeps it, so
+		// a replayed refresh token can revoke everything issued since.
+		field.String("family_id").NotEmpty().Immutable(),
+		// Set when the token is exchanged. A used token stays on file (until its
+		// expiry) so that presenting it again is recognised as reuse rather than
+		// as an unknown token.
+		field.Time("used_at").Optional().Nillable(),
 		field.Time("expires_at"),
 	}
 }

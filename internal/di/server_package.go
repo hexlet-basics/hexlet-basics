@@ -500,10 +500,12 @@ var serverPackage = do.Package(
 		}
 		return oauthserver.New(oauthserver.Deps{
 			Config: oauthserver.Config{
-				Issuer:             cfg.OAuth.Issuer,
-				EncryptionKey:      cfg.OAuth.EncryptionKey,
-				RegistrationLimit:  cfg.OAuth.RegistrationLimit,
-				RegistrationWindow: cfg.OAuth.RegistrationWindow,
+				Issuer:               cfg.OAuth.Issuer,
+				EncryptionKey:        cfg.OAuth.EncryptionKey,
+				RegistrationLimit:    cfg.OAuth.RegistrationLimit,
+				RegistrationWindow:   cfg.OAuth.RegistrationWindow,
+				AccessTokenLifetime:  cfg.OAuth.AccessTokenTTL,
+				RefreshTokenLifetime: cfg.OAuth.RefreshTokenTTL,
 			},
 			DB:            db,
 			Transactor:    txStore,
