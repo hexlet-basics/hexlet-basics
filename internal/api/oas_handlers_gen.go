@@ -17864,8 +17864,8 @@ func (s *Server) handleGetCourseRequest(args [1]string, argsEscaped bool, w http
 // Lesson player payload (theory, starter code, tests) by slug, plus the visitor's progress.
 //
 // Reading a lesson never starts it: the frontend preloads routes on hover, so a read with that effect
-// would enroll a learner in every lesson they pointed at (ADR-0012). Theory stays public and indexable
-// for everyone, including a lesson the visitor may not take yet.
+// would enroll a learner in every lesson they pointed at (ADR-0012). Theory is public and indexable
+// for everyone.
 //
 // GET /api/languages/{courseSlug}/lessons/{slug}
 func (s *Server) handleGetCourseLessonRequest(args [2]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
