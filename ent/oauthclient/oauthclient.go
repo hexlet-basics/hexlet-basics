@@ -25,6 +25,8 @@ const (
 	FieldRedirectUris = "redirect_uris"
 	// FieldScopes holds the string denoting the scopes field in the database.
 	FieldScopes = "scopes"
+	// FieldMetadataExpiresAt holds the string denoting the metadata_expires_at field in the database.
+	FieldMetadataExpiresAt = "metadata_expires_at"
 	// Table holds the table name of the oauthclient in the database.
 	Table = "oauth_clients"
 )
@@ -38,6 +40,7 @@ var Columns = []string{
 	FieldName,
 	FieldRedirectUris,
 	FieldScopes,
+	FieldMetadataExpiresAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -99,4 +102,9 @@ func ByRedirectUris(opts ...sql.OrderTermOption) OrderOption {
 // ByScopes orders the results by the scopes field.
 func ByScopes(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldScopes, opts...).ToFunc()
+}
+
+// ByMetadataExpiresAt orders the results by the metadata_expires_at field.
+func ByMetadataExpiresAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetadataExpiresAt, opts...).ToFunc()
 }

@@ -91,6 +91,13 @@ func (s *Server) authorize(w http.ResponseWriter, r *http.Request) {
 	ctx := op.ContextWithIssuer(r.Context(), s.issuer)
 	if err := r.ParseForm(); err == nil {
 		ctx = context.WithValue(ctx, resourceKey{}, r.Form["resource"])
+		// A client id that is a URL is registered by its metadata document, which
+		// is fetched (or refreshed) here, before the library looks the client up.
+		address, _ := s.clientAddress(ctx)
+		if derr := s.documents.ensure(ctx, r.Form.Get("client_id"), address); derr != nil {
+			writeDocumentError(w, derr)
+			return
+		}
 	}
 	op.Authorize(s.issuerWriter(w), r.WithContext(ctx), authorizer{Provider: s.provider, s: s})
 }

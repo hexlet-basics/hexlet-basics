@@ -56,22 +56,49 @@ type OAuth struct {
 	// Router is the production router; mounted OAuth endpoints and the generated
 	// API (the consent operations) are both reachable through it.
 	Router http.Handler
+	// Documents is the web host of Client ID Metadata Documents: the server
+	// fetches the documents it publishes the way it would fetch them from the
+	// internet (https, a hostname), but they are served from this process.
+	Documents *ClientDocuments
 
 	now time.Time
 }
 
 // NewOAuth builds the stack. The clock starts at the real time and moves only
 // through Advance, so a token can be expired without sleeping.
+//
+// Client ID Metadata Documents are fetched from o.Documents (see ClientDocuments).
 func NewOAuth(t *testing.T) *OAuth {
+	t.Helper()
+	return newOAuth(t, true)
+}
+
+// NewOAuthWithProductionFetcher is NewOAuth with the metadata document client
+// the application wires in production, which refuses every non-public address.
+// A test about what the server will not fetch uses it; there is no document
+// host behind it.
+func NewOAuthWithProductionFetcher(t *testing.T) *OAuth {
+	t.Helper()
+	return newOAuth(t, false)
+}
+
+func newOAuth(t *testing.T, documentHost bool) *OAuth {
 	t.Helper()
 	db, tx, transactor := NewClientWithTxAndTransactor(t)
 	o := &OAuth{t: t, DB: db, now: time.Now()}
+	if documentHost {
+		o.Documents = newClientDocuments(t)
+	}
 
 	translator := NewTranslator(t)
 	errorHandler := NewAPIErrorHandler(t, translator)
 	services := NewServices(t, tx, transactor)
 	mocks := NewMocks()
 
+	var serverOpts []oauthserver.Option
+	if documentHost {
+		serverOpts = append(serverOpts, oauthserver.WithMetadataHTTPClient(o.Documents.client))
+	}
 	server, err := oauthserver.New(oauthserver.Deps{
 		Config:        oauthserver.Config{Issuer: OAuthIssuer, EncryptionKey: oauthEncryptionKey},
 		DB:            db,
@@ -79,7 +106,7 @@ func NewOAuth(t *testing.T) *OAuth {
 		App:           handlers.OAuthSession{},
 		ClientAddress: handlers.ClientIP,
 		Now:           func() time.Time { return o.now },
-	})
+	}, serverOpts...)
 	require.NoError(t, err)
 	o.Server = server
 

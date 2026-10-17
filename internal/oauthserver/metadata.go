@@ -45,6 +45,10 @@ func (s *Server) metadata(w http.ResponseWriter, r *http.Request) {
 	// RFC 7591: where a client registers itself. The library's discovery type has
 	// no field for it.
 	out["registration_endpoint"] = s.issuer + registerPath
+	// A client may use an https URL as its client_id, and we fetch the document
+	// there (draft-ietf-oauth-client-id-metadata-document): MCP clients look for
+	// this flag before choosing between that and dynamic registration.
+	out["client_id_metadata_document_supported"] = true
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 	_ = json.NewEncoder(w).Encode(out)
