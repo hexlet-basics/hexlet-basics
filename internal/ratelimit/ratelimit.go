@@ -1,6 +1,6 @@
 // Package ratelimit is a fixed-window counter keyed by an opaque string. The
-// OAuth server counts client registrations per address with it (ADR-0019) and
-// the MCP endpoint counts tool calls per user and per Connected App (ADR-0018).
+// OAuth server counts client registrations per address with it (ADR-0020) and
+// the MCP endpoint counts tool calls per user and per Connected App (ADR-0019).
 //
 // It lives in memory, per replica: with several replicas a key gets its limit
 // once per replica. That is a deliberate trade for having no table to clean and

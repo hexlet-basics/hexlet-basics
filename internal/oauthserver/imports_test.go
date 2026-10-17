@@ -10,7 +10,7 @@ import (
 
 // TestThePackageDoesNotDependOnTheHTTPHandlers fails if internal/oauthserver
 // starts importing internal/handlers, directly or through another package
-// (ADR-0019): the server is meant to be liftable out of the application and
+// (ADR-0020): the server is meant to be liftable out of the application and
 // reaches it only through the Application interface. `go list -deps` follows
 // transitive imports, which a lint rule on direct imports would miss. The
 // package's own tests are excluded on purpose: they use testsupport, which

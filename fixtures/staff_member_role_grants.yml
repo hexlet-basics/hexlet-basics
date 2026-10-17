@@ -20,7 +20,7 @@
   created_at: '2026-07-26 20:50:30'
   updated_at: '2026-07-26 20:50:30'
 # The blog updater edits and cannot publish; the blog publisher publishes and
-# cannot edit: publishing is not an update (ADR-0017).
+# cannot edit: publishing is not an update (ADR-0018).
 - id: {{ id "staff_grant_blog_updater_update" }}
   role_id: {{ id "staff_role_blog_updater" }}
   permission: blog_posts.update

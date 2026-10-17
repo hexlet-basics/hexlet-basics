@@ -3,7 +3,7 @@ package mcpserver
 import "context"
 
 // Principal is who an admin tool call acts for, as the generated server's
-// security handler sees it (ADR-0018 addendum, #854). The tool dispatcher puts
+// security handler sees it (ADR-0019 addendum, #854). The tool dispatcher puts
 // one in the context of the in-process request it sends through the generated
 // server; handlers.Security.HandleAdminSession, the one check the HTTP
 // operations also pass, reads it instead of a session and decides from the

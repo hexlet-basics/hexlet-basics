@@ -14,7 +14,7 @@ import (
 
 // mcpPath is where the MCP endpoint lives. The canonical resource URL is the
 // configured issuer plus this path: one value, built once from configuration,
-// never from a request (ADR-0019 addendum, #841).
+// never from a request (ADR-0020 addendum, #841).
 const mcpPath = "/mcp"
 
 // Resource is the canonical URL of the MCP endpoint (RFC 8707): the one resource

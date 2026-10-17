@@ -57,7 +57,7 @@ func (s *Server) AdminDeleteReview(ctx context.Context, params api.AdminDeleteRe
 	return &api.AdminDeleteReviewNoContent{}, nil
 }
 
-// A state is not an update (ADR-0017, state transitions addendum): the
+// A state is not an update (ADR-0018, state transitions addendum): the
 // Publication State of a review moves only through the three operations below,
 // each with its own Permission, and the legal moves are the reviews module's
 // (the shared transitions.Publish, Unpublish and Archive). A new review is a

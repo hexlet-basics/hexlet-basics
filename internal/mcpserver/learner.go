@@ -13,7 +13,7 @@ import (
 	"hexletbasics/internal/progress"
 )
 
-// The learner tools (ADR-0018). getMyDashboard is the operationId of the HTTP
+// The learner tools (ADR-0019). getMyDashboard is the operationId of the HTTP
 // operation it mirrors; the other two compose what the course and lesson pages
 // read and are named for what they answer, because the contract has no single
 // operation for them (it cannot tell Started from Not started per Lesson).

@@ -20,7 +20,7 @@ import (
 // time the record is given up (and logged) rather than holding the response.
 const publishTimeout = 2 * time.Second
 
-// NewPersonalDataReadMiddleware records staff reads of personal data (ADR-0017
+// NewPersonalDataReadMiddleware records staff reads of personal data (ADR-0018
 // addendum), the sibling of NewAuditMiddleware for the operations that change
 // nothing. It is selected by the contract: an operation that declares
 // `x-personal-data` (permissions.PersonalDataEntity) is recorded, every other
@@ -38,7 +38,7 @@ const publishTimeout = 2 * time.Second
 //
 // Only an answer that holds data is a read: a handler error, or a response that
 // is an error body rather than a row or a list, records nothing. A refused call
-// never gets here; the security handler records it (AuthHandler.HandleAdminSession).
+// never gets here; the security handler records it (Security.HandleAdminSession).
 // The MCP server dispatches through the same middleware with audit.WithSource
 // set, so the same record carries the channel and Connected App.
 func NewPersonalDataReadMiddleware(publisher events.StandalonePublisher, i18n *localization.Translator, errorHandler *APIErrorHandler) api.Middleware {

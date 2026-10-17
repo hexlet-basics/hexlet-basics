@@ -16,7 +16,7 @@ export const Route = createFileRoute("/{-$locale}/admin")({
 });
 
 // Nav entries. An entry with a `capability` is shown only to a staff member whose
-// role holds that capability Permission (ADR-0017): the administrator flag does
+// role holds that capability Permission (ADR-0018): the administrator flag does
 // not imply it, so the menu asks the API what the caller holds. Each new CRUD
 // resource adds one line here; the screens themselves
 // are driven by the shared engine (CrudList/CrudForm). Ordered content-first,

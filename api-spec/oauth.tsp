@@ -9,7 +9,7 @@ using OpenAPI;
 namespace HexletBasics;
 
 // ---------------------------------------------------------------------------
-// OAuth consent screen (ADR-0019).
+// OAuth consent screen (ADR-0020).
 //
 // The protocol endpoints an RFC defines (`/oauth/authorize`, `/oauth/token`,
 // the discovery documents) are hand-written outside this contract on purpose:
@@ -67,7 +67,7 @@ interface OAuthConsents {
 }
 
 // ---------------------------------------------------------------------------
-// Connected Apps (ADR-0019, #848): the OAuth clients the signed-in user has
+// Connected Apps (ADR-0020, #848): the OAuth clients the signed-in user has
 // approved, and withdrawing one. Both are session-guarded and show only the
 // caller's own apps; the revoke is also behind the cross-origin protection (ADR-0017).
 // ---------------------------------------------------------------------------

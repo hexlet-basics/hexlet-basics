@@ -16,7 +16,7 @@ import (
 // token the OAuth helper issues is bound to.
 const MCPEndpoint = OAuthIssuer + "/mcp"
 
-// This file is the top-of-stack test seam for everything MCP (ADR-0018): the
+// This file is the top-of-stack test seam for everything MCP (ADR-0019): the
 // full production router in process, driven by a real MCP client from the
 // official SDK, authenticated with a token from the OAuth helper. A test reads
 // like a connected assistant: it never builds a JSON-RPC message or calls a

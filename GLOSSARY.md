@@ -23,7 +23,7 @@ in [Storage mapping](#storage-mapping).
 
 A fourth exception existed for a while and is gone: the **values** of
 `PermissionResource` (`"language_lesson_members"`, `"languages"`, …) were rows in
-the create/read/update/delete matrix. ADR-0017 replaced that matrix with
+the create/read/update/delete matrix. ADR-0018 replaced that matrix with
 Permissions named with the terms (`courses.read`, `lesson_progress.read`), and
 migrations carried the existing rows into them, so the legacy names are no
 longer identifiers anywhere.
@@ -246,4 +246,4 @@ schema does not exist yet.
 | Course Lesson Review | `language_lesson_reviews` | `language_lesson_version_id` |
 | Staff Member | `staff_members` | — |
 | Staff Role | `staff_member_roles` | — |
-| Permission | `staff_member_role_grants` | one row per Permission a Staff Role holds (ADR-0017); the former `staff_member_role_permissions` bit matrix is dropped |
+| Permission | `staff_member_role_grants` | one row per Permission a Staff Role holds (ADR-0018); the former `staff_member_role_permissions` bit matrix is dropped |

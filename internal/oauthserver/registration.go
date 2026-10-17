@@ -39,7 +39,7 @@ const (
 // defaultRegistrationScopes is what a registration that names no scope may
 // request later: reading, never admin. A client that wants more asks for it by
 // name, and the user still consents and the user's Permissions still decide
-// (ADR-0019 addendum, #840).
+// (ADR-0020 addendum, #840).
 var defaultRegistrationScopes = []string{ScopeCatalogRead, ScopeProgressRead}
 
 // registrationFields are the metadata (RFC 7591) a registration is judged on;

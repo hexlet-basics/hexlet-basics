@@ -56,7 +56,7 @@ func (c *client) RestrictAdditionalAccessTokenScopes() func([]string) []string {
 
 // IsScopeAllowed admits a custom scope only when the client was registered with
 // it, so a client cannot be shown or granted more than it declared. The policy
-// for what a registration may declare is a later step of ADR-0019.
+// for what a registration may declare is a later step of ADR-0020.
 func (c *client) IsScopeAllowed(scope string) bool     { return slices.Contains(c.row.Scopes, scope) }
 func (c *client) IDTokenUserinfoClaimsAssertion() bool { return false }
 func (c *client) ClockSkew() time.Duration             { return 0 }

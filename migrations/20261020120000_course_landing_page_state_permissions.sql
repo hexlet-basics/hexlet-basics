@@ -1,4 +1,4 @@
--- ADR-0017, state transitions slice: publishing, unpublishing and archiving a
+-- ADR-0018, state transitions slice: publishing, unpublishing and archiving a
 -- landing page become operations of their own (course_landing_pages.publish,
 -- course_landing_pages.unpublish, course_landing_pages.archive), no longer a field of the update.
 -- The state used to be settable through the update, so every role holding

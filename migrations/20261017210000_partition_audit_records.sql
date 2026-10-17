@@ -1,4 +1,4 @@
--- ADR-0017 / ticket #846: audit_records becomes a table partitioned by month on
+-- ADR-0018 / ticket #846: audit_records becomes a table partitioned by month on
 -- occurred_at, so retention is a DROP of a whole month instead of a DELETE
 -- (which the append-only trigger refuses, and which would bloat the table).
 --

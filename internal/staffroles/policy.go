@@ -23,7 +23,7 @@ var ErrForbidden = errors.New("staff permission is required")
 // the locales their record lists — legacy `authorize_staff_locale!`.
 //
 // What an operation needs is the Permission it declares in the contract, which
-// the role must hold as a grant (ADR-0017). An administrator passes every
+// the role must hold as a grant (ADR-0018). An administrator passes every
 // operation Permission without a grant, except the capability Permissions
 // (mcp.read, audit.read, ...): those must be granted explicitly to the role of
 // whoever uses them, an administrator included, because they open channels

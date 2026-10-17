@@ -1,4 +1,4 @@
--- ADR-0017: the audit trail. One row per operation an administrator or staff
+-- ADR-0018: the audit trail. One row per operation an administrator or staff
 -- member performs, written in the same transaction as the change.
 --
 -- No foreign keys on purpose: a record outlives the user, the Connected App and

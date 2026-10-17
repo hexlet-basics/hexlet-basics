@@ -13,7 +13,7 @@ export default defineConfig({
   // The browser reaches the Go API on the site's own origin under `/api`
   // (ADR-0015); in development Vite stands in for the production ingress.
   server: {
-    // The OAuth server (ADR-0019) is the one thing outside `/api`: its
+    // The OAuth server (ADR-0020) is the one thing outside `/api`: its
     // endpoints under `/oauth` and the two metadata documents go to Go too, so
     // the consent flow works on the origin the browser is on. The well-known
     // keys are exact patterns: `/.well-known` as a whole belongs to the SSR server.
@@ -22,7 +22,7 @@ export default defineConfig({
       "/oauth": process.env.API_URL ?? "http://localhost:3001",
       "^/\\.well-known/(oauth-authorization-server|openid-configuration)$":
         process.env.API_URL ?? "http://localhost:3001",
-      // The MCP endpoint (ADR-0018) and its protected resource metadata.
+      // The MCP endpoint (ADR-0019) and its protected resource metadata.
       "^/mcp$": process.env.API_URL ?? "http://localhost:3001",
       "^/\\.well-known/oauth-protected-resource(/mcp)?$":
         process.env.API_URL ?? "http://localhost:3001",

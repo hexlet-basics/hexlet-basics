@@ -17,7 +17,7 @@ import (
 	"hexletbasics/internal/staffroles"
 )
 
-// NewAdminDispatcher is what an MCP admin tool call is served by (ADR-0018
+// NewAdminDispatcher is what an MCP admin tool call is served by (ADR-0019
 // addendum): the generated api.Server, wrapped as the router wraps it for the
 // website except for what does not apply to a call that has no browser. It
 // resolves the locale from the request's Accept-Language, which the tool sets
@@ -42,7 +42,7 @@ func NewAdminDispatcher(apiServer http.Handler, i18n *localization.Translator) h
 //  3. every capability Permission the operation needs (mcp.read or mcp.write
 //     by its kind, plus mcp.manage for an operation on users, staff and roles,
 //     as the contract declares), by Policy.HasCapability, which the
-//     administrator flag does not satisfy (ADR-0017).
+//     administrator flag does not satisfy (ADR-0018).
 //
 // A failure of any is the refusal HTTP gives: an Audit Record with outcome
 // forbidden (channel mcp, since the tool put its Source in the context) and 403,
