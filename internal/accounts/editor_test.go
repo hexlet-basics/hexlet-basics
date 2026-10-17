@@ -63,8 +63,10 @@ func TestEditorKeepsTheLastAdministrator(t *testing.T) {
 	editor := accounts.NewEditor(db)
 	lastAdmin := fixtures.ID(fixtures.UserAdminLearner)
 	notAdmin := false
-	// The fixtures hold two administrators; with one of them demoted, the other is the last.
+	// The fixtures hold three administrators (the learner, the second one and the
+	// one who is also staff); with the other two demoted, the learner is the last.
 	db.User.UpdateOneID(fixtures.ID(fixtures.UserSecondAdmin)).SetAdmin(false).ExecX(t.Context())
+	db.User.UpdateOneID(fixtures.ID(fixtures.UserAdminStaff)).SetAdmin(false).ExecX(t.Context())
 
 	_, err := editor.Update(t.Context(), lastAdmin, accounts.UserFields{Email: "admin-learner@example.com", Admin: &notAdmin})
 	require.ErrorIs(t, err, accounts.ErrLastAdmin)
