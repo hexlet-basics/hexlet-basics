@@ -727,3 +727,38 @@ with these settled in the slice:
   the split: a role that edits cannot publish, one that publishes can neither
   edit nor unpublish nor archive.
 
+
+### Course Readiness (#863)
+
+A Course's Readiness (GLOSSARY) is a property of the product, not a publication
+workflow, but it is a state, so it follows the same rule with these differences:
+
+- **Operations and Permissions:** `adminMarkCourseDraft`, `adminMarkCourseInDevelopment`
+  and `adminMarkCourseCompleted`, `POST /admin/courses/{id}/mark_draft|mark_in_development|mark_completed`,
+  Permissions `courses.mark_draft`, `courses.mark_in_development`, `courses.mark_completed`,
+  kind `write`. The Permission is named `<resource>.<operation>` like the others; the
+  verb is "mark" because the glossary says a Course is marked with its Readiness.
+- **Its own table, same machinery.** `internal/transitions/readiness.go` holds
+  `MarkDraft`, `MarkInDevelopment` and `MarkCompleted` over a `Readiness` type; the
+  Publication State table does not fit. Any change between two distinct values is
+  legal (a completed Course may return to development), so each lists the two
+  other values as `From`; repeating the current value is refused with the same
+  409 (`state.illegal_transition`), its two values named through the new
+  `readiness.*` messages in ru, en and es (`refuseTransitionNamed` takes the names). A
+  Course with no readiness counts as a draft.
+- **A new Course is a draft:** create sets it explicitly; `readiness` is skipped in
+  the generated `SetInput` and absent from `CourseInput` and the clients, while the
+  Course response still shows it.
+- **Side effects.** None is lost with the old update. Readiness is read from the
+  column by the queries and nothing is copied or cached: the public catalogue,
+  its category pages, the sitemap and the lessons list ask for completed Courses
+  (`landingpages.Completed`). The course loader writes the readiness of a Course
+  *Version* (the `progress` of its spec), never the Course's, so no other writer
+  needed a change.
+- **Audit.** The change goes through `UpdateOne`, so the Audit Record carries the old
+  and new value; it names the column, which keeps the retired name `progress`.
+- **Existing access is preserved** by the migration `course_readiness_permissions`,
+  granting the three Permissions to every role holding `courses.update`, tested over
+  every combination and applied twice. The fixtures gained a course updater and a
+  course readiness role to test the split. The admin screen replaces the select with
+  a button per other value (`CourseReadinessPanel`).

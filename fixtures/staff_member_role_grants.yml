@@ -63,3 +63,20 @@
   permission: course_landing_pages.publish
   created_at: '2026-07-26 20:50:38'
   updated_at: '2026-07-26 20:50:38'
+# The same split for a course's readiness: the updater edits and cannot change
+# the readiness, the readiness role changes it and cannot edit.
+- id: {{ id "staff_grant_course_updater_update" }}
+  role_id: {{ id "staff_role_course_updater" }}
+  permission: courses.update
+  created_at: '2026-07-26 20:50:39'
+  updated_at: '2026-07-26 20:50:39'
+- id: {{ id "staff_grant_course_readiness_mark_draft" }}
+  role_id: {{ id "staff_role_course_readiness" }}
+  permission: courses.mark_draft
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'
+- id: {{ id "staff_grant_course_readiness_mark_completed" }}
+  role_id: {{ id "staff_role_course_readiness" }}
+  permission: courses.mark_completed
+  created_at: '2026-07-26 20:50:41'
+  updated_at: '2026-07-26 20:50:41'

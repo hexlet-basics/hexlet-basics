@@ -362,6 +362,13 @@ export default {
         add: "Agregar pregunta",
         title: "FAQ",
       },
+      readiness: {
+        changeError: "No se pudo cambiar la disponibilidad",
+        changed: "Disponibilidad cambiada",
+        markCompleted: "Marcar como completado",
+        markDraft: "Marcar como borrador",
+        markInDevelopment: "Marcar como en desarrollo",
+      },
       banners: {
         edit: {
           header: "Editar banner",

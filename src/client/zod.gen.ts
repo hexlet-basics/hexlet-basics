@@ -291,6 +291,18 @@ export const zCourseLandingPageInput = z.object({
 export const zCourseLearnAs = z.enum(['first_language', 'second_language']);
 
 /**
+ * The input of a course: never its Readiness. A new course is a draft and the
+ *     Readiness changes only through the mark-as operations.
+ */
+export const zCourseInput = z.object({
+  slug: z.string().nullable(),
+  learnAs: zCourseLearnAs.nullable(),
+  hexletProgramLandingPage: z.string().nullable(),
+  repositoryUrl: z.string().nullable(),
+  coverAttachmentId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable()
+});
+
+/**
  * A lesson as shown in admin lists (legacy: `LanguageLessonForLists`).
  */
 export const zCourseLessonListItem = z.object({
@@ -358,15 +370,6 @@ export const zCourseReadiness = z.enum([
   'in_development',
   'draft'
 ]);
-
-export const zCourseInput = z.object({
-  slug: z.string().nullable(),
-  learnAs: zCourseLearnAs.nullable(),
-  readiness: zCourseReadiness.nullable(),
-  hexletProgramLandingPage: z.string().nullable(),
-  repositoryUrl: z.string().nullable(),
-  coverAttachmentId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable()
-});
 
 /**
  * A build/version of a course's exercises (legacy `LanguageVersion`).
@@ -1730,6 +1733,33 @@ export const zAdminUpdateCoursePath = z.object({
  * The request has succeeded.
  */
 export const zAdminUpdateCourseResponse = zCourse;
+
+export const zAdminMarkCourseCompletedPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminMarkCourseCompletedResponse = zCourse;
+
+export const zAdminMarkCourseDraftPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminMarkCourseDraftResponse = zCourse;
+
+export const zAdminMarkCourseInDevelopmentPath = z.object({
+  id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminMarkCourseInDevelopmentResponse = zCourse;
 
 export const zAdminReviewCoursePath = z.object({
   id: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })

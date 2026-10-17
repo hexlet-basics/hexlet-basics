@@ -108,7 +108,6 @@ func (u *CategoryQnaItemUpdateOne) SetInput(i *api.QnaItemInput) *CategoryQnaIte
 func (c *CourseCreate) SetInput(i *api.CourseInput) *CourseCreate {
 	c.SetNillableSlug(inputconv.StringPtr(i.Slug))
 	c.SetNillableLearnAs(inputconv.StringPtr(i.LearnAs))
-	c.SetNillableReadiness(inputconv.StringPtr(i.Readiness))
 	c.SetNillableHexletProgramLandingPage(inputconv.StringPtr(i.HexletProgramLandingPage))
 	return c
 }
@@ -127,11 +126,6 @@ func (u *CourseUpdateOne) SetInput(i *api.CourseInput) *CourseUpdateOne {
 		u.ClearLearnAs()
 	} else {
 		u.SetLearnAs(string(i.LearnAs.Value))
-	}
-	if i.Readiness.Null {
-		u.ClearReadiness()
-	} else {
-		u.SetReadiness(string(i.Readiness.Value))
 	}
 	if i.HexletProgramLandingPage.Null {
 		u.ClearHexletProgramLandingPage()

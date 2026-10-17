@@ -474,6 +474,35 @@ func (UnimplementedHandler) AdminListUsers(ctx context.Context, params AdminList
 	return r, ht.ErrNotImplemented
 }
 
+// AdminMarkCourseCompleted implements adminMarkCourseCompleted operation.
+//
+// Mark a course as completed: it joins the public catalogue.
+//
+// POST /api/admin/courses/{id}/mark_completed
+func (UnimplementedHandler) AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (r AdminMarkCourseCompletedRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminMarkCourseDraft implements adminMarkCourseDraft operation.
+//
+// Mark a course as a draft. A state is not an update: each change of Course Readiness is its own
+// operation with its own Permission. Any change between two distinct values is legal; repeating the
+// current value is a 409 with a localized `detail`.
+//
+// POST /api/admin/courses/{id}/mark_draft
+func (UnimplementedHandler) AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (r AdminMarkCourseDraftRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// AdminMarkCourseInDevelopment implements adminMarkCourseInDevelopment operation.
+//
+// Mark a course as in development.
+//
+// POST /api/admin/courses/{id}/mark_in_development
+func (UnimplementedHandler) AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (r AdminMarkCourseInDevelopmentRes, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // AdminPublishBanner implements adminPublishBanner operation.
 //
 // Publish a draft or archived banner. A state is not an update: each change of Publication State is

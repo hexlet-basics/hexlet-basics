@@ -381,3 +381,72 @@ func TestStateMigrationsGrantTheTransitionsToEveryUpdater(t *testing.T) {
 		})
 	}
 }
+
+// TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater is the state
+// migrations' test for a Course's Readiness: the migration runs over a role for
+// every combination of holding courses.update, an already-held mark_completed
+// and a bystander read, and the policy is asked about each operation. Every
+// holder of update gains the three changes (the readiness used to be settable
+// through the update), and no other role gains one.
+func TestCourseReadinessMigrationGrantsTheChangesToEveryUpdater(t *testing.T) {
+	migration, err := os.ReadFile("../../migrations/20261020130000_course_readiness_permissions.sql")
+	require.NoError(t, err)
+
+	// The roles are made the way an administrator makes them, through the role
+	// operations, so the scenario holds exactly the grants the API can give.
+	h := testsupport.NewHarness(t)
+	db := h.DB
+	editor := db.User.GetX(t.Context(), editorID)
+	staff := editor.QueryStaffMember().OnlyX(t.Context())
+
+	const holdsUpdate, holdsCompleted, holdsRead = 1, 2, 4
+	grants := map[int]string{
+		holdsUpdate:    "courses.update",
+		holdsCompleted: "courses.mark_completed",
+		holdsRead:      "courses.read",
+	}
+	roles := make([]int, 8)
+	for mask := range roles {
+		role, err := h.Client.AdminCreateRole(t.Context(), &api.RoleInput{
+			Name:        fmt.Sprintf("combo-%d", mask),
+			Description: api.NilString{Null: true},
+		})
+		require.NoError(t, err)
+		roles[mask] = int(role.ID)
+
+		held := []string{}
+		for bit, permission := range grants {
+			if mask&bit != 0 {
+				held = append(held, permission)
+			}
+		}
+		_, err = h.Client.AdminUpdateRolePermissions(t.Context(), &api.RolePermissionsInput{Grants: held},
+			api.AdminUpdateRolePermissionsParams{RoleId: role.ID})
+		require.NoError(t, err)
+	}
+	// Running it twice proves it is idempotent for a role that already holds a grant.
+	_, err = h.Tx.ExecContext(t.Context(), string(migration))
+	require.NoError(t, err)
+	_, err = h.Tx.ExecContext(t.Context(), string(migration))
+	require.NoError(t, err)
+
+	policy := staffroles.NewPolicy(db)
+	for mask, roleID := range roles {
+		db.StaffMember.UpdateOneID(staff.ID).SetRoleID(roleID).ExecX(t.Context())
+
+		check := func(operation string, want bool) {
+			err := policy.Allow(t.Context(), editor, "ru", operation)
+			if want {
+				assert.NoError(t, err, "combination %03b keeps %s", mask, operation)
+			} else {
+				assert.ErrorIs(t, err, staffroles.ErrForbidden, "combination %03b still refuses %s", mask, operation)
+			}
+		}
+		updater := mask&holdsUpdate != 0
+		check("AdminListCourses", mask&holdsRead != 0)
+		check("AdminUpdateCourse", updater)
+		check("AdminMarkCourseDraft", updater)
+		check("AdminMarkCourseInDevelopment", updater)
+		check("AdminMarkCourseCompleted", updater || mask&holdsCompleted != 0)
+	}
+}

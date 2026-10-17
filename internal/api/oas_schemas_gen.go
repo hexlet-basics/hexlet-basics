@@ -546,6 +546,30 @@ type AdminListUsersUnauthorized ProblemDetails
 
 func (*AdminListUsersUnauthorized) adminListUsersRes() {}
 
+type AdminMarkCourseCompletedForbidden ProblemDetails
+
+func (*AdminMarkCourseCompletedForbidden) adminMarkCourseCompletedRes() {}
+
+type AdminMarkCourseCompletedUnauthorized ProblemDetails
+
+func (*AdminMarkCourseCompletedUnauthorized) adminMarkCourseCompletedRes() {}
+
+type AdminMarkCourseDraftForbidden ProblemDetails
+
+func (*AdminMarkCourseDraftForbidden) adminMarkCourseDraftRes() {}
+
+type AdminMarkCourseDraftUnauthorized ProblemDetails
+
+func (*AdminMarkCourseDraftUnauthorized) adminMarkCourseDraftRes() {}
+
+type AdminMarkCourseInDevelopmentForbidden ProblemDetails
+
+func (*AdminMarkCourseInDevelopmentForbidden) adminMarkCourseInDevelopmentRes() {}
+
+type AdminMarkCourseInDevelopmentUnauthorized ProblemDetails
+
+func (*AdminMarkCourseInDevelopmentUnauthorized) adminMarkCourseInDevelopmentRes() {}
+
 type AdminPublishBannerForbidden ProblemDetails
 
 func (*AdminPublishBannerForbidden) adminPublishBannerRes() {}
@@ -2548,9 +2572,12 @@ func (s *Course) SetCoverThumbVariant(val NilString) {
 	s.CoverThumbVariant = val
 }
 
-func (*Course) adminCreateCourseRes() {}
-func (*Course) adminGetCourseRes()    {}
-func (*Course) adminUpdateCourseRes() {}
+func (*Course) adminCreateCourseRes()            {}
+func (*Course) adminGetCourseRes()               {}
+func (*Course) adminMarkCourseCompletedRes()     {}
+func (*Course) adminMarkCourseDraftRes()         {}
+func (*Course) adminMarkCourseInDevelopmentRes() {}
+func (*Course) adminUpdateCourseRes()            {}
 
 // A catalog entry as shown on the courses index (legacy: `LanguageLandingPageForLists`). Embeds the
 // full course plus derived fields.
@@ -2892,13 +2919,14 @@ func (s *CourseCategoryView) SetQnaItems(val []QnaItem) {
 
 func (*CourseCategoryView) getPublicCourseCategoryRes() {}
 
+// The input of a course: never its Readiness. A new course is a draft and the Readiness changes only
+// through the mark-as operations.
 // Ref: #/components/schemas/CourseInput
 type CourseInput struct {
-	Slug                     NilString          `json:"slug"`
-	LearnAs                  NilCourseLearnAs   `json:"learnAs"`
-	Readiness                NilCourseReadiness `json:"readiness"`
-	HexletProgramLandingPage NilString          `json:"hexletProgramLandingPage"`
-	RepositoryUrl            NilString          `json:"repositoryUrl"`
+	Slug                     NilString        `json:"slug"`
+	LearnAs                  NilCourseLearnAs `json:"learnAs"`
+	HexletProgramLandingPage NilString        `json:"hexletProgramLandingPage"`
+	RepositoryUrl            NilString        `json:"repositoryUrl"`
 	// Attachment id from `POST /admin/attachments`, or null.
 	CoverAttachmentId NilInt32 `json:"coverAttachmentId"`
 }
@@ -2911,11 +2939,6 @@ func (s *CourseInput) GetSlug() NilString {
 // GetLearnAs returns the value of LearnAs.
 func (s *CourseInput) GetLearnAs() NilCourseLearnAs {
 	return s.LearnAs
-}
-
-// GetReadiness returns the value of Readiness.
-func (s *CourseInput) GetReadiness() NilCourseReadiness {
-	return s.Readiness
 }
 
 // GetHexletProgramLandingPage returns the value of HexletProgramLandingPage.
@@ -2941,11 +2964,6 @@ func (s *CourseInput) SetSlug(val NilString) {
 // SetLearnAs sets the value of LearnAs.
 func (s *CourseInput) SetLearnAs(val NilCourseLearnAs) {
 	s.LearnAs = val
-}
-
-// SetReadiness sets the value of Readiness.
-func (s *CourseInput) SetReadiness(val NilCourseReadiness) {
-	s.Readiness = val
 }
 
 // SetHexletProgramLandingPage sets the value of HexletProgramLandingPage.

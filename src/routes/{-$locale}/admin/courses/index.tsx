@@ -59,8 +59,10 @@ function CoursesList() {
       enableSorting: false,
     },
     {
-      accessorKey: "progress",
+      id: "readiness",
       header: t(($) => $.models.attributes.course.readiness),
+      cell: ({ row }) =>
+        t(($) => $.models.attributes.course["readiness/values"][row.original.readiness ?? "draft"]),
       enableSorting: false,
     },
     {

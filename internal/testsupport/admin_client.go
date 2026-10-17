@@ -140,6 +140,18 @@ func (c *Client) AdminUpdateCourse(ctx context.Context, request *api.CourseInput
 	return success[api.Course](c.Client.AdminUpdateCourse(ctx, request, params))
 }
 
+func (c *Client) AdminMarkCourseDraft(ctx context.Context, params api.AdminMarkCourseDraftParams) (*api.Course, error) {
+	return success[api.Course](c.Client.AdminMarkCourseDraft(ctx, params))
+}
+
+func (c *Client) AdminMarkCourseInDevelopment(ctx context.Context, params api.AdminMarkCourseInDevelopmentParams) (*api.Course, error) {
+	return success[api.Course](c.Client.AdminMarkCourseInDevelopment(ctx, params))
+}
+
+func (c *Client) AdminMarkCourseCompleted(ctx context.Context, params api.AdminMarkCourseCompletedParams) (*api.Course, error) {
+	return success[api.Course](c.Client.AdminMarkCourseCompleted(ctx, params))
+}
+
 func (c *Client) AdminListCourseLandingPages(ctx context.Context, params api.AdminListCourseLandingPagesParams) (*api.CourseLandingPagePage, error) {
 	return success[api.CourseLandingPagePage](c.Client.AdminListCourseLandingPages(ctx, params))
 }

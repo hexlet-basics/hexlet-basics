@@ -126,7 +126,10 @@ _ru_: прогресс · _es_: progreso
 
 **Course Readiness**:
 How finished the Course itself is — draft, in development, or completed
-(`CourseReadiness`). A property of the product, not of any learner.
+(`CourseReadiness`). A property of the product, not of any learner. A state all
+the same: it changes only by marking the Course as draft, in development or
+completed, never by editing the Course, and each of those is a Permission of its
+own. Not a Publication State: any change between two distinct values is legal.
 _ru_: готовность курса · _es_: disponibilidad del curso
 
 **Next Lesson**:

@@ -52,3 +52,13 @@
   description: Publishes course landing pages but cannot edit them
   created_at: '2026-07-26 20:50:38'
   updated_at: '2026-07-26 20:50:38'
+- id: {{ id "staff_role_course_updater" }}
+  name: course updater
+  description: Edits courses but cannot change their readiness
+  created_at: '2026-07-26 20:50:39'
+  updated_at: '2026-07-26 20:50:39'
+- id: {{ id "staff_role_course_readiness" }}
+  name: course readiness
+  description: Changes the readiness of courses but cannot edit them
+  created_at: '2026-07-26 20:50:40'
+  updated_at: '2026-07-26 20:50:40'

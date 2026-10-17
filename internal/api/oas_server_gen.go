@@ -298,6 +298,26 @@ type Handler interface {
 	//
 	// GET /api/admin/api/users
 	AdminListUsers(ctx context.Context, params AdminListUsersParams) (AdminListUsersRes, error)
+	// AdminMarkCourseCompleted implements adminMarkCourseCompleted operation.
+	//
+	// Mark a course as completed: it joins the public catalogue.
+	//
+	// POST /api/admin/courses/{id}/mark_completed
+	AdminMarkCourseCompleted(ctx context.Context, params AdminMarkCourseCompletedParams) (AdminMarkCourseCompletedRes, error)
+	// AdminMarkCourseDraft implements adminMarkCourseDraft operation.
+	//
+	// Mark a course as a draft. A state is not an update: each change of Course Readiness is its own
+	// operation with its own Permission. Any change between two distinct values is legal; repeating the
+	// current value is a 409 with a localized `detail`.
+	//
+	// POST /api/admin/courses/{id}/mark_draft
+	AdminMarkCourseDraft(ctx context.Context, params AdminMarkCourseDraftParams) (AdminMarkCourseDraftRes, error)
+	// AdminMarkCourseInDevelopment implements adminMarkCourseInDevelopment operation.
+	//
+	// Mark a course as in development.
+	//
+	// POST /api/admin/courses/{id}/mark_in_development
+	AdminMarkCourseInDevelopment(ctx context.Context, params AdminMarkCourseInDevelopmentParams) (AdminMarkCourseInDevelopmentRes, error)
 	// AdminPublishBanner implements adminPublishBanner operation.
 	//
 	// Publish a draft or archived banner. A state is not an update: each change of Publication State is

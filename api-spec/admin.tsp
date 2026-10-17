@@ -295,10 +295,11 @@ interface AdminReviews {
 // + trigger review + create version.
 // ---------------------------------------------------------------------------
 
+/** The input of a course: never its Readiness. A new course is a draft and the
+    Readiness changes only through the mark-as operations. */
 model CourseInput {
   slug: string | null;
   learnAs: CourseLearnAs | null;
-  readiness: CourseReadiness | null;
   hexletProgramLandingPage: string | null;
   repositoryUrl: string | null;
 
@@ -322,6 +323,21 @@ interface AdminCourses {
   } | UnauthorizedError | ForbiddenError | ApiError;
 
   @put @useAuth(AdminSession) @route("/{id}") @extension("x-permission", #{ name: "courses.update", kind: "write" }) @operationId("adminUpdateCourse") update(@path id: int32, @body body: CourseInput): Course | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Mark a course as a draft. A state is not an update: each change of Course
+      Readiness is its own operation with its own Permission. Any change between two
+      distinct values is legal; repeating the current value is a 409 with a localized
+      `detail`. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/mark_draft") @extension("x-permission", #{ name: "courses.mark_draft", kind: "write" }) @operationId("adminMarkCourseDraft")
+  markDraft(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Mark a course as in development. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/mark_in_development") @extension("x-permission", #{ name: "courses.mark_in_development", kind: "write" }) @operationId("adminMarkCourseInDevelopment")
+  markInDevelopment(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
+
+  /** Mark a course as completed: it joins the public catalogue. */
+  @post @useAuth([AdminSession, XsrfToken]) @route("/{id}/mark_completed") @extension("x-permission", #{ name: "courses.mark_completed", kind: "write" }) @operationId("adminMarkCourseCompleted")
+  markCompleted(@path id: int32): Course | UnauthorizedError | ForbiddenError | ApiError;
 
   /** Enqueue AI re-review of every current lesson version. */
   @post @useAuth(AdminSession) @route("/{id}/review") @extension("x-permission", #{ name: "courses.review", kind: "write" }) @operationId("adminReviewCourse") review(@path id: int32): NoContent | NotFoundError | UnauthorizedError | ForbiddenError | ApiError;
