@@ -1,6 +1,7 @@
 package mcpserver
 
 import (
+	"errors"
 	"fmt"
 	"slices"
 	"sort"
@@ -26,12 +27,22 @@ type operation struct {
 	// Body is the request body's JSON Schema, nil when the operation takes none.
 	Body         map[string]any
 	BodyRequired bool
+	// Multipart is set instead of a JSON Body when the request is a form with one
+	// binary part (the attachment upload): a tool carries the file as base64
+	// and the request synthesizer builds the multipart body from it.
+	Multipart *multipartFile
 	// Response is the JSON Schema of the first 2xx response that has a JSON body,
 	// nil when the operation answers without one (a delete).
 	Response map[string]any
 	// Admin is true when the operation requires the AdminSession scheme: the one
 	// whose security handler is the MCP checkpoint.
 	Admin bool
+}
+
+// multipartFile is the single file part of a multipart/form-data request body.
+type multipartFile struct {
+	// Field is the part's name, as the contract names it.
+	Field string
 }
 
 // parameter is a path or query parameter of an operation.
@@ -112,14 +123,22 @@ func buildOperation(doc *contractDoc, id, method, path string, node map[string]a
 	}
 
 	if body, ok := node["requestBody"].(map[string]any); ok {
-		schema, err := jsonSchemaOf(body["content"], doc)
+		file, err := multipartFileOf(body["content"], doc)
 		if err != nil {
 			return nil, fmt.Errorf("operation %s: request body: %w", id, err)
 		}
-		if schema == nil {
-			return nil, fmt.Errorf("operation %s: request body is not JSON", id)
+		if file != nil {
+			op.Multipart = file
+		} else {
+			schema, err := jsonSchemaOf(body["content"], doc)
+			if err != nil {
+				return nil, fmt.Errorf("operation %s: request body: %w", id, err)
+			}
+			if schema == nil {
+				return nil, fmt.Errorf("operation %s: request body is not JSON", id)
+			}
+			op.Body = schema
 		}
-		op.Body = schema
 		op.BodyRequired, _ = body["required"].(bool)
 	}
 
@@ -167,6 +186,35 @@ func jsonSchemaOf(content any, doc *contractDoc) (map[string]any, error) {
 	}
 	schema, _ := resolved.(map[string]any)
 	return schema, nil
+}
+
+// multipartFileOf finds the file part of a multipart/form-data entry, nil when
+// the content has none. A form that is not exactly one binary part is an error:
+// the base64 tool input carries one file and nothing else, so the registry
+// refuses an operation it would build a wrong request for.
+func multipartFileOf(content any, doc *contractDoc) (*multipartFile, error) {
+	entries, _ := content.(map[string]any)
+	entry, ok := entries["multipart/form-data"].(map[string]any)
+	if !ok {
+		return nil, nil
+	}
+	resolved, err := inline(entry["schema"], doc.Components.Schemas, nil)
+	if err != nil {
+		return nil, err
+	}
+	schema, _ := resolved.(map[string]any)
+	properties, _ := schema["properties"].(map[string]any)
+	if len(properties) != 1 {
+		return nil, errors.New("a multipart form must have exactly one part")
+	}
+	for name, raw := range properties {
+		part, _ := raw.(map[string]any)
+		if part["type"] != "string" || part["format"] != "binary" {
+			return nil, fmt.Errorf("multipart part %s is not a binary file", name)
+		}
+		return &multipartFile{Field: name}, nil
+	}
+	return nil, nil
 }
 
 func asList(v any) []any {

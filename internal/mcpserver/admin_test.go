@@ -84,7 +84,7 @@ func TestOnlyAllowlistedOperationsAreTools(t *testing.T) {
 	slices.Sort(names)
 	// Banner create and delete, and every other admin operation, are in the
 	// contract and are not tools until their operationId is listed.
-	assert.Equal(t, []string{"adminListBanners", "adminUpdateBanner"}, names)
+	assert.Equal(t, []string{"adminListBanners", "adminUpdateBanner", "adminUploadAttachment"}, names)
 
 	// Calling one anyway is refused by the endpoint itself: there is no such tool.
 	_, err = session.CallTool(t.Context(), &mcp.CallToolParams{
@@ -495,6 +495,8 @@ func sampleArguments(t *testing.T, tool *mcp.Tool) map[string]any {
 		switch property := schema.Properties[name]; {
 		case name == "locale":
 			args[name] = "en"
+		case name == "body" && tool.Name == "adminUploadAttachment":
+			args[name] = map[string]any{"fileName": "x.png", "contentBase64": "eA=="}
 		case property["type"] == "integer":
 			args[name] = 1
 		case property["type"] == "string":
