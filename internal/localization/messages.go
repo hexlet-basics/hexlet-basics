@@ -47,6 +47,24 @@ var (
 			Other: "authorization request not found or already decided",
 		},
 	}
+	AuditWindowReversed = Message{
+		value: i18n.Message{
+			ID:    "audit.window_reversed",
+			Other: "the end of the period must be after its start",
+		},
+	}
+	AuditWindowTooWide = Message{
+		value: i18n.Message{
+			ID:    "audit.window_too_wide",
+			Other: "the period may not be longer than 92 days",
+		},
+	}
+	AuditEntityIDNeedsType = Message{
+		value: i18n.Message{
+			ID:    "audit.entity_id_needs_type",
+			Other: "an entity id needs its entity type",
+		},
+	}
 	FileTooLarge = Message{
 		value: i18n.Message{
 			ID:    "attachments.file_too_large",

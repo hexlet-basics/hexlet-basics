@@ -182,6 +182,14 @@ type Handler interface {
 	//
 	// GET /api/admin/api/users/{id}
 	AdminGetUser(ctx context.Context, params AdminGetUserParams) (AdminGetUserRes, error)
+	// AdminListAuditRecords implements adminListAuditRecords operation.
+	//
+	// The audit trail, newest first. Needs the capability Permission `audit.read` on the Staff Role even
+	// for an administrator, and is itself recorded as a read of personal data: records carry addresses and
+	// old values.
+	//
+	// GET /api/admin/audit_records
+	AdminListAuditRecords(ctx context.Context, params AdminListAuditRecordsParams) (AdminListAuditRecordsRes, error)
 	// AdminListBanners implements adminListBanners operation.
 	//
 	// List banners (paginated).

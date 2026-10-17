@@ -267,6 +267,58 @@ export const adminUploadAttachmentMutation = (options?: Partial<Options<AdminUpl
   return mutationOptions;
 };
 
+export const adminListAuditRecordsQueryKey = (options?: Options<AdminListAuditRecordsData>) => createQueryKey('adminListAuditRecords', options);
+
+/**
+ * The audit trail, newest first. Needs the capability Permission `audit.read`
+ * on the Staff Role even for an administrator, and is itself recorded as a
+ * read of personal data: records carry addresses and old values.
+ */
+export const adminListAuditRecordsOptions = (options?: Options<AdminListAuditRecordsData>) => queryOptions<AdminListAuditRecordsResponse, AxiosError<AdminListAuditRecordsError>, AdminListAuditRecordsResponse, ReturnType<typeof adminListAuditRecordsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListAuditRecords({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListAuditRecordsQueryKey(options)
+});
+
+export const adminListAuditRecordsInfiniteQueryKey = (options?: Options<AdminListAuditRecordsData>): QueryKey<Options<AdminListAuditRecordsData>> => createQueryKey('adminListAuditRecords', options, true);
+
+/**
+ * The audit trail, newest first. Needs the capability Permission `audit.read`
+ * on the Staff Role even for an administrator, and is itself recorded as a
+ * read of personal data: records carry addresses and old values.
+ */
+export const adminListAuditRecordsInfiniteOptions = (options?: Options<AdminListAuditRecordsData>) => {
+  const opts = infiniteQueryOptions<AdminListAuditRecordsResponse, AxiosError<AdminListAuditRecordsError>, InfiniteData<AdminListAuditRecordsResponse>, QueryKey<Options<AdminListAuditRecordsData>>, number | Pick<QueryKey<Options<AdminListAuditRecordsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+  // @ts-ignore
+  {
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+      // @ts-ignore
+      const page: Pick<QueryKey<Options<AdminListAuditRecordsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        query: {
+          page: pageParam
+        }
+      };
+      const params = createInfiniteParams(queryKey, page);
+      const { data } = await adminListAuditRecords({
+        ...options,
+        ...params,
+        signal,
+        throwOnError: true
+      });
+      return data;
+    },
+    queryKey: adminListAuditRecordsInfiniteQueryKey(options)
+  });
+  return opts as Omit<typeof opts, 'initialData'>;
+};
+
 export const adminListBannersQueryKey = (options?: Options<AdminListBannersData>) => createQueryKey('adminListBanners', options);
 
 /**

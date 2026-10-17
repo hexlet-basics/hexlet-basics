@@ -426,6 +426,42 @@ interface AdminMessages {
   @get @extension("x-permission", #{ name: "messages.read", kind: "read" }) @extension("x-personal-data", "AiMessage") @operationId("adminListMessages") list(...ListQuery): Page<LessonAssistantMessage> | UnauthorizedError | ForbiddenError | ApiError;
 }
 
+/**
+ * Filters of the audit trail listing. The table is partitioned by month on
+ * `occurred_at`, so every query carries a time window: `from` defaults to 30
+ * days before `to`, `to` defaults to now, and the window may not exceed 92 days
+ * (a wider one is a 422). A narrower window is the way to look further back.
+ */
+model AuditRecordQuery {
+  @query @minValue(1) page?: int32;
+  @query @minValue(1) @maxValue(100) perPage?: int32;
+
+  @query actorUserId?: int32;
+  @query channel?: "web" | "mcp";
+  @query operation?: string;
+  @query entityType?: string;
+  @query entityId?: string;
+
+  /** Start of the window (inclusive). */
+  @query from?: utcDateTime;
+
+  /** End of the window (exclusive). */
+  @query to?: utcDateTime;
+}
+
+@route("/admin/audit_records")
+@tag("Admin: Audit")
+@useAuth(AdminSession)
+interface AdminAuditRecords {
+  /**
+   * The audit trail, newest first. Needs the capability Permission `audit.read`
+   * on the Staff Role even for an administrator, and is itself recorded as a
+   * read of personal data: records carry addresses and old values.
+   */
+  @get @extension("x-permission", #{ name: "audit.read", kind: "read" }) @extension("x-personal-data", "AuditRecord") @operationId("adminListAuditRecords")
+  list(...AuditRecordQuery): Page<AuditRecord> | ValidationError | UnauthorizedError | ForbiddenError | ApiError;
+}
+
 // ---------------------------------------------------------------------------
 // Admin users (legacy `/admin/api/users`) — full CRUD + search.
 // ---------------------------------------------------------------------------

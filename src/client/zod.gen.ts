@@ -27,6 +27,77 @@ export const zAttachmentUploadForm = z.object({
 });
 
 /**
+ * The old and new value of one field an operation changed. `old` is absent on a
+ * create and `new` on a delete. A `secret` field (password material, a token)
+ * carries its name only: no value was ever stored. The values are JSON of any
+ * shape, as the field held them.
+ */
+export const zAuditFieldChange = z.object({
+  name: z.string(),
+  old: z.unknown().optional(),
+  new: z.unknown().optional(),
+  secret: z.boolean().optional()
+});
+
+/**
+ * One mutation of one entity inside an operation. A bulk change carries no id.
+ */
+export const zAuditChange = z.object({
+  entity: z.string(),
+  id: z.string().optional(),
+  op: z.string(),
+  fields: z.array(zAuditFieldChange).optional()
+});
+
+/**
+ * What a read of personal data touched: how many rows and, up to a cap, their
+ * ids. Identifiers and counts only, never a field value.
+ */
+export const zAuditReads = z.object({
+  count: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  ids: z.array(z.string()).optional()
+});
+
+/**
+ * One Audit Record: who did what, through which channel, to which entity, and
+ * how it ended (legacy: none, the trail is new). A change carries `changes`, a
+ * read of personal data carries `reads`, a refusal carries neither.
+ */
+export const zAuditRecord = z.object({
+  id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+  occurredAt: z.iso.datetime(),
+  actorUserId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
+  channel: z.enum(['web', 'mcp']),
+  connectedAppId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
+  tokenId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).nullable(),
+  requestId: z.string().nullable(),
+  address: z.string().nullable(),
+  userAgent: z.string().nullable(),
+  operation: z.string(),
+  entityType: z.string().nullable(),
+  entityId: z.string().nullable(),
+  locale: z.string().nullable(),
+  outcome: z.enum([
+    'succeeded',
+    'forbidden',
+    'failed'
+  ]),
+  changes: z.array(zAuditChange),
+  reads: zAuditReads.nullable()
+});
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export const zAuditRecordPage = z.object({
+  items: z.array(zAuditRecord),
+  total: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+  perPage: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+});
+
+/**
  * Banner display background.
  */
 export const zBannerBackground = z.enum([
@@ -1021,6 +1092,30 @@ export const zValidationError = z.object({
   errors: z.record(z.string(), z.array(z.string()))
 });
 
+export const zAuditRecordQueryActorUserId = z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' });
+
+export const zAuditRecordQueryChannel = z.enum(['web', 'mcp']);
+
+export const zAuditRecordQueryEntityId = z.string();
+
+export const zAuditRecordQueryEntityType = z.string();
+
+/**
+ * Start of the window (inclusive).
+ */
+export const zAuditRecordQueryFrom = z.iso.datetime();
+
+export const zAuditRecordQueryOperation = z.string();
+
+export const zAuditRecordQueryPage = z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' });
+
+export const zAuditRecordQueryPerPage = z.int().gte(1).lte(100);
+
+/**
+ * End of the window (exclusive).
+ */
+export const zAuditRecordQueryTo = z.iso.datetime();
+
 export const zListQueryPage = z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' });
 
 export const zListQueryPerPage = z.int().gte(1).lte(100);
@@ -1115,6 +1210,23 @@ export const zAdminUploadAttachmentBody = zAttachmentUploadForm;
  * The request has succeeded and a new resource has been created as a result.
  */
 export const zAdminUploadAttachmentResponse = zAttachment;
+
+export const zAdminListAuditRecordsQuery = z.object({
+  page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+  perPage: z.int().gte(1).lte(100).optional(),
+  actorUserId: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+  channel: z.enum(['web', 'mcp']).optional(),
+  operation: z.string().optional(),
+  entityType: z.string().optional(),
+  entityId: z.string().optional(),
+  from: z.iso.datetime().optional(),
+  to: z.iso.datetime().optional()
+});
+
+/**
+ * The request has succeeded.
+ */
+export const zAdminListAuditRecordsResponse = zAuditRecordPage;
 
 export const zAdminListBannersQuery = z.object({
   page: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),

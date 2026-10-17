@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 	ht "github.com/ogen-go/ogen/http"
 )
 
@@ -344,6 +345,14 @@ func (*AdminGetUserForbidden) adminGetUserRes() {}
 type AdminGetUserUnauthorized ProblemDetails
 
 func (*AdminGetUserUnauthorized) adminGetUserRes() {}
+
+type AdminListAuditRecordsForbidden ProblemDetails
+
+func (*AdminListAuditRecordsForbidden) adminListAuditRecordsRes() {}
+
+type AdminListAuditRecordsUnauthorized ProblemDetails
+
+func (*AdminListAuditRecordsUnauthorized) adminListAuditRecordsRes() {}
 
 type AdminListBannersForbidden ProblemDetails
 
@@ -806,6 +815,506 @@ func (s *AttachmentUploadFormMultipart) GetFile() ht.MultipartFile {
 // SetFile sets the value of File.
 func (s *AttachmentUploadFormMultipart) SetFile(val ht.MultipartFile) {
 	s.File = val
+}
+
+// One mutation of one entity inside an operation. A bulk change carries no id.
+// Ref: #/components/schemas/AuditChange
+type AuditChange struct {
+	// The ent entity type, e.g. `BlogPost`.
+	Entity string    `json:"entity"`
+	ID     OptString `json:"id"`
+	// Create, update or delete.
+	Op     string             `json:"op"`
+	Fields []AuditFieldChange `json:"fields"`
+}
+
+// GetEntity returns the value of Entity.
+func (s *AuditChange) GetEntity() string {
+	return s.Entity
+}
+
+// GetID returns the value of ID.
+func (s *AuditChange) GetID() OptString {
+	return s.ID
+}
+
+// GetOp returns the value of Op.
+func (s *AuditChange) GetOp() string {
+	return s.Op
+}
+
+// GetFields returns the value of Fields.
+func (s *AuditChange) GetFields() []AuditFieldChange {
+	return s.Fields
+}
+
+// SetEntity sets the value of Entity.
+func (s *AuditChange) SetEntity(val string) {
+	s.Entity = val
+}
+
+// SetID sets the value of ID.
+func (s *AuditChange) SetID(val OptString) {
+	s.ID = val
+}
+
+// SetOp sets the value of Op.
+func (s *AuditChange) SetOp(val string) {
+	s.Op = val
+}
+
+// SetFields sets the value of Fields.
+func (s *AuditChange) SetFields(val []AuditFieldChange) {
+	s.Fields = val
+}
+
+// The old and new value of one field an operation changed. `old` is absent on a create and `new` on a
+// delete. A `secret` field (password material, a token) carries its name only: no value was ever
+// stored. The values are JSON of any shape, as the field held them.
+// Ref: #/components/schemas/AuditFieldChange
+type AuditFieldChange struct {
+	Name   string  `json:"name"`
+	Old    jx.Raw  `json:"old"`
+	New    jx.Raw  `json:"new"`
+	Secret OptBool `json:"secret"`
+}
+
+// GetName returns the value of Name.
+func (s *AuditFieldChange) GetName() string {
+	return s.Name
+}
+
+// GetOld returns the value of Old.
+func (s *AuditFieldChange) GetOld() jx.Raw {
+	return s.Old
+}
+
+// GetNew returns the value of New.
+func (s *AuditFieldChange) GetNew() jx.Raw {
+	return s.New
+}
+
+// GetSecret returns the value of Secret.
+func (s *AuditFieldChange) GetSecret() OptBool {
+	return s.Secret
+}
+
+// SetName sets the value of Name.
+func (s *AuditFieldChange) SetName(val string) {
+	s.Name = val
+}
+
+// SetOld sets the value of Old.
+func (s *AuditFieldChange) SetOld(val jx.Raw) {
+	s.Old = val
+}
+
+// SetNew sets the value of New.
+func (s *AuditFieldChange) SetNew(val jx.Raw) {
+	s.New = val
+}
+
+// SetSecret sets the value of Secret.
+func (s *AuditFieldChange) SetSecret(val OptBool) {
+	s.Secret = val
+}
+
+// What a read of personal data touched: how many rows and, up to a cap, their ids. Identifiers and
+// counts only, never a field value.
+// Ref: #/components/schemas/AuditReads
+type AuditReads struct {
+	Count int32    `json:"count"`
+	Ids   []string `json:"ids"`
+}
+
+// GetCount returns the value of Count.
+func (s *AuditReads) GetCount() int32 {
+	return s.Count
+}
+
+// GetIds returns the value of Ids.
+func (s *AuditReads) GetIds() []string {
+	return s.Ids
+}
+
+// SetCount sets the value of Count.
+func (s *AuditReads) SetCount(val int32) {
+	s.Count = val
+}
+
+// SetIds sets the value of Ids.
+func (s *AuditReads) SetIds(val []string) {
+	s.Ids = val
+}
+
+// One Audit Record: who did what, through which channel, to which entity, and how it ended (legacy:
+// none, the trail is new). A change carries `changes`, a read of personal data carries `reads`, a
+// refusal carries neither.
+// Ref: #/components/schemas/AuditRecord
+type AuditRecord struct {
+	ID         int64     `json:"id"`
+	OccurredAt time.Time `json:"occurredAt"`
+	// Null for a refusal of a caller who was not signed in.
+	ActorUserId    NilInt32           `json:"actorUserId"`
+	Channel        AuditRecordChannel `json:"channel"`
+	ConnectedAppId NilInt32           `json:"connectedAppId"`
+	TokenId        NilInt32           `json:"tokenId"`
+	RequestId      NilString          `json:"requestId"`
+	Address        NilString          `json:"address"`
+	UserAgent      NilString          `json:"userAgent"`
+	// The operation name, e.g. `AdminUpdateBlogPost`.
+	Operation  string             `json:"operation"`
+	EntityType NilString          `json:"entityType"`
+	EntityId   NilString          `json:"entityId"`
+	Locale     NilString          `json:"locale"`
+	Outcome    AuditRecordOutcome `json:"outcome"`
+	Changes    []AuditChange      `json:"changes"`
+	Reads      NilAuditReads      `json:"reads"`
+}
+
+// GetID returns the value of ID.
+func (s *AuditRecord) GetID() int64 {
+	return s.ID
+}
+
+// GetOccurredAt returns the value of OccurredAt.
+func (s *AuditRecord) GetOccurredAt() time.Time {
+	return s.OccurredAt
+}
+
+// GetActorUserId returns the value of ActorUserId.
+func (s *AuditRecord) GetActorUserId() NilInt32 {
+	return s.ActorUserId
+}
+
+// GetChannel returns the value of Channel.
+func (s *AuditRecord) GetChannel() AuditRecordChannel {
+	return s.Channel
+}
+
+// GetConnectedAppId returns the value of ConnectedAppId.
+func (s *AuditRecord) GetConnectedAppId() NilInt32 {
+	return s.ConnectedAppId
+}
+
+// GetTokenId returns the value of TokenId.
+func (s *AuditRecord) GetTokenId() NilInt32 {
+	return s.TokenId
+}
+
+// GetRequestId returns the value of RequestId.
+func (s *AuditRecord) GetRequestId() NilString {
+	return s.RequestId
+}
+
+// GetAddress returns the value of Address.
+func (s *AuditRecord) GetAddress() NilString {
+	return s.Address
+}
+
+// GetUserAgent returns the value of UserAgent.
+func (s *AuditRecord) GetUserAgent() NilString {
+	return s.UserAgent
+}
+
+// GetOperation returns the value of Operation.
+func (s *AuditRecord) GetOperation() string {
+	return s.Operation
+}
+
+// GetEntityType returns the value of EntityType.
+func (s *AuditRecord) GetEntityType() NilString {
+	return s.EntityType
+}
+
+// GetEntityId returns the value of EntityId.
+func (s *AuditRecord) GetEntityId() NilString {
+	return s.EntityId
+}
+
+// GetLocale returns the value of Locale.
+func (s *AuditRecord) GetLocale() NilString {
+	return s.Locale
+}
+
+// GetOutcome returns the value of Outcome.
+func (s *AuditRecord) GetOutcome() AuditRecordOutcome {
+	return s.Outcome
+}
+
+// GetChanges returns the value of Changes.
+func (s *AuditRecord) GetChanges() []AuditChange {
+	return s.Changes
+}
+
+// GetReads returns the value of Reads.
+func (s *AuditRecord) GetReads() NilAuditReads {
+	return s.Reads
+}
+
+// SetID sets the value of ID.
+func (s *AuditRecord) SetID(val int64) {
+	s.ID = val
+}
+
+// SetOccurredAt sets the value of OccurredAt.
+func (s *AuditRecord) SetOccurredAt(val time.Time) {
+	s.OccurredAt = val
+}
+
+// SetActorUserId sets the value of ActorUserId.
+func (s *AuditRecord) SetActorUserId(val NilInt32) {
+	s.ActorUserId = val
+}
+
+// SetChannel sets the value of Channel.
+func (s *AuditRecord) SetChannel(val AuditRecordChannel) {
+	s.Channel = val
+}
+
+// SetConnectedAppId sets the value of ConnectedAppId.
+func (s *AuditRecord) SetConnectedAppId(val NilInt32) {
+	s.ConnectedAppId = val
+}
+
+// SetTokenId sets the value of TokenId.
+func (s *AuditRecord) SetTokenId(val NilInt32) {
+	s.TokenId = val
+}
+
+// SetRequestId sets the value of RequestId.
+func (s *AuditRecord) SetRequestId(val NilString) {
+	s.RequestId = val
+}
+
+// SetAddress sets the value of Address.
+func (s *AuditRecord) SetAddress(val NilString) {
+	s.Address = val
+}
+
+// SetUserAgent sets the value of UserAgent.
+func (s *AuditRecord) SetUserAgent(val NilString) {
+	s.UserAgent = val
+}
+
+// SetOperation sets the value of Operation.
+func (s *AuditRecord) SetOperation(val string) {
+	s.Operation = val
+}
+
+// SetEntityType sets the value of EntityType.
+func (s *AuditRecord) SetEntityType(val NilString) {
+	s.EntityType = val
+}
+
+// SetEntityId sets the value of EntityId.
+func (s *AuditRecord) SetEntityId(val NilString) {
+	s.EntityId = val
+}
+
+// SetLocale sets the value of Locale.
+func (s *AuditRecord) SetLocale(val NilString) {
+	s.Locale = val
+}
+
+// SetOutcome sets the value of Outcome.
+func (s *AuditRecord) SetOutcome(val AuditRecordOutcome) {
+	s.Outcome = val
+}
+
+// SetChanges sets the value of Changes.
+func (s *AuditRecord) SetChanges(val []AuditChange) {
+	s.Changes = val
+}
+
+// SetReads sets the value of Reads.
+func (s *AuditRecord) SetReads(val NilAuditReads) {
+	s.Reads = val
+}
+
+type AuditRecordChannel string
+
+const (
+	AuditRecordChannelWeb AuditRecordChannel = "web"
+	AuditRecordChannelMcp AuditRecordChannel = "mcp"
+)
+
+// AllValues returns all AuditRecordChannel values.
+func (AuditRecordChannel) AllValues() []AuditRecordChannel {
+	return []AuditRecordChannel{
+		AuditRecordChannelWeb,
+		AuditRecordChannelMcp,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuditRecordChannel) MarshalText() ([]byte, error) {
+	switch s {
+	case AuditRecordChannelWeb:
+		return []byte(s), nil
+	case AuditRecordChannelMcp:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuditRecordChannel) UnmarshalText(data []byte) error {
+	switch AuditRecordChannel(data) {
+	case AuditRecordChannelWeb:
+		*s = AuditRecordChannelWeb
+		return nil
+	case AuditRecordChannelMcp:
+		*s = AuditRecordChannelMcp
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type AuditRecordOutcome string
+
+const (
+	AuditRecordOutcomeSucceeded AuditRecordOutcome = "succeeded"
+	AuditRecordOutcomeForbidden AuditRecordOutcome = "forbidden"
+	AuditRecordOutcomeFailed    AuditRecordOutcome = "failed"
+)
+
+// AllValues returns all AuditRecordOutcome values.
+func (AuditRecordOutcome) AllValues() []AuditRecordOutcome {
+	return []AuditRecordOutcome{
+		AuditRecordOutcomeSucceeded,
+		AuditRecordOutcomeForbidden,
+		AuditRecordOutcomeFailed,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuditRecordOutcome) MarshalText() ([]byte, error) {
+	switch s {
+	case AuditRecordOutcomeSucceeded:
+		return []byte(s), nil
+	case AuditRecordOutcomeForbidden:
+		return []byte(s), nil
+	case AuditRecordOutcomeFailed:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuditRecordOutcome) UnmarshalText(data []byte) error {
+	switch AuditRecordOutcome(data) {
+	case AuditRecordOutcomeSucceeded:
+		*s = AuditRecordOutcomeSucceeded
+		return nil
+	case AuditRecordOutcomeForbidden:
+		*s = AuditRecordOutcomeForbidden
+		return nil
+	case AuditRecordOutcomeFailed:
+		*s = AuditRecordOutcomeFailed
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// A page of results. Generic envelope reused by every admin list so the CRUD engine (TanStack Table)
+// can read pagination uniformly.
+// Ref: #/components/schemas/AuditRecordPage
+type AuditRecordPage struct {
+	Items []AuditRecord `json:"items"`
+	// Total rows across all pages (before pagination).
+	Total int32 `json:"total"`
+	// 1-based page number this response represents.
+	Page int32 `json:"page"`
+	// Page size used for this response.
+	PerPage int32 `json:"perPage"`
+}
+
+// GetItems returns the value of Items.
+func (s *AuditRecordPage) GetItems() []AuditRecord {
+	return s.Items
+}
+
+// GetTotal returns the value of Total.
+func (s *AuditRecordPage) GetTotal() int32 {
+	return s.Total
+}
+
+// GetPage returns the value of Page.
+func (s *AuditRecordPage) GetPage() int32 {
+	return s.Page
+}
+
+// GetPerPage returns the value of PerPage.
+func (s *AuditRecordPage) GetPerPage() int32 {
+	return s.PerPage
+}
+
+// SetItems sets the value of Items.
+func (s *AuditRecordPage) SetItems(val []AuditRecord) {
+	s.Items = val
+}
+
+// SetTotal sets the value of Total.
+func (s *AuditRecordPage) SetTotal(val int32) {
+	s.Total = val
+}
+
+// SetPage sets the value of Page.
+func (s *AuditRecordPage) SetPage(val int32) {
+	s.Page = val
+}
+
+// SetPerPage sets the value of PerPage.
+func (s *AuditRecordPage) SetPerPage(val int32) {
+	s.PerPage = val
+}
+
+func (*AuditRecordPage) adminListAuditRecordsRes() {}
+
+type AuditRecordQueryChannel string
+
+const (
+	AuditRecordQueryChannelWeb AuditRecordQueryChannel = "web"
+	AuditRecordQueryChannelMcp AuditRecordQueryChannel = "mcp"
+)
+
+// AllValues returns all AuditRecordQueryChannel values.
+func (AuditRecordQueryChannel) AllValues() []AuditRecordQueryChannel {
+	return []AuditRecordQueryChannel{
+		AuditRecordQueryChannelWeb,
+		AuditRecordQueryChannelMcp,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s AuditRecordQueryChannel) MarshalText() ([]byte, error) {
+	switch s {
+	case AuditRecordQueryChannelWeb:
+		return []byte(s), nil
+	case AuditRecordQueryChannelMcp:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *AuditRecordQueryChannel) UnmarshalText(data []byte) error {
+	switch AuditRecordQueryChannel(data) {
+	case AuditRecordQueryChannelWeb:
+		*s = AuditRecordQueryChannelWeb
+		return nil
+	case AuditRecordQueryChannelMcp:
+		*s = AuditRecordQueryChannelMcp
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // A site banner (legacy: `Banner`).
@@ -5183,6 +5692,51 @@ func (s *MyDashboardLandingPagesByCourseId) init() MyDashboardLandingPagesByCour
 	return m
 }
 
+// NewNilAuditReads returns new NilAuditReads with value set to v.
+func NewNilAuditReads(v AuditReads) NilAuditReads {
+	return NilAuditReads{
+		Value: v,
+	}
+}
+
+// NilAuditReads is nullable AuditReads.
+type NilAuditReads struct {
+	Value AuditReads
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilAuditReads) SetTo(v AuditReads) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilAuditReads) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilAuditReads) SetToNull() {
+	o.Null = true
+	var v AuditReads
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilAuditReads) Get() (v AuditReads, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilAuditReads) Or(d AuditReads) AuditReads {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewNilBanner returns new NilBanner with value set to v.
 func NewNilBanner(v Banner) NilBanner {
 	return NilBanner{
@@ -6150,6 +6704,144 @@ func (s *OAuthDecision) SetRedirectUrl(val string) {
 
 func (*OAuthDecision) approveOAuthConsentRes() {}
 func (*OAuthDecision) denyOAuthConsentRes()    {}
+
+// NewOptAuditRecordQueryChannel returns new OptAuditRecordQueryChannel with value set to v.
+func NewOptAuditRecordQueryChannel(v AuditRecordQueryChannel) OptAuditRecordQueryChannel {
+	return OptAuditRecordQueryChannel{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptAuditRecordQueryChannel is optional AuditRecordQueryChannel.
+type OptAuditRecordQueryChannel struct {
+	Value AuditRecordQueryChannel
+	Set   bool
+}
+
+// IsSet returns true if OptAuditRecordQueryChannel was set.
+func (o OptAuditRecordQueryChannel) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptAuditRecordQueryChannel) Reset() {
+	var v AuditRecordQueryChannel
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptAuditRecordQueryChannel) SetTo(v AuditRecordQueryChannel) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptAuditRecordQueryChannel) Get() (v AuditRecordQueryChannel, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptAuditRecordQueryChannel) Or(d AuditRecordQueryChannel) AuditRecordQueryChannel {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
+	Set   bool
+}
+
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBool) SetTo(v bool) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBool) Get() (v bool, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
 
 // NewOptInt32 returns new OptInt32 with value set to v.
 func NewOptInt32(v int32) OptInt32 {
@@ -8135,6 +8827,7 @@ func (s *ValidationError) SetErrors(val ValidationErrorErrors) {
 }
 
 func (*ValidationError) adminCreateBlogPostRes()            {}
+func (*ValidationError) adminListAuditRecordsRes()          {}
 func (*ValidationError) adminSetBlogPostRelatedCoursesRes() {}
 func (*ValidationError) adminUpdateBlogPostRes()            {}
 func (*ValidationError) adminUpdateRolePermissionsRes()     {}

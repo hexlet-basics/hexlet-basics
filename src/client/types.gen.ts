@@ -36,6 +36,94 @@ export type AttachmentUploadForm = {
 };
 
 /**
+ * One mutation of one entity inside an operation. A bulk change carries no id.
+ */
+export type AuditChange = {
+  /**
+   * The ent entity type, e.g. `BlogPost`.
+   */
+  entity: string;
+  id?: string;
+  /**
+   * create, update or delete.
+   */
+  op: string;
+  fields?: Array<AuditFieldChange>;
+};
+
+/**
+ * The old and new value of one field an operation changed. `old` is absent on a
+ * create and `new` on a delete. A `secret` field (password material, a token)
+ * carries its name only: no value was ever stored. The values are JSON of any
+ * shape, as the field held them.
+ */
+export type AuditFieldChange = {
+  name: string;
+  old?: unknown;
+  new?: unknown;
+  secret?: boolean;
+};
+
+/**
+ * What a read of personal data touched: how many rows and, up to a cap, their
+ * ids. Identifiers and counts only, never a field value.
+ */
+export type AuditReads = {
+  count: number;
+  ids?: Array<string>;
+};
+
+/**
+ * One Audit Record: who did what, through which channel, to which entity, and
+ * how it ended (legacy: none, the trail is new). A change carries `changes`, a
+ * read of personal data carries `reads`, a refusal carries neither.
+ */
+export type AuditRecord = {
+  id: number;
+  occurredAt: string;
+  /**
+   * Null for a refusal of a caller who was not signed in.
+   */
+  actorUserId: number | null;
+  channel: 'web' | 'mcp';
+  connectedAppId: number | null;
+  tokenId: number | null;
+  requestId: string | null;
+  address: string | null;
+  userAgent: string | null;
+  /**
+   * The operation name, e.g. `AdminUpdateBlogPost`.
+   */
+  operation: string;
+  entityType: string | null;
+  entityId: string | null;
+  locale: string | null;
+  outcome: 'succeeded' | 'forbidden' | 'failed';
+  changes: Array<AuditChange>;
+  reads: AuditReads | null;
+};
+
+/**
+ * A page of results. Generic envelope reused by every admin list so the CRUD
+ * engine (TanStack Table) can read pagination uniformly.
+ */
+export type AuditRecordPage = {
+  items: Array<AuditRecord>;
+  /**
+   * Total rows across all pages (before pagination).
+   */
+  total: number;
+  /**
+   * 1-based page number this response represents.
+   */
+  page: number;
+  /**
+   * Page size used for this response.
+   */
+  perPage: number;
+};
+
+/**
  * A site banner (legacy: `Banner`).
  */
 export type Banner = {
@@ -1333,6 +1421,30 @@ export type ValidationError = {
   };
 };
 
+export type AuditRecordQueryActorUserId = number;
+
+export type AuditRecordQueryChannel = 'web' | 'mcp';
+
+export type AuditRecordQueryEntityId = string;
+
+export type AuditRecordQueryEntityType = string;
+
+/**
+ * Start of the window (inclusive).
+ */
+export type AuditRecordQueryFrom = string;
+
+export type AuditRecordQueryOperation = string;
+
+export type AuditRecordQueryPage = number;
+
+export type AuditRecordQueryPerPage = number;
+
+/**
+ * End of the window (exclusive).
+ */
+export type AuditRecordQueryTo = string;
+
 export type ListQueryPage = number;
 
 export type ListQueryPerPage = number;
@@ -1725,6 +1837,64 @@ export type AdminUploadAttachmentResponses = {
 };
 
 export type AdminUploadAttachmentResponse = AdminUploadAttachmentResponses[keyof AdminUploadAttachmentResponses];
+
+export type AdminListAuditRecordsData = {
+  body?: never;
+  path?: never;
+  query?: {
+    page?: number;
+    perPage?: number;
+    actorUserId?: number;
+    channel?: 'web' | 'mcp';
+    operation?: string;
+    entityType?: string;
+    entityId?: string;
+    /**
+     * Start of the window (inclusive).
+     */
+    from?: string;
+    /**
+     * End of the window (exclusive).
+     */
+    to?: string;
+  };
+  url: '/api/admin/audit_records';
+};
+
+export type AdminListAuditRecordsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListAuditRecordsError = AdminListAuditRecordsErrors[keyof AdminListAuditRecordsErrors];
+
+export type AdminListAuditRecordsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: AuditRecordPage;
+};
+
+export type AdminListAuditRecordsResponse = AdminListAuditRecordsResponses[keyof AdminListAuditRecordsResponses];
 
 export type AdminListBannersData = {
   body?: never;
