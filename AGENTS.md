@@ -162,7 +162,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
 
 ## Test
 
-- `mise run test` — the Go suite (`go test ./...`).
+- `mise run test` — the Go suite (`go test -shuffle=on ./...`). Tests run in a random
+  order and `go` prints the seed, so a test must not depend on another's side
+  effects; replay an order with `mise run test -- -shuffle=<seed> ./pkg`.
 - `mise run test:cover` — the Go suite over `cmd/` and `internal/` with
   coverage, failing under the total in `.testcoverage.yml` (generated code and
   `testsupport` excluded). `pnpm test:coverage` does the same for the frontend
