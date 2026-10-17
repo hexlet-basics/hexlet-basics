@@ -154,8 +154,8 @@ jobs:
     timeout-minutes: 30
     services:
       postgres:
-        # Pinned by digest (jactionlint); move it with the postgres image the Go
-        # tests use (internal/testsupport/testdb).
+        # Pinned by digest (jactionlint); move it with the postgres service of
+        # the test job below and of nightly.yml.
         image: postgres:18-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
         env:
           POSTGRES_PASSWORD: postgres
@@ -210,6 +210,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    services:
+      postgres:
+        # Pinned by digest (jactionlint); the e2e job above and nightly.yml use the same image.
+        image: postgres:18-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DB_PORT: '5432'
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -228,8 +243,8 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('go.sum') }}
           restore-keys: ${{ runner.os }}-go-
 
-      # DB packages use testcontainers-go to start independent PostgreSQL 18
-      # instances, apply Atlas migrations, and load the committed fixtures.
+      # DB packages clone their databases with pgtestdb on the service above,
+      # from a template of the Atlas migrations and the committed fixtures.
       - run: mise run test
 
   # Builds both images without pushing, so a PR that breaks a Dockerfile (or

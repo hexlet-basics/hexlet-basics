@@ -1,12 +1,17 @@
-// Package testdb owns the lifecycle of the disposable Postgres used by a test
-// package. Each package gets an independently migrated and seeded database, so
-// `go test ./...` needs Docker but no separately prepared test service.
+// Package testdb owns the lifecycle of the disposable database a test package
+// uses. A package gets its own database cloned from a migrated, fixture-loaded
+// template on the development Postgres daemon (`mise run db:up`), the way Rails
+// clones `db_test-N` for parallel tests. The template is built once per
+// migrations/fixtures content hash and shared by every package, so a clone costs
+// milliseconds where a container per package cost seconds (ADR-0019).
 package testdb
 
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"sync"
@@ -16,69 +21,104 @@ import (
 	"ariga.io/atlas/sql/migrate"
 	atlaspostgres "ariga.io/atlas/sql/postgres"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/testcontainers/testcontainers-go"
-	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
+	"github.com/peterldowns/pgtestdb"
+	"github.com/peterldowns/pgtestdb/migrators/common"
 
 	"hexletbasics/internal/fixtures"
 )
 
+// The server tests clone from. The defaults are the db daemon of mise.toml; CI
+// points TEST_DB_HOST/TEST_DB_PORT at its service container, as E2E_DB_* does
+// for the end-to-end suite. The credentials are the daemon's superuser, which
+// pgtestdb uses only to create the template, the clones and its own role.
 const (
-	postgresImage = "postgres:18-alpine"
-	databaseName  = "code_basics_test"
-	databaseUser  = "postgres"
-	databasePass  = "postgres"
+	defaultHost = "127.0.0.1"
+	defaultPort = "54330"
+	adminUser   = "postgres"
+	adminPass   = "postgres"
 )
 
 var (
 	databaseURL string
-	urlMu       sync.RWMutex
+	// template is what Clone clones from: the server and the migrator Run used.
+	template struct {
+		conf pgtestdb.Config
+		m    migrator
+	}
+	urlMu sync.RWMutex
 )
 
-// Run starts, migrates, and seeds the package's Postgres before running its
-// tests. TestMain must pass the returned status to os.Exit so the container can
-// be terminated before the process exits.
+// Run clones the package's database before running its tests. TestMain must
+// pass the returned status to os.Exit so the database is dropped before the
+// process exits.
 func Run(m *testing.M) (code int) {
 	root, err := repositoryRoot()
 	if err != nil {
 		return setupFailed(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-	container, err := tcpostgres.Run(
-		ctx,
-		postgresImage,
-		tcpostgres.WithDatabase(databaseName),
-		tcpostgres.WithUsername(databaseUser),
-		tcpostgres.WithPassword(databasePass),
-		tcpostgres.BasicWaitStrategies(),
-	)
-	if err != nil {
-		cancel()
-		return setupFailed(fmt.Errorf("start Postgres container: %w", err))
-	}
-	defer func() {
-		if err := testcontainers.TerminateContainer(container); err != nil {
-			fmt.Fprintf(os.Stderr, "test database cleanup failed: %v\n", err)
-			if code == 0 {
-				code = 1
-			}
-		}
-	}()
-
-	dsn, err := container.ConnectionString(ctx, "sslmode=disable")
-	if err == nil {
-		err = prepareDatabase(ctx, dsn, root)
-	}
-	cancel()
-	if err != nil {
+	conf := serverConfig()
+	if err := requireServer(conf); err != nil {
 		return setupFailed(err)
 	}
 
+	// pgtestdb takes a testing.TB, and TestMain has none: this one records the
+	// failure for Run to report and holds the cleanup until the tests are done.
+	setup := &mainTB{}
+	defer func() {
+		setup.close()
+		// A drop that failed is reported through Fatalf, after the tests passed.
+		if setup.err != nil && code == 0 {
+			fmt.Fprintf(os.Stderr, "test database cleanup failed: %v\n", setup.err)
+			code = 1
+		}
+	}()
+
+	mig := migrator{root: root, admin: conf}
+	clone := pgtestdb.Custom(setup, conf, mig)
+	if setup.err != nil {
+		return setupFailed(setup.err)
+	}
+
 	urlMu.Lock()
-	databaseURL = dsn
+	databaseURL = clone.URL()
+	template.conf, template.m = conf, mig
 	urlMu.Unlock()
 
 	return m.Run()
+}
+
+func serverConfig() pgtestdb.Config {
+	return pgtestdb.Config{
+		DriverName: "pgx",
+		Host:       envOr("TEST_DB_HOST", defaultHost),
+		Port:       envOr("TEST_DB_PORT", defaultPort),
+		User:       adminUser,
+		Password:   adminPass,
+		Database:   "postgres",
+		Options:    "sslmode=disable&timezone=UTC",
+		// A package that leaks a connection must not turn into a failed cleanup
+		// and a database left behind on the shared server.
+		ForceTerminateConnections: true,
+	}
+}
+
+func envOr(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
+
+// requireServer fails fast with the fix when the daemon is down: pgtestdb's own
+// error is a bare connection refusal.
+func requireServer(conf pgtestdb.Config) error {
+	addr := net.JoinHostPort(conf.Host, conf.Port)
+	c, err := net.DialTimeout("tcp", addr, 2*time.Second)
+	if err != nil {
+		return fmt.Errorf("no Postgres on %s (start it with `mise run db:up`, or set TEST_DB_HOST/TEST_DB_PORT): %w", addr, err)
+	}
+	return c.Close()
 }
 
 // DatabaseURL returns the connection string for the current package's
@@ -92,23 +132,45 @@ func DatabaseURL() string {
 	return databaseURL
 }
 
-func prepareDatabase(ctx context.Context, dsn, root string) error {
-	db, err := sql.Open("pgx", dsn)
-	if err != nil {
-		return fmt.Errorf("open test database: %w", err)
-	}
-	defer func() { _ = db.Close() }()
+// migrator builds the template: the Atlas migrations, then the committed
+// fixtures. Migrations run in-process through Atlas's library rather than
+// pgtestdb's atlasmigrator, which shells out to an atlas binary the test run
+// does not otherwise need. The fixture loader switches foreign-key triggers
+// off, which takes a superuser, while migrations and the clones themselves run
+// as pgtestdb's unprivileged role like the application does; so the fixtures
+// go in through admin, the server's own credentials.
+type migrator struct {
+	root  string
+	admin pgtestdb.Config
+}
 
-	if err := db.PingContext(ctx); err != nil {
-		return fmt.Errorf("ping test database: %w", err)
+// Hash names the template. It covers what the template contains, so editing a
+// migration or a fixture row builds a new template and the next run never
+// sees a stale one. Old templates stay for pgtestdb to reuse if the content
+// comes back.
+func (mg migrator) Hash() (string, error) {
+	h := common.NewRecursiveHash()
+	if err := h.AddDirs(nil, "*.sql", filepath.Join(mg.root, "migrations")); err != nil {
+		return "", fmt.Errorf("hash migrations: %w", err)
 	}
-	if err := applyMigrations(ctx, db, filepath.Join(root, "migrations")); err != nil {
+	if err := h.AddDirs(nil, "*.yml", filepath.Join(mg.root, "fixtures")); err != nil {
+		return "", fmt.Errorf("hash fixtures: %w", err)
+	}
+	return h.String(), nil
+}
+
+func (mg migrator) Migrate(ctx context.Context, db *sql.DB, template pgtestdb.Config) error {
+	if err := applyMigrations(ctx, db, filepath.Join(mg.root, "migrations")); err != nil {
 		return err
 	}
-	if err := loadFixtures(db, filepath.Join(root, "fixtures")); err != nil {
-		return err
+	admin := mg.admin
+	admin.Database = template.Database
+	adminDB, err := admin.Connect()
+	if err != nil {
+		return fmt.Errorf("connect to the template as admin: %w", err)
 	}
-	return nil
+	defer func() { _ = adminDB.Close() }()
+	return loadFixtures(adminDB, filepath.Join(mg.root, "fixtures"))
 }
 
 func applyMigrations(ctx context.Context, db *sql.DB, path string) error {
@@ -160,24 +222,54 @@ func repositoryRoot() (string, error) {
 	}
 }
 
-// Open returns a connection pool of its own to the package's disposable
-// database, closed when the test ends. Almost every test wants the rolled-back
-// transaction testsupport hands out instead; this is for the case where the
-// connection is the thing under test, such as which of two connections sees an
-// uncommitted write, or concurrent transactions racing for one row. Whatever
-// such a test commits stays in the package's database, so it must clean up
-// after itself.
-func Open(t testing.TB) *sql.DB {
+// Clone gives the test a database of its own, cloned from the same template as
+// the package's, and drops it when the test ends. Almost every test wants the
+// rolled-back transaction testsupport hands out instead, which costs nothing;
+// a clone is for the case where the commit is the thing under test, such as
+// which of two connections sees an uncommitted write, or concurrent
+// transactions racing for one row. What such a test commits dies with its
+// clone, so it has nothing to clean up and cannot leak into another test.
+func Clone(t testing.TB) *sql.DB {
 	t.Helper()
-	db, err := sql.Open("pgx", DatabaseURL())
-	if err != nil {
-		t.Fatalf("open test database: %v", err)
-	}
-	t.Cleanup(func() { _ = db.Close() })
-	return db
+	DatabaseURL() // panics when Run did not set the package up
+	urlMu.RLock()
+	conf, m := template.conf, template.m
+	urlMu.RUnlock()
+	return pgtestdb.New(t, conf, m)
 }
 
 func setupFailed(err error) int {
 	fmt.Fprintf(os.Stderr, "test database setup failed: %v\n", err)
 	return 1
+}
+
+// mainTB is the slice of testing.TB pgtestdb needs, for use outside a test. A
+// Fatalf is recorded rather than stopping the process, since pgtestdb returns
+// right after it; Run reads err once pgtestdb is back.
+type mainTB struct {
+	err      error
+	cleanups []func()
+}
+
+func (b *mainTB) Cleanup(f func())    { b.cleanups = append(b.cleanups, f) }
+func (b *mainTB) Failed() bool        { return b.err != nil }
+func (b *mainTB) Helper()             {}
+func (b *mainTB) Logf(string, ...any) {}
+func (b *mainTB) Fatalf(format string, args ...any) {
+	b.err = errors.Join(b.err, fmt.Errorf(format, args...))
+}
+
+// close drops the package's database. Cleanups run last-in first-out, as in
+// testing, and a panicking one does not stop the rest; its panic lands in err.
+func (b *mainTB) close() {
+	for i := len(b.cleanups) - 1; i >= 0; i-- {
+		func() {
+			defer func() {
+				if r := recover(); r != nil {
+					b.err = errors.Join(b.err, fmt.Errorf("cleanup panicked: %v", r))
+				}
+			}()
+			b.cleanups[i]()
+		}()
+	}
 }

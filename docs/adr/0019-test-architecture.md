@@ -10,13 +10,26 @@ kept rule has a reason; a rule without one would have lost to practice.
 
 **Kept, with the reason**
 
-- **Real PostgreSQL, one rolled-back transaction per test.** Testcontainers start
-  PostgreSQL 18, apply the Atlas migrations and load `fixtures/`; a test gets a
-  transaction (`testsupport.NewClient*`, `NewHarness*`) that is rolled back. No
-  database mocks. Code that needs commit semantics goes through the savepoint
-  transactor in `testsupport`, or carries a `//nolint:forbidigo // why`. The
-  savepoint adapter is the price of running production transaction code inside
-  the rollback.
+- **Real PostgreSQL, one rolled-back transaction per test.** Each package's
+  database is cloned by [pgtestdb](https://github.com/peterldowns/pgtestdb) on the
+  development PostgreSQL 18 daemon (a service container in CI) from a template
+  holding the Atlas migrations and `fixtures/`; a test gets a transaction
+  (`testsupport.NewClient*`, `NewHarness*`) that is rolled back. No database
+  mocks. Code that needs commit semantics goes through the savepoint transactor
+  in `testsupport`, or carries a `//nolint:forbidigo // why`. The savepoint
+  adapter is the price of running production transaction code inside the
+  rollback.
+- **A test whose act is the commit gets a database of its own.** `testdb.Clone(t)`
+  is `pgtestdb.New` over the same template: two connections racing for a row, or
+  which connection sees an uncommitted write, run against a fresh clone that is
+  dropped with the test, rather than committing into the package's database and
+  cleaning up after themselves.
+- **The server is shared, the databases are not.** A template is built once per
+  content hash of `migrations/` and `fixtures/` and reused by every package, and a
+  clone costs milliseconds where a container per package cost seconds. Clients
+  connect with `timezone=UTC`: a migration that computes from `now()` once failed
+  on a developer's server in another zone, and a test database must not depend on
+  where the server runs.
 - **Fixtures only.** A test reads its data from `fixtures/` by generated
   `fixtures.Label`; `forbidigo` rejects `.Create()` in `_test.go`. Practice
   prefers per-test factories, but a labelled row names the case it exists for and
@@ -39,7 +52,7 @@ kept rule has a reason; a rule without one would have lost to practice.
   from now on.
 - **`goleak.VerifyTestMain` in the packages that spawn goroutines** (the
   assistant, the exercise runner, the event publisher), not repo-wide, where it
-  would be noise and would collide with the testcontainers startup.
+  would be noise.
 - **`testing/synctest`** is allowed for in-memory timing and concurrency logic
   (timeouts, retries, debounce).
 - **Style.** Table-driven subtests for pure functions with three or more cases;
@@ -56,3 +69,13 @@ kept rule has a reason; a rule without one would have lost to practice.
   revisit if the fixture set stops being reviewable.
 - **`t.Parallel()` everywhere.** Deferred, not rejected: it needs the
   measurement above.
+- **A container per package (testcontainers-go).** Replaced: it needed Docker for
+  every `go test`, and started and migrated a server per package. The development
+  daemon already exists, and `CREATE DATABASE … TEMPLATE` is what Rails does for
+  parallel tests.
+- **A cloned database per test, for every test.** Deferred, not rejected, in
+  favour of the rollback. A measurement on a loaded machine (load average ~30)
+  put one clone at 130–265 ms for `CREATE DATABASE` alone and 46–236 ms for the
+  drop, on a 15 MB template, and there are over a thousand tests. It would remove
+  the savepoint adapter, so revisit it with a measurement on an idle machine;
+  `testdb.Clone` is already the per-test path where it is needed.

@@ -83,8 +83,9 @@ PGDATABASE = "code_basics_development"
 # Development stack: `mise run dev` starts everything below, `mise run dev:down` stops
 # the app processes (never the database: it is a standing service, see `db`).
 # The port stays 54330 (not 5432) to avoid clashing with a local PostgreSQL;
-# .env.example, atlas.hcl and the db:* tasks all point at it. Tests do not use it:
-# they own disposable testcontainers.
+# .env.example, atlas.hcl and the db:* tasks all point at it. Tests run on this server
+# too (TEST_DB_HOST/TEST_DB_PORT override it) but never touch the development database:
+# each package clones its own from a template (internal/testsupport/testdb).
 [daemons.db]
 preset = "postgres"
 version = "18"

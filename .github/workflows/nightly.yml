@@ -19,10 +19,26 @@ concurrency:
 
 jobs:
   # The Go suite over cmd/ and internal/, failing under the total in
-  # .testcoverage.yml. The DB packages start their own PostgreSQL containers.
+  # .testcoverage.yml. The DB packages clone their databases on the service
+  # PostgreSQL (TEST_DB_PORT), the same as the test job of check.yml.
   coverage-go:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    services:
+      postgres:
+        # Pinned by digest (jactionlint); move it with check.yml's postgres images.
+        image: postgres:18-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DB_PORT: '5432'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

@@ -22,7 +22,7 @@ import (
 
 func openPool(t *testing.T) (*store.Store, *ent.Client) {
 	t.Helper()
-	db := testdb.Open(t)
+	db := testdb.Clone(t)
 	return store.New(db), store.NewClient(db)
 }
 

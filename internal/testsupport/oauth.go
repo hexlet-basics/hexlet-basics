@@ -131,7 +131,7 @@ func newOAuth(t *testing.T, documentHost bool, cfg oauthserver.Config, opts []OA
 		transactor store.Transactor
 	)
 	if options.onPool {
-		pool := testdb.Open(t)
+		pool := testdb.Clone(t)
 		db, transactor = store.NewClient(pool), store.New(pool)
 	} else {
 		db, tx, transactor = NewClientWithTxAndTransactor(t)

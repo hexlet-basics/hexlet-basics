@@ -92,8 +92,9 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   scaffold a migration to hand-author, then `atlas migrate hash`.
 - Local PostgreSQL 18 runs as the `db` mise daemon (`mise.toml`, pitchfork) on
   port **54330** (via `mise run db:up`) to avoid clashing with a `5432` DB. It
-  is a standing service: leave it running. It is only for development; tests own
-  disposable PostgreSQL 18 containers.
+  is a standing service: leave it running. Tests use the same server but never
+  its development database: each test package gets a database of its own,
+  cloned from a migrated, fixture-loaded template (see Test).
 
 ## Setup & Dev Commands (run from repo root)
 
@@ -184,9 +185,18 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   (`workflow_dispatch`). A new advisory can fail `lint:vulns` with no change
   on our side, so it is deliberately not part of `lint`. Put a check there
   when its result does not depend on the diff under review.
-- DB-dependent packages use testcontainers-go to start isolated PostgreSQL 18
-  containers, apply the Atlas migrations, and load the committed `fixtures/`
-  snapshot. Docker is required; no separate test DB preparation is needed.
+- DB-dependent packages clone their database with
+  [pgtestdb](https://github.com/peterldowns/pgtestdb) on the `db` daemon
+  (start it with `mise run db:up`; a missing server fails fast with that hint). A template database holds the
+  Atlas migrations and the committed `fixtures/`, is built once per content hash
+  of both and shared by every package, and each package (`testdb.Run` in its
+  `TestMain`) clones it in milliseconds and drops the clone at exit. No Docker and
+  no test DB preparation. CI points `TEST_DB_HOST`/`TEST_DB_PORT` at its
+  PostgreSQL service. The clients run in UTC (`timezone=UTC`), so a server in
+  another zone cannot change what a migration computes from `now()`.
+  A test that needs real commits (the commit is the act: two connections, a race
+  for a row) takes a database of its own with `testdb.Clone(t)`, dropped when the
+  test ends, instead of committing into the package's database.
 - `mise run db:prepare` prepares the development DB without replacing its data.
 - `mise run db:fixtures` migrates the development DB and loads `fixtures/` into it
   (replaces the fixture tables' data; the old `rails db:fixtures:load`). A fresh
@@ -237,7 +247,7 @@ comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
   The fixtures were exported once from the legacy Rails set and have been edited
   by hand since; `mise run fixtures:import` skips every file that exists, and
   `mise run db:fixtures` and the e2e database load them through `cmd/fixtures`,
-  the same loader the test containers use.
+  the same loader the test template database uses.
 - A test owns no connection and cleans nothing up: it gets a transaction that is
   rolled back (`testsupport.NewClient*`, `NewHarness*`), the way a Rails test does.
   Jobs are worked in it with `rivertest.Worker` (`jobs.<Kind>Worker`), and what
@@ -396,7 +406,8 @@ are committed on `main`, anything bigger is done in a worktree. See
 - To change the API: edit TypeSpec → `mise run gen` → implement/adjust the Go
   handler and, if needed, the frontend client usage → run the narrowest Go test.
 - After Go changes: `go build ./...`, then `go test ./...` (or a single package);
-  DB-dependent packages prepare their own testcontainers automatically.
+  DB-dependent packages clone their own database automatically, from the `db`
+  daemon: run `mise run db:up` first when calling `go test` directly.
 - After frontend changes: run `tsc -b` (`pnpm check`).
 - Before finishing substantial work: `mise run lint` and the most relevant tests.
 - Prefer minimal diffs; don't start broad refactors or "normalize" unrelated

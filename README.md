@@ -75,13 +75,14 @@ mise run dev:spec  # watch TypeSpec and re-emit OpenAPI on change
 mise run lint          # gofmt + go vet + golangci-lint, and tsc
 mise run lint:fix      # auto-fix Go formatting and lint findings
 
-mise run test          # go test ./... with disposable PostgreSQL 18 containers
+mise run test          # go test ./... on a database cloned per package
 ```
 
-`mise run test` requires Docker. Each DB-dependent Go package starts an independent
-PostgreSQL 18 through testcontainers-go, applies the [atlas](https://atlasgo.io)
-migrations from `migrations/`, and loads `fixtures/` before its tests. Scaffold
-a schema change with `mise run db:migrate-new <name>`.
+`mise run test` needs the local PostgreSQL 18 daemon (`mise run db:up`). Each
+DB-dependent Go package gets its own database, cloned with
+[pgtestdb](https://github.com/peterldowns/pgtestdb) from a template that holds the
+[atlas](https://atlasgo.io) migrations from `migrations/` and `fixtures/`. No Docker
+needed. Scaffold a schema change with `mise run db:migrate-new <name>`.
 
 ## Build
 
