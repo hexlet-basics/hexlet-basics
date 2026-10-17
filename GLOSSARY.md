@@ -40,6 +40,15 @@ The first successful creation of a User account through public registration.
 Later sign-ins, profile changes, and administrator-created users are not
 sign-ups.
 
+**Session**:
+A signed-in User's hold on the site between requests: an opaque token in an
+httpOnly cookie that names a server-side record. It lives 31 days and ends after
+7 without a request, when the User signs out, when the account is removed, and
+when the User's password changes. It proves who the User is and grants nothing
+else: what they may do is read from the account on every request. Not the guest
+progress cookie, which belongs to no account.
+_ru_: сессия · _es_: sesión
+
 **Magic Link**:
 An emailed link that signs an existing User in without a password. It lives
 fifteen minutes, is bound to the User's email so it dies if the email changes,
