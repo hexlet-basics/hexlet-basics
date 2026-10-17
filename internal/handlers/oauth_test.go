@@ -3,6 +3,7 @@ package handlers_test
 import (
 	"context"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,4 +32,29 @@ func TestConsentOperationsAnswerNotFoundWhileTheOAuthServerIsOff(t *testing.T) {
 	denied, err := h.Client.DenyOAuthConsent(ctx, api.DenyOAuthConsentParams{RequestId: "any"})
 	require.NoError(t, err)
 	assert.IsType(t, &api.NotFoundError{}, denied)
+}
+
+// OAUTH_ENABLED and MCP_ENABLED default to off, and the ingress sends their
+// paths to this server regardless (the chart carries no per-flag routing). With
+// both flags off the router mounts nothing for them, so each path must fall
+// through to the generated server's 404 rather than reach a half-wired handler.
+func TestOAuthAndMCPPathsAnswerNotFoundWhileTheirFlagsAreOff(t *testing.T) {
+	router, _, _ := newAttachmentRouterStack(t, false)
+
+	for _, target := range []string{
+		"/mcp",
+		"/oauth/token",
+		"/oauth/register",
+		"/.well-known/oauth-authorization-server",
+		"/.well-known/openid-configuration",
+		"/.well-known/oauth-protected-resource",
+		"/.well-known/oauth-protected-resource/mcp",
+	} {
+		t.Run(target, func(t *testing.T) {
+			rec := httptest.NewRecorder()
+			router.ServeHTTP(rec, httptest.NewRequestWithContext(t.Context(), http.MethodGet, target, nil))
+
+			assert.Equal(t, http.StatusNotFound, rec.Code)
+		})
+	}
 }
