@@ -744,6 +744,7 @@ func (c *ConverterImpl) ToStaffRoleDetail(source *ent.StaffRole) api.StaffRoleDe
 				apiStaffRoleDetail.Permissions[i] = c.ToStaffRolePermission((*source).Edges.Permissions[i])
 			}
 		}
+		apiStaffRoleDetail.Grants = grantNames((*source).Edges.Grants)
 	}
 	return apiStaffRoleDetail
 }

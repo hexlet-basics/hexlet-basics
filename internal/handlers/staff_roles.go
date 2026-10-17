@@ -2,8 +2,13 @@ package handlers
 
 import (
 	"context"
+	"errors"
+
+	"github.com/samber/lo"
 
 	"hexletbasics/internal/api"
+	"hexletbasics/internal/permissions"
+	"hexletbasics/internal/staffroles"
 )
 
 // roleDetail fetches a role with its permission matrix and converts it to the
@@ -49,13 +54,29 @@ func (s *Server) AdminGetRolePermissions(ctx context.Context, params api.AdminGe
 	return s.roleDetail(ctx, int(params.RoleId))
 }
 
-// AdminUpdateRolePermissions applies the submitted matrix; the staffroles
-// module upserts it. A missing role is a 404, before any write.
+// AdminUpdateRolePermissions applies the submitted matrix and grants; the
+// staffroles module writes them in one transaction. A missing role is a 404,
+// before any write, and an undeclared grant a 422.
 func (s *Server) AdminUpdateRolePermissions(ctx context.Context, req *api.RolePermissionsInput, params api.AdminUpdateRolePermissionsParams) (api.AdminUpdateRolePermissionsRes, error) {
 	roleID := int(params.RoleId)
 
-	if err := s.permissions.Apply(ctx, roleID, req.Permissions); err != nil {
+	if err := s.permissions.Apply(ctx, roleID, req.Permissions, req.Grants); err != nil {
+		if errors.Is(err, staffroles.ErrUnknownPermission) {
+			return validationError("grants", err.Error()), nil
+		}
 		return nil, err
 	}
 	return s.roleDetail(ctx, roleID)
+}
+
+// --- Permission catalog -----------------------------------------------------
+
+// AdminListPermissions returns the catalog of Permissions the roles screen
+// offers. It is read from the operations' declarations in the contract, so a
+// Permission appears here exactly when some operation requires it.
+func (s *Server) AdminListPermissions(context.Context) (api.AdminListPermissionsRes, error) {
+	catalog := permissions.Catalog()
+	return &api.PermissionCatalog{Permissions: lo.Map(catalog, func(p permissions.Permission, _ int) api.Permission {
+		return api.Permission{Name: p.Name, Kind: api.PermissionKind(p.Kind)}
+	})}, nil
 }

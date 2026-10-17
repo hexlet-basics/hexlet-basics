@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"time"
 
@@ -84,6 +85,21 @@ func (_c *StaffRoleCreate) AddPermissions(v ...*StaffRolePermission) *StaffRoleC
 		ids[i] = v[i].ID
 	}
 	return _c.AddPermissionIDs(ids...)
+}
+
+// AddGrantIDs adds the "grants" edge to the StaffRoleGrant entity by IDs.
+func (_c *StaffRoleCreate) AddGrantIDs(ids ...int) *StaffRoleCreate {
+	_c.mutation.AddGrantIDs(ids...)
+	return _c
+}
+
+// AddGrants adds the "grants" edges to the StaffRoleGrant entity.
+func (_c *StaffRoleCreate) AddGrants(v ...*StaffRoleGrant) *StaffRoleCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddGrantIDs(ids...)
 }
 
 // Mutation returns the StaffRoleMutation object of the builder.
@@ -194,6 +210,22 @@ func (_c *StaffRoleCreate) createSpec() (*StaffRole, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(staffrolepermission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.GrantsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

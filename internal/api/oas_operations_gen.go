@@ -53,6 +53,7 @@ const (
 	AdminListLessonProgressOperation            OperationName = "AdminListLessonProgress"
 	AdminListManagementUsersOperation           OperationName = "AdminListManagementUsers"
 	AdminListMessagesOperation                  OperationName = "AdminListMessages"
+	AdminListPermissionsOperation               OperationName = "AdminListPermissions"
 	AdminListReviewsOperation                   OperationName = "AdminListReviews"
 	AdminListRolesOperation                     OperationName = "AdminListRoles"
 	AdminListStaffMembersOperation              OperationName = "AdminListStaffMembers"

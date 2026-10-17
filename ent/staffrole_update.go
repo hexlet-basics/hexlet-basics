@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"hexletbasics/ent/predicate"
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"time"
 
@@ -84,6 +85,21 @@ func (_u *StaffRoleUpdate) AddPermissions(v ...*StaffRolePermission) *StaffRoleU
 	return _u.AddPermissionIDs(ids...)
 }
 
+// AddGrantIDs adds the "grants" edge to the StaffRoleGrant entity by IDs.
+func (_u *StaffRoleUpdate) AddGrantIDs(ids ...int) *StaffRoleUpdate {
+	_u.mutation.AddGrantIDs(ids...)
+	return _u
+}
+
+// AddGrants adds the "grants" edges to the StaffRoleGrant entity.
+func (_u *StaffRoleUpdate) AddGrants(v ...*StaffRoleGrant) *StaffRoleUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddGrantIDs(ids...)
+}
+
 // Mutation returns the StaffRoleMutation object of the builder.
 func (_u *StaffRoleUpdate) Mutation() *StaffRoleMutation {
 	return _u.mutation
@@ -108,6 +124,27 @@ func (_u *StaffRoleUpdate) RemovePermissions(v ...*StaffRolePermission) *StaffRo
 		ids[i] = v[i].ID
 	}
 	return _u.RemovePermissionIDs(ids...)
+}
+
+// ClearGrants clears all "grants" edges to the StaffRoleGrant entity.
+func (_u *StaffRoleUpdate) ClearGrants() *StaffRoleUpdate {
+	_u.mutation.ClearGrants()
+	return _u
+}
+
+// RemoveGrantIDs removes the "grants" edge to StaffRoleGrant entities by IDs.
+func (_u *StaffRoleUpdate) RemoveGrantIDs(ids ...int) *StaffRoleUpdate {
+	_u.mutation.RemoveGrantIDs(ids...)
+	return _u
+}
+
+// RemoveGrants removes "grants" edges to StaffRoleGrant entities.
+func (_u *StaffRoleUpdate) RemoveGrants(v ...*StaffRoleGrant) *StaffRoleUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveGrantIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -212,6 +249,51 @@ func (_u *StaffRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.GrantsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedGrantsIDs(); len(nodes) > 0 && !_u.mutation.GrantsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.GrantsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{staffrole.Label}
@@ -287,6 +369,21 @@ func (_u *StaffRoleUpdateOne) AddPermissions(v ...*StaffRolePermission) *StaffRo
 	return _u.AddPermissionIDs(ids...)
 }
 
+// AddGrantIDs adds the "grants" edge to the StaffRoleGrant entity by IDs.
+func (_u *StaffRoleUpdateOne) AddGrantIDs(ids ...int) *StaffRoleUpdateOne {
+	_u.mutation.AddGrantIDs(ids...)
+	return _u
+}
+
+// AddGrants adds the "grants" edges to the StaffRoleGrant entity.
+func (_u *StaffRoleUpdateOne) AddGrants(v ...*StaffRoleGrant) *StaffRoleUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddGrantIDs(ids...)
+}
+
 // Mutation returns the StaffRoleMutation object of the builder.
 func (_u *StaffRoleUpdateOne) Mutation() *StaffRoleMutation {
 	return _u.mutation
@@ -311,6 +408,27 @@ func (_u *StaffRoleUpdateOne) RemovePermissions(v ...*StaffRolePermission) *Staf
 		ids[i] = v[i].ID
 	}
 	return _u.RemovePermissionIDs(ids...)
+}
+
+// ClearGrants clears all "grants" edges to the StaffRoleGrant entity.
+func (_u *StaffRoleUpdateOne) ClearGrants() *StaffRoleUpdateOne {
+	_u.mutation.ClearGrants()
+	return _u
+}
+
+// RemoveGrantIDs removes the "grants" edge to StaffRoleGrant entities by IDs.
+func (_u *StaffRoleUpdateOne) RemoveGrantIDs(ids ...int) *StaffRoleUpdateOne {
+	_u.mutation.RemoveGrantIDs(ids...)
+	return _u
+}
+
+// RemoveGrants removes "grants" edges to StaffRoleGrant entities.
+func (_u *StaffRoleUpdateOne) RemoveGrants(v ...*StaffRoleGrant) *StaffRoleUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveGrantIDs(ids...)
 }
 
 // Where appends a list predicates to the StaffRoleUpdate builder.
@@ -438,6 +556,51 @@ func (_u *StaffRoleUpdateOne) sqlSave(ctx context.Context) (_node *StaffRole, er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(staffrolepermission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.GrantsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedGrantsIDs(); len(nodes) > 0 && !_u.mutation.GrantsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.GrantsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   staffrole.GrantsTable,
+			Columns: []string{staffrole.GrantsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(staffrolegrant.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

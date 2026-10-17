@@ -189,6 +189,10 @@ type AdminListMessagesRes interface {
 	adminListMessagesRes()
 }
 
+type AdminListPermissionsRes interface {
+	adminListPermissionsRes()
+}
+
 type AdminListReviewsRes interface {
 	adminListReviewsRes()
 }

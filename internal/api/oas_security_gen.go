@@ -83,6 +83,7 @@ var operationRolesAdminSession = map[string][]string{
 	AdminListLessonProgressOperation:            []string{},
 	AdminListManagementUsersOperation:           []string{},
 	AdminListMessagesOperation:                  []string{},
+	AdminListPermissionsOperation:               []string{},
 	AdminListReviewsOperation:                   []string{},
 	AdminListRolesOperation:                     []string{},
 	AdminListStaffMembersOperation:              []string{},

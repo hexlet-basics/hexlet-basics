@@ -1,5 +1,6 @@
-# Fixtures for `staff_member_roles`, HAND-CURATED. Two roles; "editor" owns two
-# permission rows (see staff_member_role_permissions.yml), "moderator" none.
+# Fixtures for `staff_member_roles`, HAND-CURATED. Two roles; "editor" owns one
+# matrix row and one grant (see staff_member_role_permissions.yml and
+# staff_member_role_grants.yml), "moderator" none.
 # Names are unique (staff_member_roles_name_uniq). Ordered by name in the list.
 - id: {{ id "staff_role_editor" }}
   name: editor

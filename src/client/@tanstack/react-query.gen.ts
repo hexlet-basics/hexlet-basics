@@ -1196,6 +1196,24 @@ export const adminListLessonProgressInfiniteOptions = (options?: Options<AdminLi
   return opts as Omit<typeof opts, 'initialData'>;
 };
 
+export const adminListPermissionsQueryKey = (options?: Options<AdminListPermissionsData>) => createQueryKey('adminListPermissions', options);
+
+/**
+ * The catalog of Permissions, generated from the operations' declarations.
+ */
+export const adminListPermissionsOptions = (options?: Options<AdminListPermissionsData>) => queryOptions<AdminListPermissionsResponse, AxiosError<AdminListPermissionsError>, AdminListPermissionsResponse, ReturnType<typeof adminListPermissionsQueryKey>>({
+  queryFn: async ({ queryKey, signal }) => {
+    const { data } = await adminListPermissions({
+      ...options,
+      ...queryKey[0],
+      signal,
+      throwOnError: true
+    });
+    return data;
+  },
+  queryKey: adminListPermissionsQueryKey(options)
+});
+
 export const adminGetRolePermissionsQueryKey = (options: Options<AdminGetRolePermissionsData>) => createQueryKey('adminGetRolePermissions', options);
 
 /**

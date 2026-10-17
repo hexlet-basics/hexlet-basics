@@ -42,6 +42,7 @@ import (
 	"hexletbasics/ent/session"
 	"hexletbasics/ent/staffmember"
 	"hexletbasics/ent/staffrole"
+	"hexletbasics/ent/staffrolegrant"
 	"hexletbasics/ent/staffrolepermission"
 	"hexletbasics/ent/tag"
 	"hexletbasics/ent/tagging"
@@ -121,6 +122,8 @@ type Client struct {
 	StaffMember *StaffMemberClient
 	// StaffRole is the client for interacting with the StaffRole builders.
 	StaffRole *StaffRoleClient
+	// StaffRoleGrant is the client for interacting with the StaffRoleGrant builders.
+	StaffRoleGrant *StaffRoleGrantClient
 	// StaffRolePermission is the client for interacting with the StaffRolePermission builders.
 	StaffRolePermission *StaffRolePermissionClient
 	// Tag is the client for interacting with the Tag builders.
@@ -173,6 +176,7 @@ func (c *Client) init() {
 	c.Session = NewSessionClient(c.config)
 	c.StaffMember = NewStaffMemberClient(c.config)
 	c.StaffRole = NewStaffRoleClient(c.config)
+	c.StaffRoleGrant = NewStaffRoleGrantClient(c.config)
 	c.StaffRolePermission = NewStaffRolePermissionClient(c.config)
 	c.Tag = NewTagClient(c.config)
 	c.Tagging = NewTaggingClient(c.config)
@@ -301,6 +305,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Session:                   NewSessionClient(cfg),
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
+		StaffRoleGrant:            NewStaffRoleGrantClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
 		Tag:                       NewTagClient(cfg),
 		Tagging:                   NewTaggingClient(cfg),
@@ -356,6 +361,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Session:                   NewSessionClient(cfg),
 		StaffMember:               NewStaffMemberClient(cfg),
 		StaffRole:                 NewStaffRoleClient(cfg),
+		StaffRoleGrant:            NewStaffRoleGrantClient(cfg),
 		StaffRolePermission:       NewStaffRolePermissionClient(cfg),
 		Tag:                       NewTagClient(cfg),
 		Tagging:                   NewTaggingClient(cfg),
@@ -487,6 +493,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.StaffMember.mutate(ctx, m)
 	case *StaffRoleMutation:
 		return c.StaffRole.mutate(ctx, m)
+	case *StaffRoleGrantMutation:
+		return c.StaffRoleGrant.mutate(ctx, m)
 	case *StaffRolePermissionMutation:
 		return c.StaffRolePermission.mutate(ctx, m)
 	case *TagMutation:
@@ -5176,6 +5184,22 @@ func (c *StaffRoleClient) QueryPermissions(_m *StaffRole) *StaffRolePermissionQu
 	return query
 }
 
+// QueryGrants queries the grants edge of a StaffRole.
+func (c *StaffRoleClient) QueryGrants(_m *StaffRole) *StaffRoleGrantQuery {
+	query := (&StaffRoleGrantClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(staffrole.Table, staffrole.FieldID, id),
+			sqlgraph.To(staffrolegrant.Table, staffrolegrant.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, staffrole.GrantsTable, staffrole.GrantsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *StaffRoleClient) Hooks() []Hook {
 	return c.hooks.StaffRole
@@ -5198,6 +5222,155 @@ func (c *StaffRoleClient) mutate(ctx context.Context, m *StaffRoleMutation) (Val
 		return (&StaffRoleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown StaffRole mutation op: %q", m.Op())
+	}
+}
+
+// StaffRoleGrantClient is a client for the StaffRoleGrant schema.
+type StaffRoleGrantClient struct {
+	config
+}
+
+// NewStaffRoleGrantClient returns a client for the StaffRoleGrant from the given config.
+func NewStaffRoleGrantClient(c config) *StaffRoleGrantClient {
+	return &StaffRoleGrantClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `staffrolegrant.Hooks(f(g(h())))`.
+func (c *StaffRoleGrantClient) Use(hooks ...Hook) {
+	c.hooks.StaffRoleGrant = append(c.hooks.StaffRoleGrant, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `staffrolegrant.Intercept(f(g(h())))`.
+func (c *StaffRoleGrantClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StaffRoleGrant = append(c.inters.StaffRoleGrant, interceptors...)
+}
+
+// Create returns a builder for creating a StaffRoleGrant entity.
+func (c *StaffRoleGrantClient) Create() *StaffRoleGrantCreate {
+	mutation := newStaffRoleGrantMutation(c.config, OpCreate)
+	return &StaffRoleGrantCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of StaffRoleGrant entities.
+func (c *StaffRoleGrantClient) CreateBulk(builders ...*StaffRoleGrantCreate) *StaffRoleGrantCreateBulk {
+	return &StaffRoleGrantCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StaffRoleGrantClient) MapCreateBulk(slice any, setFunc func(*StaffRoleGrantCreate, int)) *StaffRoleGrantCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StaffRoleGrantCreateBulk{err: fmt.Errorf("calling to StaffRoleGrantClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StaffRoleGrantCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StaffRoleGrantCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for StaffRoleGrant.
+func (c *StaffRoleGrantClient) Update() *StaffRoleGrantUpdate {
+	mutation := newStaffRoleGrantMutation(c.config, OpUpdate)
+	return &StaffRoleGrantUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StaffRoleGrantClient) UpdateOne(_m *StaffRoleGrant) *StaffRoleGrantUpdateOne {
+	mutation := newStaffRoleGrantMutation(c.config, OpUpdateOne, withStaffRoleGrant(_m))
+	return &StaffRoleGrantUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StaffRoleGrantClient) UpdateOneID(id int) *StaffRoleGrantUpdateOne {
+	mutation := newStaffRoleGrantMutation(c.config, OpUpdateOne, withStaffRoleGrantID(id))
+	return &StaffRoleGrantUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for StaffRoleGrant.
+func (c *StaffRoleGrantClient) Delete() *StaffRoleGrantDelete {
+	mutation := newStaffRoleGrantMutation(c.config, OpDelete)
+	return &StaffRoleGrantDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StaffRoleGrantClient) DeleteOne(_m *StaffRoleGrant) *StaffRoleGrantDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StaffRoleGrantClient) DeleteOneID(id int) *StaffRoleGrantDeleteOne {
+	builder := c.Delete().Where(staffrolegrant.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StaffRoleGrantDeleteOne{builder}
+}
+
+// Query returns a query builder for StaffRoleGrant.
+func (c *StaffRoleGrantClient) Query() *StaffRoleGrantQuery {
+	return &StaffRoleGrantQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStaffRoleGrant},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a StaffRoleGrant entity by its id.
+func (c *StaffRoleGrantClient) Get(ctx context.Context, id int) (*StaffRoleGrant, error) {
+	return c.Query().Where(staffrolegrant.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StaffRoleGrantClient) GetX(ctx context.Context, id int) *StaffRoleGrant {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryRole queries the role edge of a StaffRoleGrant.
+func (c *StaffRoleGrantClient) QueryRole(_m *StaffRoleGrant) *StaffRoleQuery {
+	query := (&StaffRoleClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(staffrolegrant.Table, staffrolegrant.FieldID, id),
+			sqlgraph.To(staffrole.Table, staffrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, staffrolegrant.RoleTable, staffrolegrant.RoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *StaffRoleGrantClient) Hooks() []Hook {
+	return c.hooks.StaffRoleGrant
+}
+
+// Interceptors returns the client interceptors.
+func (c *StaffRoleGrantClient) Interceptors() []Interceptor {
+	return c.inters.StaffRoleGrant
+}
+
+func (c *StaffRoleGrantClient) mutate(ctx context.Context, m *StaffRoleGrantMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StaffRoleGrantCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StaffRoleGrantUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StaffRoleGrantUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StaffRoleGrantDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown StaffRoleGrant mutation op: %q", m.Op())
 	}
 }
 

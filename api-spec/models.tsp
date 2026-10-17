@@ -82,9 +82,12 @@ enum ReviewState {
   archived: "archived",
 }
 
-/** Admin resources a staff role can be granted permissions on. */
+/**
+ * Admin resources a staff role can be granted permissions on through the
+ * create/read/update/delete matrix. Resources that moved to declared
+ * Permissions (ADR-0017) leave this list as they move.
+ */
 enum PermissionResource {
-  blogPosts: "blog_posts",
   banners: "banners",
   reviews: "reviews",
   leads: "leads",
@@ -421,6 +424,25 @@ model StaffRoleDetail {
   name: string;
   description: string | null;
   permissions: StaffRolePermission[];
+
+  /** Names of the declared Permissions the role holds (see `Permission`). */
+  grants: string[];
+}
+
+/** Whether an operation only reads or can change data (ADR-0017). */
+enum PermissionKind {
+  read: "read",
+  write: "write",
+}
+
+/**
+ * A Permission an admin operation can require, as declared on the operations in
+ * this contract with `x-permission`. The catalog is read from those
+ * declarations, never kept by hand.
+ */
+model Permission {
+  name: string;
+  kind: PermissionKind;
 }
 
 /** One resource's permission bits for a role (legacy: `StaffRolePermission`). */

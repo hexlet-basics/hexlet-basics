@@ -1,0 +1,131 @@
+// Package permissions is the catalog of Permissions an admin operation can
+// require (ADR-0017). Each operation declares its Permission and whether it
+// reads or writes with `x-permission` in the TypeSpec; this package reads those
+// declarations out of the generated OpenAPI document, so the catalog is never
+// kept by hand and cannot drift from the contract.
+package permissions
+
+import (
+	"fmt"
+	"slices"
+	"strings"
+
+	"gopkg.in/yaml.v3"
+
+	apispec "hexletbasics/api-spec"
+)
+
+// Kind says whether an operation only reads or can change data. Over MCP it
+// picks the `mcp.read` or `mcp.write` Permission an operation also needs.
+type Kind string
+
+const (
+	Read  Kind = "read"
+	Write Kind = "write"
+)
+
+// Requirement is what one operation declares it needs.
+type Requirement struct {
+	Permission string
+	Kind       Kind
+}
+
+// Permission is one entry of the catalog. A Permission has one Kind: it is
+// either the right to read or the right to change, so a role can be given one
+// without the other.
+type Permission struct {
+	Name string
+	Kind Kind
+}
+
+// Declarations is what the contract declares: the requirement of each
+// operation, keyed by its ogen name (AdminListBlogPosts), and the catalog.
+type Declarations struct {
+	operations map[string]Requirement
+	catalog    []Permission
+}
+
+// declared is read once from the embedded contract. A contract that cannot be
+// parsed is a build defect, not a runtime condition, and TestTheCatalog...
+// covers it, so a failure here panics at start-up rather than silently opening
+// or closing every operation.
+var declared = mustParse(apispec.OpenAPI)
+
+func mustParse(doc []byte) *Declarations {
+	d, err := Parse(doc)
+	if err != nil {
+		panic(fmt.Sprintf("permissions: read the contract: %v", err))
+	}
+	return d
+}
+
+// Parse reads the `x-permission` declarations out of an OpenAPI document. It is
+// exported so tests can feed it malformed documents.
+func Parse(doc []byte) (*Declarations, error) {
+	var spec struct {
+		Paths map[string]map[string]struct {
+			OperationID string `yaml:"operationId"`
+			Permission  *struct {
+				Name string `yaml:"name"`
+				Kind Kind   `yaml:"kind"`
+			} `yaml:"x-permission"`
+		} `yaml:"paths"`
+	}
+	if err := yaml.Unmarshal(doc, &spec); err != nil {
+		return nil, fmt.Errorf("parse OpenAPI: %w", err)
+	}
+
+	d := &Declarations{operations: map[string]Requirement{}}
+	kinds := map[string]Kind{}
+	for path, methods := range spec.Paths {
+		for method, op := range methods {
+			if op.Permission == nil {
+				continue
+			}
+			where := fmt.Sprintf("%s %s", strings.ToUpper(method), path)
+			if op.OperationID == "" || op.Permission.Name == "" {
+				return nil, fmt.Errorf("%s: x-permission needs an operationId and a name", where)
+			}
+			if op.Permission.Kind != Read && op.Permission.Kind != Write {
+				return nil, fmt.Errorf("%s: x-permission kind %q is neither read nor write", where, op.Permission.Kind)
+			}
+			if known, ok := kinds[op.Permission.Name]; ok && known != op.Permission.Kind {
+				return nil, fmt.Errorf("%s: %s is declared both %s and %s", where, op.Permission.Name, known, op.Permission.Kind)
+			}
+			kinds[op.Permission.Name] = op.Permission.Kind
+			d.operations[operationName(op.OperationID)] = Requirement{Permission: op.Permission.Name, Kind: op.Permission.Kind}
+		}
+	}
+
+	for name, kind := range kinds {
+		d.catalog = append(d.catalog, Permission{Name: name, Kind: kind})
+	}
+	slices.SortFunc(d.catalog, func(a, b Permission) int { return strings.Compare(a.Name, b.Name) })
+	return d, nil
+}
+
+// operationName turns an OpenAPI operationId (adminListBanners) into the ogen
+// name (AdminListBanners) the security handler receives.
+func operationName(operationID string) string {
+	return strings.ToUpper(operationID[:1]) + operationID[1:]
+}
+
+// For reports what the operation (an ogen operation name) declares it needs.
+// ok is false for an operation that declares nothing, which the caller treats
+// as not yet migrated to declared Permissions.
+func For(operation string) (Requirement, bool) {
+	r, ok := declared.operations[operation]
+	return r, ok
+}
+
+// Catalog lists every declared Permission once, ordered by name so the roles
+// screen and the tests see a stable list.
+func Catalog() []Permission {
+	return slices.Clone(declared.catalog)
+}
+
+// Known reports whether name is in the catalog. Grants are validated against it
+// so a role cannot be given a Permission nothing requires.
+func Known(name string) bool {
+	return slices.ContainsFunc(declared.catalog, func(p Permission) bool { return p.Name == name })
+}

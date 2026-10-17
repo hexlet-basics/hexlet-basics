@@ -875,6 +875,28 @@ var (
 		Columns:    StaffMemberRolesColumns,
 		PrimaryKey: []*schema.Column{StaffMemberRolesColumns[0]},
 	}
+	// StaffMemberRoleGrantsColumns holds the columns for the "staff_member_role_grants" table.
+	StaffMemberRoleGrantsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "permission", Type: field.TypeString},
+		{Name: "role_id", Type: field.TypeInt},
+	}
+	// StaffMemberRoleGrantsTable holds the schema information for the "staff_member_role_grants" table.
+	StaffMemberRoleGrantsTable = &schema.Table{
+		Name:       "staff_member_role_grants",
+		Columns:    StaffMemberRoleGrantsColumns,
+		PrimaryKey: []*schema.Column{StaffMemberRoleGrantsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "staff_member_role_grants_staff_member_roles_grants",
+				Columns:    []*schema.Column{StaffMemberRoleGrantsColumns[4]},
+				RefColumns: []*schema.Column{StaffMemberRolesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// StaffMemberRolePermissionsColumns holds the columns for the "staff_member_role_permissions" table.
 	StaffMemberRolePermissionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -1003,6 +1025,7 @@ var (
 		UserSessionsTable,
 		StaffMembersTable,
 		StaffMemberRolesTable,
+		StaffMemberRoleGrantsTable,
 		StaffMemberRolePermissionsTable,
 		TagsTable,
 		TaggingsTable,
@@ -1114,6 +1137,10 @@ func init() {
 	StaffMembersTable.ForeignKeys[1].RefTable = UsersTable
 	StaffMemberRolesTable.Annotation = &entsql.Annotation{
 		Table: "staff_member_roles",
+	}
+	StaffMemberRoleGrantsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
+	StaffMemberRoleGrantsTable.Annotation = &entsql.Annotation{
+		Table: "staff_member_role_grants",
 	}
 	StaffMemberRolePermissionsTable.ForeignKeys[0].RefTable = StaffMemberRolesTable
 	StaffMemberRolePermissionsTable.Annotation = &entsql.Annotation{

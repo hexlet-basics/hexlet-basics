@@ -998,7 +998,29 @@ export type OAuthDecision = {
 /**
  * Admin resources a staff role can be granted permissions on.
  */
-export type PermissionResource = 'blog_posts' | 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
+export type Permission = {
+  name: string;
+  kind: PermissionKind;
+};
+
+/**
+ * Every Permission an admin operation can require.
+ */
+export type PermissionCatalog = {
+  permissions: Array<Permission>;
+};
+
+/**
+ * Whether an operation only reads or can change data (ADR-0017).
+ */
+export type PermissionKind = 'read' | 'write';
+
+/**
+ * Admin resources a staff role can be granted permissions on through the
+ * create/read/update/delete matrix. Resources that moved to declared
+ * Permissions (ADR-0017) leave this list as they move.
+ */
+export type PermissionResource = 'banners' | 'reviews' | 'leads' | 'messages' | 'language_categories' | 'language_lessons' | 'language_lesson_reviews' | 'language_lesson_members' | 'languages' | 'language_landing_pages';
 
 /**
  * RFC 9457 problem details returned by the transport when request decoding,
@@ -1159,6 +1181,11 @@ export type RolePermissionInput = {
  */
 export type RolePermissionsInput = {
   permissions: Array<RolePermissionInput>;
+  /**
+   * The declared Permissions the role holds, replacing its current set. Names
+   * must come from the catalog (`GET /admin/management/permissions`).
+   */
+  grants: Array<string>;
 };
 
 /**
@@ -1271,6 +1298,10 @@ export type StaffRoleDetail = {
   name: string;
   description: string | null;
   permissions: Array<StaffRolePermission>;
+  /**
+   * Names of the declared Permissions the role holds (see `Permission`).
+   */
+  grants: Array<string>;
 };
 
 /**
@@ -3374,6 +3405,42 @@ export type AdminListLessonProgressResponses = {
 
 export type AdminListLessonProgressResponse = AdminListLessonProgressResponses[keyof AdminListLessonProgressResponses];
 
+export type AdminListPermissionsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/api/admin/management/permissions';
+};
+
+export type AdminListPermissionsErrors = {
+  /**
+   * The request is not authenticated (no/invalid session cookie).
+   */
+  401: ProblemDetails;
+  /**
+   * The caller is authenticated but lacks permission for this resource.
+   */
+  403: ProblemDetails;
+  /**
+   * Default error response shared by every operation.
+   *
+   * `@error` emits an OpenAPI `default` response, keeping central transport
+   * failures typed without enumerating every status on every operation.
+   */
+  default: ProblemDetails;
+};
+
+export type AdminListPermissionsError = AdminListPermissionsErrors[keyof AdminListPermissionsErrors];
+
+export type AdminListPermissionsResponses = {
+  /**
+   * The request has succeeded.
+   */
+  200: PermissionCatalog;
+};
+
+export type AdminListPermissionsResponse = AdminListPermissionsResponses[keyof AdminListPermissionsResponses];
+
 export type AdminGetRolePermissionsData = {
   body?: never;
   path: {
@@ -3430,6 +3497,12 @@ export type AdminUpdateRolePermissionsErrors = {
    * The caller is authenticated but lacks permission for this resource.
    */
   403: ProblemDetails;
+  /**
+   * Field-level validation errors, keyed by field name (each value is the list
+   * of messages for that field). Returned when a write fails validation —
+   * including constraints the schema cannot express, like uniqueness.
+   */
+  422: ValidationError;
   /**
    * Default error response shared by every operation.
    *

@@ -40,17 +40,12 @@ func actionOf(operation string) action {
 
 // resourceOperations lists, per resource, the operations a staff member holding
 // the matching bit may perform (legacy `STAFF_RESOURCE` of each admin
-// controller).
+// controller). Operations that declare a Permission in the contract (blog posts
+// so far, ADR-0017) are not listed: the declaration is their rule, and each
+// resource leaves this table as it is migrated.
 var resourceOperations = map[api.PermissionResource][]string{
 	api.PermissionResourceBanners: {
 		"AdminListBanners", "AdminGetBanner", "AdminCreateBanner", "AdminUpdateBanner", "AdminDeleteBanner",
-	},
-	api.PermissionResourceBlogPosts: {
-		"AdminListBlogPosts", "AdminGetBlogPost", "AdminCreateBlogPost", "AdminUpdateBlogPost",
-		"AdminDeleteBlogPost", "AdminSetBlogPostRelatedCourses", "AdminSuggestBlogPostRelatedCourses",
-		// The post form's course picker: an editor of posts picks the courses a post
-		// promotes without being allowed to edit courses.
-		"AdminListCourseOptions",
 	},
 	api.PermissionResourceReviews: {
 		"AdminListReviews", "AdminGetReview", "AdminCreateReview", "AdminUpdateReview", "AdminDeleteReview",
@@ -85,7 +80,8 @@ var adminOnly = map[string]bool{
 	"AdminListManagementUsers": true, "AdminGetManagementUser": true, "AdminUpdateManagementUser": true,
 	"AdminListStaffMembers": true, "AdminGetStaffMember": true, "AdminCreateStaffMember": true,
 	"AdminUpdateStaffMember": true, "AdminDeleteStaffMember": true,
-	"AdminListRoles": true, "AdminGetRole": true, "AdminCreateRole": true, "AdminUpdateRole": true,
+	"AdminListPermissions": true,
+	"AdminListRoles":       true, "AdminGetRole": true, "AdminCreateRole": true, "AdminUpdateRole": true,
 	"AdminDeleteRole": true, "AdminGetRolePermissions": true, "AdminUpdateRolePermissions": true,
 	"AdminCreateCourseVersion":  true,
 	"AdminListCategoryQnaItems": true, "AdminCreateCategoryQnaItem": true, "AdminUpdateCategoryQnaItem": true,
