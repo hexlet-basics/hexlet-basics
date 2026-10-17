@@ -1,8 +1,10 @@
 package permissions_test
 
 import (
+	"slices"
 	"testing"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -20,17 +22,23 @@ func TestAnOperationReportsTheDeclaredPermissionAndKind(t *testing.T) {
 }
 
 func TestAnOperationWithoutADeclarationHasNoRequirement(t *testing.T) {
-	_, ok := permissions.For("AdminListBanners")
+	_, ok := permissions.For("AdminListUsers")
 	assert.False(t, ok)
 }
 
 func TestTheCatalogListsEachDeclaredPermissionOnceInOrder(t *testing.T) {
-	assert.Equal(t, []permissions.Permission{
+	catalog := permissions.Catalog()
+
+	names := lo.Map(catalog, func(p permissions.Permission, _ int) string { return p.Name })
+	assert.True(t, slices.IsSorted(names), "ordered by name")
+	assert.Equal(t, lo.Uniq(names), names, "each Permission once")
+	assert.Subset(t, catalog, []permissions.Permission{
 		{Name: "blog_posts.create", Kind: permissions.Write},
 		{Name: "blog_posts.delete", Kind: permissions.Write},
 		{Name: "blog_posts.read", Kind: permissions.Read},
 		{Name: "blog_posts.update", Kind: permissions.Write},
-	}, permissions.Catalog())
+		{Name: "banners.read", Kind: permissions.Read},
+	})
 }
 
 func TestKnownTellsCatalogNamesFromInventedOnes(t *testing.T) {

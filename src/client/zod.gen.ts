@@ -646,10 +646,6 @@ export const zOAuthDecision = z.object({
  * Admin resources a staff role can be granted permissions on.
  */
 export const zPermissionResource = z.enum([
-  'banners',
-  'reviews',
-  'leads',
-  'messages',
   'language_categories',
   'language_lessons',
   'language_lesson_reviews',

@@ -13,10 +13,14 @@ import (
 	"hexletbasics/internal/testsupport"
 )
 
-// staff_member_roles.yml seeds two roles; editor owns one matrix row (banners) and one grant (blog_posts.read).
+// staff_member_roles.yml seeds two roles; editor owns no matrix row and three grants (banners.create, banners.read, blog_posts.read).
 var (
 	roleEditorID = fixtures.ID32(fixtures.StaffRoleEditor)
 )
+
+// editorGrants are the editor's grants in the fixtures, in the order the API
+// lists them.
+var editorGrants = []string{"banners.create", "banners.read", "blog_posts.read"}
 
 func TestAdminListRoles(t *testing.T) {
 	h := testsupport.NewHarness(t)
@@ -32,8 +36,8 @@ func TestAdminListRoles(t *testing.T) {
 	require.Len(t, page.Items, totalRoles)
 	assert.Equal(t, "editor", page.Items[0].Name)
 	assert.Equal(t, "moderator", page.Items[1].Name)
-	// editor owns one matrix row and one grant.
-	assert.Equal(t, int32(2), page.Items[0].PermissionsCount)
+	// editor owns no matrix row and three grants.
+	assert.Equal(t, int32(3), page.Items[0].PermissionsCount)
 	assert.Equal(t, int32(0), page.Items[1].PermissionsCount)
 }
 
@@ -45,8 +49,8 @@ func TestAdminGetRole(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Len(t, got.Permissions, 1)
-	assert.Equal(t, []string{"blog_posts.read"}, got.Grants)
+	assert.Empty(t, got.Permissions)
+	assert.Equal(t, editorGrants, got.Grants)
 }
 
 func TestAdminCreateRole(t *testing.T) {
@@ -89,8 +93,8 @@ func TestAdminUpdateRole(t *testing.T) {
 	assert.Equal(t, "editor-renamed", updated.Name)
 	assert.True(t, updated.Description.Null)
 	// Permissions and grants are untouched by a role update.
-	assert.Len(t, updated.Permissions, 1)
-	assert.Equal(t, []string{"blog_posts.read"}, updated.Grants)
+	assert.Empty(t, updated.Permissions)
+	assert.Equal(t, editorGrants, updated.Grants)
 }
 
 func TestAdminDeleteRole(t *testing.T) {
@@ -116,36 +120,35 @@ func TestAdminGetRolePermissions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 	assert.Equal(t, "editor", got.Name)
-	assert.Len(t, got.Permissions, 1)
+	assert.Empty(t, got.Permissions)
 }
 
-// TestAdminUpdateRolePermissions upserts the matrix: updates an existing row
-// (banners) and inserts a new one (reviews) — matching the legacy
-// find_or_initialize sync.
+// TestAdminUpdateRolePermissions upserts the matrix: inserts a row, then
+// updates it and inserts another — matching the legacy find_or_initialize sync.
 func TestAdminUpdateRolePermissions(t *testing.T) {
 	h := testsupport.NewHarness(t)
 	ctx := context.Background()
 
 	updated, err := h.Client.AdminUpdateRolePermissions(ctx, &api.RolePermissionsInput{
 		Permissions: []api.RolePermissionInput{
-			{Resource: api.PermissionResourceBanners, CanIndex: true, CanCreate: true, CanUpdate: true, CanDestroy: true},
-			{Resource: api.PermissionResourceReviews, CanIndex: true, CanCreate: false, CanUpdate: false, CanDestroy: false},
+			{Resource: api.PermissionResourceLanguages, CanIndex: true, CanCreate: true, CanUpdate: true, CanDestroy: true},
+			{Resource: api.PermissionResourceLanguageLessons, CanIndex: true, CanCreate: false, CanUpdate: false, CanDestroy: false},
 		},
 		Grants: []string{"blog_posts.read"},
 	}, api.AdminUpdateRolePermissionsParams{RoleId: roleEditorID})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, h.LastStatus())
 
-	// banners (updated) + reviews (inserted) = 2.
+	// Both rows are stored.
 	assert.Len(t, updated.Permissions, 2)
 
 	byResource := map[api.PermissionResource]api.StaffRolePermission{}
 	for _, p := range updated.Permissions {
 		byResource[p.Resource] = p
 	}
-	assert.True(t, byResource[api.PermissionResourceBanners].CanDestroy, "banners upgraded to full CRUD")
-	assert.True(t, byResource[api.PermissionResourceReviews].CanIndex)
-	assert.False(t, byResource[api.PermissionResourceReviews].CanCreate)
+	assert.True(t, byResource[api.PermissionResourceLanguages].CanDestroy, "full CRUD is stored")
+	assert.True(t, byResource[api.PermissionResourceLanguageLessons].CanIndex)
+	assert.False(t, byResource[api.PermissionResourceLanguageLessons].CanCreate)
 }
 
 // TestAdminUpdateRolePermissionsReplacesTheGrants checks that the grants
@@ -185,7 +188,7 @@ func TestAdminUpdateRolePermissionsRefusesAnUnknownGrant(t *testing.T) {
 	assert.Equal(t, http.StatusUnprocessableEntity, h.LastStatus())
 	got, err := h.Client.AdminGetRole(context.Background(), api.AdminGetRoleParams{ID: roleEditorID})
 	require.NoError(t, err)
-	assert.Equal(t, []string{"blog_posts.read"}, got.Grants)
+	assert.Equal(t, editorGrants, got.Grants)
 }
 
 // TestAdminListPermissions serves the catalog the roles screen offers, the one
@@ -196,10 +199,13 @@ func TestAdminListPermissions(t *testing.T) {
 	got, err := h.Client.AdminListPermissions(context.Background())
 	require.NoError(t, err)
 
-	assert.Equal(t, []api.Permission{
-		{Name: "blog_posts.create", Kind: api.PermissionKindWrite},
-		{Name: "blog_posts.delete", Kind: api.PermissionKindWrite},
-		{Name: "blog_posts.read", Kind: api.PermissionKindRead},
+	// The whole catalog is pinned by the contract test; here is that the screen's
+	// endpoint serves it, with each Permission's kind.
+	assert.Subset(t, got.Permissions, []api.Permission{
+		{Name: "banners.create", Kind: api.PermissionKindWrite},
+		{Name: "banners.read", Kind: api.PermissionKindRead},
 		{Name: "blog_posts.update", Kind: api.PermissionKindWrite},
-	}, got.Permissions)
+		{Name: "leads.read", Kind: api.PermissionKindRead},
+		{Name: "reviews.delete", Kind: api.PermissionKindWrite},
+	})
 }

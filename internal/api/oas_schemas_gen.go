@@ -6452,10 +6452,6 @@ func (s *PermissionKind) UnmarshalText(data []byte) error {
 type PermissionResource string
 
 const (
-	PermissionResourceBanners               PermissionResource = "banners"
-	PermissionResourceReviews               PermissionResource = "reviews"
-	PermissionResourceLeads                 PermissionResource = "leads"
-	PermissionResourceMessages              PermissionResource = "messages"
 	PermissionResourceLanguageCategories    PermissionResource = "language_categories"
 	PermissionResourceLanguageLessons       PermissionResource = "language_lessons"
 	PermissionResourceLanguageLessonReviews PermissionResource = "language_lesson_reviews"
@@ -6467,10 +6463,6 @@ const (
 // AllValues returns all PermissionResource values.
 func (PermissionResource) AllValues() []PermissionResource {
 	return []PermissionResource{
-		PermissionResourceBanners,
-		PermissionResourceReviews,
-		PermissionResourceLeads,
-		PermissionResourceMessages,
 		PermissionResourceLanguageCategories,
 		PermissionResourceLanguageLessons,
 		PermissionResourceLanguageLessonReviews,
@@ -6483,14 +6475,6 @@ func (PermissionResource) AllValues() []PermissionResource {
 // MarshalText implements encoding.TextMarshaler.
 func (s PermissionResource) MarshalText() ([]byte, error) {
 	switch s {
-	case PermissionResourceBanners:
-		return []byte(s), nil
-	case PermissionResourceReviews:
-		return []byte(s), nil
-	case PermissionResourceLeads:
-		return []byte(s), nil
-	case PermissionResourceMessages:
-		return []byte(s), nil
 	case PermissionResourceLanguageCategories:
 		return []byte(s), nil
 	case PermissionResourceLanguageLessons:
@@ -6511,18 +6495,6 @@ func (s PermissionResource) MarshalText() ([]byte, error) {
 // UnmarshalText implements encoding.TextUnmarshaler.
 func (s *PermissionResource) UnmarshalText(data []byte) error {
 	switch PermissionResource(data) {
-	case PermissionResourceBanners:
-		*s = PermissionResourceBanners
-		return nil
-	case PermissionResourceReviews:
-		*s = PermissionResourceReviews
-		return nil
-	case PermissionResourceLeads:
-		*s = PermissionResourceLeads
-		return nil
-	case PermissionResourceMessages:
-		*s = PermissionResourceMessages
-		return nil
 	case PermissionResourceLanguageCategories:
 		*s = PermissionResourceLanguageCategories
 		return nil

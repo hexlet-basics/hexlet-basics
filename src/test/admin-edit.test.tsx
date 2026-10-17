@@ -26,7 +26,7 @@ const role: StaffRoleDetail = {
     {
       id: 1,
       roleId: 5,
-      resource: "banners",
+      resource: "languages",
       canIndex: true,
       canCreate: false,
       canUpdate: false,
@@ -62,19 +62,19 @@ test("a role's permissions are saved as the grid the admin ticked", async () => 
   });
 
   // What the role already has is ticked; nothing else is.
-  const viewBanners = page.getByRole("checkbox", { name: "banners canIndex" });
-  await expect.element(viewBanners).toBeChecked();
-  const createBanners = page.getByRole("checkbox", { name: "banners canCreate" });
-  await expect.element(createBanners).not.toBeChecked();
+  const viewLanguages = page.getByRole("checkbox", { name: "languages canIndex" });
+  await expect.element(viewLanguages).toBeChecked();
+  const createLanguages = page.getByRole("checkbox", { name: "languages canCreate" });
+  await expect.element(createLanguages).not.toBeChecked();
 
-  await createBanners.click();
+  await createLanguages.click();
   const save = page.getByRole("button", { name: "Save" }).last();
   await save.click();
 
   const confirmation = page.getByText("Record updated");
   await expect.element(confirmation).toBeVisible();
-  const banners = received?.permissions.find((row) => row.resource === "banners");
-  expect(banners).toMatchObject({ canIndex: true, canCreate: true, canUpdate: false });
+  const languages = received?.permissions.find((row) => row.resource === "languages");
+  expect(languages).toMatchObject({ canIndex: true, canCreate: true, canUpdate: false });
 });
 
 test("a role's blog post permissions are shown and saved as the admin ticked them", async () => {
