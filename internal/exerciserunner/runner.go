@@ -261,10 +261,13 @@ func (d *Docker) run(ctx context.Context, submission progress.Submission, comman
 			Cmd:   command,
 			User:  d.opts.User,
 			// Not a TTY, so stdout and stderr stay distinguishable in the stream.
-			Tty:             false,
-			AttachStdout:    true,
-			AttachStderr:    true,
-			NetworkDisabled: true,
+			// No NetworkDisabled here: the host config's "none" mode already cuts the
+			// container off, and unlike NetworkDisabled it keeps the loopback and a
+			// populated /etc/hosts. Without them `localhost` does not resolve
+			// (EAI_AGAIN) and test runners such as Vitest die at startup.
+			Tty:          false,
+			AttachStdout: true,
+			AttachStderr: true,
 			Labels: map[string]string{
 				"com.hexletbasics.role": "exercise-check",
 				"com.hexletbasics.user": strconv.Itoa(submission.UserID),
