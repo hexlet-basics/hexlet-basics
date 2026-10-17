@@ -6,7 +6,6 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/accounts"
-	"hexletbasics/internal/api"
 	"hexletbasics/internal/blogposts"
 	"hexletbasics/internal/coursecategories"
 	"hexletbasics/internal/courses"
