@@ -9,7 +9,7 @@ using OpenAPI;
 namespace HexletBasics;
 
 // ---------------------------------------------------------------------------
-// OAuth consent screen (ADR-0016).
+// OAuth consent screen (ADR-0019).
 //
 // The protocol endpoints an RFC defines (`/oauth/authorize`, `/oauth/token`,
 // the discovery documents) are hand-written outside this contract on purpose:

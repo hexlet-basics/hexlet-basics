@@ -1,5 +1,5 @@
 // Package oauthserver is the in-process OAuth 2.1 authorization server that lets
-// remote MCP clients act for a signed-in user (ADR-0016).
+// remote MCP clients act for a signed-in user (ADR-0019).
 //
 // It is self-contained on purpose, so it can be lifted out of the application
 // later: it owns its tables and its configuration, and it must not import the
@@ -37,7 +37,7 @@ import (
 const (
 	// Endpoint paths. Every authorization-server endpoint sits under /oauth/ with
 	// the library defaults overridden, because the root belongs to the SSR server
-	// (ADR-0016). The consent screen is the SSR route /connect, outside the prefix.
+	// (ADR-0019). The consent screen is the SSR route /connect, outside the prefix.
 	authorizePath     = "/oauth/authorize"
 	callbackPath      = "/oauth/authorize/callback"
 	tokenPath         = "/oauth/token"
@@ -56,7 +56,7 @@ const (
 	refreshTokenLifetime = 30 * 24 * time.Hour
 )
 
-// Scopes a user can consent to (ADR-0016). They record what was consented to and
+// Scopes a user can consent to (ADR-0019). They record what was consented to and
 // can only narrow what the user's Permissions allow, never widen it.
 const (
 	ScopeCatalogRead  = "catalog:read"

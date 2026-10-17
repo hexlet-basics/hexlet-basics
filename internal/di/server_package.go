@@ -436,7 +436,7 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		// The OAuth server is mounted only behind its flag (ADR-0016).
+		// The OAuth server is mounted only behind its flag (ADR-0019).
 		var oauthHandler http.Handler
 		if cfg.OAuth.Enabled {
 			oauthServer, err := do.Invoke[*oauthserver.Server](i)
@@ -452,7 +452,7 @@ var serverPackage = do.Package(
 			oauthHandler,
 		), nil
 	}),
-	// The OAuth authorization server (ADR-0016). It receives the application's
+	// The OAuth authorization server (ADR-0019). It receives the application's
 	// half of its seam, who is signed in, from the handlers package; the
 	// package itself never imports handlers. Built only when the flag is on,
 	// since an invalid issuer or a missing key would otherwise stop a

@@ -50,7 +50,7 @@ operation called over MCP is allowed when the user's role holds the operation's
 Permission *and* the `mcp.*` Permission matching its kind (`mcp.read` for a
 read, `mcp.write` for a write, `mcp.manage` for operations on users, staff and
 roles). It is evaluated from the database on every call, so taking a Permission
-away works at once. A Connected App's Scope can only narrow it (ADR-0016).
+away works at once. A Connected App's Scope can only narrow it (ADR-0019).
 Catalogue and learner operations need no Staff Role: they need only the Scope
 (`catalog:read`, `progress:read`) and a user as the token's subject.
 
