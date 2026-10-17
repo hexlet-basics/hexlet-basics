@@ -31,6 +31,8 @@ pitchfork = "2.30.1"
 # Syntax check of src/ (mise run lint:syntax). The grammar comes from the
 # tree-sitter-typescript npm package; the CLI compiles it on first use.
 tree-sitter = "0.27.1"
+# Structural code search for agents (see AGENTS.md, "Code search").
+ast-grep = "0.51.0"
 # Secret scan on staged changes (pre-commit hook in hk.pkl).
 gitleaks = "8.30.1"
 # Workflow linters (mise run lint:workflows), the spelling check (lint:typos) and

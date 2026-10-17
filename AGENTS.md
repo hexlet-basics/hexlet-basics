@@ -127,6 +127,15 @@ api-spec/*.tsp  ──tsp──▶  api-spec/dist/openapi.yaml  ──┬──o
   by `mise run setup` (and mise's postinstall hook) via `hk install --mise`.
   Use `pnpm`, never `npm`/`npx` directly for JS deps.
 
+## Code search
+
+`ast-grep` is installed (pinned in `mise.toml`). For any search that depends on
+syntax or code structure (calls, declarations, a method on a type, JSX props),
+default to `ast-grep --lang <go|tsx|typescript> -p '<pattern>'` and adjust
+`--lang` per file type. Use `rg`/grep only for plain-text searches (strings,
+comments, config values). Skip generated files (`internal/api/oas_*_gen.go`,
+`src/client/`, `ent/` outside `schema/`) unless that is the point of the search.
+
 ## Codegen Commands
 
 - `mise run gen` — full contract pipeline (spec → ogen server → hey-api client).
