@@ -14,6 +14,7 @@ import (
 
 	"hexletbasics/ent"
 	"hexletbasics/internal/audit"
+	"hexletbasics/internal/store"
 	"hexletbasics/internal/testsupport"
 )
 
@@ -106,7 +107,7 @@ func planOf(t *testing.T, tx *sql.Tx, q recorded) string {
 // the other filters are combined.
 func TestAFilteredQueryReadsOnlyThePartitionsOfItsWindow(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
-	partitions := audit.NewPartitions(tx)
+	partitions := audit.NewPartitions(store.NewTxDriver(tx))
 	// Pinned in the past so these partitions never collide with the real ones.
 	now := time.Date(2024, 10, 17, 12, 0, 0, 0, time.UTC)
 	for _, month := range []time.Time{
@@ -156,7 +157,7 @@ func TestWithoutABoundEveryPartitionIsRead(t *testing.T) {
 	_, tx := testsupport.NewClientWithTx(t)
 	rec := &recorder{tx: tx}
 	unbounded := ent.NewClient(ent.Driver(entsql.NewDriver(dialect.Postgres, entsql.Conn{ExecQuerier: rec})))
-	require.NoError(t, audit.NewPartitions(tx).EnsureAhead(t.Context(), time.Date(2024, 10, 17, 0, 0, 0, 0, time.UTC)))
+	require.NoError(t, audit.NewPartitions(store.NewTxDriver(tx)).EnsureAhead(t.Context(), time.Date(2024, 10, 17, 0, 0, 0, 0, time.UTC)))
 
 	_, err := unbounded.AuditRecord.Query().Limit(20).All(t.Context())
 	require.NoError(t, err)

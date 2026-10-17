@@ -181,7 +181,7 @@ var workerPackage = do.Package(
 			jobs.AmoCRMLead(amoCRMClient),
 			jobs.AccountEmail(emailSender),
 			jobs.ReapExpiredSessions(manager, logger),
-			jobs.MaintainAuditPartitions(audit.NewPartitions(db), cfg.AuditRetentionMonths, logger),
+			jobs.MaintainAuditPartitions(audit.NewPartitions(store.NewDriver(db)), cfg.AuditRetentionMonths, logger),
 			jobs.PurgeOAuthTokens(entClient, logger),
 		}
 		if cfg.OpenAIAccessToken != "" {

@@ -307,10 +307,15 @@ for a missing month; it is never dropped by retention.
 no partition DDL, so the DDL is two SQL functions created by the migration,
 `audit_records_ensure_partition(month)` and
 `audit_records_drop_partitions_ended_before(cutoff)`. `audit.Partitions` calls
-each with one fixed statement (a single `//nolint:forbidigo` with the reason).
-Both take an advisory lock, so two workers cannot race. Considered and not
-chosen: enabling ent's `sql/execquery` feature (regenerates the whole client to
-expose a general raw-SQL door), and DDL assembled as Go strings.
+each by building a select of the function with ent's own SQL builder
+(`entgo.io/ent/dialect/sql`, the month a bound argument, the function name a
+constant of the package) and running it on ent's `dialect.Driver`, which the
+store hands it (`store.NewDriver` over the pool, `store.NewTxDriver` over a
+transaction in tests). No `database/sql` call and no `nolint` is involved, and
+no SQL is built from outside input. Both functions take an advisory lock, so
+two workers cannot race. Considered and not chosen: enabling ent's
+`sql/execquery` feature (regenerates the whole client to expose a general
+raw-SQL door), and DDL assembled as Go strings.
 
 **The job.** `maintain_audit_partitions` is a periodic River job (daily, and on
 start) in the worker process: it creates the current month and the next three
