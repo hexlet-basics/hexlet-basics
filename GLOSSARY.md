@@ -115,12 +115,21 @@ position: it does not count towards Completion.
 
 **Completion**:
 The share of a Course's Current Lessons a learner has finished, as a percentage.
-Lessons finished under a retired Version do not count towards it. Carried as
-`Enrollment.completion`; the word Progress on its own is ambiguous now that
-Lesson Progress is a record, so Completion is the name for the number. Carried
-as `CourseProgress.completion`: computed against the current Version, never
-stored on the Enrollment.
+Lessons finished under a retired Version do not count towards it. The word
+Progress on its own is ambiguous now that Lesson Progress is a record, so
+Completion is the name for the number. Carried as `CourseProgress.completion`:
+computed against the current Version, never stored on the Enrollment.
 _ru_: прогресс · _es_: progreso
+
+**Learner Lesson**:
+A Lesson as the course page and the player list it: the Lesson with the
+visitor's Position and whether they finished it. (`LearnerLesson`.)
+_ru_: урок ученика · _es_: lección del alumno
+
+**Course Progress**:
+Where a visitor stands in one Course: its state, Completion and Next Lesson.
+(`CourseProgress`.)
+_ru_: прогресс по курсу · _es_: progreso del curso
 
 **Course Readiness**:
 How finished the Course itself is — draft, in development, or completed

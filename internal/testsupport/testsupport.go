@@ -256,7 +256,7 @@ func NewHarnessAs(t *testing.T, userLabel fixtures.Label) *Harness {
 		// The real remover over the savepoint transactor, like the others.
 		PostRemover: blogposts.NewRemover(transactor),
 		Permissions: staffroles.NewPermissions(db),
-		Dashboard:   dashboard.New(db, landingpages.NewCatalog(db), tracker),
+		Dashboard:   dashboard.New(db, landingpages.NewCatalog(db), tracker, slog.New(slog.DiscardHandler)),
 		Sitemap:     sitemap.New(db),
 	})
 	srv, err := api.NewServer(

@@ -3,6 +3,7 @@ package dashboard
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/samber/lo"
 
@@ -54,12 +55,14 @@ type Dashboard struct {
 	db       *ent.Client
 	catalog  *landingpages.Catalog
 	progress CourseProgress
+	log      *slog.Logger
 }
 
 // New builds the production dashboard over the catalog and the progress module,
-// so the dashboard and the course page report the same progress.
-func New(db *ent.Client, catalog *landingpages.Catalog, tracker CourseProgress) *Dashboard {
-	return &Dashboard{db: db, catalog: catalog, progress: tracker}
+// so the dashboard and the course page report the same progress. The logger
+// reports the courses left off for lack of a card.
+func New(db *ent.Client, catalog *landingpages.Catalog, tracker CourseProgress, logger *slog.Logger) *Dashboard {
+	return &Dashboard{db: db, catalog: catalog, progress: tracker, log: logger}
 }
 
 // Courses returns the user's enrollments, newest first, each with its card and
@@ -100,6 +103,10 @@ func (d *Dashboard) Courses(ctx context.Context, userID int, locale string) (Cou
 	for _, e := range enrollments {
 		card, ok := cards[e.CourseID]
 		if !ok {
+			// Skipped, not failed: the learner's page is fine without it, but
+			// the course is a content gap somebody has to hear about.
+			d.log.WarnContext(ctx, "dashboard course has no catalog card",
+				"course_id", e.CourseID, "user_id", userID, "locale", locale)
 			continue
 		}
 		state := states[e.CourseID]

@@ -6,7 +6,7 @@ import { localeOf } from "@/lib/locale-path";
 
 // Read the incoming SSR request's cookie header. Server-only (the client impl
 // is a no-op), so the server import is stripped from the browser bundle — the
-// browser sends the auth cookies itself through Axios `withCredentials`.
+// browser sends the auth cookies itself (same-origin fetch).
 const getRequestCookie = createIsomorphicFn()
   .server(() => getRequestHeader("cookie"))
   .client(() => undefined);

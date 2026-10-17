@@ -59,10 +59,9 @@ func (AdminInputField) Name() string { return "AdminInputField" }
 // apiconv imports ent). The default order and the eager-loaded edges live here
 // because the contract does not carry them. A schema needs AdminInput too.
 type AdminCRUD struct {
-	// Type overrides the list item model name; empty means "<Schema>".
-	Type string `json:"Type"`
 	// Detail overrides the model name get/create/update return, for a
-	// resource whose single view is richer than its list row; empty means Type.
+	// resource whose single view is richer than its list row; empty means the
+	// list item model, "<Schema>".
 	Detail string `json:"Detail"`
 	// Order is the default list order; empty means newest first (id DESC).
 	Order []AdminOrder `json:"Order"`

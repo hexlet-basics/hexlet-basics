@@ -177,7 +177,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
-		return dashboard.New(db, landingpages.NewCatalog(db), tracker), nil
+		logger, err := do.Invoke[*slog.Logger](i)
+		if err != nil {
+			return nil, err
+		}
+		return dashboard.New(db, landingpages.NewCatalog(db), tracker, logger), nil
 	}),
 	do.Lazy[*accounts.Remover](func(i do.Injector) (*accounts.Remover, error) {
 		db, err := do.Invoke[*store.Store](i)

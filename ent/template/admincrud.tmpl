@@ -36,7 +36,6 @@ import (
 {{- $input := printf "%sInput" $n.Name }}
 {{- with $in }}{{ with .Type }}{{ $input = . }}{{ end }}{{ end }}
 {{- $item := $n.Name }}
-{{- with $ann.Type }}{{ $item = . }}{{ end }}
 {{- $detail := $item }}
 {{- with $ann.Detail }}{{ $detail = . }}{{ end }}
 {{- $client := printf "%sClient" $n.Name }}
