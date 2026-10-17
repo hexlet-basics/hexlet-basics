@@ -1051,7 +1051,10 @@ export type OAuthDecision = {
 };
 
 /**
- * Admin resources a staff role can be granted permissions on.
+ * A Permission an admin operation can require, as declared on the operations in
+ * this contract with `x-permission`. The catalog is read from those
+ * declarations, never kept by hand, plus the capability Permissions the contract
+ * lists under `x-capabilities`.
  */
 export type Permission = {
   name: string;

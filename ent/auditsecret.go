@@ -5,6 +5,12 @@ package ent
 // AuditSecretFields maps an ent type name (Mutation.Type) to the names of its
 // Sensitive() fields.
 var AuditSecretFields = map[string][]string{
+	"OAuthAuthRequest": {
+		"code_hash",
+	},
+	"OAuthRefreshToken": {
+		"token_hash",
+	},
 	"User": {
 		"password_digest",
 		"confirmation_token",
