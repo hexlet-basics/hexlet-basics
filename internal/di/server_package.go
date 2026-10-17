@@ -459,6 +459,11 @@ var serverPackage = do.Package(
 		if err != nil {
 			return nil, err
 		}
+		// Off, the service resolves to nil: the router and the consent seam
+		// only ask for it behind the same flag.
+		if !cfg.OAuth.Enabled {
+			return nil, nil
+		}
 		return oauthserver.New(oauthserver.Deps{
 			Config: oauthserver.Config{
 				Issuer:        cfg.OAuth.Issuer,

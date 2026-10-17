@@ -70,6 +70,19 @@ func TestAuthenticationRequirementsAreDeclaredInOpenAPI(t *testing.T) {
 		spec.Paths["/api/admin/attachments"].Post.Security,
 	)
 
+	// The OAuth consent screen (ADR-0016): reading it needs the session, deciding
+	// needs the session and the XSRF header.
+	consent := spec.Paths["/api/oauth/consents/{requestId}"]
+	assert.Equal(t, []map[string][]string{{"UserSession": {}}}, consent.Get.Security)
+	assert.Equal(t,
+		[]map[string][]string{{"UserSession": {}, "XsrfToken": {}}},
+		spec.Paths["/api/oauth/consents/{requestId}/approve"].Post.Security,
+	)
+	assert.Equal(t,
+		[]map[string][]string{{"UserSession": {}, "XsrfToken": {}}},
+		spec.Paths["/api/oauth/consents/{requestId}/deny"].Post.Security,
+	)
+
 	assert.Contains(t, spec.Paths["/api/my"].Get.Responses, "401")
 	assert.Contains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "401")
 	assert.Contains(t, spec.Paths["/api/admin/course_categories"].Get.Responses, "403")
